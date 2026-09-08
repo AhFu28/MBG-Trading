@@ -21,7 +21,7 @@
     ],
     "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.075718"
+    "created_at": "2026-09-08T21:21:41.941515"
   },
   {
     "plan_id": "PLAN-IDX-MEDC-20260908",
@@ -45,7 +45,7 @@
     ],
     "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.075781"
+    "created_at": "2026-09-08T21:21:41.941552"
   },
   {
     "plan_id": "PLAN-IDX-AMMN-20260908",
@@ -69,7 +69,7 @@
     ],
     "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.075807"
+    "created_at": "2026-09-08T21:21:41.941576"
   },
   {
     "plan_id": "PLAN-IDX-TOWR-20260908",
@@ -93,7 +93,7 @@
     ],
     "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.075828"
+    "created_at": "2026-09-08T21:21:41.941596"
   },
   {
     "plan_id": "PLAN-IDX-ENRG-20260908",
@@ -117,7 +117,7 @@
     ],
     "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.075848"
+    "created_at": "2026-09-08T21:21:41.941616"
   },
   {
     "plan_id": "PLAN-IDX-TLKM-20260908",
@@ -141,7 +141,7 @@
     ],
     "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.075866"
+    "created_at": "2026-09-08T21:21:41.941634"
   },
   {
     "plan_id": "PLAN-IDX-MDKA-20260908",
@@ -165,7 +165,7 @@
     ],
     "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.075883"
+    "created_at": "2026-09-08T21:21:41.941651"
   },
   {
     "plan_id": "PLAN-IDX-ICBP-20260908",
@@ -189,7 +189,7 @@
     ],
     "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.075902"
+    "created_at": "2026-09-08T21:21:41.941669"
   },
   {
     "plan_id": "PLAN-IDX-PTBA-20260908",
@@ -213,7 +213,7 @@
     ],
     "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.075918"
+    "created_at": "2026-09-08T21:21:41.941686"
   },
   {
     "plan_id": "PLAN-IDX-BJBR-20260908",
@@ -237,7 +237,7 @@
     ],
     "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.075935"
+    "created_at": "2026-09-08T21:21:41.941703"
   },
   {
     "plan_id": "PLAN-IDX-BREN-20260908",
@@ -261,7 +261,7 @@
     ],
     "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.075952"
+    "created_at": "2026-09-08T21:21:41.941728"
   },
   {
     "plan_id": "PLAN-IDX-GOTO-20260908",
@@ -285,7 +285,7 @@
     ],
     "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.075969"
+    "created_at": "2026-09-08T21:21:41.941772"
   },
   {
     "plan_id": "PLAN-CRYPTO-SUIUSDT-20260908",
@@ -309,7 +309,7 @@
     ],
     "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.076007"
+    "created_at": "2026-09-08T21:21:41.941810"
   },
   {
     "plan_id": "PLAN-CRYPTO-RENDERUSDT-20260908",
@@ -333,7 +333,7 @@
     ],
     "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.076044"
+    "created_at": "2026-09-08T21:21:41.941833"
   },
   {
     "plan_id": "PLAN-CRYPTO-FETUSDT-20260908",
@@ -357,7 +357,7 @@
     ],
     "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.076073"
+    "created_at": "2026-09-08T21:21:41.941857"
   },
   {
     "plan_id": "PLAN-CRYPTO-SOLUSDT-20260908",
@@ -381,7 +381,7 @@
     ],
     "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.076101"
+    "created_at": "2026-09-08T21:21:41.941874"
   },
   {
     "plan_id": "PLAN-CRYPTO-LINKUSDT-20260908",
@@ -405,7 +405,7 @@
     ],
     "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.076132"
+    "created_at": "2026-09-08T21:21:41.941891"
   },
   {
     "plan_id": "PLAN-CRYPTO-NEARUSDT-20260908",
@@ -429,7 +429,7 @@
     ],
     "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.076160"
+    "created_at": "2026-09-08T21:21:41.941907"
   },
   {
     "plan_id": "PLAN-CRYPTO-ETHUSDT-20260908",
@@ -453,7 +453,7 @@
     ],
     "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.076185"
+    "created_at": "2026-09-08T21:21:41.941922"
   },
   {
     "plan_id": "PLAN-CRYPTO-AVAXUSDT-20260908",
@@ -477,6 +477,6 @@
     ],
     "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
     "status": "AWAITING_HUMAN_REVIEW",
-    "created_at": "2026-09-08T19:36:54.076214"
+    "created_at": "2026-09-08T21:21:41.941937"
   }
 ]
