@@ -1,17 +1,17 @@
 {
   "id": "GLOBAL_LATEST",
-  "headline": "Middle East Supply Tensions Drive Crude Oil Spike; Inflation Watch Resumes",
+  "headline": "US Markets Consolidate Ahead of Fed Policy Statement; Commodity Prices Stable",
   "source": "Global Macro Telemetry Feed (US Fed / Energy / Metals)",
-  "event_category": "OIL",
-  "sentiment": "BULLISH",
-  "severity": "HIGH",
-  "gold_price": 4436.8,
-  "gold_change_pct": 0.16,
-  "brent_oil_price": 97.76,
-  "brent_oil_change_pct": 1.54,
-  "dxy_index": 98.82,
-  "dxy_change_pct": -0.34,
-  "us10y_yield": 4.79,
+  "event_category": "FED",
+  "sentiment": "NEUTRAL",
+  "severity": "NORMAL",
+  "gold_price": 4431.7,
+  "gold_change_pct": 0.04,
+  "brent_oil_price": 97.32,
+  "brent_oil_change_pct": 1.08,
+  "dxy_index": 98.87,
+  "dxy_change_pct": -0.29,
+  "us10y_yield": 4.8,
   "idx_affected_sectors": [
     "ENERGY_OIL_GAS"
   ],
@@ -32,6 +32,6 @@
       "reason": "Jet fuel cost pressure on aviation operating margin"
     }
   ],
-  "full_narrative": "Global telemetry report: Gold at $4436.8 (0.16%), Brent Crude at $97.76 (1.54%). DXY at 98.82 pts. Monitored for impact on Indonesian equities.",
-  "updated_at": "2026-09-08T22:03:45.717559"
+  "full_narrative": "Global telemetry report: Gold at $4431.7 (0.04%), Brent Crude at $97.32 (1.08%). DXY at 98.87 pts. Monitored for impact on Indonesian equities.",
+  "updated_at": "2026-09-08T18:24:55.917186"
 }
