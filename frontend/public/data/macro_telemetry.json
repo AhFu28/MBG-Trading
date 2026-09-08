@@ -5,17 +5,33 @@
   "event_category": "OIL",
   "sentiment": "BULLISH",
   "severity": "HIGH",
-  "gold_price": 4441.1,
-  "gold_change_pct": 0.26,
-  "brent_oil_price": 98.53,
-  "brent_oil_change_pct": 2.34,
-  "dxy_index": 98.94,
-  "dxy_change_pct": -0.23,
-  "us10y_yield": 4.79,
+  "gold_price": 4454.4,
+  "gold_change_pct": 0.56,
+  "brent_oil_price": 97.75,
+  "brent_oil_change_pct": 1.53,
+  "dxy_index": 98.84,
+  "dxy_change_pct": -0.33,
+  "us10y_yield": 4.76,
   "idx_affected_sectors": [
+    "MINING_GOLD",
     "ENERGY_OIL_GAS"
   ],
   "idx_affected_stocks": [
+    {
+      "ticker": "ANTM",
+      "impact": "BULLISH",
+      "reason": "Gold +0.56% boosts mining realized selling price"
+    },
+    {
+      "ticker": "BRMS",
+      "impact": "BULLISH",
+      "reason": "High leverage to spot gold rallies"
+    },
+    {
+      "ticker": "MDKA",
+      "impact": "BULLISH",
+      "reason": "Copper/gold production hedge"
+    },
     {
       "ticker": "MEDC",
       "impact": "BULLISH",
@@ -32,6 +48,6 @@
       "reason": "Jet fuel cost pressure on aviation operating margin"
     }
   ],
-  "full_narrative": "Global telemetry report: Gold at $4441.1 (0.26%), Brent Crude at $98.53 (2.34%). DXY at 98.94 pts. Monitored for impact on Indonesian equities.",
-  "updated_at": "2026-09-08T19:36:48.495486"
+  "full_narrative": "Global telemetry report: Gold at $4454.4 (0.56%), Brent Crude at $97.75 (1.53%). DXY at 98.84 pts. Monitored for impact on Indonesian equities.",
+  "updated_at": "2026-09-08T20:28:54.821446"
 }

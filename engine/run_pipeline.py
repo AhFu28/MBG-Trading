@@ -13,6 +13,7 @@ from fetchers.idx_market import IDXMarketFetcher
 from fetchers.crypto_spot import CryptoSpotFetcher
 from analyzer.llm_brain import LLMBrain
 from database.supabase_client import DatabaseClient
+from notifiers.telegram_notifier import TelegramNotifier
 
 logging.basicConfig(
     level=logging.INFO,
@@ -27,7 +28,7 @@ def main():
         load_dotenv(env_path)
 
     parser = argparse.ArgumentParser(description="Market Brain Grid & Cockpit Engine Runner")
-    parser.add_argument("--mode", choices=["all", "hourly_crypto_macro", "daily_idx_morning", "mock"], default="all")
+    parser.add_argument("--mode", choices=["all", "hourly_crypto_macro", "daily_idx_morning"], default="all")
     args = parser.parse_args()
 
     logger.info(f"Starting Market Brain Grid Pipeline in mode: {args.mode.upper()}")
@@ -38,6 +39,7 @@ def main():
     idx_fetcher = IDXMarketFetcher()
     crypto_fetcher = CryptoSpotFetcher()
     brain = LLMBrain()
+    telegram = TelegramNotifier()
 
     macro_data = {}
     crypto_spot_10 = []
@@ -78,6 +80,12 @@ def main():
         "execution_duration_sec": round((datetime.now() - start_time).total_seconds(), 2)
     }
     db.sync_complete_bundle(bundle)
+
+    # 5. Broadcast to Telegram (if enabled in ENV)
+    if macro_data:
+        telegram.broadcast_macro_flash(macro_data)
+    if trade_plans:
+        telegram.broadcast_daily_plans(trade_plans)
 
     logger.info(f"Pipeline finished successfully in {bundle['execution_duration_sec']} seconds.")
     print("="*60)
