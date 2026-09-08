@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PasswordGate from './components/PasswordGate.jsx';
 import MacroAlertBanner from './components/MacroAlertBanner.jsx';
 import IdxKongloGrid from './components/IdxKongloGrid.jsx';
 import IdxDividendTab from './components/IdxDividendTab.jsx';
@@ -79,6 +80,7 @@ export default function App() {
   const uniqueIndexedStocks = Array.from(new Map(allIndexedStocks.map(s => [s.ticker, s])).values());
 
   return (
+    <PasswordGate>
     <div style={{ minHeight: '100vh', padding: '16px 20px', maxWidth: '1440px', margin: '0 auto' }}>
       
       {/* 1. Master Top Bar */}
@@ -225,5 +227,6 @@ export default function App() {
       </footer>
 
     </div>
+    </PasswordGate>
   );
 }
