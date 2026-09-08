@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import argparse
 import logging
 from datetime import datetime
@@ -68,14 +69,23 @@ def main():
         trade_plans = brain.generate_daily_trade_plans(idx_data, crypto_spot_10, macro_data)
         db.upsert_trade_plans(trade_plans)
 
-    # 4. Consolidate Master Cockpit Bundle (for instant frontend load)
+    # 4. Consolidate Master Cockpit Bundle (Preserve existing data if running hourly)
+    existing_bundle = {}
+    bundle_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "public", "data", "latest_cockpit_bundle.json")
+    if os.path.exists(bundle_path):
+        try:
+            with open(bundle_path, "r", encoding="utf-8") as bf:
+                existing_bundle = json.load(bf)
+        except Exception as be:
+            logger.warning(f"Could not load existing bundle to merge: {be}")
+
     bundle = {
-        "macro_telemetry": macro_data,
-        "conglomerates": idx_data.get("conglomerates", {}),
-        "dividend_hunters": idx_data.get("dividend_hunters", []),
-        "foreign_flow": idx_data.get("foreign_flow", {}),
-        "crypto_spot_10": crypto_spot_10,
-        "daily_trade_plans": trade_plans,
+        "macro_telemetry": macro_data or existing_bundle.get("macro_telemetry", {}),
+        "conglomerates": idx_data.get("conglomerates") or existing_bundle.get("conglomerates", {}),
+        "dividend_hunters": idx_data.get("dividend_hunters") or existing_bundle.get("dividend_hunters", []),
+        "foreign_flow": idx_data.get("foreign_flow") or existing_bundle.get("foreign_flow", {}),
+        "crypto_spot_10": crypto_spot_10 or existing_bundle.get("crypto_spot_10", []),
+        "daily_trade_plans": trade_plans or existing_bundle.get("daily_trade_plans", []),
         "mode": args.mode,
         "execution_duration_sec": round((datetime.now() - start_time).total_seconds(), 2)
     }

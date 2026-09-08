@@ -15,7 +15,7 @@
     "ma50": 3390.9,
     "rsi_14": 32.8,
     "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-08T21:21:34.792468"
+    "updated_at": "2026-09-08T22:03:47.708284"
   },
   {
     "ticker": "TPIA",
@@ -33,7 +33,7 @@
     "ma50": 1989.9,
     "rsi_14": 48.5,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-08T21:21:34.873187"
+    "updated_at": "2026-09-08T22:03:47.999569"
   },
   {
     "ticker": "BRPT",
@@ -51,7 +51,7 @@
     "ma50": 1755.3,
     "rsi_14": 39.1,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-08T21:21:35.126630"
+    "updated_at": "2026-09-08T22:03:48.168944"
   },
   {
     "ticker": "CUAN",
@@ -69,7 +69,7 @@
     "ma50": 728.2,
     "rsi_14": 66.1,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:35.190198"
+    "updated_at": "2026-09-08T22:03:48.459396"
   },
   {
     "ticker": "PTRO",
@@ -87,7 +87,7 @@
     "ma50": 4693.7,
     "rsi_14": 55.2,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:35.370640"
+    "updated_at": "2026-09-08T22:03:48.877663"
   },
   {
     "ticker": "INDF",
@@ -105,7 +105,7 @@
     "ma50": 7037.0,
     "rsi_14": 60.0,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-08T21:21:35.493064"
+    "updated_at": "2026-09-08T22:03:48.972885"
   },
   {
     "ticker": "ICBP",
@@ -123,7 +123,7 @@
     "ma50": 7153.2,
     "rsi_14": 32.7,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-08T21:21:35.661420"
+    "updated_at": "2026-09-08T22:03:49.051053"
   },
   {
     "ticker": "MEDC",
@@ -141,7 +141,7 @@
     "ma50": 1299.9,
     "rsi_14": 64.1,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-08T21:21:35.815052"
+    "updated_at": "2026-09-08T22:03:49.148692"
   },
   {
     "ticker": "AMMN",
@@ -159,7 +159,7 @@
     "ma50": 4052.6,
     "rsi_14": 65.4,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-08T21:21:35.944470"
+    "updated_at": "2026-09-08T22:03:49.263260"
   },
   {
     "ticker": "ASII",
@@ -177,7 +177,7 @@
     "ma50": 4897.0,
     "rsi_14": 64.3,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:36.213252"
+    "updated_at": "2026-09-08T22:03:49.344773"
   },
   {
     "ticker": "UNTR",
@@ -195,7 +195,7 @@
     "ma50": 24531.0,
     "rsi_14": 70.7,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:36.303997"
+    "updated_at": "2026-09-08T22:03:49.430416"
   },
   {
     "ticker": "AUTO",
@@ -213,7 +213,7 @@
     "ma50": 2814.0,
     "rsi_14": 84.1,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:36.486665"
+    "updated_at": "2026-09-08T22:03:49.514168"
   },
   {
     "ticker": "BBCA",
@@ -231,7 +231,7 @@
     "ma50": 6299.7,
     "rsi_14": 72.2,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:37.406893"
+    "updated_at": "2026-09-08T22:03:49.707765"
   },
   {
     "ticker": "TOWR",
@@ -249,7 +249,7 @@
     "ma50": 407.7,
     "rsi_14": 73.1,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-08T21:21:37.865044"
+    "updated_at": "2026-09-08T22:03:49.822328"
   },
   {
     "ticker": "BELI",
@@ -267,7 +267,7 @@
     "ma50": 272.4,
     "rsi_14": 60.8,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:37.955708"
+    "updated_at": "2026-09-08T22:03:49.883206"
   },
   {
     "ticker": "BRMS",
@@ -285,7 +285,7 @@
     "ma50": 604.9,
     "rsi_14": 62.7,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:38.048759"
+    "updated_at": "2026-09-08T22:03:50.108986"
   },
   {
     "ticker": "BUMI",
@@ -303,7 +303,7 @@
     "ma50": 172.4,
     "rsi_14": 78.9,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:38.355584"
+    "updated_at": "2026-09-08T22:03:50.177862"
   },
   {
     "ticker": "ENRG",
@@ -321,7 +321,7 @@
     "ma50": 1278.5,
     "rsi_14": 71.6,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-08T21:21:38.469264"
+    "updated_at": "2026-09-08T22:03:50.238343"
   },
   {
     "ticker": "VKTR",
@@ -339,7 +339,7 @@
     "ma50": 763.4,
     "rsi_14": 50.0,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-08T21:21:38.969829"
+    "updated_at": "2026-09-08T22:03:50.357151"
   },
   {
     "ticker": "ADRO",
@@ -357,7 +357,7 @@
     "ma50": 2514.4,
     "rsi_14": 58.1,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:39.047874"
+    "updated_at": "2026-09-08T22:03:50.438810"
   },
   {
     "ticker": "ADMR",
@@ -375,7 +375,7 @@
     "ma50": 1554.6,
     "rsi_14": 45.6,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-08T21:21:39.107431"
+    "updated_at": "2026-09-08T22:03:50.518089"
   },
   {
     "ticker": "ITMG",
@@ -393,7 +393,7 @@
     "ma50": 24529.5,
     "rsi_14": 79.7,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:39.207574"
+    "updated_at": "2026-09-08T22:03:50.600112"
   },
   {
     "ticker": "PTBA",
@@ -411,7 +411,7 @@
     "ma50": 2441.4,
     "rsi_14": 89.9,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-08T21:21:39.399757"
+    "updated_at": "2026-09-08T22:03:50.834075"
   },
   {
     "ticker": "ADRO",
@@ -429,7 +429,7 @@
     "ma50": 2514.4,
     "rsi_14": 58.1,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:39.457114"
+    "updated_at": "2026-09-08T22:03:50.879465"
   },
   {
     "ticker": "MPMX",
@@ -447,7 +447,7 @@
     "ma50": 997.4,
     "rsi_14": 82.4,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:39.543795"
+    "updated_at": "2026-09-08T22:03:50.976766"
   },
   {
     "ticker": "HEXA",
@@ -465,7 +465,7 @@
     "ma50": 4422.0,
     "rsi_14": 80.0,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:39.708612"
+    "updated_at": "2026-09-08T22:03:51.154439"
   },
   {
     "ticker": "BBRI",
@@ -483,7 +483,7 @@
     "ma50": 3036.0,
     "rsi_14": 77.0,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:39.794247"
+    "updated_at": "2026-09-08T22:03:51.286541"
   },
   {
     "ticker": "BMRI",
@@ -501,7 +501,7 @@
     "ma50": 4196.6,
     "rsi_14": 74.6,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:39.878740"
+    "updated_at": "2026-09-08T22:03:51.556296"
   },
   {
     "ticker": "BBNI",
@@ -519,7 +519,7 @@
     "ma50": 3581.2,
     "rsi_14": 76.3,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:40.001254"
+    "updated_at": "2026-09-08T22:03:51.648635"
   },
   {
     "ticker": "BJTM",
@@ -537,7 +537,7 @@
     "ma50": 517.6,
     "rsi_14": 80.0,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:40.228231"
+    "updated_at": "2026-09-08T22:03:51.719288"
   },
   {
     "ticker": "BJBR",
@@ -555,7 +555,7 @@
     "ma50": 783.3,
     "rsi_14": 60.0,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-08T21:21:40.309368"
+    "updated_at": "2026-09-08T22:03:51.833235"
   },
   {
     "ticker": "BBCA",
@@ -573,7 +573,7 @@
     "ma50": 6299.7,
     "rsi_14": 72.2,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:40.387825"
+    "updated_at": "2026-09-08T22:03:51.897934"
   },
   {
     "ticker": "BBRI",
@@ -591,7 +591,7 @@
     "ma50": 3036.0,
     "rsi_14": 77.0,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:40.465850"
+    "updated_at": "2026-09-08T22:03:51.952246"
   },
   {
     "ticker": "BMRI",
@@ -609,7 +609,7 @@
     "ma50": 4196.6,
     "rsi_14": 74.6,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:40.512073"
+    "updated_at": "2026-09-08T22:03:52.001623"
   },
   {
     "ticker": "TLKM",
@@ -627,7 +627,7 @@
     "ma50": 2595.8,
     "rsi_14": 61.9,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-08T21:21:40.597930"
+    "updated_at": "2026-09-08T22:03:52.087383"
   },
   {
     "ticker": "ASII",
@@ -645,7 +645,7 @@
     "ma50": 4897.0,
     "rsi_14": 64.3,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:40.647842"
+    "updated_at": "2026-09-08T22:03:52.131002"
   },
   {
     "ticker": "MDKA",
@@ -663,7 +663,7 @@
     "ma50": 2782.9,
     "rsi_14": 67.1,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-08T21:21:40.711740"
+    "updated_at": "2026-09-08T22:03:52.259092"
   },
   {
     "ticker": "ANTM",
@@ -681,7 +681,7 @@
     "ma50": 3008.8,
     "rsi_14": 54.5,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-08T21:21:40.837190"
+    "updated_at": "2026-09-08T22:03:52.369252"
   },
   {
     "ticker": "GOTO",
@@ -699,7 +699,7 @@
     "ma50": 50.0,
     "rsi_14": 0.0,
     "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-08T21:21:40.899729"
+    "updated_at": "2026-09-08T22:03:52.432085"
   },
   {
     "ticker": "BRIS",
@@ -717,7 +717,7 @@
     "ma50": 1786.8,
     "rsi_14": 45.7,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-08T21:21:40.971166"
+    "updated_at": "2026-09-08T22:03:52.497203"
   },
   {
     "ticker": "CPIN",
@@ -735,6 +735,6 @@
     "ma50": 3125.2,
     "rsi_14": 68.1,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-08T21:21:41.075202"
+    "updated_at": "2026-09-08T22:03:52.674357"
   }
 ]
