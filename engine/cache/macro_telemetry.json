@@ -5,12 +5,12 @@
   "event_category": "OIL",
   "sentiment": "BULLISH",
   "severity": "HIGH",
-  "gold_price": 4400.0,
-  "gold_change_pct": -0.67,
-  "brent_oil_price": 99.31,
-  "brent_oil_change_pct": 3.15,
-  "dxy_index": 98.86,
-  "dxy_change_pct": -0.31,
+  "gold_price": 4399.0,
+  "gold_change_pct": -0.7,
+  "brent_oil_price": 99.54,
+  "brent_oil_change_pct": 3.39,
+  "dxy_index": 98.79,
+  "dxy_change_pct": -0.37,
   "us10y_yield": 4.81,
   "idx_affected_sectors": [
     "ENERGY_OIL_GAS"
@@ -32,6 +32,6 @@
       "reason": "Jet fuel cost pressure on aviation operating margin"
     }
   ],
-  "full_narrative": "Global telemetry report: Gold at $4400.0 (-0.67%), Brent Crude at $99.31 (3.15%). DXY at 98.86 pts. Monitored for impact on Indonesian equities.",
-  "updated_at": "2026-09-08T21:42:33.567372"
+  "full_narrative": "Global telemetry report: Gold at $4399.0 (-0.7%), Brent Crude at $99.54 (3.39%). DXY at 98.79 pts. Monitored for impact on Indonesian equities.",
+  "updated_at": "2026-09-08T23:57:03.165215"
 }
