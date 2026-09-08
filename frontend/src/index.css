@@ -1,0 +1,163 @@
+:root {
+  --bg-canvas: #faf9f5;
+  --bg-panel: #ffffff;
+  --bg-panel-subtle: #f4f3ec;
+  --bg-panel-dark: #1e2024;
+  --border-color: #2a2b30;
+  --border-hairline: 1px solid #2a2b30;
+  --border-muted: 1px solid #d5d3cb;
+  
+  --text-primary: #121316;
+  --text-muted: #5c5f66;
+  --text-inverse: #faf9f5;
+
+  --accent-orange: #ff6b00;
+  --accent-blue: #0066cc;
+  --accent-rust: #b83232;
+  --accent-green: #1b8a4b;
+  --accent-gold: #c28800;
+
+  --font-mono: 'DM Mono', 'Roboto Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-radius: 0px !important;
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hard edge panel layout */
+.telemetry-panel {
+  background: var(--bg-panel);
+  border: var(--border-hairline);
+  box-shadow: 2px 2px 0px rgba(42, 43, 48, 0.15);
+}
+
+.telemetry-header {
+  background: var(--bg-panel-subtle);
+  border-bottom: var(--border-hairline);
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  border: 1px solid currentColor;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-bull {
+  color: var(--accent-green);
+  background: #edf7f0;
+}
+
+.badge-bear {
+  color: var(--accent-rust);
+  background: #fdf0f0;
+}
+
+.badge-alert {
+  color: var(--accent-orange);
+  background: #fff4ed;
+  border-color: var(--accent-orange);
+}
+
+.badge-blue {
+  color: var(--accent-blue);
+  background: #edf4fa;
+}
+
+/* Button */
+.telemetry-btn {
+  background: var(--bg-panel);
+  border: var(--border-hairline);
+  padding: 6px 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+
+.telemetry-btn:hover {
+  background: var(--text-primary);
+  color: var(--text-inverse);
+}
+
+.telemetry-btn.active {
+  background: var(--accent-orange);
+  color: #ffffff;
+  border-color: var(--border-color);
+}
+
+/* Tables */
+.telemetry-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.telemetry-table th {
+  background: var(--bg-panel-subtle);
+  border-bottom: var(--border-hairline);
+  border-right: var(--border-muted);
+  padding: 6px 10px;
+  text-align: left;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.telemetry-table td {
+  padding: 8px 10px;
+  border-bottom: var(--border-muted);
+  border-right: var(--border-muted);
+}
+
+.telemetry-table tr:hover {
+  background: #fdfcf7;
+}
+
+/* Metric Pill */
+.metric-box {
+  border: var(--border-muted);
+  padding: 8px 10px;
+  background: var(--bg-panel);
+}
+
+.metric-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+}
+
+.metric-value {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 2px;
+}
