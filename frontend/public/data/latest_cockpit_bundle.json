@@ -6,13 +6,13 @@
     "event_category": "OIL",
     "sentiment": "BULLISH",
     "severity": "HIGH",
-    "gold_price": 4431.7,
-    "gold_change_pct": 0.04,
-    "brent_oil_price": 98.65,
-    "brent_oil_change_pct": 2.46,
-    "dxy_index": 98.98,
-    "dxy_change_pct": -0.18,
-    "us10y_yield": 4.78,
+    "gold_price": 4441.1,
+    "gold_change_pct": 0.26,
+    "brent_oil_price": 98.53,
+    "brent_oil_change_pct": 2.34,
+    "dxy_index": 98.94,
+    "dxy_change_pct": -0.23,
+    "us10y_yield": 4.79,
     "idx_affected_sectors": [
       "ENERGY_OIL_GAS"
     ],
@@ -33,8 +33,8 @@
         "reason": "Jet fuel cost pressure on aviation operating margin"
       }
     ],
-    "full_narrative": "Global telemetry report: Gold at $4431.7 (0.04%), Brent Crude at $98.65 (2.46%). DXY at 98.98 pts. Monitored for impact on Indonesian equities.",
-    "updated_at": "2026-09-08T19:25:43.396092"
+    "full_narrative": "Global telemetry report: Gold at $4441.1 (0.26%), Brent Crude at $98.53 (2.34%). DXY at 98.94 pts. Monitored for impact on Indonesian equities.",
+    "updated_at": "2026-09-08T19:36:48.495486"
   },
   "conglomerates": {
     "BARITO_GROUP": [
@@ -54,7 +54,7 @@
         "ma50": 3390.9,
         "rsi_14": 32.8,
         "technical_signal": "OVERSOLD_REBOUND",
-        "updated_at": "2026-09-08T19:25:43.617112"
+        "updated_at": "2026-09-08T19:36:49.009697"
       },
       {
         "ticker": "TPIA",
@@ -72,7 +72,7 @@
         "ma50": 1989.9,
         "rsi_14": 48.5,
         "technical_signal": "PULLBACK",
-        "updated_at": "2026-09-08T19:25:43.745643"
+        "updated_at": "2026-09-08T19:36:49.147584"
       },
       {
         "ticker": "BRPT",
@@ -90,7 +90,7 @@
         "ma50": 1755.3,
         "rsi_14": 39.1,
         "technical_signal": "PULLBACK",
-        "updated_at": "2026-09-08T19:25:44.030812"
+        "updated_at": "2026-09-08T19:36:49.239799"
       },
       {
         "ticker": "CUAN",
@@ -108,7 +108,7 @@
         "ma50": 728.2,
         "rsi_14": 66.1,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:44.135777"
+        "updated_at": "2026-09-08T19:36:49.309238"
       },
       {
         "ticker": "PTRO",
@@ -126,7 +126,7 @@
         "ma50": 4693.7,
         "rsi_14": 55.2,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:44.319854"
+        "updated_at": "2026-09-08T19:36:49.444616"
       }
     ],
     "SALIM_GROUP": [
@@ -146,7 +146,7 @@
         "ma50": 7037.0,
         "rsi_14": 60.0,
         "technical_signal": "BREAKOUT",
-        "updated_at": "2026-09-08T19:25:44.483652"
+        "updated_at": "2026-09-08T19:36:49.543830"
       },
       {
         "ticker": "ICBP",
@@ -164,7 +164,7 @@
         "ma50": 7153.2,
         "rsi_14": 32.7,
         "technical_signal": "ACCUMULATION",
-        "updated_at": "2026-09-08T19:25:44.669299"
+        "updated_at": "2026-09-08T19:36:49.681547"
       },
       {
         "ticker": "MEDC",
@@ -182,7 +182,7 @@
         "ma50": 1299.9,
         "rsi_14": 64.1,
         "technical_signal": "BREAKOUT",
-        "updated_at": "2026-09-08T19:25:44.816079"
+        "updated_at": "2026-09-08T19:36:50.048509"
       },
       {
         "ticker": "AMMN",
@@ -200,7 +200,7 @@
         "ma50": 4052.6,
         "rsi_14": 65.4,
         "technical_signal": "BREAKOUT",
-        "updated_at": "2026-09-08T19:25:45.082376"
+        "updated_at": "2026-09-08T19:36:50.276636"
       }
     ],
     "ASTRA_GROUP": [
@@ -220,7 +220,7 @@
         "ma50": 4897.0,
         "rsi_14": 64.3,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:45.235659"
+        "updated_at": "2026-09-08T19:36:50.489920"
       },
       {
         "ticker": "UNTR",
@@ -238,7 +238,7 @@
         "ma50": 24531.0,
         "rsi_14": 70.7,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:45.463005"
+        "updated_at": "2026-09-08T19:36:50.626579"
       },
       {
         "ticker": "AUTO",
@@ -256,7 +256,7 @@
         "ma50": 2814.0,
         "rsi_14": 84.1,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:45.619258"
+        "updated_at": "2026-09-08T19:36:50.749413"
       }
     ],
     "DJARUM_GROUP": [
@@ -276,7 +276,7 @@
         "ma50": 6299.7,
         "rsi_14": 72.2,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:45.874041"
+        "updated_at": "2026-09-08T19:36:50.855511"
       },
       {
         "ticker": "TOWR",
@@ -294,7 +294,7 @@
         "ma50": 407.7,
         "rsi_14": 73.1,
         "technical_signal": "BREAKOUT",
-        "updated_at": "2026-09-08T19:25:46.346675"
+        "updated_at": "2026-09-08T19:36:51.009029"
       },
       {
         "ticker": "BELI",
@@ -312,7 +312,7 @@
         "ma50": 272.4,
         "rsi_14": 60.8,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:46.949210"
+        "updated_at": "2026-09-08T19:36:51.093584"
       }
     ],
     "BAKRIE_GROUP": [
@@ -332,7 +332,7 @@
         "ma50": 604.9,
         "rsi_14": 62.7,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:47.050668"
+        "updated_at": "2026-09-08T19:36:51.178497"
       },
       {
         "ticker": "BUMI",
@@ -350,7 +350,7 @@
         "ma50": 172.4,
         "rsi_14": 78.9,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:47.242069"
+        "updated_at": "2026-09-08T19:36:51.316739"
       },
       {
         "ticker": "ENRG",
@@ -368,7 +368,7 @@
         "ma50": 1278.5,
         "rsi_14": 71.6,
         "technical_signal": "BREAKOUT",
-        "updated_at": "2026-09-08T19:25:47.347886"
+        "updated_at": "2026-09-08T19:36:51.396410"
       },
       {
         "ticker": "VKTR",
@@ -386,7 +386,7 @@
         "ma50": 763.4,
         "rsi_14": 50.0,
         "technical_signal": "PULLBACK",
-        "updated_at": "2026-09-08T19:25:47.457240"
+        "updated_at": "2026-09-08T19:36:51.482267"
       }
     ],
     "ADARO_GROUP": [
@@ -406,7 +406,7 @@
         "ma50": 2514.4,
         "rsi_14": 58.1,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:47.741424"
+        "updated_at": "2026-09-08T19:36:51.569361"
       },
       {
         "ticker": "ADMR",
@@ -424,7 +424,7 @@
         "ma50": 1554.6,
         "rsi_14": 45.6,
         "technical_signal": "PULLBACK",
-        "updated_at": "2026-09-08T19:25:48.072684"
+        "updated_at": "2026-09-08T19:36:51.724858"
       }
     ]
   },
@@ -445,7 +445,7 @@
       "ma50": 24529.5,
       "rsi_14": 79.7,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-08T19:25:48.475160"
+      "updated_at": "2026-09-08T19:36:51.811562"
     },
     {
       "ticker": "PTBA",
@@ -463,7 +463,7 @@
       "ma50": 2441.4,
       "rsi_14": 89.9,
       "technical_signal": "ACCUMULATION",
-      "updated_at": "2026-09-08T19:25:48.679568"
+      "updated_at": "2026-09-08T19:36:51.905599"
     },
     {
       "ticker": "ADRO",
@@ -481,7 +481,7 @@
       "ma50": 2514.4,
       "rsi_14": 58.1,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-08T19:25:48.740541"
+      "updated_at": "2026-09-08T19:36:52.121629"
     },
     {
       "ticker": "MPMX",
@@ -499,7 +499,7 @@
       "ma50": 997.4,
       "rsi_14": 82.4,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-08T19:25:48.871124"
+      "updated_at": "2026-09-08T19:36:52.202623"
     },
     {
       "ticker": "HEXA",
@@ -517,7 +517,7 @@
       "ma50": 4422.0,
       "rsi_14": 80.0,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-08T19:25:49.394951"
+      "updated_at": "2026-09-08T19:36:52.288852"
     },
     {
       "ticker": "BBRI",
@@ -535,7 +535,7 @@
       "ma50": 3036.0,
       "rsi_14": 77.0,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-08T19:25:49.551080"
+      "updated_at": "2026-09-08T19:36:52.448047"
     },
     {
       "ticker": "BMRI",
@@ -553,7 +553,7 @@
       "ma50": 4196.6,
       "rsi_14": 74.6,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-08T19:25:49.690803"
+      "updated_at": "2026-09-08T19:36:52.546201"
     },
     {
       "ticker": "BBNI",
@@ -571,7 +571,7 @@
       "ma50": 3581.2,
       "rsi_14": 76.3,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-08T19:25:49.870335"
+      "updated_at": "2026-09-08T19:36:52.649581"
     },
     {
       "ticker": "BJTM",
@@ -589,7 +589,7 @@
       "ma50": 517.6,
       "rsi_14": 80.0,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-08T19:25:50.013850"
+      "updated_at": "2026-09-08T19:36:52.875741"
     },
     {
       "ticker": "BJBR",
@@ -607,7 +607,7 @@
       "ma50": 783.3,
       "rsi_14": 60.0,
       "technical_signal": "ACCUMULATION",
-      "updated_at": "2026-09-08T19:25:50.387168"
+      "updated_at": "2026-09-08T19:36:53.015525"
     }
   ],
   "foreign_flow": {
@@ -628,7 +628,7 @@
         "ma50": 2782.9,
         "rsi_14": 67.1,
         "technical_signal": "BREAKOUT",
-        "updated_at": "2026-09-08T19:25:51.179046"
+        "updated_at": "2026-09-08T19:36:53.566520"
       },
       {
         "ticker": "TLKM",
@@ -646,7 +646,7 @@
         "ma50": 2595.8,
         "rsi_14": 61.9,
         "technical_signal": "BREAKOUT",
-        "updated_at": "2026-09-08T19:25:50.993777"
+        "updated_at": "2026-09-08T19:36:53.378900"
       },
       {
         "ticker": "BBRI",
@@ -664,7 +664,7 @@
         "ma50": 3036.0,
         "rsi_14": 77.0,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:50.641279"
+        "updated_at": "2026-09-08T19:36:53.225331"
       },
       {
         "ticker": "BBCA",
@@ -682,7 +682,7 @@
         "ma50": 6299.7,
         "rsi_14": 72.2,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:50.435987"
+        "updated_at": "2026-09-08T19:36:53.171554"
       },
       {
         "ticker": "CPIN",
@@ -700,7 +700,7 @@
         "ma50": 3125.2,
         "rsi_14": 68.1,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:52.097690"
+        "updated_at": "2026-09-08T19:36:54.066981"
       }
     ],
     "top_outflow": [
@@ -720,7 +720,7 @@
         "ma50": 3008.8,
         "rsi_14": 54.5,
         "technical_signal": "PULLBACK",
-        "updated_at": "2026-09-08T19:25:51.340960"
+        "updated_at": "2026-09-08T19:36:53.663771"
       },
       {
         "ticker": "GOTO",
@@ -738,7 +738,7 @@
         "ma50": 50.0,
         "rsi_14": 0.0,
         "technical_signal": "OVERSOLD_REBOUND",
-        "updated_at": "2026-09-08T19:25:51.452882"
+        "updated_at": "2026-09-08T19:36:53.748194"
       },
       {
         "ticker": "BRIS",
@@ -756,7 +756,7 @@
         "ma50": 1786.8,
         "rsi_14": 45.7,
         "technical_signal": "PULLBACK",
-        "updated_at": "2026-09-08T19:25:51.710433"
+        "updated_at": "2026-09-08T19:36:53.978672"
       },
       {
         "ticker": "ASII",
@@ -774,7 +774,7 @@
         "ma50": 4897.0,
         "rsi_14": 64.3,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:51.046323"
+        "updated_at": "2026-09-08T19:36:53.472703"
       },
       {
         "ticker": "BMRI",
@@ -792,7 +792,7 @@
         "ma50": 4196.6,
         "rsi_14": 74.6,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-08T19:25:50.696919"
+        "updated_at": "2026-09-08T19:36:53.287054"
       }
     ]
   },
@@ -811,7 +811,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "Strong ecosystem TVL expansion; holding breakout retest above recent pivot.",
       "invalidation_rule": "4H candle close below $2.0855 voids trade structure.",
-      "updated_at": "2026-09-08T19:25:43.453868",
+      "updated_at": "2026-09-08T19:36:48.554448",
       "rank": 1
     },
     {
@@ -828,7 +828,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "Decentralized compute demand catalyst; RSI recovering from oversold bounce.",
       "invalidation_rule": "4H candle close below $6.208 voids trade structure.",
-      "updated_at": "2026-09-08T19:25:43.453912",
+      "updated_at": "2026-09-08T19:36:48.554528",
       "rank": 2
     },
     {
@@ -845,7 +845,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "AI alliance token consolidation; tight stop placement available at range low.",
       "invalidation_rule": "4H candle close below $1.4065 voids trade structure.",
-      "updated_at": "2026-09-08T19:25:43.453922",
+      "updated_at": "2026-09-08T19:36:48.554547",
       "rank": 3
     },
     {
@@ -862,7 +862,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "High DEX volume dominance; breakout continuation pattern above key horizontal zone.",
       "invalidation_rule": "4H candle close below $173.14 voids trade structure.",
-      "updated_at": "2026-09-08T19:25:43.453846",
+      "updated_at": "2026-09-08T19:36:48.554408",
       "rank": 4
     },
     {
@@ -879,7 +879,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "Oracle network staking expansion; tight compression beneath major supply zone.",
       "invalidation_rule": "4H candle close below $12.42 voids trade structure.",
-      "updated_at": "2026-09-08T19:25:43.453900",
+      "updated_at": "2026-09-08T19:36:48.554500",
       "rank": 5
     },
     {
@@ -896,7 +896,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "AI & modular narrative proxy; bullish 4H momentum crossover.",
       "invalidation_rule": "4H candle close below $5.044 voids trade structure.",
-      "updated_at": "2026-09-08T19:25:43.453882",
+      "updated_at": "2026-09-08T19:36:48.554466",
       "rank": 6
     },
     {
@@ -913,7 +913,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "Defending multi-week ascending trendline; gas burn and staking ratio stable.",
       "invalidation_rule": "4H candle close below $2570.5 voids trade structure.",
-      "updated_at": "2026-09-08T19:25:43.453833",
+      "updated_at": "2026-09-08T19:36:48.554386",
       "rank": 7
     },
     {
@@ -930,7 +930,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "Subnet institutional testing catalyst; accumulation at base of consolidation channel.",
       "invalidation_rule": "4H candle close below $27.55 voids trade structure.",
-      "updated_at": "2026-09-08T19:25:43.453891",
+      "updated_at": "2026-09-08T19:36:48.554484",
       "rank": 8
     },
     {
@@ -947,7 +947,7 @@
       "conviction": "MEDIUM",
       "catalyst_thesis": "Consolidation above weekly support band; institutional spot ETF inflows steady.",
       "invalidation_rule": "4H candle close below $66445.0 voids trade structure.",
-      "updated_at": "2026-09-08T19:25:43.453807",
+      "updated_at": "2026-09-08T19:36:48.554350",
       "rank": 9
     },
     {
@@ -964,7 +964,7 @@
       "conviction": "MEDIUM",
       "catalyst_thesis": "Range-bound accumulation near platform utility support level.",
       "invalidation_rule": "4H candle close below $572.3 voids trade structure.",
-      "updated_at": "2026-09-08T19:25:43.453857",
+      "updated_at": "2026-09-08T19:36:48.554427",
       "rank": 10
     }
   ],
@@ -972,72 +972,295 @@
     {
       "plan_id": "PLAN-IDX-INDF-20260908",
       "symbol": "INDF.JK",
+      "clean_ticker": "INDF",
       "market": "IDX",
       "direction": "LONG",
       "entry_price": 7500.0,
       "stop_loss": 7200.0,
       "target_1": 8160.0,
-      "target_2": 8550.0,
+      "target_2": 8580.0,
       "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 7500.0 - SL Rp 7200.0 = Rp 300.0) = 33 Lot",
       "risk_reward_ratio": 2.2,
-      "facts_summary": "Harga Rp 7500.0, Signal: BREAKOUT, RSI 14: 60.0, Sub-Kategori: SALIM_GROUP.",
-      "opinion_thesis": "Konsolidasi di atas MA20 didukung katalis kelompok SALIM_GROUP dan sentimen makro.",
+      "technical_signal": "BREAKOUT",
+      "facts_summary": "Harga Rp 7500.0, Signal: BREAKOUT, RSI 14: 60.0, MA20: Rp 7330.0, Sub-Kategori: SALIM_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster SALIM_GROUP dan akumulasi terukur.",
       "three_invalidations": [
         "1. Penutupan candle harian di bawah Rp 7200.0",
-        "2. Outflow asing masif lebih dari Rp 50 Miliar dalam 1 sesi",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
         "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
       ],
       "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
       "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-08T19:25:52.105358"
-    },
-    {
-      "plan_id": "PLAN-IDX-ICBP-20260908",
-      "symbol": "ICBP.JK",
-      "market": "IDX",
-      "direction": "LONG",
-      "entry_price": 7200.0,
-      "stop_loss": 6912.0,
-      "target_1": 7834.0,
-      "target_2": 8208.0,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 7200.0 - SL Rp 6912.0 = Rp 288.0) = 34 Lot",
-      "risk_reward_ratio": 2.2,
-      "facts_summary": "Harga Rp 7200.0, Signal: ACCUMULATION, RSI 14: 32.7, Sub-Kategori: SALIM_GROUP.",
-      "opinion_thesis": "Konsolidasi di atas MA20 didukung katalis kelompok SALIM_GROUP dan sentimen makro.",
-      "three_invalidations": [
-        "1. Penutupan candle harian di bawah Rp 6912.0",
-        "2. Outflow asing masif lebih dari Rp 50 Miliar dalam 1 sesi",
-        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
-      ],
-      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
-      "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-08T19:25:52.105396"
+      "created_at": "2026-09-08T19:36:54.075718"
     },
     {
       "plan_id": "PLAN-IDX-MEDC-20260908",
       "symbol": "MEDC.JK",
+      "clean_ticker": "MEDC",
       "market": "IDX",
       "direction": "LONG",
       "entry_price": 1535.0,
       "stop_loss": 1474.0,
       "target_1": 1669.0,
-      "target_2": 1748.0,
+      "target_2": 1755.0,
       "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 1535.0 - SL Rp 1474.0 = Rp 61.0) = 163 Lot",
       "risk_reward_ratio": 2.2,
-      "facts_summary": "Harga Rp 1535.0, Signal: BREAKOUT, RSI 14: 64.1, Sub-Kategori: SALIM_GROUP.",
-      "opinion_thesis": "Konsolidasi di atas MA20 didukung katalis kelompok SALIM_GROUP dan sentimen makro.",
+      "technical_signal": "BREAKOUT",
+      "facts_summary": "Harga Rp 1535.0, Signal: BREAKOUT, RSI 14: 64.1, MA20: Rp 1399.8, Sub-Kategori: SALIM_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster SALIM_GROUP dan akumulasi terukur.",
       "three_invalidations": [
         "1. Penutupan candle harian di bawah Rp 1474.0",
-        "2. Outflow asing masif lebih dari Rp 50 Miliar dalam 1 sesi",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
         "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
       ],
       "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
       "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-08T19:25:52.105421"
+      "created_at": "2026-09-08T19:36:54.075781"
+    },
+    {
+      "plan_id": "PLAN-IDX-AMMN-20260908",
+      "symbol": "AMMN.JK",
+      "clean_ticker": "AMMN",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 4670.0,
+      "stop_loss": 4483.0,
+      "target_1": 5081.0,
+      "target_2": 5343.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 4670.0 - SL Rp 4483.0 = Rp 187.0) = 53 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "BREAKOUT",
+      "facts_summary": "Harga Rp 4670.0, Signal: BREAKOUT, RSI 14: 65.4, MA20: Rp 4371.5, Sub-Kategori: SALIM_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster SALIM_GROUP dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 4483.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.075807"
+    },
+    {
+      "plan_id": "PLAN-IDX-TOWR-20260908",
+      "symbol": "TOWR.JK",
+      "clean_ticker": "TOWR",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 470.0,
+      "stop_loss": 451.0,
+      "target_1": 512.0,
+      "target_2": 538.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 470.0 - SL Rp 451.0 = Rp 19.0) = 526 Lot",
+      "risk_reward_ratio": 2.21,
+      "technical_signal": "BREAKOUT",
+      "facts_summary": "Harga Rp 470.0, Signal: BREAKOUT, RSI 14: 73.1, MA20: Rp 434.2, Sub-Kategori: DJARUM_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster DJARUM_GROUP dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 451.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.075828"
+    },
+    {
+      "plan_id": "PLAN-IDX-ENRG-20260908",
+      "symbol": "ENRG.JK",
+      "clean_ticker": "ENRG",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 1470.0,
+      "stop_loss": 1411.0,
+      "target_1": 1600.0,
+      "target_2": 1682.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 1470.0 - SL Rp 1411.0 = Rp 59.0) = 169 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "BREAKOUT",
+      "facts_summary": "Harga Rp 1470.0, Signal: BREAKOUT, RSI 14: 71.6, MA20: Rp 1272.0, Sub-Kategori: BAKRIE_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster BAKRIE_GROUP dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 1411.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.075848"
+    },
+    {
+      "plan_id": "PLAN-IDX-TLKM-20260908",
+      "symbol": "TLKM.JK",
+      "clean_ticker": "TLKM",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 2650.0,
+      "stop_loss": 2544.0,
+      "target_1": 2883.0,
+      "target_2": 3032.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 2650.0 - SL Rp 2544.0 = Rp 106.0) = 94 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "BREAKOUT",
+      "facts_summary": "Harga Rp 2650.0, Signal: BREAKOUT, RSI 14: 61.9, MA20: Rp 2606.0, Sub-Kategori: INSTITUTIONAL_TRACKER.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster INSTITUTIONAL_TRACKER dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 2544.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.075866"
+    },
+    {
+      "plan_id": "PLAN-IDX-MDKA-20260908",
+      "symbol": "MDKA.JK",
+      "clean_ticker": "MDKA",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 3120.0,
+      "stop_loss": 2995.0,
+      "target_1": 3395.0,
+      "target_2": 3570.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 3120.0 - SL Rp 2995.0 = Rp 125.0) = 80 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "BREAKOUT",
+      "facts_summary": "Harga Rp 3120.0, Signal: BREAKOUT, RSI 14: 67.1, MA20: Rp 2939.0, Sub-Kategori: INSTITUTIONAL_TRACKER.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster INSTITUTIONAL_TRACKER dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 2995.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.075883"
+    },
+    {
+      "plan_id": "PLAN-IDX-ICBP-20260908",
+      "symbol": "ICBP.JK",
+      "clean_ticker": "ICBP",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 7200.0,
+      "stop_loss": 6912.0,
+      "target_1": 7834.0,
+      "target_2": 8237.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 7200.0 - SL Rp 6912.0 = Rp 288.0) = 34 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "ACCUMULATION",
+      "facts_summary": "Harga Rp 7200.0, Signal: ACCUMULATION, RSI 14: 32.7, MA20: Rp 7572.5, Sub-Kategori: SALIM_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster SALIM_GROUP dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 6912.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.075902"
+    },
+    {
+      "plan_id": "PLAN-IDX-PTBA-20260908",
+      "symbol": "PTBA.JK",
+      "clean_ticker": "PTBA",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 3000.0,
+      "stop_loss": 2880.0,
+      "target_1": 3264.0,
+      "target_2": 3432.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 3000.0 - SL Rp 2880.0 = Rp 120.0) = 83 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "ACCUMULATION",
+      "facts_summary": "Harga Rp 3000.0, Signal: ACCUMULATION, RSI 14: 89.9, MA20: Rp 2554.0, Sub-Kategori: HIGH_YIELD_ARISTOCRAT.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster HIGH_YIELD_ARISTOCRAT dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 2880.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.075918"
+    },
+    {
+      "plan_id": "PLAN-IDX-BJBR-20260908",
+      "symbol": "BJBR.JK",
+      "clean_ticker": "BJBR",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 800.0,
+      "stop_loss": 768.0,
+      "target_1": 870.0,
+      "target_2": 915.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 800.0 - SL Rp 768.0 = Rp 32.0) = 312 Lot",
+      "risk_reward_ratio": 2.19,
+      "technical_signal": "ACCUMULATION",
+      "facts_summary": "Harga Rp 800.0, Signal: ACCUMULATION, RSI 14: 60.0, MA20: Rp 792.5, Sub-Kategori: HIGH_YIELD_ARISTOCRAT.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster HIGH_YIELD_ARISTOCRAT dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 768.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.075935"
+    },
+    {
+      "plan_id": "PLAN-IDX-BREN-20260908",
+      "symbol": "BREN.JK",
+      "clean_ticker": "BREN",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 3300.0,
+      "stop_loss": 3168.0,
+      "target_1": 3590.0,
+      "target_2": 3775.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 3300.0 - SL Rp 3168.0 = Rp 132.0) = 75 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "OVERSOLD_REBOUND",
+      "facts_summary": "Harga Rp 3300.0, Signal: OVERSOLD_REBOUND, RSI 14: 32.8, MA20: Rp 3422.5, Sub-Kategori: BARITO_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster BARITO_GROUP dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 3168.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.075952"
+    },
+    {
+      "plan_id": "PLAN-IDX-GOTO-20260908",
+      "symbol": "GOTO.JK",
+      "clean_ticker": "GOTO",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 50.0,
+      "stop_loss": 48.0,
+      "target_1": 54.0,
+      "target_2": 57.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 50.0 - SL Rp 48.0 = Rp 2.0) = 5000 Lot",
+      "risk_reward_ratio": 2.0,
+      "technical_signal": "OVERSOLD_REBOUND",
+      "facts_summary": "Harga Rp 50.0, Signal: OVERSOLD_REBOUND, RSI 14: 0.0, MA20: Rp 50.0, Sub-Kategori: INSTITUTIONAL_TRACKER.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster INSTITUTIONAL_TRACKER dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 48.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.075969"
     },
     {
       "plan_id": "PLAN-CRYPTO-SUIUSDT-20260908",
       "symbol": "SUI/USDT",
+      "clean_ticker": "SUIUSDT",
       "market": "CRYPTO",
       "direction": "LONG",
       "entry_price": 2.15,
@@ -1046,20 +1269,22 @@
       "target_2": 2.408,
       "position_size_math": "($10,000 Portfolio \u00d7 1% Risk = $100) \u00f7 ($2.15 - $2.0855) = 1550.3636 Units",
       "risk_reward_ratio": 2.0,
+      "technical_signal": "PULLBACK_SUPPORT_RETEST",
       "facts_summary": "Pair SUI/USDT di harga $2.15, 24h Change: 6.5%, Conviction: HIGH.",
       "opinion_thesis": "Strong ecosystem TVL expansion; holding breakout retest above recent pivot.",
       "three_invalidations": [
         "4H candle close below $2.0855 voids trade structure.",
-        "Bitcoin breakdown di bawah support kunci $65,000",
+        "Bitcoin breakdown di bawah support kunci mingguan",
         "Spike mendadak pada funding rate perp memicu long squeeze"
       ],
-      "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan tidak ada rilis berita regulasi mendadak.",
+      "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
       "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-08T19:25:52.105445"
+      "created_at": "2026-09-08T19:36:54.076007"
     },
     {
       "plan_id": "PLAN-CRYPTO-RENDERUSDT-20260908",
       "symbol": "RENDER/USDT",
+      "clean_ticker": "RENDERUSDT",
       "market": "CRYPTO",
       "direction": "LONG",
       "entry_price": 6.4,
@@ -1068,19 +1293,164 @@
       "target_2": 7.168,
       "position_size_math": "($10,000 Portfolio \u00d7 1% Risk = $100) \u00f7 ($6.4 - $6.208) = 520.8306 Units",
       "risk_reward_ratio": 2.0,
+      "technical_signal": "PULLBACK_SUPPORT_RETEST",
       "facts_summary": "Pair RENDER/USDT di harga $6.4, 24h Change: 5.0%, Conviction: HIGH.",
       "opinion_thesis": "Decentralized compute demand catalyst; RSI recovering from oversold bounce.",
       "three_invalidations": [
         "4H candle close below $6.208 voids trade structure.",
-        "Bitcoin breakdown di bawah support kunci $65,000",
+        "Bitcoin breakdown di bawah support kunci mingguan",
         "Spike mendadak pada funding rate perp memicu long squeeze"
       ],
-      "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan tidak ada rilis berita regulasi mendadak.",
+      "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
       "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-08T19:25:52.105466"
+      "created_at": "2026-09-08T19:36:54.076044"
+    },
+    {
+      "plan_id": "PLAN-CRYPTO-FETUSDT-20260908",
+      "symbol": "FET/USDT",
+      "clean_ticker": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entry_price": 1.45,
+      "stop_loss": 1.4065,
+      "target_1": 1.537,
+      "target_2": 1.624,
+      "position_size_math": "($10,000 Portfolio \u00d7 1% Risk = $100) \u00f7 ($1.45 - $1.4065) = 2298.7977 Units",
+      "risk_reward_ratio": 2.0,
+      "technical_signal": "PULLBACK_SUPPORT_RETEST",
+      "facts_summary": "Pair FET/USDT di harga $1.45, 24h Change: 4.8%, Conviction: HIGH.",
+      "opinion_thesis": "AI alliance token consolidation; tight stop placement available at range low.",
+      "three_invalidations": [
+        "4H candle close below $1.4065 voids trade structure.",
+        "Bitcoin breakdown di bawah support kunci mingguan",
+        "Spike mendadak pada funding rate perp memicu long squeeze"
+      ],
+      "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.076073"
+    },
+    {
+      "plan_id": "PLAN-CRYPTO-SOLUSDT-20260908",
+      "symbol": "SOL/USDT",
+      "clean_ticker": "SOLUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entry_price": 178.5,
+      "stop_loss": 173.14,
+      "target_1": 189.21,
+      "target_2": 199.92,
+      "position_size_math": "($10,000 Portfolio \u00d7 1% Risk = $100) \u00f7 ($178.5 - $173.14) = 18.6567 Units",
+      "risk_reward_ratio": 2.0,
+      "technical_signal": "PULLBACK_SUPPORT_RETEST",
+      "facts_summary": "Pair SOL/USDT di harga $178.5, 24h Change: 4.1%, Conviction: HIGH.",
+      "opinion_thesis": "High DEX volume dominance; breakout continuation pattern above key horizontal zone.",
+      "three_invalidations": [
+        "4H candle close below $173.14 voids trade structure.",
+        "Bitcoin breakdown di bawah support kunci mingguan",
+        "Spike mendadak pada funding rate perp memicu long squeeze"
+      ],
+      "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.076101"
+    },
+    {
+      "plan_id": "PLAN-CRYPTO-LINKUSDT-20260908",
+      "symbol": "LINK/USDT",
+      "clean_ticker": "LINKUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entry_price": 12.8,
+      "stop_loss": 12.42,
+      "target_1": 13.57,
+      "target_2": 14.34,
+      "position_size_math": "($10,000 Portfolio \u00d7 1% Risk = $100) \u00f7 ($12.8 - $12.42) = 263.1572 Units",
+      "risk_reward_ratio": 2.0,
+      "technical_signal": "PULLBACK_SUPPORT_RETEST",
+      "facts_summary": "Pair LINK/USDT di harga $12.8, 24h Change: 3.7%, Conviction: HIGH.",
+      "opinion_thesis": "Oracle network staking expansion; tight compression beneath major supply zone.",
+      "three_invalidations": [
+        "4H candle close below $12.42 voids trade structure.",
+        "Bitcoin breakdown di bawah support kunci mingguan",
+        "Spike mendadak pada funding rate perp memicu long squeeze"
+      ],
+      "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.076132"
+    },
+    {
+      "plan_id": "PLAN-CRYPTO-NEARUSDT-20260908",
+      "symbol": "NEAR/USDT",
+      "clean_ticker": "NEARUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entry_price": 5.2,
+      "stop_loss": 5.044,
+      "target_1": 5.512,
+      "target_2": 5.824,
+      "position_size_math": "($10,000 Portfolio \u00d7 1% Risk = $100) \u00f7 ($5.2 - $5.044) = 641.0215 Units",
+      "risk_reward_ratio": 2.0,
+      "technical_signal": "PULLBACK_SUPPORT_RETEST",
+      "facts_summary": "Pair NEAR/USDT di harga $5.2, 24h Change: 3.2%, Conviction: HIGH.",
+      "opinion_thesis": "AI & modular narrative proxy; bullish 4H momentum crossover.",
+      "three_invalidations": [
+        "4H candle close below $5.044 voids trade structure.",
+        "Bitcoin breakdown di bawah support kunci mingguan",
+        "Spike mendadak pada funding rate perp memicu long squeeze"
+      ],
+      "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.076160"
+    },
+    {
+      "plan_id": "PLAN-CRYPTO-ETHUSDT-20260908",
+      "symbol": "ETH/USDT",
+      "clean_ticker": "ETHUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entry_price": 2650.0,
+      "stop_loss": 2570.5,
+      "target_1": 2809.0,
+      "target_2": 2968.0,
+      "position_size_math": "($10,000 Portfolio \u00d7 1% Risk = $100) \u00f7 ($2650.0 - $2570.5) = 1.2579 Units",
+      "risk_reward_ratio": 2.0,
+      "technical_signal": "PULLBACK_SUPPORT_RETEST",
+      "facts_summary": "Pair ETH/USDT di harga $2650.0, 24h Change: 2.4%, Conviction: HIGH.",
+      "opinion_thesis": "Defending multi-week ascending trendline; gas burn and staking ratio stable.",
+      "three_invalidations": [
+        "4H candle close below $2570.5 voids trade structure.",
+        "Bitcoin breakdown di bawah support kunci mingguan",
+        "Spike mendadak pada funding rate perp memicu long squeeze"
+      ],
+      "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.076185"
+    },
+    {
+      "plan_id": "PLAN-CRYPTO-AVAXUSDT-20260908",
+      "symbol": "AVAX/USDT",
+      "clean_ticker": "AVAXUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entry_price": 28.4,
+      "stop_loss": 27.55,
+      "target_1": 30.1,
+      "target_2": 31.81,
+      "position_size_math": "($10,000 Portfolio \u00d7 1% Risk = $100) \u00f7 ($28.4 - $27.55) = 117.6469 Units",
+      "risk_reward_ratio": 2.0,
+      "technical_signal": "PULLBACK_SUPPORT_RETEST",
+      "facts_summary": "Pair AVAX/USDT di harga $28.4, 24h Change: 2.1%, Conviction: HIGH.",
+      "opinion_thesis": "Subnet institutional testing catalyst; accumulation at base of consolidation channel.",
+      "three_invalidations": [
+        "4H candle close below $27.55 voids trade structure.",
+        "Bitcoin breakdown di bawah support kunci mingguan",
+        "Spike mendadak pada funding rate perp memicu long squeeze"
+      ],
+      "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-08T19:36:54.076214"
     }
   ],
   "mode": "all",
-  "execution_duration_sec": 14.72,
-  "last_updated": "2026-09-08T19:25:52.108559"
+  "execution_duration_sec": 11.81,
+  "last_updated": "2026-09-08T19:36:54.082832"
 }

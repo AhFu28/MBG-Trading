@@ -13,7 +13,7 @@
     "conviction": "HIGH",
     "catalyst_thesis": "Strong ecosystem TVL expansion; holding breakout retest above recent pivot.",
     "invalidation_rule": "4H candle close below $2.0855 voids trade structure.",
-    "updated_at": "2026-09-08T19:25:43.453868",
+    "updated_at": "2026-09-08T19:36:48.554448",
     "rank": 1
   },
   {
@@ -30,7 +30,7 @@
     "conviction": "HIGH",
     "catalyst_thesis": "Decentralized compute demand catalyst; RSI recovering from oversold bounce.",
     "invalidation_rule": "4H candle close below $6.208 voids trade structure.",
-    "updated_at": "2026-09-08T19:25:43.453912",
+    "updated_at": "2026-09-08T19:36:48.554528",
     "rank": 2
   },
   {
@@ -47,7 +47,7 @@
     "conviction": "HIGH",
     "catalyst_thesis": "AI alliance token consolidation; tight stop placement available at range low.",
     "invalidation_rule": "4H candle close below $1.4065 voids trade structure.",
-    "updated_at": "2026-09-08T19:25:43.453922",
+    "updated_at": "2026-09-08T19:36:48.554547",
     "rank": 3
   },
   {
@@ -64,7 +64,7 @@
     "conviction": "HIGH",
     "catalyst_thesis": "High DEX volume dominance; breakout continuation pattern above key horizontal zone.",
     "invalidation_rule": "4H candle close below $173.14 voids trade structure.",
-    "updated_at": "2026-09-08T19:25:43.453846",
+    "updated_at": "2026-09-08T19:36:48.554408",
     "rank": 4
   },
   {
@@ -81,7 +81,7 @@
     "conviction": "HIGH",
     "catalyst_thesis": "Oracle network staking expansion; tight compression beneath major supply zone.",
     "invalidation_rule": "4H candle close below $12.42 voids trade structure.",
-    "updated_at": "2026-09-08T19:25:43.453900",
+    "updated_at": "2026-09-08T19:36:48.554500",
     "rank": 5
   },
   {
@@ -98,7 +98,7 @@
     "conviction": "HIGH",
     "catalyst_thesis": "AI & modular narrative proxy; bullish 4H momentum crossover.",
     "invalidation_rule": "4H candle close below $5.044 voids trade structure.",
-    "updated_at": "2026-09-08T19:25:43.453882",
+    "updated_at": "2026-09-08T19:36:48.554466",
     "rank": 6
   },
   {
@@ -115,7 +115,7 @@
     "conviction": "HIGH",
     "catalyst_thesis": "Defending multi-week ascending trendline; gas burn and staking ratio stable.",
     "invalidation_rule": "4H candle close below $2570.5 voids trade structure.",
-    "updated_at": "2026-09-08T19:25:43.453833",
+    "updated_at": "2026-09-08T19:36:48.554386",
     "rank": 7
   },
   {
@@ -132,7 +132,7 @@
     "conviction": "HIGH",
     "catalyst_thesis": "Subnet institutional testing catalyst; accumulation at base of consolidation channel.",
     "invalidation_rule": "4H candle close below $27.55 voids trade structure.",
-    "updated_at": "2026-09-08T19:25:43.453891",
+    "updated_at": "2026-09-08T19:36:48.554484",
     "rank": 8
   },
   {
@@ -149,7 +149,7 @@
     "conviction": "MEDIUM",
     "catalyst_thesis": "Consolidation above weekly support band; institutional spot ETF inflows steady.",
     "invalidation_rule": "4H candle close below $66445.0 voids trade structure.",
-    "updated_at": "2026-09-08T19:25:43.453807",
+    "updated_at": "2026-09-08T19:36:48.554350",
     "rank": 9
   },
   {
@@ -166,7 +166,7 @@
     "conviction": "MEDIUM",
     "catalyst_thesis": "Range-bound accumulation near platform utility support level.",
     "invalidation_rule": "4H candle close below $572.3 voids trade structure.",
-    "updated_at": "2026-09-08T19:25:43.453857",
+    "updated_at": "2026-09-08T19:36:48.554427",
     "rank": 10
   }
 ]

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function CryptoSpot10({ cryptoList = [] }) {
+export default function CryptoSpot10({ cryptoList = [], onOpenChart }) {
   if (cryptoList.length === 0) {
     return <div className="telemetry-panel" style={{ padding: '20px' }}>Scanning Top 10 Crypto Spot pairs...</div>;
   }
@@ -39,9 +39,18 @@ export default function CryptoSpot10({ cryptoList = [] }) {
                 </span>
                 <span style={{ fontSize: '13px', fontWeight: '700' }}>{item.pair}</span>
               </div>
-              <span className={`badge ${item.conviction === 'HIGH' ? 'badge-bull' : 'badge-alert'}`}>
-                {item.conviction} CONVICTION
-              </span>
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                <span className={`badge ${item.conviction === 'HIGH' ? 'badge-bull' : 'badge-alert'}`}>
+                  {item.conviction}
+                </span>
+                <button 
+                  className="telemetry-btn"
+                  style={{ padding: '1px 6px', fontSize: '9px', background: 'var(--accent-blue)', color: '#fff' }}
+                  onClick={() => onOpenChart(item.pair.replace('/', ''), 'CRYPTO')}
+                >
+                  📈 CHART
+                </button>
+              </div>
             </div>
 
             {/* Card Body */}
@@ -65,7 +74,7 @@ export default function CryptoSpot10({ cryptoList = [] }) {
                 </div>
               </div>
 
-              {/* Execution Execution Matrix */}
+              {/* Execution Matrix */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '11px' }}>
                 <div className="metric-box">
                   <div className="metric-label">ENTRY ZONE</div>
@@ -86,7 +95,7 @@ export default function CryptoSpot10({ cryptoList = [] }) {
                   </div>
                 </div>
                 <div className="metric-box" style={{ background: '#f0f9f3', border: '1px solid #cce8d4' }}>
-                  <div className="metric-label" style={{ color: 'var(--accent-green)' }}>TARGET 2 (SWING TP2)</div>
+                  <div className="metric-label" style={{ color: 'var(--accent-green)' }}>TARGET 2 (SWING)</div>
                   <div style={{ fontWeight: '700', fontSize: '12px', color: 'var(--accent-green)' }}>
                     ${item.take_profit_2}
                   </div>

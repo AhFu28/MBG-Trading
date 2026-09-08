@@ -5,12 +5,33 @@ import IdxDividendTab from './components/IdxDividendTab.jsx';
 import IdxForeignFlow from './components/IdxForeignFlow.jsx';
 import CryptoSpot10 from './components/CryptoSpot10.jsx';
 import DailyTradePlans from './components/DailyTradePlans.jsx';
+import AllTickerExplorer from './components/AllTickerExplorer.jsx';
+import TradingViewModal from './components/TradingViewModal.jsx';
 
 export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('crypto'); // Default to crypto spot or plans
+  const [activeTab, setActiveTab] = useState('plans'); // Default to 10-20 trade plans
   const [currentTime, setCurrentTime] = useState(new Date());
+
+  // TradingView Chart Modal State
+  const [chartModal, setChartModal] = useState({
+    isOpen: false,
+    symbol: 'BBCA',
+    market: 'IDX'
+  });
+
+  const handleOpenChart = (symbol, market = 'IDX') => {
+    setChartModal({
+      isOpen: true,
+      symbol: symbol,
+      market: market
+    });
+  };
+
+  const handleCloseChart = () => {
+    setChartModal(prev => ({ ...prev, isOpen: false }));
+  };
 
   // Clock tick
   useEffect(() => {
@@ -39,6 +60,24 @@ export default function App() {
     loadBundle();
   }, []);
 
+  // Collect all indexed stocks for AllTickerExplorer
+  const allIndexedStocks = [];
+  if (data?.conglomerates) {
+    Object.values(data.conglomerates).forEach(arr => allIndexedStocks.push(...arr));
+  }
+  if (data?.dividend_hunters) {
+    allIndexedStocks.push(...data.dividend_hunters);
+  }
+  if (data?.foreign_flow?.top_inflow) {
+    allIndexedStocks.push(...data.foreign_flow.top_inflow);
+  }
+  if (data?.foreign_flow?.top_outflow) {
+    allIndexedStocks.push(...data.foreign_flow.top_outflow);
+  }
+
+  // Deduplicate by ticker
+  const uniqueIndexedStocks = Array.from(new Map(allIndexedStocks.map(s => [s.ticker, s])).values());
+
   return (
     <div style={{ minHeight: '100vh', padding: '16px 20px', maxWidth: '1440px', margin: '0 auto' }}>
       
@@ -53,12 +92,20 @@ export default function App() {
                 MARKET BRAIN GRID // TRADING INTELLIGENCE COCKPIT
               </h1>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                TACTICAL TELEMETRY DESK · IDX CONGLO/DIVIDEND/FLOW · CRYPTO SPOT 10 · US MACRO RADAR
+                TACTICAL TELEMETRY DESK · 10-20 ACTIONABLE RECOMMANDATIONS · TRADINGVIEW INTERACTIVE
               </div>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '11px' }}>
+            <button 
+              onClick={() => handleOpenChart('BBCA', 'IDX')}
+              className="telemetry-btn"
+              style={{ background: 'var(--accent-blue)', color: '#fff' }}
+            >
+              📈 LAUNCH TRADINGVIEW
+            </button>
+
             <div className="metric-box" style={{ padding: '4px 8px' }}>
               <span className="metric-label">TIME (WIB): </span>
               <span style={{ fontWeight: '700' }}>{currentTime.toLocaleTimeString('id-ID')}</span>
@@ -83,6 +130,13 @@ export default function App() {
       {/* 3. Main Navigation Tab Selector */}
       <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
         <button
+          onClick={() => setActiveTab('plans')}
+          className={`telemetry-btn ${activeTab === 'plans' ? 'active' : ''}`}
+        >
+          🎯 10-20 REKOMENDASI TRADING ({data?.daily_trade_plans?.length || 0})
+        </button>
+
+        <button
           onClick={() => setActiveTab('crypto')}
           className={`telemetry-btn ${activeTab === 'crypto' ? 'active' : ''}`}
         >
@@ -90,17 +144,17 @@ export default function App() {
         </button>
 
         <button
-          onClick={() => setActiveTab('plans')}
-          className={`telemetry-btn ${activeTab === 'plans' ? 'active' : ''}`}
+          onClick={() => setActiveTab('explorer')}
+          className={`telemetry-btn ${activeTab === 'explorer' ? 'active' : ''}`}
         >
-          🎯 DAILY TRADE PLANS (ASTRA)
+          🔍 ALL-TICKER EXPLORER ({uniqueIndexedStocks.length}+)
         </button>
 
         <button
           onClick={() => setActiveTab('konglo')}
           className={`telemetry-btn ${activeTab === 'konglo' ? 'active' : ''}`}
         >
-          🏢 IDX CONGLOMERATES (KONGSI)
+          🏢 IDX CONGLOMERATES
         </button>
 
         <button
@@ -125,29 +179,42 @@ export default function App() {
         </div>
       ) : (
         <main>
-          {activeTab === 'crypto' && (
-            <CryptoSpot10 cryptoList={data?.crypto_spot_10} />
+          {activeTab === 'plans' && (
+            <DailyTradePlans plans={data?.daily_trade_plans} onOpenChart={handleOpenChart} />
           )}
 
-          {activeTab === 'plans' && (
-            <DailyTradePlans plans={data?.daily_trade_plans} />
+          {activeTab === 'crypto' && (
+            <CryptoSpot10 cryptoList={data?.crypto_spot_10} onOpenChart={handleOpenChart} />
+          )}
+
+          {activeTab === 'explorer' && (
+            <AllTickerExplorer allStocks={uniqueIndexedStocks} onSelectTicker={handleOpenChart} />
           )}
 
           {activeTab === 'konglo' && (
-            <IdxKongloGrid conglomerates={data?.conglomerates} />
+            <IdxKongloGrid conglomerates={data?.conglomerates} onSelectTicker={handleOpenChart} />
           )}
 
           {activeTab === 'dividend' && (
-            <IdxDividendTab dividendHunters={data?.dividend_hunters} />
+            <IdxDividendTab dividendHunters={data?.dividend_hunters} onSelectTicker={handleOpenChart} />
           )}
 
           {activeTab === 'foreign' && (
-            <IdxForeignFlow foreignFlow={data?.foreign_flow} />
+            <IdxForeignFlow foreignFlow={data?.foreign_flow} onSelectTicker={handleOpenChart} />
           )}
         </main>
       )}
 
-      {/* 5. Standing Disclaimer Footer */}
+      {/* 5. TradingView Interactive Modal */}
+      {chartModal.isOpen && (
+        <TradingViewModal
+          initialSymbol={chartModal.symbol}
+          market={chartModal.market}
+          onClose={handleCloseChart}
+        />
+      )}
+
+      {/* 6. Standing Disclaimer Footer */}
       <footer style={{ marginTop: '30px', borderTop: 'var(--border-muted)', paddingTop: '12px', fontSize: '11px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
         <div>
           <strong>DISCLAIMER</strong>: Educational and research intelligence platform only. Zero automated live executions. Verify every metric before trading.

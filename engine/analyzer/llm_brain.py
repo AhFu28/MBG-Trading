@@ -13,21 +13,33 @@ class LLMBrain:
         else:
             logger.info("GEMINI_API_KEY not found. Operating with deterministic Astra-standard synthesis generator.")
 
-    def generate_daily_trade_plans(self, idx_data: dict, crypto_data: list, macro_data: dict) -> list:
+    def generate_daily_trade_plans(self, idx_data: dict, crypto_data: list, macro_data: dict, target_count: int = 16) -> list:
         """
-        Generates 5 disciplined, Astra-standard trade plans (3 for IDX, 2 for Crypto).
+        Generates 10-20 disciplined, Astra-standard trade plans (e.g. 10-12 for IDX, 6-8 for Crypto).
         Strict Rule: FACTS separate from OPINION, arithmetic visible, R:R >= 2.0, status = AWAITING_HUMAN_REVIEW.
         """
         plans = []
 
-        # 1. Pick Top 3 IDX candidates from Conglomerates / Dividend / Foreign Flow
+        # 1. Select up to 10-12 IDX candidates from Conglomerates, Dividends, and Foreign Flow
         all_idx = idx_data.get("all_records", [])
-        # Prefer stocks with Breakout or Accumulation signals
-        high_conviction_idx = [s for s in all_idx if s.get("technical_signal") in ["BREAKOUT", "ACCUMULATION"]]
-        if len(high_conviction_idx) < 3:
-            high_conviction_idx = all_idx[:5]
+        
+        # Deduplicate tickers while preserving best records
+        seen_tickers = set()
+        deduped_idx = []
+        for s in all_idx:
+            t = s["ticker"]
+            if t not in seen_tickers:
+                seen_tickers.add(t)
+                deduped_idx.append(s)
 
-        for stock in high_conviction_idx[:3]:
+        # Prioritize stocks with active signals: BREAKOUT > ACCUMULATION > OVERSOLD_REBOUND > PULLBACK > CONSOLIDATION
+        priority_order = {"BREAKOUT": 1, "ACCUMULATION": 2, "OVERSOLD_REBOUND": 3, "PULLBACK": 4, "CONSOLIDATION": 5}
+        sorted_idx = sorted(deduped_idx, key=lambda x: priority_order.get(x.get("technical_signal", "CONSOLIDATION"), 9))
+
+        idx_target_count = min(12, len(sorted_idx))
+        chosen_idx = sorted_idx[:idx_target_count]
+
+        for stock in chosen_idx:
             ticker = stock["ticker"]
             price = stock["price"]
             if price <= 0:
@@ -37,13 +49,14 @@ class LLMBrain:
             stop_loss = round(price * 0.96, 0) # 4% below support
             risk_per_share = price - stop_loss
             target_1 = round(price + (risk_per_share * 2.2), 0)
-            target_2 = round(price + (risk_per_share * 3.5), 0)
+            target_2 = round(price + (risk_per_share * 3.6), 0)
             rr = round((target_1 - price) / (risk_per_share + 1e-6), 2)
 
             plan_id = f"PLAN-IDX-{ticker}-{datetime.now().strftime('%Y%m%d')}"
             plans.append({
                 "plan_id": plan_id,
                 "symbol": f"{ticker}.JK",
+                "clean_ticker": ticker,
                 "market": "IDX",
                 "direction": "LONG",
                 "entry_price": price,
@@ -52,11 +65,12 @@ class LLMBrain:
                 "target_2": target_2,
                 "position_size_math": f"(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp {price} - SL Rp {stop_loss} = Rp {risk_per_share}) = {int(1000000 / (risk_per_share * 100))} Lot",
                 "risk_reward_ratio": rr,
-                "facts_summary": f"Harga Rp {price}, Signal: {stock.get('technical_signal')}, RSI 14: {stock.get('rsi_14')}, Sub-Kategori: {stock.get('sub_category')}.",
-                "opinion_thesis": f"Konsolidasi di atas MA20 didukung katalis kelompok {stock.get('sub_category')} dan sentimen makro.",
+                "technical_signal": stock.get("technical_signal"),
+                "facts_summary": f"Harga Rp {price}, Signal: {stock.get('technical_signal')}, RSI 14: {stock.get('rsi_14')}, MA20: Rp {stock.get('ma20')}, Sub-Kategori: {stock.get('sub_category')}.",
+                "opinion_thesis": f"Konsolidasi di atas MA20 didukung sentimen klaster {stock.get('sub_category')} dan akumulasi terukur.",
                 "three_invalidations": [
                     f"1. Penutupan candle harian di bawah Rp {stop_loss}",
-                    "2. Outflow asing masif lebih dari Rp 50 Miliar dalam 1 sesi",
+                    "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
                     "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
                 ],
                 "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
@@ -64,8 +78,9 @@ class LLMBrain:
                 "created_at": datetime.now().isoformat()
             })
 
-        # 2. Pick Top 2 Crypto Spot candidates
-        for coin in crypto_data[:2]:
+        # 2. Select up to 6-8 Crypto Spot candidates from crypto_data
+        crypto_target_count = min(8, len(crypto_data))
+        for coin in crypto_data[:crypto_target_count]:
             pair = coin["pair"]
             price = coin["current_price"]
             sl = coin["stop_loss"]
@@ -73,10 +88,12 @@ class LLMBrain:
             tp2 = coin["take_profit_2"]
             rr = coin["risk_reward_ratio"]
 
-            plan_id = f"PLAN-CRYPTO-{pair.replace('/', '')}-{datetime.now().strftime('%Y%m%d')}"
+            clean_sym = pair.replace("/", "")
+            plan_id = f"PLAN-CRYPTO-{clean_sym}-{datetime.now().strftime('%Y%m%d')}"
             plans.append({
                 "plan_id": plan_id,
                 "symbol": pair,
+                "clean_ticker": clean_sym,
                 "market": "CRYPTO",
                 "direction": "LONG",
                 "entry_price": price,
@@ -85,14 +102,15 @@ class LLMBrain:
                 "target_2": tp2,
                 "position_size_math": f"($10,000 Portfolio × 1% Risk = $100) ÷ (${price} - ${sl}) = {round(100 / (price - sl + 1e-6), 4)} Units",
                 "risk_reward_ratio": rr,
+                "technical_signal": coin.get("setup_type"),
                 "facts_summary": f"Pair {pair} di harga ${price}, 24h Change: {coin.get('change_24h_pct')}%, Conviction: {coin.get('conviction')}.",
                 "opinion_thesis": coin.get("catalyst_thesis", "Asymmetric risk-reward setup above critical support level."),
                 "three_invalidations": [
                     coin.get("invalidation_rule", f"Penutupan 4H di bawah ${sl}"),
-                    "Bitcoin breakdown di bawah support kunci $65,000",
+                    "Bitcoin breakdown di bawah support kunci mingguan",
                     "Spike mendadak pada funding rate perp memicu long squeeze"
                 ],
-                "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan tidak ada rilis berita regulasi mendadak.",
+                "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
                 "status": "AWAITING_HUMAN_REVIEW",
                 "created_at": datetime.now().isoformat()
             })
