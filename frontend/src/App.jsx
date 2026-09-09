@@ -109,10 +109,10 @@ export default function App() {
               <div style={{ width: '10px', height: '10px', background: 'var(--accent-green)' }}></div>
               <div>
                 <h1 style={{ fontSize: '13px', fontWeight: '700', letterSpacing: '0.06em', margin: 0, color: 'var(--text-primary)' }}>
-                  MBG BLOOMBERG QUANT TERMINAL // JAKARTA
+                  MBG ASTRA QUANTITATIVE TERMINAL // INSTITUTIONAL CROSS-ASSET DESK
                 </h1>
                 <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
-                  5-TAB WORKSPACE · LIVE NEWS WIRE · CLUSTER BADGES · INTERACTIVE SORTING
+                  10-MODULE UNIFIED COCKPIT · SMC ORDER BLOCKS · BANDARMOLOGI IIFS · TIMESFM AI · EXP3 META-LEARNER
                 </div>
               </div>
             </div>

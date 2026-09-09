@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 
 const ASSETS = [
     { ticker: 'SPY', name: 'S&P 500', group: 'Equity' },
@@ -8,12 +8,11 @@ const ASSETS = [
     { ticker: 'EURUSD', name: 'Euro/USD', group: 'Forex' },
     { ticker: 'XAU', name: 'Gold', group: 'Commodity' },
     { ticker: 'WTI', name: 'Crude Oil', group: 'Commodity' },
-    { ticker: 'US10Y', name: '10Y Treasury Yield', group: 'Rates' },
-    { ticker: 'VIX', name: 'Volatility Index', group: 'Volatility' },
-    { ticker: 'DXY', name: 'US Dollar Index', group: 'Forex' }
+    { ticker: 'US10Y', name: '10Y Yield', group: 'Rates' },
+    { ticker: 'VIX', name: 'Volatility', group: 'Volatility' },
+    { ticker: 'DXY', name: 'US Dollar', group: 'Forex' }
 ];
 
-// Mock Data calibrated for typical intermarket relationships
 const CORRELATION_DATA = {
     '1M': {
         'SPY-SPY': 1.0, 'SPY-QQQ': 0.92, 'SPY-BTC': 0.45, 'SPY-ETH': 0.42, 'SPY-EURUSD': 0.35, 'SPY-XAU': 0.15, 'SPY-WTI': 0.25, 'SPY-US10Y': -0.45, 'SPY-VIX': -0.85, 'SPY-DXY': -0.40,
@@ -41,167 +40,154 @@ const CORRELATION_DATA = {
     }
 };
 
-const getCellStyling = (value) => {
-    if (value === 1) return "bg-gray-800 text-gray-500 font-bold";
-    if (value >= 0.7) return "bg-emerald-900 text-emerald-400 font-bold border border-emerald-500/30";
-    if (value >= 0.3) return "bg-emerald-950/50 text-emerald-300";
-    if (value > -0.3 && value < 0.3) return "bg-gray-800 text-gray-400";
-    if (value <= -0.7) return "bg-rose-950 text-rose-400 font-bold border border-rose-500/30";
-    return "bg-rose-950/40 text-rose-300";
+const getCellStyle = (val) => {
+    if (val === 1) return { background: '#1c1d22', color: '#888', fontWeight: 'bold' };
+    if (val >= 0.7) return { background: '#064e3b', color: '#6ee7b7', fontWeight: 'bold' };
+    if (val >= 0.3) return { background: '#062d22', color: '#a7f3d0' };
+    if (val > -0.3 && val < 0.3) return { background: '#18191d', color: '#9ca3af' };
+    if (val <= -0.7) return { background: '#881337', color: '#fca5a5', fontWeight: 'bold' };
+    return { background: '#3f121d', color: '#fecaca' };
 };
-
-const getTooltipText = (assetA, assetB, value) => {
-    if (assetA === assetB) return `${assetA} berkorelasi sempurna dengan dirinya sendiri.`;
-    
-    let strength = "Lemah atau Tidak Ada";
-    let direction = "";
-    
-    if (Math.abs(value) >= 0.7) strength = "Kuat";
-    else if (Math.abs(value) >= 0.3) strength = "Moderat";
-
-    if (value >= 0.3) direction = "Positif";
-    else if (value <= -0.3) direction = "Negatif";
-
-    let text = `${assetA} vs ${assetB}: Korelasi ${direction} ${strength} (${value > 0 ? '+' : ''}${value.toFixed(2)}) - `;
-    
-    if (value >= 0.7) text += "Cenderung bergerak sangat searah.";
-    else if (value >= 0.3) text += "Sering bergerak searah.";
-    else if (value <= -0.7) text += "Cenderung bergerak berlawanan arah secara signifikan.";
-    else if (value <= -0.3) text += "Sering bergerak berlawanan arah.";
-    else text += "Tidak ada hubungan pergerakan yang jelas (Independen).";
-
-    return text;
-};
-
 
 export default function PearsonCorrelationWidget() {
     const [timeframe, setTimeframe] = useState('1M');
+    const [activeTooltip, setActiveTooltip] = useState(null);
 
     return (
-        <div className="bg-gray-900 rounded-xl border border-gray-800 p-6 flex flex-col gap-6 shadow-xl">
-            {/* Header & Controls */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="flex items-center gap-3">
-                    <span style={{ fontSize: '22px' }}>🌐</span>
-                    <h2 className="text-xl font-bold text-white tracking-wider">CROSS-ASSET PEARSON CORRELATION MATRIX</h2>
+        <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', padding: '16px', fontFamily: 'var(--font-mono)' }}>
+            {/* Header Controls */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '18px' }}>🌐</span>
+                    <div>
+                        <div style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '0.06em', color: 'var(--text-primary)' }}>
+                            CROSS-ASSET PEARSON CORRELATION MATRIX
+                        </div>
+                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                            LINEAR ASSOCIATION (-1.0 TO +1.0) ACROSS 10 GLOBAL BENCHMARK ASSETS
+                        </div>
+                    </div>
                 </div>
-                
-                <div className="flex items-center gap-2 bg-gray-800 p-1 rounded-lg">
-                    <button 
+
+                <div style={{ display: 'flex', gap: '4px' }}>
+                    <button
                         onClick={() => setTimeframe('1M')}
-                        className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${timeframe === '1M' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-gray-200'}`}
+                        className={'telemetry-btn ' + (timeframe === '1M' ? 'active' : '')}
+                        style={{ fontSize: '10px', padding: '4px 10px', fontWeight: '700' }}
                     >
                         1 BULAN (30 Hari)
                     </button>
-                    <button 
+                    <button
                         onClick={() => setTimeframe('3M')}
-                        className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${timeframe === '3M' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-gray-200'}`}
+                        className={'telemetry-btn ' + (timeframe === '3M' ? 'active' : '')}
+                        style={{ fontSize: '10px', padding: '4px 10px', fontWeight: '700' }}
                     >
                         3 BULAN (90 Hari)
                     </button>
                 </div>
             </div>
 
-            {/* Legend */}
-            <div className="flex flex-wrap items-center gap-2 md:gap-6 text-xs text-gray-400 border-b border-gray-800 pb-4">
-                <span className="font-semibold text-gray-300 mr-2">SKALA:</span>
-                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-emerald-900 border border-emerald-500/50"></div>+1.0 (Positif Kuat)</div>
-                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-emerald-950/50"></div>+0.3 sd +0.7</div>
-                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-gray-800"></div>0.0 (Uncorrelated)</div>
-                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-rose-950/40"></div>-0.3 sd -0.7</div>
-                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-rose-950 border border-rose-500/50"></div>-1.0 (Negatif Kuat)</div>
+            {/* Legend Bar */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', padding: '8px 10px', background: 'var(--bg-panel-subtle)', border: 'var(--border-muted)', fontSize: '10px', marginBottom: '14px' }}>
+                <span style={{ fontWeight: '700', color: 'var(--accent-orange)' }}>SKALA WARNA:</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '10px', height: '10px', background: '#064e3b', display: 'inline-block' }}></span> +1.0 (Positif Kuat)
+                </span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '10px', height: '10px', background: '#062d22', display: 'inline-block' }}></span> +0.3 s/d +0.7
+                </span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '10px', height: '10px', background: '#18191d', display: 'inline-block' }}></span> 0.0 (Netral)
+                </span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '10px', height: '10px', background: '#3f121d', display: 'inline-block' }}></span> -0.3 s/d -0.7
+                </span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '10px', height: '10px', background: '#881337', display: 'inline-block' }}></span> -1.0 (Negatif Kuat)
+                </span>
             </div>
 
-            {/* Heatmap Grid */}
-            <div className="overflow-x-auto pb-4">
-                <div className="min-w-[800px]">
-                    <div className="grid grid-cols-11 gap-1">
-                        {/* Empty top-left cell */}
-                        <div className="p-2"></div>
-                        
-                        {/* Column Headers */}
-                        {ASSETS.map(asset => (
-                            <div key={`col-${asset.ticker}`} className="p-2 text-center flex flex-col justify-end group relative cursor-help">
-                                <span className="text-xs font-bold text-gray-300 group-hover:text-white transition-colors">{asset.ticker}</span>
-                                <div className="opacity-0 group-hover:opacity-100 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-800 text-xs text-gray-200 p-2 rounded shadow-lg pointer-events-none z-10 transition-opacity">
-                                    {asset.name} ({asset.group})
-                                </div>
-                            </div>
-                        ))}
-
-                        {/* Rows */}
-                        {ASSETS.map(rowAsset => (
-                            <React.Fragment key={`row-${rowAsset.ticker}`}>
-                                {/* Row Header */}
-                                <div className="p-2 flex items-center justify-end group relative cursor-help pr-4">
-                                    <span className="text-xs font-bold text-gray-300 group-hover:text-white transition-colors">{rowAsset.ticker}</span>
-                                    <div className="opacity-0 group-hover:opacity-100 absolute right-full top-1/2 -translate-y-1/2 mr-2 w-max bg-gray-800 text-xs text-gray-200 p-2 rounded shadow-lg pointer-events-none z-10 transition-opacity">
-                                        {rowAsset.name} ({rowAsset.group})
-                                    </div>
-                                </div>
-
-                                {/* Cells */}
-                                {ASSETS.map(colAsset => {
-                                    const key = `${rowAsset.ticker}-${colAsset.ticker}`;
-                                    const value = CORRELATION_DATA[timeframe][key];
+            {/* Heatmap Grid Table */}
+            <div style={{ overflowX: 'auto', marginBottom: '16px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10px', textAlign: 'center' }}>
+                    <thead>
+                        <tr>
+                            <th style={{ padding: '6px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)' }}></th>
+                            {ASSETS.map(col => (
+                                <th key={'col-' + col.ticker} style={{ padding: '6px 4px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontWeight: '700' }}>
+                                    {col.ticker}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {ASSETS.map(row => (
+                            <tr key={'row-' + row.ticker}>
+                                <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: '700', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                                    {row.ticker}
+                                </td>
+                                {ASSETS.map(col => {
+                                    const key = `${row.ticker}-${col.ticker}`;
+                                    const val = CORRELATION_DATA[timeframe][key] !== undefined ? CORRELATION_DATA[timeframe][key] : 0.0;
+                                    const style = getCellStyle(val);
                                     return (
-                                        <div 
-                                            key={key} 
-                                            className={`
-                                                relative group flex items-center justify-center p-3 rounded text-sm transition-all hover:scale-105 cursor-crosshair z-0 hover:z-10
-                                                ${getCellStyling(value)}
-                                            `}
+                                        <td
+                                            key={key}
+                                            style={{
+                                                padding: '8px 4px',
+                                                border: 'var(--border-hairline)',
+                                                cursor: 'pointer',
+                                                transition: 'opacity 0.15s',
+                                                ...style
+                                            }}
+                                            onMouseEnter={() => setActiveTooltip({ row: row.ticker, col: col.ticker, val })}
+                                            onMouseLeave={() => setActiveTooltip(null)}
+                                            title={`${row.ticker} vs ${col.ticker}: ${val > 0 ? '+' : ''}${val.toFixed(2)}`}
                                         >
-                                            {value > 0 && value !== 1 ? '+' : ''}{value === 1 ? '1.00' : value.toFixed(2)}
-                                            
-                                            {/* Cell Tooltip */}
-                                            <div className="opacity-0 group-hover:opacity-100 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-gray-950 border border-gray-700 text-xs text-gray-300 p-3 rounded-lg shadow-2xl pointer-events-none transition-opacity">
-                                                {getTooltipText(rowAsset.ticker, colAsset.ticker, value)}
-                                            </div>
-                                        </div>
+                                            {val > 0 && val !== 1 ? '+' : ''}{val.toFixed(2)}
+                                        </td>
                                     );
                                 })}
-                            </React.Fragment>
+                            </tr>
                         ))}
-                    </div>
-                </div>
+                    </tbody>
+                </table>
             </div>
 
-            {/* Key Insights Box */}
-            <div className="bg-gray-800/50 rounded-xl p-5 border border-gray-700/50 mt-2">
-                <h3 className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
-                    <span>ℹ️</span>
-                    KEY DIVERSIFICATION TAKEAWAYS
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-800">
-                        <div className="flex items-center gap-2 mb-2 text-emerald-400">
-                            <span>🛡️</span>
-                            <span className="text-xs font-bold uppercase">Best Hedge Pair</span>
-                        </div>
-                        <p className="text-sm text-gray-400 leading-relaxed">
-                            <strong className="text-gray-200">EURUSD vs DXY (-0.95)</strong>: Korelasi negatif sangat kuat. DXY secara inheren didominasi oleh EUR, menjadikannya lindung nilai (hedge) alami. SPY vs VIX (-0.85) juga menunjukkan hedge volatilitas klasik.
-                        </p>
-                    </div>
-                    
-                    <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-800">
-                        <div className="flex items-center gap-2 mb-2 text-blue-400">
-                            <span>📈</span>
-                            <span className="text-xs font-bold uppercase">Highest Synergy</span>
-                        </div>
-                        <p className="text-sm text-gray-400 leading-relaxed">
-                            <strong className="text-gray-200">SPY vs QQQ (+0.92)</strong> dan <strong className="text-gray-200">BTC vs ETH (+0.88)</strong>: Aset dalam kelas yang sama bergerak hampir identik. Hindari mengalokasikan modal terlalu besar di kedua aset ini sekaligus jika mencari diversifikasi.
-                        </p>
-                    </div>
+            {/* Active Tooltip Callout */}
+            {activeTooltip && (
+                <div style={{ padding: '8px 12px', background: 'var(--bg-panel-subtle)', border: '1px solid var(--accent-blue)', fontSize: '11px', marginBottom: '14px', color: 'var(--text-primary)' }}>
+                    💡 <strong>{activeTooltip.row} vs {activeTooltip.col}</strong>: Nilai Korelasi = <strong>{activeTooltip.val > 0 ? '+' : ''}{activeTooltip.val.toFixed(2)}</strong>.
+                    {activeTooltip.val <= -0.7 ? ' Hubungan berlawanan arah sangat kuat (ideal untuk instrumen lindung nilai / hedging).' : activeTooltip.val >= 0.7 ? ' Bergerak hampir identik bersamaan (hindari double risk pada setup yang sama).' : ' Bergerak independen satu sama lain.'}
+                </div>
+            )}
 
-                    <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-800">
-                        <div className="flex items-center gap-2 mb-2 text-amber-400">
-                            <span>📉</span>
-                            <span className="text-xs font-bold uppercase">Safe Haven Status</span>
-                        </div>
-                        <p className="text-sm text-gray-400 leading-relaxed">
-                            <strong className="text-gray-200">Gold (XAU) vs VIX (+0.15)</strong>: Korelasi positif lemah dengan ketakutan pasar (VIX), menegaskan perannya sebagai pelindung nilai krisis. Emas (XAU) vs Dolar (DXY) (-0.65) menunjukkan emas ditekan saat dolar menguat.
-                        </p>
+            {/* Key Insights Box */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px' }}>
+                <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '10px' }}>
+                    <div style={{ color: 'var(--accent-green)', fontWeight: '700', fontSize: '10px', marginBottom: '4px' }}>
+                        🛡️ BEST HEDGE PAIR (LINDUNG NILAI):
+                    </div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                        <strong>EUR/USD vs DXY (-0.95)</strong> &amp; <strong>SPY vs VIX (-0.85)</strong>: Ketika indeks saham jatuh terjal, volatilitas (VIX) melesat naik tajam. Gunakan emas atau instrumen inverse untuk memproteksi portofolio.
+                    </div>
+                </div>
+
+                <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '10px' }}>
+                    <div style={{ color: 'var(--accent-blue)', fontWeight: '700', fontSize: '10px', marginBottom: '4px' }}>
+                        📈 HIGHEST SYNERGY (SEARAH):
+                    </div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                        <strong>SPY vs QQQ (+0.92)</strong> &amp; <strong>BTC vs ETH (+0.88)</strong>: Saham teknologi dan kripto utama bergerak seirama. Hindari memasang alokasi modal besar di keduanya sekaligus jika mencari diversifikasi murni.
+                    </div>
+                </div>
+
+                <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '10px' }}>
+                    <div style={{ color: 'var(--accent-gold)', fontWeight: '700', fontSize: '10px', marginBottom: '4px' }}>
+                        🪙 SAFE HAVEN DYNAMICS:
+                    </div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                        <strong>Emas (XAU) vs DXY (-0.65)</strong>: Emas ditekan saat indeks Dolar AS menguat. Saat yield obligasi US10Y turun, daya tarik emas sebagai aset tanpa yield meningkat tajam.
                     </div>
                 </div>
             </div>
