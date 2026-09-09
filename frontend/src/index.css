@@ -231,12 +231,72 @@ body {
   background: #1d2027 !important;
 }
 
+[data-theme="dark"] code {
+  color: var(--text-primary) !important;
+  background: transparent !important;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: var(--bg-panel-subtle) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .telemetry-btn {
+  background: var(--bg-panel-subtle);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .telemetry-btn:hover {
+  background: var(--text-primary);
+  color: var(--bg-canvas);
+}
+
+[data-theme="dark"] .telemetry-btn.active {
+  background: var(--accent-orange) !important;
+  color: #ffffff !important;
+  border-color: var(--accent-orange) !important;
+}
+
+[data-theme="dark"] .badge {
+  background: var(--bg-panel-subtle);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .badge-bull {
+  background: #132a1c !important;
+  color: #34c759 !important;
+  border-color: #1b8a4b !important;
+}
+
+[data-theme="dark"] .badge-bear {
+  background: #331414 !important;
+  color: #ff453a !important;
+  border-color: #b83232 !important;
+}
+
+[data-theme="dark"] .badge-alert {
+  background: #332200 !important;
+  color: #ff9f0a !important;
+  border-color: #c28800 !important;
+}
+
+[data-theme="dark"] .badge-blue {
+  background: #0d2238 !important;
+  color: #64d2ff !important;
+  border-color: #0066cc !important;
+}
+
 /* Fix text wrap in expanded drawer rows */
 .drawer-content,
 .drawer-content td,
 .drawer-box,
 .drawer-box p,
-.drawer-box div{
+.drawer-box div {
   white-space: normal !important;
   word-break: break-word !important;
   overflow-wrap: break-word !important;

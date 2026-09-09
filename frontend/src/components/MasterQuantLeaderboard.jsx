@@ -491,7 +491,7 @@ export default function MasterQuantLeaderboard({
                             {idx + 1}
                           </td>
                           <td style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '13px' }}>
-                            
+                            ${item.ticker}
                           </td>
                           <td>
                             <span className='badge' style={{
