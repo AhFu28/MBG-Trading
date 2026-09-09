@@ -3,11 +3,20 @@ import sys, os
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable, Image
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm, mm
 from reportlab.pdfgen import canvas
+
+def clean_str(s):
+    if not isinstance(s, str):
+        return str(s)
+    s = s.replace('\u201c', '"').replace('\u201d', '"').replace('\u2018', "'").replace('\u2019', "'")
+    s = s.replace('\u2192', '->').replace('\u2190', '<-').replace('\u2014', '-').replace('\u2013', '-')
+    s = s.replace('\u2022', '&bull;').replace('\u00d7', 'x').replace('\u2265', '>=').replace('\u2264', '<=')
+    s = s.replace('\u00b1', '+/-')
+    return s
 
 class AcademyNumberedCanvas(canvas.Canvas):
     def __init__(self, *args, **kwargs):
@@ -186,6 +195,56 @@ def build_pdf():
         leading=8.6,
         textColor=colors.HexColor('#0F172A')
     )
+    fig_caption = ParagraphStyle(
+        'FigCaption',
+        parent=styles['Normal'],
+        fontName='Helvetica-Oblique',
+        fontSize=6.8,
+        leading=9,
+        alignment=1,
+        textColor=colors.HexColor('#475569'),
+        spaceAfter=5
+    )
+
+    def make_callout(text, title='CATATAN PENTING // DOKTRIN ASTRA', bg_col='#E0F2FE', border_col='#0284C7'):
+        content = f"<b>{title}:</b><br/>{text}"
+        t = Table([[Paragraph(content, callout_box)]], colWidths=[174*mm])
+        t.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,-1), colors.HexColor(bg_col)),
+            ('BOX', (0,0), (-1,-1), 1, colors.HexColor(border_col)),
+            ('PADDING', (0,0), (-1,-1), 5),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE')
+        ]))
+        return t
+
+    def make_analogy_box(num_str, title_str, metaphor_str, narrative_str, lesson_str):
+        header_text = f"<b>ANALOGI #{num_str}: {title_str.upper()}</b> &mdash; <i>{metaphor_str}</i>"
+        body_content = f"{narrative_str}<br/><br/><b>Pelajaran Emas untuk Pemula:</b> {lesson_str}"
+        t = Table([
+            [Paragraph(header_text, table_header)],
+            [Paragraph(body_content, table_cell)]
+        ], colWidths=[174*mm])
+        t.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#0369A1')),
+            ('BACKGROUND', (0,1), (-1,1), colors.HexColor('#F0F9FF')),
+            ('BOX', (0,0), (-1,-1), 0.8, colors.HexColor('#0284C7')),
+            ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#BAE6FD')),
+            ('PADDING', (0,0), (-1,-1), 4.5)
+        ]))
+        return t
+
+    def make_figure_block(img_rel_path, fig_num_str, title_str, caption_str, w_mm=170, h_mm=90):
+        elements = []
+        if os.path.exists(img_rel_path):
+            img = Image(img_rel_path, width=w_mm*mm, height=h_mm*mm)
+            elements.append(img)
+            elements.append(Spacer(1, 1.5*mm))
+            caption_text = f"<b>GAMBAR {fig_num_str}: {title_str.upper()}</b> &mdash; {caption_str}"
+            elements.append(Paragraph(caption_text, fig_caption))
+            elements.append(Spacer(1, 3.5*mm))
+        else:
+            elements.append(Paragraph(f"[PERINGATAN: Gambar {img_rel_path} tidak ditemukan]", fig_caption))
+        return KeepTogether(elements)
 
     story = []
 
@@ -293,7 +352,73 @@ def build_pdf():
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor('#F8FAFC')])
     ]))
     story.append(t_scaff)
-    story.append(Spacer(1, 5*mm))
+    story.append(Spacer(1, 4*mm))
+
+    story.append(Paragraph('<b>1.3 Tujuh Analogi Membumi Penyelamat Nyawa Pemula</b>', h2_style))
+    story.append(Paragraph(
+        "Untuk membantu orang awam memahami pasar secara intuitif dalam hitungan menit tanpa tersesat dalam jargon teknis, "
+        "MBG Quant Academy menetapkan 7 analogi baku yang wajib dipahami:",
+        body_style
+    ))
+    story.append(Spacer(1, 2*mm))
+
+    story.append(make_analogy_box(
+        "1", "Hard Stop Loss (SL)", "Sabuk Pengaman & Airbag Mobil",
+        "Stop Loss bukan tanda kekalahan atau kebodohan, melainkan persis seperti <b>sabuk pengaman dan airbag mobil</b>. "
+        "Mengaktifkan Stop Loss bukan berniat menabrakkan mobil, melainkan saat ada truk rem blong (koreksi pasar tiba-tiba), "
+        "airbag meledak menyelamatkan nyawa Anda. Anda lebam sedikit (rugi 2%), tetapi Anda tetap hidup dan besok bisa menyetir lagi.",
+        "Jangan pernah masuk ke pasar modal tanpa memasang rem darurat saklek!"
+    ))
+    story.append(Spacer(1, 2.5*mm))
+
+    story.append(make_analogy_box(
+        "2", "Aturan Risiko 2% (2% Rule)", "Bensin Cadangan Jet Tempur F-16",
+        "Pilot tempur selalu menyisakan bahan bakar cadangan saklek agar pesawat bisa pulang selamat ke kapal induk. "
+        "Aturan Risiko 2% memastikan dalam 1 kali transaksi, Anda maksimal hanya boleh rugi 2% dari total modal akun (Modal Rp 10 juta = batas rugi maksimal Rp 200 ribu). "
+        "Dibutuhkan 50 kali salah berturut-turut untuk menghabiskan modal Anda.",
+        "Batasi risiko nominal per trade agar 1 kekalahan tidak pernah mengganggu ketenangan tidur Anda."
+    ))
+    story.append(Spacer(1, 2.5*mm))
+
+    story.append(make_analogy_box(
+        "3", "Order Block Institusi", "Jejak Kaki Gajah di Pasir Pantai",
+        "Institusi raksasa mengelola ratusan miliar hingga triliunan rupiah. Ketika seekor <b>gajah raksasa melintasi pasir pantai yang basah</b>, "
+        "jejak kakinya meninggalkan cekungan dalam (Order Block). Saat harga kembali menginjak cekungan pasir itu, area tersebut menjadi bantalan kuat pemantulan.",
+        "Jangan melawan gajah. Cukup temukan jejak kakinya di grafik, lalu ikut menunggangi dorongannya."
+    ))
+    story.append(Spacer(1, 2.5*mm))
+
+    story.append(make_analogy_box(
+        "4", "Fair Value Gap (FVG)", "Celah Gravitasi & Magnet Diskon Supermarket",
+        "Lompatan harga yang terburu-buru meninggalkan ruang hampa (vacuum) likuiditas 3 candlestick. "
+        "Hukum pasar seperti gravitasi: harga saham pasti memiliki daya tarik magnetik untuk tersedot kembali mengisi ruang hampa diskon tersebut sebelum melanjutkan reli.",
+        "Jangan pernah mengejar harga yang sedang lari kencang (FOMO). Tunggu harga ditarik magnet kembali ke FVG."
+    ))
+    story.append(Spacer(1, 2.5*mm))
+
+    story.append(make_analogy_box(
+        "5", "Dividend Trap Saham Siklikal", "Keju Gratis di Perangkap Tikus",
+        "Aroma wangi keju dividen yield 25% memancing investor pemula berebut membeli di puncak Cum-Date. "
+        "Namun esok harinya saat Ex-Date, bandar serentak membanting harga ARB simetris berhari-hari (-32%). Hasilnya: dividen didapat Rp 800, harga anjlok Rp 1.250 (boncos bersih -9.3%).",
+        "Tidak ada makan siang gratis di bursa. Hindari membeli saham hanya karena tergiur besarnya persentase dividen!"
+    ))
+    story.append(Spacer(1, 2.5*mm))
+
+    story.append(make_analogy_box(
+        "6", "Order Book (Bid/Offer) & HAKA/HAKI", "Antrean Lelang Sayur di Pasar Tradisional",
+        "Bid adalah antrean pedagang menawar murah, Offer adalah antrean petani memasang harga jual tinggi. "
+        "HAKA (Hajar Kanan) adalah pembeli borong langsung tanpa menawar; HAKI (Hajar Kiri) adalah petani panik obral murah langsung ke antrean pembeli.",
+        "Perhatikan apakah transaksi didorong agresivitas beli (HAKA) atau aksi panik buang barang (HAKI)."
+    ))
+    story.append(Spacer(1, 2.5*mm))
+
+    story.append(make_analogy_box(
+        "7", "Kripto Spot USDT", "Beli Emas Batangan Fisik vs Main Kasino Rentenir",
+        "Membeli Spot USDT (tanpa leverage) seperti membeli keping emas murni lalu disimpan di brankas sendiri: tidak ada yang bisa menyita aset Anda. "
+        "Sebaliknya, trading Futures leverage tinggi seperti berjudi di kasino dengan utang rentenir: jarum wicking flash dump seketika melenyapkan seluruh modal (likuidasi).",
+        "Pegang aset Spot murni, nikmati tidur tenang tanpa rasa was-was terkena margin call!"
+    ))
+    story.append(PageBreak())
 
     # ==========================================
     # 3. BAB 2: LEVEL 1 — FONDASI RISIKO 2% & MATEMATIKA MODAL
@@ -358,9 +483,87 @@ def build_pdf():
     story.append(t_dd)
     story.append(Spacer(1, 4*mm))
 
+    # EMBED GAMBAR 3: Drawdown vs Recovery
+    story.append(make_figure_block(
+        os.path.join("COMPILE PRD", "figures", "03_drawdown_vs_recovery.png"),
+        "1", "Kurva Hiperbolik Drawdown vs Persentase Pemulihan Modal (Recovery Return)",
+        "Grafik memvisualisasikan bagaimana penurunan modal di atas 20% membuat kebutuhan pemulihan melonjak tajam secara eksponensial. "
+        "Zona merah tebal (>50% DD) adalah 'Jurang Kematian Finansial' di mana trader membutuhkan keuntungan lebih dari 100% hingga 900% "
+        "hanya untuk sekadar kembali ke titik impas modal awal.",
+        w_mm=160, h_mm=108
+    ))
+    story.append(Spacer(1, 3*mm))
+
+    story.append(Paragraph('<b>2.3 Tiga Tier Modal Riil Pemula (Rupiah Nyata)</b>', h2_style))
+    story.append(Paragraph(
+        "Berapapun modal awal yang Anda miliki saat memulai, formula perlindungan modal 2% bekerja dengan disiplin yang sama persis. "
+        "Berikut adalah batas risiko mutlak yang tidak boleh dilanggar untuk 3 profil modal awal pemula:",
+        body_style
+    ))
+
+    tier_table_data = [
+        [Paragraph('<b>TIER MODAL</b>', table_header), Paragraph('<b>TOTAL SALDO AKUN</b>', table_header), Paragraph('<b>BATAS RISIKO PER TRANSAKSI (2%)</b>', table_header), Paragraph('<b>MAKSIMAL ALOKASI DANA PER POSISI (25%)</b>', table_header), Paragraph('<b>DAYA TAHAN SALAH BERTURUT-TURUT</b>', table_header)],
+        [Paragraph('<b>Tier Pemula Mini</b>', table_cell_bold), Paragraph('Rp 5.000.000', table_cell), Paragraph('<b>Rp 100.000</b>', table_cell_bold), Paragraph('Rp 1.250.000', table_cell), Paragraph('50 Kali Berturut-turut', table_cell)],
+        [Paragraph('<b>Tier Standar Ritel</b>', table_cell_bold), Paragraph('Rp 10.000.000', table_cell), Paragraph('<b>Rp 200.000</b>', table_cell_bold), Paragraph('Rp 2.500.000', table_cell), Paragraph('50 Kali Berturut-turut', table_cell)],
+        [Paragraph('<b>Tier Menengah Astra</b>', table_cell_bold), Paragraph('Rp 20.000.000', table_cell), Paragraph('<b>Rp 400.000</b>', table_cell_bold), Paragraph('Rp 5.000.000', table_cell), Paragraph('50 Kali Berturut-turut', table_cell)]
+    ]
+    t_tier = Table(tier_table_data, colWidths=[28*mm, 28*mm, 42*mm, 44*mm, 32*mm])
+    t_tier.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#0F172A')),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#CBD5E1')),
+        ('PADDING', (0,0), (-1,-1), 3.2),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor('#F8FAFC')]),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE')
+    ]))
+    story.append(t_tier)
+    story.append(Spacer(1, 4*mm))
+
+    story.append(Paragraph('<b>2.4 Sistem Rem Ganda (Dual-Brake System) & Panduan Hitung Lot</b>', h2_style))
+    story.append(Paragraph(
+        "Kelemahan paling umum dari rumus position sizing standar adalah: jika Stop Loss diletakkan sangat dekat dengan harga beli "
+        "(misal hanya selisih 1-2 fraksi), rumus matematika akan menghasilkan jumlah lot yang sangat besar hingga menghabiskan 80-100% "
+        "seluruh modal Anda (Over-concentration). Untuk mencegah malapetaka ini, sistem Astra memberlakukan <b>Sistem Rem Ganda</b>:",
+        body_style
+    ))
+
+    dual_brake_box = (
+        "<b>FORMULA SISTEM REM GANDA (DUAL-BRAKE LOT CALCULATION):</b><br/>"
+        "&nbsp;&nbsp;&nbsp;&nbsp;<b>Lot = min( Rem_1, Rem_2 )</b><br/>"
+        "&nbsp;&nbsp;&nbsp;&nbsp;<b>Rem_1 (Batas Risiko Nominal 2%) = floor[ (Modal x 2%) / ((Harga_Beli - Stop_Loss) x 100) ]</b><br/>"
+        "&nbsp;&nbsp;&nbsp;&nbsp;<b>Rem_2 (Batas Eksposur Portofolio 25%) = floor[ (Modal x 25%) / (Harga_Beli x 100) ]</b><br/>"
+        "<i>*Catatan: Fungsi 'floor' berarti koma desimal SELALU dibuang ke bawah agar batas risiko tidak terlampaui.</i>"
+    )
+    story.append(make_callout(dual_brake_box, 'SISTEM REM GANDA ASTRA', '#ECFDF5', '#059669'))
+    story.append(Spacer(1, 3*mm))
+
+    story.append(Paragraph('<b>Tutorial Contoh Kasus Nyata Hitung Lot:</b>', body_bold))
+    story.append(Paragraph(
+        "<b>Kasus Saham A (Harga Menengah):</b> Anda memiliki modal Rp 10.000.000. Ingin membeli saham perbankan di harga <b>Rp 1.500</b>, "
+        "dengan batas Stop Loss di bawah swing low pada level <b>Rp 1.425</b> (Jarak SL = Rp 75 atau 5%).<br/>"
+        "&bull; <b>Langkah 1:</b> Hitung batas rugi 2% = 2% x Rp 10.000.000 = Rp 200.000.<br/>"
+        "&bull; <b>Langkah 2:</b> Hitung risiko per lembar saham = Rp 1.500 - Rp 1.425 = Rp 75 (atau Rp 7.500 per lot).<br/>"
+        "&bull; <b>Langkah 3 (Rem 1):</b> Rp 200.000 / Rp 7.500 = 26,67 lot &rarr; Buang koma ke bawah = <b>26 Lot</b>.<br/>"
+        "&bull; <b>Langkah 4 (Rem 2):</b> Batas modal 25% = Rp 2.500.000 / (Rp 1.500 x 100) = 16,67 lot &rarr; <b>16 Lot</b>.<br/>"
+        "&bull; <b>HASIL KEPUTUSAN REM GANDA:</b> min(26 lot, 16 lot) = <b>16 Lot (Senilai Rp 2.400.000)</b>.<br/>"
+        "<i>Perhatikan: Rem 2 aktif menyelamatkan portofolio Anda dari risiko menumpuk terlalu banyak modal pada satu saham saja!</i>",
+        body_style
+    ))
+    story.append(Spacer(1, 2*mm))
+
+    story.append(Paragraph(
+        "<b>Kasus Saham B (Saham Murah / Second Liner):</b> Anda memiliki modal Rp 5.000.000. Ingin membeli saham tambang di harga <b>Rp 350</b>, "
+        "dengan Stop Loss di <b>Rp 336</b> (Fraksi Rp 2, selisih 7 fraksi = Rp 14).<br/>"
+        "&bull; <b>Rem 1 (Risiko 2% = Rp 100.000):</b> Rp 100.000 / (Rp 14 x 100) = 71,42 lot &rarr; <b>71 Lot</b>.<br/>"
+        "&bull; <b>Rem 2 (Eksposur 25% = Rp 1.250.000):</b> Rp 1.250.000 / (Rp 350 x 100) = 35,71 lot &rarr; <b>35 Lot</b>.<br/>"
+        "&bull; <b>HASIL KEPUTUSAN REM GANDA:</b> min(71 lot, 35 lot) = <b>35 Lot (Senilai Rp 1.225.000)</b>.<br/>"
+        "Jika Anda terkena Stop Loss, nominal rugi Anda hanya 35 lot x Rp 14 x 100 = <b>Rp 49.000 (hanya 0.98% modal, sangat aman!)</b>.",
+        body_style
+    ))
+    story.append(Spacer(1, 3*mm))
+
     p5 = (
-        "<b>2.3 Simulasi Monte Carlo: Mengapa Risiko 10% Menghancurkan Akun vs Ketahanan 2%</b><br/>"
-        "Dengan risiko $r = 10\%$ per trade, rentetan kerugian 7 kali berturut-turut akan memangkas modal sebesar: "
+        "<b>2.5 Simulasi Monte Carlo: Mengapa Risiko 10% Menghancurkan Akun vs Ketahanan 2%</b><br/>"
+        "Dengan risiko r = 10% per trade, rentetan kerugian 7 kali berturut-turut akan memangkas modal sebesar: "
         "<i>D<sub>7</sub> = 1 - (0.90)<sup>7</sup> = 52.17%</i> (modal tinggal separuh). "
         "Sebaliknya, dengan Doktrin Astra 2%, dibutuhkan <b>35 kali salah berturut-turut</b> untuk mengalami drawdown yang sama: "
         "<i>D<sub>35</sub> = 1 - (0.98)<sup>35</sup> = 50.60%</i>. "
@@ -412,7 +615,17 @@ def build_pdf():
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor('#F8FAFC')])
     ]))
     story.append(t_comm)
-    story.append(Spacer(1, 5*mm))
+    story.append(Spacer(1, 3*mm))
+
+    # EMBED GAMBAR 2: Macro & Commodity Transmission
+    story.append(make_figure_block(
+        os.path.join("COMPILE PRD", "figures", "08_macro_commodity_transmission.png"),
+        "2", "Peta Transmisi Makroekonomi Global & Komoditas Fisik ke Saham Emiten BEI",
+        "Panel kiri memetakan transmisi segitiga makro (DXY, US10Y, USD/IDR) terhadap Foreign Inflow/Outflow IHSG. "
+        "Panel kanan menghubungkan komoditas fisik dunia (Emas, Minyak, Batubara, Nikel) langsung ke saham emiten pilihan BEI.",
+        w_mm=170, h_mm=90
+    ))
+    story.append(Spacer(1, 4*mm))
 
     # ==========================================
     # 5. BAB 4: LEVEL 3 — SMART MONEY CONCEPTS (SMC)
@@ -431,6 +644,18 @@ def build_pdf():
         "• <b>Status BROKEN:</b> Penutupan harga menembus batas bawah Low OB &rarr; Tesis gugur otomatis (Invalidated)."
     )
     story.append(Paragraph(p8, body_style))
+    story.append(Spacer(1, 2*mm))
+
+    # EMBED GAMBAR 1: Candlestick & Order Block
+    story.append(make_figure_block(
+        os.path.join("COMPILE PRD", "figures", "01_candlestick_order_block.png"),
+        "3", "Anatomi Fisik Candlestick & Pembentukan Bullish Order Block Institusional",
+        "Panel kiri membedah anatomi fisik candlestick (Body tebal vs Ekor Wick penolakan harga). Panel kanan menunjukkan proses pembentukan "
+        "Bullish Order Block: lilin merah terakhir sebelum ledakan ekspansi >2x ATR yang menjebol resisten (BOS), menciptakan zona demand "
+        "berbayang hijau sebagai sarang antrean beli institusi.",
+        w_mm=170, h_mm=91
+    ))
+    story.append(Spacer(1, 3*mm))
 
     p9 = (
         "<b>4.2 Fair Value Gap (FVG) sebagai Magnet Ketidakseimbangan</b><br/>"
@@ -440,6 +665,17 @@ def build_pdf():
         "sebelum melanjutkan tren ekspansi utama. Area 50% median FVG adalah titik masuk ideal (Optimal Trade Entry)."
     )
     story.append(Paragraph(p9, body_style))
+    story.append(Spacer(1, 2*mm))
+
+    # EMBED GAMBAR 2: Fair Value Gap (FVG)
+    story.append(make_figure_block(
+        os.path.join("COMPILE PRD", "figures", "02_fair_value_gap_fvg.png"),
+        "4", "Struktur Imbalance 3 Candlestick & Garis Magnet 50% Consequent Encroachment (C.E.)",
+        "Diagram memperlihatkan celah likuiditas kosong berbayang biru di antara High Candle 1 dan Low Candle 3. Garis putus-putus emas adalah "
+        "level 50% Consequent Encroachment (C.E.) yang berfungsi sebagai magnet paling akurat untuk entry pantulan harga.",
+        w_mm=170, h_mm=89
+    ))
+    story.append(Spacer(1, 3*mm))
 
     p10 = (
         "<b>4.3 Break of Structure (BOS), CHoCH, dan Penentuan Zona Diskon vs Premium</b><br/>"
@@ -450,6 +686,28 @@ def build_pdf():
         "Pembelian hanya diperbolehkan di <i>Discount Zone (&lt;50%)</i> yang berhimpitan dengan Fresh Order Block."
     )
     story.append(Paragraph(p10, body_style))
+    story.append(Spacer(1, 2*mm))
+
+    p10_sweep = (
+        "<b>4.4 Anatomi Liquidity Sweep / Turtle Soup (Stop Hunt) & Rejection Wick</b><br/>"
+        "Smart Money memerlukan kolam likuiditas besar untuk mengeksekusi akumulasi posisi mereka. "
+        "Cara tercepat adalah dengan sengaja menjatuhkan harga sesaat menembus support kunci (Liquidity Sweep) untuk memicu order Stop Loss "
+        "massal trader ritel dan memancing breakout seller terjebak. "
+        "Begitu pesanan jual panik terserap habis, harga langsung ditutup memantul kembali ke atas (reclaim) dengan ekor jarum panjang (Rejection Wick). "
+        "Pola Turtle Soup ini terjadi pada saham BBRI di Rp 4.150 dan Bitcoin di $60.000 sebelum reli kencang."
+    )
+    story.append(Paragraph(p10_sweep, body_style))
+    story.append(Spacer(1, 2*mm))
+
+    # EMBED GAMBAR 7: Liquidity Sweep
+    story.append(make_figure_block(
+        os.path.join("COMPILE PRD", "figures", "07_liquidity_sweep_turtle_soup.png"),
+        "5", "Anatomi Liquidity Sweep / Turtle Soup & Formasi Rejection Wick Reclaim",
+        "Visualisasi proses perburuan likuiditas (Stop Hunt): harga menusuk support kunci untuk melikuidasi posisi ritel, "
+        "lalu memantul ditutup di atas support (Daily Reclaim). Menghasilkan rasio Risk/Reward asimetris > 1:4.",
+        w_mm=170, h_mm=90
+    ))
+    story.append(Spacer(1, 3*mm))
     story.append(PageBreak())
 
     # ==========================================
@@ -504,19 +762,65 @@ def build_pdf():
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor('#F8FAFC')])
     ]))
     story.append(t_iifs_cls)
-    story.append(Spacer(1, 4*mm))
+    story.append(Spacer(1, 3*mm))
+
+    # Walkthrough Hitungan IIFS
+    story.append(Paragraph('<b>Studi Hitungan Nyata Komposit IIFS (Saham Perbankan Big-Cap):</b>', body_bold))
+    story.append(Paragraph(
+        "Sebuah saham perbankan sedang sideways di harga Rp 4.500. Engine MBG menghitung data statistik 20 hari terakhir:<br/>"
+        "1. Nilai OBV hari ini berada 2.2 standar deviasi di atas rata-rata &rarr; Z(OBV) = +2.2 &rarr; Bobot 30% = <b>+0.66</b>.<br/>"
+        "2. Nilai MFI melonjak ke level 78, setara Z-Score +1.6 &rarr; Z(MFI) = +1.6 &rarr; Bobot 25% = <b>+0.40</b>.<br/>"
+        "3. Harga ditutup 1.8% di atas garis VWAP harian bandar &rarr; Z(&Delta;VWAP) = +1.8 &rarr; Bobot 25% = <b>+0.45</b>.<br/>"
+        "4. Chaikin A/D menunjukkan penutupan selalu di pucuk candle &rarr; Z(Chaikin) = +1.4 &rarr; Bobot 20% = <b>+0.28</b>.<br/>"
+        "&bull; <b>SKOR AKHIR IIFS:</b> 0.66 + 0.40 + 0.45 + 0.28 = <b>+1.79 (&asymp; +1.8) &rarr; STATUS: AKUMULASI AGRESIF INSTITUSI!</b><br/>"
+        "<i>Kesimpulan bagi pemula: Saham ini sedang dikumpulkan secara senyap oleh investor paus meskipun grafik harganya tampak tenang.</i>",
+        body_style
+    ))
+    story.append(Spacer(1, 3*mm))
 
     p12 = (
-        "<b>5.2 Mikrostruktur BEI: 5 Kelompok Fraksi Harga & Aturan ARB Simetris</b><br/>"
+        "<b>5.2 Mikrostruktur BEI: 5 Kelompok Fraksi Harga, Aturan ARB Simetris & Anatomi Dividend Trap</b><br/>"
         "Berdasarkan Keputusan Direksi BEI No. <b>Kep-00055/BEI/03-2023</b> (efektif penuh sejak 4 September 2023), "
         "bursa memberlakukan <b>Batas Auto Rejection Simetris</b>: batas ARB setara dengan batas ARA:<br/>"
-        "• Harga Rp 50 – Rp 200: Batas ARA/ARB = <b>&plusmn;35%</b> | Fraksi: <b>Rp 1</b><br/>"
-        "• Harga &gt;Rp 200 – Rp 5.000: Batas ARA/ARB = <b>&plusmn;25%</b> | Fraksi: Rp 2 (200-500), Rp 5 (500-2rb), Rp 10 (2rb-5rb)<br/>"
+        "• Harga Rp 50 &ndash; Rp 200: Batas ARA/ARB = <b>&plusmn;35%</b> | Fraksi: <b>Rp 1</b><br/>"
+        "• Harga &gt;Rp 200 &ndash; Rp 5.000: Batas ARA/ARB = <b>&plusmn;25%</b> | Fraksi: Rp 2 (200-500), Rp 5 (500-2rb), Rp 10 (2rb-5rb)<br/>"
         "• Harga &gt;Rp 5.000: Batas ARA/ARB = <b>&plusmn;20%</b> | Fraksi: <b>Rp 25</b><br/>"
-        "<i>Waspada Spoofing:</i> Manipulator pasar kerap memasang <b>Fake Bid</b> tebal untuk memicu ritel melakukan HAKA (Hajar Kanan). "
-        "Ketika ritel membeli di Offer, manipulator langsung mencabut (cancel) bid tebal dan melakukan HAKI (Hajar Kiri) masif."
+        "<i>Waspada Dividend Trap:</i> Pada saham siklikal, pembagian dividen yield tinggi (>20%) kerap menjadi ajang exit bagi investor institusi. "
+        "Saat ritel HAKA di Cum-Date, institusi melakukan Net Sell masif, memicu gap down ARB berhari-hari di Ex-Date."
     )
     story.append(Paragraph(p12, body_style))
+    story.append(Spacer(1, 2*mm))
+
+    # EMBED GAMBAR 5: Dividend Trap Anatomy
+    story.append(make_figure_block(
+        os.path.join("COMPILE PRD", "figures", "05_dividend_trap_anatomy.png"),
+        "6", "Anatomi 4 Fase Dividend Trap Saham Siklikal & Kaskade ARB Simetris",
+        "Panel atas memperlihatkan kaskade terjun bebas harga saham dari Rp 3.900 menuju Rp 2.650 (-32%) pasca Ex-Date. "
+        "Panel bawah membuktikan kontras ekstrem: lonjakan volume HAKA ritel di puncak Cum-Date bertepatan tepat dengan aksi distribusi "
+        "Net Sell masif oleh Smart Money asing, menyebabkan kerugian bersih total -9.3% dan modal terkunci berbulan-bulan.",
+        w_mm=170, h_mm=110
+    ))
+    story.append(Spacer(1, 3*mm))
+
+    p12_spoof = (
+        "<b>5.3 Anatomi Order Book BEI: Fake Bid (Spoofing) vs Real Passive Absorption</b><br/>"
+        "Manipulator pasar memanfaatkan visual Order Book untuk menggiring psikologi ritel. "
+        "Mereka memasang antrean beli raksasa palsu (Fake Bid puluhan ribu lot) agar ritel mengira ada pembeli kuat, lalu ritel terburu-buru HAKA di harga penawaran (Offer). "
+        "Begitu ritel membeli, antrean bid palsu langsung dicabut dan bandar mengguyur saham (HAKI) ke antrean bid tipis di bawahnya.<br/>"
+        "Sebaliknya, akumulasi asli institusi ditandai oleh antrean bid yang tebal merata di setiap fraksi harga dan tidak pernah dicabut saat transaksi berlangsung."
+    )
+    story.append(Paragraph(p12_spoof, body_style))
+    story.append(Spacer(1, 2*mm))
+
+    # EMBED GAMBAR 10: Order Book Spoofing vs Real Absorption
+    story.append(make_figure_block(
+        os.path.join("COMPILE PRD", "figures", "10_orderbook_spoofing_anatomy.png"),
+        "7", "Anatomi Mikrostruktur Order Book BEI: Fake Bid (Spoofing) vs Real Passive Absorption",
+        "Panel kiri membedah trik Fake Bid bandar (48.500 lot semu) untuk memancing ritel HAKA sebelum bid dicabut. "
+        "Panel kanan membuktikan ciri khas akumulasi nyata Smart Money: antrean bid tebal merata dan konsisten terkonfirmasi IIFS Z-Score > +1.5.",
+        w_mm=170, h_mm=90
+    ))
+    story.append(Spacer(1, 3*mm))
     story.append(PageBreak())
 
     # ==========================================
@@ -546,10 +850,21 @@ def build_pdf():
     story.append(Paragraph(p14, body_style))
 
     p15 = (
-        "<b>6.3 Rotasi Likuiditas Kripto & Bitcoin Dominance (BTC.D)</b><br/>"
+        "<b>6.3 Rotasi Likuiditas Kripto, Bitcoin Dominance (BTC.D) & The Capital Waterfall</b><br/>"
         "Pergerakan likuiditas pasar kripto mengalir melalui 4 fase sistematis (*The Capital Waterfall*):"
     )
     story.append(Paragraph(p15, body_style))
+    story.append(Spacer(1, 2*mm))
+
+    # EMBED GAMBAR 6: Crypto Liquidity Pyramid
+    story.append(make_figure_block(
+        os.path.join("COMPILE PRD", "figures", "06_crypto_liquidity_pyramid.png"),
+        "8", "Piramida Aliran Likuiditas Kripto (The Capital Waterfall) & Siklus Rotasi Altseason",
+        "Panel kiri menggambarkan aliran modal 4 layer: Fiat/USDT On-Ramp -> Bitcoin -> Ethereum/L1 Giants -> Altcoin & Meme Tokens. "
+        "Panel kanan memetakan korelasi siklus: Altseason meledak HANYA saat Bitcoin Dominance (BTC.D) anjlok bebas dari puncaknya.",
+        w_mm=170, h_mm=99
+    ))
+    story.append(Spacer(1, 2*mm))
 
     crypto_flow = [
         "<b>Fase 1 (Bitcoin Surge):</b> Likuiditas baru masuk ke Bitcoin. Harga BTC melonjak kencang, Bitcoin Dominance (BTC.D) menanjak tajam. Altcoin tertinggal.",
@@ -559,7 +874,16 @@ def build_pdf():
     ]
     for pt in crypto_flow:
         story.append(Paragraph(f"• {pt}", bullet_style))
+    story.append(Spacer(1, 2*mm))
+
+    story.append(Paragraph(
+        "<b>Aturan Emas Keluar Pasar (Golden Exit Rule):</b><br/>"
+        "<i>'Saat supir taksi, teman kantor yang tidak pernah investasi, dan grup keluarga WhatsApp mulai bertanya cara membeli koin meme bertema binatang, "
+        "itu adalah tanda mutlak bahwa siklus berada di pucuk mania Fase 4. Segera jual 100% altcoin Anda kembali ke USDT dan nikmati keuntungan di tempat aman!'</i>",
+        body_style
+    ))
     story.append(Spacer(1, 4*mm))
+    story.append(PageBreak())
 
     # ==========================================
     # 8. BAB 7: 4 STUDI KASUS NYATA MENDALAM
@@ -603,7 +927,19 @@ def build_pdf():
         "sementara BRMS meroket <b>+115% (Rp 150 &rarr; Rp 320+)</b> didukung akumulasi institusional."
     )
     story.append(Paragraph(cs3, body_style))
-    story.append(Spacer(1, 2.5*mm))
+    story.append(Spacer(1, 2*mm))
+
+    # EMBED GAMBAR 9: Operating Leverage ANTM vs BRMS
+    story.append(make_figure_block(
+        os.path.join("COMPILE PRD", "figures", "09_operating_leverage_gold_brms_vs_antm.png"),
+        "9", "Infografis Paradoks Operating Leverage: Mengapa BRMS Naik +115% sedangkan ANTM Hanya +28%",
+        "Panel kiri membandingkan lonjakan harga saham 2024 saat emas mencetak rekor dunia. "
+        "Panel kanan membuktikan rahasia kuantitatif operating leverage: biaya gali emas BRMS tetap ($950/oz) "
+        "sehingga kenaikan harga emas langsung melipatgandakan margin laba kotor menjadi laba murni (+67%), "
+        "sementara ANTM terbebani margin tipis perdagangan ritel dan lesunya harga nikel.",
+        w_mm=170, h_mm=90
+    ))
+    story.append(Spacer(1, 3*mm))
 
     cs4 = (
         "<b>STUDI KASUS 4: Bitcoin $60.000 Turtle Soup Liquidity Sweep (1 Mei 2024)</b><br/>"
@@ -622,8 +958,28 @@ def build_pdf():
     story.append(Paragraph('BAB 8: SOP OPERASIONAL, PRE-FLIGHT CHECKLIST & JURNAL DISIPLIN', h1_style))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#0F172A'), spaceAfter=5))
 
+    p16_intro = (
+        "<b>8.1 Flowchart Standar Operasional Prosedur (SOP) 5 Langkah Astra</b><br/>"
+        "Trading profesional bukan aktivitas tebak-tebakan berdasarkan perasaan (feeling) atau bisikan grup saham. "
+        "Setiap keputusan eksekusi di MBG Cockpit wajib melewati <b>5 Gerbang Keputusan Saklek (Zero-Tolerance Gating)</b> secara berurutan. "
+        "Jika ada 1 gerbang saja yang tidak lolos kriteria, rencana trading otomatis BATAL seketika:"
+    )
+    story.append(Paragraph(p16_intro, body_style))
+    story.append(Spacer(1, 2*mm))
+
+    # EMBED GAMBAR 4: Flowchart SOP 5 Langkah Astra
+    story.append(make_figure_block(
+        os.path.join("COMPILE PRD", "figures", "04_astra_5_step_flowchart.png"),
+        "10", "Flowchart Diagram Alur Pengambilan Keputusan Trading 5 Langkah Astra Standard",
+        "Diagram alur vertikal menunjukkan proses penyaringan ketat: Mulai -> Filter Makro & Komoditas -> Verifikasi Arus Asing IIFS -> "
+        "Validasi Struktur SMC & Zona Diskon -> Kalkulasi Lot Rem Ganda 2% -> Pemasangan Order Bracket GTC (SL + TP) -> Monitor Disiplin. "
+        "Setiap cabang penolakan (TIDAK) langsung mengarahkan trader untuk 'TIDAK TRADING / WAIT & SEE'.",
+        w_mm=155, h_mm=109
+    ))
+    story.append(Spacer(1, 3*mm))
+
     p16 = (
-        "<b>8.1 Pre-Flight Safety Checklist (Gerbang Keputusan 5 Poin Saklek)</b><br/>"
+        "<b>8.2 Pre-Flight Safety Checklist (Gerbang Keputusan 5 Poin Saklek)</b><br/>"
         "Sama seperti pilot yang dilarang lepas landas jika ada alarm kabin menyala, trader kuantitatif MBG "
         "<b>DILARANG MENGEKSEKUSI ORDER BELI</b> jika salah satu dari 5 parameter ini berstatus merah:"
     )
@@ -694,101 +1050,49 @@ def build_pdf():
     )
     story.append(Paragraph(glossary_intro, body_style))
 
-    raw_glossary = [
-        ("1", "Risk/Reward Ratio (R:R)", "Manajemen Risiko", "Perbandingan potensi risiko nominal rugi terhadap target profit.", "Wajib minimal 1:2. Jangan masuk trade jika potensi profit lebih kecil dari risiko."),
-        ("2", "Hard Stop Loss (SL)", "Manajemen Risiko", "Batas harga mutlak di mana posisi wajib segera di-cut loss.", "Tentukan harga SL sebelum klik beli. Pasang auto-order di sekuritas/exchange."),
-        ("3", "Aturan Risiko 2% (2% Rule)", "Manajemen Risiko", "Batas kerugian per transaksi maksimal 2% dari total ekuitas modal.", "Modal Rp10jt -> batas rugi maks Rp200rb. Menjamin akun bertahan dari rentetan rugi."),
-        ("4", "Position Sizing / Kalkulator Lot", "Manajemen Risiko", "Kalkulasi matematis jumlah lot berdasarkan jarak entry ke Stop Loss.", "Lot = floor((Modal x 2%) / ((Entry - SL) x 100)). Mencegah pembelian all-in."),
-        ("5", "Trailing Stop", "Manajemen Risiko", "Stop loss dinamis yang digeser naik mengunci floating profit.", "Jika saham naik +10%, geser SL ke atas titik modal (BEP) atau bawah swing low."),
-        ("6", "Break-Even Point (BEP)", "Manajemen Risiko", "Menggeser batas SL ke harga beli setelah TP1 tercapai.", "Membuat sisa posisi 50% menjadi 'Risk-Free Trade' tanpa beban psikologis."),
-        ("7", "Drawdown (DD)", "Manajemen Risiko", "Persentase penurunan modal portofolio dari puncak tertinggi ke lembah.", "Jaga DD di bawah 15%. Penurunan 50% butuh recovery 100% hanya untuk impas."),
-        ("8", "Cut Loss vs Averaging Down", "Manajemen Risiko", "Cut Loss = buang rugi; Averaging Down = beli lagi saham turun.", "Pemula dilarang averaging down pada saham downtrend karena mengunci modal."),
-        ("9", "3 Invalidation Rules", "Manajemen Risiko", "3 kondisi objektif yang otomatis menggugurkan tesis trading.", "Jebol support struktur, IIFS berbalik distribusi, atau pembalikan makro ekstrem."),
-        ("10", "Awaiting Human Review", "Manajemen Risiko", "Status sinyal kuantitatif di mana eksekusi akhir 100% di tangan trader.", "Bot MBG memberikan alpha berbasis data; eksekusi akhir diotorisasi oleh manusia."),
-        
-        ("11", "Lot Saham", "Mekanisme Bursa", "Satuan baku transaksi saham resmi BEI (1 Lot = 100 lembar saham).", "Beli 5 lot saham Rp2.000 butuh modal Rp1.000.000 (tambah estimasi fee ~0.15%)."),
-        ("12", "Fraksi Harga BEI (Tick Size)", "Mekanisme Bursa", "Kelipatan kenaikan/penurunan harga resmi sesuai 5 kelompok harga.", "<200 (Rp1), 200-500 (Rp2), 500-2rb (Rp5), 2rb-5rb (Rp10), >=5rb (Rp25)."),
-        ("13", "ARA (Auto Rejection Atas)", "Mekanisme Bursa", "Batas maksimal persentase kenaikan harga harian di bursa (20% - 35%).", "Antrean offer kosong. Hindari FOMO membeli di pucuk ARA karena rawan koreksi."),
-        ("14", "ARB Simetris (Bawah)", "Mekanisme Bursa", "Batas maksimal persentase penurunan harga harian (-20% s/d -35%).", "Berdasarkan Kep-00055/BEI/03-2023, batas ARB simetris dengan persentase ARA."),
-        ("15", "Bid & Offer (Order Book)", "Mekanisme Bursa", "Bid (kiri) = antrean pembeli; Offer/Ask (kanan) = antrean penjual.", "Harga naik jika ada yang HAKA Offer; harga turun jika ada yang HAKI Bid."),
-        ("16", "HAKA (Hajar Kanan)", "Mekanisme Bursa", "Membeli langsung di harga Offer terbaik agar order tereksekusi instan.", "Gunakan saat momentum breakout kuat, namun sadari harga beli lebih mahal."),
-        ("17", "HAKI (Hajar Kiri)", "Mekanisme Bursa", "Menjual langsung di harga Bid terbaik agar posisi laku seketika.", "Wajib dilakukan saat Cut Loss darurat ketika struktur harga jebol."),
-        ("18", "Cum Date & Ex Date", "Mekanisme Bursa", "Cum Date = hari terakhir berhak dividen; Ex Date = hari tanpa dividen.", "Memegang saham di Cum Date berhak dividen, namun Ex-Date rawan dibuka gap down."),
-        ("19", "Dividend Trap", "Mekanisme Bursa", "Jebakan penurunan harga di Ex-Date melebihi dividen tunai yang diterima.", "Sering terjadi pada saham siklikal komoditas dengan dividen yield >10%."),
-        ("20", "Tiering Saham (Bluechip s/d Gorengan)", "Mekanisme Bursa", "Blue Chip (>Rp50T likuid); 2nd liner (mid-cap); 3rd liner (small-cap).", "Pemula wajib 70-80% modal di Blue Chip / LQ45. Batasi saham gorengan."),
-        ("21", "UMA (Unusual Market Activity)", "Mekanisme Bursa", "Radar peringatan BEI atas pergerakan saham di luar kebiasaan.", "Batasi alokasi modal pada saham UMA karena memiliki risiko suspensi gembok bursa."),
-        ("22", "Suspensi Bursa", "Mekanisme Bursa", "Penghentian sementara perdagangan suatu saham oleh otoritas BEI.", "Jika disuspensi, dana Anda terkunci tidak bisa ditransaksikan sampai gembok dibuka."),
-        ("23", "Klaster Konglomerasi", "Mekanisme Bursa", "Grup kepemilikan konglo (Barito, Salim, Astra, Djarum, Bakrie, Adaro).", "Saham dalam satu konglomerasi bergerak dalam korelasi kuat saat aksi korporasi."),
+    import json
+    glossary_path = os.path.join("engine", "cache", "glossary_66_clean.json")
+    terms_list = []
+    if os.path.exists(glossary_path):
+        with open(glossary_path, 'r', encoding='utf-8') as gf:
+            terms_list = json.load(gf)
 
-        ("24", "Order Block (OB)", "Price Action & SMC", "Candle berlawanan arah terakhir sebelum lonjakan impulsif >2x ATR.", "Bullish OB = candle merah sebelum reli. Pasang antrean beli saat retest."),
-        ("25", "Bullish OB vs Bearish OB", "Price Action & SMC", "OB Beli (sebelum reli naik) vs OB Jual (sebelum penurunan tajam).", "Bullish OB dipakai untuk entry buy; Bearish OB dipakai untuk target exit/TP."),
-        ("26", "Status OB (Fresh/Tested/Broken)", "Price Action & SMC", "Fresh (belum disentuh); Tested (sudah dipantulkan); Broken (jebol).", "Prioritaskan Fresh OB. Hindari OB yang sudah diuji >2 kali karena rentan jebol."),
-        ("27", "Fair Value Gap (FVG)", "Price Action & SMC", "Celah ketidakseimbangan harga antara Candle ke-1 dan Candle ke-3.", "FVG bertindak sebagai magnet. Entry terbaik saat harga retrace menutup FVG."),
-        ("28", "Break of Structure (BOS)", "Price Action & SMC", "Penembusan swing high/low sebelumnya mengonfirmasi kelanjutan tren.", "Tunggu harga pullback ke area diskon pasca BOS, jangan kejar di pucuk breakout."),
-        ("29", "Change of Character (CHoCH)", "Price Action & SMC", "Sinyal awal pembalikan arah struktur pasar dari turun ke naik (reversal).", "Peringatan awal bahwa tren lama melemah dan tren baru mulai terbentuk."),
-        ("30", "Liquidity Sweep (Stop Hunt)", "Price Action & SMC", "Manipulasi harga menembus support sesaat untuk memicu cut loss ritel.", "Ciri khas: candle meninggalkan ekor panjang (wick) bervolume besar pasca tembus support."),
-        ("31", "Discount Zone vs Premium Zone", "Price Action & SMC", "Diskon (<50% range) = area beli; Premium (>50% range) = area jual.", "Beli hanya di zona diskon yang bersinggungan dengan Bullish Order Block."),
-        ("32", "Confluence Score", "Price Action & SMC", "Skor kumulatif keselarasan teknikal (Diskon + Fresh OB + FVG + Volume).", "Skor >75% menandakan setup dengan probabilitas keberhasilan tinggi."),
-        ("33", "Support & Resistance (S/R)", "Price Action & SMC", "Lantai penahan turun (Support) dan plafon penahan naik (Resistance).", "Beli di support teruji dengan SL ketat; jual sebagian di plafon resistance."),
-
-        ("34", "Institutional Inflow Score (IIFS)", "Bandarmologi & Flow", "Skor kuantitatif gabungan 4 indikator volume melacak uang bandar/asing.", "Skor Z > +1.5 = akumulasi agresif; Skor Z < -1.5 = distribusi masif."),
-        ("35", "Z-Score Normalization", "Bandarmologi & Flow", "Standarisasi deviasi statistik data deret waktu dengan rolling window 20.", "Mengukur keabnormalan volume transaksi relatif terhadap rata-rata 20 hari."),
-        ("36", "OBV Z-Score (30%)", "Bandarmologi & Flow", "Pilar 1 IIFS: volume kumulatif pada hari kenaikan vs penurunan harga.", "OBV divergence naik saat harga flat mengonfirmasi akumulasi senyap bandar."),
-        ("37", "MFI Z-Score (25%)", "Bandarmologi & Flow", "Pilar 2 IIFS: Money Flow Index tertimbang volume harga tipikal.", "Mengukur tekanan likuiditas uang nyata pembeli institusi."),
-        ("38", "Deviasi VWAP (25%)", "Bandarmologi & Flow", "Pilar 3 IIFS: selisih harga terakhir terhadap Volume-Weighted Average Price.", "Harga di atas VWAP menandakan pembeli dominan; patokan harga rata-rata institusi."),
-        ("39", "Chaikin A/D Line (20%)", "Bandarmologi & Flow", "Pilar 4 IIFS: posisi penutupan harian dalam rentang High-Low dikali volume.", "Mengukur apakah institusi menutup posisi di pucuk atas atau bawah spread."),
-        ("40", "Net Foreign Flow (NFF)", "Bandarmologi & Flow", "Selisih beli bersih dikurangi jual bersih oleh seluruh investor asing.", "Asing penggerak utama saham penggerak indeks (BBCA, BBRI, BMRI, TLKM)."),
-        ("41", "Fase Akumulasi & Distribusi", "Bandarmologi & Flow", "Akumulasi = kumpul barang murah; Distribusi = buang barang di harga mahal.", "Akumulasi: harga sideways volume membesar. Distribusi: berita positif harga gagal naik."),
-        ("42", "Fake Bid / Offer (Spoofing)", "Bandarmologi & Flow", "Pemasangan puluhan ribu lot order semu yang dicabut sebelum tereksekusi.", "Bid tebal palsu dipasang memancing ritel HAKA sebelum bandar banting harga."),
-        ("43", "VWAP", "Bandarmologi & Flow", "Volume-Weighted Average Price patokan harga wajar transaksi big player.", "Jangan membeli untuk day trade jika harga saham berada jauh di bawah VWAP."),
-
-        ("44", "Google TimesFM 2.5", "Model Kuantitatif & AI", "Foundation Model AI Google Research untuk meramal lintasan harga 5 hari.", "Memberikan proyeksi tren probabilistik dengan arsitektur Transformer time-series."),
-        ("45", "Confidence Band 80%", "Model Kuantitatif & AI", "Pita batas ramalan atas dan bawah dengan derajat keyakinan 80%.", "Membantu trader melihat batas optimis dan pesimis pergerakan harga."),
-        ("46", "Statistical Ensemble Fallback", "Model Kuantitatif & AI", "Sistem cadangan regresi linear + EMA momentum jika TimesFM offline.", "Menjamin sistem tidak pernah crash dan selalu menyajikan proyeksi matematis."),
-        ("47", "Exp3 Multi-Armed Bandit", "Model Kuantitatif & AI", "Algoritma online machine learning melombakan bobot strategi trading.", "Otomatis menaikkan bobot strategi yang sedang memiliki win rate tertinggi."),
-        ("48", "State Machine Virtual Portfolio", "Model Kuantitatif & AI", "Alur simulasi forward testing: PENDING -> ACTIVE -> TP/SL HIT -> EXPIRED.", "Mencatat performa simulasi tanpa risiko dengan batas kedaluwarsa 30 hari."),
-        ("49", "Rolling 30-Day Auto Purge", "Model Kuantitatif & AI", "Pembersihan otomatis riwayat simulasi yang berumur lebih dari 30 hari.", "Menjaga database tetap bersih, ringan, dan relevan dengan kondisi bursa terkini."),
-        ("50", "LLM Brain (Gemini Flash)", "Model Kuantitatif & AI", "AI sintesis tiket trading harian dan penerjemah narasi 'Bahasa Bayi'.", "Menjelaskan peristiwa makro rumit dalam 2 kalimat santai ramah pemula."),
-
-        ("51", "Moving Average (MA20 & MA50)", "Indikator Teknis", "Rata-rata harga penutupan 20 hari (pendek) dan 50 hari (menengah).", "Kondisi bullish sehat jika Harga > MA20 > MA50 (Golden Alignment)."),
-        ("52", "Golden Alignment", "Indikator Teknis", "Susunan sempurna tren naik di mana Harga > MA20 > MA50.", "Konfirmasi tren bullish berkepastian tinggi untuk strategi swing trading."),
-        ("53", "RSI 14 (Wilder's Smoothing)", "Indikator Teknis", "Indikator momentum 0-100: Overbought (>70), Oversold (<30).", "Zona momentum breakout terbaik berada pada rentang RSI 50-65."),
-        ("54", "ATR (Average True Range)", "Indikator Teknis", "Ukuran volatilitas rata-rata rentang harga per candle selama 14 periode.", "Dipakai untuk mengukur impulse Order Block (>2x ATR) dan trailing stop."),
-        ("55", "Volume Spike", "Indikator Teknis", "Lonjakan volume perdagangan melompat >2x rata-rata 20 hari.", "Breakout resisten wajib divalidasi volume spike untuk menghindari bull trap."),
-        ("56", "Pearson Correlation Matrix", "Indikator Teknis", "Matriks korelasi statistik (-1.0 s/d +1.0) pergerakan antar aset.", "Menghindari diversifikasi semu saham yang bergerak searah 100%."),
-
-        ("57", "DXY (US Dollar Index)", "Makro & Kripto", "Indeks kekuatan mata uang USD terhadap mata uang utama dunia.", "DXY melonjak tajam memicu capital outflow asing dari IHSG dan pelemahan Rupiah."),
-        ("58", "US10Y Treasury Yield", "Makro & Kripto", "Imbal hasil obligasi AS 10 tahun tolok ukur risk-free rate dunia.", "Kenaikan US10Y menaikkan biaya modal global dan menekan valuasi saham."),
-        ("59", "Komoditas XAU & Brent Crude", "Makro & Kripto", "Harga acuan Emas dunia (safe haven) dan Minyak Mentah energi.", "Transmisi langsung ke saham tambang emas (ANTM/BRMS) dan migas (MEDC/ENRG)."),
-        ("60", "Crypto Spot USDT", "Makro & Kripto", "Pembelian aset kripto murni 1:1 tanpa leverage pinjaman margin.", "Bebas biaya inap, nol risiko likuidasi paksa saat terjadi flash dump."),
-        ("61", "Bitcoin Halving 4 Tahunan", "Makro & Kripto", "Pemotongan 50% imbalan penambang BTC setiap 210.000 blok.", "Memicu kejutan pasokan (supply shock) dan awal siklus pasar bullish."),
-        ("62", "Bitcoin Dominance (BTC.D)", "Makro & Kripto", "Persentase kapitalisasi pasar Bitcoin terhadap total pasar kripto.", "BTC.D anjlok mengonfirmasi dimulainya musim altcoin (Altseason)."),
-
-        ("63", "Master Top Bar HUD", "Cockpit UI MBG", "Bar atas navigasi waktu WIB, status data real-time, dan kalkulator.", "Pusat kontrol navigasi terminal pasar modal MBG Cockpit."),
-        ("64", "Bloomberg NewsWire Tape", "Cockpit UI MBG", "Pita berjalan 4 indikator makro dan carousel berita headline 6 detik.", "Menyajikan radar berita makro dan ticker emiten terdampak secara instan."),
-        ("65", "Executive Hero Bar", "Cockpit UI MBG", "3 kartu ringkasan eksekutif: Sentimen IHSG, Top Saham, dan Top Crypto.", "Menampilkan alpha pilihan harian dengan skor probabilitas tertinggi."),
-        ("66", "Telegram Radar 24/7", "Cockpit UI MBG", "Bot asisten siaga 6 format pesan (Morning, Midday, Evening, Alert, Chat).", "Mengirim sinyal instan dan panduan interaktif langsung ke smartphone trader.")
-    ]
+    def get_cat(tid):
+        if tid <= 10:
+            return "Manajemen Risiko"
+        elif tid <= 23:
+            return "Mekanisme Bursa BEI"
+        elif tid <= 33:
+            return "Smart Money Concepts"
+        elif tid <= 43:
+            return "Bandarmologi IIFS"
+        elif tid <= 50:
+            return "Kuantitatif & AI"
+        elif tid <= 56:
+            return "Indikator Teknis"
+        else:
+            return "Makro, Kripto & UI"
 
     table_rows = [
-        [Paragraph('<b>#</b>', table_header), Paragraph('<b>ISTILAH & KATEGORI</b>', table_header), Paragraph('<b>PENJELASAN KONSEP (PEMULA)</b>', table_header), Paragraph('<b>ATURAN / TIPS PRAKTIS DI PASAR</b>', table_header)]
+        [Paragraph('<b>#</b>', table_header), Paragraph('<b>ISTILAH & KATEGORI</b>', table_header), Paragraph('<b>DEFINISI RAMAH PEMULA, ANALOGI & TIPS OPERASIONAL</b>', table_header)]
     ]
-    for row in raw_glossary:
-        no, term, cat, desc, practical = row
-        term_cell = f"<b>{term}</b><br/><font color='#0284C7'>[{cat}]</font>"
-        practical_cell = f"<font color='#D97706'><b>Tips Praktis:</b></font> {practical}"
+    for item in terms_list:
+        tid = item.get('id', 0)
+        t_term = clean_str(item.get('term', ''))
+        t_def = clean_str(item.get('def', ''))
+        cat = get_cat(tid)
+        term_cell = f"<b>{t_term}</b><br/><font color='#0284C7'>[{cat}]</font>"
         table_rows.append([
-            Paragraph(no, table_cell_bold),
+            Paragraph(str(tid), table_cell_bold),
             Paragraph(term_cell, table_cell),
-            Paragraph(desc, table_cell),
-            Paragraph(practical_cell, table_cell)
+            Paragraph(t_def, table_cell)
         ])
 
-    t_gloss = Table(table_rows, colWidths=[8*mm, 42*mm, 60*mm, 64*mm], repeatRows=1)
+    t_gloss = Table(table_rows, colWidths=[8*mm, 44*mm, 122*mm], repeatRows=1)
     t_gloss.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#0F172A')),
         ('GRID', (0,0), (-1,-1), 0.4, colors.HexColor('#CBD5E1')),
-        ('PADDING', (0,0), (-1,-1), 2.6),
+        ('PADDING', (0,0), (-1,-1), 2.8),
         ('VALIGN', (0,0), (-1,-1), 'TOP'),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor('#F8FAFC')])
     ]))

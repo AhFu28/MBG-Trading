@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import PasswordGate from './components/PasswordGate.jsx';
-import BloombergNewsWire from './components/BloombergNewsWire.jsx';
 import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
+import HomeDashboardTab from './components/HomeDashboardTab.jsx';
 import TradingViewModal from './components/TradingViewModal.jsx';
 import LotCalculatorModal from './components/LotCalculatorModal.jsx';
 import Sidebar from './components/Sidebar.jsx';
@@ -9,10 +9,8 @@ import Sidebar from './components/Sidebar.jsx';
 export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [activeTab, setActiveTab] = useState('STOCK');
+  const [activeTab, setActiveTab] = useState('HOME');
   const [isMobileOpen, setMobileOpen] = useState(false);
-
 
   // Dark Mode state with persistence in localStorage
   const [theme, setTheme] = useState(() => {
@@ -32,28 +30,28 @@ export default function App() {
     }
   }, [theme]);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
-  };
+  }, []);
 
   // TradingView Chart Modal State
   const [chartModal, setChartModal] = useState({
     isOpen: false,
-    symbol: 'MEDC',
+    symbol: 'AMMN',
     market: 'IDX'
   });
 
-  const handleOpenChart = (symbol, market = 'IDX') => {
+  const handleOpenChart = useCallback((symbol = 'AMMN', market = 'IDX') => {
     setChartModal({
       isOpen: true,
       symbol: symbol,
       market: market
     });
-  };
+  }, []);
 
-  const handleCloseChart = () => {
+  const handleCloseChart = useCallback(() => {
     setChartModal(prev => ({ ...prev, isOpen: false }));
-  };
+  }, []);
 
   // Lot Calculator Modal State
   const [lotCalcModal, setLotCalcModal] = useState({
@@ -62,18 +60,12 @@ export default function App() {
     sl: ''
   });
 
-  const handleOpenLotCalc = (entry = '', sl = '') => {
+  const handleOpenLotCalc = useCallback((entry = '', sl = '') => {
     setLotCalcModal({ isOpen: true, entry, sl });
-  };
+  }, []);
 
-  const handleCloseLotCalc = () => {
+  const handleCloseLotCalc = useCallback(() => {
     setLotCalcModal(prev => ({ ...prev, isOpen: false }));
-  };
-
-  // Clock tick
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
   }, []);
 
   const loadBundle = async () => {
@@ -97,9 +89,23 @@ export default function App() {
     loadBundle();
   }, []);
 
-  // Top picks extraction for Executive Hero HUD
-  const topIdx = (data?.daily_trade_plans || []).filter(p => p.market === 'IDX')[0];
-  const topCrypto = (data?.crypto_spot_10 || [])[0];
+  const getTabLabel = (tab) => {
+    switch (tab) {
+      case 'HOME': return '🏠 Home Command Center';
+      case 'STOCK': return '📈 Saham IDX Alpha';
+      case 'CRYPTO': return '⚡ Crypto Spot Momentum';
+      case 'WATCHLIST': return '⭐ Personal Watchlist';
+      case 'GLOBAL_MARKETS': return '🌍 Pasar Global';
+      case 'TESTING': return '🧪 Strategy Testing Lab';
+      case 'CURRENT_TEST': return '🧪 Forward Paper Trading';
+      case 'BACKTEST_LAB': return '📊 Historical Backtest Lab';
+      case 'ECONOMIC_CALENDAR': return '📅 Kalender Makro';
+      case 'PEARSON_CORRELATION': return '🔗 Korelasi Pearson';
+      case 'NEWS': return '📰 Terminal Live News';
+      case 'ACADEMY': return '🎓 Quant Academy';
+      default: return 'Institutional Desk';
+    }
+  };
 
   return (
     <PasswordGate>
@@ -126,19 +132,16 @@ export default function App() {
           />
         )}
 
-        {/* ===== LEFT SIDEBAR ===== */}
+        {/* ===== LEFT SIDEBAR (Zero-Scroll 100vh) ===== */}
         <Sidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           theme={theme}
           toggleTheme={toggleTheme}
-          onOpenChart={handleOpenChart}
-          onOpenLotCalc={handleOpenLotCalc}
           onRefresh={loadBundle}
           isMobileOpen={isMobileOpen}
           setMobileOpen={setMobileOpen}
-          currentTime={currentTime}
-          lastUpdate={data?.meta?.generated_at}
+          lastUpdate={data?.last_updated || data?.meta?.generated_at}
           stockCount={(data?.daily_trade_plans || []).filter(p => p.market === 'IDX').length}
           cryptoCount={(data?.crypto_spot_10 || []).length}
           newsCount={(data?.macro_telemetry?.live_news || []).length}
@@ -147,91 +150,89 @@ export default function App() {
         {/* ===== MAIN CONTENT AREA ===== */}
         <div className="main-content">
 
-          {/* 1. Slim breadcrumb top bar */}
-          <header className='telemetry-panel' style={{ marginBottom: '10px', padding: '6px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-            <div style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '0.05em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-              <span style={{ color: 'var(--accent-green)' }}>MBG</span>
-              <span style={{ margin: '0 6px', opacity: 0.4 }}>//</span>
-              <span style={{ color: 'var(--text-primary)' }}>
-                {activeTab === 'STOCK' && '📈 Saham IDX'}
-                {activeTab === 'CRYPTO' && '⚡ Crypto Spot'}
-                {activeTab === 'CURRENT_TEST' && '🧪 Paper Trading'}
-                {activeTab === 'BACKTEST_LAB' && '📊 Backtest Lab'}
-                {activeTab === 'GLOBAL_MARKETS' && '🌍 Pasar Global'}
-                {activeTab === 'ECONOMIC_CALENDAR' && '📅 Kalender Makro'}
-                {activeTab === 'PEARSON_CORRELATION' && '🔗 Korelasi Pearson'}
-                {activeTab === 'NEWS' && '📰 Live News'}
-                {activeTab === 'WATCHLIST' && '⭐ Watchlist'}
-                {activeTab === 'ACADEMY' && '🎓 Quant Academy'}
-              </span>
+          {/* 1. Master Top Header Bar (MBG title aligned with Launch Chart & Lot Calculator) */}
+          <header className="telemetry-panel" style={{
+            marginBottom: '12px',
+            padding: '8px 16px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '10px'
+          }}>
+            {/* Left: Active Module Breadcrumb */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 6px var(--accent-green)' }} />
+              <div style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                <span style={{ color: 'var(--accent-green)' }}>MBG ASTRA</span>
+                <span style={{ margin: '0 6px', opacity: 0.4 }}>//</span>
+                <span style={{ color: 'var(--text-primary)' }}>{getTabLabel(activeTab)}</span>
+              </div>
             </div>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-              {data?.macro_telemetry?.impact_assessment?.overall_sentiment
-                ? <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>🟢 {data.macro_telemetry.impact_assessment.overall_sentiment}</span>
-                : <span>⏳ Awaiting data...</span>
-              }
+
+            {/* Right: Quick Launch Tools + Status */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => handleOpenChart('AMMN', 'IDX')}
+                className="telemetry-btn"
+                style={{
+                  background: 'var(--bg-panel-subtle)',
+                  borderColor: 'var(--border-color)',
+                  color: 'var(--text-primary)',
+                  padding: '5px 12px',
+                  fontSize: '11px',
+                  fontWeight: '700',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px'
+                }}
+                title="Buka TradingView Pro Chart"
+              >
+                <span>📈</span>
+                <span>LAUNCH CHART</span>
+              </button>
+
+              <button
+                onClick={() => handleOpenLotCalc()}
+                className="telemetry-btn"
+                style={{
+                  background: 'var(--accent-green)',
+                  color: '#ffffff',
+                  padding: '5px 12px',
+                  fontSize: '11px',
+                  fontWeight: '700',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  boxShadow: '0 2px 6px rgba(0, 208, 132, 0.25)'
+                }}
+                title="Kalkulator Ukuran Lot & Manajemen Risiko"
+              >
+                <span>💰</span>
+                <span>KALKULATOR LOT</span>
+              </button>
+
+              <div style={{ fontSize: '10px', padding: '4px 8px', borderRadius: '4px', background: 'var(--bg-panel-subtle)', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                {data?.last_updated ? ('SYNC: ' + new Date(data.last_updated).toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }) + ' WIB') : 'DATA LIVE 🟢'}
+              </div>
             </div>
           </header>
 
-          {/* 2. Bloomberg Live News Wire */}
-          <BloombergNewsWire macro={data?.macro_telemetry} onSelectTicker={handleOpenChart} />
-
-          {/* 3. Executive Hero Bento Cards */}
-          {data && (() => {
-            const topIdx = (data?.daily_trade_plans || []).filter(p => p.market === 'IDX')[0];
-            const topCrypto = (data?.crypto_spot_10 || [])[0];
-            return (
-              <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: '10px', marginBottom: '12px' }}>
-
-                {/* Card 1: Macro Regime */}
-                <div className='telemetry-panel' style={{ padding: '10px 14px', borderLeft: '3px solid var(--accent-green)', background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(0,208,132,0.04) 100%)' }}>
-                  <div className='metric-label'>🌍 IHSG & Global Macro Regime</div>
-                  <div style={{ fontSize: '13px', fontWeight: '700', marginTop: '4px', color: 'var(--accent-green)' }}>
-                    {data?.macro_telemetry?.impact_assessment?.overall_sentiment || 'AWAITING DATA'}
-                  </div>
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px', lineHeight: 1.4 }}>
-                    {data?.macro_telemetry?.impact_assessment?.narrative || data?.macro_telemetry?.live_news?.[0]?.title || 'Menunggu data macro...'}
-                  </div>
-                </div>
-
-                {/* Card 2: IDX Alpha */}
-                <div className='telemetry-panel' style={{ padding: '10px 14px', borderLeft: '3px solid var(--accent-blue)' }}>
-                  <div className='metric-label'>🔥 #1 IDX Alpha Watchlist</div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '4px' }}>
-                    <span style={{ fontSize: '15px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-                      {topIdx?.clean_ticker || 'MEDC'}
-                    </span>
-                    <span className='badge badge-bull'>{topIdx?.technical_signal || 'BREAKOUT'}</span>
-                  </div>
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
-                    Entry: Rp {topIdx?.entry_price?.toLocaleString()} · TP: Rp {topIdx?.target_1?.toLocaleString()} · R:R {topIdx?.risk_reward_ratio || 2.2}
-                  </div>
-                </div>
-
-                {/* Card 3: Crypto Alpha */}
-                <div className='telemetry-panel' style={{ padding: '10px 14px', borderLeft: '3px solid var(--accent-orange)' }}>
-                  <div className='metric-label'>⚡ #1 Crypto Spot Alpha</div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '4px' }}>
-                    <span style={{ fontSize: '15px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-                      {topCrypto?.pair || 'SOL/USDT'}
-                    </span>
-                    <span className='badge badge-alert'>R:R 1:{topCrypto?.risk_reward_ratio || 2.0}</span>
-                  </div>
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
-                    Entry: ${topCrypto?.current_price || topCrypto?.entry_high} · TP: ${topCrypto?.take_profit_1} · SL: ${topCrypto?.stop_loss}
-                  </div>
-                </div>
-
-              </div>
-            );
-          })()}
-
-          {/* 4. Master Quant Leaderboard */}
+          {/* 2. Main Tab Body */}
           {loading ? (
-            <div className='telemetry-panel' style={{ padding: '30px', textAlign: 'center', color: 'var(--text-primary)' }}>
-              Initializing Bloomberg Quant Terminal Telemetry...
+            <div className="telemetry-panel" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-primary)' }}>
+              Memuat Telemetri MBG Astra Quant Terminal...
             </div>
+          ) : activeTab === 'HOME' ? (
+            /* HOME COMMAND CENTER (Wire + Bento + Foreign Flow + Konglo + Top 5 Alpha) */
+            <HomeDashboardTab
+              data={data}
+              onSelectTicker={handleOpenChart}
+              onOpenLotCalc={handleOpenLotCalc}
+              onNavigateTab={setActiveTab}
+            />
           ) : (
+            /* DEEP-DIVE SCREENER / TESTING / RESEARCH TABS */
             <main>
               <MasterQuantLeaderboard
                 activeTab={activeTab}
@@ -252,7 +253,7 @@ export default function App() {
             </main>
           )}
 
-          {/* 5. TradingView Chart Modal */}
+          {/* 3. TradingView Chart Modal */}
           {chartModal.isOpen && (
             <TradingViewModal
               initialSymbol={chartModal.symbol}
@@ -261,7 +262,7 @@ export default function App() {
             />
           )}
 
-          {/* Lot Calculator Modal */}
+          {/* 4. Lot Calculator Modal */}
           <LotCalculatorModal
             isOpen={lotCalcModal.isOpen}
             onClose={handleCloseLotCalc}
@@ -269,12 +270,25 @@ export default function App() {
             prefillSL={lotCalcModal.sl}
           />
 
-          {/* 6. Disclaimer Footer */}
-          <footer style={{ marginTop: '20px', borderTop: 'var(--border-muted)', paddingTop: '10px', fontSize: '10px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+          {/* 5. Institutional Disclaimer Footer */}
+          <footer style={{
+            marginTop: '24px',
+            borderTop: 'var(--border-muted)',
+            paddingTop: '10px',
+            paddingBottom: '16px',
+            fontSize: '10px',
+            color: 'var(--text-muted)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '8px'
+          }}>
             <div>
-              <strong>DISCLAIMER</strong>: Algorithmic screening & quantitative intelligence only. Bukan ajakan investasi.
+              <strong>DISCLAIMER</strong>: Algorithmic screening &amp; quantitative intelligence only. Bukan ajakan atau nasihat investasi.
             </div>
-            <div>MBG BLOOMBERG QUANT TERMINAL · ZERO RUNTIME COST</div>
+            <div>
+              MBG ASTRA QUANT TERMINAL · ZERO RUNTIME COST
+            </div>
           </footer>
 
         </div>{/* /main-content */}

@@ -64,8 +64,8 @@ const mockBacktestLab = {
   }
 };
 
-const BacktestPerformanceLab = ({ data = {} }) => {
-  const labData = data.backtest_lab || mockBacktestLab;
+const BacktestPerformanceLab = ({ backtestLab, data = {} }) => {
+  const labData = backtestLab || data.backtest_lab || mockBacktestLab;
   const strategies = labData.strategies || [];
   
   const [selectedStrategyId, setSelectedStrategyId] = useState('ALL');

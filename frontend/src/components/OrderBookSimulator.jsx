@@ -12,14 +12,14 @@ const OrderBookSimulator = ({ ticker = 'BBCA', currentPrice = 9000, isOpen = fal
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') onClose?.();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Determine market type and accurate tick size
-  const isCrypto = ticker.includes('USDT') || ticker.includes('USD') || ticker.includes('/') || (currentPrice > 0 && currentPrice < 100);
+  // Determine market type and accurate tick size (Do not treat IDX stocks under Rp 100 as crypto)
+  const isCrypto = ticker.includes('USDT') || ticker.includes('USD') || ticker.includes('/');
 
   const tickSize = useMemo(() => {
     const p = Number(currentPrice) || 1000;
@@ -112,7 +112,7 @@ const OrderBookSimulator = ({ ticker = 'BBCA', currentPrice = 9000, isOpen = fal
 
   return (
     <div 
-      onClick={onClose}
+      onClick={() => onClose?.()}
       style={{
         position: 'fixed',
         inset: 0,

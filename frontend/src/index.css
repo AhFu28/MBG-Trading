@@ -209,6 +209,15 @@ body {
   }
 }
 
+@media (max-width: 960px) {
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .side-by-side-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 
 /* =====================================================
    SIDEBAR LAYOUT — SoSoValue Style
@@ -220,25 +229,32 @@ body {
   background: var(--bg-canvas);
 }
 
-/* Fixed left sidebar */
+/* Fixed left sidebar (Zero-Scroll Optimized) */
 .sidebar {
   position: fixed;
   top: 0;
   left: 0;
-  width: 220px;
+  width: 230px;
   height: 100vh;
   background: var(--bg-panel);
   border-right: var(--border-hairline);
   display: flex;
   flex-direction: column;
   z-index: 100;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Hide scrollbar Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
   box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none; /* Hide scrollbar Chrome/Safari */
 }
 
 /* Logo / Brand section */
 .sidebar-logo {
-  padding: 16px 16px 12px;
+  padding: 14px 14px 10px;
   border-bottom: var(--border-hairline);
   display: flex;
   align-items: center;
@@ -265,7 +281,7 @@ body {
 }
 
 .sidebar-logo-sub {
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.06em;
   color: var(--text-muted);
@@ -274,7 +290,7 @@ body {
 
 /* User profile section */
 .sidebar-user {
-  padding: 12px 16px;
+  padding: 8px 14px;
   border-bottom: var(--border-hairline);
   display: flex;
   align-items: center;
@@ -283,18 +299,18 @@ body {
 }
 
 .sidebar-avatar {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: var(--accent-blue);
+  background: linear-gradient(135deg, var(--accent-green) 0%, #008a57 100%);
   color: #fff;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 2px solid rgba(59, 130, 246, 0.4);
+  border: 1px solid rgba(0, 208, 132, 0.4);
 }
 
 .sidebar-user-info {
@@ -303,7 +319,7 @@ body {
 }
 
 .sidebar-user-name {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--text-primary);
   white-space: nowrap;
@@ -312,7 +328,7 @@ body {
 }
 
 .sidebar-user-role {
-  font-size: 9px;
+  font-size: 8px;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -322,32 +338,36 @@ body {
 .sidebar-nav {
   flex: 1;
   overflow-y: auto;
-  padding: 8px 0;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-color) transparent;
+  overflow-x: hidden;
+  padding: 4px 0;
+  scrollbar-width: none;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebar-nav-section-label {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--text-muted);
-  padding: 10px 16px 4px;
+  padding: 6px 14px 2px;
 }
 
 .sidebar-nav-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 16px;
+  gap: 8px;
+  padding: 6px 14px;
   cursor: pointer;
   border: none;
   background: transparent;
   width: 100%;
   text-align: left;
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--text-muted);
   transition: all 0.12s ease;
@@ -417,7 +437,7 @@ body {
 
 /* Main content area shifts right of sidebar */
 .main-content {
-  margin-left: 220px;
+  margin-left: 230px;
   flex: 1;
   min-height: 100vh;
   padding: 12px 16px;
@@ -435,6 +455,7 @@ body {
   }
   .main-content {
     margin-left: 0;
+    padding-top: 52px; /* Clear fixed hamburger button */
   }
   .sidebar-hamburger {
     display: flex;

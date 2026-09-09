@@ -1,10 +1,178 @@
 import logging
+import re
 import urllib.request
 import xml.etree.ElementTree as ET
-import yfinance as yf
 from datetime import datetime
+from typing import List, Dict, Any, Tuple
+import yfinance as yf
 
 logger = logging.getLogger("NewsMacroFetcher")
+
+class NewsProcessor:
+    """Smart Heuristic Micro-NLP & Rule-based Takeaway Generator for Indonesian Equities."""
+
+    KNOWN_TICKERS = {
+        "BBCA", "BBRI", "BMRI", "BBNI", "ANTM", "BRMS", "MDKA", "MEDC",
+        "ENRG", "ADRO", "ADMR", "BREN", "CUAN", "TPIA", "PTRO", "BYAN",
+        "ITMG", "PTBA", "INDF", "ICBP", "ASII", "UNTR", "GOTO", "TLKM",
+        "GIAA", "AMMN", "TOWR", "SMGR", "INDY", "BELI", "BUMI", "VKTR",
+        "CPIN", "ACES", "SMRA", "BSDE", "CTRA", "KLBF"
+    }
+
+    ACTION_MAP = {
+        "BULLISH": [
+            "menguat", "naik", "melonjak", "surges", "rally", "rebound", "net buy",
+            "tembus", "melesat", "ara", "terangkat", "dibuka menguat", "cuan", "diincar",
+            "akselerasi", "akumulasi", "laba", "dividen"
+        ],
+        "BEARISH": [
+            "melemah", "turun", "anjlok", "terkoreksi", "tertekan", "net sell", "jebol",
+            "tergelincir", "ambles", "rugi", "terpuruk", "gagal menembus", "distribusi", "drop"
+        ]
+    }
+
+    @classmethod
+    def extract_tickers(cls, text: str) -> List[str]:
+        words = re.findall(r"\b[A-Z]{4}\b", text.upper())
+        found = [w for w in words if w in cls.KNOWN_TICKERS]
+        upper_t = text.upper()
+        if ("HAJI ISAM" in upper_t or "BAYAN" in upper_t) and "BYAN" not in found:
+            found.append("BYAN")
+        if "ANTAM" in upper_t and "ANTM" not in found:
+            found.append("ANTM")
+        if "MEDCO" in upper_t and "MEDC" not in found:
+            found.append("MEDC")
+        if ("BANK BRI" in upper_t or "BRI " in upper_t) and "BBRI" not in found:
+            found.append("BBRI")
+        if ("BANK MANDIRI" in upper_t or "MANDIRI " in upper_t) and "BMRI" not in found:
+            found.append("BMRI")
+        if ("BANK BCA" in upper_t or "BCA " in upper_t) and "BBCA" not in found:
+            found.append("BBCA")
+        return list(dict.fromkeys(found))
+
+    @classmethod
+    def infer_sentiment(cls, text: str) -> Tuple[str, float]:
+        text_lower = text.lower()
+        bull_score = sum(1 for w in cls.ACTION_MAP["BULLISH"] if w in text_lower)
+        bear_score = sum(1 for w in cls.ACTION_MAP["BEARISH"] if w in text_lower)
+
+        if bull_score > bear_score:
+            return "BULLISH", round(min(1.0, 0.35 * bull_score), 2)
+        elif bear_score > bull_score:
+            return "BEARISH", round(max(-1.0, -0.35 * bear_score), 2)
+        return "NEUTRAL", 0.0
+
+    @classmethod
+    def extract_metrics(cls, text: str) -> List[str]:
+        metrics = []
+        pcts = re.findall(r"[-+]?\d+[.,]?\d*%", text)
+        if pcts:
+            metrics.append(f"Perubahan: {', '.join(pcts)}")
+        levels = re.findall(r"\b(?:level|posisi|ke)\s+([\d.,]+)", text, re.IGNORECASE)
+        if levels:
+            metrics.append(f"Level kunci: {levels[0]}")
+        vals = re.findall(r"(?:Rp|US\$|\$)\s*[\d.,]+\s*(?:Miliar|Triliun|Juta)?", text, re.IGNORECASE)
+        if vals:
+            metrics.append(f"Nilai: {vals[0]}")
+        return metrics
+
+    @classmethod
+    def generate_key_takeaways(cls, title: str, source: str, tag: str) -> Tuple[str, List[str], str, float, List[str], List[str]]:
+        tickers = cls.extract_tickers(title)
+        sentiment, sentiment_score = cls.infer_sentiment(title)
+        metrics = cls.extract_metrics(title)
+
+        # 1. Poin Inti Peristiwa & Metrik
+        if sentiment == "BULLISH":
+            t1 = f"Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait."
+        elif sentiment == "BEARISH":
+            t1 = f"Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait."
+        else:
+            t1 = f"Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan."
+
+        if metrics:
+            t1 += f" Terpantau {'; '.join(metrics)}."
+
+        # 2. Poin Dampak Emiten & Sektor
+        if tickers:
+            t2 = f"Fokus pasar tertuju pada pergerakan saham ${', $'.join(tickers)} dengan volatilitas aktif."
+        elif tag == "METALS":
+            t2 = f"Dinamika harga komoditas logam mulia menjadi katalis utama rotasi sektor tambang BEI."
+        elif tag == "ENERGY":
+            t2 = f"Fluktuasi harga minyak mentah global memengaruhi ekspektasi marjin operasional sektor energi."
+        elif tag == "BANKING":
+            t2 = f"Saham perbankan berkapitalisasi besar menjadi penopang stabilitas pergerakan indeks IHSG."
+        elif tag == "FOREIGN_FLOW":
+            t2 = f"Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite)."
+        else:
+            t2 = f"IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid."
+
+        # 3. Poin Panduan & Manajemen Risiko Trader
+        if sentiment == "BULLISH":
+            t3 = f"Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+        elif sentiment == "BEARISH":
+            t3 = f"Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+        else:
+            t3 = f"Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+
+        key_takeaways = [t1, t2, t3]
+        ticker_str = f" pada saham {', '.join(tickers)}" if tickers else ""
+        summary = f"Warta dari {source}: Berita mengindikasikan sentimen {sentiment.lower()}{ticker_str} dengan pengaruh terhadap sektor {tag}."
+
+        return summary, key_takeaways, sentiment, sentiment_score, tickers, metrics
+
+    @classmethod
+    def build_daily_snips(cls, macro: dict, live_news: list) -> dict:
+        gold_c = float(macro.get("gold_change_pct", 0) or 0)
+        oil_c = float(macro.get("brent_oil_change_pct", 0) or 0)
+        dxy_val = float(macro.get("dxy_index", 104.0) or 104.0)
+        dxy_c = float(macro.get("dxy_change_pct", 0) or 0)
+
+        if gold_c > 0.5 and oil_c > 0.8:
+            stance = "SELECTIVE_BULLISH"
+            badge = "🟢 ROTASI KOMODITAS & ENERGI"
+            narrative = "Penguatan serentak komoditas emas dan minyak dunia menjadi motor defensif utama bagi sektor tambang dan migas BEI."
+        elif dxy_val > 105.0:
+            stance = "DEFENSIVE"
+            badge = "🟡 TEKANAN DOLLAR AS (DXY)"
+            narrative = "Penguatan indeks DXY memicu volatilitas nilai tukar dan potensi arus keluar asing jangka pendek."
+        elif oil_c > 2.0:
+            stance = "MIXED_VOLATILE"
+            badge = "⚡ VOLATILITAS ENERGI TINGGI"
+            narrative = "Lonjakan harga minyak mentah menguntungkan emiten hulu migas, namun menekan margin sektor transportasi."
+        else:
+            stance = "CONSOLIDATIVE"
+            badge = "⚪ KONSOLIDASI PASAR SEHAT"
+            narrative = "IHSG bergerak variatif dengan kecenderungan konsolidasi menjelang rilis data inflasi dan suku bunga acuan."
+
+        top_catalysts = []
+        for idx, item in enumerate(live_news[:3], 1):
+            top_catalysts.append({
+                "rank": idx,
+                "topic": item.get("tag", "MARKET"),
+                "highlight": item.get("title", ""),
+                "tickers": item.get("related_tickers", [])
+            })
+
+        return {
+            "edition": "MORNING_BRIEF",
+            "generated_at": datetime.now().isoformat(),
+            "market_verdict": {
+                "stance": stance,
+                "badge": badge,
+                "confidence": "HIGH",
+                "narrative": narrative
+            },
+            "macro_pulse": {
+                "gold": {"price": macro.get("gold_price", 2750.0), "change_pct": gold_c, "status": "RALLY" if gold_c > 0 else "PULLBACK"},
+                "brent": {"price": macro.get("brent_oil_price", 74.2), "change_pct": oil_c, "status": "SURGE" if oil_c > 0 else "COOLING"},
+                "dxy": {"val": dxy_val, "change_pct": dxy_c, "status": "FIRM" if dxy_val >= 104.5 else "SOFT"},
+                "us10y": {"yield": macro.get("us10y_yield", 4.28), "status": "STABLE"}
+            },
+            "top_catalysts": top_catalysts,
+            "actionable_guidance": "Fokus pada saham berorientasi ekspor atau komoditas. Terapkan stop loss disiplin 3-4% untuk membatasi risiko."
+        }
+
 
 class NewsMacroFetcher:
     def __init__(self):
@@ -91,6 +259,8 @@ class NewsMacroFetcher:
                     elif any(k in upper_t for k in ["FED", "SUKU BUNGA", "INFLASI", "TRUMP", "DOLLAR", "DXY"]):
                         tag = "MACRO"
 
+                    summary, key_takeaways, sentiment, sentiment_score, tickers, metrics = NewsProcessor.generate_key_takeaways(title, source, tag)
+
                     articles.append({
                         "id": f"news-{len(articles)+1}",
                         "title": title,
@@ -98,41 +268,56 @@ class NewsMacroFetcher:
                         "link": link,
                         "pub_date": pub_date,
                         "tag": tag,
-                        "summary": f"Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari {source}."
+                        "sentiment": sentiment,
+                        "sentiment_score": sentiment_score,
+                        "related_tickers": tickers,
+                        "metrics": metrics,
+                        "reading_time_sec": 45,
+                        "summary": summary,
+                        "key_takeaways": key_takeaways
                     })
-            logger.info(f"Successfully fetched {len(articles)} live financial news articles via RSS.")
+            logger.info(f"Successfully fetched {len(articles)} live financial news articles via RSS with structured takeaways.")
         except Exception as e:
             logger.warning(f"Failed to fetch live RSS news: {e}. Using calibrated fallback news items.")
-            # High-quality fallback articles
-            articles = [
+            # High-quality fallback articles with rich takeaways
+            fallback_seeds = [
                 {
-                    "id": "news-1",
-                    "title": "IHSG Berpeluang Menguat Hari Ini, Saham Komoditas dan Tambang Jadi Sorotan",
+                    "title": "IHSG Berpeluang Menguat Hari Ini, Saham Komoditas ANTM dan BRMS Jadi Sorotan",
                     "source": "InvestorTrust",
                     "link": "https://www.investortrust.id",
-                    "pub_date": datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT"),
-                    "tag": "IHSG",
-                    "summary": "Penguatan harga emas dunia dan rebound minyak mentah menopang optimisme emiten energi dan logam di BEI."
+                    "tag": "METALS"
                 },
                 {
-                    "id": "news-2",
-                    "title": "Arus Dana Asing Mengalir Deras ke Perbankan BUMN dan Emiten Konglomerasi",
+                    "title": "Arus Dana Asing Mengalir Deras ke Perbankan BUMN BBRI dan BMRI",
                     "source": "Bloomberg Technoz",
                     "link": "https://www.bloombergtechnoz.com",
-                    "pub_date": datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT"),
-                    "tag": "FOREIGN_FLOW",
-                    "summary": "Investor institusi asing mencatatkan akumulasi beli bersih signifikan pada saham berkapitalisasi besar."
+                    "tag": "FOREIGN_FLOW"
                 },
                 {
-                    "id": "news-3",
-                    "title": "The Fed Pertahankan Suku Bunga Acuan, Pasar Emerging Market Cermati Indeks DXY",
+                    "title": "Minyak Brent Stabil di $74, Saham MEDC Berpeluang Lanjutkan Rebound",
                     "source": "Bisnis.com",
                     "link": "https://market.bisnis.com",
-                    "pub_date": datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT"),
-                    "tag": "MACRO",
-                    "summary": "Stabilitas yield US Treasury 10 Tahun meredam volatilitas nilai tukar Rupiah di pasar spot."
+                    "tag": "ENERGY"
                 }
             ]
+            articles = []
+            for idx, s in enumerate(fallback_seeds, 1):
+                summary, key_takeaways, sentiment, sentiment_score, tickers, metrics = NewsProcessor.generate_key_takeaways(s["title"], s["source"], s["tag"])
+                articles.append({
+                    "id": f"news-{idx}",
+                    "title": s["title"],
+                    "source": s["source"],
+                    "link": s["link"],
+                    "pub_date": datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT"),
+                    "tag": s["tag"],
+                    "sentiment": sentiment,
+                    "sentiment_score": sentiment_score,
+                    "related_tickers": tickers,
+                    "metrics": metrics,
+                    "reading_time_sec": 40,
+                    "summary": summary,
+                    "key_takeaways": key_takeaways
+                })
 
         return articles
 
@@ -212,6 +397,7 @@ class NewsMacroFetcher:
         ]
 
         live_news = self.fetch_live_financial_news()
+        daily_snips = NewsProcessor.build_daily_snips(macro, live_news)
 
         return {
             "id": "GLOBAL_LATEST",
@@ -230,6 +416,7 @@ class NewsMacroFetcher:
             "us10y_yield": macro.get("us10y_yield"),
             "idx_affected_sectors": affected_sectors,
             "idx_affected_stocks": affected_stocks,
+            "daily_snips": daily_snips,
             "live_news": live_news,
             "full_narrative": (
                 f"Global telemetry report: Gold at ${macro.get('gold_price')} ({macro.get('gold_change_pct')}%), "

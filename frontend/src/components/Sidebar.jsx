@@ -1,36 +1,41 @@
-import React from 'react';
+﻿import React, { useState, useEffect } from 'react';
 
 const NAV_ITEMS = [
-  { id: 'STOCK',               icon: '📈', label: 'Saham IDX',       section: 'EXECUTION DESK' },
-  { id: 'CRYPTO',              icon: '⚡', label: 'Crypto Spot',      section: 'EXECUTION DESK' },
-  { id: 'WATCHLIST',           icon: '⭐', label: 'Watchlist',        section: 'EXECUTION DESK' },
-  { id: 'CURRENT_TEST',        icon: '🧪', label: 'Paper Trading',    section: 'QUANT LAB' },
-  { id: 'BACKTEST_LAB',        icon: '📊', label: 'Backtest Lab',     section: 'QUANT LAB' },
-  { id: 'GLOBAL_MARKETS',      icon: '🌍', label: 'Pasar Global',     section: 'MACRO INTEL' },
-  { id: 'ECONOMIC_CALENDAR',   icon: '📅', label: 'Kalender Makro',   section: 'MACRO INTEL' },
-  { id: 'PEARSON_CORRELATION', icon: '🔗', label: 'Korelasi Pearson', section: 'MACRO INTEL' },
-  { id: 'NEWS',                icon: '📰', label: 'Live News',        section: 'MACRO INTEL' },
-  { id: 'ACADEMY',             icon: '🎓', label: 'Quant Academy',    section: 'RESEARCH' },
+  { id: 'HOME',                icon: '🏠', label: 'Home',            section: 'COMMAND CENTER' },
+  { id: 'STOCK',               icon: '📈', label: 'Saham IDX',       section: 'MARKETS' },
+  { id: 'CRYPTO',              icon: '⚡', label: 'Crypto Spot',      section: 'MARKETS' },
+  { id: 'WATCHLIST',           icon: '⭐', label: 'Watchlist',        section: 'MARKETS' },
+  { id: 'GLOBAL_MARKETS',      icon: '🌍', label: 'Pasar Global',     section: 'MARKETS' },
+  { id: 'TESTING',             icon: '🧪', label: 'Testing Lab',     section: 'QUANT & RESEARCH' },
+  { id: 'ECONOMIC_CALENDAR',   icon: '📅', label: 'Kalender Makro',   section: 'QUANT & RESEARCH' },
+  { id: 'PEARSON_CORRELATION', icon: '🔗', label: 'Korelasi Pearson', section: 'QUANT & RESEARCH' },
+  { id: 'NEWS',                icon: '📰', label: 'Live News',        section: 'QUANT & RESEARCH' },
+  { id: 'ACADEMY',             icon: '🎓', label: 'Quant Academy',    section: 'QUANT & RESEARCH' },
 ];
 
-const SECTIONS = ['EXECUTION DESK', 'QUANT LAB', 'MACRO INTEL', 'RESEARCH'];
+const SECTIONS = ['COMMAND CENTER', 'MARKETS', 'QUANT & RESEARCH'];
 
 export default function Sidebar({
   activeTab,
   setActiveTab,
   theme,
   toggleTheme,
-  onOpenChart,
-  onOpenLotCalc,
   onRefresh,
   isMobileOpen,
   setMobileOpen,
-  currentTime,
   lastUpdate,
   stockCount = 0,
   cryptoCount = 0,
   newsCount = 0,
 }) {
+  // Self-contained WIB clock to prevent parent re-renders
+  const [clock, setClock] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setClock(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const getBadge = (id) => {
     if (id === 'STOCK') return stockCount > 0 ? stockCount : null;
     if (id === 'CRYPTO') return cryptoCount > 0 ? cryptoCount : null;
@@ -38,14 +43,22 @@ export default function Sidebar({
     return null;
   };
 
+  const handleLogout = () => {
+    if (window.confirm('Logout dari sesi MBG Trading Terminal? Data watchlist & paper trading Anda tetap tersimpan aman.')) {
+      localStorage.removeItem('mbg_cockpit_auth');
+      localStorage.removeItem('mbg_cockpit_auth_time');
+      window.location.reload();
+    }
+  };
+
   return (
-    <aside className={`sidebar ${isMobileOpen ? 'open' : ''}`}>
+    <aside className={sidebar }>
 
       {/* === 1. LOGO / BRAND === */}
       <div className="sidebar-logo">
         <div className="sidebar-logo-dot" />
         <div>
-          <div className="sidebar-logo-text">MBG Astra</div>
+          <div className="sidebar-logo-text">MBG ASTRA</div>
           <div className="sidebar-logo-sub">Quant Terminal · v2</div>
         </div>
       </div>
@@ -60,20 +73,24 @@ export default function Sidebar({
         <div style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 5px var(--accent-green)', flexShrink: 0 }} />
       </div>
 
-      {/* === 3. NAV ITEMS === */}
+      {/* === 3. NAV ITEMS (Compact Zero-Scroll) === */}
       <nav className="sidebar-nav">
         {SECTIONS.map(section => {
           const items = NAV_ITEMS.filter(n => n.section === section);
           return (
-            <div key={section}>
+            <div key={section} style={{ marginBottom: '4px' }}>
               <div className="sidebar-nav-section-label">{section}</div>
               {items.map(item => {
                 const badge = getBadge(item.id);
+                const isActive = activeTab === item.id;
                 return (
                   <button
                     key={item.id}
-                    className={`sidebar-nav-item ${activeTab === item.id ? 'active' : ''}`}
-                    onClick={() => { setActiveTab(item.id); if (isMobileOpen) setMobileOpen(false); }}
+                    className={sidebar-nav-item }
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      if (isMobileOpen) setMobileOpen(false);
+                    }}
                     title={item.label}
                   >
                     <span className="sidebar-nav-icon">{item.icon}</span>
@@ -82,59 +99,52 @@ export default function Sidebar({
                   </button>
                 );
               })}
-              {section !== 'RESEARCH' && <div className="sidebar-divider" />}
+              {section !== 'QUANT & RESEARCH' && <div className="sidebar-divider" />}
             </div>
           );
         })}
       </nav>
 
-      {/* === 4. QUICK ACTION DOCK === */}
-      <div style={{ padding: '8px 0', borderTop: 'var(--border-hairline)', borderBottom: 'var(--border-hairline)', flexShrink: 0 }}>
-        <button className="sidebar-nav-item" onClick={() => onOpenChart && onOpenChart('MEDC', 'IDX')} title="Launch TradingView Chart">
-          <span className="sidebar-nav-icon">📉</span>
-          <span className="sidebar-nav-label">Launch Chart</span>
-        </button>
-        <button className="sidebar-nav-item" onClick={() => onOpenLotCalc && onOpenLotCalc()} title="Kalkulator Lot">
-          <span className="sidebar-nav-icon">💰</span>
-          <span className="sidebar-nav-label">Kalkulator Lot</span>
-        </button>
-      </div>
-
-      {/* === 5. SYSTEM FOOTER === */}
+      {/* === 4. SYSTEM FOOTER === */}
       <div className="sidebar-footer">
-        {/* WIB Clock + Last Sync */}
+        {/* WIB Clock + Sync Indicator */}
         <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>🕒 {currentTime ? currentTime.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour12: false }) : '--:--:--'} WIB</span>
-          {lastUpdate && <span style={{ color: 'var(--accent-green)' }}>🟢</span>}
+          <span>🕒 {clock.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour12: false })} WIB</span>
+          <span style={{ color: 'var(--accent-green)', fontWeight: '700' }}>
+            {lastUpdate ? '🟢 SYNCED' : '🟡 LOCAL'}
+          </span>
         </div>
 
-        {/* Theme + Refresh */}
-        <div style={{ display: 'flex', gap: '6px' }}>
-          <button className="sidebar-nav-item" onClick={toggleTheme} style={{ flex: 1, justifyContent: 'center', padding: '6px 8px', fontSize: '11px' }} title="Toggle Theme">
+        {/* Theme + Sync Buttons */}
+        <div style={{ display: 'flex', gap: '6px', marginTop: '6px' }}>
+          <button className="telemetry-btn" onClick={toggleTheme} style={{ flex: 1, padding: '4px 6px', fontSize: '10px' }} title="Toggle Theme">
             {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
           </button>
-          <button className="sidebar-nav-item" onClick={onRefresh} style={{ flex: 1, justifyContent: 'center', padding: '6px 8px', fontSize: '11px' }} title="Refresh Data">
+          <button className="telemetry-btn" onClick={onRefresh} style={{ flex: 1, padding: '4px 6px', fontSize: '10px' }} title="Refresh Data">
             🔄 Sync
           </button>
         </div>
 
         <div className="sidebar-divider" />
 
-        {/* Settings + Logout */}
-        <button className="sidebar-nav-item" onClick={() => alert('Settings — coming soon')} title="Settings">
-          <span className="sidebar-nav-icon">⚙️</span>
-          <span className="sidebar-nav-label">Settings</span>
-        </button>
-        <button
-          className="sidebar-nav-item"
-          onClick={() => { if (window.confirm('Logout dari MBG Trading Terminal?')) { localStorage.clear(); window.location.reload(); } }}
-          style={{ color: 'var(--accent-rust)' }}
-          title="Logout"
-        >
-          <span className="sidebar-nav-icon">🚪</span>
-          <span className="sidebar-nav-label">Logout</span>
-        </button>
+        {/* Settings + Safe Logout */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <button
+            onClick={() => alert('MBG Astra Quantitative Desk\nVersion: 2.4.0 (Zero Runtime Cost)\nTimesFM + SMC + IIFS Active')}
+            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}
+          >
+            <span>⚙️ Settings</span>
+          </button>
+          <button
+            onClick={handleLogout}
+            style={{ background: 'none', border: 'none', color: 'var(--accent-rust)', cursor: 'pointer', fontSize: '11px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '4px' }}
+            title="Keluar dari sesi ini"
+          >
+            <span>🚪 Logout</span>
+          </button>
+        </div>
       </div>
+
     </aside>
   );
 }

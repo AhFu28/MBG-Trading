@@ -8,6 +8,7 @@ import PearsonCorrelationWidget from './PearsonCorrelationWidget.jsx';
 import GlobalMarketsTab from './GlobalMarketsTab.jsx';
 import OrderBookSimulator from './OrderBookSimulator.jsx';
 import QuantAcademyTab from './QuantAcademyTab.jsx';
+import TestingHubTab from './TestingHubTab.jsx';
 
 export default function MasterQuantLeaderboard({
   activeTab = 'STOCK',          // controlled from App.jsx (via Sidebar)
@@ -37,8 +38,11 @@ export default function MasterQuantLeaderboard({
   const [sortField, setSortField] = useState('rank');
   const [sortDirection, setSortDirection] = useState('asc');
 
-  // Reset expanded drawer when tab changes from sidebar
-  useEffect(() => { setExpandedId(null); }, [activeTab]);
+  // Reset expanded drawer and search term when tab changes from sidebar
+  useEffect(() => { 
+    setExpandedId(null); 
+    setSearchTerm('');
+  }, [activeTab]);
 
 
   // Conglomerate lookup map
@@ -322,7 +326,18 @@ export default function MasterQuantLeaderboard({
       )}
 
       {/* VIEW ACCORDING TO ACTIVE MAIN TAB */}
-      {/* VIEW ACCORDING TO ACTIVE MAIN TAB */}
+      {activeMainTab === 'TESTING' && (
+        <div style={{ padding: '0' }}>
+          <TestingHubTab
+            paperPortfolio={paperPortfolio}
+            currentPrices={Object.fromEntries(allItems.map(i => [i.ticker, i.price]))}
+            backtestLab={backtestLab}
+            strategyRankings={strategyRankings}
+            onSelectTicker={onSelectTicker}
+          />
+        </div>
+      )}
+
       {activeMainTab === 'CURRENT_TEST' && (
         <div style={{ padding: '12px' }}>
           <VirtualForwardPortfolio
