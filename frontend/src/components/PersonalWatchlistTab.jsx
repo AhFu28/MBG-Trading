@@ -39,7 +39,13 @@ export default function PersonalWatchlistTab({ allStocks = [], onSelectTicker })
   };
 
   const watchlistItems = watchlist.map(ticker => {
-    const found = allStocks.find(s => s.ticker === ticker || s.pair === ticker || s.clean_ticker === ticker);
+    const cleanTicker = ticker.replace('/', '').toUpperCase();
+    const found = allStocks.find(s => {
+      const sTicker = (s.ticker || '').replace('/', '').toUpperCase();
+      const sPair = (s.pair || '').replace('/', '').toUpperCase();
+      const sClean = (s.clean_ticker || '').replace('/', '').toUpperCase();
+      return sTicker === cleanTicker || sPair === cleanTicker || sClean === cleanTicker;
+    });
     if (found) {
       return {
         ticker,

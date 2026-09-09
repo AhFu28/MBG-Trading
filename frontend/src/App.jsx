@@ -189,7 +189,7 @@ export default function App() {
                 <span className='badge badge-alert'>R:R 1:{topCrypto?.risk_reward_ratio || 2.0}</span>
               </div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                Entry:  | TP1:  | SL: 
+                Entry: ${topCrypto?.current_price || topCrypto?.entry_high} | TP1: ${topCrypto?.take_profit_1} | SL: ${topCrypto?.stop_loss}
               </div>
             </div>
           </div>

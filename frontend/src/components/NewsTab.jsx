@@ -5,7 +5,7 @@ export default function NewsTab({ liveNews = [], macro = {} }) {
   const [newsSearch, setNewsSearch] = useState('');
 
   const items = Array.isArray(liveNews) ? liveNews : [];
-  const categories = ['ALL', 'IHSG / MARKET', 'COMMODITY', 'CORPORATE', 'MACRO'];
+  const categories = ['ALL', 'IHSG', 'METALS', 'ENERGY', 'BANKING', 'MACRO'];
 
   const filteredNews = items.filter(item => {
     const matchesSearch = !newsSearch || 
@@ -15,8 +15,8 @@ export default function NewsTab({ liveNews = [], macro = {} }) {
     
     if (!matchesSearch) return false;
     if (newsFilter === 'ALL') return true;
-    const catStr = ((item.category || '') + ' ' + (item.tag || '')).toUpperCase();
-    return catStr.includes(newsFilter.replace(' / MARKET', ''));
+    const tag = (item.tag || item.category || '').toUpperCase();
+    return tag.includes(newsFilter);
   });
 
   return (
@@ -135,7 +135,7 @@ export default function NewsTab({ liveNews = [], macro = {} }) {
                     {news.source || 'WIRE'}
                   </span>
                   <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                    {news.published_str || 'Baru saja'}
+                    {news.published_str || news.pub_date || 'Baru saja'}
                   </span>
                 </div>
 
@@ -179,9 +179,9 @@ export default function NewsTab({ liveNews = [], macro = {} }) {
                 <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                   TAG: <strong style={{ color: 'var(--accent-blue)' }}>{news.tag || 'MARKET'}</strong>
                 </span>
-                {news.url ? (
+                {(news.url || news.link) ? (
                   <a
-                    href={news.url}
+                    href={news.url || news.link}
                     target='_blank'
                     rel='noopener noreferrer'
                     className='telemetry-btn'

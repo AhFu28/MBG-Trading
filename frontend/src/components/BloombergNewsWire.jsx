@@ -49,7 +49,7 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
         <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: '4px' }}>
             <span style={{ color: '#8e8e93' }}>XAU/USD:</span>
-            <span style={{ fontWeight: '700' }}>\</span>
+            <span style={{ fontWeight: '700' }}>${macro.gold_price}</span>
             <span style={{ color: goldChange >= 0 ? '#34c759' : '#ff3b30' }}>
               ({goldChange >= 0 ? '+' + goldChange + '%' : goldChange + '%'})
             </span>
@@ -57,7 +57,7 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
 
           <div style={{ display: 'flex', gap: '4px' }}>
             <span style={{ color: '#8e8e93' }}>BRENT:</span>
-            <span style={{ fontWeight: '700' }}>\</span>
+            <span style={{ fontWeight: '700' }}>${macro.brent_oil_price}</span>
             <span style={{ color: oilChange >= 0 ? '#34c759' : '#ff3b30' }}>
               ({oilChange >= 0 ? '+' + oilChange + '%' : oilChange + '%'})
             </span>
@@ -120,7 +120,7 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
             </div>
 
             <h3 style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-primary)', margin: '2px 0 6px 0', minHeight: '20px' }}>
-              ⚡ {headlines[headlineIndex]}
+              ⚡ {typeof headlines[headlineIndex] === 'object' ? (headlines[headlineIndex]?.title || headlines[headlineIndex]?.headline) : headlines[headlineIndex]}
             </h3>
 
             <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 8px 0', lineHeight: 1.4 }}>

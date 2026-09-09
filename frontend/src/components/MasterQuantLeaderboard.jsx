@@ -13,24 +13,15 @@ export default function MasterQuantLeaderboard({
   macro = {},
   onSelectTicker
 }) {
-  // 5 Main Tabs requested by user:
-  // 1: STOCK (IDX)
-  // 2: CRYPTO
-  // 3: NEWS (Live News wire)
-  // 4: WATCHLIST (Custom manual picker stored in browser localStorage)
-  // 5: WIKI (Institutional definitions & glossary)
   const [activeMainTab, setActiveMainTab] = useState('STOCK');
-  
-  // Sub-filter inside STOCK tab
   const [stockSubFilter, setStockSubFilter] = useState('ALL_STOCKS'); // ALL_STOCKS | PLANS | KONGLO | DIVIDEND | FOREIGN
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedId, setExpandedId] = useState(null);
 
-  // Sorting state: field and direction ('asc' | 'desc')
   const [sortField, setSortField] = useState('rank');
   const [sortDirection, setSortDirection] = useState('asc');
 
-  // Conglomerate ticker lookup map
+  // Conglomerate lookup map
   const kongloLookup = useMemo(() => {
     const map = {};
     Object.entries(conglomerates || {}).forEach(([groupName, stocks]) => {
@@ -44,6 +35,23 @@ export default function MasterQuantLeaderboard({
     return map;
   }, [conglomerates]);
 
+  // Sets of tickers for accurate sub-filter categorization (prevents data dropout)
+  const dividendTickerSet = useMemo(() => new Set((dividendHunters || []).map(d => d.ticker)), [dividendHunters]);
+  const foreignTickerSet = useMemo(() => {
+    const s = new Set();
+    (foreignFlow?.top_net_buys || []).forEach(f => s.add(f.ticker));
+    (foreignFlow?.top_net_sells || []).forEach(f => s.add(f.ticker));
+    return s;
+  }, [foreignFlow]);
+
+  // Dynamic R:R calculator
+  const calcRR = (entry, sl, tp) => {
+    const risk = Math.abs(Number(entry) - Number(sl));
+    const reward = Math.abs(Number(tp) - Number(entry));
+    if (risk <= 0) return 2.0;
+    return Number((reward / risk).toFixed(2));
+  };
+
   // Build unified items list
   const { allItems, allStockItems, allCryptoItems } = useMemo(() => {
     const items = [];
@@ -51,22 +59,30 @@ export default function MasterQuantLeaderboard({
     // 1. Trade Plans
     tradePlans.forEach((plan, idx) => {
       const ticker = plan.clean_ticker || (plan.symbol ? plan.symbol.replace('.JK', '') : ('PLAN-' + idx));
+      const entry = plan.entry_price || 0;
+      const sl = plan.stop_loss || 0;
+      const tp = plan.target_1 || 0;
+      const realRR = plan.risk_reward_ratio || calcRR(entry, sl, tp);
+
+      // Resolve real change % if present, fallback to neutral
+      const changePct = plan.change_pct !== undefined ? plan.change_pct : (plan.raw_change_pct !== undefined ? plan.raw_change_pct : 0.0);
+
       items.push({
         id: plan.plan_id || ('plan-' + idx),
         rank: idx + 1,
         ticker: ticker,
         fullSymbol: plan.symbol,
         market: plan.market,
-        cluster: kongloLookup[ticker] || (plan.market === 'IDX' ? 'ASTRA / BLUECHIP' : 'CRYPTO ALPHA'),
-        categoryLabel: plan.market === 'IDX' ? 'ASTRA PLAN (IDX)' : 'CRYPTO ALPHA (USDT)',
-        price: plan.entry_price || 0,
-        changePct: plan.market === 'IDX' ? 1.5 : 3.2,
+        cluster: kongloLookup[ticker] || (plan.market === 'IDX' ? 'BLUECHIP' : 'CRYPTO ALPHA'),
+        categoryLabel: plan.market === 'IDX' ? 'TRADE PLAN (IDX)' : 'CRYPTO ALPHA (USDT)',
+        price: entry,
+        changePct: changePct,
         signal: plan.technical_signal || 'BUY',
         signalType: 'BULL',
-        entry: plan.entry_price || 0,
-        stopLoss: plan.stop_loss || 0,
-        target1: plan.target_1 || 0,
-        riskReward: plan.risk_reward_ratio || 2.2,
+        entry: entry,
+        stopLoss: sl,
+        target1: tp,
+        riskReward: realRR,
         isTradePlan: true,
         rawPlan: plan
       });
@@ -76,6 +92,11 @@ export default function MasterQuantLeaderboard({
     cryptoSpotList.forEach((c) => {
       const existing = items.find(i => i.ticker === c.pair);
       if (!existing) {
+        const entry = c.current_price || c.entry_high || 0;
+        const sl = c.stop_loss || 0;
+        const tp = c.take_profit_1 || 0;
+        const realRR = c.risk_reward_ratio || calcRR(entry, sl, tp);
+
         items.push({
           id: 'crypto-' + c.pair,
           rank: items.length + 1,
@@ -88,10 +109,11 @@ export default function MasterQuantLeaderboard({
           changePct: c.change_24h_pct || 0,
           signal: c.setup_type || 'SPOT_LONG',
           signalType: 'BLUE',
-          entry: c.entry_high || c.current_price || 0,
-          stopLoss: c.stop_loss || 0,
-          target1: c.take_profit_1 || 0,
-          riskReward: c.risk_reward_ratio || 2.0,
+          entry: entry,
+          entryRange: c.entry_low && c.entry_high ? (c.entry_low + ' - ' + c.entry_high) : null,
+          stopLoss: sl,
+          target1: tp,
+          riskReward: realRR,
           isTradePlan: false,
           rawCrypto: c
         });
@@ -104,6 +126,11 @@ export default function MasterQuantLeaderboard({
         stocks.forEach(s => {
           if (!items.find(i => i.ticker === s.ticker)) {
             const cleanGroup = group.replace('_GROUP', '').replace('_', ' ');
+            const price = s.price || 0;
+            const sl = Math.round(Number(price) * 0.95);
+            const tp = Math.round(Number(price) * 1.10);
+            const realRR = calcRR(price, sl, tp);
+
             items.push({
               id: 'konglo-' + s.ticker,
               rank: items.length + 1,
@@ -112,14 +139,14 @@ export default function MasterQuantLeaderboard({
               market: 'IDX',
               cluster: cleanGroup,
               categoryLabel: cleanGroup,
-              price: s.price || 0,
+              price: price,
               changePct: s.change_pct || 0,
               signal: s.technical_signal || 'MONITOR',
               signalType: s.technical_signal === 'BREAKOUT' ? 'BULL' : 'BLUE',
-              entry: s.price || 0,
-              stopLoss: Math.round(Number(s.price || 0) * 0.95),
-              target1: Math.round(Number(s.price || 0) * 1.08),
-              riskReward: 2.1,
+              entry: price,
+              stopLoss: sl,
+              target1: tp,
+              riskReward: realRR,
               isTradePlan: false,
               rawStock: s
             });
@@ -131,6 +158,11 @@ export default function MasterQuantLeaderboard({
     // 4. Dividend Hunters
     (dividendHunters || []).forEach(d => {
       if (!items.find(i => i.ticker === d.ticker)) {
+        const price = d.price || 0;
+        const sl = Math.round(Number(price) * 0.95);
+        const tp = Math.round(Number(price) * 1.10);
+        const realRR = calcRR(price, sl, tp);
+
         items.push({
           id: 'div-' + d.ticker,
           rank: items.length + 1,
@@ -139,14 +171,14 @@ export default function MasterQuantLeaderboard({
           market: 'IDX',
           cluster: kongloLookup[d.ticker] || 'DIVIDEND QUALITY',
           categoryLabel: 'YIELD ' + d.dividend_yield_pct + '%',
-          price: d.price || 0,
+          price: price,
           changePct: d.change_pct || 0,
           signal: d.dividend_trap_risk === 'LOW' ? 'HIGH YIELD SAFE' : 'TRAP RISK',
           signalType: d.dividend_trap_risk === 'LOW' ? 'BULL' : 'WARN',
-          entry: d.price || 0,
-          stopLoss: Math.round(Number(d.price || 0) * 0.94),
-          target1: Math.round(Number(d.price || 0) * 1.10),
-          riskReward: 2.4,
+          entry: price,
+          stopLoss: sl,
+          target1: tp,
+          riskReward: realRR,
           isTradePlan: false,
           rawStock: d
         });
@@ -157,6 +189,11 @@ export default function MasterQuantLeaderboard({
     const foreignList = [...(foreignFlow?.top_net_buys || []), ...(foreignFlow?.top_net_sells || [])];
     foreignList.forEach(f => {
       if (!items.find(i => i.ticker === f.ticker)) {
+        const price = f.price || 0;
+        const sl = Math.round(Number(price) * 0.95);
+        const tp = Math.round(Number(price) * 1.10);
+        const realRR = calcRR(price, sl, tp);
+
         items.push({
           id: 'foreign-' + f.ticker,
           rank: items.length + 1,
@@ -165,14 +202,14 @@ export default function MasterQuantLeaderboard({
           market: 'IDX',
           cluster: kongloLookup[f.ticker] || 'FOREIGN TARGET',
           categoryLabel: f.flow_type || 'FOREIGN FLOW',
-          price: f.price || 0,
+          price: price,
           changePct: f.change_pct || 0,
           signal: f.flow_type === 'ACCUMULATION' ? 'FOREIGN BUY' : 'FOREIGN SELL',
           signalType: f.flow_type === 'ACCUMULATION' ? 'BULL' : 'WARN',
-          entry: f.price || 0,
-          stopLoss: Math.round(Number(f.price || 0) * 0.95),
-          target1: Math.round(Number(f.price || 0) * 1.07),
-          riskReward: 2.0,
+          entry: price,
+          stopLoss: sl,
+          target1: tp,
+          riskReward: realRR,
           isTradePlan: false,
           rawStock: f
         });
@@ -185,18 +222,18 @@ export default function MasterQuantLeaderboard({
     return { allItems: items, allStockItems: stockOnly, allCryptoItems: cryptoOnly };
   }, [tradePlans, cryptoSpotList, conglomerates, dividendHunters, foreignFlow, kongloLookup]);
 
-  // Filtering based on current view
+  // Robust filtering using Membership Sets (No deduplication data loss)
   const currentDataset = useMemo(() => {
     let list = [];
     if (activeMainTab === 'STOCK') {
       if (stockSubFilter === 'PLANS') {
         list = allStockItems.filter(i => i.isTradePlan);
       } else if (stockSubFilter === 'KONGLO') {
-        list = allStockItems.filter(i => kongloLookup[i.ticker]);
+        list = allStockItems.filter(i => Boolean(kongloLookup[i.ticker]));
       } else if (stockSubFilter === 'DIVIDEND') {
-        list = allStockItems.filter(i => i.id.startsWith('div-') || (i.categoryLabel && i.categoryLabel.includes('YIELD')));
+        list = allStockItems.filter(i => dividendTickerSet.has(i.ticker) || i.id.startsWith('div-'));
       } else if (stockSubFilter === 'FOREIGN') {
-        list = allStockItems.filter(i => i.id.startsWith('foreign-') || (i.categoryLabel && i.categoryLabel.includes('FOREIGN')));
+        list = allStockItems.filter(i => foreignTickerSet.has(i.ticker) || i.id.startsWith('foreign-'));
       } else {
         list = allStockItems;
       }
@@ -206,7 +243,6 @@ export default function MasterQuantLeaderboard({
       list = allItems;
     }
 
-    // Search filter
     if (searchTerm.trim()) {
       const q = searchTerm.trim().toLowerCase();
       list = list.filter(i => 
@@ -216,7 +252,6 @@ export default function MasterQuantLeaderboard({
       );
     }
 
-    // Sorting
     return [...list].sort((a, b) => {
       let valA = a[sortField];
       let valB = b[sortField];
@@ -233,7 +268,7 @@ export default function MasterQuantLeaderboard({
       if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [activeMainTab, stockSubFilter, searchTerm, allStockItems, allCryptoItems, allItems, sortField, sortDirection, kongloLookup]);
+  }, [activeMainTab, stockSubFilter, searchTerm, allStockItems, allCryptoItems, allItems, sortField, sortDirection, kongloLookup, dividendTickerSet, foreignTickerSet]);
 
   const handleSort = (field) => {
     if (sortField === field) {
@@ -313,7 +348,7 @@ export default function MasterQuantLeaderboard({
         </span>
       </div>
 
-      {/* RENDER VIEW ACCORDING TO ACTIVE MAIN TAB */}
+      {/* VIEW ACCORDING TO ACTIVE MAIN TAB */}
       {activeMainTab === 'NEWS' && (
         <div style={{ padding: '12px' }}>
           <NewsTab liveNews={liveNews} macro={macro} />
@@ -334,7 +369,7 @@ export default function MasterQuantLeaderboard({
 
       {(activeMainTab === 'STOCK' || activeMainTab === 'CRYPTO') && (
         <>
-          {/* Sub-toolbar for STOCK / CRYPTO view */}
+          {/* Sub-toolbar */}
           <div style={{
             padding: '8px 12px',
             background: 'var(--bg-panel)',
@@ -456,7 +491,7 @@ export default function MasterQuantLeaderboard({
                             {idx + 1}
                           </td>
                           <td style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '13px' }}>
-                            ${item.ticker}
+                            
                           </td>
                           <td>
                             <span className='badge' style={{
@@ -487,7 +522,7 @@ export default function MasterQuantLeaderboard({
                             {Number(item.changePct) >= 0 ? '+' + item.changePct + '%' : item.changePct + '%'}
                           </td>
                           <td>
-                            <code>{item.market === 'IDX' ? ('Rp ' + Number(item.entry).toLocaleString()) : ('$' + item.entry)}</code>
+                            <code>{item.entryRange ? item.entryRange : (item.market === 'IDX' ? ('Rp ' + Number(item.entry).toLocaleString()) : ('$' + item.entry))}</code>
                           </td>
                           <td style={{ color: '#ff3b30' }}>
                             <code>{item.market === 'IDX' ? ('Rp ' + Number(item.stopLoss).toLocaleString()) : ('$' + item.stopLoss)}</code>
@@ -524,7 +559,7 @@ export default function MasterQuantLeaderboard({
                           </td>
                         </tr>
 
-                        {/* EXPANDED PROGRESSIVE DISCLOSURE DRAWER (WITH WRAP FIX) */}
+                        {/* EXPANDED PROGRESSIVE DISCLOSURE DRAWER */}
                         {isExpanded && (
                           <tr className='drawer-content' style={{ background: 'var(--bg-panel-subtle)' }}>
                             <td colSpan='11' style={{ padding: '12px 16px', borderBottom: 'var(--border-hairline)', whiteSpace: 'normal' }}>
@@ -579,16 +614,19 @@ export default function MasterQuantLeaderboard({
                                   )}
                                 </div>
 
-                                {/* Drawer Box 3: Invalidation Rules */}
+                                {/* Drawer Box 3: Invalidation Rules (Cleaned Bullets) */}
                                 <div className='drawer-box' style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', whiteSpace: 'normal', wordBreak: 'break-word' }}>
                                   <div style={{ fontWeight: '700', color: '#ff3b30', marginBottom: '6px', fontSize: '10px', letterSpacing: '0.04em' }}>
-                                    ⛔ 3 INVALIDATION (CUT RULES):
+                                    ⛔ {p?.three_invalidations?.length ? '3 INVALIDATION (CUT RULES):' : 'INVALIDATION (CUT RULES):'}
                                   </div>
-                                  {p && Array.isArray(p.three_invalidations) && p.three_invalidations.map((inv, i) => (
-                                    <div key={i} style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '10px', lineHeight: 1.4 }}>
-                                      • {inv}
-                                    </div>
-                                  ))}
+                                  {p && Array.isArray(p.three_invalidations) && p.three_invalidations.map((inv, i) => {
+                                    const cleanText = inv.replace(/^\d+[\.\)]\s*/, '');
+                                    return (
+                                      <div key={i} style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '10px', lineHeight: 1.4 }}>
+                                        • {cleanText}
+                                      </div>
+                                    );
+                                  })}
                                   {c && (
                                     <div style={{ color: '#ff3b30', fontSize: '10px', lineHeight: 1.4 }}>
                                       • {c.invalidation_rule}
