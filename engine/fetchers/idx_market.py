@@ -6,6 +6,7 @@ logger = logging.getLogger("IDXMarketFetcher")
 
 class IDXMarketFetcher:
     def __init__(self):
+        self.history_dfs = {}
         # 1. Conglomerate Groups Definition
         self.conglomerates = {
             "BARITO_GROUP": [
@@ -87,6 +88,8 @@ class IDXMarketFetcher:
             t = yf.Ticker(ticker)
             hist = t.history(period="3mo")
             if not hist.empty and len(hist) >= 15:
+                self.history_dfs[ticker] = hist
+                self.history_dfs[ticker.replace(".JK", "")] = hist
                 closes = hist["Close"]
                 vols = hist["Volume"]
                 price = float(closes.iloc[-1])
@@ -230,5 +233,6 @@ class IDXMarketFetcher:
         results["foreign_flow"]["top_inflow"] = sorted_flow[:5]
         results["foreign_flow"]["top_outflow"] = sorted(flow_records, key=lambda x: x["foreign_net_val_idr"])[:5]
         results["all_records"].extend(flow_records)
+        results["history_dfs"] = self.history_dfs
 
         return results

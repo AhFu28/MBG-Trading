@@ -115,4 +115,79 @@ class LLMBrain:
                 "created_at": datetime.now().isoformat()
             })
 
+        # 3. Gemini LLM Enrichment
+        if self.use_llm:
+            try:
+                import json
+                import time
+                from google import genai
+                
+                client = genai.Client(api_key=self.api_key)
+                
+                # Rate limit: max 3 API calls per run. We will just use 1 batch for all to be safe.
+                prompt_data = []
+                for p in plans:
+                    prompt_data.append({
+                        "id": p["plan_id"],
+                        "ticker": p["clean_ticker"],
+                        "price": p["entry_price"],
+                        "signal": p.get("technical_signal"),
+                        "entry": p["entry_price"],
+                        "sl": p["stop_loss"],
+                        "tp": p["target_1"]
+                    })
+                
+                prompt = f"""
+                You are an expert trading analyst. For the following trade plans, generate:
+                1. 'ai_thesis': a 2-sentence catalyst thesis in Indonesian.
+                2. 'ai_bahasa_bayi': a simple "Bahasa Bayi" (baby language/eli5) explanation of why we buy.
+                
+                Also generate one 'ai_market_sentiment' summary for the overall market based on these setups.
+                
+                Trade plans data:
+                {json.dumps(prompt_data, indent=2)}
+                
+                Respond ONLY in valid JSON format exactly like this:
+                {{
+                    "ai_market_sentiment": "Overall summary...",
+                    "plans_enrichment": [
+                        {{
+                            "id": "...",
+                            "ai_thesis": "...",
+                            "ai_bahasa_bayi": "..."
+                        }}
+                    ]
+                }}
+                """
+                
+                response = client.models.generate_content(
+                    model='gemini-2.0-flash',
+                    contents=prompt,
+                    config={
+                        'temperature': 0.3,
+                        'response_mime_type': 'application/json'
+                    }
+                )
+                
+                res_data = json.loads(response.text)
+                sentiment = res_data.get("ai_market_sentiment", "Netral")
+                enrich_map = {item["id"]: item for item in res_data.get("plans_enrichment", [])}
+                
+                for p in plans:
+                    if p["plan_id"] in enrich_map:
+                        p["ai_thesis"] = enrich_map[p["plan_id"]].get("ai_thesis", "Sentimen positif teknikal.")
+                        p["ai_bahasa_bayi"] = enrich_map[p["plan_id"]].get("ai_bahasa_bayi", "Beli karena grafiknya bagus.")
+                    else:
+                        p["ai_thesis"] = "Sentimen positif teknikal berdasarkan data empiris."
+                        p["ai_bahasa_bayi"] = "Harga turun dikit buat naik lebih tinggi, ayo beli."
+                    p["ai_market_sentiment"] = sentiment
+                    
+            except Exception as e:
+                logger.error(f"Gemini LLM enrichment failed: {e}")
+                # Fallback silently to static narratives
+                for p in plans:
+                    p["ai_thesis"] = "Sentimen positif teknikal berdasarkan data empiris."
+                    p["ai_bahasa_bayi"] = "Harga turun dikit buat naik lebih tinggi, ayo beli."
+                    p["ai_market_sentiment"] = "Netral - menunggu konfirmasi arah pasar."
+
         return plans

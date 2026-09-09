@@ -1,0 +1,45 @@
+name: Evening Closing & Global Night Watch (18:30 WIB)
+
+on:
+  schedule:
+    # 11:30 UTC is exactly 18:30 WIB (Daily: Mon-Sun)
+    - cron: '30 11 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  evening-global-watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r engine/requirements.txt
+
+      - name: Run Full Pipeline (Macro, Crypto Spot & IDX Closing Data)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python engine/run_pipeline.py --mode all
+
+      - name: Commit Updated Local Data Fallback
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add frontend/public/data/ engine/cache/ || true
+          git commit -m "[skip ci] 🌙 evening global watch update" || echo "No changes to commit"
+          git push || echo "Push skipped"

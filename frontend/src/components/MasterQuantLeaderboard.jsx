@@ -11,7 +11,8 @@ export default function MasterQuantLeaderboard({
   foreignFlow = {},
   liveNews = [],
   macro = {},
-  onSelectTicker
+  onSelectTicker,
+  onOpenLotCalc
 }) {
   const [activeMainTab, setActiveMainTab] = useState('STOCK');
   const [stockSubFilter, setStockSubFilter] = useState('ALL_STOCKS'); // ALL_STOCKS | PLANS | KONGLO | DIVIDEND | FOREIGN
@@ -39,8 +40,8 @@ export default function MasterQuantLeaderboard({
   const dividendTickerSet = useMemo(() => new Set((dividendHunters || []).map(d => d.ticker)), [dividendHunters]);
   const foreignTickerSet = useMemo(() => {
     const s = new Set();
-    (foreignFlow?.top_net_buys || []).forEach(f => s.add(f.ticker));
-    (foreignFlow?.top_net_sells || []).forEach(f => s.add(f.ticker));
+    (foreignFlow?.top_inflow || []).forEach(f => s.add(f.ticker));
+    (foreignFlow?.top_outflow || []).forEach(f => s.add(f.ticker));
     return s;
   }, [foreignFlow]);
 
@@ -186,7 +187,7 @@ export default function MasterQuantLeaderboard({
     });
 
     // 5. Foreign Flow
-    const foreignList = [...(foreignFlow?.top_net_buys || []), ...(foreignFlow?.top_net_sells || [])];
+    const foreignList = [...(foreignFlow?.top_inflow || []), ...(foreignFlow?.top_outflow || [])];
     foreignList.forEach(f => {
       if (!items.find(i => i.ticker === f.ticker)) {
         const price = f.price || 0;
@@ -589,8 +590,20 @@ export default function MasterQuantLeaderboard({
 
                                 {/* Drawer Box 2: Opinion & Sizing Math */}
                                 <div className='drawer-box' style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                                  <div style={{ fontWeight: '700', color: 'var(--accent-orange)', marginBottom: '6px', fontSize: '10px', letterSpacing: '0.04em' }}>
-                                    💡 THESIS &amp; POSITION SIZING MATH:
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                                    <div style={{ fontWeight: '700', color: 'var(--accent-orange)', fontSize: '10px', letterSpacing: '0.04em' }}>
+                                      💡 THESIS &amp; POSITION SIZING MATH:
+                                    </div>
+                                    <button 
+                                      className="telemetry-btn"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (onOpenLotCalc) onOpenLotCalc(item.entry, item.stopLoss);
+                                      }}
+                                      style={{ padding: '2px 8px', fontSize: '10px', background: 'var(--accent-green)', color: '#fff' }}
+                                    >
+                                      💰 Hitung Lot
+                                    </button>
                                   </div>
                                   {p && (
                                     <>

@@ -3,6 +3,7 @@ import PasswordGate from './components/PasswordGate.jsx';
 import BloombergNewsWire from './components/BloombergNewsWire.jsx';
 import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
 import TradingViewModal from './components/TradingViewModal.jsx';
+import LotCalculatorModal from './components/LotCalculatorModal.jsx';
 
 export default function App() {
   const [data, setData] = useState(null);
@@ -48,6 +49,21 @@ export default function App() {
 
   const handleCloseChart = () => {
     setChartModal(prev => ({ ...prev, isOpen: false }));
+  };
+
+  // Lot Calculator Modal State
+  const [lotCalcModal, setLotCalcModal] = useState({
+    isOpen: false,
+    entry: '',
+    sl: ''
+  });
+
+  const handleOpenLotCalc = (entry = '', sl = '') => {
+    setLotCalcModal({ isOpen: true, entry, sl });
+  };
+
+  const handleCloseLotCalc = () => {
+    setLotCalcModal(prev => ({ ...prev, isOpen: false }));
   };
 
   // Clock tick
@@ -129,14 +145,23 @@ export default function App() {
                 📈 LAUNCH CHART
               </button>
 
+              <button 
+                onClick={() => handleOpenLotCalc()}
+                className='telemetry-btn'
+                style={{ background: 'var(--accent-green)', color: '#fff', padding: '4px 10px', fontSize: '10px' }}
+              >
+                💰 KALKULATOR LOT
+              </button>
+
               <div className='metric-box' style={{ padding: '3px 8px' }}>
                 <span className='metric-label'>WIB: </span>
                 <span style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{currentTime.toLocaleTimeString('id-ID')}</span>
               </div>
 
               <div className='metric-box' style={{ padding: '3px 8px' }}>
-                <span className='metric-label'>TELEGRAM BOT: </span>
-                <span style={{ color: 'var(--accent-green)', fontWeight: '700' }}>ONLINE 🟢</span>
+                <span style={{ color: 'var(--accent-green)', fontWeight: '700' }}>
+                  {data?.meta?.generated_at ? ('LAST UPDATE: ' + new Date(data.meta.generated_at).toLocaleTimeString('id-ID', {timeZone:'Asia/Jakarta'}) + ' WIB') : 'DATA OFFLINE 🔴'}
+                </span>
               </div>
 
               <button onClick={loadBundle} className='telemetry-btn' style={{ padding: '4px 8px', fontSize: '10px' }}>
@@ -162,10 +187,10 @@ export default function App() {
             <div className='telemetry-panel' style={{ padding: '8px 12px', borderLeft: '4px solid #34c759' }}>
               <div className='metric-label'>IHSG &amp; GLOBAL BIAS</div>
               <div style={{ fontSize: '13px', fontWeight: '700', marginTop: '2px', color: '#1b8a4b' }}>
-                BULLISH MOMENTUM ACCUMULATION
+                {data?.macro_telemetry?.impact_assessment?.overall_sentiment || 'AWAITING DATA'}
               </div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                Rally Emas &amp; Minyak menopang emiten tambang dan energi BEI.
+                {data?.macro_telemetry?.impact_assessment?.narrative || data?.macro_telemetry?.live_news?.[0]?.title || 'Menunggu data macro terbaru...'}
               </div>
             </div>
 
@@ -211,6 +236,7 @@ export default function App() {
               liveNews={data?.macro_telemetry?.live_news || []}
               macro={data?.macro_telemetry || {}}
               onSelectTicker={handleOpenChart}
+              onOpenLotCalc={handleOpenLotCalc}
             />
           </main>
         )}
@@ -223,6 +249,14 @@ export default function App() {
             onClose={handleCloseChart}
           />
         )}
+
+        {/* Lot Calculator Modal */}
+        <LotCalculatorModal
+          isOpen={lotCalcModal.isOpen}
+          onClose={handleCloseLotCalc}
+          prefillEntry={lotCalcModal.entry}
+          prefillSL={lotCalcModal.sl}
+        />
 
         {/* 6. Institutional Disclaimer Footer */}
         <footer style={{
