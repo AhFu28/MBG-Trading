@@ -155,7 +155,9 @@ export default function App() {
 
               <div className='metric-box' style={{ padding: '3px 8px' }}>
                 <span className='metric-label'>WIB: </span>
-                <span style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{currentTime.toLocaleTimeString('id-ID')}</span>
+                <span style={{ fontWeight: '700', color: 'var(--text-primary)' }}>
+                  {currentTime.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour12: false })}
+                </span>
               </div>
 
               <div className='metric-box' style={{ padding: '3px 8px' }}>

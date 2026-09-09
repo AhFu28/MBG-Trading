@@ -1,15 +1,142 @@
-﻿import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+// Helper to calculate exact timezone time & market status
+function getZoneInfo(date, timeZone) {
+  try {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      hour12: false,
+      weekday: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+    const parts = formatter.formatToParts(date);
+    const getVal = (type) => parts.find(p => p.type === type)?.value || '';
+    const hour = parseInt(getVal('hour'), 10);
+    const minute = parseInt(getVal('minute'), 10);
+    const second = parseInt(getVal('second'), 10);
+    const weekday = getVal('weekday'); // Mon, Tue, Wed, Thu, Fri, Sat, Sun
+    const timeStr = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
+    return { hour, minute, second, weekday, timeStr };
+  } catch (e) {
+    return { hour: date.getHours(), minute: date.getMinutes(), second: date.getSeconds(), weekday: 'Mon', timeStr: '--:--:--' };
+  }
+}
 
 export default function GlobalMarketsTab({ onSelectTicker }) {
   const [activeRegion, setActiveRegion] = useState('ALL');
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Real-time 1-second clock tick
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const regions = ['ALL', 'WALL STREET', 'ASIA PACIFIC', 'INDONESIA', 'BONDS & YIELD', 'FOREX & CURRENCIES'];
 
-  const marketSessions = [
-    { name: 'Tokyo (TSE)', flag: '🇯🇵', hours: '07:00 - 13:30 WIB', isOpen: false },
-    { name: 'Jakarta (IDX)', flag: '🇮🇩', hours: '09:00 - 16:00 WIB', isOpen: true },
-    { name: 'London (LSE)', flag: '🇬🇧', hours: '15:00 - 23:30 WIB', isOpen: false },
-    { name: 'New York (NYSE)', flag: '🇺🇸', hours: '20:30 - 03:00 WIB', isOpen: false },
-  ];
+  // Calculate dynamic real-time status for each global exchange
+  const getExchangeStatus = () => {
+    // 1. Jakarta (IDX) - Asia/Jakarta
+    const jkt = getZoneInfo(currentTime, 'Asia/Jakarta');
+    const jktMin = jkt.hour * 60 + jkt.minute;
+    const isJktWeekend = jkt.weekday === 'Sat' || jkt.weekday === 'Sun';
+    let jktOpen = false;
+    let jktNote = 'TUTUP 🔴';
+    let jktBadge = 'badge-bear';
+
+    if (isJktWeekend) {
+      jktNote = 'LIBUR AKHIR PEKAN 🔴';
+    } else if (jkt.weekday === 'Fri') {
+      if (jktMin >= 540 && jktMin < 690) { // 09:00 - 11:30
+        jktOpen = true; jktNote = 'BUKA (SESI 1) 🟢'; jktBadge = 'badge-bull';
+      } else if (jktMin >= 690 && jktMin < 840) { // 11:30 - 14:00
+        jktNote = 'ISTIRAHAT JUMAT 🟡'; jktBadge = 'badge-hold';
+      } else if (jktMin >= 840 && jktMin < 960) { // 14:00 - 16:00
+        jktOpen = true; jktNote = 'BUKA (SESI 2) 🟢'; jktBadge = 'badge-bull';
+      } else {
+        jktNote = 'TUTUP (SESI BERAKHIR) 🔴';
+      }
+    } else { // Mon - Thu
+      if (jktMin >= 540 && jktMin < 720) { // 09:00 - 12:00
+        jktOpen = true; jktNote = 'BUKA (SESI 1) 🟢'; jktBadge = 'badge-bull';
+      } else if (jktMin >= 720 && jktMin < 810) { // 12:00 - 13:30
+        jktNote = 'ISTIRAHAT SIANG 🟡'; jktBadge = 'badge-hold';
+      } else if (jktMin >= 810 && jktMin < 960) { // 13:30 - 16:00
+        jktOpen = true; jktNote = 'BUKA (SESI 2) 🟢'; jktBadge = 'badge-bull';
+      } else {
+        jktNote = 'TUTUP (SESI BERAKHIR) 🔴';
+      }
+    }
+
+    // 2. Tokyo (TSE) - Asia/Tokyo
+    const tyo = getZoneInfo(currentTime, 'Asia/Tokyo');
+    const tyoMin = tyo.hour * 60 + tyo.minute;
+    const isTyoWeekend = tyo.weekday === 'Sat' || tyo.weekday === 'Sun';
+    let tyoOpen = false;
+    let tyoNote = 'TUTUP 🔴';
+    let tyoBadge = 'badge-bear';
+
+    if (isTyoWeekend) {
+      tyoNote = 'LIBUR AKHIR PEKAN 🔴';
+    } else if (tyoMin >= 540 && tyoMin < 690) { // 09:00 - 11:30 JST
+      tyoOpen = true; tyoNote = 'BUKA (SESI PAGI) 🟢'; tyoBadge = 'badge-bull';
+    } else if (tyoMin >= 690 && tyoMin < 750) { // 11:30 - 12:30 JST
+      tyoNote = 'ISTIRAHAT SIANG 🟡'; tyoBadge = 'badge-hold';
+    } else if (tyoMin >= 750 && tyoMin < 930) { // 12:30 - 15:30 JST
+      tyoOpen = true; tyoNote = 'BUKA (SESI SIANG) 🟢'; tyoBadge = 'badge-bull';
+    } else {
+      tyoNote = 'TUTUP (SESI BERAKHIR) 🔴';
+    }
+
+    // 3. London (LSE) - Europe/London
+    const lon = getZoneInfo(currentTime, 'Europe/London');
+    const lonMin = lon.hour * 60 + lon.minute;
+    const isLonWeekend = lon.weekday === 'Sat' || lon.weekday === 'Sun';
+    let lonOpen = false;
+    let lonNote = 'TUTUP 🔴';
+    let lonBadge = 'badge-bear';
+
+    if (isLonWeekend) {
+      lonNote = 'LIBUR AKHIR PEKAN 🔴';
+    } else if (lonMin >= 480 && lonMin < 990) { // 08:00 - 16:30 local
+      lonOpen = true; lonNote = 'BUKA (SESI AKTIF) 🟢'; lonBadge = 'badge-bull';
+    } else {
+      lonNote = 'TUTUP (SESI BERAKHIR) 🔴';
+    }
+
+    // 4. New York (NYSE) - America/New_York
+    const ny = getZoneInfo(currentTime, 'America/New_York');
+    const nyMin = ny.hour * 60 + ny.minute;
+    const isNyWeekend = ny.weekday === 'Sat' || ny.weekday === 'Sun';
+    let nyOpen = false;
+    let nyNote = 'TUTUP 🔴';
+    let nyBadge = 'badge-bear';
+
+    if (isNyWeekend) {
+      nyNote = 'LIBUR AKHIR PEKAN 🔴';
+    } else if (nyMin >= 570 && nyMin < 960) { // 09:30 - 16:00 local (20:30 - 03:00 WIB)
+      nyOpen = true; nyNote = 'BUKA (SESI AKTIF) 🟢'; nyBadge = 'badge-bull';
+    } else if (nyMin >= 240 && nyMin < 570) {
+      nyNote = 'PRE-MARKET 🟡'; nyBadge = 'badge-hold';
+    } else if (nyMin >= 960 && nyMin < 1200) {
+      nyNote = 'AFTER-HOURS 🟡'; nyBadge = 'badge-hold';
+    } else {
+      nyNote = 'TUTUP (SESI BERAKHIR) 🔴';
+    }
+
+    return [
+      { name: 'Tokyo (TSE)', flag: '🇯🇵', hours: '07:00 - 13:30 WIB', localTime: `${tyo.timeStr} JST`, isOpen: tyoOpen, note: tyoNote, badge: tyoBadge },
+      { name: 'Jakarta (IDX)', flag: '🇮🇩', hours: '09:00 - 16:00 WIB', localTime: `${jkt.timeStr} WIB`, isOpen: jktOpen, note: jktNote, badge: jktBadge },
+      { name: 'London (LSE)', flag: '🇬🇧', hours: '14:00 - 22:30 WIB', localTime: `${lon.timeStr} BST`, isOpen: lonOpen, note: lonNote, badge: lonBadge },
+      { name: 'New York (NYSE)', flag: '🇺🇸', hours: '20:30 - 03:00 WIB', localTime: `${ny.timeStr} EDT`, isOpen: nyOpen, note: nyNote, badge: nyBadge },
+    ];
+  };
+
+  const marketSessions = getExchangeStatus();
+
+  const jktCurrent = getZoneInfo(currentTime, 'Asia/Jakarta');
 
   const assets = [
     // Wall Street
@@ -52,20 +179,36 @@ export default function GlobalMarketsTab({ onSelectTicker }) {
   return (
     <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', padding: '16px', fontFamily: 'var(--font-mono)' }}>
       
-      {/* 1. Global Session Clocks */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '8px', marginBottom: '14px' }}>
+      {/* 1. Global Session Clocks & Live Master Clock */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', padding: '6px 10px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '10px', color: 'var(--text-muted)' }}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-green)', display: 'inline-block' }}></span>
+          <strong style={{ color: 'var(--text-primary)' }}>SINKRONISASI BURSA GLOBAL REAL-TIME</strong>
+          <span>(STATUS BERUBAH OTOMATIS PER DETIK)</span>
+        </div>
+        <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--accent-orange)' }}>
+          WIB CLOCK: {jktCurrent.timeStr} WIB
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '8px', marginBottom: '14px' }}>
         {marketSessions.map(s => (
-          <div key={s.name} style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '8px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div key={s.name} style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '10px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '16px' }}>{s.flag}</span>
+              <span style={{ fontSize: '20px' }}>{s.flag}</span>
               <div>
                 <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)' }}>{s.name}</div>
                 <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{s.hours}</div>
+                <div style={{ fontSize: '10px', color: 'var(--accent-green)', fontWeight: '700', marginTop: '2px' }}>
+                  🕒 {s.localTime}
+                </div>
               </div>
             </div>
-            <span className={'badge ' + (s.isOpen ? 'badge-bull' : 'badge-bear')} style={{ fontSize: '9px' }}>
-              {s.isOpen ? 'BUKA 🟢' : 'TUTUP 🔴'}
-            </span>
+            <div style={{ textAlign: 'right' }}>
+              <span className={'badge ' + s.badge} style={{ fontSize: '9px', display: 'inline-block', padding: '3px 6px' }}>
+                {s.note}
+              </span>
+            </div>
           </div>
         ))}
       </div>
