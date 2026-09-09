@@ -235,6 +235,9 @@ export default function App() {
               foreignFlow={data?.foreign_flow || {}}
               liveNews={data?.macro_telemetry?.live_news || []}
               macro={data?.macro_telemetry || {}}
+              paperPortfolio={data?.paper_portfolio || {}}
+              backtestLab={data?.backtest_lab || {}}
+              strategyRankings={data?.strategy_rankings || []}
               onSelectTicker={handleOpenChart}
               onOpenLotCalc={handleOpenLotCalc}
             />

@@ -13,6 +13,7 @@ from fetchers.news_macro import NewsMacroFetcher
 from fetchers.idx_market import IDXMarketFetcher
 from fetchers.crypto_spot import CryptoSpotFetcher
 from analyzer.llm_brain import LLMBrain
+from analyzer.backtest_engine import BacktestEngine
 
 try:
     from analyzer.smc_detector import SMCDetector
@@ -91,6 +92,7 @@ def main():
     forecasts = {}
     portfolio_summary = {}
     strategy_rankings = {}
+    backtest_lab = {}
 
     try:
         logger.info("Running Advanced Analytics & Paper Portfolio...")
@@ -153,6 +155,12 @@ def main():
             try: strategy_rankings = exp3.get_rankings()
             except Exception as e: logger.warning(f"Exp3 Bandit failed: {e}")
             
+        try:
+            logger.info("Running Archetype Backtests...")
+            backtest_lab = BacktestEngine().run_all_archetypes()
+        except Exception as e:
+            logger.warning(f"BacktestEngine failed: {e}")
+
     except Exception as e:
         logger.error(f"Advanced integration pipeline error: {e}")
 
@@ -178,6 +186,7 @@ def main():
         "forecasts": forecasts or existing_bundle.get("forecasts", {}),
         "paper_portfolio": portfolio_summary or existing_bundle.get("paper_portfolio", {}),
         "strategy_rankings": strategy_rankings or existing_bundle.get("strategy_rankings", {}),
+        "backtest_lab": backtest_lab or existing_bundle.get("backtest_lab", {}),
         "mode": args.mode,
         "execution_duration_sec": round((datetime.now() - start_time).total_seconds(), 2)
     }

@@ -28,12 +28,12 @@
     "event_category": "GOLD",
     "sentiment": "BULLISH",
     "severity": "HIGH",
-    "gold_price": 4446.1,
-    "gold_change_pct": 1.19,
-    "brent_oil_price": 100.05,
-    "brent_oil_change_pct": 2.18,
-    "dxy_index": 98.77,
-    "dxy_change_pct": -0.07,
+    "gold_price": 4442.0,
+    "gold_change_pct": 1.09,
+    "brent_oil_price": 100.57,
+    "brent_oil_change_pct": 2.71,
+    "dxy_index": 98.76,
+    "dxy_change_pct": -0.08,
     "us10y_yield": 4.81,
     "idx_affected_sectors": [
       "MINING_GOLD",
@@ -43,7 +43,7 @@
       {
         "ticker": "ANTM",
         "impact": "BULLISH",
-        "reason": "Gold +1.19% boosts mining realized selling price"
+        "reason": "Gold +1.09% boosts mining realized selling price"
       },
       {
         "ticker": "BRMS",
@@ -83,12 +83,12 @@
       },
       {
         "id": "news-2",
-        "title": "IHSG turun 0,58% di sesi pertama, asing jual saham-saham bank",
-        "source": "IDNFinancials",
-        "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQSkdfZDJ6X3dvdk0xTjZMWGhUYVpabjZNNUpaMzJIaEtBQlBQU1hQSkV1R01SWFUtcmVjQ3V4NVhONUxJNWo3QzNnQ1hSa29VeUxia3ZLVGZDOVVGRjJpVm93VldVWXVsVVcxVWZBa1hQOWFtdlozbnUwVkhmbWczZGNMSjNFUVZFYUxCbUtwYVEtUXRfdjdwdE5ZV2dSYTlhQXNVMXpn?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 05:45:00 GMT",
-        "tag": "BANKING",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari IDNFinancials."
+        "title": "Dampak AI ke Pasar Saham: Peluang Investasi di Era Data Center",
+        "source": "maybanktrade.co.id",
+        "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPV1k2c2Z3Z19XSmRUTjNGQV9PcExUZ3QwMXMxNGdTV3VqcmFXdzRVRGxSOGxfMnlSM0dVSUZLZFdzbmpHeXBScnFXWWh0MHl2RGhSMHZlOGU2bW9GdGNjRk44SnlpWWZqNTJ3S2lIOWVWZTRMU1lwOHBPcHlsWmNyY1piRklOZ0lkNXFEb29QSkZwbnVsMlF2U09Sb1dBcFZ5dXc?oc=5",
+        "pub_date": "Wed, 09 Sep 2026 09:30:00 GMT",
+        "tag": "IHSG",
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari maybanktrade.co.id."
       },
       {
         "id": "news-3",
@@ -101,42 +101,51 @@
       },
       {
         "id": "news-4",
-        "title": "IHSG Menguat, Asing Net Buy: TOWR dan SMGR Menarik",
-        "source": "maybanktrade.co.id",
-        "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQSDVjMS01OHhVT1RxV24xYkRHeTRRd3FLQlRBX1lncnZuMlA0UHBHeTMxY1RSb1hBcjZsZ1RickE5ekdHRU0wU214S25BYjl0bld1U1ZfWjdJeUYwZld1bzNEd2lrLWtSeFJyV2F3ejAwRG5qRXpxS3ktQTVmRG0tLUxzTzBpOXBLb0MwR1JrLTI?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 08:34:00 GMT",
-        "tag": "FOREIGN_FLOW",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari maybanktrade.co.id."
-      },
-      {
-        "id": "news-5",
-        "title": "IHSG Sesi I Tertekan 0,58% ke Level 6.647",
+        "title": "IHSG Ditutup Terkoreksi 0,12% ke Level 6.678",
         "source": "CNBC Indonesia",
-        "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNM3BkSk1zcURfVUxla19iRGd5Z0JndFJURm9CWUtOOUJ1cHdYUHVneFNQX2w0WGNZTlBZdXBqZGpnZDJkX3lNR0RkVEZ3TnpuaHE1em9XS0FvNzkwNnAxdFpjNlVFZE1yNVJVNEY0ZkItVFRnaEJBUzJEQjRnX2t1QTlPLVhtbXl2azV2ZXhTdFFyeE1wYThfQjVSWnRKMlJ4M1HSAacBQVVfeXFMUE5yeUptSjgtTm9EckJHd2tsOUl0dUJQaUxRTlVVakdVTmUtdG9WVzZOejQ3bkpVUUxBOERlSV90UzNFakpvUEVpQ1V0anU2dEhRS05GYUZaSzdmenZQUEZYaHBnbDVzTUZWdGZ4eHhJUndaN3pPOFVtMjFRNzloa1pNdzV4T0lwMjdXc2lMNUZLa25MZHZGUTNmdVVpdHBNSnRYWFJ1Sjg?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 05:53:01 GMT",
+        "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOcjEzUEZ4TDA2bExIb1ZuTU5jVDVsV214SXQtVG40SzhNQVNMMkdTcHVrcDBfTDM0b21ERGJpbEdPTW9XdlVhTC1nay1UbGV5QnpYcGRES0k5NHh1SWplUDJ0Y0NpYlhBZkFUM1RKakh1SjR1TkZrblNPYk5BT0JZeUNueUV0NURjWXRQbXZ1eDE4ejh5QlNJUXgwcVhjOGdLRVR1LWFR0gGrAUFVX3lxTE1LaU9DTXRHSVp4bEdUVFM2NVZlWE5GVzh4N3RINVJDYTRzeGoxY3kxeWFrUmFpNi1WVl9Tem02c3hSVllxRGpLeE9INXlBVEVMSU10a3NXcEZBZjRnYi1BZXlzVGtHOHF0aG9pWExBaV9BY3h3ckczbm5KT0Z5djAzT0lBeFl1ZWdSMTh2T0M0LW5YT1JlQnJOQzE0WHBwcmFKWFhMMFZURDF2aw?oc=5",
+        "pub_date": "Wed, 09 Sep 2026 09:37:47 GMT",
         "tag": "IHSG",
         "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari CNBC Indonesia."
       },
       {
+        "id": "news-5",
+        "title": "IHSG turun 0,58% di sesi pertama, asing jual saham-saham bank",
+        "source": "IDNFinancials",
+        "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQSkdfZDJ6X3dvdk0xTjZMWGhUYVpabjZNNUpaMzJIaEtBQlBQU1hQSkV1R01SWFUtcmVjQ3V4NVhONUxJNWo3QzNnQ1hSa29VeUxia3ZLVGZDOVVGRjJpVm93VldVWXVsVVcxVWZBa1hQOWFtdlozbnUwVkhmbWczZGNMSjNFUVZFYUxCbUtwYVEtUXRfdjdwdE5ZV2dSYTlhQXNVMXpn?oc=5",
+        "pub_date": "Wed, 09 Sep 2026 05:45:00 GMT",
+        "tag": "BANKING",
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari IDNFinancials."
+      },
+      {
         "id": "news-6",
-        "title": "Penyebab IHSG Melemah Hingga Gagal Menembus 6.700",
-        "source": "Bloomberg Technoz",
-        "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPbmkxMVhWcUlUS1FHYUpaSTdFN3ZweHJDbE14ZlU3ZzZFYnU5UTVxVFgwd3F6c3Y1NktNcEU2SVAtQ0FoTDhvRy1pTExYckRNME1pLU5hT29kLW01UzVZZFBUNy1IOGJJRi1yb2N5ZjVONDBjaDhjZzdraTAtZEtaWmIxcUttSTV3MDBSR0FfSV9qTjhleTM4Mmt6NnN5dDU5STdN?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 06:33:11 GMT",
+        "title": "Haji Isam Tawar 62% Saham BYAN Senilai US$3 Miliar, Segini Perkiraan Harganya",
+        "source": "Ajaib",
+        "link": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQYVVLTGY0Zk1YM3VaWGItc0xSQjR5MDh1dkdUcmZVUXYyUEJhQktjUlZxa1hUaFdWdDF4anBXRVA3Y0tVWDZObWN2cEpUenFsV3hBbXEwYU5ZZlpnUFQwUEZRZFVwUjhKcVdobTdsTXVTLVpXbGN0aE9MTHZkZE4xUjdOOENWZlJuV3hv?oc=5",
+        "pub_date": "Wed, 09 Sep 2026 09:21:55 GMT",
         "tag": "IHSG",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Bloomberg Technoz."
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Ajaib."
       },
       {
         "id": "news-7",
-        "title": "IHSG Berpeluang Konsolidasi Hari Ini, Saham MBMA hingga ERAA Layak Dipantau",
-        "source": "InvestorTrust",
-        "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQdU9ZLTU1S3pBS0JMUUxOVmpHdHdLNFVzcFhwZTRvaFpnOXNKNGV5blY0dnRwQjJ6bS1RYkViSlplelkxanZsVnlNaXJYTktoYTRLcVA4MHVNRHB0MTY4NzBfSjhfVlNSQXhtMWdzZ3ZITERKaXV1TkF0OHRGS0o0WWQtZm4zWmFyU0NXaVVITFlpT3YxZ1RpUEF3SThfVDEwQkNxSE5qSUVtNElEVWoxWlhrOA?oc=5",
-        "pub_date": "Tue, 08 Sep 2026 22:39:00 GMT",
+        "title": "Penyebab IHSG Melemah Hingga Gagal Menembus 6.700",
+        "source": "bloombergtechnoz.com",
+        "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPbmkxMVhWcUlUS1FHYUpaSTdFN3ZweHJDbE14ZlU3ZzZFYnU5UTVxVFgwd3F6c3Y1NktNcEU2SVAtQ0FoTDhvRy1pTExYckRNME1pLU5hT29kLW01UzVZZFBUNy1IOGJJRi1yb2N5ZjVONDBjaDhjZzdraTAtZEtaWmIxcUttSTV3MDBSR0FfSV9qTjhleTM4Mmt6NnN5dDU5STdN?oc=5",
+        "pub_date": "Wed, 09 Sep 2026 06:33:11 GMT",
         "tag": "IHSG",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari InvestorTrust."
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari bloombergtechnoz.com."
       },
       {
         "id": "news-8",
+        "title": "IHSG Berpeluang Konsolidasi Hari Ini, Saham MBMA hingga ERAA Layak Dipantau",
+        "source": "investortrust.id",
+        "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQdU9ZLTU1S3pBS0JMUUxOVmpHdHdLNFVzcFhwZTRvaFpnOXNKNGV5blY0dnRwQjJ6bS1RYkViSlplelkxanZsVnlNaXJYTktoYTRLcVA4MHVNRHB0MTY4NzBfSjhfVlNSQXhtMWdzZ3ZITERKaXV1TkF0OHRGS0o0WWQtZm4zWmFyU0NXaVVITFlpT3YxZ1RpUEF3SThfVDEwQkNxSE5qSUVtNElEVWoxWlhrOA?oc=5",
+        "pub_date": "Tue, 08 Sep 2026 22:39:00 GMT",
+        "tag": "IHSG",
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari investortrust.id."
+      },
+      {
+        "id": "news-9",
         "title": "Rekomendasi Saham Tim Analis Bareksa Hari Ini: AADI, DSNG & CUAN, IHSG Berpotensi Terkoreksi",
         "source": "Bareksa.com",
         "link": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxQRjQyTS1xWVBnZFg2MDZQSk1RSTZuVnZvYVh5QjRsUDM5bTFWN2ZaWVFFZ3g5eFk4dGxRMHRMa010c1BrSnEwN0g5aFV6SGZRNUdnM01uQlBVRHVOMHBQT0RtcU1nemFxMmxYcjI0M0VRSXVvY1RlNDlkWlMtQUg5a2RvZUJFOEt5bEc3SzNOS3FfX0dscVN0bjVVMVNoQjlkZTdKNXJpYVJzZS1FUERmS2oxVDBuVHBlSEp3WmV5Z3NTVzYxSEVzX3dZcGhXQlltY1VuWlZn?oc=5",
@@ -145,34 +154,34 @@
         "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Bareksa.com."
       },
       {
-        "id": "news-9",
+        "id": "news-10",
         "title": "IHSG Hari Ini Lanjut Menguat ke 6.693, Ini Pergerakan Saham Energi",
         "source": "Listrik Indonesia",
         "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPTlJ5TC1tWGl1ZXplSDAwRGhlLXp6ZjFZVWJDaUQxREdLUkZHTHRtd0RJa3ZORE41OGVZUUVjN3E2NnM4NXJodUk0ZXRKdDg4UXNjYmhYYzN4ckw2d3ZEZXpNc01DNzJaMVMxVDlINzlTbWM1NjB4STBWZ0hnYmh5Tm9SVXdBX1JaVThwanlMLVpGZnRmaGpRY1RaUXZDbUZWMnNydFBXY1dXQQ?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 07:16:29 GMT",
+        "pub_date": "Wed, 09 Sep 2026 08:56:50 GMT",
         "tag": "IHSG",
         "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Listrik Indonesia."
       },
       {
-        "id": "news-10",
-        "title": "Saham Apple (AAPL): iPhone 18 dan Foldable Masuki Era Baru",
-        "source": "Ajaib",
-        "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQX3lwYVRJWTlsUjYzOXhNY1dwU3QyakZRek4wTW5tRGR1dEVycGFUZllpV0dMdmdJRHlsNFJWUHNiMTRUNnU0NzNVbmptT3p6d3FBUFNmSlZUTHMzWVRVdG4tMGFwR2luUFU0MzJsNEdsYjZHLTlmby1LeGtJMjBleDR3?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 06:15:47 GMT",
-        "tag": "IHSG",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Ajaib."
-      },
-      {
         "id": "news-11",
-        "title": "IHSG Rabu dibuka menguat 14,40 poin ke posisi 6.700",
-        "source": "jogja.antaranews.com",
-        "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQYzdYM0t2bHZzMUNiRC1TZ2hhbTVDbW1sRmVjYVY4Y2hoRF9GYTAxSk1ZX0Y3MUJqQ3diWGdYMzM1Z1NsNW8xa2EyZzdKUUlCbzJhZHV0b0pfTTFhelR3ZXR5dXJaSVhsY2MyVm81M0Z0NHZwWHJramNBRmROX2I4UHlpU09pSDBfOEtEb1M1TE1VQlpKRFZz?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 04:40:00 GMT",
-        "tag": "IHSG",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari jogja.antaranews.com."
+        "title": "IHSG Menguat, Asing Net Buy: TOWR dan SMGR Menarik",
+        "source": "maybanktrade.co.id",
+        "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQSDVjMS01OHhVT1RxV24xYkRHeTRRd3FLQlRBX1lncnZuMlA0UHBHeTMxY1RSb1hBcjZsZ1RickE5ekdHRU0wU214S25BYjl0bld1U1ZfWjdJeUYwZld1bzNEd2lrLWtSeFJyV2F3ejAwRG5qRXpxS3ktQTVmRG0tLUxzTzBpOXBLb0MwR1JrLTI?oc=5",
+        "pub_date": "Wed, 09 Sep 2026 08:34:00 GMT",
+        "tag": "FOREIGN_FLOW",
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari maybanktrade.co.id."
       },
       {
         "id": "news-12",
+        "title": "IHSG Rabu dibuka menguat 14,40 poin ke posisi 6.700",
+        "source": "ANTARA News Yogyakarta",
+        "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQYzdYM0t2bHZzMUNiRC1TZ2hhbTVDbW1sRmVjYVY4Y2hoRF9GYTAxSk1ZX0Y3MUJqQ3diWGdYMzM1Z1NsNW8xa2EyZzdKUUlCbzJhZHV0b0pfTTFhelR3ZXR5dXJaSVhsY2MyVm81M0Z0NHZwWHJramNBRmROX2I4UHlpU09pSDBfOEtEb1M1TE1VQlpKRFZz?oc=5",
+        "pub_date": "Wed, 09 Sep 2026 04:40:00 GMT",
+        "tag": "IHSG",
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News Yogyakarta."
+      },
+      {
+        "id": "news-13",
         "title": "Korelasi Emas, IHSG, S&P 500 & Bitcoin 10 Tahun Terakhir",
         "source": "Pluang",
         "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOU1NubjJOVE1xek4yWDNrckUwVFBjTHlFYkVXakhHaWp2TDlfbE5SWFhUMjBCeXNmR2hKdDBsZVFENXRMTXlGYUtVbGNHS05vbWIydXlrYzJUcUkxTDZPZkxWYkc1Q3gxN2h6a09uRkJfUWh0MGpVMDRSTHRDNTBwYQ?oc=5",
@@ -181,16 +190,16 @@
         "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Pluang."
       },
       {
-        "id": "news-13",
-        "title": "Harga Saham Naik Tajam, BEI Gembok Perdagangan MGLV dan UANG",
+        "id": "news-14",
+        "title": "IHSG Sesi I Tertekan 0,58% ke Level 6.647",
         "source": "CNBC Indonesia",
-        "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOQWZBS1hrMjhSTkpZbmVwU0tWWGhNdlM4MktvWDFYck9FMzVrU0M1a1NiQjc2SEV4enB3RXMzY1Y1ZlJUSlk0SG1JeFlIUEZlQnMxQzJJRFBpVXdyZFhvYW5BLTlRTzhWQ1oyYk9PdkI0SjZXN1oxZ3J3SUt0WnViYmdsN0JTSmJFSUZYcm9KMlBhOHp1cDJuSWJSc18xSHByTnRsOWUyMzIxWl9Zek1sbk8ya09kbkZrUUNoU2JR0gHDAUFVX3lxTFBTNmtSX3lSY2VveE52bVJPQ2tuM05Tdm9mZFZmY0ZZaEJsVU9mZnF0ZUs3cmZxbnBYUmp4ZUUtYkxSSGstbjdMRTNXaUxYQ3lPSzZ3cTdCclhWemFWMW5COE45bE1QZ0tQd055aWR5a0JkSVZIamZWeFdZMEZYaHBTWnBsYnhDR1YweVpyeFdXb05wMVpOWVFObUo3NGVKTnUwRnNrVWZDUW9mbjZ4VzFvRGZtZUlXcm9rdWo5cnZjYkFDOA?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 02:26:28 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNM3BkSk1zcURfVUxla19iRGd5Z0JndFJURm9CWUtOOUJ1cHdYUHVneFNQX2w0WGNZTlBZdXBqZGpnZDJkX3lNR0RkVEZ3TnpuaHE1em9XS0FvNzkwNnAxdFpjNlVFZE1yNVJVNEY0ZkItVFRnaEJBUzJEQjRnX2t1QTlPLVhtbXl2azV2ZXhTdFFyeE1wYThfQjVSWnRKMlJ4M1HSAacBQVVfeXFMUE5yeUptSjgtTm9EckJHd2tsOUl0dUJQaUxRTlVVakdVTmUtdG9WVzZOejQ3bkpVUUxBOERlSV90UzNFakpvUEVpQ1V0anU2dEhRS05GYUZaSzdmenZQUEZYaHBnbDVzTUZWdGZ4eHhJUndaN3pPOFVtMjFRNzloa1pNdzV4T0lwMjdXc2lMNUZLa25MZHZGUTNmdVVpdHBNSnRYWFJ1Sjg?oc=5",
+        "pub_date": "Wed, 09 Sep 2026 05:53:01 GMT",
         "tag": "IHSG",
         "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari CNBC Indonesia."
       },
       {
-        "id": "news-14",
+        "id": "news-15",
         "title": "IHSG Rabu dibuka menguat 14,40 poin ke posisi 6.700",
         "source": "ANTARA News Jambi",
         "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQT1QydDVXT2xPMEJ5ZVFOTlo1clhOMzYzb0FkOURIUzEyUDRzRHR5ZXVOWEFSRElqdndTS1h2Q2YwQm1KTzBIaUttbDVHRy1TZnVHcGNMMHp1cHZ0c1B6dVhrcm9pdnBUaWFucHVFc1M5ZzIyQVlFOHNtc04tYWtQOE1HUW9rQzRhUkdwSmxsNlVlZGs5YjVoU3EyQmbSAZwBQVVfeXFMUE9UMnQ1V09sTzBCeWVRTk5aNXJYTjM2M29BZDlESFMxMlA0c0R0eWV1TlhBUkRJanZ3U0tYdkNmMEJtSk8wSGlLbWw1R0ctU2Z1R3BjTDB6dXB2dHNQenVYa3JvaXZwVGlhbnB1RXNTOWcyMkFZRThzbXNOLWFrUDhNR1Fva0M0YVJHcEpsbDZVZWRrOWI1aFNxMkJm?oc=5",
@@ -199,16 +208,25 @@
         "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News Jambi."
       },
       {
-        "id": "news-15",
+        "id": "news-16",
+        "title": "Harga Saham Naik Tajam, BEI Gembok Perdagangan MGLV dan UANG",
+        "source": "CNBC Indonesia",
+        "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOQWZBS1hrMjhSTkpZbmVwU0tWWGhNdlM4MktvWDFYck9FMzVrU0M1a1NiQjc2SEV4enB3RXMzY1Y1ZlJUSlk0SG1JeFlIUEZlQnMxQzJJRFBpVXdyZFhvYW5BLTlRTzhWQ1oyYk9PdkI0SjZXN1oxZ3J3SUt0WnViYmdsN0JTSmJFSUZYcm9KMlBhOHp1cDJuSWJSc18xSHByTnRsOWUyMzIxWl9Zek1sbk8ya09kbkZrUUNoU2JR0gHDAUFVX3lxTFBTNmtSX3lSY2VveE52bVJPQ2tuM05Tdm9mZFZmY0ZZaEJsVU9mZnF0ZUs3cmZxbnBYUmp4ZUUtYkxSSGstbjdMRTNXaUxYQ3lPSzZ3cTdCclhWemFWMW5COE45bE1QZ0tQd055aWR5a0JkSVZIamZWeFdZMEZYaHBTWnBsYnhDR1YweVpyeFdXb05wMVpOWVFObUo3NGVKTnUwRnNrVWZDUW9mbjZ4VzFvRGZtZUlXcm9rdWo5cnZjYkFDOA?oc=5",
+        "pub_date": "Wed, 09 Sep 2026 02:26:28 GMT",
+        "tag": "IHSG",
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari CNBC Indonesia."
+      },
+      {
+        "id": "news-17",
         "title": "BEI Buka Gembok Saham Gocap, Investor Ritel Bisa Dapat Hidden Gem - Market",
-        "source": "Bloomberg Technoz",
+        "source": "bloombergtechnoz.com",
         "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPRHhXVEJHYXlBMXZwYldwSFdRcW8xQzlyNmxyZXdSenZfdmtPcXFlX3lHS2pGWXZSVkRBZjBhTVY4a0R4OXl4Y19xS3Fad2Q4R3FueHZIVGQzRGNWSF93WklsZTZ0RlhuU3ZELVQyc3hTWFBhZEtzanFGZFNlWG5mM3dQeG1SM1J0STUyUE5jNXplMXpTYjczcmR2aHVRanVMc19SQjd1aGcwem8wcmVQeXc5X1B2TFU?oc=5",
         "pub_date": "Wed, 09 Sep 2026 06:14:25 GMT",
         "tag": "IHSG",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Bloomberg Technoz."
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari bloombergtechnoz.com."
       },
       {
-        "id": "news-16",
+        "id": "news-18",
         "title": "BEI Pantau Ketat Saham SOHO & OILS Usai Harga Naik Terus",
         "source": "CNBC Indonesia",
         "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPNERyc0xiOWxuZjFXSVRIZ0c1MFdwZFJSRVFWQXozT2VGOFRyRENTUWRDYzhBSUFoQnZnd2JHR1V1NE9tbTRkTlBROEJMN2dIMjNLeFM1ZnQ1eFVNc0VDcWRLbHVCakd5QnhYejJQYS01S2tjVFNPbzlpUnZiLTktdnlLWjBJejNpc1VGWjdEcE12UXhlYlVJMDNlWFljbVBncmc0V2pFd0tIYUFHQU85UnlCTGV1dHfSAbwBQVVfeXFMTTJhRnI5STdRVDR5b3J1ZUdQdEEwMHdNTFRQdTd1RFpld29nVzV5Mk5GUFpLYzB3eUlRdGtUVUItR1pHYnpJcDNsRmktYjZpc2kyODVEZzRhRkY4WEdQZkIyTWc5ZGx4UVQ0aWZNZDVxdkJGRExtbUdDdks2TjNmQWdoS3QyWWlEa0JKbU5zamFRWEFQTS0yTUcwQ1hieUpkNnd0YzlIbzZBa1ZWY1Nic0IweF9IS1FiVnpZYTk?oc=5",
@@ -217,16 +235,25 @@
         "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari CNBC Indonesia."
       },
       {
-        "id": "news-17",
+        "id": "news-19",
         "title": "IHSG berpotensi variatif seiring tensi geopolitik dan ekspektasi Fed",
-        "source": "jogja.antaranews.com",
+        "source": "ANTARA News Yogyakarta",
         "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOSkFhVVh4dGtqLVI4ekFwb0cxb0hsV3I4bGJCMTFDYmd6RmtVTFRhWHNuREJZcVZHQ2ltcm9sRldFcnBYb21NX0dHNVp6aTVBUks5Q3FXMkVaMXpfemZnZ2k5bzN4UGU0UXdoU2ZrZVE3OTV5UWpzLUdPOXZEb1ROeDBMNE1ZaGFyUEdLZlk4MjBURmZTMGpxdTEzY09EMDJ3Zl9JM0hLOHRkbjBaYnNUZA?oc=5",
         "pub_date": "Wed, 09 Sep 2026 05:00:00 GMT",
         "tag": "MACRO",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari jogja.antaranews.com."
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News Yogyakarta."
       },
       {
-        "id": "news-18",
+        "id": "news-20",
+        "title": "Saham Apple (AAPL): iPhone 18 dan Foldable Masuki Era Baru",
+        "source": "Ajaib",
+        "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQX3lwYVRJWTlsUjYzOXhNY1dwU3QyakZRek4wTW5tRGR1dEVycGFUZllpV0dMdmdJRHlsNFJWUHNiMTRUNnU0NzNVbmptT3p6d3FBUFNmSlZUTHMzWVRVdG4tMGFwR2luUFU0MzJsNEdsYjZHLTlmby1LeGtJMjBleDR3?oc=5",
+        "pub_date": "Wed, 09 Sep 2026 06:15:47 GMT",
+        "tag": "IHSG",
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Ajaib."
+      },
+      {
+        "id": "news-21",
         "title": "IHSG Dibuka Menguat 0,22% Tembus Level Psikologis 6.700",
         "source": "CNBC Indonesia",
         "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQUmlGZWNlMUNJbDZfTHEwMDVycFdmdXV0aTlNV1B4MFJ5VWlSX3dDbU5kdHZGbDZyajRHd2UtazVmVm4zbXV1R09aZGRGUjlkaVBjc29ZVDdpR0NKM1Nody02cHplX3hkYWR6cnI3VmZXZW1JZ2tOX1NsWmZFSFlDWHUyM3lTUFRwNExpWFRXb01LOEJXOTk2ZjltMmdhZVBYYnRVZGJXT3NwOVRjRVlXWDNhZmXSAboBQVVfeXFMTmowM0l0ZE1nd29iYU44aVhWenlwcHZQRXpIU2tORGp4YjJneUZlZXByVDZsLUQ5NDNMVTZHeEQtd1RwLUhaUUxoOE5ESHRTTFM5T3JfeEtyWndxSGRZX1hPX1MzWjFLTkhFX2hnVzZzd3NldWxodnZ6TjBVZXl5SG9zbzU2emZVMVF6S0g1N2NrS3Rqa2ptSFA2RnZjZDJheUdFYUxDcVpGUDNXR3NQMnNtMUl6bXhWUXJR?oc=5",
@@ -235,16 +262,25 @@
         "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari CNBC Indonesia."
       },
       {
-        "id": "news-19",
+        "id": "news-22",
+        "title": "IHSG Tergelincir, tapi 2 Saham ARA hingga 34%",
+        "source": "investor.id",
+        "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxORkJRM183RlotejY0d1JudnlXc2FkSTk2TW9FeGRKMS10aF9UWHhyRzhxcUNiek9JQ05nNmJsUTBET3A2b3RKWFZmak5BZnRPR2dYUGUxa00wZG52U19Vengtd256VzZDd3AwYnI2NEdGbE1CRU02bzEzeTVQVk9NZWhuZw?oc=5",
+        "pub_date": "Wed, 09 Sep 2026 09:35:55 GMT",
+        "tag": "IHSG",
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari investor.id."
+      },
+      {
+        "id": "news-23",
         "title": "IHSG Rabu menguat 14,40 poin jadi 6.700",
-        "source": "kalsel.antaranews.com",
+        "source": "ANTARA News",
         "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNTDllX0VlSFNEU2xvdGVtLS1hVVRXbGgwNC1fcVhjTU5fQzAwMmNHeEJyVUNZb3JTaFVoSlNuTVJJWU1TSlFBampyZFFDZWtJLXdzRkRzQUticGxhQ3JMVExkdkZ2Y0ZRLUZEQXZQMFV6OTk2WHhUUmlXZlVtSXVaaGVET3otXzND0gGOAUFVX3lxTE1TWURvNWJvWEl2UHJmMi1yUDVEWVBYVzNPZWxfQzBqekhvejF5RXNKSGJ4bW85LVFEYmg4Wnhxb25jVUhaeFE2cWROcVpZczRZXzBUaUJQRWZtcXVCTTBNbE1zVFk5dzJINV9VUjRGWXNVbkRhYWtfVzA5b0pkbkhKLTktM1k3N0NHYW5rdHc?oc=5",
         "pub_date": "Wed, 09 Sep 2026 02:15:31 GMT",
         "tag": "IHSG",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari kalsel.antaranews.com."
+        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News."
       },
       {
-        "id": "news-20",
+        "id": "news-24",
         "title": "Saham BBCA Tiba-tiba Anjlok 2% Lebih, Asing Net Sell Jumbo",
         "source": "CNBC Indonesia",
         "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPLXNQTWZUNDVHVEtaUkZKTUtPTTZBN3VFWHBMdUZ3cTFGWEoxZ04waXVqVzUtRXlXZlo1LWJZVU5xWmYxTElwLVhjNzJONE5uaS1lWEdqTHA1bk5hR2VzZjJueU5rZDZSQVI2S1ZxVHZ1TWlDSXNZcWY0Z1pQX1N4eEYzNHl5by1jSzk4YkdGd2h0OHNNTTNoWGJNU29UZEpNdHZqdy14TkV1bV94NTE5LU9yaXdsNlM3bnfSAb8BQVVfeXFMTW1xVVdSMS14NVoxa2FrVFMwaDZqaDJ3VkppYTZ0REhJNzBGMVY1N3NDMVRUb2FtdzBOSVJ0Yk5QQU9mX1plMzNSM242WHc4S081NmRrLWtzdWNzbWNQR1VvVVRKdE5TS3p4dTM0ZlZVYkFRX2Nfbk53eTZqT3FrNzRObGRrZ0daaWtMLUg3S2ctUEZMUGVVWTFSRVJIeWkwN1BKeTBiNUpOUG5zYmRvY3FvdXBHRklPdjlvYWFiU2s?oc=5",
@@ -253,53 +289,17 @@
         "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari CNBC Indonesia."
       },
       {
-        "id": "news-21",
+        "id": "news-25",
         "title": "Samuel Sekuritas Kembalikan 1,13 Miliar Saham NSSS, Kepemilikan Melonjak Jadi 8,86%",
         "source": "pasardana.id",
         "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPcHh4N3pITmtQNXB1TUh6endJRmpoNnVFczJ6TWxtLWUyQ1dINzBuQUdnWm9OSGJNaW8xVmFxVVhEdzV0WmtDaGVhWVFiMFBwM0lNV2xCaWgtU2lOWGNlc01xaFNvTzRJeUJTZ0paQm5OT0Rpd2t0SmJlclNKTmVLY01od25mRFBKOW9BTGNxcG1yUHpsb3JxT0Z2TTJWMDY0V2FGeEVlSXYyQkcxdHhmLS02b0NDZlU?oc=5",
         "pub_date": "Wed, 09 Sep 2026 06:52:00 GMT",
         "tag": "IHSG",
         "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari pasardana.id."
-      },
-      {
-        "id": "news-22",
-        "title": "Belum Bayar Obligasi & Sukuk, BEI Lanjut Suspensi Saham WIKA",
-        "source": "CNBC Indonesia",
-        "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNTkY4OEY1WGxkNWRicWZaVG5ITVB6dnY1T3QteWNqdUV1WUFLeVdQbV9BUGlqSW1BS29ZSGFoMk9ua2d5MFdQRDhHN2FlM2lsa3lSTVVjcDBILVpiUWhSNXh0c1RNUzk3dVM4cldvcTlFWWRZTm5zd2ZGQkhGOVRHVmZWZUJId0JQTE56LUJoODBRREU1LXlxUTJRRi03UHVqa3MtSFM3VFJaLVF5bkRJdFR5UnNnaHVtTi1B0gHAAUFVX3lxTE9wRW5XWjViRmlpeDNiZU9wQ2Q3ZVNwYXBEU1MzMVYxNU55RlpqT0s1Y0V1aDdVZkhycUJXaVRxeGJwdXFaOXAyM25kTWdDRHZsQy1GSWhFeTgwejJQOEhiM0VhdmRMZm1UZlptc21YajEzX1paS01md2JKYnpCZGpucGxKSU9ydDd4enlNWWh5enFHSjRsZzIxZndOTXd5dk9ObjNkMkdTNWtmVFpVY1F0dTZyblBXZUNJVlFZeWJ2eg?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 08:25:03 GMT",
-        "tag": "IHSG",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari CNBC Indonesia."
-      },
-      {
-        "id": "news-23",
-        "title": "IHSG Fluktuatif Pagi Hari Ini, Cermati Sentimennya",
-        "source": "Bloomberg Technoz",
-        "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQOElyVi1LeUpWOHpIaEtXb1haSGRld2FVZTNzNjlZeV9URnFRV3MySk1MTFFLb09KeklVTmN1YUhoSHJ0WlY4c1Z4N09xSjBlajNCQjFHdmZRQk1qVW5mWEl6RGVIYkRVdlo5cXpMTGExR21wQlp0dlFLOXhDUkpPcmFldUlINm8xdzE1REFnVnpVeEw1eWM5NHdHMUxfaDE3aW04?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 03:05:00 GMT",
-        "tag": "IHSG",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Bloomberg Technoz."
-      },
-      {
-        "id": "news-24",
-        "title": "IHSG Hari Ini (9/9) Dibuka Menguat ke 6.702, Intip Saham Rekomendasi Analis",
-        "source": "Infobanknews",
-        "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxNNTJ2a3I3T2p6aW9PYW1RNFUtbTV1Z0djQUNaRDdTMkhNSHZ5c2NkVm9RU1hWV05KY0RLbTZYWWV6YWYwdWRQWkgtbW11YmRhN0NFdmR2b1lqeXVMcVlpMDl1cWptZmJfb210SUxzakRoOVlHa3prTnFubmdXTnpfYUhuSHRmd2E1THFsN0NYMGdqTktDeXRLTTBlMmxmUQ?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 02:01:00 GMT",
-        "tag": "IHSG",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Infobanknews."
-      },
-      {
-        "id": "news-25",
-        "title": "Emiten RI Ini Mau Caplok 75% Saham Aztech Pandu Persada",
-        "source": "CNBC Indonesia",
-        "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPWkdJeW93UnR5c20xZ0owcVJhUnFER3BvYmhNZjNSd3lKRVdlNUNyU2RyWnhTVGNlVmhOYks0eUlVeUVNUklEa08wbDNBMVZhVzI4WFA0MEtiMDRma2pGLXdfZHpVbWtLcF9sUG0yQmZWY0hvVDRFWHp2em4wTTQwbXFidWN6ZUl4UEdLNWdWamZULVRUTFRRLVhiT29qc2dLY3VsMU9aNUVRUDk2OFNiMWlNb3dlZ03SAbwBQVVfeXFMT19GODJNSmhHYnhVVjY5YlJ4eEhEVXA2QnVuZl9xamJMNFJ6RE12TG84dm1LaC1KRTVTZXZ5QlUwTFRlZjdNYmI0LWxVZk9fR1R5WC1vNzJhbVBJRGhtTjIwcXdaa0I0d2l3bFlWenZJVmtGOXluWW5ISDhDTGZvY1UtSlZpZVBVRmtvakNDVDRDenc5djlFaWl2NkFVLXhxbTJhckhqTlhaVUpNY0NVT1NIaW4tczcxbW44RnU?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 06:45:25 GMT",
-        "tag": "IHSG",
-        "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari CNBC Indonesia."
       }
     ],
-    "full_narrative": "Global telemetry report: Gold at $4446.1 (1.19%), Brent Crude at $100.05 (2.18%). DXY at 98.77 pts. Monitored for impact on Indonesian equities.",
-    "updated_at": "2026-09-09T16:07:40.908676"
+    "full_narrative": "Global telemetry report: Gold at $4442.0 (1.09%), Brent Crude at $100.57 (2.71%). DXY at 98.76 pts. Monitored for impact on Indonesian equities.",
+    "updated_at": "2026-09-09T16:51:23.181124"
   },
   "conglomerates": {
     "BARITO_GROUP": [
@@ -1076,7 +1076,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "Strong ecosystem TVL expansion; holding breakout retest above recent pivot.",
       "invalidation_rule": "4H candle close below $2.0855 voids trade structure.",
-      "updated_at": "2026-09-09T16:07:43.867765",
+      "updated_at": "2026-09-09T16:51:25.769421",
       "rank": 1
     },
     {
@@ -1093,7 +1093,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "Decentralized compute demand catalyst; RSI recovering from oversold bounce.",
       "invalidation_rule": "4H candle close below $6.208 voids trade structure.",
-      "updated_at": "2026-09-09T16:07:43.867803",
+      "updated_at": "2026-09-09T16:51:25.769484",
       "rank": 2
     },
     {
@@ -1110,7 +1110,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "AI alliance token consolidation; tight stop placement available at range low.",
       "invalidation_rule": "4H candle close below $1.4065 voids trade structure.",
-      "updated_at": "2026-09-09T16:07:43.867813",
+      "updated_at": "2026-09-09T16:51:25.769500",
       "rank": 3
     },
     {
@@ -1127,7 +1127,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "High DEX volume dominance; breakout continuation pattern above key horizontal zone.",
       "invalidation_rule": "4H candle close below $173.14 voids trade structure.",
-      "updated_at": "2026-09-09T16:07:43.867743",
+      "updated_at": "2026-09-09T16:51:25.769387",
       "rank": 4
     },
     {
@@ -1144,7 +1144,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "Oracle network staking expansion; tight compression beneath major supply zone.",
       "invalidation_rule": "4H candle close below $12.42 voids trade structure.",
-      "updated_at": "2026-09-09T16:07:43.867794",
+      "updated_at": "2026-09-09T16:51:25.769468",
       "rank": 5
     },
     {
@@ -1161,7 +1161,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "AI & modular narrative proxy; bullish 4H momentum crossover.",
       "invalidation_rule": "4H candle close below $5.044 voids trade structure.",
-      "updated_at": "2026-09-09T16:07:43.867775",
+      "updated_at": "2026-09-09T16:51:25.769437",
       "rank": 6
     },
     {
@@ -1178,7 +1178,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "Defending multi-week ascending trendline; gas burn and staking ratio stable.",
       "invalidation_rule": "4H candle close below $2570.5 voids trade structure.",
-      "updated_at": "2026-09-09T16:07:43.867730",
+      "updated_at": "2026-09-09T16:51:25.769367",
       "rank": 7
     },
     {
@@ -1195,7 +1195,7 @@
       "conviction": "HIGH",
       "catalyst_thesis": "Subnet institutional testing catalyst; accumulation at base of consolidation channel.",
       "invalidation_rule": "4H candle close below $27.55 voids trade structure.",
-      "updated_at": "2026-09-09T16:07:43.867785",
+      "updated_at": "2026-09-09T16:51:25.769453",
       "rank": 8
     },
     {
@@ -1212,7 +1212,7 @@
       "conviction": "MEDIUM",
       "catalyst_thesis": "Consolidation above weekly support band; institutional spot ETF inflows steady.",
       "invalidation_rule": "4H candle close below $66445.0 voids trade structure.",
-      "updated_at": "2026-09-09T16:07:43.867705",
+      "updated_at": "2026-09-09T16:51:25.769333",
       "rank": 9
     },
     {
@@ -1229,7 +1229,7 @@
       "conviction": "MEDIUM",
       "catalyst_thesis": "Range-bound accumulation near platform utility support level.",
       "invalidation_rule": "4H candle close below $572.3 voids trade structure.",
-      "updated_at": "2026-09-09T16:07:43.867755",
+      "updated_at": "2026-09-09T16:51:25.769404",
       "rank": 10
     }
   ],
@@ -1549,7 +1549,348 @@
     "DIVIDEND_TRAP",
     "FOREIGN_FLOW_MOMENTUM"
   ],
+  "backtest_lab": {
+    "summary": {
+      "total_archetypes_tested": 7,
+      "best_performer": "SMC_ORDER_BLOCK",
+      "best_return_pct": 1600.393014967359
+    },
+    "archetypes": {
+      "BREAKOUT": {
+        "total_trades": 100,
+        "wins": 46,
+        "losses": 54,
+        "win_rate_pct": 46.0,
+        "total_pnl": 157780131.42553967,
+        "total_return_pct": 157.78013142553968,
+        "profit_factor": 1.4440397745054443,
+        "sharpe_ratio": 2.868115469332606,
+        "sortino_ratio": 3.9267331822550426,
+        "max_drawdown_pct": 25.298509094188525,
+        "max_drawdown_value": 25298509.094188526,
+        "expectancy_pct": 2.1159999999999997
+      },
+      "ACCUMULATION": {
+        "total_trades": 100,
+        "wins": 70,
+        "losses": 30,
+        "win_rate_pct": 70.0,
+        "total_pnl": 674234367.7152478,
+        "total_return_pct": 674.2343677152477,
+        "profit_factor": 3.4618293437112255,
+        "sharpe_ratio": 8.613529707900712,
+        "sortino_ratio": 9.134367562357719,
+        "max_drawdown_pct": 9.625153859137558,
+        "max_drawdown_value": 17038125.361131728,
+        "expectancy_pct": 2.014
+      },
+      "OVERSOLD_REBOUND": {
+        "total_trades": 100,
+        "wins": 52,
+        "losses": 48,
+        "win_rate_pct": 52.0,
+        "total_pnl": 140359109.6299306,
+        "total_return_pct": 140.3591096299306,
+        "profit_factor": 1.4171244789948236,
+        "sharpe_ratio": 3.10783635341868,
+        "sortino_ratio": 3.7535211035860847,
+        "max_drawdown_pct": 23.66253161257674,
+        "max_drawdown_value": 34348008.202352166,
+        "expectancy_pct": 1.8440000000000005
+      },
+      "PULLBACK": {
+        "total_trades": 100,
+        "wins": 59,
+        "losses": 41,
+        "win_rate_pct": 59.0,
+        "total_pnl": 225030940.30656195,
+        "total_return_pct": 225.03094030656197,
+        "profit_factor": 1.9915067688292258,
+        "sharpe_ratio": 4.512010656932458,
+        "sortino_ratio": 5.082580486853704,
+        "max_drawdown_pct": 22.18902224126861,
+        "max_drawdown_value": 25917317.737345055,
+        "expectancy_pct": 1.8400000000000007
+      },
+      "SMC_ORDER_BLOCK": {
+        "total_trades": 100,
+        "wins": 65,
+        "losses": 35,
+        "win_rate_pct": 65.0,
+        "total_pnl": 1600393014.967359,
+        "total_return_pct": 1600.393014967359,
+        "profit_factor": 3.127652544698946,
+        "sharpe_ratio": 9.192973210118392,
+        "sortino_ratio": 12.311517567612906,
+        "max_drawdown_pct": 17.332011512695516,
+        "max_drawdown_value": 69844813.97358096,
+        "expectancy_pct": 3.472
+      },
+      "DIVIDEND_TRAP": {
+        "total_trades": 100,
+        "wins": 59,
+        "losses": 41,
+        "win_rate_pct": 59.0,
+        "total_pnl": 144100537.67757738,
+        "total_return_pct": 144.1005376775774,
+        "profit_factor": 1.7057985453778401,
+        "sharpe_ratio": 4.07491184291508,
+        "sortino_ratio": 4.461832818137542,
+        "max_drawdown_pct": 18.168544342043006,
+        "max_drawdown_value": 24667256.15011485,
+        "expectancy_pct": 1.92
+      },
+      "FOREIGN_FLOW_MOMENTUM": {
+        "total_trades": 100,
+        "wins": 61,
+        "losses": 39,
+        "win_rate_pct": 61.0,
+        "total_pnl": 1498646298.5678728,
+        "total_return_pct": 1498.6462985678727,
+        "profit_factor": 3.5147594688747623,
+        "sharpe_ratio": 8.251701660146825,
+        "sortino_ratio": 11.732617360682061,
+        "max_drawdown_pct": 11.953489068719307,
+        "max_drawdown_value": 28710433.295079768,
+        "expectancy_pct": 4.252000000000001
+      }
+    },
+    "best_performer": "SMC_ORDER_BLOCK",
+    "equity_curves": {
+      "BREAKOUT": [
+        100000000,
+        87374124.14759095,
+        86178751.5433209,
+        74701490.90581147,
+        84319844.1715235,
+        105064299.99211378,
+        100398802.22259614,
+        98433475.16906098,
+        111636918.11708136,
+        97459863.45736378,
+        107492675.70935456,
+        122081054.83586162,
+        135084862.8396591,
+        131952451.71630286,
+        129893757.64336243,
+        139446762.2192768,
+        134811394.18725285,
+        149968779.0056852,
+        144868129.19436643,
+        125088168.33193472,
+        156356347.63413107,
+        175875540.97148603,
+        174271904.6803278,
+        169047718.86548173,
+        168908453.59813923,
+        161850688.69369698,
+        162778384.4163859,
+        181172479.86069062,
+        221594414.75662044,
+        221443943.79594174,
+        257780131.42553967
+      ],
+      "ACCUMULATION": [
+        100000000,
+        118596611.54893835,
+        139083147.79375187,
+        160253239.37248117,
+        156818994.87382665,
+        165177215.40135533,
+        160418127.5409162,
+        158698027.50414303,
+        167624997.3275514,
+        166264330.22178084,
+        177486308.24008694,
+        172068939.4544303,
+        184330435.3294789,
+        180879034.54658413,
+        206554198.58274654,
+        211159769.5443085,
+        204268741.6094687,
+        216903469.17312256,
+        228852948.8230367,
+        236228215.3478141,
+        267506065.90305012,
+        280056680.36001104,
+        297874860.333808,
+        304117730.1952322,
+        331264467.0585797,
+        374317349.0981359,
+        385007396.01217973,
+        449363696.2575579,
+        465099395.41412175,
+        525431632.992019,
+        774234367.7152478
+      ],
+      "OVERSOLD_REBOUND": [
+        100000000,
+        108972977.15245156,
+        128939914.71414185,
+        139920685.15186167,
+        137815547.45514777,
+        132201400.70627157,
+        126334908.34307724,
+        122583814.13888207,
+        118893444.19518185,
+        116856756.77281803,
+        116090753.89095733,
+        120754718.10244447,
+        128565601.10815468,
+        139974790.16233715,
+        148494537.64803654,
+        147259099.96157905,
+        163021857.7023158,
+        160349317.8478652,
+        169528443.12091917,
+        170106590.27789837,
+        160940450.73045042,
+        153197142.60970065,
+        165210276.20576215,
+        193568604.40026343,
+        186458681.5782613,
+        193843246.42312452,
+        184092524.41943145,
+        198651694.66262704,
+        214907592.71670666,
+        260919771.28556538,
+        240359109.6299306
+      ],
+      "PULLBACK": [
+        100000000,
+        116802432.55217579,
+        104060436.18760425,
+        101171142.34037629,
+        99224543.27331522,
+        96751475.7842999,
+        94465078.90769853,
+        100693380.46612215,
+        105509981.05252603,
+        99398704.84199621,
+        103111769.19007282,
+        101339350.65608522,
+        105091882.3350988,
+        109297216.58363494,
+        97356841.63620485,
+        94410433.78788799,
+        99697335.17474967,
+        112224069.41556469,
+        107011241.49437146,
+        114924863.57203321,
+        129710639.97217582,
+        135384172.81648594,
+        153991322.20635065,
+        164031538.28477657,
+        171718432.90261185,
+        201530305.94418603,
+        245176617.12938246,
+        239354844.2485743,
+        226065952.88632378,
+        244890086.80242237,
+        325030940.30656195
+      ],
+      "SMC_ORDER_BLOCK": [
+        100000000,
+        110686044.37573843,
+        118502092.79701567,
+        125511452.21944249,
+        125720035.40868254,
+        138385593.8912066,
+        131566053.57702117,
+        161810190.03940502,
+        198713742.8906155,
+        249488608.98875338,
+        273698703.4954759,
+        270828232.5653062,
+        295315785.4144305,
+        335305382.19721687,
+        326671510.79302007,
+        358170830.20848304,
+        386318267.0977655,
+        345162352.52434355,
+        373270467.8450302,
+        372770138.4955813,
+        397914124.83328956,
+        429320228.1590239,
+        520113838.9340644,
+        628416897.8875854,
+        750358634.1071889,
+        813159364.4839034,
+        1000646564.9621524,
+        1180994944.2084599,
+        1160188799.147838,
+        1155205088.5601947,
+        1700393014.967359
+      ],
+      "DIVIDEND_TRAP": [
+        100000000,
+        97735375.32921478,
+        106792738.44292945,
+        118734332.75537409,
+        122472779.07289422,
+        128214998.81464332,
+        129949604.49650432,
+        125509205.71158767,
+        129298841.68083152,
+        116886806.76921628,
+        119978556.86185247,
+        116282575.14736235,
+        118044542.81527612,
+        124784443.3585179,
+        121002365.12903427,
+        118950004.28758231,
+        114651963.37689236,
+        121179801.08204874,
+        137954340.8184724,
+        159316981.03219655,
+        154630281.57000306,
+        140076080.10012436,
+        144089507.084236,
+        139720696.27941787,
+        145106640.95619538,
+        142586355.92427763,
+        157833034.51292095,
+        180351204.3372355,
+        189420187.81011698,
+        219800254.80493027,
+        244100537.67757738
+      ],
+      "FOREIGN_FLOW_MOMENTUM": [
+        100000000,
+        99465765.27377173,
+        110452796.48610683,
+        126004995.43455595,
+        129294755.09650129,
+        127781968.5427555,
+        126960070.75359178,
+        140225714.08265027,
+        145805097.4805866,
+        145061842.17100152,
+        181214114.39404297,
+        202760929.01798818,
+        230748545.52393857,
+        226785602.92880535,
+        253492623.5592378,
+        225328037.31976706,
+        249042614.74619177,
+        285855514.9305404,
+        284679210.61812973,
+        353030750.265473,
+        376197963.96028465,
+        417492137.1477189,
+        516260113.94727767,
+        517114842.2283242,
+        630991124.3989617,
+        607841739.2481112,
+        759955744.1351686,
+        844455830.8306236,
+        922484503.0058777,
+        1021955862.6587915,
+        1598646298.5678728
+      ]
+    }
+  },
   "mode": "hourly_crypto_macro",
-  "execution_duration_sec": 14.28,
-  "last_updated": "2026-09-09T16:07:44.316639"
+  "execution_duration_sec": 8.42,
+  "last_updated": "2026-09-09T16:51:26.084473"
 }

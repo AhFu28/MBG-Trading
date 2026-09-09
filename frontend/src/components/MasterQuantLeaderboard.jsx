@@ -1,7 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import NewsTab from './NewsTab.jsx';
 import PersonalWatchlistTab from './PersonalWatchlistTab.jsx';
-import KnowledgeWikiTab from './KnowledgeWikiTab.jsx';
+import VirtualForwardPortfolio from './VirtualForwardPortfolio.jsx';
+import BacktestPerformanceLab from './BacktestPerformanceLab.jsx';
+import EconomicCalendarTab from './EconomicCalendarTab.jsx';
+import PearsonCorrelationWidget from './PearsonCorrelationWidget.jsx';
+import GlobalMarketsTab from './GlobalMarketsTab.jsx';
+import OrderBookSimulator from './OrderBookSimulator.jsx';
+import QuantAcademyTab from './QuantAcademyTab.jsx';
 
 export default function MasterQuantLeaderboard({
   tradePlans = [],
@@ -11,6 +17,9 @@ export default function MasterQuantLeaderboard({
   foreignFlow = {},
   liveNews = [],
   macro = {},
+  paperPortfolio = {},
+  backtestLab = {},
+  strategyRankings = [],
   onSelectTicker,
   onOpenLotCalc
 }) {
@@ -18,6 +27,7 @@ export default function MasterQuantLeaderboard({
   const [stockSubFilter, setStockSubFilter] = useState('ALL_STOCKS'); // ALL_STOCKS | PLANS | KONGLO | DIVIDEND | FOREIGN
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedId, setExpandedId] = useState(null);
+  const [orderBookModal, setOrderBookModal] = useState({ isOpen: false, ticker: 'BBRI', price: 4900 });
 
   const [sortField, setSortField] = useState('rank');
   const [sortDirection, setSortDirection] = useState('asc');
@@ -291,10 +301,10 @@ export default function MasterQuantLeaderboard({
 
   return (
     <div className='telemetry-panel' style={{ border: 'var(--border-hairline)' }}>
-      {/* 1. Header Bar with the 5 PRIMARY TABS */}
-      <div className='telemetry-header' style={{ background: 'var(--bg-panel-subtle)', borderBottom: 'var(--border-hairline)' }}>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-          <span style={{ color: 'var(--accent-orange)', fontWeight: '900', marginRight: '6px' }}>
+      {/* 1. Header Bar with the FULL QUANT NAVIGATION TABS */}
+      <div className='telemetry-header' style={{ background: 'var(--bg-panel-subtle)', borderBottom: 'var(--border-hairline)', overflowX: 'auto' }}>
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <span style={{ color: 'var(--accent-orange)', fontWeight: '900', marginRight: '4px', fontSize: '11px' }}>
             TERMINAL NAVIGATION:
           </span>
 
@@ -302,7 +312,7 @@ export default function MasterQuantLeaderboard({
           <button
             onClick={() => { setActiveMainTab('STOCK'); setExpandedId(null); }}
             className={'telemetry-btn ' + (activeMainTab === 'STOCK' ? 'active' : '')}
-            style={{ fontSize: '11px', fontWeight: '700', padding: '5px 12px' }}
+            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
           >
             📈 SAHAM IDX ({allStockItems.length})
           </button>
@@ -311,45 +321,133 @@ export default function MasterQuantLeaderboard({
           <button
             onClick={() => { setActiveMainTab('CRYPTO'); setExpandedId(null); }}
             className={'telemetry-btn ' + (activeMainTab === 'CRYPTO' ? 'active' : '')}
-            style={{ fontSize: '11px', fontWeight: '700', padding: '5px 12px' }}
+            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
           >
             ⚡ CRYPTO SPOT ({allCryptoItems.length})
           </button>
 
-          {/* TAB 3: NEWS */}
+          {/* TAB 3: CURRENT TEST (Paper Portfolio) */}
+          <button
+            onClick={() => { setActiveMainTab('CURRENT_TEST'); setExpandedId(null); }}
+            className={'telemetry-btn ' + (activeMainTab === 'CURRENT_TEST' ? 'active' : '')}
+            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px', color: activeMainTab === 'CURRENT_TEST' ? '#fff' : 'var(--accent-green)' }}
+          >
+            🧪 CURRENT TEST
+          </button>
+
+          {/* TAB 4: BACKTEST LAB */}
+          <button
+            onClick={() => { setActiveMainTab('BACKTEST_LAB'); setExpandedId(null); }}
+            className={'telemetry-btn ' + (activeMainTab === 'BACKTEST_LAB' ? 'active' : '')}
+            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px', color: activeMainTab === 'BACKTEST_LAB' ? '#fff' : '#00b4d8' }}
+          >
+            📊 BACKTEST LAB
+          </button>
+
+          {/* TAB 5: GLOBAL MARKETS */}
+          <button
+            onClick={() => { setActiveMainTab('GLOBAL_MARKETS'); setExpandedId(null); }}
+            className={'telemetry-btn ' + (activeMainTab === 'GLOBAL_MARKETS' ? 'active' : '')}
+            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
+          >
+            🌍 PASAR GLOBAL
+          </button>
+
+          {/* TAB 6: ECONOMIC CALENDAR */}
+          <button
+            onClick={() => { setActiveMainTab('ECONOMIC_CALENDAR'); setExpandedId(null); }}
+            className={'telemetry-btn ' + (activeMainTab === 'ECONOMIC_CALENDAR' ? 'active' : '')}
+            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
+          >
+            📅 KALENDER MAKRO
+          </button>
+
+          {/* TAB 7: PEARSON CORRELATION */}
+          <button
+            onClick={() => { setActiveMainTab('PEARSON_CORRELATION'); setExpandedId(null); }}
+            className={'telemetry-btn ' + (activeMainTab === 'PEARSON_CORRELATION' ? 'active' : '')}
+            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
+          >
+            🌐 KORELASI PEARSON
+          </button>
+
+          {/* TAB 8: NEWS */}
           <button
             onClick={() => { setActiveMainTab('NEWS'); setExpandedId(null); }}
             className={'telemetry-btn ' + (activeMainTab === 'NEWS' ? 'active' : '')}
-            style={{ fontSize: '11px', fontWeight: '700', padding: '5px 12px' }}
+            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
           >
             📰 LIVE NEWS ({Array.isArray(liveNews) ? liveNews.length : 0})
           </button>
 
-          {/* TAB 4: WATCHLIST */}
+          {/* TAB 9: WATCHLIST */}
           <button
             onClick={() => { setActiveMainTab('WATCHLIST'); setExpandedId(null); }}
             className={'telemetry-btn ' + (activeMainTab === 'WATCHLIST' ? 'active' : '')}
-            style={{ fontSize: '11px', fontWeight: '700', padding: '5px 12px' }}
+            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
           >
-            ⭐ WATCHLIST SAYA
+            ⭐ WATCHLIST
           </button>
 
-          {/* TAB 5: WIKI */}
+          {/* TAB 10: QUANT ACADEMY (Evolved Wiki) */}
           <button
-            onClick={() => { setActiveMainTab('WIKI'); setExpandedId(null); }}
-            className={'telemetry-btn ' + (activeMainTab === 'WIKI' ? 'active' : '')}
-            style={{ fontSize: '11px', fontWeight: '700', padding: '5px 12px' }}
+            onClick={() => { setActiveMainTab('ACADEMY'); setExpandedId(null); }}
+            className={'telemetry-btn ' + (activeMainTab === 'ACADEMY' ? 'active' : '')}
+            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px', color: activeMainTab === 'ACADEMY' ? '#fff' : '#f59e0b' }}
           >
-            📚 WIKI &amp; KAMUS
+            🎓 QUANT ACADEMY
           </button>
         </div>
 
         <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-          {activeMainTab === 'STOCK' || activeMainTab === 'CRYPTO' ? 'KLIK BARIS UNTUK DETAIL · TRADINGVIEW MODAL ON DEMAND' : 'INSTITUTIONAL QUANT SUITE'}
+          {activeMainTab === 'STOCK' || activeMainTab === 'CRYPTO' ? 'KLIK BARIS UNTUK DETAIL · TRADINGVIEW & ORDER BOOK' : 'INSTITUTIONAL QUANT SUITE'}
         </span>
       </div>
 
       {/* VIEW ACCORDING TO ACTIVE MAIN TAB */}
+      {activeMainTab === 'CURRENT_TEST' && (
+        <div style={{ padding: '12px' }}>
+          <VirtualForwardPortfolio
+            paperPortfolio={paperPortfolio}
+            currentPrices={Object.fromEntries(allItems.map(i => [i.ticker, i.price]))}
+            onSelectTicker={onSelectTicker}
+          />
+        </div>
+      )}
+
+      {activeMainTab === 'BACKTEST_LAB' && (
+        <div style={{ padding: '12px' }}>
+          <BacktestPerformanceLab
+            backtestLab={backtestLab}
+            strategyRankings={strategyRankings}
+          />
+        </div>
+      )}
+
+      {activeMainTab === 'GLOBAL_MARKETS' && (
+        <div style={{ padding: '12px' }}>
+          <GlobalMarketsTab onSelectTicker={onSelectTicker} />
+        </div>
+      )}
+
+      {activeMainTab === 'ECONOMIC_CALENDAR' && (
+        <div style={{ padding: '12px' }}>
+          <EconomicCalendarTab />
+        </div>
+      )}
+
+      {activeMainTab === 'PEARSON_CORRELATION' && (
+        <div style={{ padding: '12px' }}>
+          <PearsonCorrelationWidget />
+        </div>
+      )}
+
+      {activeMainTab === 'ACADEMY' && (
+        <div style={{ padding: '12px' }}>
+          <QuantAcademyTab />
+        </div>
+      )}
+
       {activeMainTab === 'NEWS' && (
         <div style={{ padding: '12px' }}>
           <NewsTab liveNews={liveNews} macro={macro} />
@@ -359,12 +457,6 @@ export default function MasterQuantLeaderboard({
       {activeMainTab === 'WATCHLIST' && (
         <div style={{ padding: '12px' }}>
           <PersonalWatchlistTab allStocks={allItems} onSelectTicker={onSelectTicker} />
-        </div>
-      )}
-
-      {activeMainTab === 'WIKI' && (
-        <div style={{ padding: '12px' }}>
-          <KnowledgeWikiTab />
         </div>
       )}
 
@@ -594,16 +686,28 @@ export default function MasterQuantLeaderboard({
                                     <div style={{ fontWeight: '700', color: 'var(--accent-orange)', fontSize: '10px', letterSpacing: '0.04em' }}>
                                       💡 THESIS &amp; POSITION SIZING MATH:
                                     </div>
-                                    <button 
-                                      className="telemetry-btn"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (onOpenLotCalc) onOpenLotCalc(item.entry, item.stopLoss);
-                                      }}
-                                      style={{ padding: '2px 8px', fontSize: '10px', background: 'var(--accent-green)', color: '#fff' }}
-                                    >
-                                      💰 Hitung Lot
-                                    </button>
+                                    <div>
+                                      <button 
+                                        className="telemetry-btn"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (onOpenLotCalc) onOpenLotCalc(item.entry, item.stopLoss);
+                                        }}
+                                        style={{ padding: '2px 8px', fontSize: '10px', background: 'var(--accent-green)', color: '#fff' }}
+                                      >
+                                        💰 Hitung Lot
+                                      </button>
+                                      <button 
+                                        className="telemetry-btn"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setOrderBookModal({ isOpen: true, ticker: item.ticker, price: item.price });
+                                        }}
+                                        style={{ padding: '2px 8px', fontSize: '10px', background: '#0066cc', color: '#fff', marginLeft: '6px' }}
+                                      >
+                                        📊 Order Book
+                                      </button>
+                                    </div>
                                   </div>
                                   {p && (
                                     <>
@@ -685,6 +789,16 @@ export default function MasterQuantLeaderboard({
             </div>
           </div>
         </>
+      )}
+
+      {/* Level 2 Order Book Modal */}
+      {orderBookModal.isOpen && (
+        <OrderBookSimulator
+          ticker={orderBookModal.ticker}
+          currentPrice={orderBookModal.price}
+          isOpen={orderBookModal.isOpen}
+          onClose={() => setOrderBookModal({ isOpen: false, ticker: 'BBRI', price: 4900 })}
+        />
       )}
     </div>
   );
