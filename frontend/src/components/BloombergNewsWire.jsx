@@ -149,7 +149,7 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
                     title={item.reason}
                   >
                     <span>{item.impact === 'BULLISH' ? '🟢' : '🔴'}</span>
-                    <strong></strong>
+                    <strong>${item.ticker}</strong>
                     <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>({item.impact})</span>
                   </button>
                 ))}

@@ -173,7 +173,7 @@ export default function App() {
             <div className='telemetry-panel' style={{ padding: '8px 12px', borderLeft: '4px solid #0066cc' }}>
               <div className='metric-label'>🔥 #1 IDX ALPHA WATCHLIST</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
-                <span style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)' }}></span>
+                <span style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)' }}>${topIdx?.clean_ticker || 'MEDC'}</span>
                 <span className='badge badge-bull'>{topIdx?.technical_signal || 'BREAKOUT'}</span>
               </div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>

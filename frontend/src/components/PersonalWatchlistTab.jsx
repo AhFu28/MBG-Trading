@@ -151,7 +151,7 @@ export default function PersonalWatchlistTab({ allStocks = [], onSelectTicker })
                     {idx + 1}
                   </td>
                   <td style={{ fontWeight: '700', fontSize: '13px', color: 'var(--text-primary)' }}>
-                    
+                    ${item.ticker}
                   </td>
                   <td>
                     <span className='badge' style={{
