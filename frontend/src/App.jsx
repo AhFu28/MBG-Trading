@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PasswordGate from './components/PasswordGate.jsx';
 import BloombergNewsWire from './components/BloombergNewsWire.jsx';
 import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
@@ -111,7 +111,7 @@ export default function App() {
           onClick={() => setMobileOpen(prev => !prev)}
           aria-label="Toggle Sidebar"
         >
-          â˜°
+          ☰
         </button>
 
         {/* Mobile backdrop */}
@@ -153,22 +153,22 @@ export default function App() {
               <span style={{ color: 'var(--accent-green)' }}>MBG</span>
               <span style={{ margin: '0 6px', opacity: 0.4 }}>//</span>
               <span style={{ color: 'var(--text-primary)' }}>
-                {activeTab === 'STOCK' && 'ðŸ“ˆ Saham IDX'}
-                {activeTab === 'CRYPTO' && 'âš¡ Crypto Spot'}
-                {activeTab === 'CURRENT_TEST' && 'ðŸ§ª Paper Trading'}
-                {activeTab === 'BACKTEST_LAB' && 'ðŸ“Š Backtest Lab'}
-                {activeTab === 'GLOBAL_MARKETS' && 'ðŸŒ Pasar Global'}
-                {activeTab === 'ECONOMIC_CALENDAR' && 'ðŸ“… Kalender Makro'}
-                {activeTab === 'PEARSON_CORRELATION' && 'ðŸ”— Korelasi Pearson'}
-                {activeTab === 'NEWS' && 'ðŸ“° Live News'}
-                {activeTab === 'WATCHLIST' && 'â­ Watchlist'}
-                {activeTab === 'ACADEMY' && 'ðŸŽ“ Quant Academy'}
+                {activeTab === 'STOCK' && '📈 Saham IDX'}
+                {activeTab === 'CRYPTO' && '⚡ Crypto Spot'}
+                {activeTab === 'CURRENT_TEST' && '🧪 Paper Trading'}
+                {activeTab === 'BACKTEST_LAB' && '📊 Backtest Lab'}
+                {activeTab === 'GLOBAL_MARKETS' && '🌍 Pasar Global'}
+                {activeTab === 'ECONOMIC_CALENDAR' && '📅 Kalender Makro'}
+                {activeTab === 'PEARSON_CORRELATION' && '🔗 Korelasi Pearson'}
+                {activeTab === 'NEWS' && '📰 Live News'}
+                {activeTab === 'WATCHLIST' && '⭐ Watchlist'}
+                {activeTab === 'ACADEMY' && '🎓 Quant Academy'}
               </span>
             </div>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
               {data?.macro_telemetry?.impact_assessment?.overall_sentiment
-                ? <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>ðŸŸ¢ {data.macro_telemetry.impact_assessment.overall_sentiment}</span>
-                : <span>â³ Awaiting data...</span>
+                ? <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>🟢 {data.macro_telemetry.impact_assessment.overall_sentiment}</span>
+                : <span>⏳ Awaiting data...</span>
               }
             </div>
           </header>
@@ -185,7 +185,7 @@ export default function App() {
 
                 {/* Card 1: Macro Regime */}
                 <div className='telemetry-panel' style={{ padding: '10px 14px', borderLeft: '3px solid var(--accent-green)', background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(0,208,132,0.04) 100%)' }}>
-                  <div className='metric-label'>ðŸŒ IHSG & Global Macro Regime</div>
+                  <div className='metric-label'>🌍 IHSG & Global Macro Regime</div>
                   <div style={{ fontSize: '13px', fontWeight: '700', marginTop: '4px', color: 'var(--accent-green)' }}>
                     {data?.macro_telemetry?.impact_assessment?.overall_sentiment || 'AWAITING DATA'}
                   </div>
@@ -196,7 +196,7 @@ export default function App() {
 
                 {/* Card 2: IDX Alpha */}
                 <div className='telemetry-panel' style={{ padding: '10px 14px', borderLeft: '3px solid var(--accent-blue)' }}>
-                  <div className='metric-label'>ðŸ”¥ #1 IDX Alpha Watchlist</div>
+                  <div className='metric-label'>🔥 #1 IDX Alpha Watchlist</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '4px' }}>
                     <span style={{ fontSize: '15px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                       {topIdx?.clean_ticker || 'MEDC'}
@@ -204,13 +204,13 @@ export default function App() {
                     <span className='badge badge-bull'>{topIdx?.technical_signal || 'BREAKOUT'}</span>
                   </div>
                   <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
-                    Entry: Rp {topIdx?.entry_price?.toLocaleString()} Â· TP: Rp {topIdx?.target_1?.toLocaleString()} Â· R:R {topIdx?.risk_reward_ratio || 2.2}
+                    Entry: Rp {topIdx?.entry_price?.toLocaleString()} · TP: Rp {topIdx?.target_1?.toLocaleString()} · R:R {topIdx?.risk_reward_ratio || 2.2}
                   </div>
                 </div>
 
                 {/* Card 3: Crypto Alpha */}
                 <div className='telemetry-panel' style={{ padding: '10px 14px', borderLeft: '3px solid var(--accent-orange)' }}>
-                  <div className='metric-label'>âš¡ #1 Crypto Spot Alpha</div>
+                  <div className='metric-label'>⚡ #1 Crypto Spot Alpha</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '4px' }}>
                     <span style={{ fontSize: '15px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                       {topCrypto?.pair || 'SOL/USDT'}
@@ -218,7 +218,7 @@ export default function App() {
                     <span className='badge badge-alert'>R:R 1:{topCrypto?.risk_reward_ratio || 2.0}</span>
                   </div>
                   <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
-                    Entry: ${topCrypto?.current_price || topCrypto?.entry_high} Â· TP: ${topCrypto?.take_profit_1} Â· SL: ${topCrypto?.stop_loss}
+                    Entry: ${topCrypto?.current_price || topCrypto?.entry_high} · TP: ${topCrypto?.take_profit_1} · SL: ${topCrypto?.stop_loss}
                   </div>
                 </div>
 
@@ -274,7 +274,7 @@ export default function App() {
             <div>
               <strong>DISCLAIMER</strong>: Algorithmic screening & quantitative intelligence only. Bukan ajakan investasi.
             </div>
-            <div>MBG BLOOMBERG QUANT TERMINAL Â· ZERO RUNTIME COST</div>
+            <div>MBG BLOOMBERG QUANT TERMINAL · ZERO RUNTIME COST</div>
           </footer>
 
         </div>{/* /main-content */}
