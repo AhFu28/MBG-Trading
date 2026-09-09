@@ -27,13 +27,13 @@
   "event_category": "GOLD",
   "sentiment": "BULLISH",
   "severity": "HIGH",
-  "gold_price": 4468.7,
-  "gold_change_pct": 1.7,
-  "brent_oil_price": 100.75,
-  "brent_oil_change_pct": 2.89,
-  "dxy_index": 98.63,
-  "dxy_change_pct": -0.21,
-  "us10y_yield": 4.8,
+  "gold_price": 4443.7,
+  "gold_change_pct": 1.13,
+  "brent_oil_price": 101.16,
+  "brent_oil_change_pct": 3.31,
+  "dxy_index": 98.72,
+  "dxy_change_pct": -0.12,
+  "us10y_yield": 4.82,
   "idx_affected_sectors": [
     "MINING_GOLD",
     "ENERGY_OIL_GAS"
@@ -42,7 +42,7 @@
     {
       "ticker": "ANTM",
       "impact": "BULLISH",
-      "reason": "Gold +1.7% boosts mining realized selling price"
+      "reason": "Gold +1.13% boosts mining realized selling price"
     },
     {
       "ticker": "BRMS",
@@ -100,6 +100,15 @@
     },
     {
       "id": "news-4",
+      "title": "Haji Isam Tawar 62% Saham BYAN Senilai US$3 Miliar, Segini Perkiraan Harganya",
+      "source": "Ajaib",
+      "link": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQYVVLTGY0Zk1YM3VaWGItc0xSQjR5MDh1dkdUcmZVUXYyUEJhQktjUlZxa1hUaFdWdDF4anBXRVA3Y0tVWDZObWN2cEpUenFsV3hBbXEwYU5ZZlpnUFQwUEZRZFVwUjhKcVdobTdsTXVTLVpXbGN0aE9MTHZkZE4xUjdOOENWZlJuV3hv?oc=5",
+      "pub_date": "Wed, 09 Sep 2026 09:21:55 GMT",
+      "tag": "IHSG",
+      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Ajaib."
+    },
+    {
+      "id": "news-5",
       "title": "IHSG Rabu dibuka menguat 14,40 poin",
       "source": "ANTARA News Sultra",
       "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPbzFaOTFHT2dhZzNDWEttZzhkMUJlbnBUQUpWZGs2TXlfWlNtY0VDTVp4akcwQkhOTzdnU3VFTmJfZ2p3NGdwSGo3WWZMa0JFYWxoanVWdzlNcHd6aWRiU053RGxQeU5wQ0NVZzlJUk5Id0poLUU5cGdBWEI0OFBQSFRZd0E?oc=5",
@@ -108,7 +117,7 @@
       "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News Sultra."
     },
     {
-      "id": "news-5",
+      "id": "news-6",
       "title": "IHSG Ditutup Terkoreksi 0,12% ke Level 6.678",
       "source": "CNBC Indonesia",
       "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOcjEzUEZ4TDA2bExIb1ZuTU5jVDVsV214SXQtVG40SzhNQVNMMkdTcHVrcDBfTDM0b21ERGJpbEdPTW9XdlVhTC1nay1UbGV5QnpYcGRES0k5NHh1SWplUDJ0Y0NpYlhBZkFUM1RKakh1SjR1TkZrblNPYk5BT0JZeUNueUV0NURjWXRQbXZ1eDE4ejh5QlNJUXgwcVhjOGdLRVR1LWFR0gGrAUFVX3lxTE1LaU9DTXRHSVp4bEdUVFM2NVZlWE5GVzh4N3RINVJDYTRzeGoxY3kxeWFrUmFpNi1WVl9Tem02c3hSVllxRGpLeE9INXlBVEVMSU10a3NXcEZBZjRnYi1BZXlzVGtHOHF0aG9pWExBaV9BY3h3ckczbm5KT0Z5djAzT0lBeFl1ZWdSMTh2T0M0LW5YT1JlQnJOQzE0WHBwcmFKWFhMMFZURDF2aw?oc=5",
@@ -117,22 +126,13 @@
       "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari CNBC Indonesia."
     },
     {
-      "id": "news-6",
+      "id": "news-7",
       "title": "IHSG dan Bursa Asia Tertekan, Kenaikan Harga Minyak Jadi Penyebab",
       "source": "Bloomberg Technoz",
       "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNODlSX05fWUJadlpLSFctTFZpRG9yMDB0TmxxUVBYdFM1bGRxbGt6SkRGVm9yMzlMeXBsdUVHcjJBeHJ6c1MyWlBsVWhEVm1uendYOU1IX2RLWnp6UXQ0Ymt6WGtiWldWbEVhTHRveEpqWm5qUkZsMng5b043ZjBrQzF6VmxUM0FFQ3E2U0tCaWVCdkdRSGs1MWlMTzA3T2NTbjNtWlF2akxWLW5DVjM1YUxNQU1jYUE?oc=5",
       "pub_date": "Wed, 09 Sep 2026 11:30:00 GMT",
       "tag": "ENERGY",
       "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Bloomberg Technoz."
-    },
-    {
-      "id": "news-7",
-      "title": "Haji Isam Tawar 62% Saham BYAN Senilai US$3 Miliar, Segini Perkiraan Harganya",
-      "source": "Ajaib",
-      "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE1XUFVteXRNUHM3Q3M2d3lZWjhNeFNzOVI4eFZOYW5CWWJEcDRqcWRGNjdERFNyZm9pb0N3VlIwb0EwbjJsUUZuZGU0X0NSSm1jSEpUSlpzbkJtUnA1RDlubl9GRW9xSHhXTkpSTHVDdjNxTHAzblNSTw?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 09:21:55 GMT",
-      "tag": "IHSG",
-      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Ajaib."
     },
     {
       "id": "news-8",
@@ -145,12 +145,12 @@
     },
     {
       "id": "news-9",
-      "title": "IHSG Hari Ini Lanjut Menguat ke 6.693, Ini Pergerakan Saham Energi",
-      "source": "Listrik Indonesia",
-      "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPTlJ5TC1tWGl1ZXplSDAwRGhlLXp6ZjFZVWJDaUQxREdLUkZHTHRtd0RJa3ZORE41OGVZUUVjN3E2NnM4NXJodUk0ZXRKdDg4UXNjYmhYYzN4ckw2d3ZEZXpNc01DNzJaMVMxVDlINzlTbWM1NjB4STBWZ0hnYmh5Tm9SVXdBX1JaVThwanlMLVpGZnRmaGpRY1RaUXZDbUZWMnNydFBXY1dXQQ?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 08:56:50 GMT",
+      "title": "The Indonesia Stock Exchange Index (IHSG) fell slightly by 0.12% to a level of 6,678 (Wednesday, September 9, 2026).",
+      "source": "Databoks Katadata",
+      "link": "https://news.google.com/rss/articles/CBMigwJBVV95cUxQVVlSQ291aHNWZ2NvOXdERGEwbUJ4YnBWWHgyMGxhaURwZlFfc0I5cFEwcVNiWWtkaDJxRnRWcHR3QTl5YVBQUmhhcW1rM0xtXy1oak5Xd0xOU1FNblFZUlpEVGFUV3ljanVJSnJxZHBlc0Q1X3owUXBjZUJTeGhSVG1yZ3BialMyeFJNT1QxeWFLTm41cUtOVlFEYnZGcXQ1eUl6SE5Sa1ZUdVlyQTRaTE9XSzRYdm5Tc3BkMHlWOThrTDJCcXJaX2lxMm51RUVRNGJNcTBVUXJ1dW8tNkw2UGZMRnpUcU1fQjB6b18xelEzY2hWNGNMTEI0c2dOM1kxVlA4?oc=5",
+      "pub_date": "Wed, 09 Sep 2026 11:20:00 GMT",
       "tag": "IHSG",
-      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Listrik Indonesia."
+      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Databoks Katadata."
     },
     {
       "id": "news-10",
@@ -172,87 +172,6 @@
     },
     {
       "id": "news-12",
-      "title": "Korelasi Emas, IHSG, S&P 500 & Bitcoin 10 Tahun Terakhir",
-      "source": "Pluang",
-      "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOU1NubjJOVE1xek4yWDNrckUwVFBjTHlFYkVXakhHaWp2TDlfbE5SWFhUMjBCeXNmR2hKdDBsZVFENXRMTXlGYUtVbGNHS05vbWIydXlrYzJUcUkxTDZPZkxWYkc1Q3gxN2h6a09uRkJfUWh0MGpVMDRSTHRDNTBwYQ?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 06:40:00 GMT",
-      "tag": "METALS",
-      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Pluang."
-    },
-    {
-      "id": "news-13",
-      "title": "IHSG Menguat, Asing Net Buy: TOWR dan SMGR Menarik",
-      "source": "maybanktrade.co.id",
-      "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQSDVjMS01OHhVT1RxV24xYkRHeTRRd3FLQlRBX1lncnZuMlA0UHBHeTMxY1RSb1hBcjZsZ1RickE5ekdHRU0wU214S25BYjl0bld1U1ZfWjdJeUYwZld1bzNEd2lrLWtSeFJyV2F3ejAwRG5qRXpxS3ktQTVmRG0tLUxzTzBpOXBLb0MwR1JrLTI?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 08:34:00 GMT",
-      "tag": "FOREIGN_FLOW",
-      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari maybanktrade.co.id."
-    },
-    {
-      "id": "news-14",
-      "title": "IHSG Rabu dibuka menguat 14,40 poin ke posisi 6.700",
-      "source": "ANTARA News Yogyakarta",
-      "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQYzdYM0t2bHZzMUNiRC1TZ2hhbTVDbW1sRmVjYVY4Y2hoRF9GYTAxSk1ZX0Y3MUJqQ3diWGdYMzM1Z1NsNW8xa2EyZzdKUUlCbzJhZHV0b0pfTTFhelR3ZXR5dXJaSVhsY2MyVm81M0Z0NHZwWHJramNBRmROX2I4UHlpU09pSDBfOEtEb1M1TE1VQlpKRFZz?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 04:40:00 GMT",
-      "tag": "IHSG",
-      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News Yogyakarta."
-    },
-    {
-      "id": "news-15",
-      "title": "IHSG Sesi I Tertekan 0,58% ke Level 6.647",
-      "source": "CNBC Indonesia",
-      "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNM3BkSk1zcURfVUxla19iRGd5Z0JndFJURm9CWUtOOUJ1cHdYUHVneFNQX2w0WGNZTlBZdXBqZGpnZDJkX3lNR0RkVEZ3TnpuaHE1em9XS0FvNzkwNnAxdFpjNlVFZE1yNVJVNEY0ZkItVFRnaEJBUzJEQjRnX2t1QTlPLVhtbXl2azV2ZXhTdFFyeE1wYThfQjVSWnRKMlJ4M1HSAacBQVVfeXFMUE5yeUptSjgtTm9EckJHd2tsOUl0dUJQaUxRTlVVakdVTmUtdG9WVzZOejQ3bkpVUUxBOERlSV90UzNFakpvUEVpQ1V0anU2dEhRS05GYUZaSzdmenZQUEZYaHBnbDVzTUZWdGZ4eHhJUndaN3pPOFVtMjFRNzloa1pNdzV4T0lwMjdXc2lMNUZLa25MZHZGUTNmdVVpdHBNSnRYWFJ1Sjg?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 05:53:01 GMT",
-      "tag": "IHSG",
-      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari CNBC Indonesia."
-    },
-    {
-      "id": "news-16",
-      "title": "Rekomendasi Saham AS Ajaib Hari Ini: INTC, AMZN, dan WMB",
-      "source": "Ajaib",
-      "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTFBrbFJ1ZXplRzR0MEUxczBtcXFVM2NYMUhDZGdLVzBaVlEtRkYyTHRkbVpsc3A0cmcxN2h5WkFDY05QdHdLUThKSkZhdFQ2enVERUQwUjJ1Y3N1NzZ6NmNMazJGdlg5TWxPMWdNcE1RY0xiZjQwRFJuVXBR?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 09:35:44 GMT",
-      "tag": "IHSG",
-      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Ajaib."
-    },
-    {
-      "id": "news-17",
-      "title": "Penyebab IHSG Melemah Hingga Gagal Menembus 6.700",
-      "source": "Bloomberg Technoz",
-      "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPbmkxMVhWcUlUS1FHYUpaSTdFN3ZweHJDbE14ZlU3ZzZFYnU5UTVxVFgwd3F6c3Y1NktNcEU2SVAtQ0FoTDhvRy1pTExYckRNME1pLU5hT29kLW01UzVZZFBUNy1IOGJJRi1yb2N5ZjVONDBjaDhjZzdraTAtZEtaWmIxcUttSTV3MDBSR0FfSV9qTjhleTM4Mmt6NnN5dDU5STdN?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 06:33:11 GMT",
-      "tag": "IHSG",
-      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Bloomberg Technoz."
-    },
-    {
-      "id": "news-18",
-      "title": "IHSG Rabu dibuka menguat 14,40 poin ke posisi 6.700",
-      "source": "ANTARA News Jambi",
-      "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQT1QydDVXT2xPMEJ5ZVFOTlo1clhOMzYzb0FkOURIUzEyUDRzRHR5ZXVOWEFSRElqdndTS1h2Q2YwQm1KTzBIaUttbDVHRy1TZnVHcGNMMHp1cHZ0c1B6dVhrcm9pdnBUaWFucHVFc1M5ZzIyQVlFOHNtc04tYWtQOE1HUW9rQzRhUkdwSmxsNlVlZGs5YjVoU3EyQmbSAZwBQVVfeXFMUE9UMnQ1V09sTzBCeWVRTk5aNXJYTjM2M29BZDlESFMxMlA0c0R0eWV1TlhBUkRJanZ3U0tYdkNmMEJtSk8wSGlLbWw1R0ctU2Z1R3BjTDB6dXB2dHNQenVYa3JvaXZwVGlhbnB1RXNTOWcyMkFZRThzbXNOLWFrUDhNR1Fva0M0YVJHcEpsbDZVZWRrOWI1aFNxMkJm?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 02:04:39 GMT",
-      "tag": "IHSG",
-      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News Jambi."
-    },
-    {
-      "id": "news-19",
-      "title": "IHSG ditutup melemah dipicu kenaikan harga minyak mentah global",
-      "source": "ANTARA News",
-      "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPc09YOWxhcFBfSUxWV2tjM0pubWdPd0NsQVViSkU3ak9TUV96dDNIN2ZlRWpsVEluODFnb3JBZU52RlB2VThHTFlfNWRzZ0VrV29FcGU5TXZrMzJFRDlHMWhvdEJfSzRBZlRDc2k2eGVNQjRqUWJvcDZhU05QQVBoSUVpRGVNdWEyMHljQTJLMjZHUDZyTHJ6T0tlUkJCNExqWVBKQTNpMU1RQ2_SAasBQVVfeXFMT3NPWDlsYXBQX0lMVldrYzNKbm1nT3dDbEFVYkpFN2pPU1FfenQzSDdmZUVqbFRJbjgxZ29yQWVOdkZQdlU4R0xZXzVkc2dFa1dvRXBlOU12azMyRUQ5RzFob3RCX0s0QWZUQ3NpNnhlTUI0alFib3A2YVNOUEFQaElFaURlTXVhMjB5Y0EySzI2R1A2ckxyek9LZVJCQjRMallQSkEzaTFNUUNv?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 09:58:30 GMT",
-      "tag": "ENERGY",
-      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News."
-    },
-    {
-      "id": "news-20",
-      "title": "IHSG berpotensi variatif seiring tensi geopolitik dan ekspektasi Fed",
-      "source": "ANTARA News Yogyakarta",
-      "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOSkFhVVh4dGtqLVI4ekFwb0cxb0hsV3I4bGJCMTFDYmd6RmtVTFRhWHNuREJZcVZHQ2ltcm9sRldFcnBYb21NX0dHNVp6aTVBUks5Q3FXMkVaMXpfemZnZ2k5bzN4UGU0UXdoU2ZrZVE3OTV5UWpzLUdPOXZEb1ROeDBMNE1ZaGFyUEdLZlk4MjBURmZTMGpxdTEzY09EMDJ3Zl9JM0hLOHRkbjBaYnNUZA?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 05:00:00 GMT",
-      "tag": "MACRO",
-      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News Yogyakarta."
-    },
-    {
-      "id": "news-21",
       "title": "Rekomendasi Saham Tim Analis Bareksa Hari Ini: AADI, DSNG & CUAN, IHSG Berpotensi Terkoreksi",
       "source": "Bareksa.com",
       "link": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxQRjQyTS1xWVBnZFg2MDZQSk1RSTZuVnZvYVh5QjRsUDM5bTFWN2ZaWVFFZ3g5eFk4dGxRMHRMa010c1BrSnEwN0g5aFV6SGZRNUdnM01uQlBVRHVOMHBQT0RtcU1nemFxMmxYcjI0M0VRSXVvY1RlNDlkWlMtQUg5a2RvZUJFOEt5bEc3SzNOS3FfX0dscVN0bjVVMVNoQjlkZTdKNXJpYVJzZS1FUERmS2oxVDBuVHBlSEp3WmV5Z3NTVzYxSEVzX3dZcGhXQlltY1VuWlZn?oc=5",
@@ -261,7 +180,79 @@
       "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Bareksa.com."
     },
     {
-      "id": "news-22",
+      "id": "news-13",
+      "title": "Korelasi Emas, IHSG, S&P 500 & Bitcoin 10 Tahun Terakhir",
+      "source": "Pluang",
+      "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOU1NubjJOVE1xek4yWDNrckUwVFBjTHlFYkVXakhHaWp2TDlfbE5SWFhUMjBCeXNmR2hKdDBsZVFENXRMTXlGYUtVbGNHS05vbWIydXlrYzJUcUkxTDZPZkxWYkc1Q3gxN2h6a09uRkJfUWh0MGpVMDRSTHRDNTBwYQ?oc=5",
+      "pub_date": "Wed, 09 Sep 2026 06:40:00 GMT",
+      "tag": "METALS",
+      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Pluang."
+    },
+    {
+      "id": "news-14",
+      "title": "IHSG Menguat, Asing Net Buy: TOWR dan SMGR Menarik",
+      "source": "maybanktrade.co.id",
+      "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQSDVjMS01OHhVT1RxV24xYkRHeTRRd3FLQlRBX1lncnZuMlA0UHBHeTMxY1RSb1hBcjZsZ1RickE5ekdHRU0wU214S25BYjl0bld1U1ZfWjdJeUYwZld1bzNEd2lrLWtSeFJyV2F3ejAwRG5qRXpxS3ktQTVmRG0tLUxzTzBpOXBLb0MwR1JrLTI?oc=5",
+      "pub_date": "Wed, 09 Sep 2026 08:34:00 GMT",
+      "tag": "FOREIGN_FLOW",
+      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari maybanktrade.co.id."
+    },
+    {
+      "id": "news-15",
+      "title": "IHSG Rabu dibuka menguat 14,40 poin ke posisi 6.700",
+      "source": "ANTARA News Yogyakarta",
+      "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQYzdYM0t2bHZzMUNiRC1TZ2hhbTVDbW1sRmVjYVY4Y2hoRF9GYTAxSk1ZX0Y3MUJqQ3diWGdYMzM1Z1NsNW8xa2EyZzdKUUlCbzJhZHV0b0pfTTFhelR3ZXR5dXJaSVhsY2MyVm81M0Z0NHZwWHJramNBRmROX2I4UHlpU09pSDBfOEtEb1M1TE1VQlpKRFZz?oc=5",
+      "pub_date": "Wed, 09 Sep 2026 04:40:00 GMT",
+      "tag": "IHSG",
+      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News Yogyakarta."
+    },
+    {
+      "id": "news-16",
+      "title": "IHSG Sesi I Tertekan 0,58% ke Level 6.647",
+      "source": "CNBC Indonesia",
+      "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNM3BkSk1zcURfVUxla19iRGd5Z0JndFJURm9CWUtOOUJ1cHdYUHVneFNQX2w0WGNZTlBZdXBqZGpnZDJkX3lNR0RkVEZ3TnpuaHE1em9XS0FvNzkwNnAxdFpjNlVFZE1yNVJVNEY0ZkItVFRnaEJBUzJEQjRnX2t1QTlPLVhtbXl2azV2ZXhTdFFyeE1wYThfQjVSWnRKMlJ4M1HSAacBQVVfeXFMUE5yeUptSjgtTm9EckJHd2tsOUl0dUJQaUxRTlVVakdVTmUtdG9WVzZOejQ3bkpVUUxBOERlSV90UzNFakpvUEVpQ1V0anU2dEhRS05GYUZaSzdmenZQUEZYaHBnbDVzTUZWdGZ4eHhJUndaN3pPOFVtMjFRNzloa1pNdzV4T0lwMjdXc2lMNUZLa25MZHZGUTNmdVVpdHBNSnRYWFJ1Sjg?oc=5",
+      "pub_date": "Wed, 09 Sep 2026 05:53:01 GMT",
+      "tag": "IHSG",
+      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari CNBC Indonesia."
+    },
+    {
+      "id": "news-17",
+      "title": "Rekomendasi Saham AS Ajaib Hari Ini: INTC, AMZN, dan WMB",
+      "source": "Ajaib",
+      "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTFBrbFJ1ZXplRzR0MEUxczBtcXFVM2NYMUhDZGdLVzBaVlEtRkYyTHRkbVpsc3A0cmcxN2h5WkFDY05QdHdLUThKSkZhdFQ2enVERUQwUjJ1Y3N1NzZ6NmNMazJGdlg5TWxPMWdNcE1RY0xiZjQwRFJuVXBR?oc=5",
+      "pub_date": "Wed, 09 Sep 2026 09:35:44 GMT",
+      "tag": "IHSG",
+      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Ajaib."
+    },
+    {
+      "id": "news-18",
+      "title": "Penyebab IHSG Melemah Hingga Gagal Menembus 6.700",
+      "source": "Bloomberg Technoz",
+      "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPbmkxMVhWcUlUS1FHYUpaSTdFN3ZweHJDbE14ZlU3ZzZFYnU5UTVxVFgwd3F6c3Y1NktNcEU2SVAtQ0FoTDhvRy1pTExYckRNME1pLU5hT29kLW01UzVZZFBUNy1IOGJJRi1yb2N5ZjVONDBjaDhjZzdraTAtZEtaWmIxcUttSTV3MDBSR0FfSV9qTjhleTM4Mmt6NnN5dDU5STdN?oc=5",
+      "pub_date": "Wed, 09 Sep 2026 06:33:11 GMT",
+      "tag": "IHSG",
+      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Bloomberg Technoz."
+    },
+    {
+      "id": "news-19",
+      "title": "IHSG Rabu dibuka menguat 14,40 poin ke posisi 6.700",
+      "source": "ANTARA News Jambi",
+      "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQT1QydDVXT2xPMEJ5ZVFOTlo1clhOMzYzb0FkOURIUzEyUDRzRHR5ZXVOWEFSRElqdndTS1h2Q2YwQm1KTzBIaUttbDVHRy1TZnVHcGNMMHp1cHZ0c1B6dVhrcm9pdnBUaWFucHVFc1M5ZzIyQVlFOHNtc04tYWtQOE1HUW9rQzRhUkdwSmxsNlVlZGs5YjVoU3EyQmbSAZwBQVVfeXFMUE9UMnQ1V09sTzBCeWVRTk5aNXJYTjM2M29BZDlESFMxMlA0c0R0eWV1TlhBUkRJanZ3U0tYdkNmMEJtSk8wSGlLbWw1R0ctU2Z1R3BjTDB6dXB2dHNQenVYa3JvaXZwVGlhbnB1RXNTOWcyMkFZRThzbXNOLWFrUDhNR1Fva0M0YVJHcEpsbDZVZWRrOWI1aFNxMkJm?oc=5",
+      "pub_date": "Wed, 09 Sep 2026 02:04:39 GMT",
+      "tag": "IHSG",
+      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News Jambi."
+    },
+    {
+      "id": "news-20",
+      "title": "IHSG ditutup melemah dipicu kenaikan harga minyak mentah global",
+      "source": "ANTARA News",
+      "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPc09YOWxhcFBfSUxWV2tjM0pubWdPd0NsQVViSkU3ak9TUV96dDNIN2ZlRWpsVEluODFnb3JBZU52RlB2VThHTFlfNWRzZ0VrV29FcGU5TXZrMzJFRDlHMWhvdEJfSzRBZlRDc2k2eGVNQjRqUWJvcDZhU05QQVBoSUVpRGVNdWEyMHljQTJLMjZHUDZyTHJ6T0tlUkJCNExqWVBKQTNpMU1RQ2_SAasBQVVfeXFMT3NPWDlsYXBQX0lMVldrYzNKbm1nT3dDbEFVYkpFN2pPU1FfenQzSDdmZUVqbFRJbjgxZ29yQWVOdkZQdlU4R0xZXzVkc2dFa1dvRXBlOU12azMyRUQ5RzFob3RCX0s0QWZUQ3NpNnhlTUI0alFib3A2YVNOUEFQaElFaURlTXVhMjB5Y0EySzI2R1A2ckxyek9LZVJCQjRMallQSkEzaTFNUUNv?oc=5",
+      "pub_date": "Wed, 09 Sep 2026 09:58:30 GMT",
+      "tag": "ENERGY",
+      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News."
+    },
+    {
+      "id": "news-21",
       "title": "BEI Buka Gembok Saham Gocap, Investor Ritel Bisa Dapat Hidden Gem - Market",
       "source": "Bloomberg Technoz",
       "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPRHhXVEJHYXlBMXZwYldwSFdRcW8xQzlyNmxyZXdSenZfdmtPcXFlX3lHS2pGWXZSVkRBZjBhTVY4a0R4OXl4Y19xS3Fad2Q4R3FueHZIVGQzRGNWSF93WklsZTZ0RlhuU3ZELVQyc3hTWFBhZEtzanFGZFNlWG5mM3dQeG1SM1J0STUyUE5jNXplMXpTYjczcmR2aHVRanVMc19SQjd1aGcwem8wcmVQeXc5X1B2TFU?oc=5",
@@ -270,7 +261,7 @@
       "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari Bloomberg Technoz."
     },
     {
-      "id": "news-23",
+      "id": "news-22",
       "title": "IHSG Tergelincir, tapi 2 Saham ARA hingga 34%",
       "source": "investor.id",
       "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxORkJRM183RlotejY0d1JudnlXc2FkSTk2TW9FeGRKMS10aF9UWHhyRzhxcUNiek9JQ05nNmJsUTBET3A2b3RKWFZmak5BZnRPR2dYUGUxa00wZG52U19Vengtd256VzZDd3AwYnI2NEdGbE1CRU02bzEzeTVQVk9NZWhuZw?oc=5",
@@ -279,24 +270,33 @@
       "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari investor.id."
     },
     {
-      "id": "news-24",
-      "title": "Samuel Sekuritas Kembalikan 1,13 Miliar Saham NSSS, Kepemilikan Melonjak Jadi 8,86%",
-      "source": "pasardana.id",
-      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPcHh4N3pITmtQNXB1TUh6endJRmpoNnVFczJ6TWxtLWUyQ1dINzBuQUdnWm9OSGJNaW8xVmFxVVhEdzV0WmtDaGVhWVFiMFBwM0lNV2xCaWgtU2lOWGNlc01xaFNvTzRJeUJTZ0paQm5OT0Rpd2t0SmJlclNKTmVLY01od25mRFBKOW9BTGNxcG1yUHpsb3JxT0Z2TTJWMDY0V2FGeEVlSXYyQkcxdHhmLS02b0NDZlU?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 06:52:00 GMT",
-      "tag": "IHSG",
-      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari pasardana.id."
+      "id": "news-23",
+      "title": "IHSG berpotensi variatif seiring tensi geopolitik dan ekspektasi Fed",
+      "source": "ANTARA News Yogyakarta",
+      "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOSkFhVVh4dGtqLVI4ekFwb0cxb0hsV3I4bGJCMTFDYmd6RmtVTFRhWHNuREJZcVZHQ2ltcm9sRldFcnBYb21NX0dHNVp6aTVBUks5Q3FXMkVaMXpfemZnZ2k5bzN4UGU0UXdoU2ZrZVE3OTV5UWpzLUdPOXZEb1ROeDBMNE1ZaGFyUEdLZlk4MjBURmZTMGpxdTEzY09EMDJ3Zl9JM0hLOHRkbjBaYnNUZA?oc=5",
+      "pub_date": "Wed, 09 Sep 2026 05:00:00 GMT",
+      "tag": "MACRO",
+      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari ANTARA News Yogyakarta."
     },
     {
-      "id": "news-25",
+      "id": "news-24",
       "title": "IHSG Dibuka Menguat 0,22% Tembus Level Psikologis 6.700",
       "source": "CNBC Indonesia",
       "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQUmlGZWNlMUNJbDZfTHEwMDVycFdmdXV0aTlNV1B4MFJ5VWlSX3dDbU5kdHZGbDZyajRHd2UtazVmVm4zbXV1R09aZGRGUjlkaVBjc29ZVDdpR0NKM1Nody02cHplX3hkYWR6cnI3VmZXZW1JZ2tOX1NsWmZFSFlDWHUyM3lTUFRwNExpWFRXb01LOEJXOTk2ZjltMmdhZVBYYnRVZGJXT3NwOVRjRVlXWDNhZmXSAboBQVVfeXFMTmowM0l0ZE1nd29iYU44aVhWenlwcHZQRXpIU2tORGp4YjJneUZlZXByVDZsLUQ5NDNMVTZHeEQtd1RwLUhaUUxoOE5ESHRTTFM5T3JfeEtyWndxSGRZX1hPX1MzWjFLTkhFX2hnVzZzd3NldWxodnZ6TjBVZXl5SG9zbzU2emZVMVF6S0g1N2NrS3Rqa2ptSFA2RnZjZDJheUdFYUxDcVpGUDNXR3NQMnNtMUl6bXhWUXJR?oc=5",
       "pub_date": "Wed, 09 Sep 2026 02:05:59 GMT",
       "tag": "IHSG",
       "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari CNBC Indonesia."
+    },
+    {
+      "id": "news-25",
+      "title": "Net Sell Melanda Rp 438,87 Miliar, Sebaliknya Saham ANTM, BBRI, hingga INDY Tetap Diincar Investor Asing",
+      "source": "InvestorTrust",
+      "link": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxQY250ZjRrSEpBQURvUFcyTHlHcnlzUW5valJHQVlQOERMWjZEb2o5Ny12TUYzdGlhN053NExXbW5ZR2g0UzlJT1FvZGlaN0lPUDYyV2xzOTBHdTdxeTZ2WGFjT1Z0cDVpajFRYVprSXBDbklKQWRoMm5CZnotUU5IMDRkdDZ3X0FJTXd2cjh3Ym1ETHhOSUJBbHpGWWdrWE5zVFhQXzNJLXg0d1NCMDBIOWMxN1dZZGZhM0FuOEVRdUsyaWcyQzFGOTRYTzNKbUVXWDNnWnhROA?oc=5",
+      "pub_date": "Tue, 08 Sep 2026 21:09:00 GMT",
+      "tag": "METALS",
+      "summary": "Berita pasar finansial terkini terkait pergerakan IHSG, emiten BEI, dan sentimen ekonomi makro dari InvestorTrust."
     }
   ],
-  "full_narrative": "Global telemetry report: Gold at $4468.7 (1.7%), Brent Crude at $100.75 (2.89%). DXY at 98.63 pts. Monitored for impact on Indonesian equities.",
-  "updated_at": "2026-09-09T14:16:37.257127"
+  "full_narrative": "Global telemetry report: Gold at $4443.7 (1.13%), Brent Crude at $101.16 (3.31%). DXY at 98.72 pts. Monitored for impact on Indonesian equities.",
+  "updated_at": "2026-09-09T15:13:40.761041"
 }
