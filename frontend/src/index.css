@@ -192,3 +192,52 @@ body {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* Dark Mode Overrides */
+[data-theme="dark"] {
+  --bg-canvas: #0d0e11;
+  --bg-panel: #16181d;
+  --bg-panel-subtle: #1f2229;
+  --bg-panel-dark: #0a0b0d;
+  --border-color: #2a2b30;
+  --border-hairline: 1px solid #2a2b30;
+  --border-muted: 1px solid #33363f;
+
+  --text-primary: #e5e5ea;
+  --text-muted: #8e8e93;
+  --text-inverse: #0d0e11;
+
+  --accent-orange: #ff7a1a;
+  --accent-blue: #3399ff;
+  --accent-rust: #d94848;
+  --accent-green: #30d158;
+  --accent-gold: #ffd60a;
+}
+
+[data-theme="dark"] .telemetry-table th {
+  background: #1f2229 !important;
+  color: #8e8e93 !important;
+  border-bottom: 1px solid #2a2b30 !important;
+  border-right: 1px solid #2a2b30 !important;
+}
+
+[data-theme="dark"] .telemetry-table td {
+  border-bottom: 1px solid #242730 !important;
+  border-right: 1px solid #242730 !important;
+}
+
+[data-theme="dark"] .telemetry-table tr:hover {
+  background: #1d2027 !important;
+}
+
+/* Fix text wrap in expanded drawer rows */
+.drawer-content,
+.drawer-content td,
+.drawer-box,
+.drawer-box p,
+.drawer-box div{
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
