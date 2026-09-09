@@ -5,12 +5,12 @@
   "event_category": "FED",
   "sentiment": "NEUTRAL",
   "severity": "NORMAL",
-  "gold_price": 4417.0,
-  "gold_change_pct": 0.53,
-  "brent_oil_price": 99.3,
-  "brent_oil_change_pct": 1.41,
-  "dxy_index": 98.76,
-  "dxy_change_pct": -0.08,
+  "gold_price": 4422.6,
+  "gold_change_pct": 0.65,
+  "brent_oil_price": 99.1,
+  "brent_oil_change_pct": 1.21,
+  "dxy_index": 98.74,
+  "dxy_change_pct": -0.1,
   "us10y_yield": 4.81,
   "idx_affected_sectors": [
     "MINING_GOLD",
@@ -20,7 +20,7 @@
     {
       "ticker": "ANTM",
       "impact": "BULLISH",
-      "reason": "Gold +0.53% boosts mining realized selling price"
+      "reason": "Gold +0.65% boosts mining realized selling price"
     },
     {
       "ticker": "BRMS",
@@ -48,6 +48,6 @@
       "reason": "Jet fuel cost pressure on aviation operating margin"
     }
   ],
-  "full_narrative": "Global telemetry report: Gold at $4417.0 (0.53%), Brent Crude at $99.3 (1.41%). DXY at 98.76 pts. Monitored for impact on Indonesian equities.",
-  "updated_at": "2026-09-09T04:26:52.172683"
+  "full_narrative": "Global telemetry report: Gold at $4422.6 (0.65%), Brent Crude at $99.1 (1.21%). DXY at 98.74 pts. Monitored for impact on Indonesian equities.",
+  "updated_at": "2026-09-09T04:41:13.949292"
 }
