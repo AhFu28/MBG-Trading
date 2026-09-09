@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import PasswordGate from './components/PasswordGate.jsx';
 import BloombergNewsWire from './components/BloombergNewsWire.jsx';
 import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
 import TradingViewModal from './components/TradingViewModal.jsx';
 import LotCalculatorModal from './components/LotCalculatorModal.jsx';
+import Sidebar from './components/Sidebar.jsx';
 
 export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [activeTab, setActiveTab] = useState('STOCK');
+  const [isMobileOpen, setMobileOpen] = useState(false);
+
 
   // Dark Mode state with persistence in localStorage
   const [theme, setTheme] = useState(() => {
@@ -99,191 +103,183 @@ export default function App() {
 
   return (
     <PasswordGate>
-      <div style={{ minHeight: '100vh', padding: '12px 16px', maxWidth: '1440px', margin: '0 auto' }}>
-        
-        {/* 1. Master Top Bar */}
-        <header className='telemetry-panel' style={{ marginBottom: '10px', padding: '8px 14px', border: 'var(--border-hairline)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ width: '10px', height: '10px', background: 'var(--accent-green)' }}></div>
-              <div>
-                <h1 style={{ fontSize: '13px', fontWeight: '700', letterSpacing: '0.06em', margin: 0, color: 'var(--text-primary)' }}>
-                  MBG ASTRA QUANTITATIVE TERMINAL // INSTITUTIONAL CROSS-ASSET DESK
-                </h1>
-                <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
-                  10-MODULE UNIFIED COCKPIT · SMC ORDER BLOCKS · BANDARMOLOGI IIFS · TIMESFM AI · EXP3 META-LEARNER
-                </div>
-              </div>
-            </div>
+      <div className="app-layout">
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', flexWrap: 'wrap' }}>
-              {/* Dark / Light Mode Toggle Button */}
-              <button
-                onClick={toggleTheme}
-                className='telemetry-btn'
-                style={{
-                  padding: '4px 10px',
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  background: theme === 'dark' ? 'var(--bg-panel-subtle)' : '#1c1d22',
-                  color: theme === 'dark' ? 'var(--text-primary)' : '#fff',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}
-                title='Toggle Light / Dark Mode'
-              >
-                {theme === 'dark' ? '☀️ LIGHT MODE' : '🌙 DARK MODE'}
-              </button>
+        {/* Mobile hamburger toggle */}
+        <button
+          className="sidebar-hamburger"
+          onClick={() => setMobileOpen(prev => !prev)}
+          aria-label="Toggle Sidebar"
+        >
+          â˜°
+        </button>
 
-              <button 
-                onClick={() => handleOpenChart('MEDC', 'IDX')}
-                className='telemetry-btn'
-                style={{ background: 'var(--text-primary)', color: 'var(--bg-canvas)', padding: '4px 10px', fontSize: '10px' }}
-              >
-                📈 LAUNCH CHART
-              </button>
-
-              <button 
-                onClick={() => handleOpenLotCalc()}
-                className='telemetry-btn'
-                style={{ background: 'var(--accent-green)', color: '#fff', padding: '4px 10px', fontSize: '10px' }}
-              >
-                💰 KALKULATOR LOT
-              </button>
-
-              <div className='metric-box' style={{ padding: '3px 8px' }}>
-                <span className='metric-label'>WIB: </span>
-                <span style={{ fontWeight: '700', color: 'var(--text-primary)' }}>
-                  {currentTime.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour12: false })}
-                </span>
-              </div>
-
-              <div className='metric-box' style={{ padding: '3px 8px' }}>
-                <span style={{ color: 'var(--accent-green)', fontWeight: '700' }}>
-                  {data?.meta?.generated_at ? ('LAST UPDATE: ' + new Date(data.meta.generated_at).toLocaleTimeString('id-ID', {timeZone:'Asia/Jakarta'}) + ' WIB') : 'DATA OFFLINE 🔴'}
-                </span>
-              </div>
-
-              <button onClick={loadBundle} className='telemetry-btn' style={{ padding: '4px 8px', fontSize: '10px' }}>
-                🔄 REFRESH
-              </button>
-            </div>
-
-          </div>
-        </header>
-
-        {/* 2. Bloomberg Live News Wire & Multi-Headline Carousel */}
-        <BloombergNewsWire macro={data?.macro_telemetry} onSelectTicker={handleOpenChart} />
-
-        {/* 3. Executive Hero Bar: 3-Second Market Mood & Top Alpha */}
-        {data && (
-          <div className='hero-grid' style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '10px',
-            marginBottom: '12px'
-          }}>
-            {/* Box 1: Overall Market Mood */}
-            <div className='telemetry-panel' style={{ padding: '8px 12px', borderLeft: '4px solid #34c759' }}>
-              <div className='metric-label'>IHSG &amp; GLOBAL BIAS</div>
-              <div style={{ fontSize: '13px', fontWeight: '700', marginTop: '2px', color: '#1b8a4b' }}>
-                {data?.macro_telemetry?.impact_assessment?.overall_sentiment || 'AWAITING DATA'}
-              </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                {data?.macro_telemetry?.impact_assessment?.narrative || data?.macro_telemetry?.live_news?.[0]?.title || 'Menunggu data macro terbaru...'}
-              </div>
-            </div>
-
-            {/* Box 2: Top Saham BEI of the Day */}
-            <div className='telemetry-panel' style={{ padding: '8px 12px', borderLeft: '4px solid #0066cc' }}>
-              <div className='metric-label'>🔥 #1 IDX ALPHA WATCHLIST</div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
-                <span style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)' }}>${topIdx?.clean_ticker || 'MEDC'}</span>
-                <span className='badge badge-bull'>{topIdx?.technical_signal || 'BREAKOUT'}</span>
-              </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                Entry: Rp {topIdx?.entry_price?.toLocaleString()} | TP: Rp {topIdx?.target_1?.toLocaleString()} | R:R {topIdx?.risk_reward_ratio || 2.2}
-              </div>
-            </div>
-
-            {/* Box 3: Top Spot Crypto of the Day */}
-            <div className='telemetry-panel' style={{ padding: '8px 12px', borderLeft: '4px solid #ff9500' }}>
-              <div className='metric-label'>⚡ #1 CRYPTO SPOT ALPHA</div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
-                <span style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)' }}>{topCrypto?.pair || 'SOL/USDT'}</span>
-                <span className='badge badge-alert'>R:R 1:{topCrypto?.risk_reward_ratio || 2.0}</span>
-              </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                Entry: ${topCrypto?.current_price || topCrypto?.entry_high} | TP1: ${topCrypto?.take_profit_1} | SL: ${topCrypto?.stop_loss}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 4. Single Master Quant Leaderboard with 5-Tab System */}
-        {loading ? (
-          <div className='telemetry-panel' style={{ padding: '30px', textAlign: 'center', color: 'var(--text-primary)' }}>
-            Initializing Bloomberg Quant Terminal Telemetry...
-          </div>
-        ) : (
-          <main>
-            <MasterQuantLeaderboard
-              tradePlans={data?.daily_trade_plans || []}
-              cryptoSpotList={data?.crypto_spot_10 || []}
-              conglomerates={data?.conglomerates || {}}
-              dividendHunters={data?.dividend_hunters || []}
-              foreignFlow={data?.foreign_flow || {}}
-              liveNews={data?.macro_telemetry?.live_news || []}
-              macro={data?.macro_telemetry || {}}
-              paperPortfolio={data?.paper_portfolio || {}}
-              backtestLab={data?.backtest_lab || {}}
-              strategyRankings={data?.strategy_rankings || []}
-              onSelectTicker={handleOpenChart}
-              onOpenLotCalc={handleOpenLotCalc}
-            />
-          </main>
-        )}
-
-        {/* 5. TradingView Interactive Modal */}
-        {chartModal.isOpen && (
-          <TradingViewModal
-            initialSymbol={chartModal.symbol}
-            market={chartModal.market}
-            onClose={handleCloseChart}
+        {/* Mobile backdrop */}
+        {isMobileOpen && (
+          <div
+            onClick={() => setMobileOpen(false)}
+            style={{
+              position: 'fixed', inset: 0,
+              background: 'rgba(0,0,0,0.5)',
+              zIndex: 99
+            }}
           />
         )}
 
-        {/* Lot Calculator Modal */}
-        <LotCalculatorModal
-          isOpen={lotCalcModal.isOpen}
-          onClose={handleCloseLotCalc}
-          prefillEntry={lotCalcModal.entry}
-          prefillSL={lotCalcModal.sl}
+        {/* ===== LEFT SIDEBAR ===== */}
+        <Sidebar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          theme={theme}
+          toggleTheme={toggleTheme}
+          onOpenChart={handleOpenChart}
+          onOpenLotCalc={handleOpenLotCalc}
+          onRefresh={loadBundle}
+          isMobileOpen={isMobileOpen}
+          setMobileOpen={setMobileOpen}
+          currentTime={currentTime}
+          lastUpdate={data?.meta?.generated_at}
+          stockCount={(data?.daily_trade_plans || []).filter(p => p.market === 'IDX').length}
+          cryptoCount={(data?.crypto_spot_10 || []).length}
+          newsCount={(data?.macro_telemetry?.live_news || []).length}
         />
 
-        {/* 6. Institutional Disclaimer Footer */}
-        <footer style={{
-          marginTop: '20px',
-          borderTop: 'var(--border-muted)',
-          paddingTop: '10px',
-          fontSize: '10px',
-          color: 'var(--text-muted)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '8px'
-        }}>
-          <div>
-            <strong>DISCLAIMER</strong>: Algorithmic screening &amp; quantitative intelligence only. Bukan ajakan atau nasihat investasi. Selalu lakukan validasi dan risk management sebelum eksekusi.
-          </div>
-          <div>
-            MBG BLOOMBERG QUANT TERMINAL · ZERO RUNTIME SERVER COST
-          </div>
-        </footer>
+        {/* ===== MAIN CONTENT AREA ===== */}
+        <div className="main-content">
 
-      </div>
+          {/* 1. Slim breadcrumb top bar */}
+          <header className='telemetry-panel' style={{ marginBottom: '10px', padding: '6px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+            <div style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '0.05em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              <span style={{ color: 'var(--accent-green)' }}>MBG</span>
+              <span style={{ margin: '0 6px', opacity: 0.4 }}>//</span>
+              <span style={{ color: 'var(--text-primary)' }}>
+                {activeTab === 'STOCK' && 'ðŸ“ˆ Saham IDX'}
+                {activeTab === 'CRYPTO' && 'âš¡ Crypto Spot'}
+                {activeTab === 'CURRENT_TEST' && 'ðŸ§ª Paper Trading'}
+                {activeTab === 'BACKTEST_LAB' && 'ðŸ“Š Backtest Lab'}
+                {activeTab === 'GLOBAL_MARKETS' && 'ðŸŒ Pasar Global'}
+                {activeTab === 'ECONOMIC_CALENDAR' && 'ðŸ“… Kalender Makro'}
+                {activeTab === 'PEARSON_CORRELATION' && 'ðŸ”— Korelasi Pearson'}
+                {activeTab === 'NEWS' && 'ðŸ“° Live News'}
+                {activeTab === 'WATCHLIST' && 'â­ Watchlist'}
+                {activeTab === 'ACADEMY' && 'ðŸŽ“ Quant Academy'}
+              </span>
+            </div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+              {data?.macro_telemetry?.impact_assessment?.overall_sentiment
+                ? <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>ðŸŸ¢ {data.macro_telemetry.impact_assessment.overall_sentiment}</span>
+                : <span>â³ Awaiting data...</span>
+              }
+            </div>
+          </header>
+
+          {/* 2. Bloomberg Live News Wire */}
+          <BloombergNewsWire macro={data?.macro_telemetry} onSelectTicker={handleOpenChart} />
+
+          {/* 3. Executive Hero Bento Cards */}
+          {data && (() => {
+            const topIdx = (data?.daily_trade_plans || []).filter(p => p.market === 'IDX')[0];
+            const topCrypto = (data?.crypto_spot_10 || [])[0];
+            return (
+              <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: '10px', marginBottom: '12px' }}>
+
+                {/* Card 1: Macro Regime */}
+                <div className='telemetry-panel' style={{ padding: '10px 14px', borderLeft: '3px solid var(--accent-green)', background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(0,208,132,0.04) 100%)' }}>
+                  <div className='metric-label'>ðŸŒ IHSG & Global Macro Regime</div>
+                  <div style={{ fontSize: '13px', fontWeight: '700', marginTop: '4px', color: 'var(--accent-green)' }}>
+                    {data?.macro_telemetry?.impact_assessment?.overall_sentiment || 'AWAITING DATA'}
+                  </div>
+                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px', lineHeight: 1.4 }}>
+                    {data?.macro_telemetry?.impact_assessment?.narrative || data?.macro_telemetry?.live_news?.[0]?.title || 'Menunggu data macro...'}
+                  </div>
+                </div>
+
+                {/* Card 2: IDX Alpha */}
+                <div className='telemetry-panel' style={{ padding: '10px 14px', borderLeft: '3px solid var(--accent-blue)' }}>
+                  <div className='metric-label'>ðŸ”¥ #1 IDX Alpha Watchlist</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '4px' }}>
+                    <span style={{ fontSize: '15px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                      {topIdx?.clean_ticker || 'MEDC'}
+                    </span>
+                    <span className='badge badge-bull'>{topIdx?.technical_signal || 'BREAKOUT'}</span>
+                  </div>
+                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
+                    Entry: Rp {topIdx?.entry_price?.toLocaleString()} Â· TP: Rp {topIdx?.target_1?.toLocaleString()} Â· R:R {topIdx?.risk_reward_ratio || 2.2}
+                  </div>
+                </div>
+
+                {/* Card 3: Crypto Alpha */}
+                <div className='telemetry-panel' style={{ padding: '10px 14px', borderLeft: '3px solid var(--accent-orange)' }}>
+                  <div className='metric-label'>âš¡ #1 Crypto Spot Alpha</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '4px' }}>
+                    <span style={{ fontSize: '15px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                      {topCrypto?.pair || 'SOL/USDT'}
+                    </span>
+                    <span className='badge badge-alert'>R:R 1:{topCrypto?.risk_reward_ratio || 2.0}</span>
+                  </div>
+                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px', fontFamily: 'var(--font-mono)' }}>
+                    Entry: ${topCrypto?.current_price || topCrypto?.entry_high} Â· TP: ${topCrypto?.take_profit_1} Â· SL: ${topCrypto?.stop_loss}
+                  </div>
+                </div>
+
+              </div>
+            );
+          })()}
+
+          {/* 4. Master Quant Leaderboard */}
+          {loading ? (
+            <div className='telemetry-panel' style={{ padding: '30px', textAlign: 'center', color: 'var(--text-primary)' }}>
+              Initializing Bloomberg Quant Terminal Telemetry...
+            </div>
+          ) : (
+            <main>
+              <MasterQuantLeaderboard
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                tradePlans={data?.daily_trade_plans || []}
+                cryptoSpotList={data?.crypto_spot_10 || []}
+                conglomerates={data?.conglomerates || {}}
+                dividendHunters={data?.dividend_hunters || []}
+                foreignFlow={data?.foreign_flow || {}}
+                liveNews={data?.macro_telemetry?.live_news || []}
+                macro={data?.macro_telemetry || {}}
+                paperPortfolio={data?.paper_portfolio || {}}
+                backtestLab={data?.backtest_lab || {}}
+                strategyRankings={data?.strategy_rankings || []}
+                onSelectTicker={handleOpenChart}
+                onOpenLotCalc={handleOpenLotCalc}
+              />
+            </main>
+          )}
+
+          {/* 5. TradingView Chart Modal */}
+          {chartModal.isOpen && (
+            <TradingViewModal
+              initialSymbol={chartModal.symbol}
+              market={chartModal.market}
+              onClose={handleCloseChart}
+            />
+          )}
+
+          {/* Lot Calculator Modal */}
+          <LotCalculatorModal
+            isOpen={lotCalcModal.isOpen}
+            onClose={handleCloseLotCalc}
+            prefillEntry={lotCalcModal.entry}
+            prefillSL={lotCalcModal.sl}
+          />
+
+          {/* 6. Disclaimer Footer */}
+          <footer style={{ marginTop: '20px', borderTop: 'var(--border-muted)', paddingTop: '10px', fontSize: '10px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+            <div>
+              <strong>DISCLAIMER</strong>: Algorithmic screening & quantitative intelligence only. Bukan ajakan investasi.
+            </div>
+            <div>MBG BLOOMBERG QUANT TERMINAL Â· ZERO RUNTIME COST</div>
+          </footer>
+
+        </div>{/* /main-content */}
+
+      </div>{/* /app-layout */}
     </PasswordGate>
   );
 }

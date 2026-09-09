@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ACADEMY_LEVELS = [
   {
@@ -123,15 +123,238 @@ const ACADEMY_LEVELS = [
   }
 ];
 
+const DICTIONARY_CATEGORIES = [
+  'ALL',
+  'Manajemen Risiko',
+  'Mekanisme Bursa',
+  'Price Action & SMC',
+  'Bandarmologi & Flow',
+  'Indikator & Analisis',
+  'Makro & Kripto'
+];
+
 const GLOSSARY_TERMS = [
-  { term: 'Risk / Reward Ratio (R:R)', desc: 'Perbandingan antara nominal rupiah yang siap Anda rugikan dan target keuntungan minimal 1:2.' },
-  { term: 'Hard Stop Loss (SL)', desc: 'Batas harga mutlak di mana posisi wajib dipotong rugi demi menyelamatkan kelangsungan modal akun.' },
-  { term: 'Order Block (OB)', desc: 'Area jejak candle institusi tempat akumulasi atau distribusi sebelum pergerakan impulsif besar terjadi.' },
-  { term: 'Fair Value Gap (FVG)', desc: 'Celah ketidakseimbangan harga antara 3 candle berturut-turut yang sering diuji ulang oleh harga.' },
-  { term: 'Dividend Trap', desc: 'Penurunan harga drastis pasca tanggal Cum-Date yang melampaui persentase dividen yang diterima investor.' },
-  { term: 'Net Foreign Flow (NFF)', desc: 'Selisih nilai beli bersih dikurangi jual bersih oleh seluruh investor asing di bursa saham BEI.' },
-  { term: 'Moving Average (MA20/50)', desc: 'Garis rata-rata harga penutupan 20 hari (jangka pendek) dan 50 hari (jangka menengah).' },
-  { term: 'Crypto Spot (USDT)', desc: 'Pembelian aset kripto murni 1:1 tanpa hutang/leverage sehingga bebas biaya inap dan nol risiko likuidasi.' }
+  // 1. MANAJEMEN RISIKO & MODAL
+  {
+    term: 'Risk / Reward Ratio (R:R)',
+    category: 'Manajemen Risiko',
+    desc: 'Perbandingan antara nominal rupiah yang siap Anda rugikan (risiko) terhadap target keuntungan (reward) yang ingin dicapai.',
+    practical: 'Wajib minimal 1:2. Jika siap rugi Rp 100.000 (SL), target profit (TP) minimal Rp 200.000. Jangan masuk jika potensi cuan lebih kecil dari risiko.'
+  },
+  {
+    term: 'Hard Stop Loss (SL)',
+    category: 'Manajemen Risiko',
+    desc: 'Batas harga mutlak di mana posisi wajib segera di-cut loss untuk mengamankan sisa modal agar tidak tergerus lebih dalam.',
+    practical: 'Tentukan harga SL sebelum klik tombol beli. Pasang automatic order di sekuritas agar emosi tidak menahan Anda membiarkan kerugian membesar.'
+  },
+  {
+    term: 'Aturan Risiko Maksimal 2% (2% Rule)',
+    category: 'Manajemen Risiko',
+    desc: 'Prinsip ketat di mana kerugian dalam 1 kali transaksi tidak boleh melebihi 2% dari total modal portofolio Anda.',
+    practical: 'Modal Rp 10.000.000 -> batas rugi per transaksi maksimal Rp 200.000. Ini menjamin Anda tetap hidup di bursa walau salah 10x berturut-turut.'
+  },
+  {
+    term: 'Position Sizing (Kalkulator Lot)',
+    category: 'Manajemen Risiko',
+    desc: 'Metode menghitung jumlah lot yang dibeli secara presisi berdasarkan jarak titik beli ke Stop Loss, bukan membeli asal-asalan (All-In).',
+    practical: 'Rumus: Max Lot = (Modal x 2%) / ((Harga Entry - Harga SL) x 100). Makin jauh jarak SL, makin sedikit lot yang boleh dibeli.'
+  },
+  {
+    term: 'Trailing Stop',
+    category: 'Manajemen Risiko',
+    desc: 'Batas stop loss dinamis yang digeser naik mengikuti kenaikan harga saham untuk mengunci keuntungan yang sudah berjalan (floating profit).',
+    practical: 'Jika saham sudah naik +10%, geser SL ke atas titik modal (Break Even) atau di bawah swing low terbaru untuk mengamankan cuan jika harga berbalik.'
+  },
+  {
+    term: 'Drawdown (DD)',
+    category: 'Manajemen Risiko',
+    desc: 'Persentase penurunan saldo modal dari titik tertinggi (peak) ke titik terendah (trough) dalam suatu rentang waktu trading.',
+    practical: 'Jaga drawdown di bawah 15%. Kerugian modal 50% membutuhkan kenaikan 100% hanya untuk kembali ke titik impas (balik modal).'
+  },
+  {
+    term: 'Cut Loss vs Averaging Down',
+    category: 'Manajemen Risiko',
+    desc: 'Cut Loss adalah disiplin memotong kerugian. Averaging Down adalah membeli lagi saham saat harganya sedang turun terus.',
+    practical: 'Pemula DILARANG averaging down pada saham tren turun (downtrend). Ini adalah jebakan psikologis yang sering mengunci modal hingga nyangkut parah.'
+  },
+
+  // 2. MEKANISME BURSA & FRAKSI BEI
+  {
+    term: 'Lot Saham',
+    category: 'Mekanisme Bursa',
+    desc: 'Satuan resmi perdagangan saham di Bursa Efek Indonesia (BEI). 1 Lot setara dengan 100 lembar saham.',
+    practical: 'Beli saham harga Rp 2.000 sebanyak 5 lot = 5 x 100 x Rp 2.000 = Rp 1.000.000 (tambahkan estimasi fee sekuritas ~0.15%).'
+  },
+  {
+    term: 'Fraksi Harga BEI (Tick Size)',
+    category: 'Mekanisme Bursa',
+    desc: 'Kelipatan resmi kenaikan/penurunan harga saham di BEI sesuai rentang kelompok harga.',
+    practical: '<Rp 200 (kelipatan Rp 1); Rp 200-500 (Rp 2); Rp 500-2.000 (Rp 5); Rp 2.000-5.000 (Rp 10); >Rp 5.000 (Rp 25). Antrean order wajib sesuai fraksi.'
+  },
+  {
+    term: 'ARA (Auto Rejection Atas)',
+    category: 'Mekanisme Bursa',
+    desc: 'Batas persentase kenaikan harga maksimal harian saham di BEI (20% hingga 35% tergantung fraksi harga).',
+    practical: 'Saat saham menyentuh ARA, antrean offer kosong. Hindari FOMO membeli di pucuk ARA karena rawan aksi ambil untung (profit taking) keesokan harinya.'
+  },
+  {
+    term: 'ARB (Auto Rejection Bawah)',
+    category: 'Mekanisme Bursa',
+    desc: 'Batas persentase penurunan harga terdalam harian saham di BEI (simetris dengan batas persentase ARA).',
+    practical: 'Saat saham terkunci ARB, antrean bid kosong sehingga saham sulit dijual seketika. Selalu disiplin pasang Hard SL sebelum harga mendekati ARB.'
+  },
+  {
+    term: 'Bid & Offer (Order Book)',
+    category: 'Mekanisme Bursa',
+    desc: 'Bid (kiri) adalah antrean calon pembeli (ingin semurah mungkin); Offer/Ask (kanan) adalah antrean penjual (ingin semahal mungkin).',
+    practical: 'Harga saham baru bergerak naik jika ada pembeli yang HAKA antrean Offer, dan turun jika ada penjual yang HAKI antrean Bid.'
+  },
+  {
+    term: 'HAKA (Hajar Kanan)',
+    category: 'Mekanisme Bursa',
+    desc: 'Tindakan membeli saham langsung pada harga Offer terbaik saat itu agar transaksi langsung Match tanpa mengantre.',
+    practical: 'Gunakan HAKA saat momentum breakout sangat kuat dan Anda butuh masuk cepat, namun sadari bahwa harga beli Anda sedikit lebih tinggi.'
+  },
+  {
+    term: 'HAKI (Hajar Kiri)',
+    category: 'Mekanisme Bursa',
+    desc: 'Tindakan menjual saham langsung pada harga Bid terbaik saat itu agar posisi saham langsung laku terjual saat itu juga.',
+    practical: 'Wajib dilakukan saat Cut Loss darurat ketika struktur harga jebol dan Anda butuh melikuidasi posisi secepat kilat untuk proteksi modal.'
+  },
+  {
+    term: 'Cum Date & Ex Date',
+    category: 'Mekanisme Bursa',
+    desc: 'Cum Date adalah hari terakhir membeli saham agar berhak atas dividen. Ex Date adalah hari berikutnya di mana pembeli TIDAK lagi berhak dapat dividen.',
+    practical: 'Saham yang dipegang saat penutupan Cum Date berhak dapat dividen, namun bersiaplah harga saham biasanya dibuka gap down pada pagi Ex-Date.'
+  },
+  {
+    term: 'Dividend Trap',
+    category: 'Mekanisme Bursa',
+    desc: 'Jebakan di mana harga saham anjlok jauh lebih dalam daripada persentase nominal dividen yang dibagikan pasca Ex-Date.',
+    practical: 'Sering menimpa pemula yang beli saham komoditas siklikal tepat sebelum Cum-Date demi dividen 8-10%, namun menderita penurunan modal 15-20% saat Ex-Date.'
+  },
+  {
+    term: 'Tiering Saham (Blue Chip, 2nd Liner, Gorengan)',
+    category: 'Mekanisme Bursa',
+    desc: 'Klasifikasi saham: Blue Chip (kapitalisasi besar >Rp 50T, likuid & aman); 2nd liner (mid-cap bertumbuh); 3rd liner / gorengan (kapitalisasi kecil & sangat volatil).',
+    practical: 'Pemula disarankan 70-80% modal di saham Blue Chip (LQ45). Batasi atau hindari saham lapis 3 yang mudah dimanipulasi pergerakannya oleh bandar.'
+  },
+  {
+    term: 'UMA & Suspensi Bursa',
+    category: 'Mekanisme Bursa',
+    desc: 'UMA (Unusual Market Activity) adalah radar waspada BEI atas pergerakan tak wajar; Suspensi adalah tindakan bursa mengunci perdagangan saham sementara waktu.',
+    practical: 'Jika saham berstatus UMA, batasi alokasi modal. Jika saham digembok (suspensi), modal Anda terkunci tidak bisa diperjualbelikan sampai dibuka kembali.'
+  },
+
+  // 3. PRICE ACTION & SMART MONEY CONCEPTS (SMC)
+  {
+    term: 'Support & Resistance (S/R)',
+    category: 'Price Action & SMC',
+    desc: 'Support adalah lantai harga di mana minat beli menahan penurunan; Resistance adalah plafon harga di mana tekanan jual menahan kenaikan.',
+    practical: 'Beli di area support yang teruji pantul dengan SL ketat. Jual sebagian atau bersiap exit saat harga mendekati plafon resistance.'
+  },
+  {
+    term: 'Order Block (OB)',
+    category: 'Price Action & SMC',
+    desc: 'Candle berlawanan arah terakhir sebelum terjadi dorongan harga impulsif besar (>2x ATR) oleh modal institusi (Smart Money).',
+    practical: 'Bullish OB = candle merah terakhir sebelum harga meroket naik. Pasang antrean beli saat harga turun kembali (retest) ke kotak area OB tersebut.'
+  },
+  {
+    term: 'Fair Value Gap (FVG)',
+    category: 'Price Action & SMC',
+    desc: 'Celah ketidakseimbangan harga antara titik tertinggi Candle 1 dan titik terendah Candle 3 akibat dorongan agresif satu arah.',
+    practical: 'FVG bertindak seperti magnet harga. Peluang entry terbaik adalah menunggu harga retrace masuk kembali ke dalam celah FVG sebelum bergerak searah tren.'
+  },
+  {
+    term: 'Break of Structure (BOS)',
+    category: 'Price Action & SMC',
+    desc: 'Kondisi di mana harga berhasil menembus puncak sebelumnya (Higher High) pada tren naik, menandakan kelanjutan tren.',
+    practical: 'Jangan beli tepat di pucuk saat BOS baru pecah. Tunggu harga pullback ke area diskon (di bawah 50% rentang pergerakan) untuk risiko lebih rendah.'
+  },
+  {
+    term: 'Change of Character (CHoCH)',
+    category: 'Price Action & SMC',
+    desc: 'Tanda awal perubahan struktur pasar dari tren turun menjadi tren naik (atau sebaliknya) saat swing point kunci ditembus.',
+    practical: 'Sinyal peringatan awal bahwa tren lama telah melemah dan bersiap untuk berganti arah. Waspadai pembalikan arah tren.'
+  },
+  {
+    term: 'Liquidity Sweep (Stop Hunt)',
+    category: 'Price Action & SMC',
+    desc: 'Manuver harga sengaja didorong menembus support/resisten sesaat untuk memicu order cut loss ritel, lalu ditarik kencang ke arah berlawanan.',
+    practical: 'Ciri khasnya adalah candle meninggalkan ekor panjang (rejection wick) dengan volume besar pasca menembus support kunci.'
+  },
+
+  // 4. BANDARMOLOGI & FLOW
+  {
+    term: 'Net Foreign Flow (NFF)',
+    category: 'Bandarmologi & Flow',
+    desc: 'Selisih nilai beli bersih dikurangi jual bersih oleh seluruh investor asing di bursa saham BEI.',
+    practical: 'Investor asing adalah motor utama saham penggerak indeks (BBCA, BBRI, BMRI, TLKM). Akumulasi asing berhari-hari pertanda tren naik sehat.'
+  },
+  {
+    term: 'Fase Akumulasi & Distribusi',
+    category: 'Bandarmologi & Flow',
+    desc: 'Akumulasi = bandar/institusi mengumpulkan saham diam-diam di harga murah; Distribusi = bandar menjual saham ke ritel di harga mahal.',
+    practical: 'Ciri akumulasi: harga sideways tapi volume membesar atau foreign net buy stabil. Ciri distribusi: berita sangat positif di media namun harga gagal naik.'
+  },
+  {
+    term: 'VWAP (Volume-Weighted Average Price)',
+    category: 'Bandarmologi & Flow',
+    desc: 'Harga rata-rata transaksi saham yang dihitung dengan memperhitungkan volume pada setiap tingkat harga.',
+    practical: 'Harga di atas VWAP menandakan pembeli memegang kendali (Bullish Intraday). Jangan membeli saham untuk day trading jika harganya jauh di bawah VWAP.'
+  },
+  {
+    term: 'Fake Bid & Fake Offer (Spoofing)',
+    category: 'Bandarmologi & Flow',
+    desc: 'Trik memajang puluhan ribu lot antrean bid/offer semu di order book untuk memanipulasi psikologi trader ritel.',
+    practical: 'Bid tebal palsu sering dipasang di bawah agar terkesan ada penahan kuat, padahal begitu harga mendekat, antrean tersebut langsung dicabut (withdraw).'
+  },
+  {
+    term: 'IIFS (Institutional Inflow Flow Score)',
+    category: 'Bandarmologi & Flow',
+    desc: 'Skor kuantitatif gabungan indikator volume (OBV 30%, MFI 25%, deviasi VWAP 25%, Chaikin A/D 20%) untuk melacak pergerakan uang besar.',
+    practical: 'Skor Z > +1.5 menandakan akumulasi institusi agresif. Skor Z < -1.5 menandakan distribusi masif di mana Anda wajib waspada exit.'
+  },
+
+  // 5. INDIKATOR TEKNIS & ANALISIS
+  {
+    term: 'Moving Average (MA20 & MA50)',
+    category: 'Indikator & Analisis',
+    desc: 'Garis rata-rata harga penutupan selama 20 hari (tren pendek) dan 50 hari (tren menengah) untuk menyaring arah tren pasar.',
+    practical: 'Kondisi bullish ideal jika Harga > MA20 > MA50 (Golden Alignment). Hindari membeli saham jika posisinya berada di bawah MA50 yang menukik turun.'
+  },
+  {
+    term: 'RSI (Relative Strength Index)',
+    category: 'Indikator & Analisis',
+    desc: 'Indikator momentum pada skala 0 hingga 100 untuk mendeteksi tingkat kejenuhan beli (Overbought) atau jenuh jual (Oversold).',
+    practical: 'RSI > 70 = Overbought (rawan koreksi); RSI < 30 = Oversold (potensi rebound). Setup breakout terbaik terjadi saat RSI bergerak di zona 50-65.'
+  },
+  {
+    term: 'Volume Spike',
+    category: 'Indikator & Analisis',
+    desc: 'Lonjakan volume perdagangan yang melompat jauh di atas rata-rata normal (misalnya >2x rata-rata 20 hari).',
+    practical: 'Breakout resisten WAJIB divalidasi oleh volume spike. Kenaikan harga tanpa volume adalah perangkap bull trap.'
+  },
+
+  // 6. MAKROEKONOMI & KRIPTO
+  {
+    term: 'DXY (US Dollar Index)',
+    category: 'Makro & Kripto',
+    desc: 'Indeks kekuatan mata uang Dolar AS terhadap mata uang utama dunia (Euro, Yen, Poundsterling, dll).',
+    practical: 'Jika DXY melonjak tajam, nilai tukar Rupiah tertekan dan dana asing cenderung keluar (outflow) dari pasar saham Indonesia (IHSG).'
+  },
+  {
+    term: 'Yield Obligasi US10Y (US 10-Year Treasury)',
+    category: 'Makro & Kripto',
+    desc: 'Imbal hasil surat utang pemerintah AS tenor 10 tahun yang menjadi patokan suku bunga bebas risiko dunia.',
+    practical: 'Kenaikan imbal hasil US10Y menaikkan biaya modal global dan menekan valuasi saham teknologi serta saham yang berutang tinggi.'
+  },
+  {
+    term: 'Crypto Spot USDT (No Leverage)',
+    category: 'Makro & Kripto',
+    desc: 'Pembelian aset kripto murni 1:1 tanpa menggunakan hutang/margin/leverage sehingga bebas biaya inap dan nol risiko likuidasi.',
+    practical: 'Gunakan Spot untuk investasi atau swing kripto. Saat terjadi crash mendadak (flash dump), koin Anda tetap utuh tanpa risiko modal musnah.'
+  }
 ];
 
 export default function QuantAcademyTab() {
@@ -141,6 +364,7 @@ export default function QuantAcademyTab() {
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeCategory, setActiveCategory] = useState('ALL');
 
   const [progress, setProgress] = useState(() => {
     try {
@@ -197,10 +421,18 @@ export default function QuantAcademyTab() {
   const percentComplete = Math.round((progress.completedLevels.length / 4) * 100);
   const earnedBadges = ACADEMY_LEVELS.filter(l => progress.completedLevels.includes(l.id)).map(l => l.badge);
 
-  const filteredGlossary = GLOSSARY_TERMS.filter(g =>
-    g.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    g.desc.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredGlossary = GLOSSARY_TERMS.filter(g => {
+    const termLower = searchTerm.toLowerCase();
+    const matchesSearch = !searchTerm ||
+      g.term.toLowerCase().includes(termLower) ||
+      g.desc.toLowerCase().includes(termLower) ||
+      (g.practical && g.practical.toLowerCase().includes(termLower)) ||
+      (g.category && g.category.toLowerCase().includes(termLower));
+    
+    if (!matchesSearch) return false;
+    if (activeCategory === 'ALL') return true;
+    return g.category === activeCategory;
+  });
 
   return (
     <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', padding: '16px', fontFamily: 'var(--font-mono)' }}>
@@ -265,7 +497,7 @@ export default function QuantAcademyTab() {
           className={'telemetry-btn ' + (activeTab === 'dictionary' ? 'active' : '')}
           style={{ fontSize: '11px', padding: '5px 12px', fontWeight: '700' }}
         >
-          📖 Quick Dictionary
+          📖 Quick Dictionary ({GLOSSARY_TERMS.length})
         </button>
         {progress.completedLevels.length === 4 && (
           <button
@@ -460,28 +692,112 @@ export default function QuantAcademyTab() {
 
       {/* TAB 2: QUICK DICTIONARY */}
       {activeTab === 'dictionary' && (
-        <div>
-          <div style={{ marginBottom: '12px' }}>
-            <input
-              type="text"
-              placeholder="Cari istilah dalam kamus..."
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              style={{ width: '100%', padding: '8px 10px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '11px' }}
-            />
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px' }}>
-            {filteredGlossary.map((item, idx) => (
-              <div key={idx} style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '12px' }}>
-                <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--accent-blue)', marginBottom: '4px' }}>
-                  {item.term}
-                </div>
-                <div style={{ fontSize: '10px', color: 'var(--text-primary)', lineHeight: 1.4 }}>
-                  {item.desc}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          
+          {/* Header & Filter Controls */}
+          <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+              <div>
+                <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
+                  📖 KAMUS KILAT TRADING PEMULA // QUICK GLOSSARY & CHEATSHEET
+                </span>
+                <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  Daftar istilah esensial bursa saham BEI, Smart Money Concepts (SMC), Bandarmologi, dan Manajemen Modal dengan tips penerapan praktis.
                 </div>
               </div>
-            ))}
+              <span className="badge badge-blue" style={{ fontSize: '10px', padding: '3px 8px' }}>
+                {filteredGlossary.length} dari {GLOSSARY_TERMS.length} Istilah Ditampilkan
+              </span>
+            </div>
+
+            {/* Search Input */}
+            <div>
+              <input
+                type="text"
+                placeholder="🔍 Cari istilah, singkatan (SL, FVG, ARA, NFF, VWAP...), definisi, atau tips praktis..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  background: 'var(--bg-panel)',
+                  border: 'var(--border-hairline)',
+                  color: 'var(--text-primary)',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '11px',
+                  outline: 'none'
+                }}
+              />
+            </div>
+
+            {/* Category Filter Pills */}
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)', marginRight: '4px' }}>FILTER:</span>
+              {DICTIONARY_CATEGORIES.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={'telemetry-btn ' + (activeCategory === cat ? 'active' : '')}
+                  style={{ fontSize: '10px', padding: '3px 8px' }}
+                >
+                  {cat === 'ALL' ? 'SEMUA KATEGORI' : cat}
+                </button>
+              ))}
+            </div>
           </div>
+
+          {/* Vertical Table Layout (Model Tabel Kebawah Rapi) */}
+          <div style={{ overflowX: 'auto', border: 'var(--border-hairline)', background: 'var(--bg-panel-subtle)' }}>
+            <table className="telemetry-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr>
+                  <th style={{ width: '38px', textAlign: 'center' }}>#</th>
+                  <th style={{ width: '220px' }}>ISTILAH & KATEGORI</th>
+                  <th style={{ width: '40%' }}>PENJELASAN KONSEP (PEMULA)</th>
+                  <th style={{ width: '42%' }}>ATURAN / TIPS PRAKTIS DI PASAR</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredGlossary.length > 0 ? (
+                  filteredGlossary.map((item, idx) => (
+                    <tr key={idx} style={{ verticalAlign: 'top' }}>
+                      <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '10px', fontWeight: '700', padding: '10px 6px' }}>
+                        {idx + 1}
+                      </td>
+                      <td style={{ whiteSpace: 'normal', padding: '10px 12px' }}>
+                        <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-blue)', marginBottom: '5px' }}>
+                          {item.term}
+                        </div>
+                        <span className={`badge ${
+                          item.category === 'Manajemen Risiko' ? 'badge-alert' :
+                          item.category === 'Mekanisme Bursa' ? 'badge-blue' :
+                          item.category === 'Price Action & SMC' ? 'badge-bull' :
+                          item.category === 'Bandarmologi & Flow' ? 'badge-blue' :
+                          item.category === 'Indikator & Analisis' ? 'badge-bull' : 'badge-alert'
+                        }`} style={{ fontSize: '9px' }}>
+                          {item.category}
+                        </span>
+                      </td>
+                      <td style={{ whiteSpace: 'normal', fontSize: '11px', lineHeight: 1.5, color: 'var(--text-primary)', padding: '10px 12px' }}>
+                        {item.desc}
+                      </td>
+                      <td style={{ whiteSpace: 'normal', fontSize: '10.5px', lineHeight: 1.5, color: 'var(--text-muted)', padding: '10px 12px' }}>
+                        <span style={{ color: 'var(--accent-orange)', fontWeight: '700' }}>💡 Aturan Praktis: </span>
+                        {item.practical}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" style={{ textAlign: 'center', padding: '30px 14px', color: 'var(--text-muted)', fontSize: '11px' }}>
+                      Tidak ada istilah yang cocok dengan pencarian "<strong>{searchTerm}</strong>". Coba kata kunci lain atau pilih tombol SEMUA KATEGORI.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
         </div>
       )}
 

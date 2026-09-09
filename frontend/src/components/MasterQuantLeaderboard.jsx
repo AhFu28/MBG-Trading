@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import NewsTab from './NewsTab.jsx';
 import PersonalWatchlistTab from './PersonalWatchlistTab.jsx';
 import VirtualForwardPortfolio from './VirtualForwardPortfolio.jsx';
@@ -10,6 +10,8 @@ import OrderBookSimulator from './OrderBookSimulator.jsx';
 import QuantAcademyTab from './QuantAcademyTab.jsx';
 
 export default function MasterQuantLeaderboard({
+  activeTab = 'STOCK',          // controlled from App.jsx (via Sidebar)
+  onTabChange,                  // callback so inner navigation still works
   tradePlans = [],
   cryptoSpotList = [],
   conglomerates = {},
@@ -23,14 +25,21 @@ export default function MasterQuantLeaderboard({
   onSelectTicker,
   onOpenLotCalc
 }) {
-  const [activeMainTab, setActiveMainTab] = useState('STOCK');
-  const [stockSubFilter, setStockSubFilter] = useState('ALL_STOCKS'); // ALL_STOCKS | PLANS | KONGLO | DIVIDEND | FOREIGN
+  // Alias for internal use — reads from controlled prop
+  const activeMainTab = activeTab;
+  const setActiveMainTab = (tab) => onTabChange?.(tab);
+
+  const [stockSubFilter, setStockSubFilter] = useState('ALL_STOCKS');
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedId, setExpandedId] = useState(null);
   const [orderBookModal, setOrderBookModal] = useState({ isOpen: false, ticker: 'BBRI', price: 4900 });
 
   const [sortField, setSortField] = useState('rank');
   const [sortDirection, setSortDirection] = useState('asc');
+
+  // Reset expanded drawer when tab changes from sidebar
+  useEffect(() => { setExpandedId(null); }, [activeTab]);
+
 
   // Conglomerate lookup map
   const kongloLookup = useMemo(() => {
@@ -301,109 +310,18 @@ export default function MasterQuantLeaderboard({
 
   return (
     <div className='telemetry-panel' style={{ border: 'var(--border-hairline)' }}>
-      {/* 1. Header Bar with the FULL QUANT NAVIGATION TABS */}
-      <div className='telemetry-header' style={{ background: 'var(--bg-panel-subtle)', borderBottom: 'var(--border-hairline)', overflowX: 'auto' }}>
-        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
-          <span style={{ color: 'var(--accent-orange)', fontWeight: '900', marginRight: '4px', fontSize: '11px' }}>
-            TERMINAL NAVIGATION:
+      {/* Sub-filter context bar for STOCK/CRYPTO tabs */}
+      {(activeMainTab === 'STOCK' || activeMainTab === 'CRYPTO') && (
+        <div className='telemetry-header' style={{ background: 'var(--bg-panel-subtle)', borderBottom: 'var(--border-hairline)', fontSize: '10px', color: 'var(--text-muted)' }}>
+          <span>
+            {activeMainTab === 'STOCK'
+              ? `📈 Saham IDX · ${allStockItems.length} stocks · KLIK BARIS UNTUK DETAIL · TRADINGVIEW & ORDER BOOK`
+              : `⚡ Crypto Spot · ${allCryptoItems.length} pairs · KLIK BARIS UNTUK DETAIL`}
           </span>
-
-          {/* TAB 1: STOCK */}
-          <button
-            onClick={() => { setActiveMainTab('STOCK'); setExpandedId(null); }}
-            className={'telemetry-btn ' + (activeMainTab === 'STOCK' ? 'active' : '')}
-            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
-          >
-            📈 SAHAM IDX ({allStockItems.length})
-          </button>
-
-          {/* TAB 2: CRYPTO */}
-          <button
-            onClick={() => { setActiveMainTab('CRYPTO'); setExpandedId(null); }}
-            className={'telemetry-btn ' + (activeMainTab === 'CRYPTO' ? 'active' : '')}
-            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
-          >
-            ⚡ CRYPTO SPOT ({allCryptoItems.length})
-          </button>
-
-          {/* TAB 3: CURRENT TEST (Paper Portfolio) */}
-          <button
-            onClick={() => { setActiveMainTab('CURRENT_TEST'); setExpandedId(null); }}
-            className={'telemetry-btn ' + (activeMainTab === 'CURRENT_TEST' ? 'active' : '')}
-            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px', color: activeMainTab === 'CURRENT_TEST' ? '#fff' : 'var(--accent-green)' }}
-          >
-            🧪 CURRENT TEST
-          </button>
-
-          {/* TAB 4: BACKTEST LAB */}
-          <button
-            onClick={() => { setActiveMainTab('BACKTEST_LAB'); setExpandedId(null); }}
-            className={'telemetry-btn ' + (activeMainTab === 'BACKTEST_LAB' ? 'active' : '')}
-            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px', color: activeMainTab === 'BACKTEST_LAB' ? '#fff' : '#00b4d8' }}
-          >
-            📊 BACKTEST LAB
-          </button>
-
-          {/* TAB 5: GLOBAL MARKETS */}
-          <button
-            onClick={() => { setActiveMainTab('GLOBAL_MARKETS'); setExpandedId(null); }}
-            className={'telemetry-btn ' + (activeMainTab === 'GLOBAL_MARKETS' ? 'active' : '')}
-            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
-          >
-            🌍 PASAR GLOBAL
-          </button>
-
-          {/* TAB 6: ECONOMIC CALENDAR */}
-          <button
-            onClick={() => { setActiveMainTab('ECONOMIC_CALENDAR'); setExpandedId(null); }}
-            className={'telemetry-btn ' + (activeMainTab === 'ECONOMIC_CALENDAR' ? 'active' : '')}
-            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
-          >
-            📅 KALENDER MAKRO
-          </button>
-
-          {/* TAB 7: PEARSON CORRELATION */}
-          <button
-            onClick={() => { setActiveMainTab('PEARSON_CORRELATION'); setExpandedId(null); }}
-            className={'telemetry-btn ' + (activeMainTab === 'PEARSON_CORRELATION' ? 'active' : '')}
-            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
-          >
-            🌐 KORELASI PEARSON
-          </button>
-
-          {/* TAB 8: NEWS */}
-          <button
-            onClick={() => { setActiveMainTab('NEWS'); setExpandedId(null); }}
-            className={'telemetry-btn ' + (activeMainTab === 'NEWS' ? 'active' : '')}
-            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
-          >
-            📰 LIVE NEWS ({Array.isArray(liveNews) ? liveNews.length : 0})
-          </button>
-
-          {/* TAB 9: WATCHLIST */}
-          <button
-            onClick={() => { setActiveMainTab('WATCHLIST'); setExpandedId(null); }}
-            className={'telemetry-btn ' + (activeMainTab === 'WATCHLIST' ? 'active' : '')}
-            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px' }}
-          >
-            ⭐ WATCHLIST
-          </button>
-
-          {/* TAB 10: QUANT ACADEMY (Evolved Wiki) */}
-          <button
-            onClick={() => { setActiveMainTab('ACADEMY'); setExpandedId(null); }}
-            className={'telemetry-btn ' + (activeMainTab === 'ACADEMY' ? 'active' : '')}
-            style={{ fontSize: '10px', fontWeight: '700', padding: '4px 10px', color: activeMainTab === 'ACADEMY' ? '#fff' : '#f59e0b' }}
-          >
-            🎓 QUANT ACADEMY
-          </button>
         </div>
+      )}
 
-        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-          {activeMainTab === 'STOCK' || activeMainTab === 'CRYPTO' ? 'KLIK BARIS UNTUK DETAIL · TRADINGVIEW & ORDER BOOK' : 'INSTITUTIONAL QUANT SUITE'}
-        </span>
-      </div>
-
+      {/* VIEW ACCORDING TO ACTIVE MAIN TAB */}
       {/* VIEW ACCORDING TO ACTIVE MAIN TAB */}
       {activeMainTab === 'CURRENT_TEST' && (
         <div style={{ padding: '12px' }}>
