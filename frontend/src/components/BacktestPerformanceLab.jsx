@@ -103,7 +103,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
         bestStrategy: rawData.best_performer ? rawData.best_performer.replace(/_/g, ' ') : (top.archetype || 'SMC ORDER BLOCK'),
         bestSharpe: top.sharpeRatio || '11.28',
         insights: rawData.insights || {
-          worstStreak: "Max consecutive losses: 3 trades (Drawdown controlled via 2% Astra Hard SL rule)",
+          worstStreak: "Max consecutive losses: 3 trades (Drawdown controlled via 2% MBG Apex Hard SL rule)",
           marketRegime: "Superior alpha in Trend Expansion & High Institutional Accumulation regimes.",
           slEffectiveness: "Hard Stop Loss cut portfolio tail-risk by 68% compared to unhedged run."
         }
@@ -281,7 +281,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
         <ul style={{ margin: '0', paddingLeft: '20px', lineHeight: '1.6', color: '#ddd' }}>
           <li><strong>Worst-case streak analysis:</strong> {insights.worstStreak}</li>
           <li><strong>Market Regime Fit:</strong> {insights.marketRegime}</li>
-          <li><strong>Astra Invalidation Effectiveness:</strong> {insights.slEffectiveness}</li>
+          <li><strong>MBG Invalidation Effectiveness:</strong> {insights.slEffectiveness}</li>
         </ul>
       </div>
 

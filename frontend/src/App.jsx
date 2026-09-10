@@ -16,19 +16,12 @@ function HeaderClock() {
     return () => clearInterval(timer);
   }, []);
 
-  const timeStr = now.toLocaleTimeString('id-ID', { hour12: false });
-  
-  const tzName = (() => {
-    try {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      if (tz === 'Asia/Jakarta' || tz === 'Asia/Pontianak') return 'WIB';
-      if (tz === 'Asia/Makassar' || tz === 'Asia/Ujung_Pandang') return 'WITA';
-      if (tz === 'Asia/Jayapura') return 'WIT';
-      return 'WIB';
-    } catch {
-      return 'WIB';
-    }
-  })();
+  const timeStr = now.toLocaleTimeString('id-ID', { 
+    timeZone: 'Asia/Jakarta', 
+    hour12: false, 
+    hourCycle: 'h23' 
+  });
+  const tzName = 'WIB';
 
   return (
     <div 
@@ -341,7 +334,7 @@ export default function App() {
           {/* 2. Main Tab Body */}
           {loading ? (
             <div className="telemetry-panel" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-primary)' }}>
-              Memuat Telemetri MBG Astra Quant Terminal...
+              Memuat Telemetri MBG APEX Quant Terminal...
             </div>
           ) : activeTab === 'HOME' ? (
             /* HOME COMMAND CENTER (Wire + Bento + Foreign Flow + Konglo + Top 5 Alpha) */

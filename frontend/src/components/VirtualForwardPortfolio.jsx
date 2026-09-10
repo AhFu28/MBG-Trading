@@ -34,8 +34,8 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
     }
 
     const currentTickers = new Set([
-      ...(paperPortfolio?.positions || []).map(p => p.ticker),
-      ...userTrades.map(t => t.ticker)
+      ...(paperPortfolio?.positions || []).filter(p => p.status === 'ACTIVE' || p.status === 'PENDING').map(p => p.ticker),
+      ...userTrades.filter(t => t.status === 'ACTIVE' || t.status === 'PENDING').map(t => t.ticker)
     ]);
 
     // Ambil top 5 plans yang belum ada di portfolio
@@ -163,7 +163,20 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
   const handleClosePosition = (id) => {
     const updatedTrades = userTrades.map(t => {
       if (t.id === id) {
-        return { ...t, status: 'CLOSED', exitPrice: currentPrices[t.ticker] || t.entryPrice, realizedPnL: 0 }; // Mock
+        const exitPrice = currentPrices[t.ticker] || t.currentPrice || t.entryPrice;
+        const qty = t.allocation ? (t.allocation / t.entryPrice) : 0;
+        const pnl = Math.round((exitPrice - t.entryPrice) * qty);
+        let finalStatus = 'CLOSED';
+        if (t.tp1 && exitPrice >= t.tp1) finalStatus = 'TP1_HIT';
+        else if (t.sl && exitPrice <= t.sl) finalStatus = 'SL_HIT';
+
+        return { 
+          ...t, 
+          status: finalStatus, 
+          exitPrice: exitPrice, 
+          realizedPnL: pnl,
+          closedAt: new Date().toISOString()
+        };
       }
       return t;
     });

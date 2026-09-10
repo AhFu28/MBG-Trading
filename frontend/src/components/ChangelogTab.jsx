@@ -54,7 +54,7 @@ export default function ChangelogTab() {
             alignItems: 'center',
             gap: '8px'
           }}>
-            <span style={{ color: 'var(--accent-green)', fontWeight: '800' }}>MBG ASTRA</span>
+            <span style={{ color: 'var(--accent-green)', fontWeight: '800' }}>MBG APEX</span>
             <span style={{ opacity: 0.4 }}>//</span>
             <span>SYSTEM CHANGELOG & VERSION REGISTRY</span>
           </div>

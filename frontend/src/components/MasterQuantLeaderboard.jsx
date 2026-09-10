@@ -69,6 +69,28 @@ export default function MasterQuantLeaderboard({
     return s;
   }, [foreignFlow]);
 
+  // Market price lookup map from all available live/snapshot asset sources
+  const marketPriceMap = useMemo(() => {
+    const map = {};
+    (cryptoSpotList || []).forEach(c => {
+      if (c.pair && (c.current_price || c.price)) map[c.pair] = Number(c.current_price || c.price);
+    });
+    Object.values(conglomerates || {}).forEach(stocks => {
+      if (Array.isArray(stocks)) {
+        stocks.forEach(s => {
+          if (s.ticker && (s.price || s.current_price)) map[s.ticker] = Number(s.price || s.current_price);
+        });
+      }
+    });
+    (dividendHunters || []).forEach(d => {
+      if (d.ticker && (d.price || d.current_price)) map[d.ticker] = Number(d.price || d.current_price);
+    });
+    [...(foreignFlow?.top_inflow || []), ...(foreignFlow?.top_outflow || [])].forEach(f => {
+      if (f.ticker && (f.price || f.current_price)) map[f.ticker] = Number(f.price || f.current_price);
+    });
+    return map;
+  }, [cryptoSpotList, conglomerates, dividendHunters, foreignFlow]);
+
   // Dynamic R:R calculator
   const calcRR = (entry, sl, tp) => {
     const risk = Math.abs(Number(entry) - Number(sl));
@@ -88,6 +110,7 @@ export default function MasterQuantLeaderboard({
       const sl = plan.stop_loss || 0;
       const tp = plan.target_1 || 0;
       const realRR = plan.risk_reward_ratio || calcRR(entry, sl, tp);
+      const actualPrice = marketPriceMap[ticker] || plan.current_price || plan.last_price || plan.price || entry;
 
       // Resolve real change % if present, fallback to neutral
       const changePct = plan.change_pct !== undefined ? plan.change_pct : (plan.raw_change_pct !== undefined ? plan.raw_change_pct : 0.0);
@@ -100,7 +123,7 @@ export default function MasterQuantLeaderboard({
         market: plan.market,
         cluster: kongloLookup[ticker] || (plan.market === 'IDX' ? 'BLUECHIP' : 'CRYPTO ALPHA'),
         categoryLabel: plan.market === 'IDX' ? 'TRADE PLAN (IDX)' : 'CRYPTO ALPHA (USDT)',
-        price: entry,
+        price: actualPrice,
         changePct: changePct,
         signal: plan.technical_signal || 'BUY',
         signalType: 'BULL',
@@ -225,11 +248,22 @@ export default function MasterQuantLeaderboard({
       list = list.filter(d => 
         (d.ticker && d.ticker.toLowerCase().includes(q)) ||
         (d.company_name && d.company_name.toLowerCase().includes(q)) ||
+        (d.verdict && d.verdict.toLowerCase().includes(q)) ||
+        (d.dividend_trap_risk && d.dividend_trap_risk.toLowerCase().includes(q)) ||
         (kongloLookup[d.ticker] && kongloLookup[d.ticker].toLowerCase().includes(q))
       );
     }
-    return list;
-  }, [dividendHunters, searchTerm, kongloLookup]);
+    return [...list].sort((a, b) => {
+      let valA = a[sortField] !== undefined ? a[sortField] : a.dividend_yield_pct;
+      let valB = b[sortField] !== undefined ? b[sortField] : b.dividend_yield_pct;
+      if (typeof valA === 'number' && typeof valB === 'number') {
+        return sortDirection === 'asc' ? valA - valB : valB - valA;
+      }
+      return sortDirection === 'asc' 
+        ? String(valA || '').localeCompare(String(valB || ''))
+        : String(valB || '').localeCompare(String(valA || ''));
+    });
+  }, [dividendHunters, searchTerm, kongloLookup, sortField, sortDirection]);
 
   // Robust filtering using Membership Sets (No deduplication data loss)
   const currentDataset = useMemo(() => {
@@ -310,7 +344,7 @@ export default function MasterQuantLeaderboard({
           <TestingHubTab
             dailyTradePlans={tradePlans}
             paperPortfolio={paperPortfolio}
-            currentPrices={Object.fromEntries(allItems.map(i => [i.ticker, i.price]))}
+            currentPrices={{ ...marketPriceMap, ...Object.fromEntries(allItems.map(i => [i.ticker, i.price])) }}
             backtestLab={backtestLab}
             strategyRankings={strategyRankings}
             onSelectTicker={onSelectTicker}
@@ -323,7 +357,7 @@ export default function MasterQuantLeaderboard({
           <VirtualForwardPortfolio
             dailyTradePlans={tradePlans}
             paperPortfolio={paperPortfolio}
-            currentPrices={Object.fromEntries(allItems.map(i => [i.ticker, i.price]))}
+            currentPrices={{ ...marketPriceMap, ...Object.fromEntries(allItems.map(i => [i.ticker, i.price])) }}
             onSelectTicker={onSelectTicker}
           />
         </div>
@@ -416,8 +450,22 @@ export default function MasterQuantLeaderboard({
               </div>
             )}
 
-            {/* Real-time search */}
-            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            {/* Real-time search & Data Transparency Badge */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <span 
+                style={{ 
+                  fontSize: '9px', 
+                  fontFamily: 'var(--font-mono)', 
+                  padding: '3px 6px', 
+                  borderRadius: '3px', 
+                  background: 'rgba(255,255,255,0.06)', 
+                  border: '1px solid var(--border-muted)',
+                  color: 'var(--text-muted)' 
+                }}
+                title="Harga di tabel merupakan snapshot sinkronisasi pipeline. Klik tombol CHART untuk streaming realtime TradingView."
+              >
+                📊 SNAPSHOT PIPELINE
+              </span>
               <input
                 type='text'
                 placeholder={activeMainTab === 'STOCK' ? 'Cari Ticker / Grup...' : 'Cari Ticker / Klaster...'}
@@ -915,7 +963,7 @@ export default function MasterQuantLeaderboard({
               MENAMPILKAN {currentDataset.length} DARI {activeMainTab === 'STOCK' ? allStockItems.length : allCryptoItems.length} INSTRUMEN
             </div>
             <div>
-              ASTRA DISCIPLINE ENGINE · STRICT 1:2 R:R RATIO · ZERO EMOTIONAL HOPE
+              MBG APEX DISCIPLINE ENGINE · STRICT 1:2 R:R RATIO · ZERO EMOTIONAL HOPE
             </div>
           </div>
         </>

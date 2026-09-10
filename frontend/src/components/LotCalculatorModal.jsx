@@ -88,7 +88,7 @@ export default function LotCalculatorModal({ isOpen, onClose, prefillEntry = '',
         <div className="telemetry-header" style={{ background: '#1c1d22', color: '#fff', padding: '12px 16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ color: 'var(--accent-green)', fontWeight: '700', fontSize: '14px' }}>
-              💰 KALKULATOR LOT ASTRA — ANTI BONCOS
+              💰 KALKULATOR LOT MBG APEX — ANTI BONCOS
             </span>
           </div>
 

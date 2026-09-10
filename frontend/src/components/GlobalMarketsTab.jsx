@@ -6,6 +6,7 @@ function getZoneInfo(date, timeZone) {
     const formatter = new Intl.DateTimeFormat('en-US', {
       timeZone,
       hour12: false,
+      hourCycle: 'h23',
       weekday: 'short',
       hour: '2-digit',
       minute: '2-digit',
@@ -50,9 +51,13 @@ export default function GlobalMarketsTab({ onSelectTicker }) {
       jktNote = 'LIBUR AKHIR PEKAN 🔴';
       jktBadge = 'badge-bear';
     } else if (jkt.weekday === 'Fri') {
-      if (jktMin < 540) { // Sebelum 09:00
+      if (jktMin < 525) { // Sebelum 08:45
+        const rem = 525 - jktMin;
+        jktNote = `TUTUP (Pra-Buka ${Math.floor(rem/60)}j ${rem%60}m) 🔴`;
+        jktBadge = 'badge-bear';
+      } else if (jktMin >= 525 && jktMin < 540) { // 08:45 - 09:00
         const rem = 540 - jktMin;
-        jktNote = `PRA-BUKA (Sesi 1 dalam ${Math.floor(rem/60)}j ${rem%60}m) 🟡`;
+        jktNote = `PRA-PEMBUKAAN (Order Matching: ${rem}m) 🟡`;
         jktBadge = 'badge-hold';
       } else if (jktMin >= 540 && jktMin < 690) { // 09:00 - 11:30
         jktOpen = true; jktNote = 'BUKA (SESI 1) 🟢'; jktBadge = 'badge-bull';
@@ -60,16 +65,26 @@ export default function GlobalMarketsTab({ onSelectTicker }) {
         const rem = 840 - jktMin;
         jktNote = `ISTIRAHAT JUMAT (Sesi 2 dlm ${Math.floor(rem/60)}j ${rem%60}m) 🟡`; 
         jktBadge = 'badge-hold';
-      } else if (jktMin >= 840 && jktMin < 960) { // 14:00 - 16:00
+      } else if (jktMin >= 840 && jktMin < 950) { // 14:00 - 15:50
         jktOpen = true; jktNote = 'BUKA (SESI 2) 🟢'; jktBadge = 'badge-bull';
+      } else if (jktMin >= 950 && jktMin < 960) { // 15:50 - 16:00
+        jktNote = 'PRA-PENUTUPAN (Pre-Closing) 🟡';
+        jktBadge = 'badge-hold';
+      } else if (jktMin >= 965 && jktMin <= 975) { // 16:05 - 16:15
+        jktNote = 'PASCA-PENUTUPAN (Post-Trading) 🟡';
+        jktBadge = 'badge-hold';
       } else {
         jktNote = 'TUTUP (PASCA BURSA) 🔴';
         jktBadge = 'badge-bear';
       }
     } else { // Mon - Thu
-      if (jktMin < 540) { // Sebelum 09:00
+      if (jktMin < 525) { // Sebelum 08:45
+        const rem = 525 - jktMin;
+        jktNote = `TUTUP (Pra-Buka ${Math.floor(rem/60)}j ${rem%60}m) 🔴`;
+        jktBadge = 'badge-bear';
+      } else if (jktMin >= 525 && jktMin < 540) { // 08:45 - 09:00
         const rem = 540 - jktMin;
-        jktNote = `PRA-BUKA (Sesi 1 dalam ${Math.floor(rem/60)}j ${rem%60}m) 🟡`;
+        jktNote = `PRA-PEMBUKAAN (Order Matching: ${rem}m) 🟡`;
         jktBadge = 'badge-hold';
       } else if (jktMin >= 540 && jktMin < 720) { // 09:00 - 12:00
         jktOpen = true; jktNote = 'BUKA (SESI 1) 🟢'; jktBadge = 'badge-bull';
@@ -77,8 +92,14 @@ export default function GlobalMarketsTab({ onSelectTicker }) {
         const rem = 810 - jktMin;
         jktNote = `ISTIRAHAT SIANG (Sesi 2 dlm ${Math.floor(rem/60)}j ${rem%60}m) 🟡`; 
         jktBadge = 'badge-hold';
-      } else if (jktMin >= 810 && jktMin < 960) { // 13:30 - 16:00
+      } else if (jktMin >= 810 && jktMin < 950) { // 13:30 - 15:50
         jktOpen = true; jktNote = 'BUKA (SESI 2) 🟢'; jktBadge = 'badge-bull';
+      } else if (jktMin >= 950 && jktMin < 960) { // 15:50 - 16:00
+        jktNote = 'PRA-PENUTUPAN (Pre-Closing) 🟡';
+        jktBadge = 'badge-hold';
+      } else if (jktMin >= 965 && jktMin <= 975) { // 16:05 - 16:15
+        jktNote = 'PASCA-PENUTUPAN (Post-Trading) 🟡';
+        jktBadge = 'badge-hold';
       } else {
         jktNote = 'TUTUP (PASCA BURSA) 🔴';
         jktBadge = 'badge-bear';

@@ -340,7 +340,7 @@ export default function ChartingDeskTab({
               borderRadius: '4px',
               cursor: 'pointer'
             }}
-            title="Hitung ukuran lot aman berdasarkan batas risiko 2% Astra"
+            title="Hitung ukuran lot aman berdasarkan batas risiko 2% MBG Apex"
           >
             💰 Hitung Lot
           </button>
@@ -508,7 +508,7 @@ export default function ChartingDeskTab({
               <span>Setel ke Kalkulator Lot</span>
             </button>
             <div style={{ fontSize: '9px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '6px', fontFamily: 'var(--font-mono)' }}>
-              ASTRA RISK GUARD · MAX 2% EQUITY
+              MBG APEX RISK GUARD · MAX 2% EQUITY
             </div>
           </div>
 

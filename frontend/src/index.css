@@ -444,7 +444,23 @@ body {
   overflow-x: hidden;
 }
 
-/* Mobile: hide sidebar, full width content */
+/* Base hamburger hidden on desktop */
+.sidebar-hamburger {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 200;
+  background: var(--bg-panel);
+  border: var(--border-hairline);
+  border-radius: var(--radius-xs);
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+/* Mobile: hide sidebar, full width content, show hamburger */
 @media (max-width: 768px) {
   .sidebar {
     transform: translateX(-100%);
@@ -455,26 +471,16 @@ body {
   }
   .main-content {
     margin-left: 0;
-    padding-top: 52px; /* Clear fixed hamburger button */
+    padding-top: 50px;
   }
   .sidebar-hamburger {
     display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
-.sidebar-hamburger {
-  display: none;
-  position: fixed;
-  top: 12px;
-  left: 12px;
-  z-index: 200;
-  background: var(--bg-panel);
-  border: var(--border-hairline);
-  border-radius: var(--radius-xs);
-  padding: 6px 8px;
-  cursor: pointer;
-  font-size: 16px;
-}
+/* Dark mode sidebar tweaks */
 
 /* Dark mode sidebar tweaks */
 [data-theme="dark"] .sidebar {

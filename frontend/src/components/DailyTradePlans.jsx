@@ -4,7 +4,7 @@ export default function DailyTradePlans({ plans = [], onOpenChart }) {
   const [filter, setFilter] = useState('ALL');
 
   if (plans.length === 0) {
-    return <div className="telemetry-panel" style={{ padding: '20px' }}>Loading Astra trade plans...</div>;
+    return <div className="telemetry-panel" style={{ padding: '20px' }}>Loading MBG Apex trade plans...</div>;
   }
 
   const filteredPlans = plans.filter(p => {
@@ -20,7 +20,7 @@ export default function DailyTradePlans({ plans = [], onOpenChart }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
           <div>
             <span style={{ fontWeight: '700', color: '#c28800', fontSize: '13px' }}>
-              🎯 ASTRA-GRADE DAILY TRADE PLANS ({plans.length} ACTIONABLE RECOMMANDATIONS)
+              🎯 MBG APEX DAILY TRADE PLANS ({plans.length} ACTIONABLE RECOMMANDATIONS)
             </span>
             <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
               Penyaringan 10-20 rekomendasi terseleksi (Saham BEI + Kripto Spot). Facts strictly separated from Opinion. Status: AWAITING HUMAN REVIEW.

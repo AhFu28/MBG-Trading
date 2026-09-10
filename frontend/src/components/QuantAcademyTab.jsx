@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 export const ACADEMY_LEVELS = [
   {
     id: 1,
-    title: 'LEVEL 1: Fondasi Disiplin Modal & Kalkulator Lot Astra (Pemula)',
+    title: 'LEVEL 1: Fondasi Disiplin Modal & Kalkulator Lot MBG Apex (Pemula)',
     badge: 'Discipline Shield 🛡️',
     summary: '90% trader boncos karena mengabaikan risiko. Pelajari rem darurat 2% dan cara menghitung lot eksak agar Anda tidak pernah terkena margin call.',
     lessons: [
@@ -17,7 +17,7 @@ export const ACADEMY_LEVELS = [
       {
         id: '1.2',
         title: 'Pelajaran 1.2: Mengapa Wajib Membatasi Risiko Maksimal 2%?',
-        content: 'Aturan 2% Doktrin Astra: dalam 1 kali transaksi, Anda maksimal hanya boleh merisikokan 2% dari total ekuitas akun Anda. Jika modal Anda Rp 10.000.000, maka risiko per trade maksimal Rp 200.000. Dengan aturan ini, Anda butuh 35 kali kalah berturut-turut untuk membuat modal terpangkas separuh. Ini memberi napas panjang untuk terus belajar tanpa takut bangkrut.',
+        content: 'Aturan 2% Doktrin MBG Apex: dalam 1 kali transaksi, Anda maksimal hanya boleh merisikokan 2% dari total ekuitas akun Anda. Jika modal Anda Rp 10.000.000, maka risiko per trade maksimal Rp 200.000. Dengan aturan ini, Anda butuh 35 kali kalah berturut-turut untuk membuat modal terpangkas separuh. Ini memberi napas panjang untuk terus belajar tanpa takut bangkrut.',
         figure: null
       },
       {
@@ -25,12 +25,12 @@ export const ACADEMY_LEVELS = [
         title: 'Pelajaran 1.3: Rumus Hitung Lot Eksak & Fraksi Harga BEI',
         content: 'Banyak pemula membeli saham secara acak (All-In). Trader kuantitatif selalu menghitung lot secara diskret: Max Lots = floor((Modal x 2%) / ((Entry - Hard SL) x 100)). Jika hasil hitung adalah 26.8 lot, selalu bulatkan ke bawah menjadi 26 lot agar batas toleransi risiko tidak terlampaui. Selalu sesuaikan antrean dengan fraksi harga resmi BEI (Rp 1, Rp 2, Rp 5, Rp 10, Rp 25).',
         figure: '/figures/04_astra_5_step_flowchart.png',
-        figureCaption: 'Gambar 2: Diagram Alur SOP 5 Langkah Eksekusi Astra Standard (Makro -> IIFS -> SMC -> Lot 2% -> Journal).'
+        figureCaption: 'Gambar 2: Diagram Alur SOP 5 Langkah Eksekusi MBG Apex Standard (Makro -> IIFS -> SMC -> Lot 2% -> Journal).'
       }
     ],
     quiz: [
       {
-        question: 'Berapa persen batas maksimal risiko per transaksi yang diwajibkan Doktrin Astra?',
+        question: 'Berapa persen batas maksimal risiko per transaksi yang diwajibkan Doktrin MBG Apex?',
         options: ['10% modal', '5% modal', 'Maksimal 2% modal portofolio', '50% modal'],
         answer: 2,
         explanation: 'Aturan emas 2% memastikan modal Anda tetap bertahan melewati rentetan kerugian pasar (drawdown).'
@@ -723,7 +723,7 @@ export const VISUAL_FIGURES_GALLERY = [
   { id: 1, title: 'Anatomi Candlestick & Bullish Order Block', file: '/figures/01_candlestick_order_block.png', category: 'Price Action & SMC', desc: 'Sumbu ekor vs body, pergerakan impulsif >2x ATR, dan area kotak demand institusional.' },
   { id: 2, title: 'Struktur Imbalance Fair Value Gap (FVG)', file: '/figures/02_fair_value_gap_fvg.png', category: 'Price Action & SMC', desc: 'Celah ruang hampa antara Candle 1 dan 3 serta titik tengah ekuilibrium diskon 50%.' },
   { id: 3, title: 'Kurva Drawdown vs Pemulihan Modal', file: '/figures/03_drawdown_vs_recovery.png', category: 'Manajemen Risiko', desc: 'Bukti matematis kenapa rugi 50% butuh cuan 100% dan bahaya zona merah penarikan >30%.' },
-  { id: 4, title: 'Flowchart SOP 5 Langkah Astra Standard', file: '/figures/04_astra_5_step_flowchart.png', category: 'Manajemen Risiko', desc: 'Peta alur kerja wajib: Filter Makro -> Skor IIFS -> Area Diskon SMC -> Lot 2% -> Jurnal.' },
+  { id: 4, title: 'Flowchart SOP 5 Langkah MBG Apex Standard', file: '/figures/04_astra_5_step_flowchart.png', category: 'Manajemen Risiko', desc: 'Peta alur kerja wajib: Filter Makro -> Skor IIFS -> Area Diskon SMC -> Lot 2% -> Jurnal.' },
   { id: 5, title: 'Anatomi 4 Fase Jebakan Dividend Trap', file: '/figures/05_dividend_trap_anatomy.png', category: 'Bandarmologi & Flow', desc: 'Fase akumulasi senyap, lonjakan volume ritel di Cum-Date, hingga kaskade ARB di Ex-Date.' },
   { id: 6, title: 'Piramida Likuiditas Kripto (Capital Waterfall)', file: '/figures/06_crypto_liquidity_pyramid.png', category: 'Makro & Kripto', desc: 'Aliran rotasi dana dari Stablecoin/Fiat -> Bitcoin -> Ethereum -> Altseason.' },
   { id: 7, title: 'Anatomi Liquidity Sweep (Turtle Soup)', file: '/figures/07_liquidity_sweep_turtle_soup.png', category: 'Price Action & SMC', desc: 'Perangkap fake breakout di atas swing high, sumbu rejection wick, dan pembalikan arah.' },
@@ -844,7 +844,7 @@ export default function QuantAcademyTab() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '10px' }}>
           <div>
             <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.06em', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>🎓 MBG QUANT ACADEMY // ASTRA DISCIPLINARY SYSTEM</span>
+              <span>🎓 MBG QUANT ACADEMY // MBG APEX DISCIPLINARY SYSTEM</span>
               <span className="badge badge-bull" style={{ fontSize: '9px' }}>5 LEVELS COMPLETE</span>
             </div>
             <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '3px' }}>
@@ -1291,7 +1291,7 @@ export default function QuantAcademyTab() {
           {/* Box 1: Position Sizing Calculator */}
           <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '16px' }}>
             <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>
-              🧮 KALKULATOR LOT PRESISI ASTRA (2% RULE)
+              🧮 KALKULATOR LOT PRESISI MBG APEX (2% RULE)
             </div>
             <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginBottom: '14px' }}>
               Hitung jumlah lot belanja maksimal secara matematis agar toleransi kerugian Anda terkunci saklek di 2% modal.
@@ -1337,7 +1337,7 @@ export default function QuantAcademyTab() {
                   style={{ width: '100%', padding: '7px 10px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '11px' }}
                 >
                   <option value={1}>1.0% (Sangat Konservatif / Akun Besar)</option>
-                  <option value={2}>2.0% (Standar Baku Doktrin Astra)</option>
+                  <option value={2}>2.0% (Standar Baku Doktrin MBG Apex)</option>
                   <option value={3}>3.0% (Agresif Terkontrol)</option>
                 </select>
               </div>
@@ -1438,7 +1438,7 @@ export default function QuantAcademyTab() {
             SERTIFIKAT KELULUSAN DISIPLIN FINANSIAL RESMI
           </div>
           <div style={{ fontSize: '20px', fontWeight: '900', color: 'var(--text-primary)', margin: '12px 0 6px 0', letterSpacing: '0.04em' }}>
-            ASTRA-CERTIFIED DISCIPLINED QUANT TRADER
+            MBG APEX-CERTIFIED DISCIPLINED QUANT TRADER
           </div>
           <p style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '22px', maxWidth: '540px', margin: '0 auto 22px auto' }}>
             Diberikan kepada trader yang telah berhasil menyelesaikan seluruh 5 tingkat kurikulum kuantitatif: Fondasi Disiplin Risiko 2%, Makroekonomi & Komoditas Global, Smart Money Concepts (SMC), Bandarmologi Modern IIFS, dan Kripto Spot Mastery dengan kelulusan evaluasi sempurna (100%).
@@ -1454,7 +1454,7 @@ export default function QuantAcademyTab() {
             </div>
             <div>
               <div style={{ color: 'var(--text-muted)' }}>OTORITAS SISTEM:</div>
-              <div style={{ fontWeight: '700', color: 'var(--accent-orange)', marginTop: '2px' }}>Astra Quant Intelligence Desk</div>
+              <div style={{ fontWeight: '700', color: 'var(--accent-orange)', marginTop: '2px' }}>MBG Apex Quant Intelligence Desk</div>
             </div>
           </div>
         </div>

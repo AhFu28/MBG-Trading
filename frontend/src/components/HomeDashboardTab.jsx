@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import BloombergNewsWire from './BloombergNewsWire.jsx';
 
 export default function HomeDashboardTab({
@@ -120,7 +120,7 @@ export default function HomeDashboardTab({
           </div>
           <div style={{ display: 'flex', gap: '6px', marginTop: '6px', fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
             <span>XAU: ${macro?.gold_price || '2,340'}</span> · 
-            <span>BRENT: ${macro?.brent_oil || '82.5'}</span> · 
+            <span>BRENT: ${macro?.brent_oil_price || macro?.brent_oil || '82.5'}</span> · 
             <span>DXY: {macro?.dxy_index || '104.1'}</span>
           </div>
         </div>

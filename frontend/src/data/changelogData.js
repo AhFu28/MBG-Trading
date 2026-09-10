@@ -1,5 +1,5 @@
 /**
- * MBG Astra Quant Terminal - Changelog & Release History Dataset
+ * MBG APEX Quant Terminal - Changelog & Release History Dataset
  * Formatted and grouped per user requirement:
  * 1. Update Package 10092026 (10 September 2026) - Current / Active
  * 2. Initial Launch Package (08 - 09 September 2026) - Consolidated Baseline
@@ -22,7 +22,7 @@ export const CHANGELOG_DATA = [
         tagColor: 'var(--accent-purple)',
         icon: '📊',
         title: 'Institutional Charting Desk & 4 Strategy Presets (TradingView Engine)',
-        desc: 'Menu baru workspace layar penuh didukung TradingView Advanced Real-Time Chart 100% gratis dengan full drawing toolbar (Trendline, Fibonacci, Position Tool). Dilengkapi 4 Strategy Presets (SMC Desk, Trend Following, Bandar Flow, Mean Reversion), telemetri setup terpadu, dan 1-klik kalkulator lot Astra.'
+        desc: 'Menu baru workspace layar penuh didukung TradingView Advanced Real-Time Chart 100% gratis dengan full drawing toolbar (Trendline, Fibonacci, Position Tool). Dilengkapi 4 Strategy Presets (SMC Desk, Trend Following, Bandar Flow, Mean Reversion), telemetri setup terpadu, dan 1-klik kalkulator lot MBG Apex.'
       },
       {
         tag: 'ORDERBOOK & FLOW',

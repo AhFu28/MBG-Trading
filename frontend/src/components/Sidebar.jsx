@@ -118,7 +118,7 @@ export default function Sidebar({
       <div className="sidebar-footer">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 8px' }}>
           <button
-            onClick={() => alert('MBG Astra Quantitative Desk\nVersion: 2.4.0 (Zero Runtime Cost)\nTimesFM + SMC + IIFS Active')}
+            onClick={() => alert('MBG APEX Quantitative Desk\nVersion: 2.4.0\nStatistical Ensemble + SMC + IIFS Active')}
             style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '5px' }}
             title="Sistem & Versi Terminal"
           >

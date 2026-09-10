@@ -128,20 +128,21 @@ def main():
 
         if portfolio:
             for plan in trade_plans:
-                t = plan.get("ticker", "")
+                t = plan.get("clean_ticker") or plan.get("ticker") or plan.get("symbol", "").replace(".JK", "")
                 if t in smc_analysis: plan["smc"] = smc_analysis[t]
                 if t in bandarmology_iifs: plan["iifs"] = bandarmology_iifs[t]
                 if t in forecasts: plan["forecast"] = forecasts[t]
                 
-                if plan.get("action") == "BUY":
+                direction = (plan.get("direction") or plan.get("action") or "").upper()
+                if direction in ["BUY", "LONG"]:
                     try:
                         portfolio.open_trade(
                             ticker=t,
                             entry_price=plan.get("entry_price", current_prices.get(t, 0)),
                             sl_price=plan.get("stop_loss", 0),
-                            tp1_price=plan.get("take_profit_1", 0),
-                            tp2_price=plan.get("take_profit_2", 0),
-                            strategy_type=plan.get("strategy_type", "Astra")
+                            tp1_price=plan.get("target_1") or plan.get("take_profit_1", 0),
+                            tp2_price=plan.get("target_2") or plan.get("take_profit_2", 0),
+                            strategy_type=plan.get("strategy") or plan.get("strategy_type", "Astra")
                         )
                     except Exception as e:
                         logger.warning(f"Failed opening trade for {t}: {e}")

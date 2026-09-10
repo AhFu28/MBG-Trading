@@ -284,18 +284,78 @@ class IDXMarketFetcher:
             {"ticker": "BRIS.JK", "name": "Bank Syariah Indonesia"},
             {"ticker": "CPIN.JK", "name": "Charoen Pokphand Indonesia"}
         ]
+        self.tv_cache = {}
+
+    def _prefetch_tradingview_idx(self):
+        """Batch-prefetch all IDX stocks real-time quotes via TradingView Scanner (0 delay, 1 HTTP call)"""
+        self.tv_cache = {}
+        try:
+            import urllib.request
+            import json
+            payload = {
+                "columns": ["name", "close", "change", "volume", "RSI", "SMA20", "SMA50"],
+                "range": [0, 950]
+            }
+            req = urllib.request.Request(
+                "https://scanner.tradingview.com/indonesia/scan",
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"User-Agent": "Mozilla/5.0", "Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(req, timeout=10) as res:
+                if res.status == 200:
+                    data = json.loads(res.read().decode("utf-8"))
+                    for item in data.get("data", []):
+                        d = item.get("d", [])
+                        if len(d) >= 7:
+                            sym = str(d[0] or "").upper()
+                            px = float(d[1] or 0)
+                            chg = round(float(d[2] or 0), 2)
+                            vol = int(d[3] or 0)
+                            rsi = round(float(d[4] or 50.0), 1)
+                            ma20 = round(float(d[5] or px), 1)
+                            ma50 = round(float(d[6] or ma20), 1)
+                            
+                            # Signal detection
+                            if px > ma20 and chg > 1.5:
+                                sig = "BREAKOUT"
+                            elif abs(chg) < 1.0 and vol > 1000000:
+                                sig = "ACCUMULATION"
+                            elif rsi < 35:
+                                sig = "OVERSOLD_REBOUND"
+                            else:
+                                sig = "PULLBACK" if px < ma20 else "CONSOLIDATION"
+
+                            est_flow = round((px * vol * (chg / 100)) * 0.35, 0)
+
+                            self.tv_cache[sym] = {
+                                "price": round(px, 0),
+                                "change_pct": chg,
+                                "volume": vol,
+                                "ma20": ma20,
+                                "ma50": ma50,
+                                "rsi_14": rsi,
+                                "foreign_net_val_idr": est_flow,
+                                "technical_signal": sig
+                            }
+                    logger.info(f"Successfully prefetched {len(self.tv_cache)} real-time IDX stocks from TradingView Scanner.")
+        except Exception as e:
+            logger.warning(f"TradingView IDX prefetch failed ({e}). Falling back to yfinance.")
 
     def _fetch_ticker_stats(self, ticker: str) -> dict:
-        """Fetch quotes and calculate technical indicators for a ticker"""
+        """Fetch quotes and calculate technical indicators for a ticker (Primary: Real-time TradingView -> Fallback: yfinance)"""
+        clean = ticker.replace(".JK", "").upper()
+        if self.tv_cache and clean in self.tv_cache:
+            return self.tv_cache[clean]
+
         default_stat = {
-            "price": 1000,
+            "price": 0,
             "change_pct": 0.0,
-            "volume": 100000,
-            "ma20": 1000,
-            "ma50": 1000,
+            "volume": 0,
+            "ma20": 0,
+            "ma50": 0,
             "rsi_14": 50.0,
             "foreign_net_val_idr": 0,
-            "technical_signal": "CONSOLIDATION"
+            "technical_signal": "DATA_UNAVAILABLE"
         }
         try:
             t = yf.Ticker(ticker)
@@ -363,6 +423,9 @@ class IDXMarketFetcher:
             },
             "all_records": []
         }
+
+        # 0. Batch Prefetch Real-time Quotes via TradingView Scanner
+        self._prefetch_tradingview_idx()
 
         # 1. Process Conglomerates
         for group_name, items in self.conglomerates.items():
