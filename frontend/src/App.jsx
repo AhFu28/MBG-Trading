@@ -69,10 +69,16 @@ export default function App() {
     setLotCalcModal(prev => ({ ...prev, isOpen: false }));
   }, []);
 
-  const loadBundle = async () => {
+  const parseSafeDate = (isoString) => {
+    if (!isoString) return null;
+    const safeIso = isoString.endsWith('Z') || isoString.includes('+') ? isoString : isoString + 'Z';
+    return new Date(safeIso);
+  };
+
+  const loadBundle = async (silent = false) => {
     try {
-      setLoading(true);
-      const res = await fetch('/data/latest_cockpit_bundle.json');
+      if (!silent) setLoading(true);
+      const res = await fetch('/data/latest_cockpit_bundle.json?_t=' + Date.now());
       if (res.ok) {
         const json = await res.json();
         setData(json);
@@ -82,12 +88,17 @@ export default function App() {
     } catch (err) {
       console.error('Error fetching latest bundle:', err);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
   useEffect(() => {
     loadBundle();
+    // Auto-poll fresh telemetry every 60 seconds
+    const interval = setInterval(() => {
+      loadBundle(true);
+    }, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   const getTabLabel = (tab) => {
@@ -214,8 +225,11 @@ export default function App() {
                 <span>KALKULATOR LOT</span>
               </button>
 
-              <div style={{ fontSize: '10px', padding: '4px 8px', borderRadius: '4px', background: 'var(--bg-panel-subtle)', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                {data?.last_updated ? ('SYNC: ' + new Date(data.last_updated).toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }) + ' WIB') : 'DATA LIVE 🟢'}
+              <div 
+                style={{ fontSize: '10px', padding: '4px 8px', borderRadius: '4px', background: 'var(--bg-panel-subtle)', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
+                title={data?.last_updated ? `Data Pipeline Snapshot: ${parseSafeDate(data.last_updated)?.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB` : 'Live Telemetry'}
+              >
+                {data?.last_updated ? ('SYNC: ' + parseSafeDate(data.last_updated)?.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }) + ' WIB') : 'DATA LIVE 🟢'}
               </div>
             </div>
           </header>

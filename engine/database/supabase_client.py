@@ -80,14 +80,16 @@ class DatabaseClient:
 
     def sync_complete_bundle(self, bundle: dict):
         """Save master bundle into latest.json for ultra-fast single-request web load"""
-        bundle["last_updated"] = datetime.now().isoformat()
+        from datetime import timezone
+        now_utc = datetime.now(timezone.utc).isoformat()
+        bundle["last_updated"] = now_utc
         self._save_local_fallback("latest_cockpit_bundle.json", bundle)
         if self.client:
             try:
                 self.client.table("system_state").upsert({
                     "key": "LATEST_COCKPIT_BUNDLE",
                     "val": bundle,
-                    "updated_at": datetime.now().isoformat()
+                    "updated_at": now_utc
                 }).execute()
             except Exception as e:
                 logger.error(f"Supabase upsert error (system_state): {e}")

@@ -48,25 +48,40 @@ export default function GlobalMarketsTab({ onSelectTicker }) {
 
     if (isJktWeekend) {
       jktNote = 'LIBUR AKHIR PEKAN 🔴';
+      jktBadge = 'badge-bear';
     } else if (jkt.weekday === 'Fri') {
-      if (jktMin >= 540 && jktMin < 690) { // 09:00 - 11:30
+      if (jktMin < 540) { // Sebelum 09:00
+        const rem = 540 - jktMin;
+        jktNote = `PRA-BUKA (Sesi 1 dalam ${Math.floor(rem/60)}j ${rem%60}m) 🟡`;
+        jktBadge = 'badge-hold';
+      } else if (jktMin >= 540 && jktMin < 690) { // 09:00 - 11:30
         jktOpen = true; jktNote = 'BUKA (SESI 1) 🟢'; jktBadge = 'badge-bull';
       } else if (jktMin >= 690 && jktMin < 840) { // 11:30 - 14:00
-        jktNote = 'ISTIRAHAT JUMAT 🟡'; jktBadge = 'badge-hold';
+        const rem = 840 - jktMin;
+        jktNote = `ISTIRAHAT JUMAT (Sesi 2 dlm ${Math.floor(rem/60)}j ${rem%60}m) 🟡`; 
+        jktBadge = 'badge-hold';
       } else if (jktMin >= 840 && jktMin < 960) { // 14:00 - 16:00
         jktOpen = true; jktNote = 'BUKA (SESI 2) 🟢'; jktBadge = 'badge-bull';
       } else {
-        jktNote = 'TUTUP (SESI BERAKHIR) 🔴';
+        jktNote = 'TUTUP (PASCA BURSA) 🔴';
+        jktBadge = 'badge-bear';
       }
     } else { // Mon - Thu
-      if (jktMin >= 540 && jktMin < 720) { // 09:00 - 12:00
+      if (jktMin < 540) { // Sebelum 09:00
+        const rem = 540 - jktMin;
+        jktNote = `PRA-BUKA (Sesi 1 dalam ${Math.floor(rem/60)}j ${rem%60}m) 🟡`;
+        jktBadge = 'badge-hold';
+      } else if (jktMin >= 540 && jktMin < 720) { // 09:00 - 12:00
         jktOpen = true; jktNote = 'BUKA (SESI 1) 🟢'; jktBadge = 'badge-bull';
       } else if (jktMin >= 720 && jktMin < 810) { // 12:00 - 13:30
-        jktNote = 'ISTIRAHAT SIANG 🟡'; jktBadge = 'badge-hold';
+        const rem = 810 - jktMin;
+        jktNote = `ISTIRAHAT SIANG (Sesi 2 dlm ${Math.floor(rem/60)}j ${rem%60}m) 🟡`; 
+        jktBadge = 'badge-hold';
       } else if (jktMin >= 810 && jktMin < 960) { // 13:30 - 16:00
         jktOpen = true; jktNote = 'BUKA (SESI 2) 🟢'; jktBadge = 'badge-bull';
       } else {
-        jktNote = 'TUTUP (SESI BERAKHIR) 🔴';
+        jktNote = 'TUTUP (PASCA BURSA) 🔴';
+        jktBadge = 'badge-bear';
       }
     }
 

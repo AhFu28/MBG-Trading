@@ -62,10 +62,10 @@ export default function HomeDashboardTab({
           </div>
         </div>
 
-        {/* Card 2: #1 High-Conviction IDX Setup */}
+        {/* Card 2: #1 IDX Alpha Watchlist */}
         <div className="telemetry-panel" style={{
           padding: '12px 16px',
-          borderLeft: '4px solid var(--accent-blue)',
+          borderLeft: '4px solid var(--accent-green)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between'
@@ -77,24 +77,26 @@ export default function HomeDashboardTab({
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '6px' }}>
               <span style={{ fontSize: '18px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-                {topIdx?.clean_ticker || 'AMMN'}
+                {topIdx?.clean_ticker || topIdx?.symbol || 'SCANNING...'}
               </span>
-              <button
-                className="telemetry-btn"
-                onClick={() => onSelectTicker(topIdx?.clean_ticker || 'AMMN', 'IDX')}
-                style={{ fontSize: '9px', padding: '2px 8px', background: 'var(--accent-blue)', color: '#fff' }}
-              >
-                CHART 📈
-              </button>
+              {topIdx && (
+                <button
+                  className="telemetry-btn"
+                  onClick={() => onSelectTicker(topIdx?.clean_ticker || topIdx?.symbol, 'IDX')}
+                  style={{ fontSize: '9px', padding: '2px 8px', background: 'var(--accent-blue)', color: '#fff' }}
+                >
+                  CHART 📈
+                </button>
+              )}
             </div>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px', fontFamily: 'var(--font-mono)' }}>
-              Entry: Rp {topIdx?.entry_price?.toLocaleString() || '4,910'} · TP: Rp {topIdx?.target_1?.toLocaleString() || '5,340'}
+              Entry: Rp {topIdx?.entry_price ? Number(topIdx.entry_price).toLocaleString() : '-'} · TP: Rp {topIdx?.target_1 ? Number(topIdx.target_1).toLocaleString() : '-'}
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', paddingTop: '6px', borderTop: 'var(--border-muted)', fontSize: '10px' }}>
-            <span style={{ color: 'var(--text-muted)' }}>Hard SL: Rp {topIdx?.stop_loss?.toLocaleString() || '4,720'}</span>
+            <span style={{ color: 'var(--text-muted)' }}>Hard SL: Rp {topIdx?.stop_loss ? Number(topIdx.stop_loss).toLocaleString() : '-'}</span>
             <span style={{ fontWeight: '800', color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
-              R:R 1:{topIdx?.risk_reward_ratio || '2.2'}
+              R:R 1:{topIdx?.risk_reward_ratio || '-'}
             </span>
           </div>
         </div>
@@ -114,20 +116,20 @@ export default function HomeDashboardTab({
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '6px' }}>
               <span style={{ fontSize: '18px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-                {topCrypto?.pair || 'SUI/USDT'}
+                {topCrypto?.pair || 'SCANNING...'}
               </span>
               <span style={{ fontSize: '11px', fontWeight: '700', color: (topCrypto?.change_24h_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                {(topCrypto?.change_24h_pct || 0) >= 0 ? '+' : ''}{topCrypto?.change_24h_pct || '0'}%
+                {(topCrypto?.change_24h_pct || 0) >= 0 ? '+' : ''}{topCrypto?.change_24h_pct !== undefined ? topCrypto.change_24h_pct : '0.00'}%
               </span>
             </div>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px', fontFamily: 'var(--font-mono)' }}>
-              Entry: ${topCrypto?.current_price || topCrypto?.entry_high || '1.85'} · TP: ${topCrypto?.take_profit_1 || '2.10'}
+              Entry: ${topCrypto?.current_price || topCrypto?.entry_high || '-'} · TP: ${topCrypto?.take_profit_1 || '-'}
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', paddingTop: '6px', borderTop: 'var(--border-muted)', fontSize: '10px' }}>
-            <span style={{ color: 'var(--text-muted)' }}>SL: ${topCrypto?.stop_loss || '1.70'}</span>
+            <span style={{ color: 'var(--text-muted)' }}>SL: ${topCrypto?.stop_loss || '-'}</span>
             <span style={{ fontWeight: '800', color: 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>
-              R:R 1:{topCrypto?.risk_reward_ratio || '2.0'}
+              R:R 1:{topCrypto?.risk_reward_ratio || '-'}
             </span>
           </div>
         </div>

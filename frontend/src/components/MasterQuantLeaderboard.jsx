@@ -308,6 +308,7 @@ export default function MasterQuantLeaderboard({
       {activeMainTab === 'TESTING' && (
         <div style={{ padding: '0' }}>
           <TestingHubTab
+            dailyTradePlans={tradePlans}
             paperPortfolio={paperPortfolio}
             currentPrices={Object.fromEntries(allItems.map(i => [i.ticker, i.price]))}
             backtestLab={backtestLab}
@@ -320,6 +321,7 @@ export default function MasterQuantLeaderboard({
       {activeMainTab === 'CURRENT_TEST' && (
         <div style={{ padding: '12px' }}>
           <VirtualForwardPortfolio
+            dailyTradePlans={tradePlans}
             paperPortfolio={paperPortfolio}
             currentPrices={Object.fromEntries(allItems.map(i => [i.ticker, i.price]))}
             onSelectTicker={onSelectTicker}
@@ -645,13 +647,13 @@ export default function MasterQuantLeaderboard({
                     <th style={{ cursor: 'pointer' }} onClick={() => handleSort('signal')}>
                       Sinyal / Setup{getSortIcon('signal')}
                     </th>
-                  <th style={{ cursor: 'pointer' }} onClick={() => handleSort('price')}>
-                    Harga Terkini{getSortIcon('price')}
+                  <th style={{ cursor: 'pointer' }} onClick={() => handleSort('price')} title="Harga snapshot terakhir dari bundle data screener">
+                    Harga Snapshot{getSortIcon('price')}
                   </th>
                   <th style={{ cursor: 'pointer' }} onClick={() => handleSort('changePct')}>
                     Chg %{getSortIcon('changePct')}
                   </th>
-                  <th>Entry Zone</th>
+                  <th title="Zona beli terencana berdasarkan setup teknikal quant">Entry Plan</th>
                   <th>Hard SL</th>
                   <th>TP1</th>
                   <th style={{ cursor: 'pointer' }} onClick={() => handleSort('riskReward')}>

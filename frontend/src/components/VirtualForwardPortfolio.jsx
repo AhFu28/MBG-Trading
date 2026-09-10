@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const VirtualForwardPortfolio = ({ paperPortfolio, currentPrices = {} }) => {
+const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, currentPrices = {}, onSelectTicker }) => {
   const [activeTab, setActiveTab] = useState('active'); // active, history, strategy
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [userTrades, setUserTrades] = useState([]);
@@ -25,6 +25,53 @@ const VirtualForwardPortfolio = ({ paperPortfolio, currentPrices = {} }) => {
       }
     }
   }, []);
+
+  // 1-Click Auto-Pick Top 5 AI Setups
+  const handleAutoPickAI = () => {
+    if (!dailyTradePlans || dailyTradePlans.length === 0) {
+      alert("Belum ada Trade Plans AI yang tersedia di sistem.");
+      return;
+    }
+
+    const currentTickers = new Set([
+      ...(paperPortfolio?.positions || []).map(p => p.ticker),
+      ...userTrades.map(t => t.ticker)
+    ]);
+
+    // Ambil top 5 plans yang belum ada di portfolio
+    const eligiblePlans = dailyTradePlans
+      .filter(p => {
+        const sym = (p.clean_ticker || (p.symbol ? p.symbol.replace('.JK', '') : '')).toUpperCase();
+        return sym && !currentTickers.has(sym);
+      })
+      .slice(0, 5);
+
+    if (eligiblePlans.length === 0) {
+      alert("Semua Top Setup AI hari ini sudah ada dalam portofolio Forward Paper Trading Anda.");
+      return;
+    }
+
+    const defaultAllocation = 10000000; // Rp 10 Juta per emiten
+    const newTrades = eligiblePlans.map((plan, idx) => {
+      const sym = (plan.clean_ticker || (plan.symbol ? plan.symbol.replace('.JK', '') : `AI-${idx}`)).toUpperCase();
+      const entry = plan.entry_price || plan.current_price || 1000;
+      return {
+        id: `ai_autopick_${Date.now()}_${sym}`,
+        ticker: sym,
+        strategy: plan.strategy || plan.technical_signal || 'AI Alpha Breakout',
+        entryPrice: entry,
+        sl: plan.stop_loss || Math.round(entry * 0.95),
+        tp1: plan.target_1 || Math.round(entry * 1.08),
+        allocation: defaultAllocation,
+        status: 'ACTIVE',
+        date: new Date().toISOString()
+      };
+    });
+
+    const updated = [...userTrades, ...newTrades];
+    setUserTrades(updated);
+    localStorage.setItem('mbg_user_paper_trades', JSON.stringify(updated));
+  };
 
   // Format currency
   const formatIDR = (val) => {
@@ -175,12 +222,47 @@ const VirtualForwardPortfolio = ({ paperPortfolio, currentPrices = {} }) => {
             </div>
           ))}
         </div>
-        <button 
-          onClick={() => setShowOrderForm(!showOrderForm)}
-          style={{ backgroundColor: '#2a2a2a', color: '#fff', border: '1px solid #444', padding: '5px 10px', cursor: 'pointer', borderRadius: '3px' }}
-        >
-          + Uji Beli Virtual
-        </button>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button 
+            onClick={handleAutoPickAI}
+            style={{ 
+              backgroundColor: 'var(--accent-orange, #f59e0b)', 
+              color: '#000', 
+              border: 'none', 
+              padding: '6px 12px', 
+              cursor: 'pointer', 
+              borderRadius: '3px',
+              fontWeight: '800',
+              fontSize: '11px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+            title="Otomatis masukkan Top 5 rekomendasi saham AI hari ini ke portofolio virtual"
+          >
+            🤖 AUTO-PICK AI TOP 5
+          </button>
+          <button 
+            onClick={() => setShowOrderForm(!showOrderForm)}
+            style={{ backgroundColor: '#2a2a2a', color: '#fff', border: '1px solid #444', padding: '6px 12px', cursor: 'pointer', borderRadius: '3px', fontSize: '11px' }}
+          >
+            + Uji Beli Virtual
+          </button>
+          {userTrades.length > 0 && (
+            <button 
+              onClick={() => {
+                if (window.confirm("Hapus semua trade simulasi manual & auto-pick Anda?")) {
+                  setUserTrades([]);
+                  localStorage.removeItem('mbg_user_paper_trades');
+                }
+              }}
+              style={{ backgroundColor: 'transparent', color: '#888', border: '1px solid #333', padding: '6px 8px', cursor: 'pointer', borderRadius: '3px', fontSize: '10px' }}
+              title="Reset trade manual Anda"
+            >
+              🗑️ Reset
+            </button>
+          )}
+        </div>
       </div>
 
       {showOrderForm && (
@@ -261,14 +343,25 @@ const VirtualForwardPortfolio = ({ paperPortfolio, currentPrices = {} }) => {
                     </span>
                   </td>
                   <td style={{ padding: '10px' }}>
-                    {p.id?.startsWith('manual') && (
-                      <button 
-                        onClick={() => handleClosePosition(p.id)}
-                        style={{ backgroundColor: 'transparent', color: '#ff4444', border: '1px solid #ff4444', padding: '3px 8px', borderRadius: '3px', cursor: 'pointer', fontSize: '11px' }}
-                      >
-                        Close
-                      </button>
-                    )}
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      {onSelectTicker && (
+                        <button
+                          onClick={() => onSelectTicker(p.ticker, 'IDX')}
+                          style={{ backgroundColor: 'var(--accent-blue, #2563eb)', color: '#fff', border: 'none', padding: '3px 6px', borderRadius: '3px', cursor: 'pointer', fontSize: '10px' }}
+                          title="Buka Chart TradingView"
+                        >
+                          Chart
+                        </button>
+                      )}
+                      {(p.id?.startsWith('manual') || p.id?.startsWith('ai_autopick')) && (
+                        <button 
+                          onClick={() => handleClosePosition(p.id)}
+                          style={{ backgroundColor: 'transparent', color: '#ff4444', border: '1px solid #ff4444', padding: '3px 6px', borderRadius: '3px', cursor: 'pointer', fontSize: '10px' }}
+                        >
+                          Close
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               );

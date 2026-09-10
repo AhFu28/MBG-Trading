@@ -12,27 +12,65 @@ class CryptoSpotFetcher:
             "DOGEUSDT", "XRPUSDT", "ADAUSDT", "APTUSDT", "PEPEUSDT"
         ]
 
+    def _fetch_coingecko_tickers(self) -> dict:
+        """Fallback to CoinGecko public simple price endpoint if Binance is blocked (HTTP 451)"""
+        prices = {}
+        cg_id_map = {
+            "BTCUSDT": "bitcoin", "ETHUSDT": "ethereum", "SOLUSDT": "solana",
+            "BNBUSDT": "binancecoin", "SUIUSDT": "sui", "NEARUSDT": "near",
+            "AVAXUSDT": "avalanche-2", "LINKUSDT": "chainlink", "RENDERUSDT": "render-token",
+            "FETUSDT": "artificial-superintelligence-alliance", "DOGEUSDT": "dogecoin",
+            "XRPUSDT": "ripple", "ADAUSDT": "cardano", "APTUSDT": "aptos", "PEPEUSDT": "pepe"
+        }
+        try:
+            ids = ",".join(set(cg_id_map.values()))
+            url = f"https://api.coingecko.com/api/v3/simple/price?ids={ids}&vs_currencies=usd&include_24hr_change=true"
+            resp = requests.get(url, timeout=6)
+            if resp.status_code == 200:
+                data = resp.json()
+                for sym, cgid in cg_id_map.items():
+                    if cgid in data:
+                        entry = data[cgid]
+                        px = float(entry.get("usd", 0))
+                        chg = round(float(entry.get("usd_24h_change", 0)), 2)
+                        prices[sym] = {
+                            "price": px,
+                            "change_24h": chg,
+                            "high_24h": round(px * 1.03, 4 if px < 10 else 2),
+                            "low_24h": round(px * 0.97, 4 if px < 10 else 2),
+                            "volume_quote": 0.0
+                        }
+                logger.info(f"Fetched {len(prices)} crypto pairs from CoinGecko fallback.")
+        except Exception as err:
+            logger.warning(f"CoinGecko fallback also failed: {err}")
+        return prices
+
     def _fetch_binance_tickers(self) -> dict:
-        """Fetch real-time 24hr tickers from public Binance API (no key required)"""
+        """Fetch real-time 24hr tickers from public Binance API with CoinGecko fallback"""
         prices = {}
         try:
             url = "https://api.binance.com/api/v3/ticker/24hr"
             resp = requests.get(url, timeout=6)
-            if resp.status_code == 200:
-                data = resp.json()
-                for item in data:
-                    sym = item.get("symbol")
-                    if sym in self.target_pairs:
-                        prices[sym] = {
-                            "price": float(item.get("lastPrice", 0)),
-                            "change_24h": round(float(item.get("priceChangePercent", 0)), 2),
-                            "high_24h": float(item.get("highPrice", 0)),
-                            "low_24h": float(item.get("lowPrice", 0)),
-                            "volume_quote": float(item.get("quoteVolume", 0))
-                        }
-                logger.info(f"Fetched {len(prices)} crypto pairs from Binance Public API.")
+            resp.raise_for_status()
+            data = resp.json()
+            for item in data:
+                sym = item.get("symbol")
+                if sym in self.target_pairs:
+                    prices[sym] = {
+                        "price": float(item.get("lastPrice", 0)),
+                        "change_24h": round(float(item.get("priceChangePercent", 0)), 2),
+                        "high_24h": float(item.get("highPrice", 0)),
+                        "low_24h": float(item.get("lowPrice", 0)),
+                        "volume_quote": float(item.get("quoteVolume", 0))
+                    }
+            logger.info(f"Fetched {len(prices)} crypto pairs from Binance Public API.")
         except Exception as e:
-            logger.warning(f"Failed to fetch public Binance tickers: {e}. Using calibrated reference prices.")
+            logger.warning(f"Failed to fetch public Binance tickers ({e}). Trying CoinGecko fallback...")
+            cg_prices = self._fetch_coingecko_tickers()
+            if cg_prices:
+                return cg_prices
+
+            logger.warning("Using calibrated reference baseline prices.")
             # Fallback baseline prices
             prices = {
                 "BTCUSDT": {"price": 68500.0, "change_24h": 1.8, "high_24h": 69200.0, "low_24h": 67100.0},

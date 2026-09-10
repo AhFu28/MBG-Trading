@@ -1,8 +1,9 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import VirtualForwardPortfolio from './VirtualForwardPortfolio.jsx';
 import BacktestPerformanceLab from './BacktestPerformanceLab.jsx';
 
 export default function TestingHubTab({
+  dailyTradePlans = [],
   paperPortfolio = {},
   currentPrices = {},
   backtestLab = {},
@@ -57,6 +58,7 @@ export default function TestingHubTab({
       <div style={{ padding: '12px' }}>
         {activeSubTab === 'PAPER' ? (
           <VirtualForwardPortfolio
+            dailyTradePlans={dailyTradePlans}
             paperPortfolio={paperPortfolio}
             currentPrices={currentPrices}
             onSelectTicker={onSelectTicker}
