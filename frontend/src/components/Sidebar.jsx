@@ -45,12 +45,72 @@ export default function Sidebar({
   return (
     <aside className={`sidebar ${isMobileOpen ? 'open' : ''}`}>
 
-      {/* === 1. LOGO / BRAND === */}
-      <div className="sidebar-logo">
-        <div className="sidebar-logo-dot" />
-        <div>
-          <div className="sidebar-logo-text">MBG ASTRA</div>
-          <div className="sidebar-logo-sub">Quant Terminal · v2</div>
+      {/* === 1. LOGO / BRAND (Cool MBG Badge + Market Brain Grid) === */}
+      <div className="sidebar-logo" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px' }}>
+        {/* Cool Monogram MBG Logo Mark */}
+        <div style={{
+          width: '38px',
+          height: '38px',
+          borderRadius: '8px',
+          background: 'linear-gradient(135deg, #07090e 0%, #0d281e 55%, #00d084 100%)',
+          border: '1px solid rgba(0, 208, 132, 0.45)',
+          boxShadow: '0 0 12px rgba(0, 208, 132, 0.25)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+          position: 'relative'
+        }}>
+          <span style={{
+            fontSize: '11px',
+            fontWeight: '900',
+            fontFamily: 'var(--font-mono)',
+            letterSpacing: '-0.02em',
+            color: '#ffffff',
+            textShadow: '0 0 8px rgba(0, 208, 132, 0.8)',
+            lineHeight: 1.1
+          }}>
+            MBG
+          </span>
+          <span style={{
+            fontSize: '6px',
+            fontWeight: '800',
+            letterSpacing: '0.08em',
+            color: 'var(--accent-green)',
+            lineHeight: 1
+          }}>
+            QUANT
+          </span>
+          {/* Active status beacon */}
+          <span style={{
+            position: 'absolute',
+            top: '-2px',
+            right: '-2px',
+            width: '6px',
+            height: '6px',
+            borderRadius: '50%',
+            background: '#00d084',
+            boxShadow: '0 0 6px #00d084'
+          }} />
+        </div>
+
+        {/* Text Details with Full Expansion */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '12px', fontWeight: '900', letterSpacing: '0.06em', color: 'var(--text-primary)', lineHeight: 1.2 }}>
+              MBG ASTRA
+            </span>
+            <span style={{ fontSize: '8px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(0, 208, 132, 0.15)', color: 'var(--accent-green)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+              PRO
+            </span>
+          </div>
+          <div style={{ fontSize: '9px', fontWeight: '700', letterSpacing: '0.04em', color: 'var(--accent-green)', textTransform: 'uppercase', marginTop: '2px', lineHeight: 1.2 }}>
+            Market Brain Grid
+          </div>
+          <div style={{ fontSize: '8px', color: 'var(--text-muted)', letterSpacing: '0.04em', lineHeight: 1.2 }}>
+            Tactical Quant Desk · v2.4
+          </div>
         </div>
       </div>
 

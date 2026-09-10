@@ -214,13 +214,11 @@ export default function App() {
             flexWrap: 'wrap',
             gap: '10px'
           }}>
-            {/* Left: Active Module Breadcrumb */}
+            {/* Left: Active Module Title (Clean & Modern) */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 6px var(--accent-green)' }} />
-              <div style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                <span style={{ color: 'var(--accent-green)' }}>MBG ASTRA</span>
-                <span style={{ margin: '0 6px', opacity: 0.4 }}>//</span>
-                <span style={{ color: 'var(--text-primary)' }}>{getTabLabel(activeTab)}</span>
+              <div style={{ fontSize: '13px', fontWeight: '800', letterSpacing: '0.04em', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
+                {getTabLabel(activeTab)}
               </div>
             </div>
 
