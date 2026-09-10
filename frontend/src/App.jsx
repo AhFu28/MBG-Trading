@@ -422,7 +422,7 @@ export default function App() {
               <strong>DISCLAIMER</strong>: Algorithmic screening &amp; quantitative intelligence only. Bukan ajakan atau nasihat investasi.
             </div>
             <div>
-              MBG ASTRA QUANT TERMINAL · ZERO RUNTIME COST
+              MBG QUANT TERMINAL // MARKET BRAIN GRID · ZERO RUNTIME COST
             </div>
           </footer>
 
