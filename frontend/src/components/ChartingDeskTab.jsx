@@ -29,54 +29,69 @@ export default function ChartingDeskTab({
     return `IDX:${clean}`;
   };
 
-  // Strategy Preset Configurations
+  // Strategy Preset Configurations with verified TradingView Study IDs
   const presetConfigs = useMemo(() => ({
     SMC: {
       badge: 'SMC DESK',
       badgeColor: 'var(--accent-purple, #a855f7)',
-      studies: ["MASimple@tv-basicstudies", "Volume@tv-basicstudies"],
-      indicators: [
-        '• Bullish & Bearish Order Blocks (OB Zone)',
-        '• Fair Value Gap (FVG Imbalance Retest)',
-        '• Market Structure Break (BOS / CHoCH)'
+      studies: [
+        "MASimple@tv-basicstudies",
+        "Volume@tv-basicstudies"
       ],
-      thesis: 'Mendeteksi jejak gajah institusi pada zona diskon SMC dengan risk-reward minimal 1:2.',
+      indicators: [
+        '• Bullish & Bearish Order Blocks (Gunakan Rectangle Tool di Toolbar Kiri)',
+        '• Fair Value Gap (FVG Imbalance Zone)',
+        '• Market Structure Break (BOS / CHoCH)',
+        '• Baseline Volume Profile & Dynamic MA Baseline'
+      ],
+      thesis: 'Mendeteksi jejak gajah institusi pada zona diskon SMC dengan risk-reward minimal 1:2. Gunakan Toolbar Gambar (Rectangle / Fib) di sisi kiri untuk menandai OB.',
       setupStatus: 'BULLISH ORDER BLOCK READY'
     },
     TREND: {
       badge: 'TREND FOLLOWING',
       badgeColor: 'var(--accent-blue, #3b82f6)',
-      studies: ["EMA@tv-basicstudies", "MACD@tv-basicstudies", "Volume@tv-basicstudies"],
-      indicators: [
-        '• Triple EMA (EMA 20, 50, 200)',
-        '• MACD Momentum Histogram',
-        '• Golden Cross & Trend Acceleration'
+      studies: [
+        "MAExp@tv-basicstudies",
+        "MACD@tv-basicstudies",
+        "Volume@tv-basicstudies"
       ],
-      thesis: 'Mengikuti arah tren dominan. Beli saat pullback ke EMA 20/50 selama harga di atas EMA 200.',
+      indicators: [
+        '• Exponential Moving Average (EMA Dynamic)',
+        '• MACD (12, 26, 9) Momentum Histogram',
+        '• Volume Confirmation'
+      ],
+      thesis: 'Mengikuti arah tren dominan. Beli saat pullback ke support dinamis EMA selama MACD histogram mengonfirmasi momentum ekspansi.',
       setupStatus: 'TREND EXPANSION VERIFIED'
     },
     FLOW: {
       badge: 'BANDAR FLOW',
       badgeColor: 'var(--accent-cyan, #06b6d4)',
-      studies: ["VWAP@tv-basicstudies", "RSI@tv-basicstudies", "Volume@tv-basicstudies"],
-      indicators: [
-        '• Rolling Session VWAP (Patokan Modal Bandar)',
-        '• Money Flow Index (MFI 14 Volume-Weighted)',
-        '• On-Balance Volume (OBV Accumulation)'
+      studies: [
+        "VWAP@tv-basicstudies",
+        "RSI@tv-basicstudies",
+        "Volume@tv-basicstudies"
       ],
-      thesis: 'Menunggangi akumulasi bandar & asing saat harga berada dekat harga modal rata-rata VWAP.',
+      indicators: [
+        '• Rolling Session VWAP (Patokan Modal Bandar/Asing)',
+        '• Relative Strength Index (RSI 14 Momentum)',
+        '• Volume Accumulation Flow'
+      ],
+      thesis: 'Menunggangi akumulasi bandar & asing saat harga berada dekat harga modal rata-rata VWAP dengan konfirmasi net foreign flow.',
       setupStatus: 'STEALTH ACCUMULATION'
     },
     MEAN: {
       badge: 'MEAN REVERSION',
       badgeColor: 'var(--accent-amber, #f59e0b)',
-      studies: ["BB@tv-basicstudies", "RSI@tv-basicstudies"],
-      indicators: [
-        '• Bollinger Bands (20, 2.0 Standard Dev)',
-        '• RSI 14 Oversold (< 30) & Overbought (> 70)',
-        '• Target Rebound ke Middle Band SMA 20'
+      studies: [
+        "BollingerBands@tv-basicstudies",
+        "RSI@tv-basicstudies"
       ],
-      thesis: 'Membeli saat harga terpental di luar Lower Bollinger Band dengan konfirmasi RSI jenuh jual.',
+      indicators: [
+        '• Bollinger Bands (20, 2.0 Standard Deviation)',
+        '• RSI 14 Oversold (< 30) & Overbought (> 70)',
+        '• Mean Target Rebound ke Middle Band SMA 20'
+      ],
+      thesis: 'Membeli saat harga terpental menembus Lower Bollinger Band dengan konfirmasi RSI jenuh jual (oversold) untuk swing cepat.',
       setupStatus: 'OVERSOLD REBOUND CANDIDATE'
     }
   }), []);
@@ -338,6 +353,7 @@ export default function ChartingDeskTab({
         {/* Main Chart Canvas (TradingView Live Advanced Widget) */}
         <div style={{ flex: 1, height: '100%', position: 'relative', background: '#0b0e14' }}>
           <div 
+            key={`tv-stage-${currentSymbol}-${currentMarket}-${activePreset}-${timeframe}`}
             ref={containerRef} 
             className="tradingview-widget-container"
             style={{ width: '100%', height: '100%' }}
