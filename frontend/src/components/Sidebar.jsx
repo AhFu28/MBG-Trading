@@ -4,6 +4,7 @@ const NAV_ITEMS = [
   { id: 'HOME',                icon: '🏠', label: 'Home',            section: 'COMMAND CENTER' },
   { id: 'STOCK',               icon: '📈', label: 'Saham IDX',       section: 'MARKETS' },
   { id: 'CRYPTO',              icon: '⚡', label: 'Crypto Spot',      section: 'MARKETS' },
+  { id: 'CHARTING',            icon: '📊', label: 'Charting Desk',    section: 'MARKETS' },
   { id: 'WATCHLIST',           icon: '⭐', label: 'Watchlist',        section: 'MARKETS' },
   { id: 'GLOBAL_MARKETS',      icon: '🌍', label: 'Pasar Global',     section: 'MARKETS' },
   { id: 'TESTING',             icon: '🧪', label: 'Testing Lab',     section: 'QUANT & RESEARCH' },
@@ -28,6 +29,7 @@ export default function Sidebar({
 
   const getBadge = (id) => {
     if (id === 'CHANGELOG') return '10092026';
+    if (id === 'CHARTING') return 'PRO';
     if (id === 'STOCK') return stockCount > 0 ? stockCount : null;
     if (id === 'CRYPTO') return cryptoCount > 0 ? cryptoCount : null;
     if (id === 'NEWS') return newsCount > 0 ? newsCount : null;

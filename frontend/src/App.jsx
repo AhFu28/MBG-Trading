@@ -6,6 +6,7 @@ import TradingViewModal from './components/TradingViewModal.jsx';
 import LotCalculatorModal from './components/LotCalculatorModal.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import ChangelogTab from './components/ChangelogTab.jsx';
+import ChartingDeskTab from './components/ChartingDeskTab.jsx';
 
 function HeaderClock() {
   const [now, setNow] = useState(() => new Date());
@@ -151,6 +152,7 @@ export default function App() {
       case 'HOME': return '🏠 Home Command Center';
       case 'STOCK': return '📈 Saham IDX Alpha';
       case 'CRYPTO': return '⚡ Crypto Spot Momentum';
+      case 'CHARTING': return '📊 Institutional Charting Desk';
       case 'WATCHLIST': return '⭐ Personal Watchlist';
       case 'GLOBAL_MARKETS': return '🌍 Pasar Global';
       case 'TESTING': return '🧪 Strategy Testing Lab';
@@ -227,7 +229,7 @@ export default function App() {
               
               {/* Launch Chart */}
               <button
-                onClick={() => handleOpenChart('AMMN', 'IDX')}
+                onClick={() => setActiveTab('CHARTING')}
                 className="telemetry-btn"
                 style={{
                   background: 'var(--bg-panel-subtle)',
@@ -240,10 +242,10 @@ export default function App() {
                   alignItems: 'center',
                   gap: '5px'
                 }}
-                title="Buka TradingView Pro Chart"
+                title="Buka Institutional Charting Desk (TradingView Pro)"
               >
                 <span>📈</span>
-                <span>LAUNCH CHART</span>
+                <span>CHARTING DESK</span>
               </button>
 
               {/* Kalkulator Lot */}
@@ -349,6 +351,15 @@ export default function App() {
               onOpenLotCalc={handleOpenLotCalc}
               onNavigateTab={setActiveTab}
             />
+          ) : activeTab === 'CHARTING' ? (
+            /* INSTITUTIONAL CHARTING DESK */
+            <main>
+              <ChartingDeskTab
+                data={data}
+                onOpenLotCalc={handleOpenLotCalc}
+                initialSymbol={chartModal.symbol || 'BBCA'}
+              />
+            </main>
           ) : activeTab === 'CHANGELOG' ? (
             /* SYSTEM CHANGELOG & VERSION RELEASES */
             <main>

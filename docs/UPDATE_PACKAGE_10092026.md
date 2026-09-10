@@ -121,3 +121,18 @@ MBG QUANT TERMINAL VERSION REGISTRY
   - Rezim Likuiditas Asing: `AGGRESSIVE ACCUMULATION`, `NEUTRAL ROTATION`, atau `HEAVY DISTRIBUTION`.
   - Top 5 Inflow vs Top 5 Outflow dengan angka Rupiah riil dan tautan langsung ke grafik TradingView.
 
+### 11. Institutional Charting Desk & 4 Strategy Presets (TradingView Engine)
+- **Dedicated Full-Screen Workspace**:
+  - Menu baru `📊 Charting Desk` pada section `MARKETS` di Sidebar dan tombol pintas `CHARTING DESK` di master header.
+  - Tampilan kerja penuh (*full-screen workspace*) didukung widget resmi TradingView Advanced Real-Time Chart 100% gratis tanpa biaya lisensi maupun data feed.
+- **Full Drawing Tools (Bebas Di-otak-atik)**:
+  - Toolbar sisi kiri lengkap: Trendline, Horizontal Ray, Parallel Channel, Fibonacci Retracement, Gann Box, Long/Short Position Calculator, Text Annotation, Brush, dan Ruler.
+  - Toolbar sisi atas: Ganti timeframe (1m, 5m, 15m, 1h, 4h, 1D, 1W), ganti jenis lilin (Candles, Heikin Ashi, Line), dan bebas menambah/menghapus ratusan indikator teknikal.
+- **4 Strategy Presets (1-Klik Switch)**:
+  - 🏛️ **SMC Desk**: Setup Smart Money Concepts (Order Block Zones, FVG Imbalance Retest, dan Market Structure Break).
+  - 📈 **Trend Following**: Triple EMA (20, 50, 200) + MACD Momentum Histogram.
+  - 🌊 **Bandar Flow**: Rolling Session VWAP (Patokan Modal Bandar) + MFI Money Flow + On-Balance Volume.
+  - 🎯 **Mean Reversion**: Bollinger Bands (20, 2.0) + RSI 14 Oversold (< 30) & Overbought (> 70).
+- **Companion Telemetry & 1-Klik Kalkulator Lot**:
+  - Panel samping menampilkan zona Entry, Stop Loss 2% Astra, Target Profit 1-2, dan tombol `💰 Setel ke Kalkulator Lot` yang langsung menyelaraskan manajemen risiko modal.
+

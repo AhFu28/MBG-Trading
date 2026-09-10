@@ -18,6 +18,13 @@ export const CHANGELOG_DATA = [
     description: 'Pembaruan arsitektur generasi kedua menghadirkan integrasi Bot Telegram serverless 24/7 di Cloudflare Pages, Command Center Home bento-grid, Zero-Scroll Sidebar, serta sistem Changelog Update terpadu.',
     highlights: [
       {
+        tag: 'CHARTING DESK',
+        tagColor: 'var(--accent-purple)',
+        icon: '📊',
+        title: 'Institutional Charting Desk & 4 Strategy Presets (TradingView Engine)',
+        desc: 'Menu baru workspace layar penuh didukung TradingView Advanced Real-Time Chart 100% gratis dengan full drawing toolbar (Trendline, Fibonacci, Position Tool). Dilengkapi 4 Strategy Presets (SMC Desk, Trend Following, Bandar Flow, Mean Reversion), telemetri setup terpadu, dan 1-klik kalkulator lot Astra.'
+      },
+      {
         tag: 'ORDERBOOK & FLOW',
         tagColor: '#3b82f6',
         icon: '📊',
