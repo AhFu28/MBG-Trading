@@ -595,3 +595,32 @@ body {
   word-break: break-word !important;
   overflow-wrap: break-word !important;
 }
+
+/* MBG NewsTab Timeline & Snips Polish */
+.news-timeline-card {
+  transition: transform 0.12s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.news-timeline-card:hover {
+  border-color: rgba(59, 130, 246, 0.45) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .news-timeline-card:hover {
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+.ticker-chip-interactive {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent-blue) !important;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.ticker-chip-interactive:hover {
+  background: rgba(59, 130, 246, 0.2) !important;
+  color: #ffffff !important;
+  border-color: var(--accent-blue) !important;
+}

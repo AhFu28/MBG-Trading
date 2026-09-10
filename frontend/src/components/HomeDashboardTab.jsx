@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import BloombergNewsWire from './BloombergNewsWire.jsx';
 
 export default function HomeDashboardTab({
@@ -56,8 +56,8 @@ export default function HomeDashboardTab({
             </div>
           </div>
           <div style={{ display: 'flex', gap: '8px', marginTop: '10px', fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-            <span>XAU: </span> · 
-            <span>BRENT: </span> · 
+            <span>XAU: ${macro?.gold_price || '2,340'}</span> · 
+            <span>BRENT: ${macro?.brent_oil || '82.5'}</span> · 
             <span>DXY: {macro?.dxy_index || '104.1'}</span>
           </div>
         </div>
@@ -77,7 +77,7 @@ export default function HomeDashboardTab({
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '6px' }}>
               <span style={{ fontSize: '18px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-                
+                {topIdx?.clean_ticker || 'AMMN'}
               </span>
               <button
                 className="telemetry-btn"
@@ -121,11 +121,11 @@ export default function HomeDashboardTab({
               </span>
             </div>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px', fontFamily: 'var(--font-mono)' }}>
-              Entry:  · TP: 
+              Entry: ${topCrypto?.current_price || topCrypto?.entry_high || '1.85'} · TP: ${topCrypto?.take_profit_1 || '2.10'}
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', paddingTop: '6px', borderTop: 'var(--border-muted)', fontSize: '10px' }}>
-            <span style={{ color: 'var(--text-muted)' }}>SL: </span>
+            <span style={{ color: 'var(--text-muted)' }}>SL: ${topCrypto?.stop_loss || '1.70'}</span>
             <span style={{ fontWeight: '800', color: 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>
               R:R 1:{topCrypto?.risk_reward_ratio || '2.0'}
             </span>
@@ -153,7 +153,7 @@ export default function HomeDashboardTab({
                 {topInflow.length > 0 ? (
                   topInflow.map((f, i) => (
                     <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: 'var(--border-muted)', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
-                      <span style={{ fontWeight: '700', cursor: 'pointer' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}></span>
+                      <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--text-primary)' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>{f.ticker}</span>
                       <span style={{ color: 'var(--accent-green)' }}>{f.net_value_fmt || ('+Rp ' + (f.net_foreign_flow_billion || 0) + 'B')}</span>
                     </div>
                   ))
@@ -170,7 +170,7 @@ export default function HomeDashboardTab({
                 {topOutflow.length > 0 ? (
                   topOutflow.map((f, i) => (
                     <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: 'var(--border-muted)', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
-                      <span style={{ fontWeight: '700', cursor: 'pointer' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}></span>
+                      <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--text-primary)' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>{f.ticker}</span>
                       <span style={{ color: 'var(--accent-rust)' }}>{f.net_value_fmt || ('-Rp ' + Math.abs(f.net_foreign_flow_billion || 0) + 'B')}</span>
                     </div>
                   ))
@@ -248,7 +248,7 @@ export default function HomeDashboardTab({
                   <tr key={idx}>
                     <td style={{ fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
                       <span style={{ color: 'var(--accent-blue)', cursor: 'pointer' }} onClick={() => onSelectTicker(ticker, 'IDX')}>
-                        
+                        {ticker}
                       </span>
                     </td>
                     <td>

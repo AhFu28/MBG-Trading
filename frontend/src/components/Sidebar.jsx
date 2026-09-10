@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const NAV_ITEMS = [
   { id: 'HOME',                icon: '🏠', label: 'Home',            section: 'COMMAND CENTER' },
@@ -52,7 +52,7 @@ export default function Sidebar({
   };
 
   return (
-    <aside className={sidebar }>
+    <aside className={`sidebar ${isMobileOpen ? 'open' : ''}`}>
 
       {/* === 1. LOGO / BRAND === */}
       <div className="sidebar-logo">
@@ -86,7 +86,7 @@ export default function Sidebar({
                 return (
                   <button
                     key={item.id}
-                    className={sidebar-nav-item }
+                    className={`sidebar-nav-item ${isActive ? 'active' : ''}`}
                     onClick={() => {
                       setActiveTab(item.id);
                       if (isMobileOpen) setMobileOpen(false);

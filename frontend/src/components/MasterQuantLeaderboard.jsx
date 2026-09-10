@@ -383,7 +383,12 @@ export default function MasterQuantLeaderboard({
 
       {activeMainTab === 'NEWS' && (
         <div style={{ padding: '12px' }}>
-          <NewsTab liveNews={liveNews} macro={macro} />
+          <NewsTab 
+            liveNews={liveNews} 
+            macro={macro} 
+            foreignFlow={foreignFlow}
+            onSelectTicker={onSelectTicker} 
+          />
         </div>
       )}
 
