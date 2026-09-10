@@ -138,47 +138,79 @@ export default function HomeDashboardTab({
         
         {/* Box Left: Foreign Institutional Flow Radar */}
         <div className="telemetry-panel" style={{ border: 'var(--border-hairline)' }}>
-          <div className="telemetry-header">
-            <span>🌊 FOREIGN INSTITUTIONAL RADAR</span>
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>BEI Net Flow Tracker</span>
+          <div className="telemetry-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span>🌊 IDX FOREIGN CAPITAL FLOW</span>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Makro BEI</span>
+            </div>
+            <span className={`badge ${
+              foreignFlow?.summary?.regime_badge === 'BULL' ? 'badge-bull' :
+              foreignFlow?.summary?.regime_badge === 'BEAR' ? 'badge-warn' : 'badge-neutral'
+            }`} style={{ fontSize: '9px', fontWeight: '800' }}>
+              {foreignFlow?.summary?.regime || 'ACCUMULATION'}
+            </span>
           </div>
           <div style={{ padding: '10px 14px' }}>
+            {/* Macro Net Stats Bar */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '10px',
+              padding: '6px 10px',
+              background: 'var(--bg-panel-subtle)',
+              borderRadius: '4px',
+              border: 'var(--border-hairline)',
+              fontSize: '11px',
+              fontFamily: 'var(--font-mono)'
+            }}>
+              <div>
+                <span style={{ color: 'var(--text-muted)', fontSize: '9px', display: 'block' }}>NET ASING (1 HARI)</span>
+                <span style={{ fontWeight: '800', color: (foreignFlow?.summary?.net_today_idr || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                  {foreignFlow?.summary?.net_today_fmt || '+Rp 1.42 T'}
+                </span>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ color: 'var(--text-muted)', fontSize: '9px', display: 'block' }}>AKUMULASI 5-HARI</span>
+                <span style={{ fontWeight: '800', color: (foreignFlow?.summary?.net_5d_idr || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                  {foreignFlow?.summary?.net_5d_fmt || '+Rp 4.85 T'}
+                </span>
+              </div>
+            </div>
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              
               {/* Inflow */}
               <div>
                 <div style={{ fontSize: '10px', fontWeight: '700', color: 'var(--accent-green)', marginBottom: '6px' }}>
-                  ▲ TOP NET AKUMULASI ASING
+                  ▲ TOP INFLOW (BUY)
                 </div>
                 {topInflow.length > 0 ? (
                   topInflow.map((f, i) => (
                     <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: 'var(--border-muted)', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
-                      <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--text-primary)' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>{f.ticker}</span>
+                      <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--text-primary)' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>${f.ticker}</span>
                       <span style={{ color: 'var(--accent-green)' }}>{f.net_value_fmt || ('+Rp ' + (f.net_foreign_flow_billion || 0) + 'B')}</span>
                     </div>
                   ))
                 ) : (
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>BBRI, ASII, BMRI, BBNI terpantau inflow</div>
+                  <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>BBRI, BMRI terpantau net buy</div>
                 )}
               </div>
 
               {/* Outflow */}
               <div>
                 <div style={{ fontSize: '10px', fontWeight: '700', color: 'var(--accent-rust)', marginBottom: '6px' }}>
-                  ▼ TOP NET DISTRIBUSI ASING
+                  ▼ TOP OUTFLOW (SELL)
                 </div>
                 {topOutflow.length > 0 ? (
                   topOutflow.map((f, i) => (
                     <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: 'var(--border-muted)', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
-                      <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--text-primary)' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>{f.ticker}</span>
+                      <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--text-primary)' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>${f.ticker}</span>
                       <span style={{ color: 'var(--accent-rust)' }}>{f.net_value_fmt || ('-Rp ' + Math.abs(f.net_foreign_flow_billion || 0) + 'B')}</span>
                     </div>
                   ))
                 ) : (
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>BBCA, GOTO terpantau outflow minor</div>
+                  <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>ASII, GOTO terpantau outflow</div>
                 )}
               </div>
-
             </div>
           </div>
         </div>
@@ -186,8 +218,14 @@ export default function HomeDashboardTab({
         {/* Box Right: Conglomerate Synergy Clusters */}
         <div className="telemetry-panel" style={{ border: 'var(--border-hairline)' }}>
           <div className="telemetry-header">
-            <span>🏢 KLASTER KONGLOMERASI BEI</span>
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>SMC Multi-Asset Synergy</span>
+            <span>🏢 GRUP KONGLOMERASI BEI</span>
+            <button
+              className="telemetry-btn"
+              onClick={() => onNavigateTab?.('STOCK')}
+              style={{ fontSize: '10px', padding: '2px 8px' }}
+            >
+              LIHAT SEMUA SAHAM & GRUP →
+            </button>
           </div>
           <div style={{ padding: '10px 14px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -196,7 +234,7 @@ export default function HomeDashboardTab({
                 return (
                   <div key={groupName} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 0', borderBottom: 'var(--border-muted)' }}>
                     <div>
-                      <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)' }}>{cleanName} GROUP</div>
+                      <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)' }}>{cleanName}</div>
                       <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
                         {(stocks || []).map(s => s.ticker).join(', ')}
                       </div>

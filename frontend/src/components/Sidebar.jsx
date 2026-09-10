@@ -11,9 +11,10 @@ const NAV_ITEMS = [
   { id: 'PEARSON_CORRELATION', icon: '🔗', label: 'Korelasi Pearson', section: 'QUANT & RESEARCH' },
   { id: 'NEWS',                icon: '📰', label: 'Live News',        section: 'QUANT & RESEARCH' },
   { id: 'ACADEMY',             icon: '🎓', label: 'Quant Academy',    section: 'QUANT & RESEARCH' },
+  { id: 'CHANGELOG',           icon: '📜', label: 'Changelog Update', section: 'SYSTEM & UPDATES' },
 ];
 
-const SECTIONS = ['COMMAND CENTER', 'MARKETS', 'QUANT & RESEARCH'];
+const SECTIONS = ['COMMAND CENTER', 'MARKETS', 'QUANT & RESEARCH', 'SYSTEM & UPDATES'];
 
 export default function Sidebar({
   activeTab,
@@ -37,6 +38,7 @@ export default function Sidebar({
   }, []);
 
   const getBadge = (id) => {
+    if (id === 'CHANGELOG') return '10092026';
     if (id === 'STOCK') return stockCount > 0 ? stockCount : null;
     if (id === 'CRYPTO') return cryptoCount > 0 ? cryptoCount : null;
     if (id === 'NEWS') return newsCount > 0 ? newsCount : null;
@@ -99,7 +101,7 @@ export default function Sidebar({
                   </button>
                 );
               })}
-              {section !== 'QUANT & RESEARCH' && <div className="sidebar-divider" />}
+              {section !== SECTIONS[SECTIONS.length - 1] && <div className="sidebar-divider" />}
             </div>
           );
         })}

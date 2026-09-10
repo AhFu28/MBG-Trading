@@ -40,6 +40,12 @@ function parseCommand(rawText) {
   if (/^\/?(plan|sinyal|rekomendasi)$/i.test(clean)) return { type: "PLAN", arg: "" };
   if (/^\/?(help|start|menu|bantuan)$/i.test(clean)) return { type: "HELP", arg: "" };
 
+  const mDiv = clean.match(/^\/?(?:dividend|dividen)\s*([A-Za-z]{3,10})?$/i);
+  if (mDiv) {
+    const sym = (mDiv[1] || "").toUpperCase();
+    return { type: "DIVIDEND", arg: POPULAR_ALIASES[sym] || sym };
+  }
+
   const mSaham = clean.match(/^\/?(?:saham|stock|saham_bei)\s*([A-Za-z]{3,10})?$/i);
   if (mSaham) {
     const sym = (mSaham[1] || "").toUpperCase();
@@ -141,10 +147,11 @@ export async function onRequestPost(context) {
         "🤖 <b>PANDUAN PERINTAH BOT MBG TRADING (24/7 CLOUD)</b>\n\n" +
         "Ketik salah satu perintah berikut di grup kapan saja:\n" +
         "• <code>/saham &lt;KODE&gt;</code> ➔ Cek analisa & level harga saham BEI (cth: <code>/saham BBCA</code>)\n" +
+        "• <code>/dividend &lt;KODE&gt;</code> ➔ Cek kalender dividen BEI & kelayakan beli (cth: <code>/dividend PTBA</code>)\n" +
         "• <code>/crypto &lt;KOIN&gt;</code> ➔ Cek harga spot & level kripto (cth: <code>/crypto BTC</code>)\n" +
         "• <code>/news</code> (atau <code>/snips</code>) ➔ Rekap harian pasar & berita berpoin\n" +
         "• <code>/plan</code> ➔ Daftar rekomendasi saham & kripto hari ini\n\n" +
-        "💡 <i>Tips: Anda juga bisa ketik santai tanpa garis miring, contoh: <code>cek BBCA</code> atau <code>snips</code>.</i>";
+        "💡 <i>Tips: Anda juga bisa ketik santai tanpa garis miring, contoh: <code>cek BBCA</code> atau <code>dividen PTBA</code>.</i>";
     } else if (type === "NEWS") {
       const macro = bundle.macro_telemetry || {};
       const snips = macro.daily_snips || {};
@@ -196,6 +203,54 @@ export async function onRequestPost(context) {
         });
         lines.push("\n⚠️ <i>Pasang batas rugi (Stop Loss) otomatis di sekuritas Anda!</i>");
         reply = lines.join("\n");
+      }
+    } else if (type === "DIVIDEND") {
+      const dividends = bundle.dividend_hunters || [];
+      if (!dividends.length) {
+        reply = "📅 <b>KALENDER DIVIDEN BEI</b>\n\n<i>Belum ada jadwal dividen dalam radar saat ini.</i>";
+      } else if (!arg) {
+        let lines = ["📅 <b>KALENDER DIVIDEN BEI & RADAR WORTH TO BUY</b>\n<i>Daftar jadwal dividen terdekat:</i>\n━━━━━━━━━━━━━━━━━━━━━\n"];
+        dividends.slice(0, 5).forEach((item, idx) => {
+          const bIcon = item.verdict_badge === 'GREEN' ? '🟢' : item.verdict_badge === 'RED' ? '🔴' : '🟡';
+          lines.push(
+            `${idx + 1}. ${bIcon} <b>$${item.ticker}</b> (${item.company_name})\n` +
+            `   ▫️ Cum Date : <b>${item.cum_date}</b> [H-${item.days_to_cum || 0} Hari]\n` +
+            `   ▫️ DPS      : Rp ${Number(item.dps_idr || 0).toLocaleString()} (Yield: <b>${item.dividend_yield_pct}%</b>)\n` +
+            `   ▫️ Status   : <b>${item.verdict || 'MONITOR'}</b>\n` +
+            `   ▫️ Buy Zone : Rp ${Number(item.buy_zone_low).toLocaleString()} - Rp ${Number(item.buy_zone_high).toLocaleString()}\n`
+          );
+        });
+        lines.push("\n💡 <i>Ketik <code>/dividend &lt;KODE&gt;</code> untuk analisa lengkap (contoh: <code>/dividend PTBA</code>).</i>");
+        reply = lines.join("\n");
+      } else {
+        const match = dividends.find(d => (d.ticker || "").toUpperCase() === arg);
+        if (match) {
+          const bIcon = match.verdict_badge === 'GREEN' ? '🟢' : match.verdict_badge === 'RED' ? '🔴' : '🟡';
+          reply = 
+            `📊 <b>ANALISA DIVIDEN: $${match.ticker} (${match.company_name})</b>\n` +
+            `Status: ${bIcon} <b>${match.verdict}</b>\n` +
+            `━━━━━━━━━━━━━━━━━━━━━\n` +
+            `🗓️ <b>JADWAL DISTRIBUSI:</b>\n` +
+            `  • Cum Date     : <b>${match.cum_date}</b> [H-${match.days_to_cum || 0} Hari]\n` +
+            `  • Ex Date      : <b>${match.ex_date}</b>\n` +
+            `  • Payment Date : <b>${match.payment_date}</b>\n\n` +
+            `💰 <b>METRIK & IMBAL HASIL:</b>\n` +
+            `  • Harga Terkini : Rp ${Number(match.price).toLocaleString()}\n` +
+            `  • Estimasi DPS  : <b>Rp ${Number(match.dps_idr).toLocaleString()}</b>\n` +
+            `  • Yield Dividen : <b>${match.dividend_yield_pct}%</b>\n` +
+            `  • Payout Ratio  : ${match.payout_ratio}%\n\n` +
+            `⚠️ <b>RADAR DIVIDEND TRAP:</b>\n` +
+            `  • Risiko Trap   : <b>${match.dividend_trap_risk}</b>\n` +
+            `  • Hist. Drop Ex : -${match.historical_drop_pct}%\n\n` +
+            `🎯 <b>WORTH TO BUY REKOMENDASI:</b>\n` +
+            `  ▫️ <i>${match.summary}</i>\n` +
+            `  🟢 <b>Buy Zone</b> : Rp ${Number(match.buy_zone_low).toLocaleString()} - Rp ${Number(match.buy_zone_high).toLocaleString()}\n` +
+            `  🔴 <b>Stop Loss</b>: Rp ${Number(match.sl).toLocaleString()}\n` +
+            `━━━━━━━━━━━━━━━━━━━━━\n` +
+            `⚠️ <i>Hindari membeli di Hari-H Cum Date saat harga sudah overbought!</i>`;
+        } else {
+          reply = `📅 <b>DIVIDEN $${arg}</b>\n\nBelum ada pengumuman jadwal dividen resmi untuk emiten <b>${arg}</b> dalam radar terdekat.`;
+        }
       }
     } else if (type === "SAHAM_EMPTY") {
       reply = "⚠️ <b>KODE SAHAM BELUM DIISI</b>\n\nFormat: <code>/saham &lt;KODE&gt;</code>\nContoh: <code>/saham BBCA</code> atau <code>/saham ANTM</code>";

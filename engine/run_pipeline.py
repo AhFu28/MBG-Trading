@@ -14,6 +14,7 @@ from fetchers.idx_market import IDXMarketFetcher
 from fetchers.crypto_spot import CryptoSpotFetcher
 from analyzer.llm_brain import LLMBrain
 from analyzer.backtest_engine import BacktestEngine
+from fetchers.broker_summary_fetcher import BrokerSummaryFetcher
 
 try:
     from analyzer.smc_detector import SMCDetector
@@ -161,6 +162,20 @@ def main():
         except Exception as e:
             logger.warning(f"BacktestEngine failed: {e}")
 
+        # Generate Broker Summaries (EOD Official Matrix ala Stockbit / NeoBDM)
+        broker_summaries = {}
+        try:
+            bs_fetcher = BrokerSummaryFetcher()
+            for rec in idx_data.get("all_records", []):
+                tick = rec.get("ticker", "")
+                pr = rec.get("price", 5000)
+                vol = rec.get("volume", 500000)
+                if tick:
+                    broker_summaries[tick] = bs_fetcher.generate_broker_summary(tick, pr, vol)
+            logger.info(f"Generated {len(broker_summaries)} Broker Summaries.")
+        except Exception as e:
+            logger.warning(f"BrokerSummary generation failed: {e}")
+
     except Exception as e:
         logger.error(f"Advanced integration pipeline error: {e}")
 
@@ -183,6 +198,7 @@ def main():
         "daily_trade_plans": trade_plans or existing_bundle.get("daily_trade_plans", []),
         "smc_analysis": smc_analysis or existing_bundle.get("smc_analysis", {}),
         "bandarmology_iifs": bandarmology_iifs or existing_bundle.get("bandarmology_iifs", {}),
+        "broker_summary": broker_summaries or existing_bundle.get("broker_summary", {}),
         "forecasts": forecasts or existing_bundle.get("forecasts", {}),
         "paper_portfolio": portfolio_summary or existing_bundle.get("paper_portfolio", {}),
         "strategy_rankings": strategy_rankings or existing_bundle.get("strategy_rankings", {}),

@@ -23,6 +23,7 @@ export default function MasterQuantLeaderboard({
   paperPortfolio = {},
   backtestLab = {},
   strategyRankings = [],
+  brokerSummary = {},
   onSelectTicker,
   onOpenLotCalc
 }) {
@@ -209,42 +210,26 @@ export default function MasterQuantLeaderboard({
       }
     });
 
-    // 5. Foreign Flow
-    const foreignList = [...(foreignFlow?.top_inflow || []), ...(foreignFlow?.top_outflow || [])];
-    foreignList.forEach(f => {
-      if (!items.find(i => i.ticker === f.ticker)) {
-        const price = f.price || 0;
-        const sl = Math.round(Number(price) * 0.95);
-        const tp = Math.round(Number(price) * 1.10);
-        const realRR = calcRR(price, sl, tp);
-
-        items.push({
-          id: 'foreign-' + f.ticker,
-          rank: items.length + 1,
-          ticker: f.ticker,
-          fullSymbol: f.ticker + '.JK',
-          market: 'IDX',
-          cluster: kongloLookup[f.ticker] || 'FOREIGN TARGET',
-          categoryLabel: f.flow_type || 'FOREIGN FLOW',
-          price: price,
-          changePct: f.change_pct || 0,
-          signal: f.flow_type === 'ACCUMULATION' ? 'FOREIGN BUY' : 'FOREIGN SELL',
-          signalType: f.flow_type === 'ACCUMULATION' ? 'BULL' : 'WARN',
-          entry: price,
-          stopLoss: sl,
-          target1: tp,
-          riskReward: realRR,
-          isTradePlan: false,
-          rawStock: f
-        });
-      }
-    });
-
     const stockOnly = items.filter(i => i.market === 'IDX');
     const cryptoOnly = items.filter(i => i.market === 'CRYPTO');
 
     return { allItems: items, allStockItems: stockOnly, allCryptoItems: cryptoOnly };
-  }, [tradePlans, cryptoSpotList, conglomerates, dividendHunters, foreignFlow, kongloLookup]);
+  }, [tradePlans, cryptoSpotList, conglomerates, dividendHunters, kongloLookup]);
+
+  const tradePlansCount = useMemo(() => allStockItems.filter(i => i.isTradePlan).length, [allStockItems]);
+
+  const filteredDividends = useMemo(() => {
+    let list = dividendHunters || [];
+    if (searchTerm.trim()) {
+      const q = searchTerm.trim().toLowerCase();
+      list = list.filter(d => 
+        (d.ticker && d.ticker.toLowerCase().includes(q)) ||
+        (d.company_name && d.company_name.toLowerCase().includes(q)) ||
+        (kongloLookup[d.ticker] && kongloLookup[d.ticker].toLowerCase().includes(q))
+      );
+    }
+    return list;
+  }, [dividendHunters, searchTerm, kongloLookup]);
 
   // Robust filtering using Membership Sets (No deduplication data loss)
   const currentDataset = useMemo(() => {
@@ -252,12 +237,6 @@ export default function MasterQuantLeaderboard({
     if (activeMainTab === 'STOCK') {
       if (stockSubFilter === 'PLANS') {
         list = allStockItems.filter(i => i.isTradePlan);
-      } else if (stockSubFilter === 'KONGLO') {
-        list = allStockItems.filter(i => Boolean(kongloLookup[i.ticker]));
-      } else if (stockSubFilter === 'DIVIDEND') {
-        list = allStockItems.filter(i => dividendTickerSet.has(i.ticker) || i.id.startsWith('div-'));
-      } else if (stockSubFilter === 'FOREIGN') {
-        list = allStockItems.filter(i => foreignTickerSet.has(i.ticker) || i.id.startsWith('foreign-'));
       } else {
         list = allStockItems;
       }
@@ -411,15 +390,13 @@ export default function MasterQuantLeaderboard({
             alignItems: 'center',
             justifyContent: 'space-between'
           }}>
-            {/* Sub-pills for Stock tab */}
+            {/* Sub-pills for Stock tab (3 SUB-FILTERS: SEMUA SAHAM, TOP TRADE PLANS, DIVIDEN HUNTER) */}
             {activeMainTab === 'STOCK' ? (
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                 {[
-                  { id: 'ALL_STOCKS', label: 'SEMUA SAHAM (' + allStockItems.length + ')' },
-                  { id: 'PLANS', label: '🎯 TOP TRADE PLANS' },
-                  { id: 'KONGLO', label: '🏢 KLASTER KONGLO' },
-                  { id: 'DIVIDEND', label: '💰 DIVIDEN HUNTER' },
-                  { id: 'FOREIGN', label: '🌊 FLOW ASING' }
+                  { id: 'ALL_STOCKS', label: `SEMUA SAHAM (${allStockItems.length})` },
+                  { id: 'PLANS', label: `🎯 TOP TRADE PLANS (${tradePlansCount})` },
+                  { id: 'DIVIDEND', label: `💰 DIVIDEN HUNTER (${filteredDividends.length})` }
                 ].map(btn => (
                   <button
                     key={btn.id}
@@ -441,7 +418,7 @@ export default function MasterQuantLeaderboard({
             <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
               <input
                 type='text'
-                placeholder='Cari Ticker / Klaster...'
+                placeholder={activeMainTab === 'STOCK' ? 'Cari Ticker / Grup...' : 'Cari Ticker / Klaster...'}
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 style={{
@@ -457,28 +434,217 @@ export default function MasterQuantLeaderboard({
                 }}
               />
               <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                ({currentDataset.length} Hasil)
+                ({stockSubFilter === 'DIVIDEND' ? filteredDividends.length : currentDataset.length} Hasil)
               </span>
             </div>
           </div>
 
-          {/* Table View */}
-          <div style={{ overflowX: 'auto', maxHeight: '580px', background: 'var(--bg-panel)' }}>
-            <table className='telemetry-table' style={{ width: '100%' }}>
-              <thead>
-                <tr>
-                  <th style={{ width: '40px', textAlign: 'center', cursor: 'pointer' }} onClick={() => handleSort('rank')}>
-                    #{getSortIcon('rank')}
-                  </th>
-                  <th style={{ cursor: 'pointer' }} onClick={() => handleSort('ticker')}>
-                    Ticker{getSortIcon('ticker')}
-                  </th>
-                  <th style={{ cursor: 'pointer' }} onClick={() => handleSort('cluster')}>
-                    Konglo / Klaster{getSortIcon('cluster')}
-                  </th>
-                  <th style={{ cursor: 'pointer' }} onClick={() => handleSort('signal')}>
-                    Sinyal / Setup{getSortIcon('signal')}
-                  </th>
+          {/* Table View: SPECIALIZED DIVIDEND VIEW vs STANDARD LEADERBOARD */}
+          {activeMainTab === 'STOCK' && stockSubFilter === 'DIVIDEND' ? (
+            <div style={{ overflowX: 'auto', maxHeight: '580px', background: 'var(--bg-panel)' }}>
+              <div style={{
+                padding: '8px 12px',
+                background: 'rgba(245, 158, 11, 0.1)',
+                borderBottom: '1px solid rgba(245, 158, 11, 0.25)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                fontSize: '11px',
+                fontFamily: 'var(--font-mono)'
+              }}>
+                <span style={{ color: 'var(--accent-gold, #fbbf24)', fontWeight: '700' }}>
+                  📅 KALENDER DIVIDEN BEI & EVALUASI KELAYAKAN BELI (WORTH TO BUY)
+                </span>
+                <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                  KLIK BARIS UNTUK DETAIL RADAR DIVIDEND TRAP & PLAYBOOK
+                </span>
+              </div>
+              <table className='telemetry-table' style={{ width: '100%' }}>
+                <thead>
+                  <tr>
+                    <th style={{ width: '35px', textAlign: 'center' }}>#</th>
+                    <th>Ticker & Emiten</th>
+                    <th>Grup</th>
+                    <th>Jadwal Cum Date</th>
+                    <th style={{ textAlign: 'right' }}>DPS (Rp)</th>
+                    <th style={{ textAlign: 'right' }}>Yield %</th>
+                    <th>Ex & Pay Date</th>
+                    <th style={{ textAlign: 'center' }}>Worth to Buy?</th>
+                    <th>Ideal Buy Zone</th>
+                    <th style={{ textAlign: 'center' }}>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredDividends.length === 0 ? (
+                    <tr>
+                      <td colSpan='10' style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
+                        Tidak ada emiten dividen yang sesuai dengan pencarian Anda.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredDividends.map((d, idx) => {
+                      const isExpanded = expandedId === ('div-' + d.ticker);
+                      const bColor = d.verdict_badge === 'GREEN' ? 'badge-bull' : d.verdict_badge === 'RED' ? 'badge-warn' : 'badge-gold';
+                      const grp = kongloLookup[d.ticker] || 'BLUECHIP';
+                      return (
+                        <React.Fragment key={d.ticker}>
+                          <tr
+                            onClick={() => toggleExpand('div-' + d.ticker)}
+                            style={{
+                              cursor: 'pointer',
+                              background: isExpanded ? 'var(--bg-panel-subtle)' : 'transparent',
+                              transition: 'background 0.15s ease'
+                            }}
+                          >
+                            <td style={{ textAlign: 'center', color: 'var(--text-muted)' }}>{idx + 1}</td>
+                            <td>
+                              <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '12px' }}>
+                                ${d.ticker}
+                              </div>
+                              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{d.company_name}</div>
+                            </td>
+                            <td>
+                              <span className="badge badge-neutral" style={{ fontSize: '9px', fontWeight: '700' }}>
+                                {grp}
+                              </span>
+                            </td>
+                            <td>
+                              <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{d.cum_date}</div>
+                              <span className="badge badge-gold" style={{ fontSize: '9px', marginTop: '2px' }}>
+                                H-{d.days_to_cum || 0} HARI
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'right', fontWeight: '700', color: 'var(--text-primary)' }}>
+                              Rp {Number(d.dps_idr || 0).toLocaleString()}
+                            </td>
+                            <td style={{ textAlign: 'right', fontWeight: '800', color: 'var(--accent-green)', fontSize: '12px' }}>
+                              {d.dividend_yield_pct}%
+                            </td>
+                            <td style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                              <div>Ex: {d.ex_date}</div>
+                              <div>Pay: {d.payment_date}</div>
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                              <span className={`badge ${bColor}`} style={{ fontSize: '9px', fontWeight: '800', display: 'inline-block' }}>
+                                {d.verdict}
+                              </span>
+                              <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px', maxWidth: '160px', margin: '2px auto 0' }}>
+                                {d.verdict_badge === 'YELLOW' ? 'Jual H-1 Cum Date' : d.verdict_badge === 'GREEN' ? 'Aman Hold Lewat Ex' : 'Risiko Drop > Yield'}
+                              </div>
+                            </td>
+                            <td>
+                              <div style={{ fontWeight: '700', color: 'var(--accent-green)' }}>
+                                {Number(d.buy_zone_low).toLocaleString()} - {Number(d.buy_zone_high).toLocaleString()}
+                              </div>
+                              <div style={{ fontSize: '9px', color: 'var(--accent-rust)' }}>
+                                SL: {Number(d.sl).toLocaleString()}
+                              </div>
+                            </td>
+                            <td style={{ textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+                              <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
+                                <button
+                                  className="telemetry-btn"
+                                  onClick={() => onSelectTicker(d.ticker, 'IDX')}
+                                  style={{ fontSize: '9px', padding: '3px 6px', color: 'var(--accent-blue)' }}
+                                >
+                                  CHART ↗
+                                </button>
+                                <button
+                                  className="telemetry-btn"
+                                  onClick={() => onOpenLotCalc?.(d.buy_zone_low || d.price, d.sl)}
+                                  style={{ fontSize: '9px', padding: '3px 6px' }}
+                                >
+                                  LOT 💰
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+
+                          {/* Expanded Dividend Drawer */}
+                          {isExpanded && (
+                            <tr>
+                              <td colSpan='10' style={{ background: 'var(--bg-canvas)', padding: '12px', borderBottom: 'var(--border-hairline)' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                                  
+                                  {/* Box 1: Fundamental Facts */}
+                                  <div style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', fontSize: '11px' }}>
+                                    <div style={{ fontWeight: '700', color: 'var(--accent-blue)', marginBottom: '6px', fontSize: '10px' }}>
+                                      📊 FAKTA FUNDAMENTAL DIVIDEN:
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px' }}>
+                                      • <strong>DPS:</strong> Rp {Number(d.dps_idr).toLocaleString()} / lembar
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px' }}>
+                                      • <strong>Payout Ratio (DPR):</strong> {d.payout_ratio}%
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px' }}>
+                                      • <strong>Recording Date:</strong> {d.recording_date}
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)' }}>
+                                      • <strong>Payment Date:</strong> {d.payment_date}
+                                    </div>
+                                  </div>
+
+                                  {/* Box 2: Radar Dividend Trap */}
+                                  <div style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', fontSize: '11px' }}>
+                                    <div style={{ fontWeight: '700', color: 'var(--accent-gold, #fbbf24)', marginBottom: '6px', fontSize: '10px' }}>
+                                      ⚠️ RADAR DIVIDEND TRAP:
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px' }}>
+                                      • <strong>Trap Risk Level:</strong> <span style={{ color: d.dividend_trap_risk === 'LOW' ? 'var(--accent-green)' : '#ff3b30', fontWeight: '700' }}>{d.dividend_trap_risk}</span>
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px' }}>
+                                      • <strong>Hist. Ex-Date Drop:</strong> -{d.historical_drop_pct}%
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px' }}>
+                                      • <strong>Net Gain vs Ex Drop:</strong> {(Number(d.dividend_yield_pct) - Number(d.historical_drop_pct)).toFixed(1)}%
+                                    </div>
+                                    <div style={{ color: 'var(--text-muted)', fontSize: '10px' }}>
+                                      • Estimasi pemulihan harga rata-rata 10-30 hari bursa.
+                                    </div>
+                                  </div>
+
+                                  {/* Box 3: Trader Playbook */}
+                                  <div style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', fontSize: '11px' }}>
+                                    <div style={{ fontWeight: '700', color: 'var(--accent-green)', marginBottom: '6px', fontSize: '10px' }}>
+                                      🎯 PLAYBOOK EKSEKUSI (WORTH TO BUY?):
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '6px', lineHeight: 1.4 }}>
+                                      {d.summary}
+                                    </div>
+                                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                                      Ideal Entry: <strong>Rp {Number(d.buy_zone_low).toLocaleString()} - Rp {Number(d.buy_zone_high).toLocaleString()}</strong> | Hard SL: <strong>Rp {Number(d.sl).toLocaleString()}</strong>
+                                    </div>
+                                  </div>
+
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div style={{ overflowX: 'auto', maxHeight: '580px', background: 'var(--bg-panel)' }}>
+              <table className='telemetry-table' style={{ width: '100%' }}>
+                <thead>
+                  <tr>
+                    <th style={{ width: '40px', textAlign: 'center', cursor: 'pointer' }} onClick={() => handleSort('rank')}>
+                      #{getSortIcon('rank')}
+                    </th>
+                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('ticker')}>
+                      Ticker{getSortIcon('ticker')}
+                    </th>
+                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('cluster')}>
+                      {activeMainTab === 'STOCK' ? 'Grup' : 'Klaster'}{getSortIcon('cluster')}
+                    </th>
+                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('signal')}>
+                      Sinyal / Setup{getSortIcon('signal')}
+                    </th>
                   <th style={{ cursor: 'pointer' }} onClick={() => handleSort('price')}>
                     Harga Terkini{getSortIcon('price')}
                   </th>
@@ -635,17 +801,40 @@ export default function MasterQuantLeaderboard({
                                       >
                                         💰 Hitung Lot
                                       </button>
-                                      <button 
-                                        className="telemetry-btn"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setOrderBookModal({ isOpen: true, ticker: item.ticker, price: item.price });
-                                        }}
-                                        style={{ padding: '2px 8px', fontSize: '10px', background: '#0066cc', color: '#fff', marginLeft: '6px' }}
-                                      >
-                                        📊 Order Book
-                                      </button>
-                                    </div>
+                                       <button 
+                                         className="telemetry-btn"
+                                         onClick={(e) => {
+                                           e.stopPropagation();
+                                           setOrderBookModal({ 
+                                             isOpen: true, 
+                                             ticker: item.ticker, 
+                                             price: item.price,
+                                             brokerData: brokerSummary[item.ticker] || brokerSummary[item.ticker?.replace('.JK', '')]
+                                           });
+                                         }}
+                                         style={{ padding: '2px 8px', fontSize: '10px', background: '#0066cc', color: '#fff', marginLeft: '6px' }}
+                                       >
+                                         📊 Order Book
+                                       </button>
+                                       {!item.ticker.includes('USDT') && !item.ticker.includes('USD') && (
+                                         <button 
+                                           className="telemetry-btn"
+                                           onClick={(e) => {
+                                             e.stopPropagation();
+                                             setOrderBookModal({ 
+                                               isOpen: true, 
+                                               ticker: item.ticker, 
+                                               price: item.price,
+                                               brokerData: brokerSummary[item.ticker] || brokerSummary[item.ticker?.replace('.JK', '')]
+                                             });
+                                           }}
+                                           style={{ padding: '2px 8px', fontSize: '10px', background: '#7c3aed', color: '#fff', marginLeft: '6px' }}
+                                           title="Radar Uang Bandar & Broker Summary ala Stockbit"
+                                         >
+                                           🕵️ Broker Flow
+                                         </button>
+                                       )}
+                                     </div>
                                   </div>
                                   {p && (
                                     <>
@@ -705,6 +894,7 @@ export default function MasterQuantLeaderboard({
               </tbody>
             </table>
           </div>
+        )}
 
           {/* Table Footer */}
           <div style={{
@@ -735,6 +925,7 @@ export default function MasterQuantLeaderboard({
           ticker={orderBookModal.ticker}
           currentPrice={orderBookModal.price}
           isOpen={orderBookModal.isOpen}
+          brokerSummaryData={orderBookModal.brokerData || brokerSummary[orderBookModal.ticker] || brokerSummary[orderBookModal.ticker?.replace('.JK', '')]}
           onClose={() => setOrderBookModal({ isOpen: false, ticker: 'BBRI', price: 4900 })}
         />
       )}

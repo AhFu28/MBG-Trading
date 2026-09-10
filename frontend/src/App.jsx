@@ -1,10 +1,11 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PasswordGate from './components/PasswordGate.jsx';
 import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
 import HomeDashboardTab from './components/HomeDashboardTab.jsx';
 import TradingViewModal from './components/TradingViewModal.jsx';
 import LotCalculatorModal from './components/LotCalculatorModal.jsx';
 import Sidebar from './components/Sidebar.jsx';
+import ChangelogTab from './components/ChangelogTab.jsx';
 
 export default function App() {
   const [data, setData] = useState(null);
@@ -103,6 +104,7 @@ export default function App() {
       case 'PEARSON_CORRELATION': return '🔗 Korelasi Pearson';
       case 'NEWS': return '📰 Terminal Live News';
       case 'ACADEMY': return '🎓 Quant Academy';
+      case 'CHANGELOG': return '📜 Changelog Update & Catatan Rilis';
       default: return 'Institutional Desk';
     }
   };
@@ -231,6 +233,11 @@ export default function App() {
               onOpenLotCalc={handleOpenLotCalc}
               onNavigateTab={setActiveTab}
             />
+          ) : activeTab === 'CHANGELOG' ? (
+            /* SYSTEM CHANGELOG & VERSION RELEASES */
+            <main>
+              <ChangelogTab />
+            </main>
           ) : (
             /* DEEP-DIVE SCREENER / TESTING / RESEARCH TABS */
             <main>
@@ -247,6 +254,7 @@ export default function App() {
                 paperPortfolio={data?.paper_portfolio || {}}
                 backtestLab={data?.backtest_lab || {}}
                 strategyRankings={data?.strategy_rankings || []}
+                brokerSummary={data?.broker_summary || {}}
                 onSelectTicker={handleOpenChart}
                 onOpenLotCalc={handleOpenLotCalc}
               />
