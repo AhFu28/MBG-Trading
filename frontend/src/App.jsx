@@ -7,6 +7,51 @@ import LotCalculatorModal from './components/LotCalculatorModal.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import ChangelogTab from './components/ChangelogTab.jsx';
 
+function HeaderClock() {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const timeStr = now.toLocaleTimeString('id-ID', { hour12: false });
+  
+  const tzName = (() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (tz === 'Asia/Jakarta' || tz === 'Asia/Pontianak') return 'WIB';
+      if (tz === 'Asia/Makassar' || tz === 'Asia/Ujung_Pandang') return 'WITA';
+      if (tz === 'Asia/Jayapura') return 'WIT';
+      return 'WIB';
+    } catch {
+      return 'WIB';
+    }
+  })();
+
+  return (
+    <div 
+      style={{ 
+        fontSize: '11px', 
+        padding: '5px 10px', 
+        borderRadius: 'var(--radius-xs)', 
+        background: 'var(--bg-panel-subtle)', 
+        color: 'var(--text-primary)', 
+        fontFamily: 'var(--font-mono)',
+        fontWeight: '700',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        border: 'var(--border-hairline)'
+      }}
+      title={`Waktu Perangkat Lokal (${Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Jakarta'})`}
+    >
+      <span>🕒</span>
+      <span>{timeStr} {tzName}</span>
+    </div>
+  );
+}
+
 export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -149,12 +194,8 @@ export default function App() {
         <Sidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          theme={theme}
-          toggleTheme={toggleTheme}
-          onRefresh={loadBundle}
           isMobileOpen={isMobileOpen}
           setMobileOpen={setMobileOpen}
-          lastUpdate={data?.last_updated || data?.meta?.generated_at}
           stockCount={(data?.daily_trade_plans || []).filter(p => p.market === 'IDX').length}
           cryptoCount={(data?.crypto_spot_10 || []).length}
           newsCount={(data?.macro_telemetry?.live_news || []).length}
@@ -163,7 +204,7 @@ export default function App() {
         {/* ===== MAIN CONTENT AREA ===== */}
         <div className="main-content">
 
-          {/* 1. Master Top Header Bar (MBG title aligned with Launch Chart & Lot Calculator) */}
+          {/* 1. Master Top Header Bar */}
           <header className="telemetry-panel" style={{
             marginBottom: '12px',
             padding: '8px 16px',
@@ -183,8 +224,10 @@ export default function App() {
               </div>
             </div>
 
-            {/* Right: Quick Launch Tools + Status */}
+            {/* Right: Quick Launch Tools, Theme Switcher, Sync & Live Clock */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              
+              {/* Launch Chart */}
               <button
                 onClick={() => handleOpenChart('AMMN', 'IDX')}
                 className="telemetry-btn"
@@ -192,7 +235,7 @@ export default function App() {
                   background: 'var(--bg-panel-subtle)',
                   borderColor: 'var(--border-color)',
                   color: 'var(--text-primary)',
-                  padding: '5px 12px',
+                  padding: '5px 11px',
                   fontSize: '11px',
                   fontWeight: '700',
                   display: 'flex',
@@ -205,13 +248,14 @@ export default function App() {
                 <span>LAUNCH CHART</span>
               </button>
 
+              {/* Kalkulator Lot */}
               <button
                 onClick={() => handleOpenLotCalc()}
                 className="telemetry-btn"
                 style={{
                   background: 'var(--accent-green)',
                   color: '#ffffff',
-                  padding: '5px 12px',
+                  padding: '5px 11px',
                   fontSize: '11px',
                   fontWeight: '700',
                   display: 'flex',
@@ -225,12 +269,72 @@ export default function App() {
                 <span>KALKULATOR LOT</span>
               </button>
 
-              <div 
-                style={{ fontSize: '10px', padding: '4px 8px', borderRadius: '4px', background: 'var(--bg-panel-subtle)', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
-                title={data?.last_updated ? `Data Pipeline Snapshot: ${parseSafeDate(data.last_updated)?.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB` : 'Live Telemetry'}
+              {/* Theme Toggle Button */}
+              <button
+                onClick={toggleTheme}
+                className="telemetry-btn"
+                style={{
+                  background: 'var(--bg-panel-subtle)',
+                  borderColor: 'var(--border-color)',
+                  color: 'var(--text-primary)',
+                  padding: '5px 10px',
+                  fontSize: '11px',
+                  fontWeight: '700',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px'
+                }}
+                title="Ganti Mode Gelap / Terang"
               >
-                {data?.last_updated ? ('SYNC: ' + parseSafeDate(data.last_updated)?.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }) + ' WIB') : 'DATA LIVE 🟢'}
+                <span>{theme === 'dark' ? '☀️' : '🌙'}</span>
+                <span>{theme === 'dark' ? 'LIGHT' : 'DARK'}</span>
+              </button>
+
+              {/* Sync Trigger Button */}
+              <button
+                onClick={() => loadBundle(false)}
+                className="telemetry-btn"
+                style={{
+                  background: 'var(--bg-panel-subtle)',
+                  borderColor: 'var(--border-color)',
+                  color: 'var(--text-primary)',
+                  padding: '5px 10px',
+                  fontSize: '11px',
+                  fontWeight: '700',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px'
+                }}
+                title="Sinkronkan & Refresh Telemetri Terbaru"
+              >
+                <span>🔄</span>
+                <span>SYNC</span>
+              </button>
+
+              {/* Sync Status Badge */}
+              <div 
+                style={{ 
+                  fontSize: '10px', 
+                  padding: '5px 8px', 
+                  borderRadius: 'var(--radius-xs)', 
+                  background: 'var(--bg-panel-subtle)', 
+                  color: 'var(--accent-green)', 
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: '700',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  border: 'var(--border-hairline)'
+                }}
+                title={data?.last_updated ? `Snapshot Pipeline: ${parseSafeDate(data.last_updated)?.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB` : 'Live Telemetry'}
+              >
+                <span>🟢</span>
+                <span>SYNCED</span>
               </div>
+
+              {/* Live Real-time Clock */}
+              <HeaderClock />
+
             </div>
           </header>
 

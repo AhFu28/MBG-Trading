@@ -19,23 +19,12 @@ const SECTIONS = ['COMMAND CENTER', 'MARKETS', 'QUANT & RESEARCH', 'SYSTEM & UPD
 export default function Sidebar({
   activeTab,
   setActiveTab,
-  theme,
-  toggleTheme,
-  onRefresh,
   isMobileOpen,
   setMobileOpen,
-  lastUpdate,
   stockCount = 0,
   cryptoCount = 0,
   newsCount = 0,
 }) {
-  // Self-contained WIB clock to prevent parent re-renders
-  const [clock, setClock] = useState(() => new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setClock(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const getBadge = (id) => {
     if (id === 'CHANGELOG') return '10092026';
@@ -107,42 +96,24 @@ export default function Sidebar({
         })}
       </nav>
 
-      {/* === 4. SYSTEM FOOTER === */}
+      {/* === 4. SYSTEM FOOTER (Clean & Compact) === */}
       <div className="sidebar-footer">
-        {/* WIB Clock + Sync Indicator */}
-        <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>🕒 {clock.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour12: false })} WIB</span>
-          <span style={{ color: 'var(--accent-green)', fontWeight: '700' }}>
-            {lastUpdate ? '🟢 SYNCED' : '🟡 LOCAL'}
-          </span>
-        </div>
-
-        {/* Theme + Sync Buttons */}
-        <div style={{ display: 'flex', gap: '6px', marginTop: '6px' }}>
-          <button className="telemetry-btn" onClick={toggleTheme} style={{ flex: 1, padding: '4px 6px', fontSize: '10px' }} title="Toggle Theme">
-            {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
-          </button>
-          <button className="telemetry-btn" onClick={onRefresh} style={{ flex: 1, padding: '4px 6px', fontSize: '10px' }} title="Refresh Data">
-            🔄 Sync
-          </button>
-        </div>
-
-        <div className="sidebar-divider" />
-
-        {/* Settings + Safe Logout */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 8px' }}>
           <button
             onClick={() => alert('MBG Astra Quantitative Desk\nVersion: 2.4.0 (Zero Runtime Cost)\nTimesFM + SMC + IIFS Active')}
-            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}
+            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '5px' }}
+            title="Sistem & Versi Terminal"
           >
-            <span>⚙️ Settings</span>
+            <span>⚙️</span>
+            <span>Settings</span>
           </button>
           <button
             onClick={handleLogout}
-            style={{ background: 'none', border: 'none', color: 'var(--accent-rust)', cursor: 'pointer', fontSize: '11px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '4px' }}
-            title="Keluar dari sesi ini"
+            style={{ background: 'none', border: 'none', color: 'var(--accent-rust)', cursor: 'pointer', fontSize: '11px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '5px' }}
+            title="Keluar dari sesi ini (Data Watchlist & Paper tetap aman)"
           >
-            <span>🚪 Logout</span>
+            <span>🚪</span>
+            <span>Logout</span>
           </button>
         </div>
       </div>
