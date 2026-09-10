@@ -4,6 +4,8 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
   const containerRef = useRef(null);
   const [currentSymbol, setCurrentSymbol] = useState(initialSymbol || 'BBCA');
   const [searchInput, setSearchInput] = useState('');
+  const [interval, setInterval] = useState('15'); // default 15m for active quant monitoring
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Format symbol for TradingView
   const getTvSymbol = (sym, mkt) => {
@@ -30,9 +32,9 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
     script.innerHTML = JSON.stringify({
       autosize: true,
       symbol: tvSymbol,
-      interval: "D",
+      interval: interval,
       timezone: "Asia/Jakarta",
-      theme: "light",
+      theme: "dark",
       style: "1", // Candlesticks
       locale: "id",
       enable_publishing: false,
@@ -56,7 +58,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
       containerRef.current.appendChild(widgetWrapper);
       containerRef.current.appendChild(script);
     }
-  }, [currentSymbol, market]);
+  }, [currentSymbol, market, interval, refreshKey]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -92,10 +94,47 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
       }}>
         
         {/* Modal Topbar */}
-        <div className="telemetry-header" style={{ background: '#1c1d22', color: '#fff' }}>
+        <div className="telemetry-header" style={{ background: '#1c1d22', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ color: 'var(--accent-orange)', fontWeight: '700' }}>TRADINGVIEW INTERACTIVE TELEMETRY</span>
             <span className="badge badge-alert">{getTvSymbol(currentSymbol, market)}</span>
+
+            {/* Timeframe selector */}
+            <div style={{ display: 'flex', gap: '3px', background: 'rgba(255,255,255,0.08)', padding: '2px 4px', borderRadius: '4px', marginLeft: '6px' }}>
+              {[
+                { label: '5m', val: '5' },
+                { label: '15m', val: '15' },
+                { label: '1H', val: '60' },
+                { label: '4H', val: '240' },
+                { label: '1D', val: 'D' }
+              ].map(tf => (
+                <button
+                  key={tf.val}
+                  onClick={() => setInterval(tf.val)}
+                  style={{
+                    background: interval === tf.val ? 'var(--accent-blue)' : 'transparent',
+                    color: interval === tf.val ? '#ffffff' : '#a0a0a5',
+                    border: 'none',
+                    padding: '2px 7px',
+                    fontSize: '10px',
+                    fontWeight: '700',
+                    borderRadius: '3px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {tf.label}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setRefreshKey(k => k + 1)}
+              className="telemetry-btn"
+              style={{ fontSize: '10px', padding: '2px 8px', background: 'var(--bg-panel)', color: 'var(--accent-green)' }}
+              title="Reload Chart Data"
+            >
+              🔄 REFRESH
+            </button>
           </div>
 
           <button 

@@ -23,30 +23,32 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
     return () => clearInterval(timer);
   }, [headlines.length]);
 
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <div className='telemetry-panel' style={{ marginBottom: '14px', border: 'var(--border-hairline)' }}>
+    <div className='telemetry-panel' style={{ marginBottom: '8px', border: 'var(--border-hairline)' }}>
       
-      {/* 1. Bloomberg Streaming Macro Ticker Tape */}
+      {/* 1. Streaming Macro Ticker Tape */}
       <div style={{
         background: 'var(--bg-panel-dark)',
         color: '#faf9f5',
-        padding: '6px 12px',
+        padding: '5px 12px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '12px',
+        gap: '10px',
         fontSize: '11px',
         letterSpacing: '0.04em'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ width: '8px', height: '8px', background: '#ff3b30', display: 'inline-block', borderRadius: '50%' }}></span>
-          <strong style={{ color: '#ff9500' }}>BLOOMBERG MACRO WIRE</strong>
-          <span style={{ color: '#8e8e93', fontSize: '10px' }}>// CONTINUOUS 24/7 FEED</span>
+          <span style={{ width: '8px', height: '8px', background: 'var(--accent-green)', display: 'inline-block', borderRadius: '50%', boxShadow: '0 0 6px var(--accent-green)' }}></span>
+          <strong style={{ color: 'var(--accent-green)', letterSpacing: '0.04em' }}>MBG MACRO INTELLIGENCE WIRE</strong>
+          <span style={{ color: '#8e8e93', fontSize: '10px' }}>// CONTINUOUS 24/7 LIVE FEED</span>
         </div>
 
         {/* Streaming Ticker Bellwethers */}
-        <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', fontFamily: 'var(--font-mono)', fontSize: '10px' }}>
           <div style={{ display: 'flex', gap: '4px' }}>
             <span style={{ color: '#8e8e93' }}>XAU/USD:</span>
             <span style={{ fontWeight: '700' }}>${macro.gold_price}</span>
@@ -78,103 +80,94 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
         </div>
       </div>
 
-      {/* 2. Breaking News Narrative Box with Carousel */}
-      <div style={{ padding: '10px 14px', background: 'var(--bg-panel)', borderTop: 'var(--border-muted)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
-          
-          <div style={{ flex: '1 1 500px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className='badge' style={{ background: '#ff9500', color: '#ffffff', border: 'none', fontSize: '9px', fontWeight: '700' }}>
-                  FLASH HEADLINE
-                </span>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                  {macro.source || 'Global Macro Intelligence Engine'} · SYNCED {new Date(macro.updated_at || Date.now()).toLocaleTimeString('id-ID')} WIB
-                </span>
-              </div>
+      {/* 2. Compact Headline Bar */}
+      <div style={{ padding: '6px 12px', background: 'var(--bg-panel)', borderTop: 'var(--border-muted)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '1 1 auto', overflow: 'hidden' }}>
+          <span className='badge' style={{ background: '#ff9500', color: '#ffffff', border: 'none', fontSize: '8px', fontWeight: '800', padding: '1px 5px' }}>
+            FLASH
+          </span>
+          <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            ⚡ {typeof headlines[headlineIndex] === 'object' ? (headlines[headlineIndex]?.title || headlines[headlineIndex]?.headline) : headlines[headlineIndex]}
+          </span>
+          <span style={{ fontSize: '9px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+            ({headlineIndex + 1}/{headlines.length})
+          </span>
+        </div>
 
-              {/* Carousel Controls */}
-              {headlines.length > 1 && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <button
-                    onClick={() => setHeadlineIndex(prev => (prev - 1 + headlines.length) % headlines.length)}
-                    className='telemetry-btn'
-                    style={{ padding: '2px 6px', fontSize: '10px' }}
-                    title='Previous headline'
-                  >
-                    ◀
-                  </button>
-                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', minWidth: '35px', textAlign: 'center' }}>
-                    {headlineIndex + 1} / {headlines.length}
-                  </span>
-                  <button
-                    onClick={() => setHeadlineIndex(prev => (prev + 1) % headlines.length)}
-                    className='telemetry-btn'
-                    style={{ padding: '2px 6px', fontSize: '10px' }}
-                    title='Next headline'
-                  >
-                    ▶
-                  </button>
-                </div>
-              )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+          {/* Affected tickers in-line */}
+          {affectedStocks.slice(0, 3).map((item, idx) => (
+            <button
+              key={idx}
+              onClick={() => onSelectTicker(item.ticker, 'IDX')}
+              className='telemetry-btn'
+              style={{
+                padding: '1px 5px',
+                fontSize: '9px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '3px',
+                borderColor: item.impact === 'BULLISH' ? '#34c759' : '#ff3b30'
+              }}
+              title={item.reason}
+            >
+              <span>{item.impact === 'BULLISH' ? '🟢' : '🔴'}</span>
+              <strong>${item.ticker}</strong>
+            </button>
+          ))}
+
+          {headlines.length > 1 && (
+            <div style={{ display: 'flex', gap: '2px' }}>
+              <button
+                onClick={() => setHeadlineIndex(prev => (prev - 1 + headlines.length) % headlines.length)}
+                className='telemetry-btn'
+                style={{ padding: '1px 5px', fontSize: '9px' }}
+                title='Prev headline'
+              >
+                ◀
+              </button>
+              <button
+                onClick={() => setHeadlineIndex(prev => (prev + 1) % headlines.length)}
+                className='telemetry-btn'
+                style={{ padding: '1px 5px', fontSize: '9px' }}
+                title='Next headline'
+              >
+                ▶
+              </button>
             </div>
+          )}
 
-            <h3 style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-primary)', margin: '2px 0 6px 0', minHeight: '20px' }}>
-              ⚡ {typeof headlines[headlineIndex] === 'object' ? (headlines[headlineIndex]?.title || headlines[headlineIndex]?.headline) : headlines[headlineIndex]}
-            </h3>
-
-            <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 8px 0', lineHeight: 1.4 }}>
-              {macro.full_narrative}
-            </p>
-
-            {/* Clickable Impacted IDX Asset Tags */}
-            {affectedStocks.length > 0 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)' }}>
-                  AFFECTED ASSETS (CLICK TO CHART):
-                </span>
-                {affectedStocks.map((item, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => onSelectTicker(item.ticker, 'IDX')}
-                    className='telemetry-btn'
-                    style={{
-                      padding: '2px 6px',
-                      fontSize: '10px',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      borderColor: item.impact === 'BULLISH' ? '#34c759' : '#ff3b30'
-                    }}
-                    title={item.reason}
-                  >
-                    <span>{item.impact === 'BULLISH' ? '🟢' : '🔴'}</span>
-                    <strong>${item.ticker}</strong>
-                    <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>({item.impact})</span>
-                  </button>
-                ))}
-              </div>
-            )}
-
-          </div>
-
-          {/* Quick Sentiment Status */}
-          <div style={{ textAlign: 'right', minWidth: '120px' }}>
-            <div style={{ fontSize: '9px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: '700' }}>
-              EVENT CATEGORY
-            </div>
-            <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-primary)', marginTop: '2px' }}>
-              {macro.event_category || 'GLOBAL_MACRO'}
-            </div>
-            <div style={{ marginTop: '4px' }}>
-              <span className={'badge ' + (macro.severity === 'HIGH' || macro.severity === 'CRITICAL' ? 'badge-bear' : 'badge-bull')}>
-                SEVERITY: {macro.severity || 'NORMAL'}
-              </span>
-            </div>
-          </div>
-
+          <button
+            onClick={() => setIsExpanded(prev => !prev)}
+            className='telemetry-btn'
+            style={{ padding: '1px 6px', fontSize: '9px', background: isExpanded ? 'var(--accent-blue)' : 'transparent', color: isExpanded ? '#fff' : 'var(--text-muted)' }}
+          >
+            {isExpanded ? '▲ Ringkas' : '▼ Detail'}
+          </button>
         </div>
       </div>
+
+      {/* Expandable Macro Narrative Drawer */}
+      {isExpanded && (
+        <div style={{ padding: '8px 12px', background: 'var(--bg-panel-subtle)', borderTop: 'var(--border-muted)', fontSize: '11px', lineHeight: 1.45, color: 'var(--text-muted)' }}>
+          <p style={{ margin: '0 0 6px 0' }}>{macro.full_narrative || 'Pasar memantau dinamika suku bunga global dan arus akumulasi institusi.'}</p>
+          {affectedStocks.length > 3 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
+              <span style={{ fontSize: '9px', fontWeight: '700', color: 'var(--text-muted)' }}>ALL IMPACTED:</span>
+              {affectedStocks.map((item, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => onSelectTicker(item.ticker, 'IDX')}
+                  className='telemetry-btn'
+                  style={{ padding: '1px 5px', fontSize: '9px' }}
+                >
+                  ${item.ticker} ({item.impact})
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
     </div>
   );

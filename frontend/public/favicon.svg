@@ -1,0 +1,21 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="mbg-fav-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D084" />
+      <stop offset="50%" stop-color="#00E599" />
+      <stop offset="100%" stop-color="#00FF9D" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#00D084" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="#08090b" stroke="#1c2029" stroke-width="2"/>
+  <g transform="translate(28, 66)" filter="url(#glow)">
+    <circle cx="62" cy="62" r="48" stroke="url(#mbg-fav-grad)" stroke-width="15" stroke-linecap="round" fill="none" />
+    <circle cx="62" cy="62" r="24" stroke="url(#mbg-fav-grad)" stroke-width="11" stroke-linecap="round" fill="none" />
+    <path d="M 62 14 C 100 14, 100 110, 138 110" stroke="url(#mbg-fav-grad)" stroke-width="15" stroke-linecap="round" fill="none" />
+    <path d="M 138 14 C 172 14, 196 38, 196 62 C 196 86, 172 110, 138 110" stroke="url(#mbg-fav-grad)" stroke-width="15" stroke-linecap="round" fill="none" />
+    <path d="M 138 38 C 151 38, 162 49, 162 62 C 162 75, 151 86, 138 86" stroke="url(#mbg-fav-grad)" stroke-width="11" stroke-linecap="round" fill="none" />
+    <line x1="138" y1="62" x2="190" y2="62" stroke="url(#mbg-fav-grad)" stroke-width="14" stroke-linecap="round" />
+  </g>
+</svg>
