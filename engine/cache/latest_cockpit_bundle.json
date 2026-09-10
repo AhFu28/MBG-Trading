@@ -28,12 +28,12 @@
     "event_category": "FED",
     "sentiment": "NEUTRAL",
     "severity": "NORMAL",
-    "gold_price": 4453.3,
-    "gold_change_pct": 0.84,
-    "brent_oil_price": 101.02,
-    "brent_oil_change_pct": -0.19,
-    "dxy_index": 98.74,
-    "dxy_change_pct": -0.03,
+    "gold_price": 4456.4,
+    "gold_change_pct": 0.91,
+    "brent_oil_price": 101.05,
+    "brent_oil_change_pct": -0.16,
+    "dxy_index": 98.73,
+    "dxy_change_pct": -0.04,
     "us10y_yield": 4.84,
     "idx_affected_sectors": [
       "MINING_GOLD"
@@ -42,7 +42,7 @@
       {
         "ticker": "ANTM",
         "impact": "BULLISH",
-        "reason": "Gold +0.84% boosts mining realized selling price"
+        "reason": "Gold +0.91% boosts mining realized selling price"
       },
       {
         "ticker": "BRMS",
@@ -57,7 +57,7 @@
     ],
     "daily_snips": {
       "edition": "MORNING_BRIEF",
-      "generated_at": "2026-09-10T04:13:45.781549",
+      "generated_at": "2026-09-10T04:41:48.817014",
       "market_verdict": {
         "stance": "CONSOLIDATIVE",
         "badge": "\u26aa KONSOLIDASI PASAR SEHAT",
@@ -66,18 +66,18 @@
       },
       "macro_pulse": {
         "gold": {
-          "price": 4453.3,
-          "change_pct": 0.84,
+          "price": 4456.4,
+          "change_pct": 0.91,
           "status": "RALLY"
         },
         "brent": {
-          "price": 101.02,
-          "change_pct": -0.19,
+          "price": 101.05,
+          "change_pct": -0.16,
           "status": "COOLING"
         },
         "dxy": {
-          "val": 98.74,
-          "change_pct": -0.03,
+          "val": 98.73,
+          "change_pct": -0.04,
           "status": "SOFT"
         },
         "us10y": {
@@ -94,17 +94,17 @@
         },
         {
           "rank": 2,
-          "topic": "IHSG",
-          "highlight": "IHSG Dibuka Menguat 0,15% Dekati Level 6.700",
-          "tickers": []
-        },
-        {
-          "rank": 3,
           "topic": "ENERGY",
           "highlight": "Penguatan IHSG dibayangi lonjakan harga minyak mentah",
           "tickers": [
             "BYAN"
           ]
+        },
+        {
+          "rank": 3,
+          "topic": "IHSG",
+          "highlight": "IHSG Dibuka Menguat 0,15% Dekati Level 6.700",
+          "tickers": []
         }
       ],
       "actionable_guidance": "Fokus pada saham berorientasi ekspor atau komoditas. Terapkan stop loss disiplin 3-4% untuk membatasi risiko."
@@ -131,6 +131,27 @@
       },
       {
         "id": "news-2",
+        "title": "Penguatan IHSG dibayangi lonjakan harga minyak mentah",
+        "source": "IDNFinancials",
+        "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxQV0V4QWJfZjRlaVlYS2JmV1BCUFNaV2ItZ1FYamJoTFZnMExTLVZ1QUZQblpDenVuaGZiSjlWOW1FUXJnbGsxNDBWeW1jcmNjTVAzTkhiLVVHVDJLVE95cnFYbWplYXpBOE9xUWNEcU9jTHNfYXJrbGtIZVdFb3d0bmhFZTA0RjVjTEFwdEpaQnhHa2pLMTY5ZVJsb3UtUQ?oc=5",
+        "pub_date": "Thu, 10 Sep 2026 01:30:00 GMT",
+        "tag": "ENERGY",
+        "sentiment": "NEUTRAL",
+        "sentiment_score": 0.0,
+        "related_tickers": [
+          "BYAN"
+        ],
+        "metrics": [],
+        "reading_time_sec": 45,
+        "summary": "Warta dari IDNFinancials: Berita mengindikasikan sentimen neutral pada saham BYAN dengan pengaruh terhadap sektor ENERGY.",
+        "key_takeaways": [
+          "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
+          "Fokus pasar tertuju pada pergerakan saham $BYAN dengan volatilitas aktif.",
+          "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+        ]
+      },
+      {
+        "id": "news-3",
         "title": "IHSG Dibuka Menguat 0,15% Dekati Level 6.700",
         "source": "CNBC Indonesia",
         "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOSUNmTExxVkVBOUtQZUVWZ2lMdXZOTW14Si1qc3ppTUZFbWtxcTVnaExkbzE1Z3R6UG5DNGx1SVZZVnNUNHhjZ2JmckpnbVFVdnNXT2c4T25PQTZvZmhVaTFVSjduYnVULUVhdkZLMlpkZ0RZdXVFZ0FFOXUyVE81VlNERXVLVU1GRm8yTk10VUpVaDd4NjJRVHlERzNFZ2NMa2R3OUdR0gGrAUFVX3lxTE1qelh0VHdjODNaa3l4ZWgtWmZPRFk3anpEOG9wQ2F6NGpQczI1cHlIOTRjT1pYbnhIa1Z5TklVRHdpb0czc2otUE9hQmlWbnlMdkdZSEVjRlFLd3lLb3BjbktBODBVOXBTbS1XRFphYWt6N0VIVF9GNk11bTkxWUtKaDAtSXZyOXVDNGdxZ2MzZUtQTjEtbG80Vld0Q1VGc3lGUmZVM3FPX2pBWQ?oc=5",
@@ -149,27 +170,6 @@
           "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait. Terpantau Perubahan: 0,15%; Level kunci: 6.700.",
           "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
           "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
-        ]
-      },
-      {
-        "id": "news-3",
-        "title": "Penguatan IHSG dibayangi lonjakan harga minyak mentah",
-        "source": "IDNFinancials",
-        "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxQV0V4QWJfZjRlaVlYS2JmV1BCUFNaV2ItZ1FYamJoTFZnMExTLVZ1QUZQblpDenVuaGZiSjlWOW1FUXJnbGsxNDBWeW1jcmNjTVAzTkhiLVVHVDJLVE95cnFYbWplYXpBOE9xUWNEcU9jTHNfYXJrbGtIZVdFb3d0bmhFZTA0RjVjTEFwdEpaQnhHa2pLMTY5ZVJsb3UtUQ?oc=5",
-        "pub_date": "Thu, 10 Sep 2026 01:30:00 GMT",
-        "tag": "ENERGY",
-        "sentiment": "NEUTRAL",
-        "sentiment_score": 0.0,
-        "related_tickers": [
-          "BYAN"
-        ],
-        "metrics": [],
-        "reading_time_sec": 45,
-        "summary": "Warta dari IDNFinancials: Berita mengindikasikan sentimen neutral pada saham BYAN dengan pengaruh terhadap sektor ENERGY.",
-        "key_takeaways": [
-          "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
-          "Fokus pasar tertuju pada pergerakan saham $BYAN dengan volatilitas aktif.",
-          "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
         ]
       },
       {
@@ -273,25 +273,6 @@
       },
       {
         "id": "news-9",
-        "title": "ANALIS MARKET (10/9/2026): IHSG Diproyeksi Bergerak Konsolidasi dalam Rentang 6600-6720",
-        "source": "pasardana.id",
-        "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPRmVjaXlRRk9uQUZicUJ0em5CVDRpRWVaRFVnbVVVQmx3VzF4OVNtZjNiYkNSMXRCQ2dFODZocXoxOHhNa3ZSNlpaNksyYlE2R3Y3ck9yRVFlTHFMN25XQTJyZWNpR3BlbDlxM2FPcng1amlVQWxiUUpqa3BxaGhmVGR1Ty1yUThBV0N4WTJuRUpNNUhfVFE3X1VpOUNtdnZ0YmNZeURQb2hYTHh2cUI3WmRBbDQzdXRJU2xRag?oc=5",
-        "pub_date": "Thu, 10 Sep 2026 00:52:00 GMT",
-        "tag": "IHSG",
-        "sentiment": "NEUTRAL",
-        "sentiment_score": 0.0,
-        "related_tickers": [],
-        "metrics": [],
-        "reading_time_sec": 45,
-        "summary": "Warta dari pasardana.id: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
-        "key_takeaways": [
-          "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
-          "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-          "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-        ]
-      },
-      {
-        "id": "news-10",
         "title": "IHSG Kamis dibuka menguat 9,98 poin ke posisi 6.688",
         "source": "ANTARA News",
         "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNVV9QaGxXdDhFTlduZkt2OUEtRTU5eUYyeXlxR0FJYnZzaWdNS2E0ZnZrR3k0dC1IYnA2NzRfX2tmQW9QMzRLU3ZCYjBCSEVvTzVrT2pycGo4bHpYOWwwLWp1Y2I5cmg1RlF3UWJIdXgwejY3NGdPcl9MTzBIYTdoQUpuLUpVQmhqOFowaGZHQ3FPUQ?oc=5",
@@ -312,7 +293,7 @@
         ]
       },
       {
-        "id": "news-11",
+        "id": "news-10",
         "title": "Harga Saham Naik Tajam, BEI Gembok Perdagangan GRPH",
         "source": "CNBC Indonesia",
         "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNc3dub2NIVXZDM3hWODdkOFpDcHZIb2MweXh5VWdHd1QwaW9GYVBXZnRMeTdVQ1FJOGpQVERGNEhVVmxXQnJuaDJsMkdGZ0ltdU9Fam80WU5ZcEp6MzlmRno3R0xrYmg1Q190emdVZktvLTNJaHZUaTN0WU9wekIzYUtuT0VpMHZEd2ZuSFZpZ0VYc3BjM20xOThMZUVDazU3WVFjNjV3UkliZktWb1dMUmVR0gG3AUFVX3lxTE1UMkdvNEVQNXdJQ1IzcUd0NGFEQWxHQTZZMEJmdmFUY3hJSzBIdzhYd2RKSHRnOW0zbTVadHd6QV9tSV9SNTVicVc5OE9OQUxzRTNrZXB4RWVXQmh0ZlhjcjJSV3NRRjIxcnJFdzd1b2Q2dDVWMldGam0yRUIxdlJMRGNYcnZmbm9KRndHTFI3SXg1TlpJN0UwYTRUczVUdDd0WWNybmNnOE50QWM4cVVHdURGTkRjbw?oc=5",
@@ -328,6 +309,27 @@
           "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait.",
           "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
           "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+        ]
+      },
+      {
+        "id": "news-11",
+        "title": "Jumlah pemegang saham RANS anjlok 606 ribu, Raffi Ahmad kuasai 62,93%",
+        "source": "IDNFinancials",
+        "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOVTY1a0RqajBidjhEQ0lfSlZHZC1GdDk1Z2YwdEY5Vm9OWjZjRi03SF9CNWxmN3FDNTBSVWdGMzdEYVBuR0p4SFc5eUp2WGlQcXNfWUxCSGtRZmtPZnkwZ1U3cU54RFVzQk9peHFFZUFjbnFWQ2tSUXFqdkhFdjRtWVE4ak1mRlBlNnVfQml6ZG45eE96ZHZ2MzZwalZPbzlPNmRkTmp6U2Jjbzhsam93aw?oc=5",
+        "pub_date": "Thu, 10 Sep 2026 03:20:00 GMT",
+        "tag": "IHSG",
+        "sentiment": "BEARISH",
+        "sentiment_score": -0.35,
+        "related_tickers": [],
+        "metrics": [
+          "Perubahan: 62,93%"
+        ],
+        "reading_time_sec": 45,
+        "summary": "Warta dari IDNFinancials: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor IHSG.",
+        "key_takeaways": [
+          "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 62,93%.",
+          "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+          "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
         ]
       },
       {
@@ -394,7 +396,7 @@
       {
         "id": "news-15",
         "title": "IHSG Kamis pagi dibuka menguat ke posisi 6.688,18",
-        "source": "ANTARA News Sumsel",
+        "source": "sumsel.antaranews.com",
         "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPY3o0VlQ1RHF2Yml5VXNqamYxS1hCTlU2NGpPeGJtUHh3c2NFUGlYUi1NaU94dnZiNmUxbWFSVU9LRm9UMHZYa0ZJX1ZNTUZNSllMM252SEs1Qm9UOTVaeDVuRFZtOHJld1BCOHdxYjZGRkdPb01EUW40NmhKLXUtSnlVVXY0bXdsZDhoeXVIQTk4U01ZYWc?oc=5",
         "pub_date": "Thu, 10 Sep 2026 02:33:57 GMT",
         "tag": "IHSG",
@@ -405,7 +407,7 @@
           "Level kunci: 6.688,18"
         ],
         "reading_time_sec": 45,
-        "summary": "Warta dari ANTARA News Sumsel: Berita mengindikasikan sentimen bullish dengan pengaruh terhadap sektor IHSG.",
+        "summary": "Warta dari sumsel.antaranews.com: Berita mengindikasikan sentimen bullish dengan pengaruh terhadap sektor IHSG.",
         "key_takeaways": [
           "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait. Terpantau Level kunci: 6.688,18.",
           "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
@@ -452,30 +454,28 @@
       },
       {
         "id": "news-18",
-        "title": "IHSG Kamis dibuka menguat 9,98 poin ke posisi 6.688",
-        "source": "ANTARA News",
-        "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQeUVpenNLalJlREhHTE0ySjZfMGxPb3IxdG95ajIya2VyTkFwclllUnlmYlN0VnlCcmxWT09TQnZKbEdBaUJ0c1dIdmVkQjNwTEJrbkwwSkhLOFNmel9SWVNZSlNXR09rcC1BMThnZ3I1MkFCX1phVDNpYkxNV2hWTDdueUxWV3BRTUVGMjJnU0U1UUtxNjF1UNIBmAFBVV95cUxQeUVpenNLalJlREhHTE0ySjZfMGxPb3IxdG95ajIya2VyTkFwclllUnlmYlN0VnlCcmxWT09TQnZKbEdBaUJ0c1dIdmVkQjNwTEJrbkwwSkhLOFNmel9SWVNZSlNXR09rcC1BMThnZ3I1MkFCX1phVDNpYkxNV2hWTDdueUxWV3BRTUVGMjJnU0U1UUtxNjF1UA?oc=5",
-        "pub_date": "Thu, 10 Sep 2026 02:08:26 GMT",
-        "tag": "IHSG",
-        "sentiment": "BULLISH",
-        "sentiment_score": 0.7,
+        "title": "IHSG melemah ikuti bursa Asia dan global tertekan naiknya harga minyak",
+        "source": "Antara News jatim",
+        "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOWmNCVk9VM21pemFicXhDLTMtMVBfTnVlV190Yl9NMk1ZNTNGNUpna3UxTFZBMTQzeG9lV3hxRVRtaEhkUUNTbUNuQ1VoYTMtZVZzV3dDbnR4N0pjRVVyUFZnVTZjdEdUTk9LLTRnS0JRaU1oMEEwYTVuOEtSdnRnQTVZRXhkNUhwaXRIajVNX0RoMkF3Q0ZBdFlGZTJQY3lKRTRnc285MnJFUzBzTEFadTFTZlNaYXY2THfSAboBQVVfeXFMTlpjQlZPVTNtaXphYnF4Qy0zLTFQX051ZVdfdGJfTTJNWTUzRjVKZ2t1MUxWQTE0M3hvZVd4cUVUbWhIZFFDU21DbkNVaGEzLWVWc1d3Q250eDdKY0VVclBWZ1U2Y3RHVE5PSy00Z0tCUWlNaDBBMGE1bjhLUnZ0Z0E1WUV4ZDVIcGl0SGo1TV9EaDJBd0NGQXRZRmUyUGN5SkU0Z3NvOTJyRVMwc0xBWnUxU2ZTWmF2Nkx3?oc=5",
+        "pub_date": "Thu, 10 Sep 2026 03:29:23 GMT",
+        "tag": "ENERGY",
+        "sentiment": "BEARISH",
+        "sentiment_score": -0.7,
         "related_tickers": [],
-        "metrics": [
-          "Level kunci: 6.688"
-        ],
+        "metrics": [],
         "reading_time_sec": 45,
-        "summary": "Warta dari ANTARA News: Berita mengindikasikan sentimen bullish dengan pengaruh terhadap sektor IHSG.",
+        "summary": "Warta dari Antara News jatim: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor ENERGY.",
         "key_takeaways": [
-          "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait. Terpantau Level kunci: 6.688.",
-          "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-          "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+          "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
+          "Fluktuasi harga minyak mentah global memengaruhi ekspektasi marjin operasional sektor energi.",
+          "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
         ]
       },
       {
         "id": "news-19",
         "title": "IHSG Koreksi Tipis, Asing Kompak Lego 10 Saham Ini",
         "source": "CNBC Indonesia",
-        "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNZlpWeXlHaVgtSlB0dlF0TXh0MTd3YXlIT2N6OXpUeE9Qdm1jVkZmU3VMekpHai03MjliWjhvY0RUSjhxQ1YwbHh3dVhTUHFVUXZLc01mM2VfUGY1ZEdQZjNhMXFMZ3JnUnB0Ml8yX01wNS10VW9ETktRVl9zZnVPX0hyeTFDTU56WlVuQjNVc0xWeGFPX2VWeEVPMWhlblFucEFzSnNad18zd3lrMzZOMQ?oc=5",
+        "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNZlpWeXlHaVgtSlB0dlF0TXh0MTd3YXlIT2N6OXpUeE9Qdm1jVkZmU3VMekpHai03MjliWjhvY0RUSjhxQ1YwbHh3dVhTUHFVUXZLc01mM2VfUGY1ZEdQZjNhMXFMZ3JnUnB0Ml8yX01wNS10VW9ETktRVl9zZnVPX0hyeTFDTU56WlVuQjNVc0xWeGFPX2VWeEVPMWhlblFucEFzSnNad18zd3lrMzZOMdIBtgFBVV95cUxPcXU2a2NVRF9Wbi1fWnlJbGxMRGVNN2IwcHoxTkVjUWZiMWt0MFBGR0xHbkYyaGhkTldxYlV6Z1Fvd0lkbDdKX2JRcG5YckNJRThiQ00yWjd2QXl6dzFkdUZOTkZLUWRTZnBCTnZKMVlZeTNGQk9hUjA1Z2E1cEhfVTctMmc1V1VxUFY0T2hhd2xyaEd4UmFPNTdoQUtobnlGVEY3M0RjaUhnV184QU93bE83SGNvQQ?oc=5",
         "pub_date": "Thu, 10 Sep 2026 01:28:32 GMT",
         "tag": "FOREIGN_FLOW",
         "sentiment": "NEUTRAL",
@@ -492,6 +492,25 @@
       },
       {
         "id": "news-20",
+        "title": "BEI Lelang 11 Kursi AB, Catat Tanggal dan Syaratnya",
+        "source": "CNBC Indonesia",
+        "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOam52MGZ1VXRlb2dlWkQwM0NiNFRGZTZ0LUV0dGhrWDlfSV84VThGZkxwdWIzMDFtcFdjaXA4WTd3T0xaREtWUkpXdk1kNE10TDczSUluUmN4OW52d0dHdnN3QVp4OXAtUnBYTkJkYmVOQXdoVTVkb0Z1QkE2Z1lpaXYzbXZFVzNZNWU5N1dDQWpMU3JPdXIxZGJFSlg2VEJHR2lydjg2bXRMTDFzcXQyTnpn0gG3AUFVX3lxTE9zT2hhVUZSUThjZUh1dnNFV1BET1Z6YXV0Q3FqeVowNGhINnZCLTFENl9adzNkaS1oTXB3ZE83RjIwbV9uWlZZbC1RZHEybUNyZDk4ZENiZXRYTlhJWTFfZ1BpYlVlOE5NaFFJeHZJcEpwbkE5V2J6OFNqNmRDOWNUWVFBVF8zMmJTWDNyV1ZQVVdTLXRuZXJYOWtyUUlVMnMyMXRQcDgtSFhlbDVoT1RJN3lSb0VpSQ?oc=5",
+        "pub_date": "Thu, 10 Sep 2026 04:00:37 GMT",
+        "tag": "IHSG",
+        "sentiment": "BULLISH",
+        "sentiment_score": 0.35,
+        "related_tickers": [],
+        "metrics": [],
+        "reading_time_sec": 45,
+        "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen bullish dengan pengaruh terhadap sektor IHSG.",
+        "key_takeaways": [
+          "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait.",
+          "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+          "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+        ]
+      },
+      {
+        "id": "news-21",
         "title": "IHSG Masih Volatil, Deretan Saham Ini Menarik Buat Dilirik",
         "source": "CNBC Indonesia",
         "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPc2ZKUHRWVm10SkdNQnp6eU80aGhEdXEwVmRFZ0pqODd5S2FNMHJwWnFRZlhDZjludlUwUkNLYW4xN25jT2xBeWJpMENCR3cxMEFKQ2FVTlN6UzM5cjJwOUpKdEFfNm4zeEQxX1R6Z2x1cjF1R012TXE3MklRQW9OUFE5SVVXYXBwTnhTOWZtVHFQY2RFN2lJREJrQUk5ZnpFbE9kZHBELXRQZEQxcFNXc2hsRW0xUFgtQzBJ?oc=5",
@@ -510,7 +529,26 @@
         ]
       },
       {
-        "id": "news-21",
+        "id": "news-22",
+        "title": "ANALIS MARKET (10/9/2026): IHSG Diproyeksi Bergerak Konsolidasi dalam Rentang 6600-6720",
+        "source": "pasardana.id",
+        "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPRmVjaXlRRk9uQUZicUJ0em5CVDRpRWVaRFVnbVVVQmx3VzF4OVNtZjNiYkNSMXRCQ2dFODZocXoxOHhNa3ZSNlpaNksyYlE2R3Y3ck9yRVFlTHFMN25XQTJyZWNpR3BlbDlxM2FPcng1amlVQWxiUUpqa3BxaGhmVGR1Ty1yUThBV0N4WTJuRUpNNUhfVFE3X1VpOUNtdnZ0YmNZeURQb2hYTHh2cUI3WmRBbDQzdXRJU2xRag?oc=5",
+        "pub_date": "Thu, 10 Sep 2026 00:52:00 GMT",
+        "tag": "IHSG",
+        "sentiment": "NEUTRAL",
+        "sentiment_score": 0.0,
+        "related_tickers": [],
+        "metrics": [],
+        "reading_time_sec": 45,
+        "summary": "Warta dari pasardana.id: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
+        "key_takeaways": [
+          "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
+          "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+          "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+        ]
+      },
+      {
+        "id": "news-23",
         "title": "IHSG Kembali Dibuka Menguat 0,20 Persen ke Level 6.691,40",
         "source": "Infobanknews",
         "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxOaXd1azhETW9pYk16Q3l5clJvU0NuQzBfdzlTakQ1ckFuT0kyb3JOcGtXbVN0UmhCWGprbnVyMVU5d0ctRWhlQi16Wjk4cXBTSWhkSV9oLUhvLWRLVFF0cW5GT1ZnRlRxd2g3c0JqcHEzRUZuTDNheWZDOXJ6V01UWUNVUkpfaE0?oc=5",
@@ -531,26 +569,7 @@
         ]
       },
       {
-        "id": "news-22",
-        "title": "BEI Lelang 11 Kursi AB, Catat Tanggal dan Syaratnya",
-        "source": "CNBC Indonesia",
-        "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOam52MGZ1VXRlb2dlWkQwM0NiNFRGZTZ0LUV0dGhrWDlfSV84VThGZkxwdWIzMDFtcFdjaXA4WTd3T0xaREtWUkpXdk1kNE10TDczSUluUmN4OW52d0dHdnN3QVp4OXAtUnBYTkJkYmVOQXdoVTVkb0Z1QkE2Z1lpaXYzbXZFVzNZNWU5N1dDQWpMU3JPdXIxZGJFSlg2VEJHR2lydjg2bXRMTDFzcXQyTnpn0gG3AUFVX3lxTE9zT2hhVUZSUThjZUh1dnNFV1BET1Z6YXV0Q3FqeVowNGhINnZCLTFENl9adzNkaS1oTXB3ZE83RjIwbV9uWlZZbC1RZHEybUNyZDk4ZENiZXRYTlhJWTFfZ1BpYlVlOE5NaFFJeHZJcEpwbkE5V2J6OFNqNmRDOWNUWVFBVF8zMmJTWDNyV1ZQVVdTLXRuZXJYOWtyUUlVMnMyMXRQcDgtSFhlbDVoT1RJN3lSb0VpSQ?oc=5",
-        "pub_date": "Thu, 10 Sep 2026 04:00:37 GMT",
-        "tag": "IHSG",
-        "sentiment": "BULLISH",
-        "sentiment_score": 0.35,
-        "related_tickers": [],
-        "metrics": [],
-        "reading_time_sec": 45,
-        "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen bullish dengan pengaruh terhadap sektor IHSG.",
-        "key_takeaways": [
-          "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait.",
-          "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-          "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
-        ]
-      },
-      {
-        "id": "news-23",
+        "id": "news-24",
         "title": "Diam-Diam Ada yang Borong 6,6 Juta saham IMPC di Harga Rp1.465",
         "source": "CNBC Indonesia",
         "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxORXZaNjdVd3h0NmxkdnNOdFhncFB4eHhyTWNMcjZUeEJISjdFYWhEeTBvZDBIV0t1YTRJZ19LRXY1di0xb3B0YS02YjZOMks3ZGxtSmZJaHc1WTM5R0c0ZnVIcVZ0dHFNMTFNNFBpWDJHbFJ6R0YxVFhtR2xSNHlxNDVkbElSeE5RVk01TXEzczJpbGVDUHVLbUE3VGQ1d3lDZzBkZmN6YzBWRmNsME5TRDZpQlRDc1RmaTlzVzJISdIBxAFBVV95cUxOMjdNYkxpZmVnc2pOQmRlc200UGlkNVBvZXBBUElweElpNVV5Q0laQlhCSVF1RW85OWdWdjBETk9YOUtnLU1GbmJCTzllLWpXcWd0SzZYMlMtcl9PTFpSRHdhdWxDMVk1NVJQM2tReUY3UlNkSmdELWhLaGYyMXNZTFdKdnBNY01oVlZzSE1FOElFSXFXRm5IeHBXekpvUjJValFrUWtfTHpyYmRlb0xzRDRiRktUOXZwSDVNaGJyVXBscWNx?oc=5",
@@ -571,46 +590,29 @@
         ]
       },
       {
-        "id": "news-24",
-        "title": "Cara Lapor Pajak Investasi Saham AS bagi Investor Indonesia",
-        "source": "Pluang",
-        "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTE51OGxjRWZYMHVBV0RzMUdNOWxmZUF1dUFrNFFVMS1veXNLV21IM1hpRFk4MkpRYzQxengwT0JnV2hWUUVfSzgyNnVhSV9iRzBnakRIeEpjb0wzRGRjUmpNOEl5THBwdG5QZUtqQ0NwVHNDMTMzUzhJ?oc=5",
-        "pub_date": "Wed, 09 Sep 2026 04:23:48 GMT",
+        "id": "news-25",
+        "title": "IHSG Kamis dibuka menguat 9,98 poin ke posisi 6.688",
+        "source": "ANTARA News",
+        "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNYnJvb1lRdXNvSlQzWVZyMEI2UTRHWGEzdG5SWk1GTFZ5M0dWbWpTdmhVN0pRYUViRm02M2hmSWkyYm9SdFpVZFU1VG5UeG5zYlpaY1dZM05Rc1lSZVkwdmYzZEkwNmRjUFgtWHh1Unp0djV3aGhzQ2E4alMzelJCTmgtTjM5cVVTN3B2UDRNT3VJdHZpVFHSAZgBQVVfeXFMUHlFaXpzS2pSZURIR0xNMko2XzBsT29yMXRveWoyMmtlck5BcHJZZVJ5ZmJTdFZ5QnJsVk9PU0J2SmxHQWlCdHNXSHZlZEIzcExCa25MMEpISzhTZnpfUllTWUpTV0dPa3AtQTE4Z2dyNTJBQl9aYVQzaWJMTVdoVkw3bnlMVldwUU1FRjIyZ1NFNVFLcTYxdVA?oc=5",
+        "pub_date": "Thu, 10 Sep 2026 02:08:26 GMT",
         "tag": "IHSG",
         "sentiment": "BULLISH",
-        "sentiment_score": 0.35,
+        "sentiment_score": 0.7,
         "related_tickers": [],
-        "metrics": [],
+        "metrics": [
+          "Level kunci: 6.688"
+        ],
         "reading_time_sec": 45,
-        "summary": "Warta dari Pluang: Berita mengindikasikan sentimen bullish dengan pengaruh terhadap sektor IHSG.",
+        "summary": "Warta dari ANTARA News: Berita mengindikasikan sentimen bullish dengan pengaruh terhadap sektor IHSG.",
         "key_takeaways": [
-          "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait.",
+          "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait. Terpantau Level kunci: 6.688.",
           "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
           "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
         ]
-      },
-      {
-        "id": "news-25",
-        "title": "Dana Global Mulai Kembali ke Indonesia, Didorong Pemulihan Pasar - Market",
-        "source": "Bloomberg Technoz",
-        "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNWEVOVHNkaVRpSTBBVVllbmZ3b3RaR25tc2owaFhCcTd1VVBBcFNZRFh4cWhFaVV4dmk5WkFrSzFlc1BlR2JuTm9xQ3J5YlJTV0xmYm9CdXktdmZ0NVRYekNZZUxXeU5Xd2RoNm9pX2RRQkNfNmpjaFlzVGt0TVZXZUFzQjBkRnNVWUhzWWNUV3pzYThFUlhEdHdTVEYzNFpNN3kyeElQbVEtWWROeVRrZHlGZmx0aUhn?oc=5",
-        "pub_date": "Thu, 10 Sep 2026 02:00:00 GMT",
-        "tag": "IHSG",
-        "sentiment": "NEUTRAL",
-        "sentiment_score": 0.0,
-        "related_tickers": [],
-        "metrics": [],
-        "reading_time_sec": 45,
-        "summary": "Warta dari Bloomberg Technoz: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
-        "key_takeaways": [
-          "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
-          "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-          "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-        ]
       }
     ],
-    "full_narrative": "Global telemetry report: Gold at $4453.3 (0.84%), Brent Crude at $101.02 (-0.19%). DXY at 98.74 pts. Monitored for impact on Indonesian equities.",
-    "updated_at": "2026-09-10T04:13:45.781574"
+    "full_narrative": "Global telemetry report: Gold at $4456.4 (0.91%), Brent Crude at $101.05 (-0.16%). DXY at 98.73 pts. Monitored for impact on Indonesian equities.",
+    "updated_at": "2026-09-10T04:41:48.817034"
   },
   "conglomerates": {
     "BARITO_GROUP": [
@@ -620,17 +622,17 @@
         "company_name": "Barito Renewables Energy",
         "category": "CONGLOMERATE",
         "sub_category": "BARITO_GROUP",
-        "price": 3300.0,
-        "change_pct": 0.0,
-        "volume": 8622000,
-        "foreign_net_val_idr": 0.0,
+        "price": 3370.0,
+        "change_pct": 2.12,
+        "volume": 7417600,
+        "foreign_net_val_idr": 185480055.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 3419.0,
-        "ma50": 3393.0,
-        "rsi_14": 36.8,
+        "ma20": 3422.0,
+        "ma50": 3398.6,
+        "rsi_14": 43.7,
         "technical_signal": "PULLBACK",
-        "updated_at": "2026-09-09T15:13:43.076763"
+        "updated_at": "2026-09-10T04:41:50.752597"
       },
       {
         "ticker": "TPIA",
@@ -638,17 +640,17 @@
         "company_name": "Chandra Asri Pacific",
         "category": "CONGLOMERATE",
         "sub_category": "BARITO_GROUP",
-        "price": 1935.0,
-        "change_pct": -0.77,
-        "volume": 122353400,
-        "foreign_net_val_idr": -638051569.0,
+        "price": 1980.0,
+        "change_pct": 2.33,
+        "volume": 106264200,
+        "foreign_net_val_idr": 1715837411.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 1991.2,
-        "ma50": 1994.4,
-        "rsi_14": 48.5,
+        "ma20": 1986.8,
+        "ma50": 2000.9,
+        "rsi_14": 51.4,
         "technical_signal": "PULLBACK",
-        "updated_at": "2026-09-09T15:13:43.396841"
+        "updated_at": "2026-09-10T04:41:50.856235"
       },
       {
         "ticker": "BRPT",
@@ -656,17 +658,17 @@
         "company_name": "Barito Pacific",
         "category": "CONGLOMERATE",
         "sub_category": "BARITO_GROUP",
-        "price": 1735.0,
-        "change_pct": -1.42,
-        "volume": 71220700,
-        "foreign_net_val_idr": -614132535.0,
+        "price": 1775.0,
+        "change_pct": 2.31,
+        "volume": 51658000,
+        "foreign_net_val_idr": 741337501.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 1829.2,
-        "ma50": 1764.3,
-        "rsi_14": 33.3,
-        "technical_signal": "OVERSOLD_REBOUND",
-        "updated_at": "2026-09-09T15:13:43.788472"
+        "ma20": 1820.5,
+        "ma50": 1772.2,
+        "rsi_14": 37.6,
+        "technical_signal": "PULLBACK",
+        "updated_at": "2026-09-10T04:41:50.978652"
       },
       {
         "ticker": "CUAN",
@@ -674,17 +676,17 @@
         "company_name": "Petrindo Jaya Kreasi",
         "category": "CONGLOMERATE",
         "sub_category": "BARITO_GROUP",
-        "price": 940.0,
-        "change_pct": 0.53,
-        "volume": 252878900,
-        "foreign_net_val_idr": 440944938.0,
+        "price": 1020.0,
+        "change_pct": 8.51,
+        "volume": 715477600,
+        "foreign_net_val_idr": 21736710322.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 853.8,
-        "ma50": 735.6,
-        "rsi_14": 72.7,
+        "ma20": 868.8,
+        "ma50": 745.4,
+        "rsi_14": 78.3,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:44.083124"
+        "updated_at": "2026-09-10T04:41:51.060691"
       },
       {
         "ticker": "PTRO",
@@ -692,17 +694,17 @@
         "company_name": "Petrosea",
         "category": "CONGLOMERATE",
         "sub_category": "BARITO_GROUP",
-        "price": 5450.0,
-        "change_pct": 0.46,
-        "volume": 20710800,
-        "foreign_net_val_idr": 181726915.0,
+        "price": 5725.0,
+        "change_pct": 5.05,
+        "volume": 60206700,
+        "foreign_net_val_idr": 6092278344.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 5250.0,
-        "ma50": 4728.5,
-        "rsi_14": 55.9,
-        "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:44.377803"
+        "ma20": 5261.2,
+        "ma50": 4767.2,
+        "rsi_14": 61.0,
+        "technical_signal": "BREAKOUT",
+        "updated_at": "2026-09-10T04:41:51.181774"
       }
     ],
     "SALIM_GROUP": [
@@ -712,17 +714,17 @@
         "company_name": "Indofood Sukses Makmur",
         "category": "CONGLOMERATE",
         "sub_category": "SALIM_GROUP",
-        "price": 7500.0,
-        "change_pct": 0.0,
-        "volume": 7929800,
-        "foreign_net_val_idr": 0.0,
+        "price": 7475.0,
+        "change_pct": -0.33,
+        "volume": 1283100,
+        "foreign_net_val_idr": -11077804.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 7341.2,
-        "ma50": 7059.1,
-        "rsi_14": 57.1,
-        "technical_signal": "ACCUMULATION",
-        "updated_at": "2026-09-09T15:13:44.805182"
+        "ma20": 7346.2,
+        "ma50": 7082.2,
+        "rsi_14": 54.8,
+        "technical_signal": "CONSOLIDATION",
+        "updated_at": "2026-09-10T04:41:51.350574"
       },
       {
         "ticker": "ICBP",
@@ -732,15 +734,15 @@
         "sub_category": "SALIM_GROUP",
         "price": 7200.0,
         "change_pct": 0.0,
-        "volume": 7180200,
+        "volume": 1611900,
         "foreign_net_val_idr": 0.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 7552.5,
-        "ma50": 7169.3,
-        "rsi_14": 29.8,
+        "ma20": 7533.8,
+        "ma50": 7182.5,
+        "rsi_14": 28.3,
         "technical_signal": "OVERSOLD_REBOUND",
-        "updated_at": "2026-09-09T15:13:45.102969"
+        "updated_at": "2026-09-10T04:41:51.458227"
       },
       {
         "ticker": "MEDC",
@@ -748,17 +750,17 @@
         "company_name": "Medco Energi Internasional",
         "category": "CONGLOMERATE",
         "sub_category": "SALIM_GROUP",
-        "price": 1575.0,
-        "change_pct": 2.61,
-        "volume": 51640600,
-        "foreign_net_val_idr": 742985588.0,
+        "price": 1605.0,
+        "change_pct": 1.9,
+        "volume": 26557900,
+        "foreign_net_val_idr": 283459106.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 1411.5,
-        "ma50": 1310.9,
-        "rsi_14": 68.2,
+        "ma20": 1425.2,
+        "ma50": 1321.8,
+        "rsi_14": 75.3,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:45.367708"
+        "updated_at": "2026-09-10T04:41:51.573561"
       },
       {
         "ticker": "AMMN",
@@ -766,17 +768,17 @@
         "company_name": "Amman Mineral Internasional",
         "category": "CONGLOMERATE",
         "sub_category": "SALIM_GROUP",
-        "price": 4910.0,
-        "change_pct": 5.14,
-        "volume": 122894600,
-        "foreign_net_val_idr": 10855390623.0,
+        "price": 4850.0,
+        "change_pct": -1.22,
+        "volume": 31457500,
+        "foreign_net_val_idr": -651469096.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 4398.5,
-        "ma50": 4084.8,
-        "rsi_14": 75.8,
-        "technical_signal": "BREAKOUT",
-        "updated_at": "2026-09-09T15:13:45.622774"
+        "ma20": 4428.5,
+        "ma50": 4119.8,
+        "rsi_14": 65.6,
+        "technical_signal": "CONSOLIDATION",
+        "updated_at": "2026-09-10T04:41:51.654945"
       }
     ],
     "ASTRA_GROUP": [
@@ -786,17 +788,17 @@
         "company_name": "Astra International",
         "category": "CONGLOMERATE",
         "sub_category": "ASTRA_GROUP",
-        "price": 4850.0,
-        "change_pct": -1.62,
-        "volume": 35658000,
-        "foreign_net_val_idr": -980577171.0,
+        "price": 4880.0,
+        "change_pct": 0.62,
+        "volume": 16689800,
+        "foreign_net_val_idr": 176738306.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 4834.0,
-        "ma50": 4903.6,
-        "rsi_14": 54.2,
+        "ma20": 4835.0,
+        "ma50": 4909.2,
+        "rsi_14": 56.8,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:45.901484"
+        "updated_at": "2026-09-10T04:41:51.776948"
       },
       {
         "ticker": "UNTR",
@@ -804,17 +806,17 @@
         "company_name": "United Tractors",
         "category": "CONGLOMERATE",
         "sub_category": "ASTRA_GROUP",
-        "price": 26000.0,
-        "change_pct": 0.48,
-        "volume": 5932800,
-        "foreign_net_val_idr": 259144704.0,
+        "price": 26900.0,
+        "change_pct": 3.46,
+        "volume": 2707800,
+        "foreign_net_val_idr": 882090220.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 24355.0,
-        "ma50": 24591.0,
-        "rsi_14": 70.0,
-        "technical_signal": "ACCUMULATION",
-        "updated_at": "2026-09-09T15:13:46.238363"
+        "ma20": 24535.0,
+        "ma50": 24688.5,
+        "rsi_14": 74.0,
+        "technical_signal": "CONSOLIDATION",
+        "updated_at": "2026-09-10T04:41:51.885528"
       },
       {
         "ticker": "AUTO",
@@ -822,17 +824,17 @@
         "company_name": "Astra Otoparts",
         "category": "CONGLOMERATE",
         "sub_category": "ASTRA_GROUP",
-        "price": 3320.0,
-        "change_pct": -1.19,
-        "volume": 5194300,
-        "foreign_net_val_idr": -71825742.0,
+        "price": 3360.0,
+        "change_pct": 1.2,
+        "volume": 1374800,
+        "foreign_net_val_idr": 19401178.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 3169.0,
-        "ma50": 2833.4,
-        "rsi_14": 78.5,
+        "ma20": 3196.0,
+        "ma50": 2853.6,
+        "rsi_14": 77.4,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:46.490329"
+        "updated_at": "2026-09-10T04:41:51.999567"
       }
     ],
     "DJARUM_GROUP": [
@@ -842,17 +844,17 @@
         "company_name": "Bank Central Asia",
         "category": "CONGLOMERATE",
         "sub_category": "DJARUM_GROUP",
-        "price": 6525.0,
-        "change_pct": -2.25,
-        "volume": 193375100,
-        "foreign_net_val_idr": -9936458654.0,
+        "price": 6450.0,
+        "change_pct": -1.15,
+        "volume": 102914100,
+        "foreign_net_val_idr": -2671778679.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 6460.2,
-        "ma50": 6312.1,
-        "rsi_14": 61.9,
-        "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:46.817370"
+        "ma20": 6469.0,
+        "ma50": 6330.6,
+        "rsi_14": 53.6,
+        "technical_signal": "PULLBACK",
+        "updated_at": "2026-09-10T04:41:52.113153"
       },
       {
         "ticker": "TOWR",
@@ -860,17 +862,17 @@
         "company_name": "Sarana Menara Nusantara",
         "category": "CONGLOMERATE",
         "sub_category": "DJARUM_GROUP",
-        "price": 484.0,
-        "change_pct": 2.98,
-        "volume": 103821400,
-        "foreign_net_val_idr": 524102886.0,
+        "price": 478.0,
+        "change_pct": -1.24,
+        "volume": 32137700,
+        "foreign_net_val_idr": -66670301.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 438.7,
-        "ma50": 410.1,
-        "rsi_14": 76.3,
+        "ma20": 443.1,
+        "ma50": 412.4,
+        "rsi_14": 71.2,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:47.122689"
+        "updated_at": "2026-09-10T04:41:52.206235"
       },
       {
         "ticker": "BELI",
@@ -878,17 +880,17 @@
         "company_name": "Global Digital Niaga (Blibli)",
         "category": "CONGLOMERATE",
         "sub_category": "DJARUM_GROUP",
-        "price": 298.0,
-        "change_pct": -6.88,
-        "volume": 3458900,
-        "foreign_net_val_idr": -24820513.0,
+        "price": 302.0,
+        "change_pct": 1.34,
+        "volume": 8849500,
+        "foreign_net_val_idr": 12534255.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 290.2,
-        "ma50": 273.0,
-        "rsi_14": 56.3,
+        "ma20": 292.4,
+        "ma50": 273.7,
+        "rsi_14": 56.9,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:47.439836"
+        "updated_at": "2026-09-10T04:41:52.288243"
       }
     ],
     "BAKRIE_GROUP": [
@@ -898,17 +900,17 @@
         "company_name": "Bumi Resources Minerals",
         "category": "CONGLOMERATE",
         "sub_category": "BAKRIE_GROUP",
-        "price": 705.0,
-        "change_pct": -0.7,
-        "volume": 215943300,
-        "foreign_net_val_idr": -372988065.0,
+        "price": 710.0,
+        "change_pct": 0.71,
+        "volume": 61547600,
+        "foreign_net_val_idr": 108591508.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 693.5,
-        "ma50": 609.0,
-        "rsi_14": 66.7,
+        "ma20": 699.0,
+        "ma50": 613.7,
+        "rsi_14": 56.8,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:47.643405"
+        "updated_at": "2026-09-10T04:41:52.362016"
       },
       {
         "ticker": "BUMI",
@@ -916,17 +918,17 @@
         "company_name": "Bumi Resources",
         "category": "CONGLOMERATE",
         "sub_category": "BAKRIE_GROUP",
-        "price": 222.0,
-        "change_pct": -1.77,
-        "volume": 1606273500,
-        "foreign_net_val_idr": -2209091882.0,
+        "price": 226.0,
+        "change_pct": 1.8,
+        "volume": 1025077700,
+        "foreign_net_val_idr": 1459505629.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 197.0,
-        "ma50": 174.2,
-        "rsi_14": 72.2,
+        "ma20": 199.1,
+        "ma50": 176.0,
+        "rsi_14": 71.4,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:47.913602"
+        "updated_at": "2026-09-10T04:41:52.454530"
       },
       {
         "ticker": "ENRG",
@@ -934,17 +936,17 @@
         "company_name": "Energi Mega Persada",
         "category": "CONGLOMERATE",
         "sub_category": "BAKRIE_GROUP",
-        "price": 1465.0,
-        "change_pct": -0.34,
-        "volume": 83252800,
-        "foreign_net_val_idr": -145138769.0,
+        "price": 1505.0,
+        "change_pct": 2.73,
+        "volume": 83122000,
+        "foreign_net_val_idr": 1195317219.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 1295.8,
-        "ma50": 1287.0,
-        "rsi_14": 69.6,
+        "ma20": 1323.8,
+        "ma50": 1296.1,
+        "rsi_14": 74.1,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:48.207910"
+        "updated_at": "2026-09-10T04:41:52.529135"
       },
       {
         "ticker": "VKTR",
@@ -952,17 +954,17 @@
         "company_name": "VKTR Teknologi Mobilitas",
         "category": "CONGLOMERATE",
         "sub_category": "BAKRIE_GROUP",
-        "price": 855.0,
-        "change_pct": -2.29,
-        "volume": 87548700,
-        "foreign_net_val_idr": -599955920.0,
+        "price": 820.0,
+        "change_pct": -4.09,
+        "volume": 137464400,
+        "foreign_net_val_idr": -1613598367.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 888.2,
-        "ma50": 769.9,
-        "rsi_14": 47.7,
+        "ma20": 889.5,
+        "ma50": 776.9,
+        "rsi_14": 36.9,
         "technical_signal": "PULLBACK",
-        "updated_at": "2026-09-09T15:13:48.474771"
+        "updated_at": "2026-09-10T04:41:52.606078"
       }
     ],
     "ADARO_GROUP": [
@@ -972,17 +974,17 @@
         "company_name": "Adaro Energy Indonesia",
         "category": "CONGLOMERATE",
         "sub_category": "ADARO_GROUP",
-        "price": 2690.0,
-        "change_pct": 0.0,
-        "volume": 68999600,
-        "foreign_net_val_idr": 0.0,
+        "price": 2700.0,
+        "change_pct": 0.37,
+        "volume": 8593800,
+        "foreign_net_val_idr": 30048222.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 2635.5,
-        "ma50": 2522.6,
-        "rsi_14": 58.9,
-        "technical_signal": "ACCUMULATION",
-        "updated_at": "2026-09-09T15:13:48.753010"
+        "ma20": 2644.0,
+        "ma50": 2531.4,
+        "rsi_14": 59.5,
+        "technical_signal": "CONSOLIDATION",
+        "updated_at": "2026-09-10T04:41:52.708172"
       },
       {
         "ticker": "ADMR",
@@ -990,17 +992,17 @@
         "company_name": "Adaro Minerals Indonesia",
         "category": "CONGLOMERATE",
         "sub_category": "ADARO_GROUP",
-        "price": 1675.0,
-        "change_pct": 2.45,
-        "volume": 36754200,
-        "foreign_net_val_idr": 527905169.0,
+        "price": 1670.0,
+        "change_pct": -0.3,
+        "volume": 13146700,
+        "foreign_net_val_idr": -23052738.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 1660.2,
-        "ma50": 1560.8,
-        "rsi_14": 54.4,
+        "ma20": 1665.2,
+        "ma50": 1567.3,
+        "rsi_14": 47.5,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:49.138969"
+        "updated_at": "2026-09-10T04:41:52.791557"
       }
     ]
   },
@@ -1012,16 +1014,16 @@
       "category": "DIVIDEND_HUNTER",
       "sub_category": "HIGH_YIELD_ARISTOCRAT",
       "price": 26550.0,
-      "change_pct": -0.75,
-      "volume": 1872500,
-      "foreign_net_val_idr": -130501547.0,
+      "change_pct": 0.0,
+      "volume": 702800,
+      "foreign_net_val_idr": 0.0,
       "dividend_yield_pct": 12.8,
       "dividend_trap_risk": "MEDIUM",
-      "ma20": 25592.5,
-      "ma50": 24620.0,
-      "rsi_14": 70.9,
+      "ma20": 25682.5,
+      "ma50": 24704.0,
+      "rsi_14": 76.5,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-09T15:13:49.481157"
+      "updated_at": "2026-09-10T04:41:52.904540"
     },
     {
       "ticker": "PTBA",
@@ -1029,17 +1031,17 @@
       "company_name": "Bukit Asam",
       "category": "DIVIDEND_HUNTER",
       "sub_category": "HIGH_YIELD_ARISTOCRAT",
-      "price": 3100.0,
-      "change_pct": 3.33,
-      "volume": 104634100,
-      "foreign_net_val_idr": 3780482350.0,
+      "price": 3160.0,
+      "change_pct": 1.94,
+      "volume": 36683200,
+      "foreign_net_val_idr": 787089412.0,
       "dividend_yield_pct": 14.2,
       "dividend_trap_risk": "MEDIUM",
-      "ma20": 2591.5,
-      "ma50": 2457.6,
-      "rsi_14": 90.7,
-      "technical_signal": "BREAKOUT",
-      "updated_at": "2026-09-09T15:13:49.806554"
+      "ma20": 2632.0,
+      "ma50": 2475.0,
+      "rsi_14": 91.3,
+      "technical_signal": "CONSOLIDATION",
+      "updated_at": "2026-09-10T04:41:53.018430"
     },
     {
       "ticker": "ADRO",
@@ -1047,17 +1049,17 @@
       "company_name": "Adaro Energy Indonesia",
       "category": "DIVIDEND_HUNTER",
       "sub_category": "HIGH_YIELD_ARISTOCRAT",
-      "price": 2690.0,
-      "change_pct": 0.0,
-      "volume": 68999600,
-      "foreign_net_val_idr": 0.0,
+      "price": 2700.0,
+      "change_pct": 0.37,
+      "volume": 8593800,
+      "foreign_net_val_idr": 30048222.0,
       "dividend_yield_pct": 10.5,
       "dividend_trap_risk": "LOW",
-      "ma20": 2635.5,
-      "ma50": 2522.6,
-      "rsi_14": 58.9,
-      "technical_signal": "ACCUMULATION",
-      "updated_at": "2026-09-09T15:13:49.841692"
+      "ma20": 2644.0,
+      "ma50": 2531.4,
+      "rsi_14": 59.5,
+      "technical_signal": "CONSOLIDATION",
+      "updated_at": "2026-09-10T04:41:53.033029"
     },
     {
       "ticker": "MPMX",
@@ -1065,17 +1067,17 @@
       "company_name": "Mitra Pinasthika Mustika",
       "category": "DIVIDEND_HUNTER",
       "sub_category": "HIGH_YIELD_ARISTOCRAT",
-      "price": 1055.0,
-      "change_pct": 0.0,
-      "volume": 2295500,
-      "foreign_net_val_idr": 0.0,
+      "price": 1045.0,
+      "change_pct": -0.95,
+      "volume": 1129700,
+      "foreign_net_val_idr": -3925284.0,
       "dividend_yield_pct": 9.4,
       "dividend_trap_risk": "LOW",
-      "ma20": 1019.8,
-      "ma50": 999.3,
-      "rsi_14": 81.2,
+      "ma20": 1021.8,
+      "ma50": 1001.3,
+      "rsi_14": 68.7,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-09T15:13:50.332687"
+      "updated_at": "2026-09-10T04:41:53.126325"
     },
     {
       "ticker": "HEXA",
@@ -1083,17 +1085,17 @@
       "company_name": "Hexindo Adiperkasa",
       "category": "DIVIDEND_HUNTER",
       "sub_category": "HIGH_YIELD_ARISTOCRAT",
-      "price": 4490.0,
+      "price": 4480.0,
       "change_pct": -0.22,
-      "volume": 420300,
-      "foreign_net_val_idr": -1453103.0,
+      "volume": 104200,
+      "foreign_net_val_idr": -359448.0,
       "dividend_yield_pct": 11.2,
       "dividend_trap_risk": "LOW",
-      "ma20": 4421.0,
-      "ma50": 4421.6,
-      "rsi_14": 76.0,
+      "ma20": 4422.0,
+      "ma50": 4425.4,
+      "rsi_14": 79.2,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-09T15:13:50.635669"
+      "updated_at": "2026-09-10T04:41:53.249101"
     },
     {
       "ticker": "BBRI",
@@ -1101,17 +1103,17 @@
       "company_name": "Bank Rakyat Indonesia",
       "category": "DIVIDEND_HUNTER",
       "sub_category": "HIGH_YIELD_ARISTOCRAT",
-      "price": 3420.0,
-      "change_pct": 0.29,
-      "volume": 156865000,
-      "foreign_net_val_idr": 544525474.0,
+      "price": 3370.0,
+      "change_pct": -1.46,
+      "volume": 60528000,
+      "foreign_net_val_idr": -1042334530.0,
       "dividend_yield_pct": 6.8,
       "dividend_trap_risk": "LOW",
-      "ma20": 3237.0,
-      "ma50": 3049.8,
-      "rsi_14": 75.0,
+      "ma20": 3249.0,
+      "ma50": 3063.8,
+      "rsi_14": 63.5,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-09T15:13:50.902333"
+      "updated_at": "2026-09-10T04:41:53.363264"
     },
     {
       "ticker": "BMRI",
@@ -1119,17 +1121,17 @@
       "company_name": "Bank Mandiri",
       "category": "DIVIDEND_HUNTER",
       "sub_category": "HIGH_YIELD_ARISTOCRAT",
-      "price": 4390.0,
-      "change_pct": -0.9,
-      "volume": 125622500,
-      "foreign_net_val_idr": -1737170741.0,
+      "price": 4370.0,
+      "change_pct": -0.46,
+      "volume": 56513800,
+      "foreign_net_val_idr": -397614143.0,
       "dividend_yield_pct": 5.9,
       "dividend_trap_risk": "LOW",
-      "ma20": 4255.5,
-      "ma50": 4207.4,
-      "rsi_14": 69.4,
+      "ma20": 4267.5,
+      "ma50": 4218.6,
+      "rsi_14": 63.2,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-09T15:13:51.360761"
+      "updated_at": "2026-09-10T04:41:53.473969"
     },
     {
       "ticker": "BBNI",
@@ -1137,17 +1139,17 @@
       "company_name": "Bank Negara Indonesia",
       "category": "DIVIDEND_HUNTER",
       "sub_category": "HIGH_YIELD_ARISTOCRAT",
-      "price": 3820.0,
-      "change_pct": -1.29,
-      "volume": 52644400,
-      "foreign_net_val_idr": -907973760.0,
+      "price": 3800.0,
+      "change_pct": -0.52,
+      "volume": 10355600,
+      "foreign_net_val_idr": -71619330.0,
       "dividend_yield_pct": 5.4,
       "dividend_trap_risk": "LOW",
-      "ma20": 3747.5,
-      "ma50": 3594.4,
-      "rsi_14": 68.9,
+      "ma20": 3758.5,
+      "ma50": 3608.4,
+      "rsi_14": 57.1,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-09T15:13:51.653106"
+      "updated_at": "2026-09-10T04:41:53.617597"
     },
     {
       "ticker": "BJTM",
@@ -1157,15 +1159,15 @@
       "sub_category": "HIGH_YIELD_ARISTOCRAT",
       "price": 530.0,
       "change_pct": 0.0,
-      "volume": 5849800,
+      "volume": 2389900,
       "foreign_net_val_idr": 0.0,
       "dividend_yield_pct": 9.1,
       "dividend_trap_risk": "LOW",
-      "ma20": 521.8,
-      "ma50": 518.0,
-      "rsi_14": 80.0,
+      "ma20": 522.8,
+      "ma50": 518.5,
+      "rsi_14": 75.0,
       "technical_signal": "CONSOLIDATION",
-      "updated_at": "2026-09-09T15:13:51.929251"
+      "updated_at": "2026-09-10T04:41:53.747470"
     },
     {
       "ticker": "BJBR",
@@ -1175,15 +1177,15 @@
       "sub_category": "HIGH_YIELD_ARISTOCRAT",
       "price": 800.0,
       "change_pct": 0.0,
-      "volume": 5875500,
+      "volume": 2662000,
       "foreign_net_val_idr": 0.0,
       "dividend_yield_pct": 8.7,
       "dividend_trap_risk": "MEDIUM",
-      "ma20": 792.8,
-      "ma50": 784.2,
-      "rsi_14": 66.7,
-      "technical_signal": "ACCUMULATION",
-      "updated_at": "2026-09-09T15:13:52.265708"
+      "ma20": 793.5,
+      "ma50": 783.8,
+      "rsi_14": 62.5,
+      "technical_signal": "CONSOLIDATION",
+      "updated_at": "2026-09-10T04:41:53.843925"
     }
   ],
   "foreign_flow": {
@@ -1194,53 +1196,53 @@
         "company_name": "Aneka Tambang",
         "category": "FOREIGN_FLOW",
         "sub_category": "INSTITUTIONAL_TRACKER",
-        "price": 3200.0,
-        "change_pct": 3.9,
-        "volume": 205956800,
-        "foreign_net_val_idr": 8996193024.0,
+        "price": 3300.0,
+        "change_pct": 3.12,
+        "volume": 148935700,
+        "foreign_net_val_idr": 5367046885.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 3116.0,
-        "ma50": 3021.0,
-        "rsi_14": 55.4,
+        "ma20": 3126.5,
+        "ma50": 3034.8,
+        "rsi_14": 60.3,
         "technical_signal": "BREAKOUT",
-        "updated_at": "2026-09-09T15:13:53.326697"
+        "updated_at": "2026-09-10T04:41:54.204391"
       },
       {
-        "ticker": "BBRI",
-        "full_ticker": "BBRI.JK",
-        "company_name": "Bank Rakyat Indonesia",
+        "ticker": "ASII",
+        "full_ticker": "ASII.JK",
+        "company_name": "Astra International",
         "category": "FOREIGN_FLOW",
         "sub_category": "INSTITUTIONAL_TRACKER",
-        "price": 3420.0,
-        "change_pct": 0.29,
-        "volume": 156865000,
-        "foreign_net_val_idr": 544525474.0,
+        "price": 4880.0,
+        "change_pct": 0.62,
+        "volume": 16689800,
+        "foreign_net_val_idr": 176738306.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 3237.0,
-        "ma50": 3049.8,
-        "rsi_14": 75.0,
+        "ma20": 4835.0,
+        "ma50": 4909.2,
+        "rsi_14": 56.8,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:52.338583"
+        "updated_at": "2026-09-10T04:41:54.011569"
       },
       {
-        "ticker": "TLKM",
-        "full_ticker": "TLKM.JK",
-        "company_name": "Telkom Indonesia",
+        "ticker": "MDKA",
+        "full_ticker": "MDKA.JK",
+        "company_name": "Merdeka Copper Gold",
         "category": "FOREIGN_FLOW",
         "sub_category": "INSTITUTIONAL_TRACKER",
-        "price": 2660.0,
-        "change_pct": 0.38,
-        "volume": 119056300,
-        "foreign_net_val_idr": 421197378.0,
+        "price": 3110.0,
+        "change_pct": 0.0,
+        "volume": 12571200,
+        "foreign_net_val_idr": 0.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 2608.5,
-        "ma50": 2602.0,
-        "rsi_14": 61.9,
-        "technical_signal": "ACCUMULATION",
-        "updated_at": "2026-09-09T15:13:52.692953"
+        "ma20": 2952.0,
+        "ma50": 2806.8,
+        "rsi_14": 64.4,
+        "technical_signal": "CONSOLIDATION",
+        "updated_at": "2026-09-10T04:41:54.092685"
       },
       {
         "ticker": "GOTO",
@@ -1250,7 +1252,7 @@
         "sub_category": "INSTITUTIONAL_TRACKER",
         "price": 50.0,
         "change_pct": 0.0,
-        "volume": 16866200,
+        "volume": 6564600,
         "foreign_net_val_idr": 0.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
@@ -1258,7 +1260,7 @@
         "ma50": 50.0,
         "rsi_14": 0.0,
         "technical_signal": "OVERSOLD_REBOUND",
-        "updated_at": "2026-09-09T15:13:53.580877"
+        "updated_at": "2026-09-10T04:41:54.281471"
       },
       {
         "ticker": "BRIS",
@@ -1266,17 +1268,17 @@
         "company_name": "Bank Syariah Indonesia",
         "category": "FOREIGN_FLOW",
         "sub_category": "INSTITUTIONAL_TRACKER",
-        "price": 1775.0,
-        "change_pct": 0.0,
-        "volume": 12359000,
-        "foreign_net_val_idr": 0.0,
+        "price": 1765.0,
+        "change_pct": -0.56,
+        "volume": 5419500,
+        "foreign_net_val_idr": -18748218.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 1784.2,
-        "ma50": 1788.2,
-        "rsi_14": 55.2,
+        "ma20": 1784.0,
+        "ma50": 1789.4,
+        "rsi_14": 48.3,
         "technical_signal": "PULLBACK",
-        "updated_at": "2026-09-09T15:13:53.852114"
+        "updated_at": "2026-09-10T04:41:54.370239"
       }
     ],
     "top_outflow": [
@@ -1286,17 +1288,35 @@
         "company_name": "Bank Central Asia",
         "category": "FOREIGN_FLOW",
         "sub_category": "INSTITUTIONAL_TRACKER",
-        "price": 6525.0,
-        "change_pct": -2.25,
-        "volume": 193375100,
-        "foreign_net_val_idr": -9936458654.0,
+        "price": 6450.0,
+        "change_pct": -1.15,
+        "volume": 102914100,
+        "foreign_net_val_idr": -2671778679.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 6460.2,
-        "ma50": 6312.1,
-        "rsi_14": 61.9,
+        "ma20": 6469.0,
+        "ma50": 6330.6,
+        "rsi_14": 53.6,
+        "technical_signal": "PULLBACK",
+        "updated_at": "2026-09-10T04:41:53.860269"
+      },
+      {
+        "ticker": "BBRI",
+        "full_ticker": "BBRI.JK",
+        "company_name": "Bank Rakyat Indonesia",
+        "category": "FOREIGN_FLOW",
+        "sub_category": "INSTITUTIONAL_TRACKER",
+        "price": 3370.0,
+        "change_pct": -1.46,
+        "volume": 60528000,
+        "foreign_net_val_idr": -1042334530.0,
+        "dividend_yield_pct": 0,
+        "dividend_trap_risk": "N/A",
+        "ma20": 3249.0,
+        "ma50": 3063.8,
+        "rsi_14": 63.5,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:52.302101"
+        "updated_at": "2026-09-10T04:41:53.874180"
       },
       {
         "ticker": "BMRI",
@@ -1304,17 +1324,35 @@
         "company_name": "Bank Mandiri",
         "category": "FOREIGN_FLOW",
         "sub_category": "INSTITUTIONAL_TRACKER",
-        "price": 4390.0,
-        "change_pct": -0.9,
-        "volume": 125622500,
-        "foreign_net_val_idr": -1737170741.0,
+        "price": 4370.0,
+        "change_pct": -0.46,
+        "volume": 56513800,
+        "foreign_net_val_idr": -397614143.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 4255.5,
-        "ma50": 4207.4,
-        "rsi_14": 69.4,
+        "ma20": 4267.5,
+        "ma50": 4218.6,
+        "rsi_14": 63.2,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:52.378348"
+        "updated_at": "2026-09-10T04:41:53.888433"
+      },
+      {
+        "ticker": "TLKM",
+        "full_ticker": "TLKM.JK",
+        "company_name": "Telkom Indonesia",
+        "category": "FOREIGN_FLOW",
+        "sub_category": "INSTITUTIONAL_TRACKER",
+        "price": 2640.0,
+        "change_pct": -0.75,
+        "volume": 30870700,
+        "foreign_net_val_idr": -213933951.0,
+        "dividend_yield_pct": 0,
+        "dividend_trap_risk": "N/A",
+        "ma20": 2611.0,
+        "ma50": 2606.0,
+        "rsi_14": 56.5,
+        "technical_signal": "CONSOLIDATION",
+        "updated_at": "2026-09-10T04:41:53.995755"
       },
       {
         "ticker": "CPIN",
@@ -1322,53 +1360,17 @@
         "company_name": "Charoen Pokphand Indonesia",
         "category": "FOREIGN_FLOW",
         "sub_category": "INSTITUTIONAL_TRACKER",
-        "price": 3260.0,
-        "change_pct": -2.4,
-        "volume": 59699300,
-        "foreign_net_val_idr": -1634805631.0,
+        "price": 3240.0,
+        "change_pct": -0.61,
+        "volume": 15356000,
+        "foreign_net_val_idr": -106223594.0,
         "dividend_yield_pct": 0,
         "dividend_trap_risk": "N/A",
-        "ma20": 3092.5,
-        "ma50": 3128.4,
-        "rsi_14": 66.0,
+        "ma20": 3099.5,
+        "ma50": 3125.2,
+        "rsi_14": 62.2,
         "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:54.128297"
-      },
-      {
-        "ticker": "ASII",
-        "full_ticker": "ASII.JK",
-        "company_name": "Astra International",
-        "category": "FOREIGN_FLOW",
-        "sub_category": "INSTITUTIONAL_TRACKER",
-        "price": 4850.0,
-        "change_pct": -1.62,
-        "volume": 35658000,
-        "foreign_net_val_idr": -980577171.0,
-        "dividend_yield_pct": 0,
-        "dividend_trap_risk": "N/A",
-        "ma20": 4834.0,
-        "ma50": 4903.6,
-        "rsi_14": 54.2,
-        "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:52.727855"
-      },
-      {
-        "ticker": "MDKA",
-        "full_ticker": "MDKA.JK",
-        "company_name": "Merdeka Copper Gold",
-        "category": "FOREIGN_FLOW",
-        "sub_category": "INSTITUTIONAL_TRACKER",
-        "price": 3110.0,
-        "change_pct": -0.32,
-        "volume": 37251200,
-        "foreign_net_val_idr": -129753380.0,
-        "dividend_yield_pct": 0,
-        "dividend_trap_risk": "N/A",
-        "ma20": 2942.5,
-        "ma50": 2792.7,
-        "rsi_14": 69.1,
-        "technical_signal": "CONSOLIDATION",
-        "updated_at": "2026-09-09T15:13:53.014093"
+        "updated_at": "2026-09-10T04:41:54.475512"
       }
     ]
   },
@@ -1546,250 +1548,61 @@
   ],
   "daily_trade_plans": [
     {
-      "plan_id": "PLAN-IDX-AMMN-20260909",
-      "symbol": "AMMN.JK",
-      "clean_ticker": "AMMN",
+      "plan_id": "PLAN-IDX-PTRO-20260910",
+      "symbol": "PTRO.JK",
+      "clean_ticker": "PTRO",
       "market": "IDX",
       "direction": "LONG",
-      "entry_price": 4910.0,
-      "stop_loss": 4714.0,
-      "target_1": 5341.0,
-      "target_2": 5616.0,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 4910.0 - SL Rp 4714.0 = Rp 196.0) = 51 Lot",
+      "entry_price": 5725.0,
+      "stop_loss": 5496.0,
+      "target_1": 6229.0,
+      "target_2": 6549.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 5725.0 - SL Rp 5496.0 = Rp 229.0) = 43 Lot",
       "risk_reward_ratio": 2.2,
       "technical_signal": "BREAKOUT",
-      "facts_summary": "Harga Rp 4910.0, Signal: BREAKOUT, RSI 14: 75.8, MA20: Rp 4398.5, Sub-Kategori: SALIM_GROUP.",
-      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster SALIM_GROUP dan akumulasi terukur.",
+      "facts_summary": "Harga Rp 5725.0, Signal: BREAKOUT, RSI 14: 61.0, MA20: Rp 5261.2, Sub-Kategori: BARITO_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster BARITO_GROUP dan akumulasi terukur.",
       "three_invalidations": [
-        "1. Penutupan candle harian di bawah Rp 4714.0",
+        "1. Penutupan candle harian di bawah Rp 5496.0",
         "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
         "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
       ],
       "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
       "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-09T15:13:54.449047",
+      "created_at": "2026-09-10T04:41:54.741683",
       "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
       "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
       "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
     },
     {
-      "plan_id": "PLAN-IDX-PTBA-20260909",
-      "symbol": "PTBA.JK",
-      "clean_ticker": "PTBA",
-      "market": "IDX",
-      "direction": "LONG",
-      "entry_price": 3100.0,
-      "stop_loss": 2976.0,
-      "target_1": 3373.0,
-      "target_2": 3546.0,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 3100.0 - SL Rp 2976.0 = Rp 124.0) = 80 Lot",
-      "risk_reward_ratio": 2.2,
-      "technical_signal": "BREAKOUT",
-      "facts_summary": "Harga Rp 3100.0, Signal: BREAKOUT, RSI 14: 90.7, MA20: Rp 2591.5, Sub-Kategori: HIGH_YIELD_ARISTOCRAT.",
-      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster HIGH_YIELD_ARISTOCRAT dan akumulasi terukur.",
-      "three_invalidations": [
-        "1. Penutupan candle harian di bawah Rp 2976.0",
-        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
-        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
-      ],
-      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
-      "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-09T15:13:54.449070",
-      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
-      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
-      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
-    },
-    {
-      "plan_id": "PLAN-IDX-ANTM-20260909",
+      "plan_id": "PLAN-IDX-ANTM-20260910",
       "symbol": "ANTM.JK",
       "clean_ticker": "ANTM",
       "market": "IDX",
       "direction": "LONG",
-      "entry_price": 3200.0,
-      "stop_loss": 3072.0,
-      "target_1": 3482.0,
-      "target_2": 3661.0,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 3200.0 - SL Rp 3072.0 = Rp 128.0) = 78 Lot",
+      "entry_price": 3300.0,
+      "stop_loss": 3168.0,
+      "target_1": 3590.0,
+      "target_2": 3775.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 3300.0 - SL Rp 3168.0 = Rp 132.0) = 75 Lot",
       "risk_reward_ratio": 2.2,
       "technical_signal": "BREAKOUT",
-      "facts_summary": "Harga Rp 3200.0, Signal: BREAKOUT, RSI 14: 55.4, MA20: Rp 3116.0, Sub-Kategori: INSTITUTIONAL_TRACKER.",
+      "facts_summary": "Harga Rp 3300.0, Signal: BREAKOUT, RSI 14: 60.3, MA20: Rp 3126.5, Sub-Kategori: INSTITUTIONAL_TRACKER.",
       "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster INSTITUTIONAL_TRACKER dan akumulasi terukur.",
       "three_invalidations": [
-        "1. Penutupan candle harian di bawah Rp 3072.0",
+        "1. Penutupan candle harian di bawah Rp 3168.0",
         "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
         "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
       ],
       "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
       "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-09T15:13:54.449088",
+      "created_at": "2026-09-10T04:41:54.741712",
       "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
       "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
       "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
     },
     {
-      "plan_id": "PLAN-IDX-INDF-20260909",
-      "symbol": "INDF.JK",
-      "clean_ticker": "INDF",
-      "market": "IDX",
-      "direction": "LONG",
-      "entry_price": 7500.0,
-      "stop_loss": 7200.0,
-      "target_1": 8160.0,
-      "target_2": 8580.0,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 7500.0 - SL Rp 7200.0 = Rp 300.0) = 33 Lot",
-      "risk_reward_ratio": 2.2,
-      "technical_signal": "ACCUMULATION",
-      "facts_summary": "Harga Rp 7500.0, Signal: ACCUMULATION, RSI 14: 57.1, MA20: Rp 7341.2, Sub-Kategori: SALIM_GROUP.",
-      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster SALIM_GROUP dan akumulasi terukur.",
-      "three_invalidations": [
-        "1. Penutupan candle harian di bawah Rp 7200.0",
-        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
-        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
-      ],
-      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
-      "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-09T15:13:54.449104",
-      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
-      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
-      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
-    },
-    {
-      "plan_id": "PLAN-IDX-UNTR-20260909",
-      "symbol": "UNTR.JK",
-      "clean_ticker": "UNTR",
-      "market": "IDX",
-      "direction": "LONG",
-      "entry_price": 26000.0,
-      "stop_loss": 24960.0,
-      "target_1": 28288.0,
-      "target_2": 29744.0,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 26000.0 - SL Rp 24960.0 = Rp 1040.0) = 9 Lot",
-      "risk_reward_ratio": 2.2,
-      "technical_signal": "ACCUMULATION",
-      "facts_summary": "Harga Rp 26000.0, Signal: ACCUMULATION, RSI 14: 70.0, MA20: Rp 24355.0, Sub-Kategori: ASTRA_GROUP.",
-      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster ASTRA_GROUP dan akumulasi terukur.",
-      "three_invalidations": [
-        "1. Penutupan candle harian di bawah Rp 24960.0",
-        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
-        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
-      ],
-      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
-      "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-09T15:13:54.449126",
-      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
-      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
-      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
-    },
-    {
-      "plan_id": "PLAN-IDX-ADRO-20260909",
-      "symbol": "ADRO.JK",
-      "clean_ticker": "ADRO",
-      "market": "IDX",
-      "direction": "LONG",
-      "entry_price": 2690.0,
-      "stop_loss": 2582.0,
-      "target_1": 2928.0,
-      "target_2": 3079.0,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 2690.0 - SL Rp 2582.0 = Rp 108.0) = 92 Lot",
-      "risk_reward_ratio": 2.2,
-      "technical_signal": "ACCUMULATION",
-      "facts_summary": "Harga Rp 2690.0, Signal: ACCUMULATION, RSI 14: 58.9, MA20: Rp 2635.5, Sub-Kategori: ADARO_GROUP.",
-      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster ADARO_GROUP dan akumulasi terukur.",
-      "three_invalidations": [
-        "1. Penutupan candle harian di bawah Rp 2582.0",
-        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
-        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
-      ],
-      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
-      "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-09T15:13:54.449141",
-      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
-      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
-      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
-    },
-    {
-      "plan_id": "PLAN-IDX-BJBR-20260909",
-      "symbol": "BJBR.JK",
-      "clean_ticker": "BJBR",
-      "market": "IDX",
-      "direction": "LONG",
-      "entry_price": 800.0,
-      "stop_loss": 768.0,
-      "target_1": 870.0,
-      "target_2": 915.0,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 800.0 - SL Rp 768.0 = Rp 32.0) = 312 Lot",
-      "risk_reward_ratio": 2.19,
-      "technical_signal": "ACCUMULATION",
-      "facts_summary": "Harga Rp 800.0, Signal: ACCUMULATION, RSI 14: 66.7, MA20: Rp 792.8, Sub-Kategori: HIGH_YIELD_ARISTOCRAT.",
-      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster HIGH_YIELD_ARISTOCRAT dan akumulasi terukur.",
-      "three_invalidations": [
-        "1. Penutupan candle harian di bawah Rp 768.0",
-        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
-        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
-      ],
-      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
-      "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-09T15:13:54.449155",
-      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
-      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
-      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
-    },
-    {
-      "plan_id": "PLAN-IDX-TLKM-20260909",
-      "symbol": "TLKM.JK",
-      "clean_ticker": "TLKM",
-      "market": "IDX",
-      "direction": "LONG",
-      "entry_price": 2660.0,
-      "stop_loss": 2554.0,
-      "target_1": 2893.0,
-      "target_2": 3042.0,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 2660.0 - SL Rp 2554.0 = Rp 106.0) = 94 Lot",
-      "risk_reward_ratio": 2.2,
-      "technical_signal": "ACCUMULATION",
-      "facts_summary": "Harga Rp 2660.0, Signal: ACCUMULATION, RSI 14: 61.9, MA20: Rp 2608.5, Sub-Kategori: INSTITUTIONAL_TRACKER.",
-      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster INSTITUTIONAL_TRACKER dan akumulasi terukur.",
-      "three_invalidations": [
-        "1. Penutupan candle harian di bawah Rp 2554.0",
-        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
-        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
-      ],
-      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
-      "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-09T15:13:54.449170",
-      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
-      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
-      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
-    },
-    {
-      "plan_id": "PLAN-IDX-BRPT-20260909",
-      "symbol": "BRPT.JK",
-      "clean_ticker": "BRPT",
-      "market": "IDX",
-      "direction": "LONG",
-      "entry_price": 1735.0,
-      "stop_loss": 1666.0,
-      "target_1": 1887.0,
-      "target_2": 1983.0,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 1735.0 - SL Rp 1666.0 = Rp 69.0) = 144 Lot",
-      "risk_reward_ratio": 2.2,
-      "technical_signal": "OVERSOLD_REBOUND",
-      "facts_summary": "Harga Rp 1735.0, Signal: OVERSOLD_REBOUND, RSI 14: 33.3, MA20: Rp 1829.2, Sub-Kategori: BARITO_GROUP.",
-      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster BARITO_GROUP dan akumulasi terukur.",
-      "three_invalidations": [
-        "1. Penutupan candle harian di bawah Rp 1666.0",
-        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
-        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
-      ],
-      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
-      "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-09T15:13:54.449184",
-      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
-      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
-      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
-    },
-    {
-      "plan_id": "PLAN-IDX-ICBP-20260909",
+      "plan_id": "PLAN-IDX-ICBP-20260910",
       "symbol": "ICBP.JK",
       "clean_ticker": "ICBP",
       "market": "IDX",
@@ -1801,7 +1614,7 @@
       "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 7200.0 - SL Rp 6912.0 = Rp 288.0) = 34 Lot",
       "risk_reward_ratio": 2.2,
       "technical_signal": "OVERSOLD_REBOUND",
-      "facts_summary": "Harga Rp 7200.0, Signal: OVERSOLD_REBOUND, RSI 14: 29.8, MA20: Rp 7552.5, Sub-Kategori: SALIM_GROUP.",
+      "facts_summary": "Harga Rp 7200.0, Signal: OVERSOLD_REBOUND, RSI 14: 28.3, MA20: Rp 7533.8, Sub-Kategori: SALIM_GROUP.",
       "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster SALIM_GROUP dan akumulasi terukur.",
       "three_invalidations": [
         "1. Penutupan candle harian di bawah Rp 6912.0",
@@ -1810,13 +1623,13 @@
       ],
       "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
       "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-09T15:13:54.449199",
+      "created_at": "2026-09-10T04:41:54.741734",
       "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
       "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
       "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
     },
     {
-      "plan_id": "PLAN-IDX-GOTO-20260909",
+      "plan_id": "PLAN-IDX-GOTO-20260910",
       "symbol": "GOTO.JK",
       "clean_ticker": "GOTO",
       "market": "IDX",
@@ -1837,34 +1650,223 @@
       ],
       "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
       "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-09T15:13:54.449213",
+      "created_at": "2026-09-10T04:41:54.741755",
       "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
       "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
       "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
     },
     {
-      "plan_id": "PLAN-IDX-BREN-20260909",
+      "plan_id": "PLAN-IDX-BREN-20260910",
       "symbol": "BREN.JK",
       "clean_ticker": "BREN",
       "market": "IDX",
       "direction": "LONG",
-      "entry_price": 3300.0,
-      "stop_loss": 3168.0,
-      "target_1": 3590.0,
-      "target_2": 3775.0,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 3300.0 - SL Rp 3168.0 = Rp 132.0) = 75 Lot",
+      "entry_price": 3370.0,
+      "stop_loss": 3235.0,
+      "target_1": 3667.0,
+      "target_2": 3856.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 3370.0 - SL Rp 3235.0 = Rp 135.0) = 74 Lot",
       "risk_reward_ratio": 2.2,
       "technical_signal": "PULLBACK",
-      "facts_summary": "Harga Rp 3300.0, Signal: PULLBACK, RSI 14: 36.8, MA20: Rp 3419.0, Sub-Kategori: BARITO_GROUP.",
+      "facts_summary": "Harga Rp 3370.0, Signal: PULLBACK, RSI 14: 43.7, MA20: Rp 3422.0, Sub-Kategori: BARITO_GROUP.",
       "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster BARITO_GROUP dan akumulasi terukur.",
       "three_invalidations": [
-        "1. Penutupan candle harian di bawah Rp 3168.0",
+        "1. Penutupan candle harian di bawah Rp 3235.0",
         "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
         "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
       ],
       "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
       "status": "AWAITING_HUMAN_REVIEW",
-      "created_at": "2026-09-09T15:13:54.449227",
+      "created_at": "2026-09-10T04:41:54.741773",
+      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
+      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
+      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
+    },
+    {
+      "plan_id": "PLAN-IDX-TPIA-20260910",
+      "symbol": "TPIA.JK",
+      "clean_ticker": "TPIA",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 1980.0,
+      "stop_loss": 1901.0,
+      "target_1": 2154.0,
+      "target_2": 2264.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 1980.0 - SL Rp 1901.0 = Rp 79.0) = 126 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "PULLBACK",
+      "facts_summary": "Harga Rp 1980.0, Signal: PULLBACK, RSI 14: 51.4, MA20: Rp 1986.8, Sub-Kategori: BARITO_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster BARITO_GROUP dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 1901.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-10T04:41:54.741791",
+      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
+      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
+      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
+    },
+    {
+      "plan_id": "PLAN-IDX-BRPT-20260910",
+      "symbol": "BRPT.JK",
+      "clean_ticker": "BRPT",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 1775.0,
+      "stop_loss": 1704.0,
+      "target_1": 1931.0,
+      "target_2": 2031.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 1775.0 - SL Rp 1704.0 = Rp 71.0) = 140 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "PULLBACK",
+      "facts_summary": "Harga Rp 1775.0, Signal: PULLBACK, RSI 14: 37.6, MA20: Rp 1820.5, Sub-Kategori: BARITO_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster BARITO_GROUP dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 1704.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-10T04:41:54.741808",
+      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
+      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
+      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
+    },
+    {
+      "plan_id": "PLAN-IDX-BBCA-20260910",
+      "symbol": "BBCA.JK",
+      "clean_ticker": "BBCA",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 6450.0,
+      "stop_loss": 6192.0,
+      "target_1": 7018.0,
+      "target_2": 7379.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 6450.0 - SL Rp 6192.0 = Rp 258.0) = 38 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "PULLBACK",
+      "facts_summary": "Harga Rp 6450.0, Signal: PULLBACK, RSI 14: 53.6, MA20: Rp 6469.0, Sub-Kategori: DJARUM_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster DJARUM_GROUP dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 6192.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-10T04:41:54.741835",
+      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
+      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
+      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
+    },
+    {
+      "plan_id": "PLAN-IDX-VKTR-20260910",
+      "symbol": "VKTR.JK",
+      "clean_ticker": "VKTR",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 820.0,
+      "stop_loss": 787.0,
+      "target_1": 893.0,
+      "target_2": 939.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 820.0 - SL Rp 787.0 = Rp 33.0) = 303 Lot",
+      "risk_reward_ratio": 2.21,
+      "technical_signal": "PULLBACK",
+      "facts_summary": "Harga Rp 820.0, Signal: PULLBACK, RSI 14: 36.9, MA20: Rp 889.5, Sub-Kategori: BAKRIE_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster BAKRIE_GROUP dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 787.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-10T04:41:54.741853",
+      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
+      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
+      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
+    },
+    {
+      "plan_id": "PLAN-IDX-BRIS-20260910",
+      "symbol": "BRIS.JK",
+      "clean_ticker": "BRIS",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 1765.0,
+      "stop_loss": 1694.0,
+      "target_1": 1921.0,
+      "target_2": 2021.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 1765.0 - SL Rp 1694.0 = Rp 71.0) = 140 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "PULLBACK",
+      "facts_summary": "Harga Rp 1765.0, Signal: PULLBACK, RSI 14: 48.3, MA20: Rp 1784.0, Sub-Kategori: INSTITUTIONAL_TRACKER.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster INSTITUTIONAL_TRACKER dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 1694.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-10T04:41:54.741870",
+      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
+      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
+      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
+    },
+    {
+      "plan_id": "PLAN-IDX-CUAN-20260910",
+      "symbol": "CUAN.JK",
+      "clean_ticker": "CUAN",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 1020.0,
+      "stop_loss": 979.0,
+      "target_1": 1110.0,
+      "target_2": 1168.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 1020.0 - SL Rp 979.0 = Rp 41.0) = 243 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "CONSOLIDATION",
+      "facts_summary": "Harga Rp 1020.0, Signal: CONSOLIDATION, RSI 14: 78.3, MA20: Rp 868.8, Sub-Kategori: BARITO_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster BARITO_GROUP dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 979.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-10T04:41:54.741890",
+      "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
+      "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
+      "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
+    },
+    {
+      "plan_id": "PLAN-IDX-INDF-20260910",
+      "symbol": "INDF.JK",
+      "clean_ticker": "INDF",
+      "market": "IDX",
+      "direction": "LONG",
+      "entry_price": 7475.0,
+      "stop_loss": 7176.0,
+      "target_1": 8133.0,
+      "target_2": 8551.0,
+      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 7475.0 - SL Rp 7176.0 = Rp 299.0) = 33 Lot",
+      "risk_reward_ratio": 2.2,
+      "technical_signal": "CONSOLIDATION",
+      "facts_summary": "Harga Rp 7475.0, Signal: CONSOLIDATION, RSI 14: 54.8, MA20: Rp 7346.2, Sub-Kategori: SALIM_GROUP.",
+      "opinion_thesis": "Konsolidasi di atas MA20 didukung sentimen klaster SALIM_GROUP dan akumulasi terukur.",
+      "three_invalidations": [
+        "1. Penutupan candle harian di bawah Rp 7176.0",
+        "2. Outflow asing masif lebih dari Rp 40 Miliar dalam 1 sesi",
+        "3. Indeks IHSG anjlok > 1.5% menembus support psikologis"
+      ],
+      "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
+      "status": "AWAITING_HUMAN_REVIEW",
+      "created_at": "2026-09-10T04:41:54.741908",
       "ai_thesis": "Sentimen positif teknikal berdasarkan data empiris.",
       "ai_bahasa_bayi": "Harga turun dikit buat naik lebih tinggi, ayo beli.",
       "ai_market_sentiment": "Netral - menunggu konfirmasi arah pasar."
@@ -2012,12 +2014,12 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 3595.0,
-        "low": 3250.0
+        "high": 3600.0,
+        "low": 3260.0
       },
       "premium_zone": {
         "high": 3940.0,
-        "low": 3595.0
+        "low": 3600.0
       },
       "confluence_score": 55
     },
@@ -2169,7 +2171,7 @@
           "gap_low": 1985.0,
           "gap_size_pct": 0.2518891687657431,
           "candle_date": "2026-09-07",
-          "filled": false
+          "filled": true
         }
       ],
       "structure": {
@@ -2446,12 +2448,12 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 825.0,
-        "low": 670.0
+        "high": 880.0,
+        "low": 720.0
       },
       "premium_zone": {
-        "high": 980.0,
-        "low": 825.0
+        "high": 1040.0,
+        "low": 880.0
       },
       "confluence_score": 25
     },
@@ -2580,12 +2582,12 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 5237.5,
+        "high": 5325.0,
         "low": 4800.0
       },
       "premium_zone": {
-        "high": 5675.0,
-        "low": 5237.5
+        "high": 5850.0,
+        "low": 5325.0
       },
       "confluence_score": 25
     },
@@ -2891,7 +2893,7 @@
     },
     "MEDC": {
       "ticker": "MEDC",
-      "smc_bias": "BEARISH",
+      "smc_bias": "NEUTRAL",
       "order_blocks": [
         {
           "type": "BEARISH_OB",
@@ -2906,6 +2908,14 @@
           "price_high": 1350.0,
           "price_low": 1285.0,
           "candle_date": "2026-08-13",
+          "strength": "MODERATE",
+          "status": "TESTED"
+        },
+        {
+          "type": "BULLISH_OB",
+          "price_high": 1555.0,
+          "price_low": 1480.0,
+          "candle_date": "2026-09-07",
           "strength": "MODERATE",
           "status": "TESTED"
         }
@@ -3022,6 +3032,14 @@
           "gap_size_pct": 0.6993006993006993,
           "candle_date": "2026-09-01",
           "filled": false
+        },
+        {
+          "type": "BULLISH_FVG",
+          "gap_high": 1580.0,
+          "gap_low": 1565.0,
+          "gap_size_pct": 0.9584664536741214,
+          "candle_date": "2026-09-09",
+          "filled": false
         }
       ],
       "structure": {
@@ -3030,14 +3048,14 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 1420.0,
+        "high": 1435.0,
         "low": 1265.0
       },
       "premium_zone": {
-        "high": 1575.0,
-        "low": 1420.0
+        "high": 1605.0,
+        "low": 1435.0
       },
-      "confluence_score": 25
+      "confluence_score": 55
     },
     "AMMN": {
       "ticker": "AMMN",
@@ -3180,6 +3198,14 @@
           "gap_size_pct": 4.740406320541761,
           "candle_date": "2026-09-08",
           "filled": false
+        },
+        {
+          "type": "BULLISH_FVG",
+          "gap_high": 4840.0,
+          "gap_low": 4700.0,
+          "gap_size_pct": 2.9787234042553195,
+          "candle_date": "2026-09-09",
+          "filled": false
         }
       ],
       "structure": {
@@ -3188,12 +3214,12 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 4525.0,
+        "high": 4540.0,
         "low": 4140.0
       },
       "premium_zone": {
-        "high": 4910.0,
-        "low": 4525.0
+        "high": 4940.0,
+        "low": 4540.0
       },
       "confluence_score": 25
     },
@@ -3341,7 +3367,7 @@
     },
     "UNTR": {
       "ticker": "UNTR",
-      "smc_bias": "NEUTRAL",
+      "smc_bias": "BEARISH",
       "order_blocks": [
         {
           "type": "BEARISH_OB",
@@ -3439,7 +3465,7 @@
           "gap_low": 26750.0,
           "gap_size_pct": 0.5607476635514018,
           "candle_date": "2026-07-17",
-          "filled": false
+          "filled": true
         },
         {
           "type": "BEARISH_FVG",
@@ -3447,7 +3473,7 @@
           "gap_low": 26500.0,
           "gap_size_pct": 0.18867924528301888,
           "candle_date": "2026-07-20",
-          "filled": false
+          "filled": true
         },
         {
           "type": "BEARISH_FVG",
@@ -3496,6 +3522,14 @@
           "gap_size_pct": 2.4640657084188913,
           "candle_date": "2026-09-01",
           "filled": false
+        },
+        {
+          "type": "BULLISH_FVG",
+          "gap_high": 26025.0,
+          "gap_low": 25975.0,
+          "gap_size_pct": 0.192492781520693,
+          "candle_date": "2026-09-09",
+          "filled": false
         }
       ],
       "structure": {
@@ -3504,14 +3538,14 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 24600.0,
+        "high": 25012.5,
         "low": 23075.0
       },
       "premium_zone": {
-        "high": 26125.0,
-        "low": 24600.0
+        "high": 26950.0,
+        "low": 25012.5
       },
-      "confluence_score": 55
+      "confluence_score": 25
     },
     "AUTO": {
       "ticker": "AUTO",
@@ -3646,18 +3680,18 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 3155.0,
-        "low": 2790.0
+        "high": 3160.0,
+        "low": 2800.0
       },
       "premium_zone": {
         "high": 3520.0,
-        "low": 3155.0
+        "low": 3160.0
       },
       "confluence_score": 25
     },
     "BBCA": {
       "ticker": "BBCA",
-      "smc_bias": "NEUTRAL",
+      "smc_bias": "BULLISH",
       "order_blocks": [
         {
           "type": "BEARISH_OB",
@@ -3701,14 +3735,6 @@
         }
       ],
       "fair_value_gaps": [
-        {
-          "type": "BULLISH_FVG",
-          "gap_high": 5528.571536346567,
-          "gap_low": 5130.11572265625,
-          "gap_size_pct": 7.766994649469742,
-          "candle_date": "2026-06-10",
-          "filled": false
-        },
         {
           "type": "BULLISH_FVG",
           "gap_high": 5877.220060324366,
@@ -3844,14 +3870,14 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 6513.030939980159,
-        "low": 6176.061879960317
+        "high": 6525.482525682824,
+        "low": 6200.96505136565
       },
       "premium_zone": {
         "high": 6850.0,
-        "low": 6513.030939980159
+        "low": 6525.482525682824
       },
-      "confluence_score": 55
+      "confluence_score": 80
     },
     "TOWR": {
       "ticker": "TOWR",
@@ -4031,7 +4057,7 @@
           "gap_low": 326.0,
           "gap_size_pct": 0.6134969325153374,
           "candle_date": "2026-09-08",
-          "filled": false
+          "filled": true
         }
       ],
       "structure": {
@@ -4206,12 +4232,12 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 687.5,
-        "low": 590.0
+        "high": 692.5,
+        "low": 600.0
       },
       "premium_zone": {
         "high": 785.0,
-        "low": 687.5
+        "low": 692.5
       },
       "confluence_score": 25
     },
@@ -4505,7 +4531,7 @@
           "gap_low": 1460.0,
           "gap_size_pct": 4.794520547945205,
           "candle_date": "2026-07-24",
-          "filled": false
+          "filled": true
         },
         {
           "type": "BEARISH_FVG",
@@ -4626,18 +4652,18 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 1213.9787902832031,
-        "low": 927.9575805664062
+        "high": 1234.5914306640625,
+        "low": 939.182861328125
       },
       "premium_zone": {
-        "high": 1500.0,
-        "low": 1213.9787902832031
+        "high": 1530.0,
+        "low": 1234.5914306640625
       },
       "confluence_score": 25
     },
     "VKTR": {
       "ticker": "VKTR",
-      "smc_bias": "BULLISH",
+      "smc_bias": "NEUTRAL",
       "order_blocks": [
         {
           "type": "BEARISH_OB",
@@ -4661,13 +4687,21 @@
           "price_low": 830.0,
           "candle_date": "2026-08-26",
           "strength": "MODERATE",
-          "status": "TESTED"
+          "status": "BROKEN"
         },
         {
           "type": "BEARISH_OB",
           "price_high": 1005.0,
           "price_low": 955.0,
           "candle_date": "2026-08-31",
+          "strength": "MODERATE",
+          "status": "TESTED"
+        },
+        {
+          "type": "BEARISH_OB",
+          "price_high": 890.0,
+          "price_low": 845.0,
+          "candle_date": "2026-09-07",
           "strength": "MODERATE",
           "status": "TESTED"
         }
@@ -4768,6 +4802,14 @@
           "gap_size_pct": 1.6853932584269662,
           "candle_date": "2026-09-04",
           "filled": true
+        },
+        {
+          "type": "BEARISH_FVG",
+          "gap_high": 865.0,
+          "gap_low": 855.0,
+          "gap_size_pct": 1.1695906432748537,
+          "candle_date": "2026-09-09",
+          "filled": false
         }
       ],
       "structure": {
@@ -4776,14 +4818,14 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 895.0,
-        "low": 785.0
+        "high": 900.0,
+        "low": 795.0
       },
       "premium_zone": {
         "high": 1005.0,
-        "low": 895.0
+        "low": 900.0
       },
-      "confluence_score": 80
+      "confluence_score": 50
     },
     "ADRO": {
       "ticker": "ADRO",
@@ -4905,7 +4947,7 @@
     },
     "ADMR": {
       "ticker": "ADMR",
-      "smc_bias": "BEARISH",
+      "smc_bias": "NEUTRAL",
       "order_blocks": [
         {
           "type": "BEARISH_OB",
@@ -5012,14 +5054,14 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 1665.0,
-        "low": 1545.0
+        "high": 1672.5,
+        "low": 1560.0
       },
       "premium_zone": {
         "high": 1785.0,
-        "low": 1665.0
+        "low": 1672.5
       },
-      "confluence_score": 25
+      "confluence_score": 50
     },
     "ITMG": {
       "ticker": "ITMG",
@@ -5162,12 +5204,12 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 25562.5,
+        "high": 25575.0,
         "low": 24200.0
       },
       "premium_zone": {
-        "high": 26925.0,
-        "low": 25562.5
+        "high": 26950.0,
+        "low": 25575.0
       },
       "confluence_score": 55
     },
@@ -5296,6 +5338,14 @@
           "gap_size_pct": 1.3651877133105803,
           "candle_date": "2026-09-07",
           "filled": false
+        },
+        {
+          "type": "BULLISH_FVG",
+          "gap_high": 3080.0,
+          "gap_low": 3030.0,
+          "gap_size_pct": 1.65016501650165,
+          "candle_date": "2026-09-09",
+          "filled": false
         }
       ],
       "structure": {
@@ -5304,12 +5354,12 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 2710.0,
+        "high": 2760.0,
         "low": 2320.0
       },
       "premium_zone": {
-        "high": 3100.0,
-        "low": 2710.0
+        "high": 3200.0,
+        "low": 2760.0
       },
       "confluence_score": 25
     },
@@ -5437,14 +5487,6 @@
         }
       ],
       "fair_value_gaps": [
-        {
-          "type": "BULLISH_FVG",
-          "gap_high": 4310.0,
-          "gap_low": 4180.0,
-          "gap_size_pct": 3.110047846889952,
-          "candle_date": "2026-06-10",
-          "filled": true
-        },
         {
           "type": "BULLISH_FVG",
           "gap_high": 4380.0,
@@ -5803,14 +5845,6 @@
       "fair_value_gaps": [
         {
           "type": "BULLISH_FVG",
-          "gap_high": 4140.0,
-          "gap_low": 4090.0,
-          "gap_size_pct": 1.2224938875305624,
-          "candle_date": "2026-06-10",
-          "filled": true
-        },
-        {
-          "type": "BULLISH_FVG",
           "gap_high": 4390.0,
           "gap_low": 4320.0,
           "gap_size_pct": 1.6203703703703702,
@@ -5996,17 +6030,17 @@
           "candle_date": "2026-08-11",
           "strength": "MODERATE",
           "status": "TESTED"
+        },
+        {
+          "type": "BEARISH_OB",
+          "price_high": 3930.0,
+          "price_low": 3880.0,
+          "candle_date": "2026-09-07",
+          "strength": "MODERATE",
+          "status": "TESTED"
         }
       ],
       "fair_value_gaps": [
-        {
-          "type": "BULLISH_FVG",
-          "gap_high": 3400.0,
-          "gap_low": 3350.0,
-          "gap_size_pct": 1.4925373134328357,
-          "candle_date": "2026-06-10",
-          "filled": true
-        },
         {
           "type": "BULLISH_FVG",
           "gap_high": 3650.0,
@@ -6133,6 +6167,14 @@
           "gap_low": 3910.0,
           "gap_size_pct": 0.7672634271099744,
           "candle_date": "2026-09-07",
+          "filled": false
+        },
+        {
+          "type": "BEARISH_FVG",
+          "gap_high": 3850.0,
+          "gap_low": 3840.0,
+          "gap_size_pct": 0.26041666666666663,
+          "candle_date": "2026-09-09",
           "filled": false
         }
       ],
@@ -6280,14 +6322,6 @@
         }
       ],
       "fair_value_gaps": [
-        {
-          "type": "BULLISH_FVG",
-          "gap_high": 2598.1432603576873,
-          "gap_low": 2422.468017578125,
-          "gap_size_pct": 7.251911748878093,
-          "candle_date": "2026-06-10",
-          "filled": true
-        },
         {
           "type": "BULLISH_FVG",
           "gap_high": 2644.37353515625,
@@ -6600,7 +6634,7 @@
           "price_low": 3100.0,
           "candle_date": "2026-08-27",
           "strength": "MODERATE",
-          "status": "TESTED"
+          "status": "BROKEN"
         }
       ],
       "fair_value_gaps": [
@@ -6755,6 +6789,14 @@
           "gap_size_pct": 0.6493506493506493,
           "candle_date": "2026-09-03",
           "filled": true
+        },
+        {
+          "type": "BULLISH_FVG",
+          "gap_high": 3230.0,
+          "gap_low": 3110.0,
+          "gap_size_pct": 3.858520900321544,
+          "candle_date": "2026-09-09",
+          "filled": false
         }
       ],
       "structure": {
@@ -6763,12 +6805,12 @@
         "break_level": null
       },
       "discount_zone": {
-        "high": 3130.0,
+        "high": 3150.0,
         "low": 2970.0
       },
       "premium_zone": {
-        "high": 3290.0,
-        "low": 3130.0
+        "high": 3330.0,
+        "low": 3150.0
       },
       "confluence_score": 25
     },
@@ -7056,432 +7098,432 @@
   "bandarmology_iifs": {
     "BREN": {
       "ticker": "BREN",
-      "iifs_score": -1.1511337712422898,
-      "iifs_zscore": -1.1511337712422898,
-      "flow_classification": "DISTRIBUTION",
+      "iifs_score": -0.8324159316363768,
+      "iifs_zscore": -0.8324159316363768,
+      "flow_classification": "MILD_DISTRIBUTION",
       "obv_trend": "DOWN",
-      "mfi_value": 23.920068171957084,
-      "vwap_deviation_pct": -5.902968390482896,
+      "mfi_value": 29.203508871221317,
+      "vwap_deviation_pct": -4.1976036902999585,
       "ad_trend": "DOWN",
       "is_accumulating": false,
       "confidence": "HIGH",
-      "estimated_flow_idr": -19614919532
+      "estimated_flow_idr": -13477575239
     },
     "TPIA": {
       "ticker": "TPIA",
-      "iifs_score": -0.19741531275612906,
-      "iifs_zscore": -0.19741531275612906,
+      "iifs_score": 0.10336425423639833,
+      "iifs_zscore": 0.10336425423639833,
       "flow_classification": "NEUTRAL",
       "obv_trend": "DOWN",
-      "mfi_value": 52.96097738592378,
-      "vwap_deviation_pct": -3.738667474307388,
+      "mfi_value": 51.74085248897272,
+      "vwap_deviation_pct": -1.1697759702193953,
       "ad_trend": "DOWN",
-      "is_accumulating": false,
+      "is_accumulating": true,
       "confidence": "LOW",
-      "estimated_flow_idr": -14759200106
+      "estimated_flow_idr": 7289937146
     },
     "BRPT": {
       "ticker": "BRPT",
-      "iifs_score": -1.734782532348062,
-      "iifs_zscore": -1.734782532348062,
+      "iifs_score": -1.3238032133492696,
+      "iifs_zscore": -1.3238032133492696,
       "flow_classification": "DISTRIBUTION",
       "obv_trend": "DOWN",
-      "mfi_value": 31.88456177016498,
-      "vwap_deviation_pct": -5.98198981488777,
+      "mfi_value": 29.652005016563436,
+      "vwap_deviation_pct": -3.0735424273223058,
       "ad_trend": "DOWN",
       "is_accumulating": false,
       "confidence": "HIGH",
-      "estimated_flow_idr": -43982353200
+      "estimated_flow_idr": -29153098999
     },
     "CUAN": {
       "ticker": "CUAN",
-      "iifs_score": 0.9033241264634473,
-      "iifs_zscore": 0.9033241264634473,
-      "flow_classification": "MILD_ACCUMULATION",
+      "iifs_score": 1.488574134016473,
+      "iifs_zscore": 1.488574134016473,
+      "flow_classification": "ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 83.44734476060931,
-      "vwap_deviation_pct": 9.594025061007919,
-      "ad_trend": "DOWN",
+      "mfi_value": 84.71163645961902,
+      "vwap_deviation_pct": 17.352027607366274,
+      "ad_trend": "UP",
       "is_accumulating": true,
-      "confidence": "MEDIUM",
-      "estimated_flow_idr": 72736742692
+      "confidence": "HIGH",
+      "estimated_flow_idr": 125589452589
     },
     "PTRO": {
       "ticker": "PTRO",
-      "iifs_score": 0.47202572913612817,
-      "iifs_zscore": 0.47202572913612817,
-      "flow_classification": "NEUTRAL",
+      "iifs_score": 1.2842734301211784,
+      "iifs_zscore": 1.2842734301211784,
+      "flow_classification": "ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 70.55152839766006,
-      "vwap_deviation_pct": 3.2064946206201443,
+      "mfi_value": 73.7566277673637,
+      "vwap_deviation_pct": 8.056341958930052,
       "ad_trend": "DOWN",
       "is_accumulating": true,
-      "confidence": "LOW",
-      "estimated_flow_idr": 16905439254
+      "confidence": "MEDIUM",
+      "estimated_flow_idr": 42175490782
     },
     "INDF": {
       "ticker": "INDF",
-      "iifs_score": 0.9305394823554363,
-      "iifs_zscore": 0.9305394823554363,
+      "iifs_score": 0.6960131289779392,
+      "iifs_zscore": 0.6960131289779392,
       "flow_classification": "MILD_ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 62.894484636672935,
-      "vwap_deviation_pct": 2.182119001659232,
+      "mfi_value": 60.15961500505323,
+      "vwap_deviation_pct": 1.8048577578045768,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "MEDIUM",
-      "estimated_flow_idr": 5532213210
+      "estimated_flow_idr": 3982181622
     },
     "ICBP": {
       "ticker": "ICBP",
-      "iifs_score": -1.7367028392634654,
-      "iifs_zscore": -1.7367028392634654,
+      "iifs_score": -1.5397492939228479,
+      "iifs_zscore": -1.5397492939228479,
       "flow_classification": "DISTRIBUTION",
       "obv_trend": "DOWN",
-      "mfi_value": 36.87283251557725,
-      "vwap_deviation_pct": -4.446081723013683,
+      "mfi_value": 37.933158469381965,
+      "vwap_deviation_pct": -4.375443833691741,
       "ad_trend": "DOWN",
       "is_accumulating": false,
       "confidence": "HIGH",
-      "estimated_flow_idr": -11043157734
+      "estimated_flow_idr": -9667063663
     },
     "MEDC": {
       "ticker": "MEDC",
-      "iifs_score": 1.355865613729525,
-      "iifs_zscore": 1.355865613729525,
+      "iifs_score": 1.5805360777071882,
+      "iifs_zscore": 1.5805360777071882,
       "flow_classification": "ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 83.47833130179042,
-      "vwap_deviation_pct": 10.474159874594543,
-      "ad_trend": "DOWN",
+      "mfi_value": 89.06206304813077,
+      "vwap_deviation_pct": 11.783635972076643,
+      "ad_trend": "UP",
       "is_accumulating": true,
-      "confidence": "MEDIUM",
-      "estimated_flow_idr": 14838279771
+      "confidence": "HIGH",
+      "estimated_flow_idr": 16878829049
     },
     "AMMN": {
       "ticker": "AMMN",
-      "iifs_score": 2.327841926046792,
-      "iifs_zscore": 2.327841926046792,
-      "flow_classification": "HEAVY_ACCUMULATION",
+      "iifs_score": 1.569437964954129,
+      "iifs_zscore": 1.569437964954129,
+      "flow_classification": "ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 70.38604966908629,
-      "vwap_deviation_pct": 10.65114961650858,
+      "mfi_value": 65.6485371835985,
+      "vwap_deviation_pct": 8.787932413141728,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "HIGH",
-      "estimated_flow_idr": 94704998948
+      "estimated_flow_idr": 61779205876
     },
     "ASII": {
       "ticker": "ASII",
-      "iifs_score": 1.230296810842296,
-      "iifs_zscore": 1.230296810842296,
+      "iifs_score": 1.1562069696027455,
+      "iifs_zscore": 1.1562069696027455,
       "flow_classification": "ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 50.236062326153345,
-      "vwap_deviation_pct": 0.184573862719672,
+      "mfi_value": 47.80621563421256,
+      "vwap_deviation_pct": 0.8226004586766925,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "HIGH",
-      "estimated_flow_idr": 43104186047
+      "estimated_flow_idr": 38561884922
     },
     "UNTR": {
       "ticker": "UNTR",
-      "iifs_score": 0.9961625659550034,
-      "iifs_zscore": 0.9961625659550034,
-      "flow_classification": "MILD_ACCUMULATION",
+      "iifs_score": 1.2483063104557341,
+      "iifs_zscore": 1.2483063104557341,
+      "flow_classification": "ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 50.0543417367648,
-      "vwap_deviation_pct": 6.592565571334262,
-      "ad_trend": "DOWN",
+      "mfi_value": 49.49596892789527,
+      "vwap_deviation_pct": 9.714263698394396,
+      "ad_trend": "UP",
       "is_accumulating": true,
-      "confidence": "MEDIUM",
-      "estimated_flow_idr": 15411051253
+      "confidence": "HIGH",
+      "estimated_flow_idr": 19030433619
     },
     "AUTO": {
       "ticker": "AUTO",
-      "iifs_score": -0.47288468622328417,
-      "iifs_zscore": -0.47288468622328417,
+      "iifs_score": -0.4011334038777378,
+      "iifs_zscore": -0.4011334038777378,
       "flow_classification": "NEUTRAL",
       "obv_trend": "UP",
-      "mfi_value": 71.71411789765699,
-      "vwap_deviation_pct": 2.6439232056859123,
+      "mfi_value": 71.07868583594635,
+      "vwap_deviation_pct": 3.516170709585235,
       "ad_trend": "DOWN",
       "is_accumulating": false,
       "confidence": "MEDIUM",
-      "estimated_flow_idr": -1188983645
+      "estimated_flow_idr": -1001600366
     },
     "BBCA": {
       "ticker": "BBCA",
-      "iifs_score": 0.27620456552117767,
-      "iifs_zscore": 0.27620456552117767,
+      "iifs_score": -0.32117312640880746,
+      "iifs_zscore": -0.32117312640880746,
       "flow_classification": "NEUTRAL",
       "obv_trend": "UP",
-      "mfi_value": 73.06821641657575,
-      "vwap_deviation_pct": 0.8000639734494318,
+      "mfi_value": 67.33173406363181,
+      "vwap_deviation_pct": -0.5359866572453132,
       "ad_trend": "DOWN",
-      "is_accumulating": true,
+      "is_accumulating": false,
       "confidence": "LOW",
-      "estimated_flow_idr": 28140669958
+      "estimated_flow_idr": -32620666850
     },
     "TOWR": {
       "ticker": "TOWR",
-      "iifs_score": 1.003691844838913,
-      "iifs_zscore": 1.003691844838913,
-      "flow_classification": "ACCUMULATION",
+      "iifs_score": 0.6689001954250986,
+      "iifs_zscore": 0.6689001954250986,
+      "flow_classification": "MILD_ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 71.2814395920187,
-      "vwap_deviation_pct": 8.412549837800073,
+      "mfi_value": 68.64629169392708,
+      "vwap_deviation_pct": 6.488485511815159,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "HIGH",
-      "estimated_flow_idr": 5587102143
+      "estimated_flow_idr": 3697892202
     },
     "BELI": {
       "ticker": "BELI",
-      "iifs_score": -0.6520218830185739,
-      "iifs_zscore": -0.6520218830185739,
-      "flow_classification": "MILD_DISTRIBUTION",
-      "obv_trend": "DOWN",
-      "mfi_value": 48.03979950206082,
-      "vwap_deviation_pct": -8.90330947940857,
-      "ad_trend": "UP",
+      "iifs_score": -0.180176885980128,
+      "iifs_zscore": -0.180176885980128,
+      "flow_classification": "NEUTRAL",
+      "obv_trend": "UP",
+      "mfi_value": 55.749351244981284,
+      "vwap_deviation_pct": -7.633898851173486,
+      "ad_trend": "DOWN",
       "is_accumulating": false,
       "confidence": "MEDIUM",
-      "estimated_flow_idr": -98243492
+      "estimated_flow_idr": -30159163
     },
     "BRMS": {
       "ticker": "BRMS",
-      "iifs_score": -0.6408158935073818,
-      "iifs_zscore": -0.6408158935073818,
+      "iifs_score": -0.8157753209130993,
+      "iifs_zscore": -0.8157753209130993,
       "flow_classification": "MILD_DISTRIBUTION",
       "obv_trend": "DOWN",
-      "mfi_value": 66.29131638623642,
-      "vwap_deviation_pct": 1.7205339878491699,
+      "mfi_value": 60.79966981618485,
+      "vwap_deviation_pct": 1.8735492593724412,
       "ad_trend": "UP",
       "is_accumulating": false,
       "confidence": "MEDIUM",
-      "estimated_flow_idr": -24315725079
+      "estimated_flow_idr": -30105297075
     },
     "BUMI": {
       "ticker": "BUMI",
-      "iifs_score": 1.042112668828474,
-      "iifs_zscore": 1.042112668828474,
+      "iifs_score": 1.044746326910364,
+      "iifs_zscore": 1.044746326910364,
       "flow_classification": "ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 84.1841144487165,
-      "vwap_deviation_pct": 11.003802932517795,
+      "mfi_value": 82.36622946213286,
+      "vwap_deviation_pct": 12.340435163206513,
       "ad_trend": "DOWN",
       "is_accumulating": true,
       "confidence": "MEDIUM",
-      "estimated_flow_idr": 94726311788
+      "estimated_flow_idr": 93053257851
     },
     "ENRG": {
       "ticker": "ENRG",
-      "iifs_score": 1.151985959155998,
-      "iifs_zscore": 1.151985959155998,
+      "iifs_score": 1.1001624884740837,
+      "iifs_zscore": 1.1001624884740837,
       "flow_classification": "ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 70.92379759910058,
-      "vwap_deviation_pct": 16.970996444497658,
+      "mfi_value": 71.28731162092649,
+      "vwap_deviation_pct": 12.531945685470452,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "HIGH",
-      "estimated_flow_idr": 20789921533
+      "estimated_flow_idr": 17535624576
     },
     "VKTR": {
       "ticker": "VKTR",
-      "iifs_score": -1.8539295868383114,
-      "iifs_zscore": -1.8539295868383114,
-      "flow_classification": "DISTRIBUTION",
+      "iifs_score": -2.332286501624247,
+      "iifs_zscore": -2.332286501624247,
+      "flow_classification": "HEAVY_DISTRIBUTION",
       "obv_trend": "DOWN",
-      "mfi_value": 56.80307379706698,
-      "vwap_deviation_pct": -4.943883602298874,
+      "mfi_value": 46.031095762688345,
+      "vwap_deviation_pct": -8.640291346313088,
       "ad_trend": "DOWN",
       "is_accumulating": false,
       "confidence": "HIGH",
-      "estimated_flow_idr": -23934071831
+      "estimated_flow_idr": -30982393108
     },
     "ADRO": {
       "ticker": "ADRO",
-      "iifs_score": -0.41747669666866327,
-      "iifs_zscore": -0.41747669666866327,
+      "iifs_score": -0.3197456694772257,
+      "iifs_zscore": -0.3197456694772257,
       "flow_classification": "NEUTRAL",
       "obv_trend": "DOWN",
-      "mfi_value": 68.3784151877212,
-      "vwap_deviation_pct": 0.7075418003929829,
+      "mfi_value": 70.43198029071739,
+      "vwap_deviation_pct": 0.9339818888660062,
       "ad_trend": "UP",
       "is_accumulating": false,
       "confidence": "LOW",
-      "estimated_flow_idr": -7721332212
+      "estimated_flow_idr": -5831033106
     },
     "ADMR": {
       "ticker": "ADMR",
-      "iifs_score": -0.7862249558844491,
-      "iifs_zscore": -0.7862249558844491,
+      "iifs_score": -0.9367312697836869,
+      "iifs_zscore": -0.9367312697836869,
       "flow_classification": "MILD_DISTRIBUTION",
       "obv_trend": "DOWN",
-      "mfi_value": 63.404457803986,
-      "vwap_deviation_pct": 0.6441384558605041,
+      "mfi_value": 62.204616859867066,
+      "vwap_deviation_pct": 0.15525843952443288,
       "ad_trend": "DOWN",
       "is_accumulating": false,
       "confidence": "HIGH",
-      "estimated_flow_idr": -7458398959
+      "estimated_flow_idr": -8775290377
     },
     "ITMG": {
       "ticker": "ITMG",
-      "iifs_score": 0.5361193925763207,
-      "iifs_zscore": 0.5361193925763207,
-      "flow_classification": "MILD_ACCUMULATION",
+      "iifs_score": 0.291818009139175,
+      "iifs_zscore": 0.291818009139175,
+      "flow_classification": "NEUTRAL",
       "obv_trend": "UP",
-      "mfi_value": 70.71051672944857,
-      "vwap_deviation_pct": 3.645551853511908,
+      "mfi_value": 70.22836688147208,
+      "vwap_deviation_pct": 3.407632632066536,
       "ad_trend": "DOWN",
       "is_accumulating": true,
       "confidence": "MEDIUM",
-      "estimated_flow_idr": 3207472678
+      "estimated_flow_idr": 1727665746
     },
     "PTBA": {
       "ticker": "PTBA",
-      "iifs_score": 1.5028767406781443,
-      "iifs_zscore": 1.5028767406781443,
+      "iifs_score": 1.4902859799215884,
+      "iifs_zscore": 1.4902859799215884,
       "flow_classification": "ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 97.73989781704422,
-      "vwap_deviation_pct": 11.651971857256061,
+      "mfi_value": 97.8364085212572,
+      "vwap_deviation_pct": 12.945934679872737,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "HIGH",
-      "estimated_flow_idr": 25599343306
+      "estimated_flow_idr": 26412002619
     },
     "MPMX": {
       "ticker": "MPMX",
-      "iifs_score": 1.8128203539208647,
-      "iifs_zscore": 1.8128203539208647,
+      "iifs_score": 1.1660470409409394,
+      "iifs_zscore": 1.1660470409409394,
       "flow_classification": "ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 74.08103858720641,
-      "vwap_deviation_pct": 3.54791094633038,
+      "mfi_value": 69.69780390743037,
+      "vwap_deviation_pct": 2.456798530096452,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "HIGH",
-      "estimated_flow_idr": 967493507
+      "estimated_flow_idr": 612390505
     },
     "HEXA": {
       "ticker": "HEXA",
-      "iifs_score": 1.003032257860042,
-      "iifs_zscore": 1.003032257860042,
-      "flow_classification": "ACCUMULATION",
+      "iifs_score": 0.9898720054995684,
+      "iifs_zscore": 0.9898720054995684,
+      "flow_classification": "MILD_ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 31.221953328664426,
-      "vwap_deviation_pct": 1.699278607276715,
+      "mfi_value": 34.971349555855724,
+      "vwap_deviation_pct": 1.4688691837492294,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "HIGH",
-      "estimated_flow_idr": 313190598
+      "estimated_flow_idr": 308765751
     },
     "BBRI": {
       "ticker": "BBRI",
-      "iifs_score": 1.387584705440191,
-      "iifs_zscore": 1.387584705440191,
-      "flow_classification": "ACCUMULATION",
+      "iifs_score": 0.8183271091135804,
+      "iifs_zscore": 0.8183271091135804,
+      "flow_classification": "MILD_ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 76.92873895923296,
-      "vwap_deviation_pct": 5.346023655658073,
+      "mfi_value": 71.46235223567889,
+      "vwap_deviation_pct": 3.537328347465544,
       "ad_trend": "UP",
       "is_accumulating": true,
-      "confidence": "HIGH",
-      "estimated_flow_idr": 122335121102
+      "confidence": "MEDIUM",
+      "estimated_flow_idr": 70357842560
     },
     "BMRI": {
       "ticker": "BMRI",
-      "iifs_score": 0.8884013648886473,
-      "iifs_zscore": 0.8884013648886473,
-      "flow_classification": "MILD_ACCUMULATION",
+      "iifs_score": 0.47822185586320354,
+      "iifs_zscore": 0.47822185586320354,
+      "flow_classification": "NEUTRAL",
       "obv_trend": "UP",
-      "mfi_value": 70.00979261742468,
-      "vwap_deviation_pct": 2.9554710861450375,
+      "mfi_value": 64.3556276001,
+      "vwap_deviation_pct": 2.1842628301965354,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "HIGH",
-      "estimated_flow_idr": 67469282573
+      "estimated_flow_idr": 34928018693
     },
     "BBNI": {
       "ticker": "BBNI",
-      "iifs_score": 0.17139375639705645,
-      "iifs_zscore": 0.17139375639705645,
+      "iifs_score": -0.19576699303583422,
+      "iifs_zscore": -0.19576699303583422,
       "flow_classification": "NEUTRAL",
       "obv_trend": "UP",
-      "mfi_value": 69.26041398193158,
-      "vwap_deviation_pct": 1.5162808965859786,
+      "mfi_value": 62.81948021714544,
+      "vwap_deviation_pct": 0.8123518840406639,
       "ad_trend": "UP",
-      "is_accumulating": true,
-      "confidence": "MEDIUM",
-      "estimated_flow_idr": 3730057897
+      "is_accumulating": false,
+      "confidence": "LOW",
+      "estimated_flow_idr": -4196756844
     },
     "BJTM": {
       "ticker": "BJTM",
-      "iifs_score": 1.2563298677104893,
-      "iifs_zscore": 1.2563298677104893,
+      "iifs_score": 1.0956962050595425,
+      "iifs_zscore": 1.0956962050595425,
       "flow_classification": "ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 85.18936888860054,
-      "vwap_deviation_pct": 1.7093088553636382,
+      "mfi_value": 83.77536749618758,
+      "vwap_deviation_pct": 1.5273689930411303,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "HIGH",
-      "estimated_flow_idr": 443877415
+      "estimated_flow_idr": 366074927
     },
     "BJBR": {
       "ticker": "BJBR",
-      "iifs_score": -0.2369602308554849,
-      "iifs_zscore": -0.2369602308554849,
+      "iifs_score": -0.2382104345411699,
+      "iifs_zscore": -0.2382104345411699,
       "flow_classification": "NEUTRAL",
       "obv_trend": "UP",
-      "mfi_value": 61.29277968846231,
-      "vwap_deviation_pct": 0.5464229116890831,
+      "mfi_value": 56.33256390374155,
+      "vwap_deviation_pct": 0.4988914050367331,
       "ad_trend": "DOWN",
       "is_accumulating": false,
-      "confidence": "LOW",
-      "estimated_flow_idr": -66458497
+      "confidence": "MEDIUM",
+      "estimated_flow_idr": -68217019
     },
     "TLKM": {
       "ticker": "TLKM",
-      "iifs_score": 2.2459140475422648,
-      "iifs_zscore": 2.2459140475422648,
-      "flow_classification": "HEAVY_ACCUMULATION",
+      "iifs_score": 1.6295077343429127,
+      "iifs_zscore": 1.6295077343429127,
+      "flow_classification": "ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 61.68750942181048,
-      "vwap_deviation_pct": 2.018300386462364,
+      "mfi_value": 56.73584397168571,
+      "vwap_deviation_pct": 1.179657680427699,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "HIGH",
-      "estimated_flow_idr": 78027586372
+      "estimated_flow_idr": 53798214861
     },
     "MDKA": {
       "ticker": "MDKA",
-      "iifs_score": 0.8044223390568042,
-      "iifs_zscore": 0.8044223390568042,
+      "iifs_score": 0.7014425972850613,
+      "iifs_zscore": 0.7014425972850613,
       "flow_classification": "MILD_ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 64.64064327289623,
-      "vwap_deviation_pct": 4.840501307288951,
+      "mfi_value": 62.35203219350808,
+      "vwap_deviation_pct": 4.757489715952425,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "HIGH",
-      "estimated_flow_idr": 13430785602
+      "estimated_flow_idr": 11236664869
     },
     "ANTM": {
       "ticker": "ANTM",
-      "iifs_score": 0.025521349313861103,
-      "iifs_zscore": 0.025521349313861103,
-      "flow_classification": "NEUTRAL",
+      "iifs_score": 0.7267124381487976,
+      "iifs_zscore": 0.7267124381487976,
+      "flow_classification": "MILD_ACCUMULATION",
       "obv_trend": "UP",
-      "mfi_value": 60.76992763047234,
-      "vwap_deviation_pct": 2.507778565125839,
+      "mfi_value": 61.977620925411344,
+      "vwap_deviation_pct": 5.269721442486949,
       "ad_trend": "UP",
       "is_accumulating": true,
       "confidence": "MEDIUM",
-      "estimated_flow_idr": 1140796726
+      "estimated_flow_idr": 34195738263
     },
     "GOTO": {
       "ticker": "GOTO",
@@ -7498,29 +7540,29 @@
     },
     "BRIS": {
       "ticker": "BRIS",
-      "iifs_score": -0.2236028004752991,
-      "iifs_zscore": -0.2236028004752991,
-      "flow_classification": "NEUTRAL",
+      "iifs_score": -0.6201606391975722,
+      "iifs_zscore": -0.6201606391975722,
+      "flow_classification": "MILD_DISTRIBUTION",
       "obv_trend": "UP",
-      "mfi_value": 45.478963061282315,
-      "vwap_deviation_pct": -0.8521743396560122,
+      "mfi_value": 41.75507441980713,
+      "vwap_deviation_pct": -1.42085712508892,
       "ad_trend": "DOWN",
       "is_accumulating": false,
-      "confidence": "LOW",
-      "estimated_flow_idr": -903766326
+      "confidence": "MEDIUM",
+      "estimated_flow_idr": -2444262054
     },
     "CPIN": {
       "ticker": "CPIN",
-      "iifs_score": 0.05816769219258647,
-      "iifs_zscore": 0.05816769219258647,
+      "iifs_score": 0.010202974496012679,
+      "iifs_zscore": 0.010202974496012679,
       "flow_classification": "NEUTRAL",
       "obv_trend": "DOWN",
-      "mfi_value": 35.51441794631867,
-      "vwap_deviation_pct": 5.621861927287478,
+      "mfi_value": 35.91087516198398,
+      "vwap_deviation_pct": 4.893073864311667,
       "ad_trend": "DOWN",
       "is_accumulating": true,
       "confidence": "LOW",
-      "estimated_flow_idr": 1448775619
+      "estimated_flow_idr": 255280850
     }
   },
   "forecasts": {
@@ -7528,205 +7570,205 @@
       "ticker": "BREN",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 3300.0,
+      "current_price": 3370.0,
       "forecast_prices": [
-        3280.964885827245,
-        3276.5925318926465,
-        3272.220177958048,
-        3267.8478240234494,
-        3263.475470088851
+        3366.0367971693704,
+        3356.8886830045867,
+        3347.7405688398035,
+        3338.5924546750202,
+        3329.4443405102365
       ],
-      "forecast_direction": "BEARISH",
-      "probability_up": 0.25,
+      "forecast_direction": "NEUTRAL",
+      "probability_up": 0.45,
       "confidence_band_80": {
         "upper": [
-          3437.5775697009863,
-          3498.0763134665417,
-          3543.481303537091,
-          3581.073191770932,
-          3613.672077369222
+          3525.407390558165,
+          3582.272737618468,
+          3623.7785338215963,
+          3657.3336414526093,
+          3685.8078209420596
         ],
         "lower": [
-          3124.3522019535035,
-          3055.1087503187514,
-          3000.9590523790052,
-          2954.6224562759667,
-          2913.2788628084804
+          3206.666203780576,
+          3131.5046283907054,
+          3071.7026038580107,
+          3019.851267897431,
+          2973.0808600784135
         ]
       },
-      "price_target_5d": 3263.475470088851,
+      "price_target_5d": 3329.4443405102365,
       "confidence": "MEDIUM",
-      "trend_strength": -0.43563454089770076
+      "trend_strength": -0.49842707659356306
     },
     "TPIA": {
       "ticker": "TPIA",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 1935.0,
+      "current_price": 1980.0,
       "forecast_prices": [
-        1922.9885720720063,
-        1922.6962784094849,
-        1922.4039847469633,
-        1922.1116910844414,
-        1921.81939742192
+        1979.3561931869685,
+        1977.255199361605,
+        1975.1542055362413,
+        1973.0532117108776,
+        1970.952217885514
       ],
-      "forecast_direction": "BEARISH",
-      "probability_up": 0.25,
+      "forecast_direction": "NEUTRAL",
+      "probability_up": 0.45,
       "confidence_band_80": {
         "upper": [
-          2030.2917166788782,
-          2074.4458407978045,
-          2108.258483017976,
-          2136.717980298185,
-          2161.7565229623756
+          2086.553450379196,
+          2128.8550143320494,
+          2160.8253014252073,
+          2187.447726095332,
+          2210.6525719688625
         ],
         "lower": [
-          1815.6854274651344,
-          1770.9467160211652,
-          1736.5494864759507,
-          1707.5054018706976,
-          1681.8822718814645
+          1872.1589359947413,
+          1825.6553843911604,
+          1789.4831096472753,
+          1758.658697326423,
+          1731.2518638021656
         ]
       },
-      "price_target_5d": 1921.81939742192,
-      "confidence": "MEDIUM",
-      "trend_strength": -0.2566493753764265
+      "price_target_5d": 1970.952217885514,
+      "confidence": "LOW",
+      "trend_strength": -0.19613427508164624
     },
     "BRPT": {
       "ticker": "BRPT",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 1735.0,
+      "current_price": 1775.0,
       "forecast_prices": [
-        1718.0760450451105,
-        1717.0789396841733,
-        1716.0818343232363,
-        1715.0847289622996,
-        1714.087623601362
+        1769.1084788733342,
+        1766.4298995331424,
+        1763.75132019295,
+        1761.0727408527584,
+        1758.3941615125664
       ],
       "forecast_direction": "BEARISH",
-      "probability_up": 0.25,
+      "probability_up": 0.14999999999999997,
       "confidence_band_80": {
         "upper": [
-          1809.1187452691795,
-          1845.8327610961198,
-          1873.7724167695865,
-          1897.1701294104378,
-          1917.665290157516
+          1860.9983717241398,
+          1896.3818322477623,
+          1922.9092833126056,
+          1944.8525265543697,
+          1963.8662083721397
         ],
         "lower": [
-          1627.0333448210415,
-          1588.3251182722267,
-          1558.3912518768861,
-          1532.9993285141613,
-          1510.5099570452082
+          1677.2185860225286,
+          1636.4779668185224,
+          1604.5933570732946,
+          1577.2929551511472,
+          1552.922114652993
         ]
       },
-      "price_target_5d": 1714.087623601362,
+      "price_target_5d": 1758.3941615125664,
       "confidence": "MEDIUM",
-      "trend_strength": -0.4344434573465382
+      "trend_strength": -0.3609022556390985
     },
     "CUAN": {
       "ticker": "CUAN",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 940.0,
+      "current_price": 1020.0,
       "forecast_prices": [
-        953.332919709447,
-        954.3070202788358,
-        955.2811208482245,
-        956.2552214176134,
-        957.2293219870021
+        1047.6748164196179,
+        1045.6014723838146,
+        1043.5281283480113,
+        1041.4547843122082,
+        1039.3814402764046
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          1017.6468256646335,
-          1045.2606183298483,
-          1066.6760735958142,
-          1084.8830333279864,
-          1101.0395876013276
+          1117.8311867592693,
+          1144.8175628050192,
+          1165.0425262509057,
+          1181.767524991511,
+          1196.255853410515
         ],
         "lower": [
-          889.0190137542604,
-          863.3534222278233,
-          843.8861681006349,
-          827.6274095072404,
-          813.4190563726766
+          977.5184460799665,
+          946.38538196261,
+          922.0137304451168,
+          901.1420436329054,
+          882.5070271422942
         ]
       },
-      "price_target_5d": 957.2293219870021,
+      "price_target_5d": 1039.3814402764046,
       "confidence": "HIGH",
-      "trend_strength": 0.8194688849784016
+      "trend_strength": 0.7809966091699836
     },
     "PTRO": {
       "ticker": "PTRO",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 5450.0,
+      "current_price": 5725.0,
       "forecast_prices": [
-        5482.284741736441,
-        5475.933014441784,
-        5469.581287147128,
-        5463.229559852471,
-        5456.877832557815
+        5812.102094269637,
+        5800.092506092401,
+        5788.082917915165,
+        5776.07332973793,
+        5764.063741560693
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          5738.807038117145,
-          5838.710325034466,
-          5913.890937752749,
-          5976.274152613879,
-          6030.479125009418
+          6084.37009639708,
+          6185.137607301257,
+          6259.664930875167,
+          6320.609333992816,
+          6372.873502415712
         ],
         "lower": [
-          5225.762445355737,
-          5113.155703849101,
-          5025.271636541507,
-          4950.184967091062,
-          4883.276540106212
+          5539.834092142194,
+          5415.047404883545,
+          5316.500904955164,
+          5231.537325483045,
+          5155.253980705675
         ]
       },
-      "price_target_5d": 5456.877832557815,
-      "confidence": "LOW",
-      "trend_strength": 0.10912602607435959
+      "price_target_5d": 5764.063741560693,
+      "confidence": "MEDIUM",
+      "trend_strength": 0.2913615917523062
     },
     "INDF": {
       "ticker": "INDF",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 7500.0,
+      "current_price": 7475.0,
       "forecast_prices": [
-        7533.340151229485,
-        7524.341689222426,
-        7515.34322721537,
-        7506.3447652083105,
-        7497.346303201253
+        7498.2255433547725,
+        7492.946797883066,
+        7487.66805241136,
+        7482.389306939653,
+        7477.110561467947
       ],
-      "forecast_direction": "BEARISH",
-      "probability_up": 0.35000000000000003,
+      "forecast_direction": "BULLISH",
+      "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          7657.801070726314,
-          7700.356009560267,
-          7730.915863340617,
-          7755.266604201967,
-          7775.649379738291
+          7622.430114029754,
+          7668.598586240352,
+          7702.796679352707,
+          7730.7984482896145,
+          7754.840424613381
         ],
         "lower": [
-          7408.879231732656,
-          7348.327368884585,
-          7299.770591090122,
-          7257.422926214654,
-          7219.043226664216
+          7374.020972679791,
+          7317.29500952578,
+          7272.539425470013,
+          7233.980165589691,
+          7199.380698322513
         ]
       },
-      "price_target_5d": 7497.346303201253,
+      "price_target_5d": 7477.110561467947,
       "confidence": "LOW",
-      "trend_strength": -0.004761904761908899
+      "trend_strength": 0.027912590841650226
     },
     "ICBP": {
       "ticker": "ICBP",
@@ -7734,303 +7776,303 @@
       "horizon_days": 5,
       "current_price": 7200.0,
       "forecast_prices": [
-        7144.852550905353,
-        7142.674559879593,
-        7140.496568853831,
-        7138.318577828071,
-        7136.14058680231
+        7150.590865802945,
+        7144.520321886599,
+        7138.449777970252,
+        7132.379234053908,
+        7126.308690137562
       ],
       "forecast_direction": "BEARISH",
       "probability_up": 0.14999999999999997,
       "confidence_band_80": {
         "upper": [
-          7287.396308415531,
-          7344.261874982108,
-          7387.389599163236,
-          7423.406092848426,
-          7454.878118363314
+          7292.145717803919,
+          7344.709113406093,
+          7383.629973693833,
+          7415.488938055856,
+          7442.834961756663
         ],
         "lower": [
-          7002.308793395176,
-          6941.087244777079,
-          6893.603538544427,
-          6853.231062807717,
-          6817.403055241307
+          7009.0360138019705,
+          6944.331530367105,
+          6893.269582246672,
+          6849.269530051959,
+          6809.782418518461
         ]
       },
-      "price_target_5d": 7136.14058680231,
+      "price_target_5d": 7126.308690137562,
       "confidence": "MEDIUM",
-      "trend_strength": -0.3023182957393513
+      "trend_strength": -0.3673245614035131
     },
     "MEDC": {
       "ticker": "MEDC",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 1575.0,
+      "current_price": 1605.0,
       "forecast_prices": [
-        1603.9184227713956,
-        1603.5392386682443,
-        1603.1600545650929,
-        1602.7808704619415,
-        1602.4016863587904
+        1636.2780900359876,
+        1636.2217586453316,
+        1636.1654272546753,
+        1636.1090958640193,
+        1636.0527644733627
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          1657.6475158520582,
-          1679.5236507969237,
-          1696.221573625398,
-          1710.2390566232666,
-          1722.5435908565655
+          1690.761355526633,
+          1713.2727316245766,
+          1730.5332112467374,
+          1745.0756268453104,
+          1757.8810497466145
         ],
         "lower": [
-          1550.189329690733,
-          1527.5548265395648,
-          1510.0985355047878,
-          1495.3226843006164,
-          1482.2597818610152
+          1581.7948245453422,
+          1559.1707856660867,
+          1541.797643262613,
+          1527.1425648827283,
+          1514.2244792001109
         ]
       },
-      "price_target_5d": 1602.4016863587904,
+      "price_target_5d": 1636.0527644733627,
       "confidence": "HIGH",
-      "trend_strength": 0.7060508413891858
+      "trend_strength": 0.7849061907104184
     },
     "AMMN": {
       "ticker": "AMMN",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 4910.0,
+      "current_price": 4850.0,
       "forecast_prices": [
-        5013.584039820935,
-        4999.494241781561,
-        4985.404443742185,
-        4971.314645702811,
-        4957.224847663435
+        4925.91464087376,
+        4920.277880518557,
+        4914.641120163354,
+        4909.00435980815,
+        4903.367599452947
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          5266.275002274493,
-          5356.853227972494,
-          5423.078029325228,
-          5476.696570609927,
-          5522.259017009438
+          5174.361020105342,
+          5271.63411955035,
+          5344.962871948978,
+          5405.897118271314,
+          5458.910592178456
         ],
         "lower": [
-          4760.8930773673765,
-          4642.135255590628,
-          4547.730858159142,
-          4465.932720795694,
-          4392.190678317432
+          4677.468261642178,
+          4568.921641486764,
+          4484.319368377729,
+          4412.111601344986,
+          4347.824606727438
         ]
       },
-      "price_target_5d": 4957.224847663435,
+      "price_target_5d": 4903.367599452947,
       "confidence": "MEDIUM",
-      "trend_strength": 0.359401558887033
+      "trend_strength": 0.4484923649329481
     },
     "ASII": {
       "ticker": "ASII",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 4850.0,
+      "current_price": 4880.0,
       "forecast_prices": [
-        4845.876685625401,
-        4851.668402936411,
-        4857.460120247421,
-        4863.25183755843,
-        4869.043554869441
+        4883.951545147051,
+        4888.65177205749,
+        4893.35199896793,
+        4898.052225878369,
+        4902.752452788808
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.65,
       "confidence_band_80": {
         "upper": [
-          4965.6492761714135,
-          5021.052424887143,
-          5064.9123324272605,
-          5102.797018650457,
-          5136.863209171575
+          5004.458170170983,
+          5059.073875522145,
+          5102.075596158033,
+          5139.065475926235,
+          5172.213458081399
         ],
         "lower": [
-          4726.104095079388,
-          4682.2843809856795,
-          4650.007908067582,
-          4623.706656466404,
-          4601.223900567307
+          4763.444920123118,
+          4718.229668592836,
+          4684.628401777827,
+          4657.038975830504,
+          4633.291447496217
         ]
       },
-      "price_target_5d": 4869.043554869441,
+      "price_target_5d": 4902.752452788808,
       "confidence": "LOW",
-      "trend_strength": 0.16184791876598598
+      "trend_strength": 0.18273141871070778
     },
     "UNTR": {
       "ticker": "UNTR",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 26000.0,
+      "current_price": 26900.0,
       "forecast_prices": [
-        26277.09425867204,
-        26301.867094155674,
-        26326.639929639314,
-        26351.41276512295,
-        26376.185600606586
+        27329.5942055361,
+        27331.83460051911,
+        27334.07499550211,
+        27336.315390485113,
+        27338.55578546812
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          26939.012088168412,
-          27237.960265806003,
-          27473.11524076274,
-          27675.248424115693,
-          27856.27886287959
+          28027.28847017212,
+          28318.523291957288,
+          28542.516910001097,
+          28731.70391975715,
+          28898.647588705986
         ],
         "lower": [
-          25615.17642917567,
-          25365.773922505345,
-          25180.164618515886,
-          25027.577106130208,
-          24896.092338333583
+          26631.899940900083,
+          26345.14590908093,
+          26125.63308100312,
+          25940.926861213076,
+          25778.463982230256
         ]
       },
-      "price_target_5d": 26376.185600606586,
+      "price_target_5d": 27338.55578546812,
       "confidence": "HIGH",
-      "trend_strength": 0.5574031231925944
+      "trend_strength": 0.611985353718867
     },
     "AUTO": {
       "ticker": "AUTO",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 3320.0,
+      "current_price": 3360.0,
       "forecast_prices": [
-        3338.0195083428584,
-        3352.308498102858,
-        3366.597487862858,
-        3380.8864776228575,
-        3395.1754673828573
+        3384.1658865341515,
+        3395.4613877235615,
+        3406.756888912972,
+        3418.0523901023826,
+        3429.3478912917926
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          3403.04900939034,
-          3444.2741004385616,
-          3479.2318876679496,
-          3510.9454797178205,
-          3540.58585226792
+          3449.2013808570127,
+          3487.4354658305906,
+          3519.401669375525,
+          3548.123378748105,
+          3574.771677548012
         ],
         "lower": [
-          3272.990007295377,
-          3260.342895767154,
-          3253.9630880577665,
-          3250.8274755278944,
-          3249.7650824977945
+          3319.13039221129,
+          3303.4873096165325,
+          3294.112108450419,
+          3287.98140145666,
+          3283.924105035573
         ]
       },
-      "price_target_5d": 3395.1754673828573,
+      "price_target_5d": 3429.3478912917926,
       "confidence": "HIGH",
-      "trend_strength": 1.0
+      "trend_strength": 0.9206050841389172
     },
     "BBCA": {
       "ticker": "BBCA",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 6525.0,
+      "current_price": 6450.0,
       "forecast_prices": [
-        6522.572851682913,
-        6535.9537914589955,
-        6549.334731235077,
-        6562.715671011159,
-        6576.096610787241
+        6433.470243958388,
+        6448.28386426833,
+        6463.097484578275,
+        6477.911104888219,
+        6492.724725198162
       ],
       "forecast_direction": "NEUTRAL",
       "probability_up": 0.5499999999999999,
       "confidence_band_80": {
         "upper": [
-          6722.24533289466,
-          6818.333322421335,
-          6895.177613567165,
-          6962.060633434654,
-          7022.577852012757
+          6608.077751987884,
+          6695.216170215812,
+          6765.526559868353,
+          6827.12612094721,
+          6883.158982533955
         ],
         "lower": [
-          6322.900370471166,
-          6253.574260496656,
-          6203.491848902989,
-          6163.370708587665,
-          6129.615369561725
+          6258.862735928892,
+          6201.351558320848,
+          6160.668409288197,
+          6128.696088829227,
+          6102.290467862368
         ]
       },
-      "price_target_5d": 6576.096610787241,
+      "price_target_5d": 6492.724725198162,
       "confidence": "MEDIUM",
-      "trend_strength": 0.35548418910062285
+      "trend_strength": 0.3121681611368504
     },
     "TOWR": {
       "ticker": "TOWR",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 484.0,
+      "current_price": 478.0,
       "forecast_prices": [
-        492.5386556847518,
-        492.98547348013227,
-        493.43229127551274,
-        493.87910907089326,
-        494.3259268662737
+        484.01470222558845,
+        484.8815434346061,
+        485.7483846436238,
+        486.6152258526414,
+        487.482067061659
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          510.20113553503535,
-          517.9639920295448,
-          524.0246037638653,
-          529.2040687714604,
-          533.8204324627279
+          501.46001035781467,
+          509.55293479497806,
+          515.9645446823341,
+          521.5058421170938,
+          526.4909619337467
         ],
         "lower": [
-          474.87617583446826,
-          468.00695493071976,
-          462.83997878716013,
-          458.5541493703262,
-          454.8314212698194
+          466.56939409336223,
+          460.21015207423414,
+          455.5322246049135,
+          451.72460958818897,
+          448.47317218957124
         ]
       },
-      "price_target_5d": 494.3259268662737,
+      "price_target_5d": 487.482067061659,
       "confidence": "HIGH",
-      "trend_strength": 0.8640402659541404
+      "trend_strength": 0.8314719854028362
     },
     "BELI": {
       "ticker": "BELI",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 298.0,
+      "current_price": 302.0,
       "forecast_prices": [
-        295.9337409884576,
-        299.2639852719691,
-        302.5942295554806,
-        305.92447383899207,
-        309.25471812250356
+        301.3863382717098,
+        304.20621732413474,
+        307.0260963765597,
+        309.8459754289847,
+        312.6658544814096
       ],
       "forecast_direction": "NEUTRAL",
       "probability_up": 0.5499999999999999,
       "confidence_band_80": {
         "upper": [
-          315.9942343199226,
-          327.633807009222,
-          337.3400232304747,
-          346.04546050192215,
-          354.1113448738406
+          320.10747375879544,
+          330.6819010329955,
+          339.45205421557273,
+          347.28824640315594,
+          354.5275860465167
         ],
         "lower": [
-          275.8732476569926,
-          270.8941635347162,
-          267.8484358804865,
-          265.803487176062,
-          264.3980913711665
+          282.66520278462417,
+          277.730533615274,
+          274.6001385375466,
+          272.4037044548134,
+          270.8041229163025
         ]
       },
-      "price_target_5d": 309.25471812250356,
+      "price_target_5d": 312.6658544814096,
       "confidence": "HIGH",
       "trend_strength": 1.0
     },
@@ -8038,205 +8080,205 @@
       "ticker": "BRMS",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 705.0,
+      "current_price": 710.0,
       "forecast_prices": [
-        705.7731137175522,
-        708.9200969890792,
-        712.0670802606064,
-        715.2140635321337,
-        718.3610468036608
+        711.5341073614542,
+        713.7831870019454,
+        716.0322666424364,
+        718.2813462829275,
+        720.5304259234186
       ],
       "forecast_direction": "NEUTRAL",
       "probability_up": 0.5499999999999999,
       "confidence_band_80": {
         "upper": [
-          751.091187788783,
-          773.0095319612423,
-          790.5602870531479,
-          805.8502116745952,
-          819.6953410363035
+          757.0039559563107,
+          778.0872635638428,
+          794.7883546211924,
+          809.2210434726408,
+          822.2040983081413
         ],
         "lower": [
-          660.4550396463213,
-          644.8306620169161,
-          633.5738734680649,
-          624.5779153896721,
-          617.026752571018
+          666.0642587665976,
+          649.479110440048,
+          637.2761786636804,
+          627.3416490932143,
+          618.856753538696
         ]
       },
-      "price_target_5d": 718.3610468036608,
+      "price_target_5d": 720.5304259234186,
       "confidence": "HIGH",
-      "trend_strength": 0.8894576867701154
+      "trend_strength": 0.7084612940802703
     },
     "BUMI": {
       "ticker": "BUMI",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 222.0,
+      "current_price": 226.0,
       "forecast_prices": [
-        225.9415586497758,
-        226.23549461906876,
-        226.52943058836172,
-        226.82336655765465,
-        227.11730252694764
+        230.3107574618452,
+        230.6552768867694,
+        230.99979631169361,
+        231.34431573661777,
+        231.68883516154196
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          237.50867770131546,
-          242.59387125934037,
-          246.56426848282635,
-          249.95760466073398,
-          252.98216703002322
+          242.0695412510503,
+          247.28470839847614,
+          251.36660726981412,
+          254.86188331502797,
+          257.9822750469271
         ],
         "lower": [
-          214.37443959823614,
-          209.87711797879714,
-          206.4945926938971,
-          203.68912845457533,
-          201.25243802387206
+          218.55197367264012,
+          214.02584537506266,
+          210.6329853535731,
+          207.82674815820758,
+          205.39539527615682
         ]
       },
-      "price_target_5d": 227.11730252694764,
+      "price_target_5d": 231.68883516154196,
       "confidence": "HIGH",
-      "trend_strength": 0.9848946691051929
+      "trend_strength": 1.0
     },
     "ENRG": {
       "ticker": "ENRG",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 1465.0,
+      "current_price": 1505.0,
       "forecast_prices": [
-        1494.9729884922249,
-        1496.1016688578807,
-        1497.2303492235365,
-        1498.359029589192,
-        1499.4877099548478
+        1537.3983412997634,
+        1536.3785910685199,
+        1535.3588408372768,
+        1534.3390906060336,
+        1533.3193403747905
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          1623.6594081059359,
-          1678.0917487688257,
-          1720.121766238612,
-          1755.731868816614,
-          1787.2392919921676
+          1669.5436392469571,
+          1723.2602636292747,
+          1764.2412108631436,
+          1798.629686500421,
+          1828.805209491679
         ],
         "lower": [
-          1366.286568878514,
-          1314.1115889469356,
-          1274.3389322084608,
-          1240.98619036177,
-          1211.736127917528
+          1405.2530433525696,
+          1349.496918507765,
+          1306.47647081141,
+          1270.048494711646,
+          1237.833471257902
         ]
       },
-      "price_target_5d": 1499.4877099548478,
+      "price_target_5d": 1533.3193403747905,
       "confidence": "HIGH",
-      "trend_strength": 0.9075592776369512
+      "trend_strength": 0.7156595808458006
     },
     "VKTR": {
       "ticker": "VKTR",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 855.0,
+      "current_price": 820.0,
       "forecast_prices": [
-        847.7178143825705,
-        850.3558050699662,
-        852.9937957573619,
-        855.6317864447576,
-        858.2697771321532
+        806.0062397489912,
+        808.7199163104713,
+        811.4335928719511,
+        814.1472694334311,
+        816.860945994911
       ],
       "forecast_direction": "NEUTRAL",
       "probability_up": 0.5499999999999999,
       "confidence_band_80": {
         "upper": [
-          917.8876518913418,
-          949.5909409443868,
-          974.531519481406,
-          995.9714614623001,
-          1015.1743037718802
+          873.4209094142968,
+          904.0586564540486,
+          928.1992259077327,
+          948.9766087640423,
+          967.6047300472275
         ],
         "lower": [
-          777.5479768737993,
-          751.1206691955456,
-          731.4560720333178,
-          715.2921114272151,
-          701.3652504924262
+          738.5915700836856,
+          713.381176166894,
+          694.6679598361694,
+          679.3179301028199,
+          666.1171619425946
         ]
       },
-      "price_target_5d": 858.2697771321532,
-      "confidence": "MEDIUM",
-      "trend_strength": 0.3099854900408908
+      "price_target_5d": 816.860945994911,
+      "confidence": "LOW",
+      "trend_strength": 0.02475701448743575
     },
     "ADRO": {
       "ticker": "ADRO",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 2690.0,
+      "current_price": 2700.0,
       "forecast_prices": [
-        2696.0172275701316,
-        2702.0087582967067,
-        2708.0002890232818,
-        2713.9918197498573,
-        2719.983350476432
+        2707.6817751436242,
+        2712.888019814147,
+        2718.0942644846705,
+        2723.3005091551936,
+        2728.506753825717
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          2763.3583270130257,
-          2797.243454433963,
-          2824.638494695923,
-          2848.674018635646,
-          2870.562626510317
+          2774.7508655335687,
+          2807.7380370596334,
+          2834.2613366574838,
+          2857.4386899350825,
+          2878.477799126711
         ],
         "lower": [
-          2628.6761281272375,
-          2606.7740621594503,
-          2591.3620833506407,
-          2579.3096208640686,
-          2569.404074442547
+          2640.61268475368,
+          2618.0380025686604,
+          2601.927192311857,
+          2589.1623283753047,
+          2578.5357085247233
         ]
       },
-      "price_target_5d": 2719.983350476432,
+      "price_target_5d": 2728.506753825717,
       "confidence": "MEDIUM",
-      "trend_strength": 0.49556977946725295
+      "trend_strength": 0.4661654135338316
     },
     "ADMR": {
       "ticker": "ADMR",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 1675.0,
+      "current_price": 1670.0,
       "forecast_prices": [
-        1679.4046939444736,
-        1679.3628132006916,
-        1679.3209324569095,
-        1679.2790517131277,
-        1679.2371709693457
+        1672.111415844995,
+        1671.81196214968,
+        1671.5125084543652,
+        1671.2130547590507,
+        1670.9136010637358
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          1742.1496036102194,
-          1768.097515419864,
-          1787.9983039143008,
-          1804.7688710446193,
-          1819.539054224037
+          1734.1588703177715,
+          1759.5603137758078,
+          1778.981852081531,
+          1795.307963704604,
+          1809.6559270956875
         ],
         "lower": [
-          1616.6597842787278,
-          1590.628110981519,
-          1570.6435609995183,
-          1553.789232381636,
-          1538.9352877146544
+          1610.0639613722185,
+          1584.0636105235524,
+          1564.0431648271992,
+          1547.1181458134974,
+          1532.171275031784
         ]
       },
-      "price_target_5d": 1679.2371709693457,
+      "price_target_5d": 1670.9136010637358,
       "confidence": "LOW",
-      "trend_strength": 0.13803164627987627
+      "trend_strength": 0.061456035297824785
     },
     "ITMG": {
       "ticker": "ITMG",
@@ -8244,65 +8286,65 @@
       "horizon_days": 5,
       "current_price": 26550.0,
       "forecast_prices": [
-        26693.910548078682,
-        26720.443385831368,
-        26746.97622358405,
-        26773.509061336736,
-        26800.04189908942
+        26676.649908243606,
+        26707.26363787308,
+        26737.877367502555,
+        26768.491097132028,
+        26799.104826761504
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          27107.760379954143,
-          27305.715430855467,
-          27463.785159096184,
-          27601.208725087654,
-          27725.43825563981
+          27089.879021358996,
+          27291.65785400827,
+          27453.611186585036,
+          27594.94932336281,
+          27723.113213969467
         ],
         "lower": [
-          26280.06071620322,
-          26135.17134080727,
-          26030.167288071916,
-          25945.809397585817,
-          25874.645542539034
+          26263.420795128215,
+          26122.869421737887,
+          26022.143548420074,
+          25942.032870901246,
+          25875.09643955354
         ]
       },
-      "price_target_5d": 26800.04189908942,
+      "price_target_5d": 26799.104826761504,
       "confidence": "MEDIUM",
-      "trend_strength": 0.4053920111011981
+      "trend_strength": 0.4068079804029834
     },
     "PTBA": {
       "ticker": "PTBA",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 3100.0,
+      "current_price": 3160.0,
       "forecast_prices": [
-        3184.616952371821,
-        3188.50628249896,
-        3192.3956126260996,
-        3196.284942753239,
-        3200.1742728803792
+        3246.6419053797176,
+        3252.5067273112927,
+        3258.371549242868,
+        3264.2363711744433,
+        3270.101193106019
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          3254.7622049532574,
-          3287.706650035714,
-          3313.8907540069,
-          3336.5754479161124,
-          3357.023825951364
+          3316.510511533802,
+          3351.315857718503,
+          3379.3875249557614,
+          3403.973583482612,
+          3426.3321459597114
         ],
         "lower": [
-          3114.4716997903843,
-          3089.305914962206,
-          3070.9004712452993,
-          3055.994437590366,
-          3043.3247198093945
+          3176.7732992256333,
+          3153.6975969040823,
+          3137.355573529974,
+          3124.4991588662747,
+          3113.8702402523263
         ]
       },
-      "price_target_5d": 3200.1742728803792,
+      "price_target_5d": 3270.101193106019,
       "confidence": "HIGH",
       "trend_strength": 1.0
     },
@@ -8310,171 +8352,171 @@
       "ticker": "MPMX",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 1055.0,
+      "current_price": 1045.0,
       "forecast_prices": [
-        1061.0211921248604,
-        1061.0270373089108,
-        1061.032882492961,
-        1061.0387276770116,
-        1061.0445728610623
+        1048.1762212327822,
+        1048.8853523245714,
+        1049.5944834163608,
+        1050.3036145081503,
+        1051.0127455999398
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          1072.2364866461546,
-          1076.8878589269339,
-          1080.4583424256916,
-          1083.4693167196,
-          1086.122733798357
+          1059.1983157549585,
+          1064.4729478835914,
+          1068.6853111345968,
+          1072.347803552503,
+          1075.658898205954
         ],
         "lower": [
-          1049.805897603566,
-          1045.1662156908878,
-          1041.6074225602306,
-          1038.608138634423,
-          1035.9664119237675
+          1037.1541267106059,
+          1033.2977567655514,
+          1030.503655698125,
+          1028.2594254637977,
+          1026.3665929939255
         ]
       },
-      "price_target_5d": 1061.0445728610623,
+      "price_target_5d": 1051.0127455999398,
       "confidence": "MEDIUM",
-      "trend_strength": 0.23340341374763945
+      "trend_strength": 0.24786847501528683
     },
     "HEXA": {
       "ticker": "HEXA",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 4490.0,
+      "current_price": 4480.0,
       "forecast_prices": [
-        4498.901800903586,
-        4500.817180873246,
-        4502.732560842904,
-        4504.647940812562,
-        4506.563320782221
+        4486.582234483773,
+        4489.902955707319,
+        4493.223676930866,
+        4496.544398154411,
+        4499.865119377958
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          4560.013510340557,
-          4587.242189178814,
-          4608.581146525124,
-          4626.871359686505,
-          4643.213257304504
+          4541.598323731764,
+          4567.707455270556,
+          4588.514338742129,
+          4606.576576650393,
+          4622.8848347926605
         ],
         "lower": [
-          4437.790091466615,
-          4414.392172567677,
-          4396.883975160684,
-          4382.42452193862,
-          4369.9133842599385
+          4431.566145235783,
+          4412.098456144082,
+          4397.933015119602,
+          4386.51221965843,
+          4376.845403963255
         ]
       },
-      "price_target_5d": 4506.563320782221,
+      "price_target_5d": 4499.865119377958,
       "confidence": "LOW",
-      "trend_strength": 0.14937120083058394
+      "trend_strength": 0.18226369495166383
     },
     "BBRI": {
       "ticker": "BBRI",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 3420.0,
+      "current_price": 3370.0,
       "forecast_prices": [
-        3447.634799620426,
-        3451.933887215137,
-        3456.232974809849,
-        3460.5320624045617,
-        3464.831149999273
+        3384.2330274198516,
+        3391.645985244152,
+        3399.058943068452,
+        3406.4719008927527,
+        3413.8848587170532
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          3529.945556144312,
-          3568.338875420406,
-          3598.799387118651,
-          3625.153575452334,
-          3648.883596866116
+          3464.3864662983365,
+          3505.0000655769486,
+          3537.888771607355,
+          3566.778778649723,
+          3593.11339667972
         ],
         "lower": [
-          3365.3240430965398,
-          3335.528899009868,
-          3313.6665625010473,
-          3295.9105493567895,
-          3280.7787031324297
+          3304.079588541367,
+          3278.2919049113557,
+          3260.2291145295494,
+          3246.1650231357826,
+          3234.6563207543863
         ]
       },
-      "price_target_5d": 3464.831149999273,
+      "price_target_5d": 3413.8848587170532,
       "confidence": "HIGH",
-      "trend_strength": 0.5654487094930292
+      "trend_strength": 0.5800852279065603
     },
     "BMRI": {
       "ticker": "BMRI",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 4390.0,
+      "current_price": 4370.0,
       "forecast_prices": [
-        4407.401849626134,
-        4413.560789174592,
-        4419.719728723049,
-        4425.878668271506,
-        4432.037607819963
+        4381.559245014463,
+        4388.8289466882625,
+        4396.098648362062,
+        4403.36835003586,
+        4410.6380517096595
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          4519.72087650285,
-          4572.403880296192,
-          4614.261989930215,
-          4650.516722024939,
-          4683.190587082926
+          4489.880944483944,
+          4542.0189631773055,
+          4583.71733540541,
+          4620.011748974823,
+          4652.852735161723
         ],
         "lower": [
-          4295.0828227494185,
-          4254.717698052992,
-          4225.177467515883,
-          4201.240614518074,
-          4180.884628557001
+          4273.237545544982,
+          4235.638930199219,
+          4208.479961318713,
+          4186.724951096898,
+          4168.423368257596
         ]
       },
-      "price_target_5d": 4432.037607819963,
+      "price_target_5d": 4410.6380517096595,
       "confidence": "MEDIUM",
-      "trend_strength": 0.3992327059105596
+      "trend_strength": 0.39314533473271157
     },
     "BBNI": {
       "ticker": "BBNI",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 3820.0,
+      "current_price": 3800.0,
       "forecast_prices": [
-        3823.4861784592435,
-        3833.9451605117556,
-        3844.404142564268,
-        3854.86312461678,
-        3865.322106669292
+        3799.640288964389,
+        3809.894806810609,
+        3820.1493246568293,
+        3830.403842503049,
+        3840.6583603492686
       ],
       "forecast_direction": "NEUTRAL",
       "probability_up": 0.5499999999999999,
       "confidence_band_80": {
         "upper": [
-          3926.105951672006,
-          3979.0714355568953,
-          4022.146803629968,
-          4060.102671042305,
-          4094.7868954086407
+          3896.878562711803,
+          3947.41049232595,
+          3988.5709552276417,
+          4024.8803899978775,
+          4058.08975046322
         ],
         "lower": [
-          3720.866405246481,
-          3688.818885466616,
-          3666.6614814985683,
-          3649.6235781912555,
-          3635.8573179299437
+          3702.402015216975,
+          3672.3791212952683,
+          3651.727694086017,
+          3635.9272950082204,
+          3623.2269702353174
         ]
       },
-      "price_target_5d": 3865.322106669292,
-      "confidence": "HIGH",
-      "trend_strength": 0.5339920481832857
+      "price_target_5d": 3840.6583603492686,
+      "confidence": "MEDIUM",
+      "trend_strength": 0.4869410368025318
     },
     "BJTM": {
       "ticker": "BJTM",
@@ -8482,33 +8524,33 @@
       "horizon_days": 5,
       "current_price": 530.0,
       "forecast_prices": [
-        531.1889785579924,
-        531.52741743286,
-        531.8658563077278,
-        532.2042951825954,
-        532.5427340574631
+        531.02826771063,
+        531.3606472512108,
+        531.6930267917916,
+        532.0254063323723,
+        532.3577858729531
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          537.2547774912306,
-          540.1057525508738,
-          542.3721282485935,
-          544.3358930490718,
-          546.1062728100295
+          536.8721840085547,
+          539.6251929371091,
+          541.814986734977,
+          543.7132389282217,
+          545.4251799699316
         ],
         "lower": [
-          525.1231796247542,
-          522.9490823148462,
-          521.359584366862,
-          520.0726973161189,
-          518.9791953048967
+          525.1843514127053,
+          523.0961015653126,
+          521.5710668486062,
+          520.3375737365229,
+          519.2903917759745
         ]
       },
-      "price_target_5d": 532.5427340574631,
+      "price_target_5d": 532.3577858729531,
       "confidence": "LOW",
-      "trend_strength": 0.19931905234784864
+      "trend_strength": 0.18655128387004974
     },
     "BJBR": {
       "ticker": "BJBR",
@@ -8516,67 +8558,67 @@
       "horizon_days": 5,
       "current_price": 800.0,
       "forecast_prices": [
-        800.9110980605965,
-        801.1876249146426,
-        801.4641517686887,
-        801.7406786227348,
-        802.0172054767809
+        800.8039491058793,
+        801.0887075553801,
+        801.3734660048809,
+        801.6582244543818,
+        801.9429829038826
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          818.5497085526706,
-          826.1323870939502,
-          832.0151213158786,
-          837.017899606883,
-          841.4583375656996
+          818.4291291754408,
+          826.014476249022,
+          831.9011733779118,
+          836.9085845935048,
+          841.3540836550966
         ],
         "lower": [
-          783.2724875685224,
-          776.2428627353349,
-          770.9131822214988,
-          766.4634576385865,
-          762.5760733878622
+          783.1787690363177,
+          776.1629388617382,
+          770.84575863185,
+          766.4078643152587,
+          762.5318821526686
         ]
       },
-      "price_target_5d": 802.0172054767809,
+      "price_target_5d": 801.9429829038826,
       "confidence": "LOW",
-      "trend_strength": 0.11137218045112442
+      "trend_strength": 0.10902255639097413
     },
     "TLKM": {
       "ticker": "TLKM",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 2660.0,
+      "current_price": 2640.0,
       "forecast_prices": [
-        2670.070645806687,
-        2668.6397707806877,
-        2667.208895754689,
-        2665.7780207286896,
-        2664.347145702691
+        2644.4119343763336,
+        2644.322738478511,
+        2644.2335425806873,
+        2644.144346682864,
+        2644.055150785041
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          2744.075836382228,
-          2773.2989149786226,
-          2795.3896458553427,
-          2813.788401879771,
-          2829.8277825174264
+          2711.895576503965,
+          2739.7590204137396,
+          2761.11863942554,
+          2779.111630938127,
+          2794.9531619516933
         ],
         "lower": [
-          2596.065455231146,
-          2563.980626582753,
-          2539.028145654035,
-          2517.7676395776084,
-          2498.866508887955
+          2576.9282922487023,
+          2548.8864565432823,
+          2527.3484457358345,
+          2509.1770624276014,
+          2493.1571396183886
         ]
       },
-      "price_target_5d": 2664.347145702691,
+      "price_target_5d": 2644.055150785041,
       "confidence": "LOW",
-      "trend_strength": 0.05398835434450871
+      "trend_strength": 0.06037821827295282
     },
     "MDKA": {
       "ticker": "MDKA",
@@ -8584,67 +8626,67 @@
       "horizon_days": 5,
       "current_price": 3110.0,
       "forecast_prices": [
-        3143.8629000010096,
-        3139.7312867361816,
-        3135.5996734713526,
-        3131.4680602065246,
-        3127.336446941696
+        3139.181036306347,
+        3137.2757158354902,
+        3135.370395364635,
+        3133.4650748937793,
+        3131.559754422923
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          3278.0969198300545,
-          3329.566858110276,
-          3368.099815919467,
-          3399.936099864615,
-          3427.4928401724956
+          3272.699703125805,
+          3326.099625281543,
+          3366.631510054798,
+          3400.5024085326963,
+          3430.116569696378
         ],
         "lower": [
-          3009.6288801719647,
-          2949.8957153620872,
-          2903.0995310232383,
-          2863.0000205484343,
-          2827.1800537108966
+          3005.6623694868886,
+          2948.4518063894375,
+          2904.109280674472,
+          2866.427741254862,
+          2833.002939149468
         ]
       },
-      "price_target_5d": 3127.336446941696,
+      "price_target_5d": 3131.559754422923,
       "confidence": "MEDIUM",
-      "trend_strength": 0.2231462901627045
+      "trend_strength": 0.2886637816405949
     },
     "ANTM": {
       "ticker": "ANTM",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 3200.0,
+      "current_price": 3300.0,
       "forecast_prices": [
-        3220.0948456786296,
-        3216.588105114332,
-        3213.081364550035,
-        3209.5746239857376,
-        3206.06788342144
+        3337.7376813061173,
+        3331.619440683992,
+        3325.5012000618663,
+        3319.3829594397403,
+        3313.2647188176143
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          3331.6062651273405,
-          3374.289066858174,
-          3406.2248086593268,
-          3432.59746288316,
-          3455.4149975762502
+          3450.6515092811956,
+          3491.30370758581,
+          3521.0736869917937,
+          3545.2106153898967,
+          3565.747713769607
         ],
         "lower": [
-          3108.5834262299186,
-          3058.88714337049,
-          3019.937920440743,
-          2986.5517850883152,
-          2956.7207692666298
+          3224.823853331039,
+          3171.9351737821735,
+          3129.928713131939,
+          3093.555303489584,
+          3060.7817238656216
         ]
       },
-      "price_target_5d": 3206.06788342144,
+      "price_target_5d": 3313.2647188176143,
       "confidence": "LOW",
-      "trend_strength": 0.07142857142856944
+      "trend_strength": 0.13647755753018678
     },
     "GOTO": {
       "ticker": "GOTO",
@@ -8684,69 +8726,69 @@
       "ticker": "BRIS",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 1775.0,
+      "current_price": 1765.0,
       "forecast_prices": [
-        1773.1056810472905,
-        1773.5862507024942,
-        1774.0668203576977,
-        1774.5473900129011,
-        1775.0279596681048
+        1761.2148514971577,
+        1761.827347062388,
+        1762.4398426276177,
+        1763.052338192848,
+        1763.6648337580782
       ],
-      "forecast_direction": "BULLISH",
-      "probability_up": 0.65,
+      "forecast_direction": "BEARISH",
+      "probability_up": 0.25,
       "confidence_band_80": {
         "upper": [
-          1823.5590858036726,
-          1844.938139976869,
-          1861.4546808105888,
-          1875.4541995256652,
-          1887.8452023996865
+          1811.3742880181765,
+          1832.7635024714052,
+          1849.3185351610482,
+          1863.3712112348855,
+          1875.8247435321618
         ],
         "lower": [
-          1722.6522762909085,
-          1702.2343614281194,
-          1686.6789599048066,
-          1673.640580500137,
-          1662.210716936523
+          1711.055414976139,
+          1690.891191653371,
+          1675.5611500941873,
+          1662.7334651508106,
+          1651.5049239839946
         ]
       },
-      "price_target_5d": 1775.0279596681048,
+      "price_target_5d": 1763.6648337580782,
       "confidence": "LOW",
-      "trend_strength": 0.0036005506724528912
+      "trend_strength": -0.02470766150503945
     },
     "CPIN": {
       "ticker": "CPIN",
       "method": "STATISTICAL_ENSEMBLE",
       "horizon_days": 5,
-      "current_price": 3260.0,
+      "current_price": 3240.0,
       "forecast_prices": [
-        3284.9437014725972,
-        3285.6345593735664,
-        3286.3254172745355,
-        3287.016275175505,
-        3287.7071330764743
+        3258.358140739774,
+        3261.782089133172,
+        3265.2060375265714,
+        3268.62998591997,
+        3272.0539343133682
       ],
       "forecast_direction": "BULLISH",
       "probability_up": 0.7499999999999999,
       "confidence_band_80": {
         "upper": [
-          3394.027479659991,
-          3439.902317921077,
-          3475.264063376675,
-          3505.183831550293,
-          3531.6258763459955
+          3366.3987827809815,
+          3414.5746303953447,
+          3452.337918824305,
+          3484.711270002385,
+          3513.64015425023
         ],
         "lower": [
-          3175.8599232852034,
-          3131.3668008260556,
-          3097.386771172396,
-          3068.8487188007175,
-          3043.788389806953
+          3150.317498698567,
+          3108.9895478709996,
+          3078.074156228838,
+          3052.5487018375547,
+          3030.4677143765066
         ]
       },
-      "price_target_5d": 3287.7071330764743,
+      "price_target_5d": 3272.0539343133682,
       "confidence": "MEDIUM",
-      "trend_strength": 0.3226624844319381
+      "trend_strength": 0.3933444722918383
     }
   },
   "paper_portfolio": {
@@ -8776,105 +8818,105 @@
     "summary": {
       "total_archetypes_tested": 7,
       "best_performer": "FOREIGN_FLOW_MOMENTUM",
-      "best_return_pct": 1232.8019373858303
+      "best_return_pct": 1666.2860783077797
     },
     "archetypes": {
       "BREAKOUT": {
         "total_trades": 100,
-        "wins": 47,
-        "losses": 53,
-        "win_rate_pct": 47.0,
-        "total_pnl": 200679978.11743635,
-        "total_return_pct": 200.67997811743635,
-        "profit_factor": 1.4011701336085407,
-        "sharpe_ratio": 3.2926724425267455,
-        "sortino_ratio": 4.567366372810971,
-        "max_drawdown_pct": 37.23063434642108,
-        "max_drawdown_value": 63049616.45242585,
+        "wins": 49,
+        "losses": 51,
+        "win_rate_pct": 49.0,
+        "total_pnl": 225431018.33699638,
+        "total_return_pct": 225.4310183369964,
+        "profit_factor": 1.309186751122084,
+        "sharpe_ratio": 3.48987663810119,
+        "sortino_ratio": 4.675405924982692,
+        "max_drawdown_pct": 51.21527598568258,
+        "max_drawdown_value": 229640766.4461397,
         "expectancy_pct": 2.1159999999999997
       },
       "ACCUMULATION": {
         "total_trades": 100,
-        "wins": 59,
-        "losses": 41,
-        "win_rate_pct": 59.0,
-        "total_pnl": 251705607.0100072,
-        "total_return_pct": 251.7056070100072,
-        "profit_factor": 1.861474260197838,
-        "sharpe_ratio": 5.055750826411816,
-        "sortino_ratio": 5.873557769602825,
-        "max_drawdown_pct": 20.557561463464406,
-        "max_drawdown_value": 59758490.37487587,
+        "wins": 56,
+        "losses": 44,
+        "win_rate_pct": 56.00000000000001,
+        "total_pnl": 174087325.4097765,
+        "total_return_pct": 174.08732540977653,
+        "profit_factor": 1.5450765807155167,
+        "sharpe_ratio": 4.051621938757653,
+        "sortino_ratio": 4.761959642594003,
+        "max_drawdown_pct": 18.771724235523457,
+        "max_drawdown_value": 43091000.8941986,
         "expectancy_pct": 2.014
       },
       "OVERSOLD_REBOUND": {
         "total_trades": 100,
-        "wins": 47,
-        "losses": 53,
-        "win_rate_pct": 47.0,
-        "total_pnl": 36437910.94730091,
-        "total_return_pct": 36.437910947300914,
-        "profit_factor": 1.1287723753637418,
-        "sharpe_ratio": 1.3102909813235581,
-        "sortino_ratio": 1.5573548800203898,
-        "max_drawdown_pct": 41.53741459289077,
-        "max_drawdown_value": 72296395.51855278,
+        "wins": 61,
+        "losses": 39,
+        "win_rate_pct": 61.0,
+        "total_pnl": 492343527.620203,
+        "total_return_pct": 492.3435276202031,
+        "profit_factor": 2.130567081466539,
+        "sharpe_ratio": 6.148237431334892,
+        "sortino_ratio": 7.357976641163775,
+        "max_drawdown_pct": 17.43825915026134,
+        "max_drawdown_value": 30635454.860368907,
         "expectancy_pct": 1.8440000000000005
       },
       "PULLBACK": {
         "total_trades": 100,
-        "wins": 59,
-        "losses": 41,
-        "win_rate_pct": 59.0,
-        "total_pnl": 249783040.3799221,
-        "total_return_pct": 249.78304037992208,
-        "profit_factor": 1.802973422881482,
-        "sharpe_ratio": 4.7843551403942906,
-        "sortino_ratio": 5.466044688399385,
-        "max_drawdown_pct": 15.404081713850386,
-        "max_drawdown_value": 41231321.629947156,
+        "wins": 62,
+        "losses": 38,
+        "win_rate_pct": 62.0,
+        "total_pnl": 366465741.916376,
+        "total_return_pct": 366.465741916376,
+        "profit_factor": 2.1454516167379345,
+        "sharpe_ratio": 5.9109468764277056,
+        "sortino_ratio": 6.714620398535413,
+        "max_drawdown_pct": 14.262497941720634,
+        "max_drawdown_value": 48500282.485790074,
         "expectancy_pct": 1.8400000000000007
       },
       "SMC_ORDER_BLOCK": {
         "total_trades": 100,
-        "wins": 60,
-        "losses": 40,
-        "win_rate_pct": 60.0,
-        "total_pnl": 1105124858.585293,
-        "total_return_pct": 1105.124858585293,
-        "profit_factor": 3.247547898564194,
-        "sharpe_ratio": 7.648566119648385,
-        "sortino_ratio": 10.748316816723039,
-        "max_drawdown_pct": 20.181668106202277,
-        "max_drawdown_value": 90057327.18860549,
+        "wins": 65,
+        "losses": 35,
+        "win_rate_pct": 65.0,
+        "total_pnl": 1604278037.6685107,
+        "total_return_pct": 1604.278037668511,
+        "profit_factor": 2.673456459418212,
+        "sharpe_ratio": 9.183981353758499,
+        "sortino_ratio": 12.238624235678655,
+        "max_drawdown_pct": 20.670147182261402,
+        "max_drawdown_value": 194831638.76165462,
         "expectancy_pct": 3.472
       },
       "DIVIDEND_TRAP": {
         "total_trades": 100,
-        "wins": 59,
-        "losses": 41,
-        "win_rate_pct": 59.0,
-        "total_pnl": 142458726.1307702,
-        "total_return_pct": 142.4587261307702,
-        "profit_factor": 1.7046113993778838,
-        "sharpe_ratio": 4.008913133096077,
-        "sortino_ratio": 4.35911519971439,
-        "max_drawdown_pct": 16.251106599734474,
-        "max_drawdown_value": 21339620.344870508,
+        "wins": 60,
+        "losses": 40,
+        "win_rate_pct": 60.0,
+        "total_pnl": 181372494.5174513,
+        "total_return_pct": 181.3724945174513,
+        "profit_factor": 1.789734062526137,
+        "sharpe_ratio": 4.629316680090687,
+        "sortino_ratio": 5.142344223868949,
+        "max_drawdown_pct": 23.394110278661923,
+        "max_drawdown_value": 56721364.32386932,
         "expectancy_pct": 1.92
       },
       "FOREIGN_FLOW_MOMENTUM": {
         "total_trades": 100,
-        "wins": 59,
-        "losses": 41,
-        "win_rate_pct": 59.0,
-        "total_pnl": 1232801937.3858304,
-        "total_return_pct": 1232.8019373858303,
-        "profit_factor": 2.480499343419037,
-        "sharpe_ratio": 7.324287155208949,
-        "sortino_ratio": 10.513564653173875,
-        "max_drawdown_pct": 18.701050976307627,
-        "max_drawdown_value": 38464385.992951035,
+        "wins": 60,
+        "losses": 40,
+        "win_rate_pct": 60.0,
+        "total_pnl": 1666286078.3077796,
+        "total_return_pct": 1666.2860783077797,
+        "profit_factor": 2.6955755537774246,
+        "sharpe_ratio": 8.036222391397908,
+        "sortino_ratio": 11.579725370880963,
+        "max_drawdown_pct": 19.705747764709145,
+        "max_drawdown_value": 156960851.62440383,
         "expectancy_pct": 4.252000000000001
       }
     },
@@ -8882,238 +8924,238 @@
     "equity_curves": {
       "BREAKOUT": [
         100000000,
-        109555959.36102195,
-        125936997.8107043,
-        140612058.16509578,
-        141093076.16277683,
-        160240339.2834065,
-        140516886.27664036,
-        122944092.76383486,
-        111878427.77041608,
-        122030632.31100868,
-        136266580.7268698,
-        149996432.58687872,
-        161045051.30632436,
-        159089274.58265638,
-        174636609.8564608,
-        168799029.21911445,
-        185705325.42857128,
-        199208666.94609147,
-        196959965.70624858,
-        221539597.86013418,
-        213934573.73327884,
-        218820373.06601155,
-        213099707.14374012,
-        231323984.54122743,
-        250537577.3422468,
-        277898467.2714133,
-        275764676.9655065,
-        307691819.8672399,
-        305050905.6754993,
-        305513910.7780066,
-        300679978.11743635
+        129502703.16995725,
+        129169471.52362184,
+        145589137.5896462,
+        160494729.03095567,
+        160642702.31098038,
+        177981516.77860123,
+        177573677.17933553,
+        207817312.04215384,
+        258045842.45082816,
+        320239541.8215121,
+        402365311.40883875,
+        399194908.489934,
+        428366678.06940687,
+        374220229.39814466,
+        368872334.9959587,
+        365445674.48559046,
+        387241892.7858564,
+        382535005.17685324,
+        337893842.8974243,
+        355817678.9651299,
+        342411882.6176379,
+        372796503.2146611,
+        414335674.20509624,
+        357485981.89292604,
+        307320498.04442215,
+        265870862.2095495,
+        265707390.4657283,
+        255502220.0786465,
+        218742576.27046818,
+        325431018.3369964
       ],
       "ACCUMULATION": [
         100000000,
-        105613463.54399662,
-        95113591.82691589,
-        108699085.21544813,
-        111084717.00400436,
-        120367643.01298405,
-        124701539.02709696,
-        112927527.85530727,
-        130221960.49335623,
-        138029243.3209324,
-        147604836.45426163,
-        142295819.84997454,
-        162032437.90749955,
-        171634150.2055794,
-        182619788.71703786,
-        163360093.97724563,
-        182538433.6958129,
-        196701828.06047007,
-        205537303.115855,
-        201204331.4548321,
-        194740019.21381417,
-        208057154.07268342,
-        224759485.13541913,
-        235630179.6171848,
-        273090881.676519,
-        267937758.75232875,
-        256856759.66027474,
-        230930123.06344798,
-        268600231.6247043,
-        264046596.44007486,
-        351705607.0100072
+        106787760.21647532,
+        112009511.356074,
+        118498963.1453265,
+        114895285.43009502,
+        111579343.89153162,
+        116728703.02260749,
+        135586080.12899223,
+        144064552.22860628,
+        153429937.411695,
+        175456425.62858012,
+        184529938.77225083,
+        200449426.48145428,
+        194778825.2280141,
+        204026748.87844113,
+        196201430.66397384,
+        224844055.00189668,
+        223003810.68294823,
+        210191587.10014793,
+        222093345.24714658,
+        195646827.79303965,
+        191411872.1760308,
+        203491834.16512883,
+        194530407.75846985,
+        204610683.80292583,
+        216512235.30774912,
+        225565459.94591925,
+        241132000.102623,
+        233198268.31688774,
+        269238561.11952496,
+        274087325.4097765
       ],
       "OVERSOLD_REBOUND": [
         100000000,
-        104249482.81192552,
-        110441668.89309178,
-        105838385.10580303,
-        103928251.08615485,
-        123547443.87743786,
-        125436591.15518478,
-        140765074.95651639,
-        150224476.9523058,
-        133525543.36669144,
-        141807106.96441624,
-        124087880.10670389,
-        138158135.9270823,
-        122958804.19070175,
-        149974554.20007092,
-        174051264.9309822,
-        152808558.73012167,
-        135795759.08902133,
-        147547547.59330878,
-        143477289.98820317,
-        126241449.89756688,
-        125373967.52041501,
-        118832736.09800982,
-        139145213.42781928,
-        120823361.16710702,
-        118165809.25723332,
-        115971495.78681691,
-        111763184.22985943,
-        108509343.12663038,
-        109219377.22592995,
-        136437910.9473009
+        96036081.58465058,
+        113399682.53291278,
+        130780458.8665637,
+        155537154.74639153,
+        155361511.24317914,
+        150835298.8873285,
+        162085664.7243049,
+        175679548.03510177,
+        156317132.5056545,
+        153456647.98360395,
+        158147559.08875477,
+        154099357.22298253,
+        183964014.58404934,
+        204511146.8828915,
+        216085833.323787,
+        216960360.85030144,
+        258912557.19126135,
+        248002412.03113207,
+        292299870.37485504,
+        300514817.30647624,
+        266884158.85601082,
+        281537139.13969415,
+        311703585.47437704,
+        365035316.8622477,
+        427339199.66765535,
+        411574190.4944045,
+        503033557.5856816,
+        499128801.81694084,
+        534195139.6672481,
+        592343527.620203
       ],
       "PULLBACK": [
         100000000,
-        116151433.45853841,
-        114766260.23606817,
-        112711935.05953014,
-        122729259.47557734,
-        117983465.63737014,
-        114819664.53895818,
-        119146624.51009475,
-        126685573.50889556,
-        134129311.29328912,
-        129146486.8368258,
-        137469687.41347727,
-        152671835.05001613,
-        162039192.52808467,
-        168697152.2407045,
-        180827895.74588737,
-        188716839.0978032,
-        166530223.68936023,
-        186528198.12222034,
-        199461939.70056507,
-        200960707.26295644,
-        196180550.07069984,
-        228408392.8478489,
-        267664911.13114864,
-        235982810.39912504,
-        255643882.56160197,
-        243025610.21827585,
-        252634273.6183115,
-        243012872.6443956,
-        289524759.604501,
-        349783040.3799221
+        96959987.0574603,
+        94071891.41677639,
+        107984482.97436905,
+        105608247.17796756,
+        111056028.0709261,
+        119432480.45924021,
+        113393132.01661348,
+        121784881.11484338,
+        132046247.89649707,
+        143877911.36987525,
+        153230804.588727,
+        148064696.38092235,
+        141198644.236315,
+        147597584.42169905,
+        143895434.57647893,
+        150501108.2349565,
+        170938444.9267021,
+        179313237.42646658,
+        210157729.55746105,
+        247448137.1640301,
+        259076933.4519533,
+        278987324.1959114,
+        318836655.7187347,
+        332324529.37594247,
+        328695603.96219623,
+        291554332.65926903,
+        335640813.43382066,
+        394768496.7137694,
+        453749038.2963838,
+        466465741.916376
       ],
       "SMC_ORDER_BLOCK": [
         100000000,
-        115556676.79476528,
-        131450236.43377107,
-        130529897.80256622,
-        142772876.82595345,
-        160926693.99085003,
-        154039022.24575657,
-        170819404.23569816,
-        153871069.9562268,
-        146233658.25211182,
-        159913245.46609598,
-        143583312.8067227,
-        142644384.51499963,
-        153784288.70661086,
-        183230200.30691215,
-        206663914.1512717,
-        230585285.04621077,
-        279649808.6391838,
-        298203058.2822185,
-        379001201.4717222,
-        364178035.88193524,
-        392558401.06965345,
-        432307624.99764323,
-        380139570.0366625,
-        371693843.20369774,
-        361227891.93753994,
-        455580561.8836836,
-        535654670.5759442,
-        652897978.7635894,
-        717980349.7787516,
-        1205124858.585293
+        113939977.22806862,
+        112391814.49119855,
+        135502652.01582998,
+        142789916.33540818,
+        157023912.53567797,
+        178224751.5005852,
+        213344294.46512145,
+        239025465.3733285,
+        292217560.9364863,
+        320410144.9277858,
+        312451336.5480001,
+        381963296.94912183,
+        409743503.50976837,
+        463447921.19047415,
+        505764052.65932053,
+        566104468.7959358,
+        611255524.7899768,
+        618241776.0261042,
+        681770142.561772,
+        665021647.4129711,
+        707709241.3450499,
+        788272061.1489426,
+        942574994.9611108,
+        841361045.3312571,
+        747743356.1994562,
+        883623115.0150566,
+        1083635582.4988585,
+        1191022173.5071187,
+        1424475785.7602572,
+        1704278037.6685107
       ],
       "DIVIDEND_TRAP": [
         100000000,
-        103810832.04531583,
-        108072089.73068732,
-        115443870.50246686,
-        104517730.58631387,
-        102648616.73879787,
-        105163446.0659055,
-        110877143.1306237,
-        117528061.94148992,
-        125542880.90038142,
-        122375423.82991363,
-        119250407.94313344,
-        115459506.23062272,
-        114221283.85581556,
-        120171009.70608036,
-        130047206.06599796,
-        137912985.42745376,
-        133975455.22332354,
-        140279440.95574772,
-        159293359.65239772,
-        162493282.31343707,
-        180259183.93153584,
-        184459612.38233027,
-        178311451.0594602,
-        171999299.138355,
-        176939932.60184157,
-        173036197.36317265,
-        167791729.01082507,
-        172228999.44628847,
-        196017709.37092286,
-        242458726.1307702
+        102514484.31616175,
+        106497296.0191641,
+        110909520.05237542,
+        118606131.12864181,
+        123040494.52738886,
+        118196409.71006116,
+        126298847.7153488,
+        121099861.55719805,
+        127259897.5659486,
+        130619570.41275585,
+        126842643.05681536,
+        123885795.92425436,
+        129418155.53427008,
+        127187430.48851198,
+        140734396.35450947,
+        147603274.74418634,
+        167651388.6304231,
+        191791329.15371916,
+        222857556.7747114,
+        233976120.9320439,
+        227786390.46386477,
+        208316095.54759446,
+        203021875.74111393,
+        198633530.87372258,
+        191644690.8052561,
+        197729145.10891065,
+        208300979.71837726,
+        232102996.44036677,
+        224363205.73062453,
+        281372494.5174513
       ],
       "FOREIGN_FLOW_MOMENTUM": [
         100000000,
-        97953200.08124627,
-        109461201.7076462,
-        138902603.0307085,
-        152298961.76837158,
-        152332539.2237184,
-        150672634.07915008,
-        148017985.0963171,
-        146502308.59927714,
-        164413687.82415935,
-        187684798.79401234,
-        189935735.4637466,
-        188120667.6753411,
-        167215958.07798696,
-        212582123.29816803,
-        240273418.86789984,
-        230478269.61864504,
-        252918277.21621642,
-        315465820.94833547,
-        356579518.9159243,
-        347676476.3741705,
-        391856006.5216011,
-        490799642.2880909,
-        534514953.43219286,
-        593402419.5455035,
-        738855555.8645499,
-        909848865.6899797,
-        993262251.0528499,
-        878067602.333747,
-        1147516567.8144524,
-        1332801937.3858304
+        114043967.85291372,
+        111879446.3260265,
+        144827029.74645773,
+        159557234.60487035,
+        159879828.0984909,
+        200818457.43432415,
+        202905116.20095512,
+        178228477.08790535,
+        199725499.23224014,
+        257276700.6233845,
+        319860871.16885346,
+        388119121.94200873,
+        339662660.16353935,
+        336187366.9103903,
+        380099404.3419759,
+        373241257.56739146,
+        418340291.44057554,
+        448491687.73310333,
+        525121900.6606391,
+        661838204.3061044,
+        720007341.9261748,
+        796523194.6463035,
+        704570107.2652005,
+        669522812.3873302,
+        783075433.7845995,
+        895701134.7284038,
+        882350098.070963,
+        989670279.7370629,
+        978984563.5243484,
+        1766286078.3077796
       ]
     }
   },
-  "mode": "hourly_crypto_macro",
-  "execution_duration_sec": 2.84,
-  "last_updated": "2026-09-10T04:13:47.507094"
+  "mode": "all",
+  "execution_duration_sec": 9.86,
+  "last_updated": "2026-09-10T04:41:57.440469"
 }
