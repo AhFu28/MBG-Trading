@@ -13,11 +13,11 @@
     "foreign_net_val_idr": -166679339.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 1818.2,
-    "ma50": 1771.3,
-    "rsi_14": 31.4,
-    "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-10T09:47:21.715274"
+    "ma20": 1822.7,
+    "ma50": 1761.8,
+    "rsi_14": 42.4,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:17.212075"
   },
   {
     "ticker": "TPIA",
@@ -35,9 +35,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 1984.2,
     "ma50": 1999.9,
-    "rsi_14": 46.4,
-    "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:21.828266"
+    "rsi_14": 43.1,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:17.212092"
   },
   {
     "ticker": "BREN",
@@ -54,10 +54,10 @@
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
     "ma20": 3418.5,
-    "ma50": 3397.2,
-    "rsi_14": 36.8,
-    "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:21.935703"
+    "ma50": 3397.4,
+    "rsi_14": 44.2,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:17.212099"
   },
   {
     "ticker": "CUAN",
@@ -75,9 +75,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 867.0,
     "ma50": 744.7,
-    "rsi_14": 75.8,
+    "rsi_14": 73.5,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-10T09:47:22.015882"
+    "updated_at": "2026-09-10T15:05:17.212104"
   },
   {
     "ticker": "PTRO",
@@ -93,11 +93,11 @@
     "foreign_net_val_idr": 0.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 5247.5,
-    "ma50": 4761.7,
-    "rsi_14": 54.5,
+    "ma20": 5266.2,
+    "ma50": 4735.0,
+    "rsi_14": 60.6,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-10T09:47:22.139438"
+    "updated_at": "2026-09-10T15:05:17.212110"
   },
   {
     "ticker": "BPII",
@@ -113,11 +113,11 @@
     "foreign_net_val_idr": 0.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 481.9,
-    "ma50": 453.9,
-    "rsi_14": 30.5,
-    "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-10T09:47:22.227199"
+    "ma20": 483.4,
+    "ma50": 456.6,
+    "rsi_14": 51.5,
+    "technical_signal": "PULLBACK",
+    "updated_at": "2026-09-10T15:05:17.212116"
   },
   {
     "ticker": "INDF",
@@ -134,10 +134,10 @@
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
     "ma20": 7338.8,
-    "ma50": 7079.2,
-    "rsi_14": 47.9,
+    "ma50": 7081.0,
+    "rsi_14": 52.8,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:22.359397"
+    "updated_at": "2026-09-10T15:05:17.212131"
   },
   {
     "ticker": "ICBP",
@@ -154,10 +154,10 @@
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
     "ma20": 7532.5,
-    "ma50": 7182.0,
-    "rsi_14": 27.7,
-    "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-10T09:47:22.460659"
+    "ma50": 7203.0,
+    "rsi_14": 39.5,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:17.212142"
   },
   {
     "ticker": "ROTI",
@@ -175,9 +175,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 584.8,
     "ma50": 594.5,
-    "rsi_14": 50.0,
+    "rsi_14": 46.3,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:22.564332"
+    "updated_at": "2026-09-10T15:05:17.212148"
   },
   {
     "ticker": "LSIP",
@@ -193,11 +193,11 @@
     "foreign_net_val_idr": -114395335.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 1526.5,
-    "ma50": 1424.8,
-    "rsi_14": 74.2,
+    "ma20": 1524.5,
+    "ma50": 1424.5,
+    "rsi_14": 70.4,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:22.709485"
+    "updated_at": "2026-09-10T15:05:17.212154"
   },
   {
     "ticker": "SIMP",
@@ -214,10 +214,10 @@
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
     "ma20": 617.0,
-    "ma50": 584.7,
-    "rsi_14": 51.9,
+    "ma50": 586.2,
+    "rsi_14": 52.8,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:22.804167"
+    "updated_at": "2026-09-10T15:05:17.212159"
   },
   {
     "ticker": "DNET",
@@ -233,11 +233,11 @@
     "foreign_net_val_idr": 0.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 9973.8,
-    "ma50": 9837.0,
-    "rsi_14": 51.8,
+    "ma20": 9926.2,
+    "ma50": 9831.0,
+    "rsi_14": 53.5,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:22.888233"
+    "updated_at": "2026-09-10T15:05:17.212169"
   },
   {
     "ticker": "DCII",
@@ -253,11 +253,11 @@
     "foreign_net_val_idr": -175962.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 202581.2,
-    "ma50": 197449.5,
-    "rsi_14": 44.4,
-    "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-10T09:47:22.970324"
+    "ma20": 202132.5,
+    "ma50": 196783.0,
+    "rsi_14": 52.2,
+    "technical_signal": "PULLBACK",
+    "updated_at": "2026-09-10T15:05:17.212175"
   },
   {
     "ticker": "AMMN",
@@ -275,9 +275,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 4426.5,
     "ma50": 4119.0,
-    "rsi_14": 63.5,
+    "rsi_14": 65.1,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:23.041365"
+    "updated_at": "2026-09-10T15:05:17.212180"
   },
   {
     "ticker": "MEDC",
@@ -293,11 +293,11 @@
     "foreign_net_val_idr": -107170612.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 1423.5,
-    "ma50": 1321.1,
-    "rsi_14": 72.5,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:23.177673"
+    "ma20": 1420.0,
+    "ma50": 1314.3,
+    "rsi_14": 69.9,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:17.212185"
   },
   {
     "ticker": "BINA",
@@ -315,9 +315,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 4170.0,
     "ma50": 4085.4,
-    "rsi_14": 48.9,
+    "rsi_14": 48.7,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:23.254709"
+    "updated_at": "2026-09-10T15:05:17.212190"
   },
   {
     "ticker": "EMTK",
@@ -335,9 +335,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 518.2,
     "ma50": 519.6,
-    "rsi_14": 35.3,
+    "rsi_14": 43.1,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:23.355782"
+    "updated_at": "2026-09-10T15:05:17.212196"
   },
   {
     "ticker": "SCMA",
@@ -353,11 +353,11 @@
     "foreign_net_val_idr": -23742026.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 205.2,
-    "ma50": 204.9,
-    "rsi_14": 31.6,
-    "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-10T09:47:23.472053"
+    "ma20": 204.7,
+    "ma50": 204.7,
+    "rsi_14": 47.1,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:17.212201"
   },
   {
     "ticker": "ASII",
@@ -373,11 +373,11 @@
     "foreign_net_val_idr": 251985337.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 4834.5,
-    "ma50": 4909.0,
-    "rsi_14": 56.2,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:23.584328"
+    "ma20": 4838.0,
+    "ma50": 4905.2,
+    "rsi_14": 48.9,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:17.212207"
   },
   {
     "ticker": "UNTR",
@@ -393,11 +393,11 @@
     "foreign_net_val_idr": 704489121.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 24508.8,
-    "ma50": 24678.0,
-    "rsi_14": 71.6,
+    "ma20": 24467.5,
+    "ma50": 24636.0,
+    "rsi_14": 66.8,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:23.704587"
+    "updated_at": "2026-09-10T15:05:17.212212"
   },
   {
     "ticker": "AUTO",
@@ -413,11 +413,11 @@
     "foreign_net_val_idr": 0.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 3194.0,
-    "ma50": 2852.8,
-    "rsi_14": 75.9,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:23.832083"
+    "ma20": 3180.0,
+    "ma50": 2837.8,
+    "rsi_14": 73.1,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:17.212217"
   },
   {
     "ticker": "AALI",
@@ -433,11 +433,11 @@
     "foreign_net_val_idr": -124915065.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 8083.8,
-    "ma50": 7193.0,
-    "rsi_14": 65.2,
+    "ma20": 8042.5,
+    "ma50": 7152.5,
+    "rsi_14": 67.0,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:23.978003"
+    "updated_at": "2026-09-10T15:05:17.212222"
   },
   {
     "ticker": "ACST",
@@ -455,9 +455,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 91.8,
     "ma50": 85.9,
-    "rsi_14": 93.7,
+    "rsi_14": 91.7,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-10T09:47:24.063882"
+    "updated_at": "2026-09-10T15:05:17.212227"
   },
   {
     "ticker": "ASGR",
@@ -473,11 +473,11 @@
     "foreign_net_val_idr": -6652940.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 2009.0,
-    "ma50": 1889.1,
-    "rsi_14": 74.6,
+    "ma20": 2002.2,
+    "ma50": 1880.3,
+    "rsi_14": 65.4,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:24.175989"
+    "updated_at": "2026-09-10T15:05:17.212233"
   },
   {
     "ticker": "HEAL",
@@ -495,9 +495,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 682.8,
     "ma50": 777.6,
-    "rsi_14": 45.9,
-    "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:24.261643"
+    "rsi_14": 38.9,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:17.212238"
   },
   {
     "ticker": "BBCA",
@@ -513,11 +513,11 @@
     "foreign_net_val_idr": -6771736793.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 6467.7,
-    "ma50": 6330.1,
-    "rsi_14": 52.4,
+    "ma20": 6481.2,
+    "ma50": 6350.0,
+    "rsi_14": 47.9,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:24.368953"
+    "updated_at": "2026-09-10T15:05:17.212243"
   },
   {
     "ticker": "TOWR",
@@ -535,9 +535,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 442.1,
     "ma50": 412.0,
-    "rsi_14": 60.9,
+    "rsi_14": 58.6,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:24.460487"
+    "updated_at": "2026-09-10T15:05:17.212248"
   },
   {
     "ticker": "BELI",
@@ -555,9 +555,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 292.5,
     "ma50": 273.7,
-    "rsi_14": 57.2,
+    "rsi_14": 52.5,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-10T09:47:24.539269"
+    "updated_at": "2026-09-10T15:05:17.212253"
   },
   {
     "ticker": "RANC",
@@ -575,9 +575,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 533.2,
     "ma50": 526.9,
-    "rsi_14": 78.6,
+    "rsi_14": 70.8,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-10T09:47:24.633192"
+    "updated_at": "2026-09-10T15:05:17.212258"
   },
   {
     "ticker": "IBST",
@@ -597,7 +597,7 @@
     "ma50": 8475.0,
     "rsi_14": 0.0,
     "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-10T09:47:24.707813"
+    "updated_at": "2026-09-10T15:05:17.366538"
   },
   {
     "ticker": "RAJA",
@@ -613,11 +613,11 @@
     "foreign_net_val_idr": -457770929.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 821.8,
-    "ma50": 855.3,
-    "rsi_14": 41.0,
+    "ma20": 824.7,
+    "ma50": 854.5,
+    "rsi_14": 46.3,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:24.845119"
+    "updated_at": "2026-09-10T15:05:17.366555"
   },
   {
     "ticker": "FORU",
@@ -634,10 +634,10 @@
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
     "ma20": 2646.2,
-    "ma50": 2771.5,
-    "rsi_14": 72.5,
+    "ma50": 2788.5,
+    "rsi_14": 65.1,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:24.939978"
+    "updated_at": "2026-09-10T15:05:17.366559"
   },
   {
     "ticker": "CBRE",
@@ -655,9 +655,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 708.2,
     "ma50": 703.2,
-    "rsi_14": 55.6,
+    "rsi_14": 54.2,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:25.013573"
+    "updated_at": "2026-09-10T15:05:17.366564"
   },
   {
     "ticker": "SINI",
@@ -673,11 +673,11 @@
     "foreign_net_val_idr": -3177633068.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 10481.2,
-    "ma50": 8338.9,
-    "rsi_14": 80.5,
+    "ma20": 10062.5,
+    "ma50": 8174.5,
+    "rsi_14": 71.5,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:25.093861"
+    "updated_at": "2026-09-10T15:05:17.366570"
   },
   {
     "ticker": "MINA",
@@ -695,9 +695,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 274.5,
     "ma50": 274.6,
-    "rsi_14": 51.4,
+    "rsi_14": 49.0,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-10T09:47:25.167760"
+    "updated_at": "2026-09-10T15:05:17.366574"
   },
   {
     "ticker": "PSAT",
@@ -715,9 +715,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 895.2,
     "ma50": 861.6,
-    "rsi_14": 43.7,
+    "rsi_14": 51.5,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:25.241379"
+    "updated_at": "2026-09-10T15:05:17.366578"
   },
   {
     "ticker": "BUVA",
@@ -735,9 +735,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 742.8,
     "ma50": 800.5,
-    "rsi_14": 45.8,
+    "rsi_14": 42.9,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:25.315347"
+    "updated_at": "2026-09-10T15:05:17.366582"
   },
   {
     "ticker": "JARR",
@@ -755,9 +755,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 2964.8,
     "ma50": 2312.5,
-    "rsi_14": 75.0,
+    "rsi_14": 78.8,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-10T09:47:25.422915"
+    "updated_at": "2026-09-10T15:05:17.366587"
   },
   {
     "ticker": "PGUN",
@@ -775,9 +775,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 9356.2,
     "ma50": 8177.0,
-    "rsi_14": 48.7,
-    "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-10T09:47:25.501838"
+    "rsi_14": 62.3,
+    "technical_signal": "CONSOLIDATION",
+    "updated_at": "2026-09-10T15:05:17.366591"
   },
   {
     "ticker": "BYAN",
@@ -795,9 +795,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 14351.2,
     "ma50": 12837.0,
-    "rsi_14": 9.3,
-    "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-10T09:47:25.643593"
+    "rsi_14": 43.8,
+    "technical_signal": "PULLBACK",
+    "updated_at": "2026-09-10T15:05:17.366595"
   },
   {
     "ticker": "BUMI",
@@ -809,15 +809,15 @@
     "catalyst_thesis": "Produsen batubara terbesar RI; kini dikendalikan bersama oleh Bakrie Group & Anthony Salim (Mach Energy).",
     "price": 212.0,
     "change_pct": -4.5,
-    "volume": 402859404,
-    "foreign_net_val_idr": -1345147550.0,
+    "volume": 4697826700,
+    "foreign_net_val_idr": -15686043351.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 198.3,
-    "ma50": 175.7,
-    "rsi_14": 60.5,
+    "ma20": 197.9,
+    "ma50": 174.5,
+    "rsi_14": 61.6,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:25.775944"
+    "updated_at": "2026-09-10T15:05:17.366599"
   },
   {
     "ticker": "BRMS",
@@ -835,9 +835,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 698.0,
     "ma50": 613.3,
-    "rsi_14": 51.3,
+    "rsi_14": 53.1,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:25.857943"
+    "updated_at": "2026-09-10T15:05:17.366603"
   },
   {
     "ticker": "ENRG",
@@ -853,11 +853,11 @@
     "foreign_net_val_idr": -291537110.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 1321.5,
-    "ma50": 1295.2,
-    "rsi_14": 70.5,
+    "ma20": 1324.0,
+    "ma50": 1305.7,
+    "rsi_14": 64.0,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-10T09:47:25.936848"
+    "updated_at": "2026-09-10T15:05:17.366607"
   },
   {
     "ticker": "VKTR",
@@ -875,9 +875,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 888.8,
     "ma50": 776.6,
-    "rsi_14": 35.6,
+    "rsi_14": 44.2,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:26.008065"
+    "updated_at": "2026-09-10T15:05:17.366611"
   },
   {
     "ticker": "BNBR",
@@ -894,10 +894,10 @@
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
     "ma20": 99.9,
-    "ma50": 98.0,
-    "rsi_14": 34.6,
-    "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-10T09:47:26.081958"
+    "ma50": 97.3,
+    "rsi_14": 43.0,
+    "technical_signal": "PULLBACK",
+    "updated_at": "2026-09-10T15:05:17.366615"
   },
   {
     "ticker": "DEWA",
@@ -914,10 +914,10 @@
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
     "ma20": 446.7,
-    "ma50": 418.6,
-    "rsi_14": 39.4,
+    "ma50": 418.8,
+    "rsi_14": 44.7,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:26.163175"
+    "updated_at": "2026-09-10T15:05:17.366619"
   },
   {
     "ticker": "MDIA",
@@ -933,11 +933,11 @@
     "foreign_net_val_idr": -2559439027.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 256.1,
-    "ma50": 181.8,
-    "rsi_14": 35.9,
+    "ma20": 241.5,
+    "ma50": 148.4,
+    "rsi_14": 49.2,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:26.254048"
+    "updated_at": "2026-09-10T15:05:17.366622"
   },
   {
     "ticker": "INKP",
@@ -953,11 +953,11 @@
     "foreign_net_val_idr": -175199684.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 8840.0,
-    "ma50": 8224.0,
-    "rsi_14": 60.0,
+    "ma20": 8825.0,
+    "ma50": 8189.5,
+    "rsi_14": 61.0,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:26.384956"
+    "updated_at": "2026-09-10T15:05:17.366626"
   },
   {
     "ticker": "TKIM",
@@ -973,11 +973,11 @@
     "foreign_net_val_idr": -268215009.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 8022.5,
-    "ma50": 6934.5,
-    "rsi_14": 50.6,
+    "ma20": 7997.5,
+    "ma50": 6880.5,
+    "rsi_14": 56.9,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:26.518065"
+    "updated_at": "2026-09-10T15:05:17.366630"
   },
   {
     "ticker": "DSSA",
@@ -995,9 +995,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 1093.5,
     "ma50": 946.9,
-    "rsi_14": 63.2,
+    "rsi_14": 56.8,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:26.596831"
+    "updated_at": "2026-09-10T15:05:17.366634"
   },
   {
     "ticker": "SMMA",
@@ -1013,11 +1013,11 @@
     "foreign_net_val_idr": 0.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 20056.2,
-    "ma50": 20454.5,
+    "ma20": 20055.0,
+    "ma50": 20597.5,
     "rsi_14": 48.1,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:26.721963"
+    "updated_at": "2026-09-10T15:05:17.366638"
   },
   {
     "ticker": "BSDE",
@@ -1033,11 +1033,11 @@
     "foreign_net_val_idr": -41830084.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 637.2,
+    "ma20": 637.3,
     "ma50": 597.8,
-    "rsi_14": 45.8,
+    "rsi_14": 52.1,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:26.811237"
+    "updated_at": "2026-09-10T15:05:17.366642"
   },
   {
     "ticker": "DMAS",
@@ -1055,9 +1055,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 181.3,
     "ma50": 156.9,
-    "rsi_14": 62.2,
+    "rsi_14": 61.6,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:26.904202"
+    "updated_at": "2026-09-10T15:05:17.366646"
   },
   {
     "ticker": "SMAR",
@@ -1073,11 +1073,11 @@
     "foreign_net_val_idr": -5714856.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 6181.2,
-    "ma50": 5723.4,
-    "rsi_14": 63.8,
+    "ma20": 6172.5,
+    "ma50": 5700.4,
+    "rsi_14": 58.6,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:27.022648"
+    "updated_at": "2026-09-10T15:05:17.366651"
   },
   {
     "ticker": "FREN",
@@ -1087,17 +1087,17 @@
     "sub_category": "SINARMAS_GROUP",
     "ownership_type": "MA_TARGET",
     "catalyst_thesis": "Katalis merger telekomunikasi besar dengan XL Axiata (EXCL) untuk efisiensi spektrum & jaringan.",
-    "price": 1000,
+    "price": 0,
     "change_pct": 0.0,
-    "volume": 100000,
+    "volume": 0,
     "foreign_net_val_idr": 0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 1000,
-    "ma50": 1000,
+    "ma20": 0,
+    "ma50": 0,
     "rsi_14": 50.0,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:27.423236"
+    "technical_signal": "DATA_UNAVAILABLE",
+    "updated_at": "2026-09-10T15:05:17.998313"
   },
   {
     "ticker": "LPKR",
@@ -1113,11 +1113,11 @@
     "foreign_net_val_idr": -214559987.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 62.6,
+    "ma20": 62.7,
     "ma50": 62.1,
-    "rsi_14": 30.8,
-    "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-10T09:47:27.516363"
+    "rsi_14": 44.2,
+    "technical_signal": "PULLBACK",
+    "updated_at": "2026-09-10T15:05:17.998337"
   },
   {
     "ticker": "LPCK",
@@ -1133,11 +1133,11 @@
     "foreign_net_val_idr": -1327002.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 602.5,
-    "ma50": 562.3,
-    "rsi_14": 38.9,
+    "ma20": 602.7,
+    "ma50": 559.8,
+    "rsi_14": 50.5,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:27.590676"
+    "updated_at": "2026-09-10T15:05:17.998345"
   },
   {
     "ticker": "SILO",
@@ -1155,9 +1155,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 2209.0,
     "ma50": 2195.9,
-    "rsi_14": 27.3,
-    "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-10T09:47:27.702209"
+    "rsi_14": 36.9,
+    "technical_signal": "PULLBACK",
+    "updated_at": "2026-09-10T15:05:17.998352"
   },
   {
     "ticker": "MLPL",
@@ -1173,11 +1173,11 @@
     "foreign_net_val_idr": -17355266.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 93.3,
-    "ma50": 91.8,
-    "rsi_14": 29.4,
-    "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-10T09:47:27.811881"
+    "ma20": 93.6,
+    "ma50": 91.4,
+    "rsi_14": 43.2,
+    "technical_signal": "PULLBACK",
+    "updated_at": "2026-09-10T15:05:17.998359"
   },
   {
     "ticker": "MPPA",
@@ -1193,11 +1193,11 @@
     "foreign_net_val_idr": -6573872.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 45.9,
-    "ma50": 46.8,
-    "rsi_14": 23.1,
+    "ma20": 46.0,
+    "ma50": 46.7,
+    "rsi_14": 32.2,
     "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-10T09:47:27.909537"
+    "updated_at": "2026-09-10T15:05:17.998366"
   },
   {
     "ticker": "LPPF",
@@ -1213,11 +1213,11 @@
     "foreign_net_val_idr": -2297295.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 1616.8,
-    "ma50": 1576.2,
-    "rsi_14": 57.1,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:28.012822"
+    "ma20": 1615.3,
+    "ma50": 1573.5,
+    "rsi_14": 63.8,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:17.998373"
   },
   {
     "ticker": "NOBU",
@@ -1235,9 +1235,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 513.7,
     "ma50": 475.9,
-    "rsi_14": 62.1,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:28.094549"
+    "rsi_14": 60.2,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:17.998381"
   },
   {
     "ticker": "SRTG",
@@ -1255,9 +1255,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 1860.2,
     "ma50": 1757.8,
-    "rsi_14": 35.2,
+    "rsi_14": 50.1,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:28.185247"
+    "updated_at": "2026-09-10T15:05:17.998389"
   },
   {
     "ticker": "MDKA",
@@ -1274,10 +1274,10 @@
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
     "ma20": 2949.5,
-    "ma50": 2805.8,
-    "rsi_14": 59.4,
+    "ma50": 2806.0,
+    "rsi_14": 59.3,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:28.275620"
+    "updated_at": "2026-09-10T15:05:17.998396"
   },
   {
     "ticker": "MBMA",
@@ -1295,9 +1295,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 539.2,
     "ma50": 525.5,
-    "rsi_14": 41.0,
+    "rsi_14": 48.8,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:28.389809"
+    "updated_at": "2026-09-10T15:05:17.998403"
   },
   {
     "ticker": "MPMX",
@@ -1315,9 +1315,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 1021.2,
     "ma50": 1001.1,
-    "rsi_14": 61.1,
+    "rsi_14": 59.2,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:28.512555"
+    "updated_at": "2026-09-10T15:05:17.998410"
   },
   {
     "ticker": "TBIG",
@@ -1335,9 +1335,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 1460.8,
     "ma50": 1433.3,
-    "rsi_14": 62.3,
+    "rsi_14": 53.6,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:28.615258"
+    "updated_at": "2026-09-10T15:05:17.998417"
   },
   {
     "ticker": "ADRO",
@@ -1355,9 +1355,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 2642.5,
     "ma50": 2530.8,
-    "rsi_14": 57.3,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:28.724001"
+    "rsi_14": 54.2,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:17.998423"
   },
   {
     "ticker": "ADMR",
@@ -1375,9 +1375,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 1664.0,
     "ma50": 1566.8,
-    "rsi_14": 44.7,
+    "rsi_14": 51.3,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:28.803199"
+    "updated_at": "2026-09-10T15:05:17.998430"
   },
   {
     "ticker": "MEGA",
@@ -1395,9 +1395,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 1977.0,
     "ma50": 1987.3,
-    "rsi_14": 44.4,
-    "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-10T09:47:28.912414"
+    "rsi_14": 46.6,
+    "technical_signal": "PULLBACK",
+    "updated_at": "2026-09-10T15:05:17.998437"
   },
   {
     "ticker": "ALLO",
@@ -1407,17 +1407,17 @@
     "sub_category": "CT_CORP",
     "ownership_type": "STRATEGIC_STAKE",
     "catalyst_thesis": "Bank digital hasil konsorsium strategis Chairul Tanjung, Anthony Salim, Bukalapak, dan Carro.",
-    "price": 1000,
+    "price": 0,
     "change_pct": 0.0,
-    "volume": 100000,
+    "volume": 0,
     "foreign_net_val_idr": 0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 1000,
-    "ma50": 1000,
+    "ma20": 0,
+    "ma50": 0,
     "rsi_14": 50.0,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:29.379289"
+    "technical_signal": "DATA_UNAVAILABLE",
+    "updated_at": "2026-09-10T15:05:18.950595"
   },
   {
     "ticker": "PTBA",
@@ -1445,11 +1445,11 @@
     "buy_zone_high": 2780,
     "sl": 2640,
     "summary": "Yield jumbo 13.3% sangat menarik, namun risiko penurunan Ex-Date tinggi (-12.5%). Disarankan beli di Buy Zone dan jual pada H-1 Cum Date untuk mengunci capital gain tanpa risiko penurunan harga Ex-Date.",
-    "ma20": 2629.0,
-    "ma50": 2473.8,
-    "rsi_14": 90.7,
+    "ma20": 2622.5,
+    "ma50": 2470.0,
+    "rsi_14": 86.7,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-10T09:47:29.496177"
+    "updated_at": "2026-09-10T15:05:18.950619"
   },
   {
     "ticker": "BMRI",
@@ -1477,11 +1477,11 @@
     "buy_zone_high": 6750,
     "sl": 6500,
     "summary": "Fundamental perbankan prima dengan CASA superior. Penurunan Ex-Date historis sangat terkontrol (<4%) dan cepat rebound. Sangat layak di-hold melewati Cum Date.",
-    "ma20": 4267.5,
-    "ma50": 4218.6,
-    "rsi_14": 63.2,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:29.608632"
+    "ma20": 4264.0,
+    "ma50": 4210.8,
+    "rsi_14": 57.6,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:18.950629"
   },
   {
     "ticker": "ITMG",
@@ -1509,11 +1509,11 @@
     "buy_zone_high": 25200,
     "sl": 24000,
     "summary": "Risiko penurunan Ex-Date historis melebihi yield (-14.2%) seiring normalisasi batubara. Tidak disarankan membeli baru menjelang Cum Date.",
-    "ma20": 25660.0,
-    "ma50": 24695.0,
-    "rsi_14": 65.0,
+    "ma20": 25627.5,
+    "ma50": 24634.0,
+    "rsi_14": 59.7,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:29.711845"
+    "updated_at": "2026-09-10T15:05:18.950636"
   },
   {
     "ticker": "BBRI",
@@ -1541,11 +1541,11 @@
     "buy_zone_high": 4550,
     "sl": 4350,
     "summary": "Kredit mikro tangguh & dividen stabil; historis rebound pasca Ex-Date rata-rata 10 hari bursa.",
-    "ma20": 3246.5,
-    "ma50": 3062.8,
-    "rsi_14": 57.9,
+    "ma20": 3244.0,
+    "ma50": 3052.6,
+    "rsi_14": 59.0,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:29.830753"
+    "updated_at": "2026-09-10T15:05:18.950644"
   },
   {
     "ticker": "ADRO",
@@ -1575,9 +1575,9 @@
     "summary": "Yield 10.5% menarik, potensi run-up pre-cum date 4-7%. Amankan profit di H-1 Cum Date.",
     "ma20": 2642.5,
     "ma50": 2530.8,
-    "rsi_14": 57.3,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:29.847481"
+    "rsi_14": 54.2,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:18.950651"
   },
   {
     "ticker": "MPMX",
@@ -1607,9 +1607,9 @@
     "summary": "Dividen yield konsisten mendekati 10% dengan kas bersih kuat dari grup Saratoga.",
     "ma20": 1021.2,
     "ma50": 1001.1,
-    "rsi_14": 61.1,
+    "rsi_14": 59.2,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:29.862722"
+    "updated_at": "2026-09-10T15:05:18.950658"
   },
   {
     "ticker": "HEXA",
@@ -1637,11 +1637,11 @@
     "buy_zone_high": 6100,
     "sl": 5750,
     "summary": "Distributor alat berat Hitachi dengan margin dividen solid & neraca bebas utang.",
-    "ma20": 4421.0,
-    "ma50": 4425.0,
-    "rsi_14": 73.1,
+    "ma20": 4427.5,
+    "ma50": 4424.2,
+    "rsi_14": 52.5,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:29.985296"
+    "updated_at": "2026-09-10T15:05:18.950665"
   },
   {
     "ticker": "BBNI",
@@ -1669,11 +1669,11 @@
     "buy_zone_high": 5250,
     "sl": 4950,
     "summary": "Valuasi PBV relatif murah dibanding peers buku 4, risiko dividend trap sangat rendah.",
-    "ma20": 3758.5,
-    "ma50": 3608.4,
-    "rsi_14": 57.1,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:30.103484"
+    "ma20": 3753.5,
+    "ma50": 3596.8,
+    "rsi_14": 55.5,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:18.950670"
   },
   {
     "ticker": "BBCA",
@@ -1687,11 +1687,11 @@
     "foreign_net_val_idr": -6771736793.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 6467.7,
-    "ma50": 6330.1,
-    "rsi_14": 52.4,
+    "ma20": 6481.2,
+    "ma50": 6350.0,
+    "rsi_14": 47.9,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:30.121555",
+    "updated_at": "2026-09-10T15:05:18.950677",
     "net_value_fmt": "-Rp 6.8 M"
   },
   {
@@ -1706,11 +1706,11 @@
     "foreign_net_val_idr": -6612858522.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 3246.5,
-    "ma50": 3062.8,
-    "rsi_14": 57.9,
+    "ma20": 3244.0,
+    "ma50": 3052.6,
+    "rsi_14": 59.0,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:30.136590",
+    "updated_at": "2026-09-10T15:05:18.950680",
     "net_value_fmt": "-Rp 6.6 M"
   },
   {
@@ -1725,11 +1725,11 @@
     "foreign_net_val_idr": -935444861.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 4267.5,
-    "ma50": 4218.6,
-    "rsi_14": 63.2,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:30.151739",
+    "ma20": 4264.0,
+    "ma50": 4210.8,
+    "rsi_14": 57.6,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:18.950683",
     "net_value_fmt": "-Rp 0.9 M"
   },
   {
@@ -1744,11 +1744,11 @@
     "foreign_net_val_idr": -909598288.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 2610.5,
-    "ma50": 2605.8,
-    "rsi_14": 54.2,
+    "ma20": 2609.0,
+    "ma50": 2602.2,
+    "rsi_14": 51.4,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:30.294668",
+    "updated_at": "2026-09-10T15:05:18.950687",
     "net_value_fmt": "-Rp 0.9 M"
   },
   {
@@ -1763,11 +1763,11 @@
     "foreign_net_val_idr": 251985337.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 4834.5,
-    "ma50": 4909.0,
-    "rsi_14": 56.2,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:30.309899",
+    "ma20": 4838.0,
+    "ma50": 4905.2,
+    "rsi_14": 48.9,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:18.950691",
     "net_value_fmt": "+Rp 0.3 M"
   },
   {
@@ -1783,10 +1783,10 @@
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
     "ma20": 2949.5,
-    "ma50": 2805.8,
-    "rsi_14": 59.4,
+    "ma50": 2806.0,
+    "rsi_14": 59.3,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:30.327682",
+    "updated_at": "2026-09-10T15:05:18.950695",
     "net_value_fmt": "-Rp 0.5 M"
   },
   {
@@ -1801,11 +1801,11 @@
     "foreign_net_val_idr": 6394249934.0,
     "dividend_yield_pct": 0,
     "dividend_trap_risk": "N/A",
-    "ma20": 3125.0,
-    "ma50": 3034.2,
-    "rsi_14": 58.3,
+    "ma20": 3120.0,
+    "ma50": 3022.6,
+    "rsi_14": 62.3,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-10T09:47:30.449640",
+    "updated_at": "2026-09-10T15:05:18.950699",
     "net_value_fmt": "+Rp 6.4 M"
   },
   {
@@ -1822,9 +1822,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 50.0,
     "ma50": 50.0,
-    "rsi_14": 0.0,
-    "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-10T09:47:30.527661",
+    "rsi_14": 38.4,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:18.950703",
     "net_value_fmt": "+Rp 0.0 M"
   },
   {
@@ -1841,9 +1841,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 1783.5,
     "ma50": 1789.2,
-    "rsi_14": 45.2,
+    "rsi_14": 42.1,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-10T09:47:30.621106",
+    "updated_at": "2026-09-10T15:05:18.950707",
     "net_value_fmt": "-Rp 0.1 M"
   },
   {
@@ -1860,9 +1860,9 @@
     "dividend_trap_risk": "N/A",
     "ma20": 3101.5,
     "ma50": 3126.0,
-    "rsi_14": 64.4,
-    "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-10T09:47:30.735939",
+    "rsi_14": 58.0,
+    "technical_signal": "ACCUMULATION",
+    "updated_at": "2026-09-10T15:05:18.950711",
     "net_value_fmt": "+Rp 0.3 M"
   }
 ]
