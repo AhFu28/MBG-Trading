@@ -115,7 +115,7 @@
     "generated_at": "2026-09-11T15:08:35.448574",
     "market_verdict": {
       "stance": "CONSOLIDATIVE",
-      "badge": "\u26aa KONSOLIDASI PASAR SEHAT",
+      "badge": "⚪ KONSOLIDASI PASAR SEHAT",
       "confidence": "HIGH",
       "narrative": "IHSG bergerak variatif dengan kecenderungan konsolidasi menjelang rilis data inflasi dan suku bunga acuan."
     },
@@ -174,7 +174,7 @@
       "tag": "FOREIGN_FLOW",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 1,49%"
@@ -196,7 +196,7 @@
       "tag": "BANKING",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BBRI"
       ],
@@ -280,7 +280,7 @@
       "tag": "FOREIGN_FLOW",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
@@ -300,7 +300,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 0,7%"
@@ -322,7 +322,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 5,62%"
@@ -344,7 +344,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -408,7 +408,7 @@
       "tag": "ENERGY",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -428,7 +428,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 0,7%"
@@ -472,7 +472,7 @@
       "tag": "FOREIGN_FLOW",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 1,49%"
@@ -494,7 +494,7 @@
       "tag": "ENERGY",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -514,7 +514,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Nilai: Rp250 "
@@ -556,7 +556,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Level kunci: 6.541"
@@ -640,7 +640,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 36,
@@ -682,7 +682,7 @@
       "tag": "METALS",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BUMI"
       ],
@@ -812,7 +812,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "ETH"
       ],
@@ -834,7 +834,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC",
         "ETH"
@@ -859,7 +859,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
@@ -879,7 +879,7 @@
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -901,7 +901,7 @@
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -923,7 +923,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
@@ -936,14 +936,14 @@
     },
     {
       "id": "news-37",
-      "title": "SEC Proposes \u201dRegulation Crypto Assets\u201d",
+      "title": "SEC Proposes ”Regulation Crypto Assets”",
       "source": "EveryCRSReport.com",
       "link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE9nTXdCNElCc185cXhrYnJJWTh5bmMtckJPVUY3dkktaFpPeG40WkFBRVN4aWdMdC1iemFsdlVCeEtDZXdZQ2FOR1U5QmFUd0ZoRnpkeVFQUFJpNktZcHB5MXhn?oc=5",
       "pub_date": "Fri, 11 Sep 2026 10:03:37 GMT",
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 33,
@@ -963,7 +963,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
@@ -983,7 +983,7 @@
       "tag": "CRYPTO_ETF",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC",
         "ETH"
@@ -1006,7 +1006,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1054,7 +1054,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1078,7 +1078,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1122,7 +1122,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC",
         "ETH"
@@ -1145,7 +1145,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "BULLISH",
-      "sentiment_score": 1.0,
+      "sentiment_score": 1,
       "related_tickers": [
         "ETH"
       ],
@@ -1169,7 +1169,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "ETH"
       ],
@@ -1184,7 +1184,7 @@
     },
     {
       "id": "news-48",
-      "title": "\ud83d\udea8\ud835\uddd5\ud835\udde5\ud835\uddd8\ud835\uddd4\ud835\uddde\ud835\udddc\ud835\udde1\ud835\uddda: $Ethereum (ETH.CC)$ surges above $2,600 for the first time in over 7 months.",
+      "title": "🚨𝗕𝗥𝗘𝗔𝗞𝗜𝗡𝗚: $Ethereum (ETH.CC)$ surges above $2,600 for the first time in over 7 months.",
       "source": "Moomoo",
       "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQTzlJU3NVWXI1LUpkU29ZTkwxU1I1UnY1d2h1U1ljNllvYXpkUHFGM05pMzVSUFlJZzBxNEY5MnZiS0NrdHpCMG1td1JpWUdHUW1hR1pUS1ZmcE5nTjFHUi1wek5mLU9hY2s2bHhnLWp1Wjd0aDlhRDh1QVpsakF5SnN2TWoyTmRITThQVDJJcWdQakdxb2taV2RiNXNKNVBjWnpQaA?oc=5",
       "pub_date": "Fri, 11 Sep 2026 14:02:35 GMT",
@@ -1215,7 +1215,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1261,7 +1261,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "ETH"
       ],
@@ -1283,7 +1283,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "ETH"
       ],
@@ -1305,7 +1305,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 36,
@@ -1325,7 +1325,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1347,7 +1347,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1372,7 +1372,7 @@
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 36,
@@ -1392,7 +1392,7 @@
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1409,14 +1409,14 @@
     },
     {
       "id": "news-58",
-      "title": "Coinbase Global Maps \u2018Everything Exchange\u2019 Push Beyond Crypto Trading",
+      "title": "Coinbase Global Maps ‘Everything Exchange’ Push Beyond Crypto Trading",
       "source": "Yahoo Finance",
       "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPNERERXZfQkFQYjl3cmZ3eEdqMkRjNTV2TEQ0OUxfODRPaGNmM282Ykg3U2ZYVEc1S1BxS050T0pXbjRuNWdYNXFkckZFMm9JdjVoQi03R0hWek12ZlJibXl0SGo5VkFJTjg0RVo3dHl0ajR6YUF0ZG12X0pTaGxsdU81Q1NvQ1pQZ1MzLWE5U0oyNzY5RnRqZldIbmp6X1pzckhtMHRsRV8?oc=5",
       "pub_date": "Fri, 11 Sep 2026 12:02:03 GMT",
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
@@ -1453,5 +1453,7 @@
     }
   ],
   "full_narrative": "Global telemetry report: Gold at $4414.8 (1.15%), Brent Crude at $104.88 (-2.56%). DXY at 98.99 pts. Monitored for impact on Indonesian equities.",
-  "updated_at": "2026-09-11T15:08:35.448593"
+  "updated_at": "2026-09-11T15:08:35.448593",
+  "ihsg_price": 6506.4,
+  "ihsg_change_pct": -1.29
 }
