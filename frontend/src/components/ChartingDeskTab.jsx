@@ -183,6 +183,12 @@ export default function ChartingDeskTab({
       containerRef.current.appendChild(widgetWrapper);
       containerRef.current.appendChild(script);
     }
+
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.innerHTML = '';
+      }
+    };
   }, [currentSymbol, currentMarket, activePreset, timeframe, presetConfigs]);
 
   const handleSelectTicker = (sym, mkt) => {

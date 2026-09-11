@@ -27,7 +27,6 @@ except ImportError as e:
 
 from database.supabase_client import DatabaseClient
 from notifiers.telegram_notifier import TelegramNotifier
-from notifiers.telegram_bot_handler import TelegramBotHandler
 
 logging.basicConfig(
     level=logging.INFO,
@@ -42,14 +41,8 @@ def main():
         load_dotenv(env_path)
 
     parser = argparse.ArgumentParser(description="Market Brain Grid & Cockpit Engine Runner")
-    parser.add_argument("--mode", choices=["all", "hourly_crypto_macro", "daily_idx_morning", "bot_polling"], default="all")
+    parser.add_argument("--mode", choices=["all", "hourly_crypto_macro", "daily_idx_morning"], default="all")
     args = parser.parse_args()
-
-    if args.mode == "bot_polling":
-        logger.info("Starting Telegram Bot Polling mode...")
-        bot = TelegramBotHandler()
-        bot.run_polling(max_cycles=5)
-        return
 
     logger.info(f"Starting Market Brain Grid Pipeline in mode: {args.mode.upper()}")
     start_time = datetime.now()
@@ -108,21 +101,44 @@ def main():
         history_dfs = idx_data.get("history_dfs", {}) if idx_data else {}
         current_prices = {r["ticker"]: r["price"] for r in all_records}
 
-        for rec in all_records:
-            t = rec["ticker"]
-            full_t = rec.get("full_ticker", f"{t}.JK")
+        # Ensure candidate trade plan tickers have historical candle DataFrames for SMC, IIFS, TimesFM
+        plan_tickers = [plan.get("clean_ticker") or plan.get("ticker") or plan.get("symbol", "").replace(".JK", "") for plan in trade_plans]
+        plan_tickers = [t for t in plan_tickers if t]
+
+        missing_tickers = [t for t in plan_tickers if t not in history_dfs and f"{t}.JK" not in history_dfs]
+        if missing_tickers:
+            logger.info(f"Downloading historical candles for {len(missing_tickers)} trade plan candidates...")
+            try:
+                import yfinance as yf
+                yf_syms = [f"{t}.JK" for t in missing_tickers]
+                downloaded = yf.download(yf_syms, period="3mo", interval="1d", group_by="ticker", progress=False)
+                if len(missing_tickers) == 1:
+                    t = missing_tickers[0]
+                    if not downloaded.empty:
+                        history_dfs[t] = downloaded
+                else:
+                    for t in missing_tickers:
+                        sym = f"{t}.JK"
+                        if sym in downloaded and not downloaded[sym].dropna(how="all").empty:
+                            history_dfs[t] = downloaded[sym].dropna(how="all")
+            except Exception as ex:
+                logger.warning(f"Batch candle download for candidates failed: {ex}")
+
+        target_tickers = set(plan_tickers + list(history_dfs.keys()))
+        for t in target_tickers:
+            full_t = f"{t}.JK"
             df = history_dfs.get(t)
             if df is None:
                 df = history_dfs.get(full_t)
 
             if df is not None and not df.empty:
-                if smc:
+                if smc and t not in smc_analysis:
                     try: smc_analysis[t] = smc.analyze(df, t)
                     except Exception as e: logger.warning(f"SMC failed for {t}: {e}")
-                if iifs:
+                if iifs and t not in bandarmology_iifs:
                     try: bandarmology_iifs[t] = iifs.analyze(df, t)
                     except Exception as e: logger.warning(f"IIFS failed for {t}: {e}")
-                if timesfm:
+                if timesfm and t not in forecasts:
                     try: forecasts[t] = timesfm.forecast(df, t)
                     except Exception as e: logger.warning(f"TimesFM failed for {t}: {e}")
 

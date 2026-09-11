@@ -73,11 +73,14 @@ const OrderBookSimulator = ({
     const t0 = performance.now();
 
     try {
-      // Primary: Tokocrypto API (Binance Cloud Indonesian Gateway)
+      // Primary: Tokocrypto API via Edge Function Proxy
       let res = await fetch(`/api/tokocrypto/open/v1/market/depth?symbol=${cryptoSymbol}&limit=10`);
-      if (!res.ok) {
-        // Direct Fallback if proxy not active
+      const ct = res.headers.get('content-type') || '';
+      if (!res.ok || !ct.includes('application/json')) {
         res = await fetch(`https://www.tokocrypto.com/open/v1/market/depth?symbol=${cryptoSymbol}&limit=10`);
+      }
+      if (!(res.headers.get('content-type') || '').includes('application/json')) {
+        throw new Error('Non-JSON depth response');
       }
       const json = await res.json();
       if (json && json.data && json.data.bids) {

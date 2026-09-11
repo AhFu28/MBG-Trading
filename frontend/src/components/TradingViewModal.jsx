@@ -58,6 +58,12 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
       containerRef.current.appendChild(widgetWrapper);
       containerRef.current.appendChild(script);
     }
+
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.innerHTML = '';
+      }
+    };
   }, [currentSymbol, market, chartInterval, refreshKey]);
 
   const handleSearchSubmit = (e) => {

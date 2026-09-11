@@ -143,12 +143,12 @@ class SMCDetector:
         return fvgs
 
     def detect_break_of_structure(self, df: pd.DataFrame, lookback=20) -> dict:
-        if len(df) < lookback:
+        if len(df) < lookback + 1:
             return {'direction': 'NEUTRAL', 'last_break_date': None, 'break_level': None}
             
-        recent_data = df.iloc[-lookback:]
-        swing_high = recent_data['High'].max()
-        swing_low = recent_data['Low'].min()
+        prior_data = df.iloc[-lookback-1 : -1]
+        swing_high = prior_data['High'].max()
+        swing_low = prior_data['Low'].min()
         
         last_price = df['Close'].iloc[-1]
         

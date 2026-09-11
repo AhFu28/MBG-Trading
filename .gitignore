@@ -38,3 +38,6 @@ yarn-error.log*
 # System
 .DS_Store
 Thumbs.db
+
+# Agent workspaces
+.agents/

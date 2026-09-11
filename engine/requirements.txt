@@ -1,5 +1,4 @@
 yfinance>=0.2.36
-requests>=2.31.0
 supabase>=2.3.0
 python-dotenv>=1.0.1
 google-genai>=0.1.1

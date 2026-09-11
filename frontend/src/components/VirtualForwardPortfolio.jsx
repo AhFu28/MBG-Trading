@@ -124,9 +124,10 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
   
   let unrealizedPnL = 0;
   activePositions.forEach(p => {
-    const currentPrice = currentPrices[p.ticker] || p.currentPrice || p.entryPrice;
-    const qty = p.allocation ? p.allocation / p.entryPrice : 0;
-    const currentPnL = (currentPrice - p.entryPrice) * qty;
+    const entryPriceNum = Number(p.entryPrice) || 0;
+    const currentPrice = currentPrices[p.ticker] || p.currentPrice || entryPriceNum;
+    const qty = (p.allocation && entryPriceNum > 0) ? Number(p.allocation) / entryPriceNum : 0;
+    const currentPnL = (currentPrice - entryPriceNum) * qty;
     unrealizedPnL += currentPnL;
   });
 

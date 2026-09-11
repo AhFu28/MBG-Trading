@@ -119,9 +119,30 @@ export default function App() {
   const loadBundle = async (silent = false) => {
     try {
       if (!silent) setLoading(true);
-      const res = await fetch('/data/latest_cockpit_bundle.json?_t=' + Date.now());
+      const res = await fetch('/data/latest_cockpit_bundle.json');
       if (res.ok) {
         const json = await res.json();
+        // Fallback if bundle is partial
+        if (!json.daily_trade_plans || !json.daily_trade_plans.length) {
+          try {
+            const fallbackPlans = await fetch('/data/daily_trade_plans.json');
+            if (fallbackPlans.ok) {
+              json.daily_trade_plans = await fallbackPlans.json();
+            }
+          } catch (e) {
+            console.warn('Fallback daily_trade_plans fetch failed:', e);
+          }
+        }
+        if (!json.crypto_spot_10 || !json.crypto_spot_10.length) {
+          try {
+            const fallbackCrypto = await fetch('/data/crypto_spot_10.json');
+            if (fallbackCrypto.ok) {
+              json.crypto_spot_10 = await fallbackCrypto.json();
+            }
+          } catch (e) {
+            console.warn('Fallback crypto_spot_10 fetch failed:', e);
+          }
+        }
         setData(json);
       } else {
         console.error('Failed to load local bundle:', res.status);
@@ -135,10 +156,10 @@ export default function App() {
 
   useEffect(() => {
     loadBundle();
-    // Auto-poll fresh telemetry every 60 seconds
+    // Auto-poll fresh telemetry every 300 seconds (5 mins) with HTTP caching
     const interval = setInterval(() => {
       loadBundle(true);
-    }, 60000);
+    }, 300000);
     return () => clearInterval(interval);
   }, []);
 
@@ -376,7 +397,7 @@ export default function App() {
             gap: '8px'
           }}>
             <div>
-              <strong>DISCLAIMER</strong>: Algorithmic screening &amp; quantitative intelligence only. Bukan ajakan atau nasihat investasi.
+              <strong>DISCLAIMER</strong>: Algorithmic screening & quantitative intelligence only. Bukan ajakan atau nasihat investasi.
             </div>
             <div>
               MBG QUANT TERMINAL // MARKET BRAIN GRID · ZERO RUNTIME COST

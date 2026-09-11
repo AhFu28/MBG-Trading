@@ -1,5 +1,6 @@
 import logging
-import requests
+import json
+import urllib.request
 from datetime import datetime
 
 logger = logging.getLogger("CryptoSpotFetcher")
@@ -25,9 +26,10 @@ class CryptoSpotFetcher:
         try:
             ids = ",".join(set(cg_id_map.values()))
             url = f"https://api.coingecko.com/api/v3/simple/price?ids={ids}&vs_currencies=usd&include_24hr_change=true"
-            resp = requests.get(url, timeout=6)
-            if resp.status_code == 200:
-                data = resp.json()
+            req = urllib.request.Request(url, headers={"User-Agent": "MBG-Trading/2.0"})
+            with urllib.request.urlopen(req, timeout=6) as resp:
+                if resp.status == 200:
+                    data = json.loads(resp.read().decode("utf-8"))
                 for sym, cgid in cg_id_map.items():
                     if cgid in data:
                         entry = data[cgid]
