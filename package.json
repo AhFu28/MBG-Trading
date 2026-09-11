@@ -4,6 +4,7 @@
   "scripts": {
     "build": "npm --prefix frontend run build",
     "dev": "npm --prefix frontend run dev",
-    "preview": "npm --prefix frontend run preview"
+    "preview": "npm --prefix frontend run preview",
+    "test": "py -m unittest engine/tests/test_smoke.py && npm --prefix frontend run build"
   }
 }

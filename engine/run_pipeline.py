@@ -163,7 +163,13 @@ def main():
                     except Exception as e:
                         logger.warning(f"Failed opening trade for {t}: {e}")
             try:
-                portfolio.check_and_update_trades(current_prices)
+                changes = portfolio.check_and_update_trades(current_prices)
+                if exp3 and changes:
+                    for ch in changes:
+                        if ch.get('new_status') in ['TP1_HIT', 'TP2_HIT', 'SL_HIT']:
+                            strat = ch.get('strategy_type')
+                            if strat:
+                                exp3.update_reward(strat, ch.get('pnl_pct', 0.0))
                 portfolio.expire_old_trades()
                 portfolio_summary = portfolio.get_portfolio_summary()
             except Exception as e:

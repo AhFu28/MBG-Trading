@@ -1,14 +1,15 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, Suspense, lazy } from 'react';
 import NewsTab from './NewsTab.jsx';
 import PersonalWatchlistTab from './PersonalWatchlistTab.jsx';
-import VirtualForwardPortfolio from './VirtualForwardPortfolio.jsx';
-import BacktestPerformanceLab from './BacktestPerformanceLab.jsx';
-import EconomicCalendarTab from './EconomicCalendarTab.jsx';
 import PearsonCorrelationWidget from './PearsonCorrelationWidget.jsx';
-import GlobalMarketsTab from './GlobalMarketsTab.jsx';
-import OrderBookSimulator from './OrderBookSimulator.jsx';
-import QuantAcademyTab from './QuantAcademyTab.jsx';
-import TestingHubTab from './TestingHubTab.jsx';
+
+const VirtualForwardPortfolio = lazy(() => import('./VirtualForwardPortfolio.jsx'));
+const BacktestPerformanceLab = lazy(() => import('./BacktestPerformanceLab.jsx'));
+const EconomicCalendarTab = lazy(() => import('./EconomicCalendarTab.jsx'));
+const GlobalMarketsTab = lazy(() => import('./GlobalMarketsTab.jsx'));
+const OrderBookSimulator = lazy(() => import('./OrderBookSimulator.jsx'));
+const QuantAcademyTab = lazy(() => import('./QuantAcademyTab.jsx'));
+const TestingHubTab = lazy(() => import('./TestingHubTab.jsx'));
 
 export default function MasterQuantLeaderboard({
   activeTab = 'STOCK',          // controlled from App.jsx (via Sidebar)
@@ -366,7 +367,8 @@ export default function MasterQuantLeaderboard({
   };
 
   return (
-    <div className='telemetry-panel' style={{ border: 'var(--border-hairline)' }}>
+    <Suspense fallback={<div className='telemetry-panel' style={{ padding: '30px', textAlign: 'center', color: 'var(--text-primary)' }}>Memuat modul quant...</div>}>
+      <div className='telemetry-panel' style={{ border: 'var(--border-hairline)' }}>
       {/* Sub-filter context bar for STOCK/CRYPTO tabs */}
       {(activeMainTab === 'STOCK' || activeMainTab === 'CRYPTO') && (
         <div className='telemetry-header' style={{ background: 'var(--bg-panel-subtle)', borderBottom: 'var(--border-hairline)', fontSize: '10px', color: 'var(--text-muted)' }}>
@@ -1072,6 +1074,7 @@ export default function MasterQuantLeaderboard({
           onClose={() => setOrderBookModal({ isOpen: false, ticker: 'BBRI', price: 4900 })}
         />
       )}
-    </div>
+      </div>
+    </Suspense>
   );
 }

@@ -84,7 +84,7 @@ class ErrorBoundary extends React.Component {
                   borderRadius: '4px'
                 }}
               >
-                🧹 RESET CACHE &amp; RESTART
+                🧹 RESET CACHE & RESTART
               </button>
             </div>
           </div>

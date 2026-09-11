@@ -90,7 +90,7 @@ class BacktestEngine:
         sharpe_ratio = (mean_return - rf_daily) / (std_return + 1e-9) * math.sqrt(252)
         
         downside_returns = [r for r in returns if r < 0]
-        downside_variance = sum((r - 0) ** 2 for r in downside_returns) / len(downside_returns) if downside_returns else 0
+        downside_variance = sum(r ** 2 for r in downside_returns) / len(returns) if returns else 0
         std_downside = math.sqrt(downside_variance)
         sortino_ratio = (mean_return - rf_daily) / (std_downside + 1e-9) * math.sqrt(252)
         

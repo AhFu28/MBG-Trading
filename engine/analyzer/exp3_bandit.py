@@ -55,7 +55,7 @@ class Exp3StrategyBandit:
         self.times_selected[s] += 1
         return s
 
-    def update_reward(self, strategy: str, reward: float):
+    def update_reward(self, strategy: str, raw_reward: float):
         if strategy not in self.strategies:
             return
             
@@ -65,15 +65,20 @@ class Exp3StrategyBandit:
         if prob <= 0:
             prob = 1e-9
         
+        # Normalize reward to [-1.0, 1.0] to prevent weight distortion/overflow
+        if abs(raw_reward) > 1.0:
+            reward = math.tanh(raw_reward / 1_000_000.0) if abs(raw_reward) > 100 else max(min(raw_reward / 10.0, 1.0), -1.0)
+        else:
+            reward = max(min(raw_reward, 1.0), -1.0)
+        
         # Exp3 update formula
         estimated_reward = reward / prob
         
         # Prevent math overflow by capping exponent
         exponent = self.gamma * estimated_reward / K
-        exponent = max(min(exponent, 50.0), -50.0) 
+        exponent = max(min(exponent, 20.0), -20.0) 
         
         self.weights[strategy] *= math.exp(exponent)
-        
         self.total_rewards[strategy] += reward
         self.save_state()
 

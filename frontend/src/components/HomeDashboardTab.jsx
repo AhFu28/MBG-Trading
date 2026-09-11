@@ -84,7 +84,7 @@ export default function HomeDashboardTab({
             }}>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="metric-label" style={{ fontSize: '9px' }}>IHSG &amp; Global Regime</span>
+                  <span className="metric-label" style={{ fontSize: '9px' }}>IHSG & Global Regime</span>
                   <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>ACTIVE</span>
                 </div>
                 <div style={{ fontSize: '16px', fontWeight: '900', marginTop: '3px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>

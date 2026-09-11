@@ -113,7 +113,7 @@ export default function LotCalculatorModal({ isOpen, onClose, prefillEntry = '',
         <div className="telemetry-header" style={{ background: '#1c1d22', color: '#fff', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ color: 'var(--accent-green)', fontWeight: '700', fontSize: '14px' }}>
-              💰 KALKULATOR RISIKO &amp; POSITION SIZING MBG APEX
+              💰 KALKULATOR RISIKO & POSITION SIZING MBG APEX
             </span>
           </div>
 

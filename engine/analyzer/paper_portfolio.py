@@ -112,9 +112,12 @@ class PaperPortfolio:
                     trade['pnl_pct'] = pnl / cost_basis if cost_basis > 0 else 0
                     status_changes.append({
                         'trade_id': trade['id'],
+                        'ticker': trade['ticker'],
+                        'strategy_type': trade.get('strategy_type', 'Astra'),
                         'old_status': old_status,
                         'new_status': new_status,
-                        'pnl': pnl
+                        'pnl': pnl,
+                        'pnl_pct': trade['pnl_pct']
                     })
                     
         if status_changes:

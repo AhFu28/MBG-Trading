@@ -1,13 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import PasswordGate from './components/PasswordGate.jsx';
 import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
 import HomeDashboardTab from './components/HomeDashboardTab.jsx';
-import TradingViewModal from './components/TradingViewModal.jsx';
-import LotCalculatorModal from './components/LotCalculatorModal.jsx';
 import Sidebar from './components/Sidebar.jsx';
-import ChangelogTab from './components/ChangelogTab.jsx';
-import ChartingDeskTab from './components/ChartingDeskTab.jsx';
 import GlobalMarketTicker from './components/GlobalMarketTicker.jsx';
+
+// Code Splitting for heavy secondary modules
+const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'));
+const LotCalculatorModal = lazy(() => import('./components/LotCalculatorModal.jsx'));
+const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
+const ChartingDeskTab = lazy(() => import('./components/ChartingDeskTab.jsx'));
+
+const jakartaTimeFormatter = new Intl.DateTimeFormat('id-ID', {
+  timeZone: 'Asia/Jakarta',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+  hourCycle: 'h23'
+});
 
 function HeaderClock() {
   const [now, setNow] = useState(() => new Date());
@@ -16,13 +27,6 @@ function HeaderClock() {
     const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
-
-  const timeStr = now.toLocaleTimeString('id-ID', { 
-    timeZone: 'Asia/Jakarta', 
-    hour12: false, 
-    hourCycle: 'h23' 
-  });
-  const tzName = 'WIB';
 
   return (
     <div 
@@ -39,10 +43,10 @@ function HeaderClock() {
         gap: '6px',
         border: 'var(--border-hairline)'
       }}
-      title={`Waktu Perangkat Lokal (${Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Jakarta'})`}
+      title="Waktu Jakarta (WIB)"
     >
       <span>🕒</span>
-      <span>{timeStr} {tzName}</span>
+      <span>{jakartaTimeFormatter.format(now)} WIB</span>
     </div>
   );
 }
@@ -50,7 +54,28 @@ function HeaderClock() {
 export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('HOME');
+
+  // Native hash routing
+  const getTabFromHash = () => {
+    const hash = window.location.hash.replace('#', '').toUpperCase();
+    return hash || 'HOME';
+  };
+  const [activeTab, setActiveTabState] = useState(getTabFromHash);
+
+  const setActiveTab = useCallback((tab) => {
+    setActiveTabState(tab);
+    window.location.hash = tab.toLowerCase();
+  }, []);
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const tab = getTabFromHash();
+      if (tab) setActiveTabState(tab);
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
   const [isMobileOpen, setMobileOpen] = useState(false);
 
   // Dark Mode state with persistence in localStorage
@@ -315,73 +340,75 @@ export default function App() {
             </div>
           </header>
 
-          {/* 2. Main Tab Body */}
-          {loading ? (
-            <div className="telemetry-panel" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-primary)' }}>
-              Memuat Telemetri MBG APEX Quant Terminal...
-            </div>
-          ) : activeTab === 'HOME' ? (
-            /* HOME COMMAND CENTER (Wire + Bento + Foreign Flow + Konglo + Top 5 Alpha) */
-            <HomeDashboardTab
-              data={data}
-              onSelectTicker={handleOpenChart}
-              onOpenLotCalc={handleOpenLotCalc}
-              onNavigateTab={setActiveTab}
-            />
-          ) : activeTab === 'CHARTING' ? (
-            /* INSTITUTIONAL CHARTING DESK */
-            <main>
-              <ChartingDeskTab
+          {/* 2. Main Tab Body with Suspense */}
+          <Suspense fallback={<div className="telemetry-panel" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-primary)' }}>Memuat modul MBG APEX...</div>}>
+            {loading ? (
+              <div className="telemetry-panel" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-primary)' }}>
+                Memuat Telemetri MBG APEX Quant Terminal...
+              </div>
+            ) : activeTab === 'HOME' ? (
+              /* HOME COMMAND CENTER (Wire + Bento + Foreign Flow + Konglo + Top 5 Alpha) */
+              <HomeDashboardTab
                 data={data}
-                onOpenLotCalc={handleOpenLotCalc}
-                initialSymbol={chartModal.symbol || 'BBCA'}
-              />
-            </main>
-          ) : activeTab === 'CHANGELOG' ? (
-            /* SYSTEM CHANGELOG & VERSION RELEASES */
-            <main>
-              <ChangelogTab />
-            </main>
-          ) : (
-            /* DEEP-DIVE SCREENER / TESTING / RESEARCH TABS */
-            <main>
-              <MasterQuantLeaderboard
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-                tradePlans={data?.daily_trade_plans || []}
-                cryptoSpotList={data?.crypto_spot_10 || []}
-                conglomerates={data?.conglomerates || {}}
-                dividendHunters={data?.dividend_hunters || []}
-                foreignFlow={data?.foreign_flow || {}}
-                liveNews={data?.macro_telemetry?.live_news || []}
-                macro={data?.macro_telemetry || {}}
-                paperPortfolio={data?.paper_portfolio || {}}
-                backtestLab={data?.backtest_lab || {}}
-                strategyRankings={data?.strategy_rankings || []}
-                brokerSummary={data?.broker_summary || {}}
                 onSelectTicker={handleOpenChart}
                 onOpenLotCalc={handleOpenLotCalc}
+                onNavigateTab={setActiveTab}
               />
-            </main>
-          )}
+            ) : activeTab === 'CHARTING' ? (
+              /* INSTITUTIONAL CHARTING DESK */
+              <main>
+                <ChartingDeskTab
+                  data={data}
+                  onOpenLotCalc={handleOpenLotCalc}
+                  initialSymbol={chartModal.symbol || 'BBCA'}
+                />
+              </main>
+            ) : activeTab === 'CHANGELOG' ? (
+              /* SYSTEM CHANGELOG & VERSION RELEASES */
+              <main>
+                <ChangelogTab />
+              </main>
+            ) : (
+              /* DEEP-DIVE SCREENER / TESTING / RESEARCH TABS */
+              <main>
+                <MasterQuantLeaderboard
+                  activeTab={activeTab}
+                  onTabChange={setActiveTab}
+                  tradePlans={data?.daily_trade_plans || []}
+                  cryptoSpotList={data?.crypto_spot_10 || []}
+                  conglomerates={data?.conglomerates || {}}
+                  dividendHunters={data?.dividend_hunters || []}
+                  foreignFlow={data?.foreign_flow || {}}
+                  liveNews={data?.macro_telemetry?.live_news || []}
+                  macro={data?.macro_telemetry || {}}
+                  paperPortfolio={data?.paper_portfolio || {}}
+                  backtestLab={data?.backtest_lab || {}}
+                  strategyRankings={data?.strategy_rankings || []}
+                  brokerSummary={data?.broker_summary || {}}
+                  onSelectTicker={handleOpenChart}
+                  onOpenLotCalc={handleOpenLotCalc}
+                />
+              </main>
+            )}
 
-          {/* 3. TradingView Chart Modal */}
-          {chartModal.isOpen && (
-            <TradingViewModal
-              initialSymbol={chartModal.symbol}
-              market={chartModal.market}
-              onClose={handleCloseChart}
+            {/* 3. TradingView Chart Modal */}
+            {chartModal.isOpen && (
+              <TradingViewModal
+                initialSymbol={chartModal.symbol}
+                market={chartModal.market}
+                onClose={handleCloseChart}
+              />
+            )}
+
+            {/* 4. Lot Calculator Modal */}
+            <LotCalculatorModal
+              isOpen={lotCalcModal.isOpen}
+              onClose={handleCloseLotCalc}
+              prefillEntry={lotCalcModal.entry}
+              prefillSL={lotCalcModal.sl}
+              initialMarket={lotCalcModal.market}
             />
-          )}
-
-          {/* 4. Lot Calculator Modal */}
-          <LotCalculatorModal
-            isOpen={lotCalcModal.isOpen}
-            onClose={handleCloseLotCalc}
-            prefillEntry={lotCalcModal.entry}
-            prefillSL={lotCalcModal.sl}
-            initialMarket={lotCalcModal.market}
-          />
+          </Suspense>
 
           {/* 5. Institutional Disclaimer Footer */}
           <footer style={{
