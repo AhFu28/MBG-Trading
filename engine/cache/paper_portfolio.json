@@ -1,6 +1,7 @@
 {
   "initial_capital": 100000000,
   "risk_pct": 0.02,
+  "realized_pnl_historical": 0.0,
   "trades": [
     {
       "id": "c58c8da5-6c94-468f-be75-4b3fa17a76e1",
@@ -1198,6 +1199,36 @@
       "strategy_type": "Astra",
       "status": "PENDING",
       "opened_at": "2026-09-11T11:46:01.344715",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
+    },
+    {
+      "id": "c71034d5-acc7-43cc-b727-ec3bb2852312",
+      "ticker": "FORU",
+      "entry_price": 3720.0,
+      "sl_price": 3571.0,
+      "tp1_price": 4048.0,
+      "tp2_price": 4256.0,
+      "lots": 55,
+      "strategy_type": "Astra",
+      "status": "ACTIVE",
+      "opened_at": "2026-09-11T09:44:52.583943",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
+    },
+    {
+      "id": "5c1b6445-a808-4545-9913-832db6fe4263",
+      "ticker": "BSDE",
+      "entry_price": 645.0,
+      "sl_price": 619.0,
+      "tp1_price": 702.0,
+      "tp2_price": 739.0,
+      "lots": 317,
+      "strategy_type": "Astra",
+      "status": "ACTIVE",
+      "opened_at": "2026-09-11T09:44:52.585389",
       "closed_at": null,
       "pnl": 0,
       "pnl_pct": 0
