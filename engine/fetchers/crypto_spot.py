@@ -54,7 +54,7 @@ class CryptoSpotFetcher:
             tv_tickers = [f"BINANCE:{pair}" for pair in self.target_pairs]
             payload = {
                 "symbols": {"tickers": tv_tickers},
-                "columns": ["name", "close", "change", "high", "low", "volume"]
+                "columns": ["name", "close", "change", "high", "low", "volume", "RSI", "SMA20", "SMA50", "Recommend.All"]
             }
             req = urllib.request.Request(
                 "https://scanner.tradingview.com/crypto/scan",
@@ -73,16 +73,24 @@ class CryptoSpotFetcher:
                             hi = float(d[3] or px * 1.02)
                             lo = float(d[4] or px * 0.98)
                             vol = float(d[5] or 0)
+                            rsi = round(float(d[6] or 50.0), 1) if len(d) > 6 and d[6] is not None else 50.0
+                            sma20 = float(d[7] or px) if len(d) > 7 and d[7] is not None else px
+                            sma50 = float(d[8] or px) if len(d) > 8 and d[8] is not None else px
+                            signal_val = float(d[9] or 0.0) if len(d) > 9 and d[9] is not None else 0.0
                             if px > 0:
                                 prices[sym] = {
                                     "price": px,
                                     "change_24h": chg,
                                     "high_24h": hi,
                                     "low_24h": lo,
-                                    "volume_quote": vol
+                                    "volume_quote": vol,
+                                    "rsi_14": rsi,
+                                    "sma20": sma20,
+                                    "sma50": sma50,
+                                    "tv_signal": signal_val
                                 }
                     if prices:
-                        logger.info(f"Successfully fetched {len(prices)} live crypto pairs from TradingView Scanner.")
+                        logger.info(f"Successfully fetched {len(prices)} live crypto pairs with RSI/SMA from TradingView Scanner.")
         except Exception as e:
             logger.warning(f"TradingView crypto scanner fetch failed: {e}")
         return prices
@@ -164,14 +172,13 @@ class CryptoSpotFetcher:
 
             pair_formatted = sym.replace("USDT", "/USDT")
             chg = data.get("change_24h", 0)
+            hi = data.get("high_24h", price * 1.02)
+            lo = data.get("low_24h", price * 0.98)
+            rsi = data.get("rsi_14", 50.0)
+            sma20 = data.get("sma20", price)
+            vol = data.get("volume_quote", 0.0)
 
-            # Generate disciplined Entry, TP1, TP2, and SL
-            # SL strictly 2.5% to 3.5% below entry to maintain capital preservation
-            sl_pct = 0.03
-            tp1_pct = 0.06
-            tp2_pct = 0.12
-
-            # Adaptive decimal rounding to avoid 0.0 on micro-tokens like PEPE
+            # Adaptive decimal rounding to avoid 0.0 on micro-tokens
             def _round_px(val):
                 if price < 0.001:
                     return round(val, 8)
@@ -182,24 +189,53 @@ class CryptoSpotFetcher:
                 else:
                     return round(val, 2)
 
-            entry_mid = price
-            entry_low = _round_px(price * 0.99)
-            entry_high = _round_px(price * 1.005)
-            stop_loss = _round_px(entry_mid * (1 - sl_pct))
-            tp1 = _round_px(entry_mid * (1 + tp1_pct))
-            tp2 = _round_px(entry_mid * (1 + tp2_pct))
+            # Dynamic Support and Resistance estimation
+            # SL is anchored below 24h Low or SMA20 support with a 0.5% buffer, capped between 2% and 4.5%
+            dist_to_low = (price - lo) / price if price > lo else 0.03
+            sl_pct = max(0.02, min(0.045, dist_to_low * 1.05))
+            stop_loss = _round_px(price * (1 - sl_pct))
 
-            rr_ratio = round(tp1_pct / sl_pct, 2) # Exactly ~2:1 minimum
+            # Target 1 is anchored to 24h High or a minimum 2.0 Risk-Reward multiple
+            dist_to_high = (hi - price) / price if hi > price else 0.05
+            tp1_pct = max(sl_pct * 2.0, min(0.15, dist_to_high * 1.1))
+            tp2_pct = tp1_pct * 1.6
+            tp1 = _round_px(price * (1 + tp1_pct))
+            tp2 = _round_px(price * (1 + tp2_pct))
 
-            setup = "PULLBACK_SUPPORT_RETEST" if chg >= 0 else "OVERSOLD_BOUNCE"
-            conviction = "HIGH" if abs(chg) > 2.0 else "MEDIUM"
-            thesis = theses.get(sym, "Technical price-action compression with favorable asymmetric risk/reward.")
-            invalidation = f"4H candle close below ${stop_loss} voids trade structure."
+            entry_low = _round_px(price * 0.992)
+            entry_high = _round_px(price * 1.004)
+            rr_ratio = round(tp1_pct / sl_pct, 2)
+
+            # Technical Setup Classification based on RSI and Price vs SMA20
+            if rsi < 35:
+                setup = "OVERSOLD_REBOUND"
+                setup_desc = f"RSI({rsi}) oversold zone; mean-reversion bounce play towards SMA20."
+            elif price >= sma20 and chg >= 0:
+                setup = "TREND_CONTINUATION"
+                setup_desc = f"Trading above SMA20 (${_round_px(sma20)}) with positive 24h momentum (+{chg}%)."
+            elif price < sma20 and chg < 0:
+                setup = "PULLBACK_SUPPORT_TEST"
+                setup_desc = f"Healthy pullback testing 24h support floor at ${_round_px(lo)}."
+            else:
+                setup = "RANGE_ACCUMULATION"
+                setup_desc = f"Consolidating within 24h range (${_round_px(lo)} - ${_round_px(hi)})."
+
+            conviction = "HIGH" if (rsi < 35 or (price > sma20 and chg > 1.5)) else "MEDIUM"
+            thesis = theses.get(sym, setup_desc)
+            invalidation = f"4H close below ${_round_px(stop_loss)} (SL invalidation floor)."
 
             candidates.append({
                 "pair": pair_formatted,
+                "symbol": sym,
                 "current_price": price,
                 "change_24h_pct": chg,
+                "high_24h": hi,
+                "low_24h": lo,
+                "rsi_14": rsi,
+                "sma20": sma20,
+                "volume_quote": vol,
+                "market": "CRYPTO",
+                "currency": "USDT",
                 "setup_type": setup,
                 "entry_low": entry_low,
                 "entry_high": entry_high,

@@ -97,11 +97,12 @@ export default function App() {
   const [lotCalcModal, setLotCalcModal] = useState({
     isOpen: false,
     entry: '',
-    sl: ''
+    sl: '',
+    market: 'IDX'
   });
 
-  const handleOpenLotCalc = useCallback((entry = '', sl = '') => {
-    setLotCalcModal({ isOpen: true, entry, sl });
+  const handleOpenLotCalc = useCallback((entry = '', sl = '', market = 'IDX') => {
+    setLotCalcModal({ isOpen: true, entry, sl, market });
   }, []);
 
   const handleCloseLotCalc = useCallback(() => {
@@ -396,6 +397,7 @@ export default function App() {
             onClose={handleCloseLotCalc}
             prefillEntry={lotCalcModal.entry}
             prefillSL={lotCalcModal.sl}
+            initialMarket={lotCalcModal.market}
           />
 
           {/* 5. Institutional Disclaimer Footer */}

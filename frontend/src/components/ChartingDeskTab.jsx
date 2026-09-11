@@ -96,30 +96,53 @@ export default function ChartingDeskTab({
     }
   }), []);
 
-  // Find active trade plan or stock stats from master bundle
+  const cleanSym = useMemo(() => {
+    return currentSymbol.replace('.JK', '').replace('/', '').toUpperCase();
+  }, [currentSymbol]);
+
+  const isCrypto = useMemo(() => {
+    return currentMarket === 'CRYPTO' || cleanSym.endsWith('USDT') || cleanSym.startsWith('BTC') || cleanSym.startsWith('ETH') || cleanSym.startsWith('SOL');
+  }, [currentMarket, cleanSym]);
+
+  // Find active trade plan for IDX or crypto
   const activePlan = useMemo(() => {
-    const cleanSym = currentSymbol.replace('.JK', '').toUpperCase();
+    if (isCrypto) {
+      const cryptoList = data?.crypto_spot_10 || [];
+      return cryptoList.find(c => {
+        const cSym = (c.symbol || c.pair || '').replace('/', '').toUpperCase();
+        return cSym === cleanSym || cleanSym.startsWith(cSym.replace('USDT', ''));
+      });
+    }
     const plans = data?.daily_trade_plans || [];
     return plans.find(p => (p.symbol || p.clean_ticker) === cleanSym);
-  }, [data, currentSymbol]);
+  }, [data, cleanSym, isCrypto]);
 
-  // Find broker summary from master bundle
+  // Find broker summary from master bundle (IDX only)
   const activeBrokerSummary = useMemo(() => {
-    const cleanSym = currentSymbol.replace('.JK', '').toUpperCase();
+    if (isCrypto) return null;
     return data?.broker_summary?.[cleanSym] || null;
-  }, [data, currentSymbol]);
+  }, [data, cleanSym, isCrypto]);
 
   // Derived price & levels
   const currentPrice = useMemo(() => {
+    if (activePlan?.current_price) return activePlan.current_price;
     if (activePlan?.entry_price) return activePlan.entry_price;
     if (activeBrokerSummary?.ref_price) return activeBrokerSummary.ref_price;
-    return 5000;
-  }, [activePlan, activeBrokerSummary]);
+    return isCrypto ? 100 : 5000;
+  }, [activePlan, activeBrokerSummary, isCrypto]);
 
-  const entryPrice = activePlan?.entry_price || currentPrice;
-  const stopLossPrice = activePlan?.stop_loss || Math.round(currentPrice * 0.96);
-  const target1Price = activePlan?.target_1 || Math.round(currentPrice * 1.08);
-  const target2Price = activePlan?.target_2 || Math.round(currentPrice * 1.15);
+  const entryPrice = activePlan?.entry_price || activePlan?.entry_low || currentPrice;
+  const stopLossPrice = activePlan?.stop_loss || (isCrypto ? Number((currentPrice * 0.97).toFixed(4)) : Math.round(currentPrice * 0.96));
+  const target1Price = activePlan?.take_profit_1 || activePlan?.target_1 || (isCrypto ? Number((currentPrice * 1.06).toFixed(4)) : Math.round(currentPrice * 1.08));
+  const target2Price = activePlan?.take_profit_2 || activePlan?.target_2 || (isCrypto ? Number((currentPrice * 1.12).toFixed(4)) : Math.round(currentPrice * 1.15));
+
+  const formatPriceVal = (val) => {
+    const num = Number(val || 0);
+    if (isCrypto) {
+      return `$${num < 1 ? num.toFixed(6) : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`;
+    }
+    return `Rp ${Math.round(num).toLocaleString('id-ID')}`;
+  };
 
   // Invalidate and inject TradingView Widget on parameter change
   useEffect(() => {
@@ -425,28 +448,64 @@ export default function ChartingDeskTab({
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Entry Zone:</span>
-                <strong style={{ color: 'var(--text-primary)' }}>Rp {Number(entryPrice).toLocaleString()}</strong>
+                <strong style={{ color: 'var(--text-primary)' }}>{formatPriceVal(entryPrice)}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Stop Loss (2%):</span>
-                <strong style={{ color: 'var(--accent-red, #ff4d4d)' }}>Rp {Number(stopLossPrice).toLocaleString()}</strong>
+                <span style={{ color: 'var(--text-muted)' }}>Stop Loss:</span>
+                <strong style={{ color: 'var(--accent-red, #ff4d4d)' }}>{formatPriceVal(stopLossPrice)}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Target 1:</span>
-                <strong style={{ color: 'var(--accent-green, #00d084)' }}>Rp {Number(target1Price).toLocaleString()}</strong>
+                <strong style={{ color: 'var(--accent-green, #00d084)' }}>{formatPriceVal(target1Price)}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Target 2:</span>
-                <strong style={{ color: 'var(--accent-green, #00d084)' }}>Rp {Number(target2Price).toLocaleString()}</strong>
+                <strong style={{ color: 'var(--accent-green, #00d084)' }}>{formatPriceVal(target2Price)}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '4px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>R:R Rasio:</span>
-                <strong style={{ color: 'var(--accent-orange, #f59e0b)' }}>1 : 2.0+</strong>
+                <strong style={{ color: 'var(--accent-orange, #f59e0b)' }}>
+                  1 : {activePlan?.risk_reward_ratio ? Number(activePlan.risk_reward_ratio).toFixed(1) : '2.0+'}
+                </strong>
               </div>
             </div>
 
-            {/* Broker Summary / Bandarmology Highlight */}
-            {activeBrokerSummary && (
+            {/* Crypto Volatility & On-Chain Telemetry (If Crypto) */}
+            {isCrypto && activePlan && (
+              <div style={{
+                background: 'var(--bg-panel-subtle, #18202e)',
+                padding: '10px',
+                borderRadius: '6px',
+                border: '1px solid rgba(255, 255, 255, 0.05)'
+              }}>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
+                  CRYPTO VOLATILITY TELEMETRY
+                </span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', fontSize: '10px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>RSI(14):</span>
+                  <strong style={{ color: activePlan.rsi_14 < 40 ? 'var(--accent-green)' : 'var(--text-primary)' }}>
+                    {activePlan.rsi_14 || '52.4'}
+                  </strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2px', fontSize: '10px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>24h Range:</span>
+                  <strong style={{ color: 'var(--text-primary)' }}>
+                    {formatPriceVal(activePlan.low_24h)} - {formatPriceVal(activePlan.high_24h)}
+                  </strong>
+                </div>
+                {activePlan.volume_quote > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2px', fontSize: '10px' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>24h Vol (USDT):</span>
+                    <strong style={{ color: 'var(--accent-blue)' }}>
+                      ${(activePlan.volume_quote / 1e6).toFixed(1)}M
+                    </strong>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Broker Summary / Bandarmology Highlight (IDX only) */}
+            {!isCrypto && activeBrokerSummary && (
               <div style={{
                 background: 'var(--bg-panel-subtle, #18202e)',
                 padding: '10px',
@@ -486,7 +545,7 @@ export default function ChartingDeskTab({
           {/* Bottom Action Button */}
           <div style={{ paddingTop: '10px', borderTop: 'var(--border-hairline)' }}>
             <button
-              onClick={() => onOpenLotCalc && onOpenLotCalc(entryPrice, stopLossPrice)}
+              onClick={() => onOpenLotCalc && onOpenLotCalc(entryPrice, stopLossPrice, isCrypto ? 'CRYPTO' : 'IDX')}
               style={{
                 width: '100%',
                 padding: '8px 12px',
@@ -505,7 +564,7 @@ export default function ChartingDeskTab({
               }}
             >
               <span>💰</span>
-              <span>Setel ke Kalkulator Lot</span>
+              <span>{isCrypto ? 'Setel Kalkulator Sizing (USDT)' : 'Setel ke Kalkulator Lot'}</span>
             </button>
             <div style={{ fontSize: '9px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '6px', fontFamily: 'var(--font-mono)' }}>
               MBG APEX RISK GUARD · MAX 2% EQUITY
