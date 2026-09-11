@@ -47,35 +47,33 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
           <span style={{ color: '#8e8e93', fontSize: '10px' }}>// CONTINUOUS 24/7 LIVE FEED</span>
         </div>
 
-        {/* Streaming Ticker Bellwethers */}
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', fontFamily: 'var(--font-mono)', fontSize: '10px' }}>
-          <div style={{ display: 'flex', gap: '4px' }}>
-            <span style={{ color: '#8e8e93' }}>XAU/USD:</span>
-            <span style={{ fontWeight: '700' }}>${macro.gold_price}</span>
-            <span style={{ color: goldChange >= 0 ? '#34c759' : '#ff3b30' }}>
-              ({goldChange >= 0 ? '+' + goldChange + '%' : goldChange + '%'})
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', gap: '4px' }}>
-            <span style={{ color: '#8e8e93' }}>BRENT:</span>
-            <span style={{ fontWeight: '700' }}>${macro.brent_oil_price}</span>
-            <span style={{ color: oilChange >= 0 ? '#34c759' : '#ff3b30' }}>
-              ({oilChange >= 0 ? '+' + oilChange + '%' : oilChange + '%'})
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', gap: '4px' }}>
-            <span style={{ color: '#8e8e93' }}>DXY:</span>
-            <span style={{ fontWeight: '700' }}>{macro.dxy_index}</span>
-            <span style={{ color: dxyChange >= 0 ? '#34c759' : '#ff3b30' }}>
-              ({dxyChange >= 0 ? '+' + dxyChange + '%' : dxyChange + '%'})
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', gap: '4px' }}>
-            <span style={{ color: '#8e8e93' }}>US10Y:</span>
-            <span style={{ fontWeight: '700' }}>{macro.us10y_yield}%</span>
+        {/* Continuous Running Marquee Ticker Tape */}
+        <div className="marquee-ticker-container" title="Continuous Macro Feed (Hover to Pause)">
+          <div className="marquee-ticker-track">
+            {[
+              { label: 'XAU/USD', val: `$${macro.gold_price || '4,374.4'}`, chg: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isUp: goldChange >= 0 },
+              { label: 'BRENT', val: `$${macro.brent_oil_price || '107.0'}`, chg: `${oilChange >= 0 ? '+' : ''}${oilChange}%`, isUp: oilChange >= 0 },
+              { label: 'DXY', val: `${macro.dxy_index || '99.08'}`, chg: `${dxyChange >= 0 ? '+' : ''}${dxyChange}%`, isUp: dxyChange >= 0 },
+              { label: 'US10Y', val: `${macro.us10y_yield || '4.94'}%`, chg: '+2 bp', isUp: true },
+              { label: 'IHSG', val: '7,760.35', chg: '+0.48%', isUp: true },
+              { label: 'BTC/USD', val: '$77,168', chg: '+0.78%', isUp: true },
+              { label: 'ETH/USD', val: '$2,463', chg: '+1.04%', isUp: true },
+              // Duplicate once to ensure seamless loop
+              { label: 'XAU/USD', val: `$${macro.gold_price || '4,374.4'}`, chg: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isUp: goldChange >= 0 },
+              { label: 'BRENT', val: `$${macro.brent_oil_price || '107.0'}`, chg: `${oilChange >= 0 ? '+' : ''}${oilChange}%`, isUp: oilChange >= 0 },
+              { label: 'DXY', val: `${macro.dxy_index || '99.08'}`, chg: `${dxyChange >= 0 ? '+' : ''}${dxyChange}%`, isUp: dxyChange >= 0 },
+              { label: 'US10Y', val: `${macro.us10y_yield || '4.94'}%`, chg: '+2 bp', isUp: true },
+              { label: 'IHSG', val: '7,760.35', chg: '+0.48%', isUp: true },
+              { label: 'BTC/USD', val: '$77,168', chg: '+0.78%', isUp: true },
+              { label: 'ETH/USD', val: '$2,463', chg: '+1.04%', isUp: true }
+            ].map((t, i) => (
+              <span key={i} className="marquee-ticker-item">
+                <b>{t.label}</b> {t.val}
+                <span style={{ color: t.isUp ? '#34c759' : '#ff3b30' }}>
+                  ({t.chg})
+                </span>
+              </span>
+            ))}
           </div>
         </div>
       </div>

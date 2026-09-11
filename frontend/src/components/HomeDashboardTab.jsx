@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import BloombergNewsWire from './BloombergNewsWire.jsx';
 
 export default function HomeDashboardTab({
@@ -523,13 +523,13 @@ export default function HomeDashboardTab({
           </div>
 
           {/* Vertical scrollable list of news cards */}
-          <div style={{
+          <div className="news-scroll-container" style={{
             display: 'flex',
             flexDirection: 'column',
             gap: '8px',
             overflowY: 'auto',
             maxHeight: '520px',
-            paddingRight: '2px'
+            paddingRight: '4px'
           }}>
             {liveNews.map((news, idx) => {
               const isBear = news.sentiment === 'BEARISH';

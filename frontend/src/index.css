@@ -630,3 +630,98 @@ body {
   color: #ffffff !important;
   border-color: var(--accent-blue) !important;
 }
+
+/* ============================================================
+   SUBTLE DARK SCROLLBAR (Blends seamlessly, no white glare)
+   ============================================================ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #232B3D transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #232B3D;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2C3549;
+}
+
+/* Custom blend scrollbar specifically for news stream */
+.news-scroll-container {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #1D2433 transparent;
+}
+
+.news-scroll-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.news-scroll-container::-webkit-scrollbar-thumb {
+  background: #1D2433;
+  border-radius: 4px;
+}
+
+.news-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #262E40;
+}
+
+/* ============================================================
+   CONTINUOUS RUNNING MARQUEE TICKER TAPE
+   ============================================================ */
+.marquee-ticker-container {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  position: relative;
+}
+
+.marquee-ticker-track {
+  display: inline-flex;
+  gap: 28px;
+  white-space: nowrap;
+  animation: tickmove 46s linear infinite;
+  padding-left: 8px;
+}
+
+.marquee-ticker-container:hover .marquee-ticker-track {
+  animation-play-state: paused;
+}
+
+@keyframes tickmove {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-ticker-item {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #8e8e93;
+  display: inline-flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.marquee-ticker-item b {
+  color: #E8ECF4;
+  font-weight: 600;
+}
+
