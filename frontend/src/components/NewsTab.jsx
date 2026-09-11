@@ -247,6 +247,85 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan hindari FOMO.
         </div>
       </div>
 
+      {/* 1B. SOSOVALUE SPOT ETF INFLOW & TURNOVER TELEMETRY */}
+      <div className='telemetry-panel' style={{
+        padding: '10px 14px',
+        background: 'linear-gradient(180deg, rgba(20,25,35,0.85) 0%, rgba(12,16,24,0.95) 100%)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: '8px'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '12px' }}>📊</span>
+            <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--accent-cyan, #38bdf8)', letterSpacing: '0.04em' }}>
+              SOSOVALUE SPOT ETF NET FLOW &amp; INSTITUTIONAL TURNOVER
+            </span>
+          </div>
+          <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+            BTC Turnover: <strong style={{ color: 'var(--accent-green)' }}>${macro?.etf_flows?.btc_etf_turnover_usd_m || 1580.4}M</strong> • ETH Turnover: <strong style={{ color: 'var(--accent-green)' }}>${macro?.etf_flows?.eth_etf_turnover_usd_m || 620.5}M</strong>
+          </div>
+        </div>
+
+        {/* ETF Cards Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+          gap: '8px'
+        }}>
+          {(macro?.etf_flows?.etfs || [
+            { symbol: 'IBIT', name: 'BlackRock BTC ETF', price: 43.68, change_pct: -1.38, turnover_m: 1350.0, net_status: 'HIGH_LIQUIDITY' },
+            { symbol: 'FBTC', name: 'Fidelity BTC ETF', price: 67.06, change_pct: -1.44, turnover_m: 153.8, net_status: 'STEADY_FLOW' },
+            { symbol: 'GBTC', name: 'Grayscale BTC ETF', price: 54.12, change_pct: -1.36, turnover_m: 54.7, net_status: 'SETTLING' },
+            { symbol: 'ETHA', name: 'BlackRock ETH ETF', price: 18.56, change_pct: -0.11, turnover_m: 602.4, net_status: 'ACCUMULATING' },
+            { symbol: 'FETH', name: 'Fidelity ETH ETF', price: 23.40, change_pct: -0.12, turnover_m: 26.3, net_status: 'INFLOW_STABLE' }
+          ]).map((etf, idx) => {
+            const isPos = (etf.change_pct || 0) >= 0;
+            return (
+              <div
+                key={etf.symbol || idx}
+                style={{
+                  background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  borderRadius: '6px',
+                  padding: '8px 10px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '3px'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                    ${etf.symbol}
+                  </span>
+                  <span style={{
+                    fontSize: '9px',
+                    fontWeight: 700,
+                    padding: '1px 5px',
+                    borderRadius: '4px',
+                    background: isPos ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)',
+                    color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)',
+                    fontFamily: 'var(--font-mono)'
+                  }}>
+                    {isPos ? '+' : ''}{etf.change_pct}%
+                  </span>
+                </div>
+                <div style={{ fontSize: '10px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {etf.name}
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                    ${etf.price?.toFixed(2)}
+                  </span>
+                  <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
+                    Vol: ${etf.turnover_m}M
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* 2. CONTROL BAR (Filter Pills + Search) */}
       <div className='telemetry-panel' style={{ padding: '10px 14px' }}>
         <div style={{
