@@ -42,8 +42,8 @@ export const CHANGELOG_DATA = [
         tag: 'DIVIDEN HUNTER V2',
         tagColor: 'var(--accent-amber)',
         icon: '💰',
-        title: 'Dividen Hunter V2: Kalender, Worth to Buy Scoring & Telegram Alert',
-        desc: 'Kalender pembagian dividen lengkap dengan Cum Date, Ex Date, Pay Date, DPS (Rp), Yield %, serta evaluasi kuantitatif "Worth to Buy" (Yield vs Trap Risk vs Payout Ratio). Terintegrasi dengan bot Telegram via /dividend.'
+        title: 'Dividen Hunter V2: Active Windowing, Dynamic Countdown & Telegram Alert',
+        desc: 'Kalender dividen dinamis berbasis jendela waktu nyata: hanya menampilkan dividen 1 bulan terakhir (pasca-Ex Date) dan perkiraan 3-6 bulan kedepan. Dilengkapi sub-filter (Semua Aktif, Mendatang, 1 Bln Terakhir), kalkulasi live countdown H-X / Pasca-Ex H+X, Worth to Buy scoring, dan bot Telegram /dividend.'
       },
       {
         tag: 'FOREIGN FLOW',

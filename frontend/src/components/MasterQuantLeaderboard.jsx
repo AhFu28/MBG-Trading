@@ -32,6 +32,7 @@ export default function MasterQuantLeaderboard({
   const setActiveMainTab = (tab) => onTabChange?.(tab);
 
   const [stockSubFilter, setStockSubFilter] = useState('ALL_STOCKS');
+  const [dividendWindow, setDividendWindow] = useState('ALL'); // 'ALL' | 'UPCOMING' | 'PAST_MONTH'
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedId, setExpandedId] = useState(null);
   const [orderBookModal, setOrderBookModal] = useState({ isOpen: false, ticker: 'BBRI', price: 4900 });
@@ -243,6 +244,44 @@ export default function MasterQuantLeaderboard({
 
   const filteredDividends = useMemo(() => {
     let list = dividendHunters || [];
+
+    // Current reference date (today in local time)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Compute dynamic days_diff and date window membership
+    list = list.map(d => {
+      let daysDiff = d.days_to_cum || 0;
+      let cumDateObj = null;
+      if (d.cum_date && d.cum_date !== '-') {
+        try {
+          cumDateObj = new Date(d.cum_date + 'T00:00:00');
+          const diffTime = cumDateObj.getTime() - today.getTime();
+          daysDiff = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        } catch (e) {
+          daysDiff = d.days_to_cum || 0;
+        }
+      }
+      return {
+        ...d,
+        days_to_cum: daysDiff,
+        isPast: daysDiff < 0,
+        isToday: daysDiff === 0,
+        isFuture: daysDiff > 0
+      };
+    });
+
+    // 1. Filter by requested window: -1 Month (past 30 days) to +6 Months (next 185 days)
+    list = list.filter(d => d.days_to_cum >= -30 && d.days_to_cum <= 185);
+
+    // 2. Filter by dividendWindow sub-tab
+    if (dividendWindow === 'UPCOMING') {
+      list = list.filter(d => d.days_to_cum >= 0);
+    } else if (dividendWindow === 'PAST_MONTH') {
+      list = list.filter(d => d.days_to_cum < 0);
+    }
+
+    // 3. Search query filter
     if (searchTerm.trim()) {
       const q = searchTerm.trim().toLowerCase();
       list = list.filter(d => 
@@ -253,6 +292,7 @@ export default function MasterQuantLeaderboard({
         (kongloLookup[d.ticker] && kongloLookup[d.ticker].toLowerCase().includes(q))
       );
     }
+
     return [...list].sort((a, b) => {
       let valA = a[sortField] !== undefined ? a[sortField] : a.dividend_yield_pct;
       let valB = b[sortField] !== undefined ? b[sortField] : b.dividend_yield_pct;
@@ -263,7 +303,7 @@ export default function MasterQuantLeaderboard({
         ? String(valA || '').localeCompare(String(valB || ''))
         : String(valB || '').localeCompare(String(valA || ''));
     });
-  }, [dividendHunters, searchTerm, kongloLookup, sortField, sortDirection]);
+  }, [dividendHunters, dividendWindow, searchTerm, kongloLookup, sortField, sortDirection]);
 
   // Robust filtering using Membership Sets (No deduplication data loss)
   const currentDataset = useMemo(() => {
@@ -499,14 +539,45 @@ export default function MasterQuantLeaderboard({
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '8px',
                 fontSize: '11px',
                 fontFamily: 'var(--font-mono)'
               }}>
-                <span style={{ color: 'var(--accent-gold, #fbbf24)', fontWeight: '700' }}>
-                  📅 KALENDER DIVIDEN BEI & EVALUASI KELAYAKAN BELI (WORTH TO BUY)
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                  <span style={{ color: 'var(--accent-gold, #fbbf24)', fontWeight: '700' }}>
+                    📅 KALENDER DIVIDEN BEI (1 BULAN TERAKHIR & 3-6 BULAN KEDEPAN)
+                  </span>
+                  
+                  {/* Sub-window Filter Buttons */}
+                  <div style={{ display: 'inline-flex', background: 'var(--bg-panel-subtle)', borderRadius: '4px', padding: '2px', border: 'var(--border-muted)', gap: '2px' }}>
+                    {[
+                      { id: 'ALL', label: 'SEMUA AKTIF' },
+                      { id: 'UPCOMING', label: '⏳ MENDATANG (3-6 BLN)' },
+                      { id: 'PAST_MONTH', label: '🏁 1 BLN TERAKHIR (PASCA EX)' }
+                    ].map(w => (
+                      <button
+                        key={w.id}
+                        onClick={() => setDividendWindow(w.id)}
+                        style={{
+                          background: dividendWindow === w.id ? 'var(--accent-gold, #fbbf24)' : 'transparent',
+                          color: dividendWindow === w.id ? '#000000' : 'var(--text-muted)',
+                          border: 'none',
+                          padding: '2px 8px',
+                          fontSize: '10px',
+                          fontWeight: '800',
+                          borderRadius: '3px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        {w.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                  KLIK BARIS UNTUK DETAIL RADAR DIVIDEND TRAP & PLAYBOOK
+                  KLIK BARIS UNTUK RADAR DIVIDEND TRAP & METRIK LENGKAP
                 </span>
               </div>
               <table className='telemetry-table' style={{ width: '100%' }}>
@@ -528,7 +599,7 @@ export default function MasterQuantLeaderboard({
                   {filteredDividends.length === 0 ? (
                     <tr>
                       <td colSpan='10' style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
-                        Tidak ada emiten dividen yang sesuai dengan pencarian Anda.
+                        Tidak ada dividen yang sesuai dalam jendela waktu ini.
                       </td>
                     </tr>
                   ) : (
@@ -536,6 +607,29 @@ export default function MasterQuantLeaderboard({
                       const isExpanded = expandedId === ('div-' + d.ticker);
                       const bColor = d.verdict_badge === 'GREEN' ? 'badge-bull' : d.verdict_badge === 'RED' ? 'badge-warn' : 'badge-gold';
                       const grp = kongloLookup[d.ticker] || 'BLUECHIP';
+                      
+                      // Format Countdown Badge
+                      let countdownBadge = null;
+                      if (d.days_to_cum === 0) {
+                        countdownBadge = (
+                          <span className="badge badge-warn" style={{ fontSize: '9px', marginTop: '2px', background: '#dc2626', color: '#ffffff' }}>
+                            🔴 HARI INI (CUM DATE)
+                          </span>
+                        );
+                      } else if (d.days_to_cum > 0) {
+                        countdownBadge = (
+                          <span className="badge badge-gold" style={{ fontSize: '9px', marginTop: '2px' }}>
+                            H-{d.days_to_cum} HARI
+                          </span>
+                        );
+                      } else {
+                        countdownBadge = (
+                          <span className="badge badge-neutral" style={{ fontSize: '9px', marginTop: '2px', color: 'var(--text-muted)' }}>
+                            PASCA EX (H+{Math.abs(d.days_to_cum)})
+                          </span>
+                        );
+                      }
+
                       return (
                         <React.Fragment key={d.ticker}>
                           <tr
@@ -543,6 +637,7 @@ export default function MasterQuantLeaderboard({
                             style={{
                               cursor: 'pointer',
                               background: isExpanded ? 'var(--bg-panel-subtle)' : 'transparent',
+                              opacity: d.days_to_cum < 0 ? 0.85 : 1,
                               transition: 'background 0.15s ease'
                             }}
                           >
@@ -560,9 +655,7 @@ export default function MasterQuantLeaderboard({
                             </td>
                             <td>
                               <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{d.cum_date}</div>
-                              <span className="badge badge-gold" style={{ fontSize: '9px', marginTop: '2px' }}>
-                                H-{d.days_to_cum || 0} HARI
-                              </span>
+                              {countdownBadge}
                             </td>
                             <td style={{ textAlign: 'right', fontWeight: '700', color: 'var(--text-primary)' }}>
                               Rp {Number(d.dps_idr || 0).toLocaleString()}

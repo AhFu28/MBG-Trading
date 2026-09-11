@@ -102,8 +102,16 @@ MBG QUANT TERMINAL VERSION REGISTRY
   - Kolom tetap dinamai **`Klaster`** khusus untuk pasar Crypto Spot (*Layer 1, DeFi, Meme*).
 - **Pencarian Adaptif**: Input pencarian berganti menjadi `CARI TICKER / GRUP...`.
 
-### 9. Dividen Hunter V2: Kalender & Evaluasi 'Worth to Buy'
-- **Kalender Distribusi Lengkap**: Menampilkan Cum Date, Countdown H-minus (`H-12`), Ex Date, Payment Date, dan nominal DPS (Rp per lembar).
+### 9. Dividen Hunter V2: Kalender, Active Windowing & Evaluasi 'Worth to Buy'
+- **Active Timeline Windowing (1 Bulan Terakhir & 3-6 Bulan Kedepan)**:
+  - Eliminasi dividen basi/lewat waktu (> 30 hari yang lalu).
+  - Jendela waktu dinamis: rentang waktu -30 hari (pasca Ex Date) s/d +185 hari (perkiraan 6 bulan kedepan).
+  - Sub-filter cepat: `SEMUA AKTIF`, `⏳ MENDATANG (3-6 BLN)`, dan `🏁 1 BLN TERAKHIR (PASCA EX)`.
+- **Dynamic Live Countdown**:
+  - `H-X HARI`: Hitungan mundur dinamis menuju Cum Date (berwarna emas).
+  - `🔴 HARI INI (CUM DATE)`: Peringatan hari puncak transaksi sebelum Ex Date.
+  - `PASCA EX (H+X)`: Status dividen yang baru selesai Cum Date untuk memantau rebound penurunan harga.
+- **Kalender Distribusi Lengkap**: Menampilkan Cum Date, Countdown, Ex Date, Payment Date, dan nominal DPS (Rp per lembar).
 - **Formula Multi-Faktor 'Worth to Buy'**:
   - Menilai imbal hasil (Yield), rasio risiko penurunan harga Ex-Date (*Dividend Trap*), kesehatan rasio pembayaran laba (*Payout Ratio*), dan posisi tren terhadap MA20.
   - Klasifikasi status:
@@ -111,7 +119,7 @@ MBG QUANT TERMINAL VERSION REGISTRY
     - 🟡 `TACTICAL (RUN-UP SWING ONLY)`: Yield tinggi namun risiko trap tinggi; direkomendasikan beli di Buy Zone dan jual pada H-1 Cum Date untuk mengunci capital gain tanpa terkena penurunan harga Ex-Date.
     - 🔴 `HIGH TRAP RISK (AVOID)`: Potensi penurunan Ex-Date melebihi yield; hindari beli baru menjelang Cum Date.
 - **Drawer Detail Interaktif**: Menyajikan simulasi Net Gain vs Ex Drop, hari pemulihan harga historis, dan batas pengaman Hard Stop Loss.
-- **Integrasi Telegram Bot**: Mendukung command `/dividend` (rekap 5 jadwal terdekat) dan `/dividend <KODE>` (analisa kelayakan beli emiten spesifik).
+- **Integrasi Telegram Bot**: Mendukung command `/dividend` (rekap jadwal terdekat) dan `/dividend <KODE>` (analisa kelayakan beli emiten spesifik).
 
 ### 10. Sentralisasi Arus Modal Asing (Foreign Flow) ke Home Command Center
 - **Eliminasi Pseudo-Plan**: Menghapus sub-tab Foreign Flow dari tabel saham IDX untuk menjaga kemurnian analisa teknikal quant (tanpa Stop Loss / TP artifisial).

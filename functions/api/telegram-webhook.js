@@ -209,29 +209,33 @@ export async function onRequestPost(context) {
       if (!dividends.length) {
         reply = "📅 <b>KALENDER DIVIDEN BEI</b>\n\n<i>Belum ada jadwal dividen dalam radar saat ini.</i>";
       } else if (!arg) {
-        let lines = ["📅 <b>KALENDER DIVIDEN BEI & RADAR WORTH TO BUY</b>\n<i>Daftar jadwal dividen terdekat:</i>\n━━━━━━━━━━━━━━━━━━━━━\n"];
-        dividends.slice(0, 5).forEach((item, idx) => {
+        let lines = ["📅 <b>KALENDER DIVIDEN BEI (1 BLN TERAKHIR & 3-6 BLN KEDEPAN)</b>\n<i>Daftar jadwal dividen terpilih:</i>\n━━━━━━━━━━━━━━━━━━━━━\n"];
+        dividends.slice(0, 7).forEach((item, idx) => {
           const bIcon = item.verdict_badge === 'GREEN' ? '🟢' : item.verdict_badge === 'RED' ? '🔴' : '🟡';
+          const diff = item.days_to_cum || 0;
+          const countdown = diff === 0 ? "🔴 HARI INI" : diff > 0 ? `H-${diff} Hari` : `PASCA EX (H+${Math.abs(diff)})`;
           lines.push(
             `${idx + 1}. ${bIcon} <b>$${item.ticker}</b> (${item.company_name})\n` +
-            `   ▫️ Cum Date : <b>${item.cum_date}</b> [H-${item.days_to_cum || 0} Hari]\n` +
+            `   ▫️ Cum Date : <b>${item.cum_date}</b> [${countdown}]\n` +
             `   ▫️ DPS      : Rp ${Number(item.dps_idr || 0).toLocaleString()} (Yield: <b>${item.dividend_yield_pct}%</b>)\n` +
             `   ▫️ Status   : <b>${item.verdict || 'MONITOR'}</b>\n` +
             `   ▫️ Buy Zone : Rp ${Number(item.buy_zone_low).toLocaleString()} - Rp ${Number(item.buy_zone_high).toLocaleString()}\n`
           );
         });
-        lines.push("\n💡 <i>Ketik <code>/dividend &lt;KODE&gt;</code> untuk analisa lengkap (contoh: <code>/dividend PTBA</code>).</i>");
+        lines.push("\n💡 <i>Ketik <code>/dividend &lt;KODE&gt;</code> untuk analisa lengkap (contoh: <code>/dividend HEXA</code>).</i>");
         reply = lines.join("\n");
       } else {
         const match = dividends.find(d => (d.ticker || "").toUpperCase() === arg);
         if (match) {
           const bIcon = match.verdict_badge === 'GREEN' ? '🟢' : match.verdict_badge === 'RED' ? '🔴' : '🟡';
+          const diff = match.days_to_cum || 0;
+          const countdown = diff === 0 ? "🔴 HARI INI" : diff > 0 ? `H-${diff} Hari` : `PASCA EX (H+${Math.abs(diff)})`;
           reply = 
             `📊 <b>ANALISA DIVIDEN: $${match.ticker} (${match.company_name})</b>\n` +
             `Status: ${bIcon} <b>${match.verdict}</b>\n` +
             `━━━━━━━━━━━━━━━━━━━━━\n` +
             `🗓️ <b>JADWAL DISTRIBUSI:</b>\n` +
-            `  • Cum Date     : <b>${match.cum_date}</b> [H-${match.days_to_cum || 0} Hari]\n` +
+            `  • Cum Date     : <b>${match.cum_date}</b> [${countdown}]\n` +
             `  • Ex Date      : <b>${match.ex_date}</b>\n` +
             `  • Payment Date : <b>${match.payment_date}</b>\n\n` +
             `💰 <b>METRIK & IMBAL HASIL:</b>\n` +
