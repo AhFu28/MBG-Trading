@@ -1232,6 +1232,21 @@
       "closed_at": null,
       "pnl": 0,
       "pnl_pct": 0
+    },
+    {
+      "id": "7877b9a5-d38f-48d1-a1e5-7018dcc978cf",
+      "ticker": "SOLUSDT",
+      "entry_price": 103.09,
+      "sl_price": 98.45,
+      "tp1_price": 112.37,
+      "tp2_price": 117.93,
+      "lots": 1988,
+      "strategy_type": "Astra",
+      "status": "PENDING",
+      "opened_at": "2026-09-11T15:08:44.457151",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
     }
   ]
 }
