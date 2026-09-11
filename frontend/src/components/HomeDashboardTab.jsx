@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import BloombergNewsWire from './BloombergNewsWire.jsx';
 
 export default function HomeDashboardTab({
@@ -13,11 +13,11 @@ export default function HomeDashboardTab({
   const topCrypto = topCryptoPicks[0];
   const macro = data?.macro_telemetry || {};
   const foreignFlow = data?.foreign_flow || {};
-  const bandarmology = data?.bandarmology_iifs || {};
+  const brokerSummary = data?.broker_summary || {};
 
   // Resolve overall sentiment safely
-  const sentiment = macro?.impact_assessment?.overall_sentiment || macro?.sentiment || 'BULLISH ACCUMULATION';
-  const narrative = macro?.impact_assessment?.narrative || macro?.headline || macro?.live_news?.[0]?.title || 'IHSG terkonsolidasi positif ditopang sektor komoditas dan perbankan.';
+  const sentiment = macro?.impact_assessment?.overall_sentiment || macro?.sentiment || 'BULLISH';
+  const narrative = macro?.impact_assessment?.narrative || macro?.headline || macro?.live_news?.[0]?.title || 'IHSG berkonsolidasi ditopang aksi akumulasi broker institusi dan stabilitas komoditas energi.';
 
   const topInflow = (foreignFlow.top_inflow || []).slice(0, 4);
   const topOutflow = (foreignFlow.top_outflow || []).slice(0, 4);
@@ -48,13 +48,15 @@ export default function HomeDashboardTab({
     id: `idx-${p.clean_ticker || idx}`,
     market: 'IDX',
     symbol: p.clean_ticker || p.symbol?.replace('.JK', '') || `IDX-${idx}`,
-    signal: p.technical_signal || 'BUY BREAKOUT',
+    name: p.company_name || p.name || 'IDX Equities',
+    signal: p.technical_signal || 'BREAKOUT',
     entry: `Rp ${Number(p.entry_price || 0).toLocaleString()}`,
     sl: `Rp ${Number(p.stop_loss || 0).toLocaleString()}`,
     tp: `Rp ${Number(p.target_1 || 0).toLocaleString()}`,
     rr: `1:${p.risk_reward_ratio || '2.0'}`,
     raw_entry: p.entry_price,
-    raw_sl: p.stop_loss
+    raw_sl: p.stop_loss,
+    change_pct: p.change_pct !== undefined ? p.change_pct : null
   }));
 
   // Normalizing Crypto spot trade plans
@@ -62,13 +64,15 @@ export default function HomeDashboardTab({
     id: `crypto-${c.pair || idx}`,
     market: 'CRYPTO',
     symbol: c.pair || `CRYPTO-${idx}`,
+    name: c.pair?.split('/')[0] + ' Spot',
     signal: c.setup_type?.replace(/_/g, ' ') || 'SPOT ACCUMULATION',
     entry: `$${c.entry_high || c.current_price || '-'}`,
     sl: `$${c.stop_loss || '-'}`,
     tp: `$${c.take_profit_1 || '-'}`,
     rr: `1:${c.risk_reward_ratio || '2.0'}`,
     raw_entry: c.entry_high || c.current_price,
-    raw_sl: c.stop_loss
+    raw_sl: c.stop_loss,
+    change_pct: c.change_24h_pct !== undefined ? c.change_24h_pct : null
   }));
 
   const allSignals = signalTab === 'IDX'
@@ -79,10 +83,10 @@ export default function HomeDashboardTab({
 
   const visibleSignals = rowLimit === 'ALL' ? allSignals : allSignals.slice(0, Number(rowLimit));
 
-  // Smart money / Bandarmology accumulating picks (replacing static conglomerate)
-  const accumulatingStocks = Object.values(bandarmology)
-    .filter(b => b.is_accumulating && (b.estimated_flow_idr || 0) > 0)
-    .sort((a, b) => (b.estimated_flow_idr || 0) - (a.estimated_flow_idr || 0))
+  // Extract Top 4 Real Accumulation Picks from broker_summary
+  const accumulatingBrokers = Object.values(brokerSummary)
+    .filter(b => b.bandar_accumulation_grade === 'BIG_ACCUMULATION' || b.bandar_accumulation_grade === 'ACCUMULATION')
+    .sort((a, b) => ((b.top_buyers?.[0]?.lots || 0) * (b.bandar_avg_price || 0)) - ((a.top_buyers?.[0]?.lots || 0) * (a.bandar_avg_price || 0)))
     .slice(0, 4);
 
   return (
@@ -94,14 +98,14 @@ export default function HomeDashboardTab({
       {/* ZONA 2: 3-CARD EXECUTIVE BENTO HUD */}
       <div className="hero-grid" style={{
         display: 'grid',
-        gridTemplateColumns: '1.3fr 1fr 1fr',
+        gridTemplateColumns: '1.2fr 1fr 1fr',
         gap: '8px'
       }}>
         {/* Card 1: Macro & Market Regime Radar */}
         <div className="telemetry-panel" style={{
           padding: '8px 12px',
           borderLeft: '3px solid var(--accent-green)',
-          background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(0,208,132,0.05) 100%)',
+          background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(0,208,132,0.04) 100%)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between'
@@ -109,16 +113,16 @@ export default function HomeDashboardTab({
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span className="metric-label" style={{ fontSize: '9px' }}>🌐 IHSG &amp; GLOBAL REGIME</span>
-              <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 4px' }}>ACTIVE REGIME</span>
+              <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>ACTIVE REGIME</span>
             </div>
-            <div style={{ fontSize: '14px', fontWeight: '800', marginTop: '4px', color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ fontSize: '15px', fontWeight: '800', marginTop: '3px', color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
               {sentiment}
             </div>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '3px', lineHeight: 1.35 }}>
-              {narrative.length > 90 ? narrative.slice(0, 90) + '...' : narrative}
+              {narrative.length > 95 ? narrative.slice(0, 95) + '...' : narrative}
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '6px', marginTop: '6px', fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+          <div style={{ display: 'flex', gap: '6px', marginTop: '5px', fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
             <span>XAU: ${macro?.gold_price || '2,340'}</span> · 
             <span>BRENT: ${macro?.brent_oil_price || macro?.brent_oil || '82.5'}</span> · 
             <span>DXY: {macro?.dxy_index || '104.1'}</span>
@@ -136,12 +140,15 @@ export default function HomeDashboardTab({
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span className="metric-label" style={{ fontSize: '9px' }}>🔥 #1 IDX ALPHA WATCHLIST</span>
-              <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 4px' }}>{topIdx?.technical_signal || 'BREAKOUT'}</span>
+              <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>{topIdx?.technical_signal || 'BREAKOUT'}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '4px' }}>
-              <span style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-                {topIdx?.clean_ticker || topIdx?.symbol || 'SCANNING...'}
-              </span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '3px' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                <span style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                  {topIdx?.clean_ticker || topIdx?.symbol || 'SCANNING...'}
+                </span>
+                <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>IDX Equities</span>
+              </div>
               {topIdx && (
                 <button
                   className="telemetry-btn"
@@ -156,7 +163,7 @@ export default function HomeDashboardTab({
               Entry: Rp {topIdx?.entry_price ? Number(topIdx.entry_price).toLocaleString() : '-'} · TP: Rp {topIdx?.target_1 ? Number(topIdx.target_1).toLocaleString() : '-'}
             </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)', fontSize: '9px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '5px', paddingTop: '4px', borderTop: 'var(--border-muted)', fontSize: '9px' }}>
             <span style={{ color: 'var(--text-muted)' }}>SL: Rp {topIdx?.stop_loss ? Number(topIdx.stop_loss).toLocaleString() : '-'}</span>
             <span style={{ fontWeight: '800', color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
               R:R 1:{topIdx?.risk_reward_ratio || '-'}
@@ -175,9 +182,9 @@ export default function HomeDashboardTab({
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span className="metric-label" style={{ fontSize: '9px' }}>⚡ #1 CRYPTO SPOT MOMENTUM</span>
-              <span className="badge badge-alert" style={{ fontSize: '8px', padding: '1px 4px' }}>NO LEV / SPOT</span>
+              <span className="badge badge-alert" style={{ fontSize: '8px', padding: '1px 5px' }}>NO LEV / SPOT</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '4px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '3px' }}>
               <span style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                 {topCrypto?.pair || 'SCANNING...'}
               </span>
@@ -189,7 +196,7 @@ export default function HomeDashboardTab({
               Entry: ${topCrypto?.current_price || topCrypto?.entry_high || '-'} · TP: ${topCrypto?.take_profit_1 || '-'}
             </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)', fontSize: '9px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '5px', paddingTop: '4px', borderTop: 'var(--border-muted)', fontSize: '9px' }}>
             <span style={{ color: 'var(--text-muted)' }}>SL: ${topCrypto?.stop_loss || '-'}</span>
             <span style={{ fontWeight: '800', color: 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>
               R:R 1:{topCrypto?.risk_reward_ratio || '-'}
@@ -203,19 +210,21 @@ export default function HomeDashboardTab({
         
         {/* Box Left: Foreign Capital Flow Radar */}
         <div className="telemetry-panel" style={{ border: 'var(--border-hairline)' }}>
-          <div className="telemetry-header" style={{ padding: '6px 10px', fontSize: '11px' }}>
-            <span>🌐 IDX FOREIGN CAPITAL FLOW</span>
+          <div className="telemetry-header" style={{ padding: '6px 10px', fontSize: '11px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span>🌐 IDX FOREIGN CAPITAL FLOW</span>
+            </div>
             <span className={`badge ${totalNetForeign >= 0 ? 'badge-bull' : 'badge-bear'}`} style={{ fontSize: '8px', padding: '1px 5px' }}>
               {totalNetForeign >= 0 ? 'NET BUY' : 'NET SELL'}
             </span>
           </div>
-          <div style={{ padding: '8px 10px' }}>
+          <div style={{ padding: '6px 10px' }}>
             {/* Macro Net Stats Bar */}
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
-              marginBottom: '6px',
-              padding: '4px 8px',
+              marginBottom: '5px',
+              padding: '3px 8px',
               background: 'var(--bg-panel-subtle)',
               borderRadius: '3px',
               border: 'var(--border-hairline)',
@@ -239,7 +248,7 @@ export default function HomeDashboardTab({
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
               {/* Inflow */}
               <div>
-                <div style={{ fontSize: '9px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '4px' }}>
+                <div style={{ fontSize: '9px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '3px' }}>
                   ▲ TOP INFLOW (BUY)
                 </div>
                 {topInflow.length > 0 ? (
@@ -256,7 +265,7 @@ export default function HomeDashboardTab({
 
               {/* Outflow */}
               <div>
-                <div style={{ fontSize: '9px', fontWeight: '800', color: 'var(--accent-rust)', marginBottom: '4px' }}>
+                <div style={{ fontSize: '9px', fontWeight: '800', color: 'var(--accent-rust)', marginBottom: '3px' }}>
                   ▼ TOP OUTFLOW (SELL)
                 </div>
                 {topOutflow.length > 0 ? (
@@ -274,12 +283,12 @@ export default function HomeDashboardTab({
           </div>
         </div>
 
-        {/* Box Right: Domestic Smart Money / Bandarmology IIFS Accumulation */}
+        {/* Box Right: Domestic Smart Money / Broker Summary Big Accumulation */}
         <div className="telemetry-panel" style={{ border: 'var(--border-hairline)' }}>
           <div className="telemetry-header" style={{ padding: '6px 10px', fontSize: '11px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span>🐳 BANDARMOLOGY IIFS (SMART MONEY)</span>
-              <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 4px' }}>DOMESTIC FLOW</span>
+              <span>🐳 BANDARMOLOGY (BROKER ACCUMULATION)</span>
+              <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 4px' }}>TOP BUYERS</span>
             </div>
             <button
               className="telemetry-btn"
@@ -289,31 +298,35 @@ export default function HomeDashboardTab({
               RADAR LENGKAP →
             </button>
           </div>
-          <div style={{ padding: '8px 10px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {accumulatingStocks.map((b, idx) => (
-                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3px 0', borderBottom: 'var(--border-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
-                  <div>
-                    <span style={{ fontWeight: '800', cursor: 'pointer', color: 'var(--accent-blue)' }} onClick={() => onSelectTicker(b.ticker, 'IDX')}>
-                      ${b.ticker}
-                    </span>
-                    <span style={{ fontSize: '8px', color: 'var(--text-muted)', marginLeft: '6px' }}>
-                      MFI {Math.round(b.mfi_value)} · OBV {b.obv_trend}
-                    </span>
+          <div style={{ padding: '6px 10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              {accumulatingBrokers.map((b, idx) => {
+                const topB = b.top_buyers?.[0];
+                const lotsK = topB?.lots ? Math.round(topB.lots / 1000).toLocaleString() + 'k' : '-';
+                return (
+                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '2px 0', borderBottom: 'var(--border-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
+                    <div>
+                      <span style={{ fontWeight: '800', cursor: 'pointer', color: 'var(--accent-blue)' }} onClick={() => onSelectTicker(b.ticker, 'IDX')}>
+                        ${b.ticker}
+                      </span>
+                      <span style={{ fontSize: '8px', color: 'var(--text-muted)', marginLeft: '6px' }}>
+                        Avg: Rp {b.bandar_avg_price || b.ref_price}
+                      </span>
+                    </div>
+                    <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>
+                        {topB?.broker} ({lotsK} lot)
+                      </span>
+                      <span className="badge badge-bull" style={{ fontSize: '8px', padding: '0 4px' }}>
+                        {b.bandar_accumulation_grade.replace(/_/g, ' ')}
+                      </span>
+                    </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <span style={{ fontWeight: '700', color: 'var(--accent-green)' }}>
-                      +Rp {((b.estimated_flow_idr || 0) / 1e9).toFixed(1)}B
-                    </span>
-                    <span className="badge badge-bull" style={{ fontSize: '8px', marginLeft: '6px', padding: '0 3px' }}>
-                      {b.flow_classification.replace(/_/g, ' ')}
-                    </span>
-                  </div>
-                </div>
-              ))}
-              {accumulatingStocks.length === 0 && (
+                );
+              })}
+              {accumulatingBrokers.length === 0 && (
                 <div style={{ fontSize: '9px', color: 'var(--text-muted)', textAlign: 'center', padding: '12px 0' }}>
-                  Smart money flow sedang dievaluasi oleh IIFS Engine...
+                  Smart money flow sedang dievaluasi oleh Broker Engine...
                 </div>
               )}
             </div>
@@ -322,9 +335,9 @@ export default function HomeDashboardTab({
 
       </div>
 
-      {/* ZONA 4: CROSS-ASSET HIGH-CONVICTION QUANT SIGNALS MATRIX */}
+      {/* ZONA 4: CROSS-ASSET HIGH-CONVICTION QUANT SIGNALS MATRIX (Coingecko/SoSoValue Density) */}
       <div className="telemetry-panel" style={{ border: 'var(--border-hairline)' }}>
-        <div className="telemetry-header" style={{ padding: '6px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
+        <div className="telemetry-header" style={{ padding: '5px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontWeight: '700', fontSize: '11px' }}>🎯 HIGH-CONVICTION QUANT SIGNALS</span>
@@ -382,49 +395,56 @@ export default function HomeDashboardTab({
         </div>
 
         {/* Scrollable Compact Table */}
-        <div style={{ maxHeight: '250px', overflowY: 'auto', overflowX: 'auto' }}>
+        <div style={{ maxHeight: '235px', overflowY: 'auto', overflowX: 'auto' }}>
           <table className="telemetry-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead style={{ position: 'sticky', top: 0, background: 'var(--bg-panel)', zIndex: 1 }}>
               <tr>
-                <th style={{ padding: '5px 8px', fontSize: '10px' }}>TICKER / PAIR</th>
-                <th style={{ padding: '5px 8px', fontSize: '10px' }}>ASSET</th>
-                <th style={{ padding: '5px 8px', fontSize: '10px' }}>SIGNAL SETUP</th>
-                <th style={{ padding: '5px 8px', fontSize: '10px' }}>ENTRY</th>
-                <th style={{ padding: '5px 8px', fontSize: '10px' }}>STOP LOSS</th>
-                <th style={{ padding: '5px 8px', fontSize: '10px' }}>TARGET 1</th>
-                <th style={{ padding: '5px 8px', fontSize: '10px' }}>R:R</th>
-                <th style={{ padding: '5px 8px', fontSize: '10px' }}>ACTION</th>
+                <th style={{ padding: '4px 8px', fontSize: '9px' }}>TICKER / ASSET</th>
+                <th style={{ padding: '4px 8px', fontSize: '9px' }}>MKT</th>
+                <th style={{ padding: '4px 8px', fontSize: '9px' }}>SETUP</th>
+                <th style={{ padding: '4px 8px', fontSize: '9px' }}>ENTRY</th>
+                <th style={{ padding: '4px 8px', fontSize: '9px' }}>STOP LOSS</th>
+                <th style={{ padding: '4px 8px', fontSize: '9px' }}>TARGET 1</th>
+                <th style={{ padding: '4px 8px', fontSize: '9px' }}>R:R</th>
+                <th style={{ padding: '4px 8px', fontSize: '9px' }}>ACTION</th>
               </tr>
             </thead>
             <tbody>
               {visibleSignals.map((plan, idx) => (
                 <tr key={plan.id || idx}>
-                  <td style={{ fontWeight: '800', fontFamily: 'var(--font-mono)', padding: '5px 8px' }}>
-                    <span
-                      style={{ color: 'var(--accent-blue)', cursor: 'pointer' }}
-                      onClick={() => onSelectTicker(plan.symbol, plan.market)}
-                    >
-                      {plan.symbol}
-                    </span>
+                  <td style={{ fontWeight: '800', fontFamily: 'var(--font-mono)', padding: '4px 8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
+                      <span
+                        style={{ color: 'var(--accent-blue)', cursor: 'pointer', fontSize: '11px' }}
+                        onClick={() => onSelectTicker(plan.symbol, plan.market)}
+                      >
+                        {plan.symbol}
+                      </span>
+                      {plan.change_pct !== null && (
+                        <span style={{ fontSize: '9px', color: plan.change_pct >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                          {plan.change_pct >= 0 ? '+' : ''}{plan.change_pct}%
+                        </span>
+                      )}
+                    </div>
                   </td>
-                  <td style={{ padding: '5px 8px' }}>
-                    <span className={plan.market === 'IDX' ? 'badge badge-bull' : 'badge badge-alert'} style={{ fontSize: '8px', padding: '1px 4px' }}>
+                  <td style={{ padding: '4px 8px' }}>
+                    <span className={plan.market === 'IDX' ? 'badge badge-bull' : 'badge badge-alert'} style={{ fontSize: '7px', padding: '1px 3px' }}>
                       {plan.market}
                     </span>
                   </td>
-                  <td style={{ padding: '5px 8px' }}>
+                  <td style={{ padding: '4px 8px' }}>
                     <span className="badge badge-neutral" style={{ fontSize: '8px', padding: '1px 4px' }}>
                       {plan.signal}
                     </span>
                   </td>
-                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '5px 8px' }}>{plan.entry}</td>
-                  <td style={{ color: 'var(--accent-rust)', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '5px 8px' }}>{plan.sl}</td>
-                  <td style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '5px 8px' }}>{plan.tp}</td>
-                  <td style={{ fontWeight: '700', color: 'var(--accent-green)', fontFamily: 'var(--font-mono)', fontSize: '11px', padding: '5px 8px' }}>
+                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', padding: '4px 8px' }}>{plan.entry}</td>
+                  <td style={{ color: 'var(--accent-rust)', fontFamily: 'var(--font-mono)', fontSize: '10px', padding: '4px 8px' }}>{plan.sl}</td>
+                  <td style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)', fontSize: '10px', padding: '4px 8px' }}>{plan.tp}</td>
+                  <td style={{ fontWeight: '700', color: 'var(--accent-green)', fontFamily: 'var(--font-mono)', fontSize: '10px', padding: '4px 8px' }}>
                     {plan.rr}
                   </td>
-                  <td style={{ padding: '5px 8px' }}>
-                    <div style={{ display: 'flex', gap: '4px' }}>
+                  <td style={{ padding: '4px 8px' }}>
+                    <div style={{ display: 'flex', gap: '3px' }}>
                       <button
                         className="telemetry-btn"
                         onClick={() => onSelectTicker(plan.symbol, plan.market)}
@@ -467,14 +487,14 @@ export default function HomeDashboardTab({
         justifyContent: 'space-between',
         alignItems: 'center',
         background: 'var(--bg-panel)',
-        padding: '6px 12px',
+        padding: '5px 12px',
         borderRadius: '4px',
         border: 'var(--border-hairline)',
-        fontSize: '10px',
+        fontSize: '9px',
         flexWrap: 'wrap',
-        gap: '8px'
+        gap: '6px'
       }}>
-        <div style={{ display: 'flex', gap: '14px', alignItems: 'center', fontFamily: 'var(--font-mono)' }}>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', fontFamily: 'var(--font-mono)' }}>
           <span style={{ color: 'var(--text-muted)' }}>
             INSTRUMENTS: <strong style={{ color: 'var(--text-primary)' }}>82 SAHAM · 10 CRYPTO</strong>
           </span>
@@ -487,10 +507,10 @@ export default function HomeDashboardTab({
         </div>
 
         <div style={{ display: 'flex', gap: '6px' }}>
-          <button className="telemetry-btn" onClick={() => onNavigateTab('TESTING')} style={{ fontSize: '9px', padding: '2px 8px' }}>
+          <button className="telemetry-btn" onClick={() => onNavigateTab('TESTING')} style={{ fontSize: '8px', padding: '2px 6px' }}>
             🧪 Testing Lab
           </button>
-          <button className="telemetry-btn" onClick={() => onNavigateTab('ACADEMY')} style={{ fontSize: '9px', padding: '2px 8px' }}>
+          <button className="telemetry-btn" onClick={() => onNavigateTab('ACADEMY')} style={{ fontSize: '8px', padding: '2px 6px' }}>
             🎓 Academy
           </button>
         </div>

@@ -7,6 +7,7 @@ import LotCalculatorModal from './components/LotCalculatorModal.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import ChangelogTab from './components/ChangelogTab.jsx';
 import ChartingDeskTab from './components/ChartingDeskTab.jsx';
+import GlobalMarketTicker from './components/GlobalMarketTicker.jsx';
 
 function HeaderClock() {
   const [now, setNow] = useState(() => new Date());
@@ -221,47 +222,8 @@ export default function App() {
             {/* Right: Quick Launch Tools, Theme Switcher, Sync & Live Clock */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               
-              {/* Launch Chart */}
-              <button
-                onClick={() => setActiveTab('CHARTING')}
-                className="telemetry-btn"
-                style={{
-                  background: 'var(--bg-panel-subtle)',
-                  borderColor: 'var(--border-color)',
-                  color: 'var(--text-primary)',
-                  padding: '5px 11px',
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px'
-                }}
-                title="Buka Institutional Charting Desk (TradingView Pro)"
-              >
-                <span>📈</span>
-                <span>CHARTING DESK</span>
-              </button>
-
-              {/* Kalkulator Lot */}
-              <button
-                onClick={() => handleOpenLotCalc()}
-                className="telemetry-btn"
-                style={{
-                  background: 'var(--accent-green)',
-                  color: '#ffffff',
-                  padding: '5px 11px',
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  boxShadow: '0 2px 6px rgba(0, 208, 132, 0.25)'
-                }}
-                title="Kalkulator Ukuran Lot & Manajemen Risiko"
-              >
-                <span>💰</span>
-                <span>KALKULATOR LOT</span>
-              </button>
+              {/* Bursa Luar Negeri (Global Market Sessions Ticker) */}
+              <GlobalMarketTicker onNavigateGlobal={() => setActiveTab('GLOBAL_MARKETS')} />
 
               {/* Theme Toggle Button */}
               <button

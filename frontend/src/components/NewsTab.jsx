@@ -51,24 +51,45 @@ export default function NewsTab({
   };
 
   const items = Array.isArray(liveNews) ? liveNews : [];
+
+  // SoSoValue-style research categories
   const categories = [
-    { id: 'ALL', label: 'SEMUA WIRE' },
-    { id: 'SNIPS', label: '⚡ DAILY RECAP (SNIPS)' },
-    { id: 'METALS', label: 'LOGAM / EMAS' },
-    { id: 'ENERGY', label: 'MINYAK & ENERGI' },
-    { id: 'BANKING', label: 'PERBANKAN' },
-    { id: 'MACRO', label: 'MAKRO GLOBAL' },
+    { id: 'ALL', label: '🔥 ALL RESEARCH' },
+    { id: 'CRYPTO', label: '⚡ CRYPTO & ETFS' },
+    { id: 'IDX', label: '🏛️ SAHAM IDX' },
+    { id: 'BANKING', label: '🏦 PERBANKAN' },
+    { id: 'COMMODITY', label: '⛏️ LOGAM & ENERGI' },
+    { id: 'MACRO', label: '🌐 FED & MAKRO' },
+    { id: 'SNIPS', label: '📋 DAILY RECAP' },
     { id: 'BOOKMARKS', label: `★ TERSIMPAN (${bookmarks.length})` }
   ];
+
+  // Aggregate Market Sentiment for Hero Bar
+  const sentimentStats = useMemo(() => {
+    let bull = 0, bear = 0, neut = 0;
+    items.forEach(item => {
+      const s = (item.sentiment || '').toUpperCase();
+      if (s === 'BULLISH') bull++;
+      else if (s === 'BEARISH') bear++;
+      else neut++;
+    });
+    const total = items.length || 1;
+    return {
+      bullPct: Math.round((bull / total) * 100),
+      bearPct: Math.round((bear / total) * 100),
+      neutPct: Math.round((neut / total) * 100),
+      total: items.length
+    };
+  }, [items]);
 
   const toggleBookmark = (id) => {
     setBookmarks(prev => {
       const exists = prev.includes(id);
       if (exists) {
-        showToast('Berita dihapus dari simpanan');
+        showToast('Riset dihapus dari simpanan');
         return prev.filter(b => b !== id);
       } else {
-        showToast('Berita berhasil disimpan!');
+        showToast('Riset berhasil disimpan!');
         return [...prev, id];
       }
     });
@@ -94,7 +115,7 @@ export default function NewsTab({
     } else {
       stopTTS();
       setTtsState({ isPlaying: true, activeId: id });
-      showToast('Memutar audio intisari berita...');
+      showToast('Memutar audio intisari riset...');
       playTTS(textToSpeak, () => {
         setTtsState({ isPlaying: false, activeId: null });
       });
@@ -109,9 +130,24 @@ export default function NewsTab({
 
       if (newsFilter === 'BOOKMARKS') {
         if (!isBookmarked) return false;
-      } else if (newsFilter !== 'ALL' && newsFilter !== 'SNIPS') {
-        const tag = (item.tag || item.category || '').toUpperCase();
-        if (!tag.includes(newsFilter)) return false;
+      } else if (newsFilter === 'CRYPTO') {
+        const stream = item.stream || '';
+        const tag = (item.tag || '').toUpperCase();
+        if (stream !== 'CRYPTO' && !tag.includes('CRYPTO') && !tag.includes('DEFI')) return false;
+      } else if (newsFilter === 'IDX') {
+        const stream = item.stream || '';
+        const tag = (item.tag || '').toUpperCase();
+        if (stream === 'CRYPTO') return false;
+        if (!['IHSG', 'BANKING', 'METALS', 'ENERGY', 'FOREIGN_FLOW'].includes(tag)) return false;
+      } else if (newsFilter === 'BANKING') {
+        const tag = (item.tag || '').toUpperCase();
+        if (!tag.includes('BANK')) return false;
+      } else if (newsFilter === 'COMMODITY') {
+        const tag = (item.tag || '').toUpperCase();
+        if (!tag.includes('METALS') && !tag.includes('ENERGY')) return false;
+      } else if (newsFilter === 'MACRO') {
+        const tag = (item.tag || '').toUpperCase();
+        if (!tag.includes('MACRO') && !tag.includes('FED')) return false;
       }
 
       if (!newsSearch) return true;
@@ -120,6 +156,7 @@ export default function NewsTab({
         (item.title && item.title.toLowerCase().includes(q)) ||
         (item.source && item.source.toLowerCase().includes(q)) ||
         (item.summary && item.summary.toLowerCase().includes(q)) ||
+        (item.tag && item.tag.toLowerCase().includes(q)) ||
         (item.related_tickers && item.related_tickers.some(t => t.toLowerCase().includes(q)))
       );
     });
@@ -166,7 +203,51 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan hindari FOMO.
       position: 'relative'
     }}>
 
-      {/* 1. CONTROL BAR (Filter Pills + Search) */}
+      {/* 1. SOSOVALUE STYLE RESEARCH HERO BAR (Aggregated Sentiment & Wire Telemetry) */}
+      <div className='telemetry-panel' style={{
+        padding: '12px 16px',
+        background: 'var(--bg-panel)',
+        borderLeft: '4px solid var(--accent-orange, #f59e0b)'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-green)', display: 'inline-block' }} />
+              <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
+                SOSOVALUE-STYLE RESEARCH &amp; MACRO WIRE
+              </span>
+              <span className="badge badge-bull" style={{ fontSize: '9px', padding: '1px 6px' }}>
+                LIVE 24/7 DUAL-STREAM
+              </span>
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
+              Kurasi riset institusional multi-stream: Saham IDX (BEI) &amp; Crypto Global ETF Flows dengan intisari AI Key Takeaways.
+            </div>
+          </div>
+
+          {/* Sentiment Meter Bar */}
+          <div style={{ display: 'flex', flexDirection: 'column', minWidth: '220px', gap: '4px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+              <span style={{ color: 'var(--accent-green)' }}>BULLISH {sentimentStats.bullPct}%</span>
+              <span style={{ color: 'var(--text-muted)' }}>NETRAL {sentimentStats.neutPct}%</span>
+              <span style={{ color: 'var(--accent-rust)' }}>BEARISH {sentimentStats.bearPct}%</span>
+            </div>
+            <div style={{
+              height: '6px',
+              borderRadius: '3px',
+              display: 'flex',
+              overflow: 'hidden',
+              background: 'rgba(255,255,255,0.06)'
+            }}>
+              <div style={{ width: `${sentimentStats.bullPct}%`, background: 'var(--accent-green)' }} title={`Bullish ${sentimentStats.bullPct}%`} />
+              <div style={{ width: `${sentimentStats.neutPct}%`, background: '#8e8e93' }} title={`Netral ${sentimentStats.neutPct}%`} />
+              <div style={{ width: `${sentimentStats.bearPct}%`, background: 'var(--accent-rust)' }} title={`Bearish ${sentimentStats.bearPct}%`} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. CONTROL BAR (Filter Pills + Search) */}
       <div className='telemetry-panel' style={{ padding: '10px 14px' }}>
         <div style={{
           display: 'flex',
@@ -199,7 +280,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan hindari FOMO.
             <div style={{ position: 'relative', width: '100%', maxWidth: '240px' }}>
               <input
                 type='text'
-                placeholder='Cari berita atau emiten ($ANTM)...'
+                placeholder='Cari berita ($BTC, $BBCA)...'
                 value={newsSearch}
                 onChange={e => setNewsSearch(e.target.value)}
                 style={{
@@ -235,7 +316,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan hindari FOMO.
               )}
             </div>
             <span style={{ fontSize: '10px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
-              ({filteredNews.length} Berita)
+              ({filteredNews.length} Riset)
             </span>
           </div>
         </div>
@@ -619,30 +700,37 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan hindari FOMO.
                     {detectedTickers.length > 0 ? (
                       <>
                         <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
-                          TICKER:
+                          ASSET:
                         </span>
-                        {detectedTickers.map(ticker => (
-                          <button
-                            key={ticker}
-                            onClick={() => onSelectTicker && onSelectTicker(ticker, 'IDX')}
-                            className='telemetry-btn ticker-chip-interactive'
-                            style={{
-                              padding: '2px 6px',
-                              fontSize: '9px',
-                              color: 'var(--accent-blue)',
-                              fontFamily: 'var(--font-mono)',
-                              fontWeight: '700',
-                              cursor: 'pointer'
-                            }}
-                            title={`Buka chart emiten $${ticker}`}
-                          >
-                            ${ticker} ↗
-                          </button>
-                        ))}
+                        {detectedTickers.map(ticker => {
+                          const isCryptoTicker = ['BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'DOGE', 'ADA', 'AVAX', 'LINK', 'SUI', 'NEAR', 'PEPE', 'RENDER', 'FET'].includes(ticker.toUpperCase());
+                          const targetMarket = isCryptoTicker ? 'CRYPTO' : 'IDX';
+                          const formattedTicker = isCryptoTicker ? `${ticker.toUpperCase()}USDT` : ticker.toUpperCase();
+
+                          return (
+                            <button
+                              key={ticker}
+                              onClick={() => onSelectTicker && onSelectTicker(formattedTicker, targetMarket)}
+                              className='telemetry-btn ticker-chip-interactive'
+                              style={{
+                                padding: '2px 7px',
+                                fontSize: '9px',
+                                color: isCryptoTicker ? 'var(--accent-orange, #f59e0b)' : 'var(--accent-blue)',
+                                borderColor: isCryptoTicker ? 'rgba(245, 158, 11, 0.3)' : 'rgba(0, 102, 204, 0.3)',
+                                fontFamily: 'var(--font-mono)',
+                                fontWeight: '700',
+                                cursor: 'pointer'
+                              }}
+                              title={`Buka chart ${isCryptoTicker ? 'Crypto' : 'Saham'} $${ticker}`}
+                            >
+                              ${ticker} ↗
+                            </button>
+                          );
+                        })}
                       </>
                     ) : (
                       <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
-                        Topik Pasar Terkait #{news.tag || 'IHSG'}
+                        Klaster #{news.tag || 'MARKET'}
                       </span>
                     )}
                   </div>

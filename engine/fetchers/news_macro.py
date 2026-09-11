@@ -12,42 +12,51 @@ class NewsProcessor:
     """Smart Heuristic Micro-NLP & Rule-based Takeaway Generator for Indonesian Equities."""
 
     KNOWN_TICKERS = {
+        # IDX Equities
         "BBCA", "BBRI", "BMRI", "BBNI", "ANTM", "BRMS", "MDKA", "MEDC",
         "ENRG", "ADRO", "ADMR", "BREN", "CUAN", "TPIA", "PTRO", "BYAN",
         "ITMG", "PTBA", "INDF", "ICBP", "ASII", "UNTR", "GOTO", "TLKM",
         "GIAA", "AMMN", "TOWR", "SMGR", "INDY", "BELI", "BUMI", "VKTR",
-        "CPIN", "ACES", "SMRA", "BSDE", "CTRA", "KLBF"
+        "CPIN", "ACES", "SMRA", "BSDE", "CTRA", "KLBF",
+        # Crypto Assets
+        "BTC", "ETH", "SOL", "BNB", "XRP", "DOGE", "ADA", "AVAX", "LINK", "SUI", "NEAR", "PEPE", "RENDER", "FET"
     }
 
     ACTION_MAP = {
         "BULLISH": [
             "menguat", "naik", "melonjak", "surges", "rally", "rebound", "net buy",
             "tembus", "melesat", "ara", "terangkat", "dibuka menguat", "cuan", "diincar",
-            "akselerasi", "akumulasi", "laba", "dividen"
+            "akselerasi", "akumulasi", "laba", "dividen", "bull", "surge", "gain", "high",
+            "inflows", "all-time high", "breakout", "skyrockets", "approval"
         ],
         "BEARISH": [
             "melemah", "turun", "anjlok", "terkoreksi", "tertekan", "net sell", "jebol",
-            "tergelincir", "ambles", "rugi", "terpuruk", "gagal menembus", "distribusi", "drop"
+            "tergelincir", "ambles", "rugi", "terpuruk", "gagal menembus", "distribusi", "drop",
+            "crash", "plunge", "slumps", "bear", "outflows", "sell-off", "liquidat", "ban"
         ]
     }
 
     @classmethod
     def extract_tickers(cls, text: str) -> List[str]:
-        words = re.findall(r"\b[A-Z]{4}\b", text.upper())
+        words = re.findall(r"\b[A-Z]{3,5}\b", text.upper())
         found = [w for w in words if w in cls.KNOWN_TICKERS]
         upper_t = text.upper()
-        if ("HAJI ISAM" in upper_t or "BAYAN" in upper_t) and "BYAN" not in found:
-            found.append("BYAN")
-        if "ANTAM" in upper_t and "ANTM" not in found:
-            found.append("ANTM")
-        if "MEDCO" in upper_t and "MEDC" not in found:
-            found.append("MEDC")
-        if ("BANK BRI" in upper_t or "BRI " in upper_t) and "BBRI" not in found:
-            found.append("BBRI")
-        if ("BANK MANDIRI" in upper_t or "MANDIRI " in upper_t) and "BMRI" not in found:
-            found.append("BMRI")
-        if ("BANK BCA" in upper_t or "BCA " in upper_t) and "BBCA" not in found:
-            found.append("BBCA")
+        # Crypto aliases
+        if "BITCOIN" in upper_t and "BTC" not in found: found.append("BTC")
+        if "ETHEREUM" in upper_t and "ETH" not in found: found.append("ETH")
+        if "SOLANA" in upper_t and "SOL" not in found: found.append("SOL")
+        if "BINANCE" in upper_t and "BNB" not in found: found.append("BNB")
+        if "RIPPLE" in upper_t and "XRP" not in found: found.append("XRP")
+        if "DOGECOIN" in upper_t and "DOGE" not in found: found.append("DOGE")
+        # IDX aliases
+        if ("HAJI ISAM" in upper_t or "BAYAN" in upper_t) and "BYAN" not in found: found.append("BYAN")
+        if "ANTAM" in upper_t and "ANTM" not in found: found.append("ANTM")
+        if "MEDCO" in upper_t and "MEDC" not in found: found.append("MEDC")
+        if ("BANK BRI" in upper_t or "BRI " in upper_t) and "BBRI" not in found: found.append("BBRI")
+        if ("BANK MANDIRI" in upper_t or "MANDIRI " in upper_t) and "BMRI" not in found: found.append("BMRI")
+        if ("BANK BCA" in upper_t or "BCA " in upper_t) and "BBCA" not in found: found.append("BBCA")
+        if ("TELKOM" in upper_t) and "TLKM" not in found: found.append("TLKM")
+        if ("ASTRA" in upper_t) and "ASII" not in found: found.append("ASII")
         return list(dict.fromkeys(found))
 
     @classmethod
@@ -83,19 +92,23 @@ class NewsProcessor:
         metrics = cls.extract_metrics(title)
 
         # 1. Poin Inti Peristiwa & Metrik
+        is_crypto_tag = "CRYPTO" in tag or any(t in ["BTC", "ETH", "SOL", "BNB", "SUI", "NEAR", "DOGE", "XRP"] for t in tickers)
+        
         if sentiment == "BULLISH":
-            t1 = f"Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait."
+            t1 = f"Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait."
         elif sentiment == "BEARISH":
             t1 = f"Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait."
         else:
-            t1 = f"Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan."
+            t1 = f"Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru."
 
         if metrics:
             t1 += f" Terpantau {'; '.join(metrics)}."
 
         # 2. Poin Dampak Emiten & Sektor
-        if tickers:
-            t2 = f"Fokus pasar tertuju pada pergerakan saham ${', $'.join(tickers)} dengan volatilitas aktif."
+        if is_crypto_tag:
+            t2 = f"Volatilitas aset kripto ${', $'.join(tickers) if tickers else 'Web3'} merespons likuiditas global dan arus modal spot ETF."
+        elif tickers:
+            t2 = f"Fokus pasar tertuju pada pergerakan saham ${', $'.join(tickers)} dengan aktivitas transaksi aktif."
         elif tag == "METALS":
             t2 = f"Dinamika harga komoditas logam mulia menjadi katalis utama rotasi sektor tambang BEI."
         elif tag == "ENERGY":
@@ -105,19 +118,28 @@ class NewsProcessor:
         elif tag == "FOREIGN_FLOW":
             t2 = f"Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite)."
         else:
-            t2 = f"IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid."
+            t2 = f"Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid."
 
         # 3. Poin Panduan & Manajemen Risiko Trader
-        if sentiment == "BULLISH":
-            t3 = f"Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
-        elif sentiment == "BEARISH":
-            t3 = f"Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+        if is_crypto_tag:
+            if sentiment == "BULLISH":
+                t3 = f"Fokus pada Spot USDT murni tanpa leverage berlebih; kawal profit dengan trailing stop 2.5%."
+            elif sentiment == "BEARISH":
+                t3 = f"Antisipasi risiko likuidasi leverage derivatif; amankan cash USDT dan tunggu support 4H teruji."
+            else:
+                t3 = f"Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
         else:
-            t3 = f"Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+            if sentiment == "BULLISH":
+                t3 = f"Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+            elif sentiment == "BEARISH":
+                t3 = f"Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+            else:
+                t3 = f"Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
 
         key_takeaways = [t1, t2, t3]
-        ticker_str = f" pada saham {', '.join(tickers)}" if tickers else ""
-        summary = f"Warta dari {source}: Berita mengindikasikan sentimen {sentiment.lower()}{ticker_str} dengan pengaruh terhadap sektor {tag}."
+        target_name = "kripto" if is_crypto_tag else "saham"
+        ticker_str = f" pada ${', $'.join(tickers)}" if tickers else ""
+        summary = f"Research Intelligence ({source}): Indikasi sentimen {sentiment.lower()}{ticker_str} mempengaruhi klaster {tag}."
 
         return summary, key_takeaways, sentiment, sentiment_score, tickers, metrics
 
@@ -225,61 +247,91 @@ class NewsMacroFetcher:
 
         return indicators
 
-    def fetch_live_financial_news(self, limit: int = 25) -> list:
-        """Fetch real-time financial market news articles via RSS feed."""
+    def fetch_live_financial_news(self, limit: int = 30) -> list:
+        """Fetch real-time dual-stream financial news (IDX Equities + Crypto Global ETF) via RSS feeds."""
         articles = []
-        try:
-            req = urllib.request.Request(self.rss_url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                xml_data = resp.read()
-                root = ET.fromstring(xml_data)
-                items = root.findall("./channel/item")
-                
-                for item in items[:limit]:
-                    raw_title = item.find("title").text if item.find("title") is not None else "Financial News Update"
-                    link = item.find("link").text if item.find("link") is not None else "#"
-                    pub_date = item.find("pubDate").text if item.find("pubDate") is not None else ""
-                    
-                    # Split publisher from title (format: "Headline - Source")
-                    parts = raw_title.rsplit(" - ", 1)
-                    title = parts[0]
-                    source = parts[1] if len(parts) > 1 else "Market News"
+        seen_titles = set()
 
-                    # Infer market tag
-                    tag = "IHSG"
-                    upper_t = title.upper()
-                    if any(k in upper_t for k in ["EMAS", "ANTM", "BRMS", "MDKA"]):
-                        tag = "METALS"
-                    elif any(k in upper_t for k in ["MINYAK", "OIL", "MEDC", "ENRG", "BRENT"]):
-                        tag = "ENERGY"
-                    elif any(k in upper_t for k in ["BBCA", "BBRI", "BMRI", "BBNI", "BANK"]):
-                        tag = "BANKING"
-                    elif any(k in upper_t for k in ["ASING", "FOREIGN", "NET BUY", "NET SELL"]):
-                        tag = "FOREIGN_FLOW"
-                    elif any(k in upper_t for k in ["FED", "SUKU BUNGA", "INFLASI", "TRUMP", "DOLLAR", "DXY"]):
-                        tag = "MACRO"
+        rss_feeds = [
+            ("IDX", "https://news.google.com/rss/search?q=IHSG+OR+saham+Indonesia+OR+%22Bank+Indonesia%22+when:1d&hl=id&gl=ID&ceid=ID:id"),
+            ("CRYPTO", "https://news.google.com/rss/search?q=crypto+OR+bitcoin+OR+ethereum+OR+%22crypto+ETF%22+when:1d&hl=en-US&gl=US&ceid=US:en")
+        ]
 
-                    summary, key_takeaways, sentiment, sentiment_score, tickers, metrics = NewsProcessor.generate_key_takeaways(title, source, tag)
+        for stream_type, feed_url in rss_feeds:
+            try:
+                req = urllib.request.Request(feed_url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+                with urllib.request.urlopen(req, timeout=8) as resp:
+                    xml_data = resp.read()
+                    root = ET.fromstring(xml_data)
+                    items = root.findall("./channel/item")
 
-                    articles.append({
-                        "id": f"news-{len(articles)+1}",
-                        "title": title,
-                        "source": source,
-                        "link": link,
-                        "pub_date": pub_date,
-                        "tag": tag,
-                        "sentiment": sentiment,
-                        "sentiment_score": sentiment_score,
-                        "related_tickers": tickers,
-                        "metrics": metrics,
-                        "reading_time_sec": 45,
-                        "summary": summary,
-                        "key_takeaways": key_takeaways
-                    })
-            logger.info(f"Successfully fetched {len(articles)} live financial news articles via RSS with structured takeaways.")
-        except Exception as e:
-            logger.warning(f"Failed to fetch live RSS news: {e}. Using calibrated fallback news items.")
-            # High-quality fallback articles with rich takeaways
+                    for item in items[:limit]:
+                        raw_title = item.find("title").text if item.find("title") is not None else "Financial News Update"
+                        link = item.find("link").text if item.find("link") is not None else "#"
+                        pub_date = item.find("pubDate").text if item.find("pubDate") is not None else ""
+
+                        # Split publisher from title
+                        parts = raw_title.rsplit(" - ", 1)
+                        title = parts[0].strip()
+                        source = parts[1].strip() if len(parts) > 1 else "Market Wire"
+
+                        # Title deduplication
+                        norm_title = re.sub(r'[^a-zA-Z0-9]', '', title).lower()
+                        if norm_title in seen_titles:
+                            continue
+                        seen_titles.add(norm_title)
+
+                        # Infer market tag
+                        upper_t = title.upper()
+                        if stream_type == "CRYPTO":
+                            if any(k in upper_t for k in ["ETF", "INFLOW", "OUTFLOW", "BLACKROCK", "FIDELITY"]):
+                                tag = "CRYPTO_ETF"
+                            elif any(k in upper_t for k in ["SOL", "SOLANA", "ETH", "ETHEREUM", "LAYER 1", "L1"]):
+                                tag = "CRYPTO_L1"
+                            elif any(k in upper_t for k in ["DEFI", "AI", "RENDER", "FET", "NEAR", "SUI"]):
+                                tag = "DEFI_AI"
+                            else:
+                                tag = "CRYPTO"
+                        else:
+                            if any(k in upper_t for k in ["EMAS", "ANTM", "BRMS", "MDKA", "GOLD"]):
+                                tag = "METALS"
+                            elif any(k in upper_t for k in ["MINYAK", "OIL", "MEDC", "ENRG", "BRENT"]):
+                                tag = "ENERGY"
+                            elif any(k in upper_t for k in ["BBCA", "BBRI", "BMRI", "BBNI", "BANK"]):
+                                tag = "BANKING"
+                            elif any(k in upper_t for k in ["ASING", "FOREIGN", "NET BUY", "NET SELL"]):
+                                tag = "FOREIGN_FLOW"
+                            elif any(k in upper_t for k in ["FED", "SUKU BUNGA", "INFLASI", "TRUMP", "DOLLAR", "DXY", "POWELL"]):
+                                tag = "MACRO"
+                            else:
+                                tag = "IHSG"
+
+                        summary, key_takeaways, sentiment, sentiment_score, tickers, metrics = NewsProcessor.generate_key_takeaways(title, source, tag)
+
+                        # Dynamic reading time based on 180 words per minute
+                        word_count = len(title.split()) + sum(len(t.split()) for t in key_takeaways)
+                        reading_time = max(30, min(120, int((word_count / 180) * 60) + 20))
+
+                        articles.append({
+                            "id": f"news-{len(articles)+1}",
+                            "title": title,
+                            "source": source,
+                            "link": link,
+                            "pub_date": pub_date,
+                            "tag": tag,
+                            "stream": stream_type,
+                            "sentiment": sentiment,
+                            "sentiment_score": sentiment_score,
+                            "related_tickers": tickers,
+                            "metrics": metrics,
+                            "reading_time_sec": reading_time,
+                            "summary": summary,
+                            "key_takeaways": key_takeaways
+                        })
+            except Exception as e:
+                logger.warning(f"Failed to fetch {stream_type} RSS feed: {e}")
+
+        if not articles:
             fallback_seeds = [
                 {
                     "title": "IHSG Berpeluang Menguat Hari Ini, Saham Komoditas ANTM dan BRMS Jadi Sorotan",
@@ -298,6 +350,12 @@ class NewsMacroFetcher:
                     "source": "Bisnis.com",
                     "link": "https://market.bisnis.com",
                     "tag": "ENERGY"
+                },
+                {
+                    "title": "Bitcoin Bertahan Kuat di Atas $76.000 Didukung Arus Masuk Bersih Spot ETF Institusi",
+                    "source": "CoinDesk",
+                    "link": "https://www.coindesk.com",
+                    "tag": "CRYPTO_ETF"
                 }
             ]
             articles = []
