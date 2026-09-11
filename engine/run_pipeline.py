@@ -14,6 +14,7 @@ from fetchers.idx_market import IDXMarketFetcher
 from fetchers.crypto_spot import CryptoSpotFetcher
 from analyzer.llm_brain import LLMBrain
 from analyzer.backtest_engine import BacktestEngine
+from analyzer.technical_indicators import TechnicalIndicators
 from fetchers.broker_summary_fetcher import BrokerSummaryFetcher
 
 try:
@@ -81,6 +82,7 @@ def main():
         trade_plans = brain.generate_daily_trade_plans(idx_data, crypto_spot_10, macro_data)
         db.upsert_trade_plans(trade_plans)
 
+    technical_analysis = {}
     smc_analysis = {}
     bandarmology_iifs = {}
     forecasts = {}
@@ -132,6 +134,9 @@ def main():
                 df = history_dfs.get(full_t)
 
             if df is not None and not df.empty:
+                if t not in technical_analysis:
+                    try: technical_analysis[t] = TechnicalIndicators.analyze(df)
+                    except Exception as e: logger.warning(f"Technicals failed for {t}: {e}")
                 if smc and t not in smc_analysis:
                     try: smc_analysis[t] = smc.analyze(df, t)
                     except Exception as e: logger.warning(f"SMC failed for {t}: {e}")
@@ -142,13 +147,16 @@ def main():
                     try: forecasts[t] = timesfm.forecast(df, t)
                     except Exception as e: logger.warning(f"TimesFM failed for {t}: {e}")
 
+        for plan in trade_plans:
+            t = plan.get("clean_ticker") or plan.get("ticker") or plan.get("symbol", "").replace(".JK", "")
+            if t in technical_analysis: plan["technicals"] = technical_analysis[t]
+            if t in smc_analysis: plan["smc"] = smc_analysis[t]
+            if t in bandarmology_iifs: plan["iifs"] = bandarmology_iifs[t]
+            if t in forecasts: plan["forecast"] = forecasts[t]
+
         if portfolio:
             for plan in trade_plans:
                 t = plan.get("clean_ticker") or plan.get("ticker") or plan.get("symbol", "").replace(".JK", "")
-                if t in smc_analysis: plan["smc"] = smc_analysis[t]
-                if t in bandarmology_iifs: plan["iifs"] = bandarmology_iifs[t]
-                if t in forecasts: plan["forecast"] = forecasts[t]
-                
                 direction = (plan.get("direction") or plan.get("action") or "").upper()
                 if direction in ["BUY", "LONG"]:
                     try:
@@ -219,6 +227,7 @@ def main():
         "foreign_flow": idx_data.get("foreign_flow") or existing_bundle.get("foreign_flow", {}),
         "crypto_spot_10": crypto_spot_10 or existing_bundle.get("crypto_spot_10", []),
         "daily_trade_plans": trade_plans or existing_bundle.get("daily_trade_plans", []),
+        "technical_analysis": technical_analysis or existing_bundle.get("technical_analysis", {}),
         "smc_analysis": smc_analysis or existing_bundle.get("smc_analysis", {}),
         "bandarmology_iifs": bandarmology_iifs or existing_bundle.get("bandarmology_iifs", {}),
         "broker_summary": broker_summaries or existing_bundle.get("broker_summary", {}),

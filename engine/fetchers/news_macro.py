@@ -203,7 +203,8 @@ class NewsMacroFetcher:
             "gold": "GC=F",          # Gold Futures
             "brent_oil": "BZ=F",      # Brent Crude Oil
             "dxy": "DX-Y.NYB",        # US Dollar Index
-            "us10y": "^TNX"           # 10 Year US Treasury Yield
+            "us10y": "^TNX",          # 10 Year US Treasury Yield
+            "ihsg": "^JKSE"           # IHSG Indonesia Composite Index
         }
         self.rss_url = "https://news.google.com/rss/search?q=IHSG+OR+saham+Indonesia+when:2d&hl=id&gl=ID&ceid=ID:id"
         self.etf_tickers = {
@@ -276,7 +277,9 @@ class NewsMacroFetcher:
             "dxy_index": 104.50,
             "dxy_change_pct": -0.10,
             "us10y_yield": 4.28,
-            "us10y_change_pct": 0.05
+            "us10y_change_pct": 0.05,
+            "ihsg_price": 6506.40,
+            "ihsg_change_pct": -1.29
         }
 
         try:
@@ -300,6 +303,9 @@ class NewsMacroFetcher:
                     elif key == "us10y":
                         indicators["us10y_yield"] = round(current, 2)
                         indicators["us10y_change_pct"] = change_pct
+                    elif key == "ihsg":
+                        indicators["ihsg_price"] = round(current, 2)
+                        indicators["ihsg_change_pct"] = change_pct
             logger.info("Successfully fetched live macro indicators from yfinance.")
         except Exception as e:
             logger.warning(f"Error fetching macro indicators via yfinance: {e}. Using calibrated fallback values.")

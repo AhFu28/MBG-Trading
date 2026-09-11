@@ -56,7 +56,7 @@
   ],
   "etf_flows": {
     "btc_etf_turnover_usd_m": 1564.2,
-    "eth_etf_turnover_usd_m": 630.0,
+    "eth_etf_turnover_usd_m": 630,
     "etfs": [
       {
         "symbol": "IBIT",
@@ -64,7 +64,7 @@
         "type": "BTC",
         "price": 43.68,
         "change_pct": -1.38,
-        "turnover_m": 1350.0,
+        "turnover_m": 1350,
         "volume": 30906700,
         "net_status": "ACCUMULATING"
       },
@@ -115,7 +115,7 @@
     "generated_at": "2026-09-11T16:58:43.674916",
     "market_verdict": {
       "stance": "CONSOLIDATIVE",
-      "badge": "\u26aa KONSOLIDASI PASAR SEHAT",
+      "badge": "⚪ KONSOLIDASI PASAR SEHAT",
       "confidence": "HIGH",
       "narrative": "IHSG bergerak variatif dengan kecenderungan konsolidasi menjelang rilis data inflasi dan suku bunga acuan."
     },
@@ -174,7 +174,7 @@
       "tag": "BANKING",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BBRI"
       ],
@@ -196,7 +196,7 @@
       "tag": "FOREIGN_FLOW",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 1,49%"
@@ -302,7 +302,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 5,62%"
@@ -324,7 +324,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Level kunci: 6.541"
@@ -388,7 +388,7 @@
       "tag": "ENERGY",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -452,7 +452,7 @@
       "tag": "ENERGY",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -472,7 +472,7 @@
       "tag": "FOREIGN_FLOW",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 1,49%"
@@ -516,7 +516,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Nilai: Rp250 "
@@ -582,7 +582,7 @@
       "tag": "METALS",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BUMI"
       ],
@@ -801,7 +801,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -821,7 +821,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -843,7 +843,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Nilai: $5 "
@@ -865,7 +865,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -887,7 +887,7 @@
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
@@ -907,7 +907,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "ETH"
       ],
@@ -929,7 +929,7 @@
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
@@ -949,7 +949,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -974,7 +974,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -996,7 +996,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1020,7 +1020,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1042,7 +1042,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1066,7 +1066,7 @@
       "tag": "CRYPTO_ETF",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "XRP",
         "BTC"
@@ -1089,7 +1089,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1134,7 +1134,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 36,
@@ -1154,7 +1154,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1169,14 +1169,14 @@
     },
     {
       "id": "news-47",
-      "title": "Crypto Billionaire Finds iPhone Duo Pretty 'Good' For Gawking at Financial Charts \u2014 Crypto Prediction Market is Already Betting on The Next Big Apple Gadget",
+      "title": "Crypto Billionaire Finds iPhone Duo Pretty 'Good' For Gawking at Financial Charts — Crypto Prediction Market is Already Betting on The Next Big Apple Gadget",
       "source": "finance.yahoo.com",
       "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxOYjZFcDBHUld1MmhMUzI5VHdSNElOT3RKQXNuSnU0TVRaT2MySEd0UFJnRld3N0diaW9veHQ2RmdaejJuTGdjSUlXTjcwcUxNcnF4QkwwS0MtbnpYR1B2RXVWSU5vcmlRRFFUZGEwNkVUaWdOc25Sd2VsdlEyUEpkNHF4MEl0eVZuNWdoR1RUSTZUbmQwT25xZWg5SlVMaENWZ0E?oc=5",
       "pub_date": "Fri, 11 Sep 2026 04:35:00 GMT",
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 39,
@@ -1196,7 +1196,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "XRP",
         "ETH"
@@ -1219,7 +1219,7 @@
       "tag": "CRYPTO_ETF",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "DOGE"
       ],
@@ -1241,7 +1241,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
@@ -1261,7 +1261,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "ETH"
       ],
@@ -1285,7 +1285,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1307,7 +1307,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1329,7 +1329,7 @@
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -1342,14 +1342,14 @@
     },
     {
       "id": "news-55",
-      "title": "Bitcoin\u2019s $76K Test: Is the Market Losing Its Balance?",
+      "title": "Bitcoin’s $76K Test: Is the Market Losing Its Balance?",
       "source": "Investing.com",
       "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPRElYTG1TYmVoY3dMZDdXMXFqbFNIdFphREVuMktoZ09HMVp3cGY5cGRfOGxWQVhQNDUybUl5Q2FpU0c4bjlaMXJtMTlFS2c0aVBXM196VklDS3J3RXkwTVFJdDBkYjhtNDdYLWFDWkFsaHQ2Tkh4YlRkVDhoRlJjWldxSURJQlV1QTRVUFRqM3FmWnRBX0g2RHpsVQ?oc=5",
       "pub_date": "Fri, 11 Sep 2026 09:15:13 GMT",
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1366,14 +1366,14 @@
     },
     {
       "id": "news-56",
-      "title": "Major Restructuring at Bitcoin Suisse \u2013 One in Two Jobs in Zug at Risk",
+      "title": "Major Restructuring at Bitcoin Suisse – One in Two Jobs in Zug at Risk",
       "source": "finews.com",
       "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNUlduVzZtY1hEdkc1ZEdaY0l1YXpQTkVRZGJiNGQwWUJNNUp1aVVFODVmZ0lSRVhWekZ6Tl9Od2NCSE1aYjh4Wms1YXp5Tk43cU53WUYtbmdNZ0xIUGYwbWJjeTFTdWEtMzF4b2FBM2c5NWx3Y3lvXzExeDNyY1hmYjBaMjJXSHdqZFFKMmpxaHNqUXBFSzJERC1VVzhEbl9pRGJhd3g5X0JfS2hrcTJYZkdCVQ?oc=5",
       "pub_date": "Fri, 11 Sep 2026 08:14:04 GMT",
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1388,14 +1388,14 @@
     },
     {
       "id": "news-57",
-      "title": "Strategy's $250 Bitcoin-Themed Air Jordan Sneakers Sell Out \u2014 But BTC Isn't Accepted",
+      "title": "Strategy's $250 Bitcoin-Themed Air Jordan Sneakers Sell Out — But BTC Isn't Accepted",
       "source": "finance.yahoo.com",
       "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxPdnRWU3VheE5Xa3VGMF9zREE4VlczWlhGbU1ZRlpSNmJoekNHdnN0amd3UGtINTlENkkwVnZCRkpBSWFXY0hiYTMyWm5hZVJwYTJINlRnY0NGa0kwV0lzcEVDcU9tQWVfNG5aeFVxTTR0UlROTEpXVHJseVJpUGpPWklsOUJicF9RSkhTMHkxMUVmUzJWTDBwS0RDM0ZaQQ?oc=5",
       "pub_date": "Thu, 10 Sep 2026 19:30:15 GMT",
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1412,14 +1412,14 @@
     },
     {
       "id": "news-58",
-      "title": "Breaking Vlad: Making Sense of Robinhood\u2019s Crypto.com Curveball",
+      "title": "Breaking Vlad: Making Sense of Robinhood’s Crypto.com Curveball",
       "source": "Sportico.com",
       "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNT2pwOElWV1FhTG9fMUFGVTluUnUwcGp0cHZVVkVJUUFZN1ctWWhXSFhNVkdrQ0JLSERzM042M3F5YXR4aGlQalJwczZZVnN1UDdCZGw2WHltYml2d21YZFd5RVJuTGtpMXp3UnVUWHRlTWs0U1lzckdFZkxjWVJLZWlKVnBrVVBHY29YNWxQd0hVcURBeTBaNFhzNzBhWjRLYUNscUNaOTdEb1VrbGk0?oc=5",
       "pub_date": "Thu, 10 Sep 2026 23:01:11 GMT",
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -1439,7 +1439,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1463,7 +1463,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC",
         "SOL"
@@ -1479,5 +1479,7 @@
     }
   ],
   "full_narrative": "Global telemetry report: Gold at $4384.9 (0.47%), Brent Crude at $104.36 (-3.04%). DXY at 99.14 pts. Monitored for impact on Indonesian equities.",
-  "updated_at": "2026-09-11T16:58:43.674961"
+  "updated_at": "2026-09-11T16:58:43.674961",
+  "ihsg_price": 6506.4,
+  "ihsg_change_pct": -1.29
 }

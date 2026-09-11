@@ -97,11 +97,16 @@ export default function HomeDashboardTab({
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
                 <div>
                   <span style={{ color: 'var(--text-muted)' }}>.JKSE: </span>
-                  <strong style={{ color: 'var(--text-primary)' }}>7,760.35</strong>
+                  <strong style={{ color: 'var(--text-primary)' }}>
+                    {macro.ihsg_price || macro.jkse_price ? Number(macro.ihsg_price || macro.jkse_price).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '6,506.40'}
+                  </strong>
                 </div>
                 <div>
                   <span style={{ color: 'var(--text-muted)' }}>Chg: </span>
-                  <strong style={{ color: 'var(--accent-green)' }}>+0.48%</strong>
+                  <strong style={{ color: (macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29) >= 0 ? 'var(--accent-green)' : '#ff3b30' }}>
+                    {(macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29) >= 0 ? '+' : ''}
+                    {macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct).toFixed(2) : '-1.29'}%
+                  </strong>
                 </div>
                 <div>
                   <span style={{ color: 'var(--text-muted)' }}>Vol Bursa: </span>

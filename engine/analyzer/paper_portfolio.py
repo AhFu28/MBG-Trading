@@ -7,13 +7,16 @@ class PaperPortfolio:
     """
     Track virtual trades to forward-test signal quality without risking real money
     """
-    def __init__(self, initial_capital=100_000_000, risk_pct=0.02):
+    def __init__(self, initial_capital=100_000_000, risk_pct=0.02, state_file=None):
         self.initial_capital = initial_capital
         self.risk_pct = risk_pct
         self.realized_pnl_historical = 0.0
         self.trades = []
-        self.state_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'cache', 'paper_portfolio.json')
-        self.load_state()
+        if state_file is False:
+            self.state_file = None
+        else:
+            self.state_file = state_file or os.path.join(os.path.dirname(os.path.dirname(__file__)), 'cache', 'paper_portfolio.json')
+            self.load_state()
 
     def open_trade(self, ticker, entry_price, sl_price, tp1_price, tp2_price, strategy_type, lots=None) -> dict:
         for t in self.trades:
@@ -209,6 +212,9 @@ class PaperPortfolio:
                 filtered_trades.append(t)
         self.trades = filtered_trades
         
+        if not self.state_file:
+            return
+
         os.makedirs(os.path.dirname(self.state_file), exist_ok=True)
         try:
             with open(self.state_file, 'w') as f:

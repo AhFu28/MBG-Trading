@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Helper to calculate exact timezone time & market status
 function getZoneInfo(date, timeZone) {
@@ -162,6 +162,8 @@ export default function GlobalMarketsTab({ onSelectTicker, macro }) {
   const liveDxyVal = macro?.dxy_index ? Number(macro.dxy_index).toFixed(2) : '98.73';
   const liveDxyChange = Number(macro?.dxy_change_pct || -0.04);
   const liveUs10yYield = macro?.us10y_yield ? `${Number(macro.us10y_yield).toFixed(2)}%` : '4.84%';
+  const liveIhsgPrice = macro?.ihsg_price || macro?.jkse_price ? Number(macro.ihsg_price || macro.jkse_price).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '6,506.40';
+  const liveIhsgChange = macro?.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29;
 
   // Comprehensive Cross-Market Asset Universe
   const assets = [
@@ -171,7 +173,7 @@ export default function GlobalMarketsTab({ onSelectTicker, macro }) {
     { ticker: '^N225', name: 'Nikkei 225 (Tokyo)', flag: '🇯🇵', price: '38,720.40', change: 0.85, high: '38,910.00', low: '38,550.00', region: 'MAJOR INDICES', market: 'GLOBAL' },
     { ticker: '^HSI', name: 'Hang Seng Index (HK)', flag: '🇭🇰', price: '17,640.10', change: -0.42, high: '17,790.00', low: '17,580.30', region: 'MAJOR INDICES', market: 'GLOBAL' },
     { ticker: '^FTSE', name: 'FTSE 100 (London)', flag: '🇬🇧', price: '8,280.60', change: 0.28, high: '8,310.00', low: '8,255.40', region: 'MAJOR INDICES', market: 'GLOBAL' },
-    { ticker: '^JKSE', name: 'IHSG (Jakarta Composite)', flag: '🇮🇩', price: '7,760.35', change: 0.48, high: '7,785.10', low: '7,730.20', region: 'MAJOR INDICES', market: 'IDX' },
+    { ticker: '^JKSE', name: 'IHSG (Jakarta Composite)', flag: '🇮🇩', price: liveIhsgPrice, change: liveIhsgChange, high: '6,560.80', low: '6,495.10', region: 'MAJOR INDICES', market: 'IDX' },
 
     // Commodities & Strategic Energy
     { ticker: 'XAU/USD', name: 'Spot Gold Bullion', flag: '🥇', price: liveGoldPrice, change: liveGoldChange, high: '$4,465.00', low: '$4,410.00', region: 'COMMODITIES', market: 'GLOBAL' },

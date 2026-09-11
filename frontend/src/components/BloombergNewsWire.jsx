@@ -7,6 +7,9 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
   const goldChange = Number(macro.gold_change_pct || 0);
   const oilChange = Number(macro.brent_oil_change_pct || 0);
   const dxyChange = Number(macro.dxy_change_pct || 0);
+  const ihsgVal = macro.ihsg_price || macro.jkse_price ? Number(macro.ihsg_price || macro.jkse_price).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '6,506.40';
+  const ihsgChange = macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29;
+  const isIhsgUp = ihsgChange >= 0;
 
   // Multi-headline support
   const headlines = Array.isArray(macro.headlines) && macro.headlines.length > 0 
@@ -55,7 +58,7 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
               { label: 'BRENT', val: `$${macro.brent_oil_price || '107.0'}`, chg: `${oilChange >= 0 ? '+' : ''}${oilChange}%`, isUp: oilChange >= 0 },
               { label: 'DXY', val: `${macro.dxy_index || '99.08'}`, chg: `${dxyChange >= 0 ? '+' : ''}${dxyChange}%`, isUp: dxyChange >= 0 },
               { label: 'US10Y', val: `${macro.us10y_yield || '4.94'}%`, chg: '+2 bp', isUp: true },
-              { label: 'IHSG', val: '7,760.35', chg: '+0.48%', isUp: true },
+              { label: 'IHSG', val: ihsgVal, chg: `${ihsgChange >= 0 ? '+' : ''}${ihsgChange}%`, isUp: isIhsgUp },
               { label: 'BTC/USD', val: '$77,168', chg: '+0.78%', isUp: true },
               { label: 'ETH/USD', val: '$2,463', chg: '+1.04%', isUp: true },
               // Duplicate once to ensure seamless loop
@@ -63,7 +66,7 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
               { label: 'BRENT', val: `$${macro.brent_oil_price || '107.0'}`, chg: `${oilChange >= 0 ? '+' : ''}${oilChange}%`, isUp: oilChange >= 0 },
               { label: 'DXY', val: `${macro.dxy_index || '99.08'}`, chg: `${dxyChange >= 0 ? '+' : ''}${dxyChange}%`, isUp: dxyChange >= 0 },
               { label: 'US10Y', val: `${macro.us10y_yield || '4.94'}%`, chg: '+2 bp', isUp: true },
-              { label: 'IHSG', val: '7,760.35', chg: '+0.48%', isUp: true },
+              { label: 'IHSG', val: ihsgVal, chg: `${ihsgChange >= 0 ? '+' : ''}${ihsgChange}%`, isUp: isIhsgUp },
               { label: 'BTC/USD', val: '$77,168', chg: '+0.78%', isUp: true },
               { label: 'ETH/USD', val: '$2,463', chg: '+1.04%', isUp: true }
             ].map((t, i) => (

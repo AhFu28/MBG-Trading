@@ -853,6 +853,22 @@ export default function MasterQuantLeaderboard({
                             )}>
                               {item.signal}
                             </span>
+                            {item.rawPlan?.technicals?.confluence_score !== undefined && (
+                              <div style={{ marginTop: '3px' }}>
+                                <span style={{
+                                  fontSize: '9px',
+                                  fontFamily: 'var(--font-mono)',
+                                  fontWeight: '800',
+                                  padding: '1px 5px',
+                                  borderRadius: '3px',
+                                  background: item.rawPlan.technicals.confluence_score >= 70 ? 'rgba(52, 199, 89, 0.15)' : item.rawPlan.technicals.confluence_score >= 40 ? 'rgba(255, 149, 0, 0.15)' : 'rgba(255, 59, 48, 0.15)',
+                                  color: item.rawPlan.technicals.confluence_score >= 70 ? 'var(--accent-green)' : item.rawPlan.technicals.confluence_score >= 40 ? 'var(--accent-orange)' : '#ff3b30',
+                                  border: `1px solid ${item.rawPlan.technicals.confluence_score >= 70 ? 'rgba(52, 199, 89, 0.3)' : item.rawPlan.technicals.confluence_score >= 40 ? 'rgba(255, 149, 0, 0.3)' : 'rgba(255, 59, 48, 0.3)'}`
+                                }}>
+                                  ⚡ {item.rawPlan.technicals.confluence_score}% Q-Score
+                                </span>
+                              </div>
+                            )}
                           </td>
                           <td style={{ fontWeight: '700', color: 'var(--text-primary)' }}>
                             {item.market === 'IDX' ? ('Rp ' + Number(item.price).toLocaleString()) : ('$' + item.price)}
@@ -1027,6 +1043,43 @@ export default function MasterQuantLeaderboard({
                                     </div>
                                   )}
                                 </div>
+
+                                {/* Drawer Box 4: Technical Confluence & Indicators */}
+                                {p?.technicals && (
+                                  <div className='drawer-box' style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                                      <div style={{ fontWeight: '700', color: 'var(--accent-green)', fontSize: '10px', letterSpacing: '0.04em' }}>
+                                        📈 TEKNIKAL &amp; CONFLUENCE SCORE:
+                                      </div>
+                                      <span style={{
+                                        fontSize: '10px',
+                                        fontFamily: 'var(--font-mono)',
+                                        fontWeight: '800',
+                                        padding: '2px 6px',
+                                        borderRadius: '3px',
+                                        background: p.technicals.confluence_score >= 70 ? 'rgba(52, 199, 89, 0.2)' : 'rgba(255, 149, 0, 0.2)',
+                                        color: p.technicals.confluence_score >= 70 ? 'var(--accent-green)' : 'var(--accent-orange)'
+                                      }}>
+                                        {p.technicals.confluence_score}/100 CONF
+                                      </span>
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '10px' }}>
+                                      • <strong>RSI (14):</strong> {p.technicals.rsi_14} ({p.technicals.rsi_14 >= 70 ? 'Overbought' : p.technicals.rsi_14 <= 30 ? 'Oversold' : 'Zona Akumulasi Sehat'})
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '10px' }}>
+                                      • <strong>MACD Status:</strong> <span style={{ fontWeight: '700', color: p.technicals.macd_status === 'GOLDEN_CROSS' || p.technicals.macd_status === 'BULLISH' ? 'var(--accent-green)' : '#ff3b30' }}>{p.technicals.macd_status}</span>
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '10px' }}>
+                                      • <strong>EMA Alignment:</strong> {p.technicals.ema_alignment} (EMA 20/50/200)
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '10px' }}>
+                                      • <strong>Bollinger Bands:</strong> {p.technicals.bollinger_squeeze ? '⚠️ SQUEEZE (Setup Ledakan Volatilitas)' : 'Band Normal'}
+                                    </div>
+                                    <div style={{ color: 'var(--text-primary)', fontSize: '10px' }}>
+                                      • <strong>ATR (14) Volatilitas:</strong> {p.technicals.atr_14 > 0 ? (item.market === 'IDX' ? `Rp ${Number(p.technicals.atr_14).toLocaleString()}` : `$${p.technicals.atr_14}`) : 'N/A'}
+                                    </div>
+                                  </div>
+                                )}
 
                               </div>
                             </td>
