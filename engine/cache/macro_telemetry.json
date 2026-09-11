@@ -27,12 +27,12 @@
   "event_category": "OIL",
   "sentiment": "BULLISH",
   "severity": "HIGH",
-  "gold_price": 4356.4,
-  "gold_change_pct": -1.35,
-  "brent_oil_price": 109.22,
-  "brent_oil_change_pct": 7.91,
-  "dxy_index": 99.09,
-  "dxy_change_pct": 0.32,
+  "gold_price": 4351.4,
+  "gold_change_pct": -1.46,
+  "brent_oil_price": 108.1,
+  "brent_oil_change_pct": 6.81,
+  "dxy_index": 99.15,
+  "dxy_change_pct": 0.39,
   "us10y_yield": 4.94,
   "idx_affected_sectors": [
     "ENERGY_OIL_GAS"
@@ -56,7 +56,7 @@
   ],
   "daily_snips": {
     "edition": "MORNING_BRIEF",
-    "generated_at": "2026-09-10T23:51:53.070264",
+    "generated_at": "2026-09-11T03:52:24.132880",
     "market_verdict": {
       "stance": "MIXED_VOLATILE",
       "badge": "\u26a1 VOLATILITAS ENERGI TINGGI",
@@ -65,18 +65,18 @@
     },
     "macro_pulse": {
       "gold": {
-        "price": 4356.4,
-        "change_pct": -1.35,
+        "price": 4351.4,
+        "change_pct": -1.46,
         "status": "PULLBACK"
       },
       "brent": {
-        "price": 109.22,
-        "change_pct": 7.91,
+        "price": 108.1,
+        "change_pct": 6.81,
         "status": "SURGE"
       },
       "dxy": {
-        "val": 99.09,
-        "change_pct": 0.32,
+        "val": 99.15,
+        "change_pct": 0.39,
         "status": "SOFT"
       },
       "us10y": {
@@ -88,23 +88,19 @@
       {
         "rank": 1,
         "topic": "IHSG",
-        "highlight": "Lakukan Hedging, UBS AG Jual 3,54 Juta Saham CPIN",
-        "tickers": [
-          "CPIN"
-        ]
+        "highlight": "Penyebab IHSG Anjlok Nyaris 2%",
+        "tickers": []
       },
       {
         "rank": 2,
-        "topic": "IHSG",
-        "highlight": "Saham Haji Isam: 4 Emiten dan Fakta Kepemilikannya",
-        "tickers": [
-          "BYAN"
-        ]
+        "topic": "ENERGY",
+        "highlight": "IHSG semakin volatil hadapi harga minyak, waspadai level ini",
+        "tickers": []
       },
       {
         "rank": 3,
         "topic": "IHSG",
-        "highlight": "IHSG Mendadak Anjlok 1% Siang Ini, Ada Dua Hantu Gentayangan!",
+        "highlight": "Penyebab IHSG Dibuka Melemah",
         "tickers": []
       }
     ],
@@ -113,27 +109,107 @@
   "live_news": [
     {
       "id": "news-1",
-      "title": "Lakukan Hedging, UBS AG Jual 3,54 Juta Saham CPIN",
-      "source": "KONTAN",
-      "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQaVRPdEhRWGVVVVVnaW9fVzhVMDItUXlucDdGaVJHbWF5N2YzS2hNZHBuYkt4NzNlRnRrMllTMmFmekRUWHdZWjlrblowQ2JjNmNVdnZnUDJ3WF9SYW9DLXhob0hscml1V0x5QTJwdmxiTlVLS1Q3Mlo0QnNuX21KbmFTb1BSTkZW?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 22:30:30 GMT",
+      "title": "Penyebab IHSG Anjlok Nyaris 2%",
+      "source": "CNBC Indonesia",
+      "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPQy1qem9fX25EaGRmbnNkUjRJVmhvelFVeE9scU44UFJ2aXBsbmxEN21xTGd3dkM3M1dwWGdwcGpPNjdiNm4wRDMxSVhuU0lqRVd1OVBQak13U2F5cmdZOWN0MVF6dmpkbGpZVzZadFBJLXY4d1pWYzVNQTh1dGJwN2I2d2VhVWVLZ0VpVnZ2Z001alB3YWfSAZsBQVVfeXFMTzFSX0MwLWNGUm02R3hhRGxnN1Iwc0FROGtPX0xTNnJfaVc1WndpMWF1a3EwVWlTQURtdVRTeFQ3dHVYXzhVMmpZRHpnWHZXUUVWMHhuNjlTZnJfLWtvb1J4eHF1RWI0aUFmWmZ3cGdtaXpJazByY2ZIbW9RdnllbV95MkxwRWZUOThVLVZsZFJkcml3WHhFSWZhcVk?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 02:27:14 GMT",
       "tag": "IHSG",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [
-        "CPIN"
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
+      "related_tickers": [],
+      "metrics": [
+        "Perubahan: 2%"
       ],
-      "metrics": [],
       "reading_time_sec": 45,
-      "summary": "Warta dari KONTAN: Berita mengindikasikan sentimen neutral pada saham CPIN dengan pengaruh terhadap sektor IHSG.",
+      "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor IHSG.",
       "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
-        "Fokus pasar tertuju pada pergerakan saham $CPIN dengan volatilitas aktif.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 2%.",
+        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
       ]
     },
     {
       "id": "news-2",
+      "title": "IHSG semakin volatil hadapi harga minyak, waspadai level ini",
+      "source": "IDNFinancials",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOVDZiRVNOY3VqNjNCTTdIVmFCTUFHMzVXUTJNRDZNaTFYZzdxdElwZnhnbFl6dy1rUlhMMVNaYVFtODE1YzRQMkVlSGdjQUdGclJKY1hkWDFlcFQyNzVuR2ljWk1OSzNNaWFWYmtfWUFTb28wdmlyMVVTQWtoUU9IOXhMaXBpZDJsaHlhYjAxX3ZsWkVOUy1ZdWRERTB5SDZkbk5lQmJB?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 01:45:00 GMT",
+      "tag": "ENERGY",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 45,
+      "summary": "Warta dari IDNFinancials: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor ENERGY.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
+        "Fluktuasi harga minyak mentah global memengaruhi ekspektasi marjin operasional sektor energi.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-3",
+      "title": "Penyebab IHSG Dibuka Melemah",
+      "source": "Bloomberg Technoz",
+      "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNUTg3bEVWOUlzVXFqaWxGSmtYTUR3Y2NpalY3RUIteENwbVZjajh2eHFPMGVOb3BqOC1nVkV5SVZab2lsLVZSbWQ5Sk1QbWN4aEJ6LTBPakh6R3ZVdWxQVVVqVjdDVjVkSmM3YnVHQ2NJWkRSLUJDdkZaaWp4aVVTRWI4a25VZWc?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 02:16:06 GMT",
+      "tag": "IHSG",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 45,
+      "summary": "Warta dari Bloomberg Technoz: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor IHSG.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
+        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-4",
+      "title": "Rekomendasi Saham Hari Ini untuk Trading: EMAS, IMPC, dan BUMI",
+      "source": "Ajaib",
+      "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOTGtZbndISWhCU3ZPdDRwanFXQkd4TWJ2Y3V2ejhFdkR6Nk5vNUNfdnlVLTlKN0hhZGFzS0hXTDJrOFNIT2Vua1J5bWhTcXNlNm5pcGU3blp1S0xXdHdXZ3lWeUlrbzUyMkZ1czU2OWRBelNkcGFsbzV4WmI4bDlhZQ?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 01:56:38 GMT",
+      "tag": "METALS",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [
+        "BUMI"
+      ],
+      "metrics": [],
+      "reading_time_sec": 45,
+      "summary": "Warta dari Ajaib: Berita mengindikasikan sentimen neutral pada saham BUMI dengan pengaruh terhadap sektor METALS.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
+        "Fokus pasar tertuju pada pergerakan saham $BUMI dengan volatilitas aktif.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-5",
+      "title": "Jumat ini IHSG dibuka melemah 36,55 poin ke posisi 6.552",
+      "source": "Antara News jatim",
+      "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNdlZxNnloaU1meHVuaUQ4Sjk2UW80a2lGQjRwYjVkbjNJeXozTEZzTVl4V1dobHdmQ3JVVXFYUHpvRE9Cam9pQWxuQzZnUldwbWFYZUEyc005c2RsOHhFYUlNRjhCSlBCeEx6TVp1RFRCaVF5N2RuSUFoVmI5cGRPZ2ZMV0NaUllWWHhIMFNJTWNIMFNyMVRlWTdZSTN4RzjSAaQBQVVfeXFMTmFzcEdqck1peVFsMXI0cjFRNW9xTXhQOU1BQWoyYm5oQVNCMEhraE5QeWE3MHVqeUN1eE9fV1VrVHhhR0hRbkN2SjBBSG9WMzVxVmd5SDdxRXZKZGRvMERvaktDMG1UMDVWeWRrOVdIX2JKei0zS3Z1Z3JGT0JfaV9JT0x0b3l4NVhYVlRHYUp1NnNsMkhrUXpNUVF4RkxINVY0ZVc?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 02:27:42 GMT",
+      "tag": "IHSG",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
+      "related_tickers": [],
+      "metrics": [
+        "Level kunci: 6.552"
+      ],
+      "reading_time_sec": 45,
+      "summary": "Warta dari Antara News jatim: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor IHSG.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Level kunci: 6.552.",
+        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-6",
       "title": "Saham Haji Isam: 4 Emiten dan Fakta Kepemilikannya",
       "source": "Pluang",
       "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE9nRU1za05odnJCXzcySk5YSEt2dVdUbnFUdmFPaEhmR3J6QWs0S2tIVXVTa202cXl6WnJhcVJqamlPNGs4TzNsWll3amxWb0Q3OXJmdmVZdU5ESDNlaFhzMUJ3ZnpvWkJyeGc?oc=5",
@@ -154,7 +230,227 @@
       ]
     },
     {
-      "id": "news-3",
+      "id": "news-7",
+      "title": "Saham SQMI Curi Perhatian Pasar, Kerap Masuk Top 10 Volume Transaksi Terbanyak",
+      "source": "insight.kontan.co.id",
+      "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPSGlDSlc1VDd2RGhobXVZb1BMMW5lLWF0akRLWGd3RzU1YmxMNHlyS1VDODhPMWNsT3pHY05TVlpzb2FXOGFuTlgxdEJIYVRuYlMyZVQtTE81ajdScWVwdS1LOHh5aW1Eakh2eHcxUGdkVUVseHMwaVJ2cE40dzA4TTlkOGROZ3p0eTlXamYyRllRRWNJZzBsWExMY29Ob1A2VDFUWUUyQnhCaHI0OGVfTQ?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 00:43:24 GMT",
+      "tag": "IHSG",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 45,
+      "summary": "Warta dari insight.kontan.co.id: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
+        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-8",
+      "title": "Ada yang Jual 10 Juta Saham INPS di Harga Rp350, Ada Apa?",
+      "source": "CNBC Indonesia",
+      "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQVUxNaVE4OGhhWUl6UWhXdHgwaDR5Y0lzcF9memlhMlQ1MDBhdkFrUmRKZmRqV2Z6TTBuY2ZERkl6Rk1uX3UxTEN4VnBzZ181MW9xQlZuMVRpZ01Fek1YOUhlYjBKNDhCOVpQZzJxWWtUQW9zT2o2YUNwN2c4d2hkMEY4VXVrNTRiNWJCTUJqZTNNRDdYQzZZMloxZl9YRXkxMmdXdmU2WHJ6UHkyYnVSaW9FOV9oZzNa0gG-AUFVX3lxTE1VUV83Y3VHN3hJdzFFbF9ZU0o1N2lfcEptb2w2dUNQd3poNTc1WEZGSFZ6dk5vTnJlUU9nSUVtbFduUjN2LVN6WmdIV2RUSnVwSFdBMTExYXhhTm1wZmJJM3BWSElXWVA1Nzk4SW43SlZKbjViUkp2RUptRENLVW9oTDJ1TWVOc0ZsaDEybnI5R3pyLS1wak1MRERWdWJYZTVUb2lZcmgzR05CVkRmeFZ0NzByZ3BVTVNWc1dCNnc?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 02:55:16 GMT",
+      "tag": "IHSG",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [
+        "Nilai: Rp350, "
+      ],
+      "reading_time_sec": 45,
+      "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan. Terpantau Nilai: Rp350, .",
+        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-9",
+      "title": "Saham BYAN Jadi Pemberat IHSG Hingga Turun 1%",
+      "source": "Bloomberg Technoz",
+      "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOMXBSZzF5SU15VlpfOW1YYWxqUS1RVEZSUlhWM2VmTzlwME9NUi1JMjhrNEJ4dGFGLVBHX3lMNXptcTNtaWp5aEZVcHBPRTAzNF9lQ192MFAzemk1LXc0VFBhWE4ya3U2N0pmcTYtc1JpYkNCQVV0UVBERWowMWlsZUVxNzJkX1k5eDNLOTIyZUxpcFo5NG0wMkRFU3k?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 03:08:33 GMT",
+      "tag": "IHSG",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
+      "related_tickers": [
+        "BYAN"
+      ],
+      "metrics": [
+        "Perubahan: 1%"
+      ],
+      "reading_time_sec": 45,
+      "summary": "Warta dari Bloomberg Technoz: Berita mengindikasikan sentimen bearish pada saham BYAN dengan pengaruh terhadap sektor IHSG.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 1%.",
+        "Fokus pasar tertuju pada pergerakan saham $BYAN dengan volatilitas aktif.",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-10",
+      "title": "Saham AADI Turun Usai Cetak ATH, Prospek Batubara dan Divestasi Kestrel Jadi Katalis",
+      "source": "insight.kontan.co.id",
+      "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPNGhFd0Jma001c0F6d0hBaHZ3dm9Ybmo4YmlrZjNlTG9ONUY5NERGTXp3SUFIVkMwdGZnNzFJRmd4UjlKZk1nSTZVemNzM3hUTkxzRDZPbTNCUV9XSUYxWTVGNTB3MjlibjZsV1luVUNnNUQ0cmhxblhhRzhYUFlrenBWNUVVdTVwYk1UcFBfUDVkaVJjd2RDZGtQWlFVSnpVR3BSYnozMEVhYkFfNDRSRGxjR0QxWmhR?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 00:28:53 GMT",
+      "tag": "IHSG",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 45,
+      "summary": "Warta dari insight.kontan.co.id: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
+        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-11",
+      "title": "Rupiah dan IHSG tertekan imbas lonjakan harga minyak",
+      "source": "IDNFinancials",
+      "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNckx2aVNmamR5enJCNTRyRGJSdWVYamt3aUpwei1GRXJLSjRHRngtS1pJc1JNeGtfckdPSy0wVnNqOGlVNTNDWGQtOXZtam5WY1RsVWpsYWdZM1BMNzFtclpiUXhsM1psQTJQcWxVNktOTlRWRUNEZk5nZVpuOUo0TXVheHNPN0plRFhBeHpUOW9sSXM0ZE9ta0Q0LTc?oc=5",
+      "pub_date": "Thu, 10 Sep 2026 10:10:00 GMT",
+      "tag": "ENERGY",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 45,
+      "summary": "Warta dari IDNFinancials: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor ENERGY.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
+        "Fluktuasi harga minyak mentah global memengaruhi ekspektasi marjin operasional sektor energi.",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-12",
+      "title": "Breaking, IHSG Anjlok 1% Lebih ke Level 6.506",
+      "source": "CNBC Indonesia",
+      "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPS2hKaXlxRjZja0NycXJNWVJjdU85RE8xeFlOb2JNQ2VxamI1TmpqMTBkQWNVcTFqOTZfZkxuR3VSc25MNXhUbXNjYVRxRmQtb0owVk9xeGdBTVNqRmktTjA0NUJvVW5idFZ5Q3p2TjNIVlhIR1U4a3Z2X1V5MmFmcTdyeVpGUW0zQXpid0NaZzhBYWlyUi1hb1o2OVRzZ3lRSm9OaXF5RdIBrAFBVV95cUxQbWdNYkxpSURxNjZ3dWdPT3hSR3A4TFN6X3BjeEx5RTJLNUY4ejFGblVYUl9DV0pTR3VfNHlGUkE1RkNjODhKVFdyYnBlaTBDajUxNi1uOTN0RTZ4cEhkQllmdXE1UTV1eFlLbW9KZFJkSXNaSDJ1Nm5Ec2pseXFHejZ3dzQ0WHJKdHBTMnB2TjY3MHZaMnp6YTlscG1RazJ6dmJ6ZF9GSVZmUUxl?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 02:03:59 GMT",
+      "tag": "IHSG",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
+      "related_tickers": [],
+      "metrics": [
+        "Perubahan: 1%",
+        "Level kunci: 6.506"
+      ],
+      "reading_time_sec": 45,
+      "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor IHSG.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 1%; Level kunci: 6.506.",
+        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-13",
+      "title": "Rangkuman Rekomendasi Saham Hari Ini, 11 September 2026",
+      "source": "Bloomberg Technoz",
+      "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNVnNjSGNYLWhSN3pFUWljaDBrUl9KdkR2UjM3ajdiNzVELXJyNGIwV2JQSzJjNWEzVm9maFRaSmIwNEd4OVdJdE9wSUpvenVzSnJVdjNFMzNPN2s2VUc3Z2lYajRGaG90aXN5QmdsNzhlc1VlSDE0dUJSWkx6MlFyMkJJVjVaQTFIYkZPSFZ5VWNSQnROMkNfNk1MMXUzMGpNMFdtRzlMMEhKZw?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 01:35:02 GMT",
+      "tag": "IHSG",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 45,
+      "summary": "Warta dari Bloomberg Technoz: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
+        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-14",
+      "title": "Asing Akumulasi 10 Saham Ini Saat IHSG Melemah 2 Hari Beruntun",
+      "source": "CNBC Indonesia",
+      "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQVTU5bmZJTTlHVTcyNmxmVXZ2aEVwTG1qSFZhOHhuUGJ6RFhaZEdsZlZHS1U5c2prOVZ1SlotallmcDVodXFhT25oQkI0c1Y2OGM5WVprMnNMb01pWmEtV0U4STg1ME1oZUptT1BTZkRyR0JZdmJnWXE0MXVWcFljbW81czlGMUNqczhDM2tBalBERzhsNEdOMTdpY2ZwR0U2U0VkaE5LcV80OVNkdGZrVkprUndUNFZnSlM5M1JzcUlrd9IBxwFBVV95cUxOdE4zQnFYT2poNzhISU5qcHpMZVR4dlF5OW9jNU9RZ2RMWVM5UVJOcmtGcEs3ZXBlUEpUTXpQUHNMM25iQnhmaTB6aVkzanRZTjdFZEpkQ3pSdjlNWEJNcVI3N3g2US05cUk2WFh2dlFraTEya05iUmJBMlluTnFOaUk2MnNxbDJoRHd2dUVkRlhQS2JCSjVuYWFLajdYazVMd2VFNXpwc2x5ZHlhemNIZW1lSDdkdTdXbUtmSXFyUnlvVUFtSHRR?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 01:33:09 GMT",
+      "tag": "FOREIGN_FLOW",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 45,
+      "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor FOREIGN_FLOW.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
+        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-15",
+      "title": "Investor Asing Net Sell Hampir Rp2 Triliun Jadi Sebab IHSG Turun",
+      "source": "Bloomberg Technoz",
+      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxObGs2dVN5WFc5VTFmVWpKRDhab2V4S3dVcndlUlJ5ck54TGZaM0cyMVoxek1wNWQwNHNHc0RIZ1I5SWx4T0Q1OTNsams2NnJxYTFlZkJlT0hKaXNZcVFRMFd3cksteEIyUDUwRi03RVBOQzFGcnI5bTlZMnF0MUV4VVMybGJ5NWVOd3Z2YXFIVDZ2TFlGN3QtVVJTNnhBQjZiN2l4ZkhVQ05wOHlfTjJXZmRkMFZFb1E?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 01:22:37 GMT",
+      "tag": "FOREIGN_FLOW",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.7,
+      "related_tickers": [],
+      "metrics": [
+        "Nilai: Rp2 Triliun"
+      ],
+      "reading_time_sec": 45,
+      "summary": "Warta dari Bloomberg Technoz: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor FOREIGN_FLOW.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Nilai: Rp2 Triliun.",
+        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-16",
+      "title": "IHSG Ambruk, Asing Ternyata Net Sell Jumbo di 10 Saham Ini",
+      "source": "CNBC Indonesia",
+      "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQZ0ZYdHdZR1liN3Q0MU9qYTZualZNQlhqVW8wTEotZmdDVG9rcG0zR2VtanE3WWxQTDFlYmhTRDcxWHVFZW42NjhwUFM2c0ZobU5rc0xOV0tHcV9nVEpFdWYzaTEtbXFIYWxwSFVOc0pVWXV3NHdJOThVWTFYR25mVVZoSzJXaXdFSDRoYkExTWtVUnN4QTlHbmZTenZHSVNvMFV1Z2ZKbWhkczhUa21OVkRGa0N0MWVKQXU40gHAAUFVX3lxTE9MNXlJMWd1NUhUUkpKZGpFUi1kZ2ZtM1RPSnlmRjd6YUFab05XcXlwNkRDOGh3NTZ5a3JuaTRIN3JaOWhTTGx6M3NVOF9aajJYNy1KWnJlZjNlY3JZWk1VMGNGZHB0MDFiMzdEX3E3d1pCVUljc2cwOEFMSzVuaHJlOG91N2VFTU4tT0hhdTJMT2dlN2NMR0U1UEFVSmNzTXAzcVEyNjd1R3drWnNtME5CVFlxb0Q0Tk53ekttZHFuTw?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 01:47:21 GMT",
+      "tag": "FOREIGN_FLOW",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 45,
+      "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor FOREIGN_FLOW.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
+        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-17",
+      "title": "BEI Pantau Ketat 4 Saham Sekaligus, Ada yang Naik Ratusan Persen",
+      "source": "CNBC Indonesia",
+      "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNck9jcWQ1NjFFbUp5ZjZ2YWtkeXAyRGJ3ZnI5YXFqSkhEY0RRSDBtZTVqT0Zfd1VIWTZJdlVaM3pWSXlhTmpIVmdFTXdtRjRWUUp5Rk1IRlhFRm9aOHMtd1Q0c1FtcXR4STI0c0dTNjQyM0NWM1VtQ3Ruam1fWTQzVUFENXFYdGxQUURGNFpnaEdHT1BkSkhERUhtZ1AzcVRnQm14V3FTS2FydEl3QlhCc2JrSmRyQW11VjllbUtublpRYU3SAcgBQVVfeXFMTm9SVFMyZDQ5cWdTajFJU04tMlp1ZTZoWTBjVjlBbnh5TXowdnJYejhiRzlhZ0ZXVnFvXzNZVnpCMVdyY1FrczVnT3NidXVMbEVrcWsyTS0yVlRpdW02NjhFVWlqM2d0eHZ0dG8zMWhmSDg1NU1ybXNhdy1VTFhmQ3NKZ1dyNVVuaE9yNm1HVTQwTGtvWWlZZnpBeUV4ODRocUd6ajhLc2tOZWtqaVFnUnpvNzk4RWNqYlZXeHVVWWlQTjBYSzdfMS0?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 01:57:29 GMT",
+      "tag": "IHSG",
+      "sentiment": "BULLISH",
+      "sentiment_score": 0.35,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 45,
+      "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen bullish dengan pengaruh terhadap sektor IHSG.",
+      "key_takeaways": [
+        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait.",
+        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+      ]
+    },
+    {
+      "id": "news-18",
       "title": "IHSG Mendadak Anjlok 1% Siang Ini, Ada Dua Hantu Gentayangan!",
       "source": "CNBC Indonesia",
       "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNeFcxc19oOFJ5U095aVY4MzRmR2NSbXRZRDltQmRUYUlud2lQdFRyZ0VIUVhmbG9PMzR1UTVfelFrRTR2azNKN21zMC1ZY3lLaDYwSTdsVTlOSkdPQ1A4Sk15THFkUlhNUl9NVkZJVndMcEJqU2ZNdGE5M1hWSUlTSWYyTnpHM1dQRWVOYVhZeWxwTjhzczc4anVwTUNLdlpBT3NYWUVKb2FPOUNOQ1ZtOW81dDdFNlpPb2xSQ9IBwgFBVV95cUxNYU9NSFJVS2xXWnFTRks4VTZoUDZxVHVEMFZSbHVOTDZsb0ZSR1IyeGpmNlJtd1lnX3dTdVpEUWRSZVFGeXQ3LUxKNHlVT1pqZzlKUU9LU3BkMlZkNS1XVzBSeTUzaVJHOXlQck8yNDZMd1otelVPTzRhcW1qbVAzTDUyY1dvRHJKUTJUekF2Ukk3UGxQUlhRVjlKbjdoWWg2VFlodi1rS2Q4SlFaYk1MbkxZalRZZ0xpcm9xTlVJeWk5UQ?oc=5",
@@ -175,149 +471,28 @@
       ]
     },
     {
-      "id": "news-4",
-      "title": "Rupiah dan IHSG tertekan imbas lonjakan harga minyak",
-      "source": "IDNFinancials",
-      "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNckx2aVNmamR5enJCNTRyRGJSdWVYamt3aUpwei1GRXJLSjRHRngtS1pJc1JNeGtfckdPSy0wVnNqOGlVNTNDWGQtOXZtam5WY1RsVWpsYWdZM1BMNzFtclpiUXhsM1psQTJQcWxVNktOTlRWRUNEZk5nZVpuOUo0TXVheHNPN0plRFhBeHpUOW9sSXM0ZE9ta0Q0LTc?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 10:10:00 GMT",
-      "tag": "ENERGY",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.35,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 45,
-      "summary": "Warta dari IDNFinancials: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor ENERGY.",
-      "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
-        "Fluktuasi harga minyak mentah global memengaruhi ekspektasi marjin operasional sektor energi.",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
-      ]
-    },
-    {
-      "id": "news-5",
-      "title": "IHSG Diramal Tersenyum Jelang Akhir Pekan",
-      "source": "CNN Indonesia",
-      "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxNNG1IdjJNdEZfZG16WGtZOHJRbUhiYmV6NkxVUloxdzhzUWZBaGNxLUhpd2VLNG1QelFDZVBPQXp2aWJ5eWY3dlkwUWxwLTlfOHQ1ZTJLb0Z0X01LT2dmTTBkNU80NmFmN3p2REM1d0taamo3bWNyZ3VPQklzRS1IaDFYUmRQRHlNM2cxWFhYQUZDeFNieVVodDBGX0lUY3VBRzNRb09FRdIBrAFBVV95cUxNdnJUSWc5dTEwMVMzR2dGWmREbFI2UmRNblFibGRBRk5iaEZ2VERlU1pncHZpY2pENy1BT196SmE4a0dPTC1wN2lmX2xoYzRuYWVmZHU1c05neFd6NG1KdnBYZEVqUmxNZExlRmRNaU9OV0RHeXZvczFmam9fWTc4a2Q2TXA4Q3dfMHV1d0w3dVQyQWNoVTNnQm5mRHA2N0xqenBTdmxrTGpTMk9l?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 23:13:57 GMT",
-      "tag": "IHSG",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 45,
-      "summary": "Warta dari CNN Indonesia: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
-        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-6",
-      "title": "IHSG Hari Ini Ditutup Turun 1,33%, Simak Top Gainer dan Top Loser LQ45",
-      "source": "Ajaib",
-      "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPRm4zNG9ydkY1WjY5UjNxWGZueE85bDYxRnBiSXphNTNWcWlELXd4c3RsQ1BoczlDd3lnMGNwM2MwTzFWQ1F5Zm9DcVRBQ3AxU2liSm5NY0ltUDNSZGw5YW5yNFBfdmdxVWRyTFdxaHdKRzdoYmgzV01ZT3RHNUhXR1VQUVNpSlltNkl1ZFl0N1EyRDVOekE?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 11:47:15 GMT",
-      "tag": "IHSG",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.35,
-      "related_tickers": [],
-      "metrics": [
-        "Perubahan: 1,33%"
-      ],
-      "reading_time_sec": 45,
-      "summary": "Warta dari Ajaib: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor IHSG.",
-      "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 1,33%.",
-        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
-      ]
-    },
-    {
-      "id": "news-7",
-      "title": "IHSG Hari Ini Moncer ke 6.689, Saham Energi Ikut Positif",
-      "source": "Listrik Indonesia",
-      "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPVzJxNU1zbHAwMlRwb0dWQ19vRFByc05BdmdJaUVtWjVrdnI3Y2hadXFwYUxOMlhxYkUwU200SWlZZEZxcEJ5ZXg1YkdZSVZ0MmJUa201dXJXc2RCaDZ0ZjhKWTJsY08td2k2SVVhQktZeUFMYWN1N0xDX1g0eVJsMk1pOHpJWVVDYlc2aFFnYXk2cTc2Vk1IOHZsNkw?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 14:30:08 GMT",
+      "id": "news-19",
+      "title": "3 Direktur AKRA Kompak Jual 5,18 Juta Saham di Harga Rp1.471",
+      "source": "CNBC Indonesia",
+      "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPMVBpc1RNWll6UE4wR1JoSVJVZ2VHc1ZVR3Q1Nl9RaUIxUkFwOGcxSlBEeXBleE1zOHAxRkZ5Y25pb1VFd2xsRC1mdVJPSkQ4R2xqYUg0d1FReHFLRjNvSjBHYTFfQXNKa0NrM3EwRXNLcmhFWDBOeEpkQUtSX2d1UVpfZFc0ZUlhZVZycGVub1JLdzR4QnB3Zl9ZQVpYcUZpUWg1cjE5UUFOLTFnOER2TWxOU3Y1ZVFuc29SNdIBwgFBVV95cUxPWUNSS2w1eGpkUzcwMjhleFMzYmFfcDExVUVaamtDY1dEUHlkSmNPZkwzaG1kZUpYWXVkNGNfVzBWTUNaU2NYY2ctNmdDTUx1MWZlYV9yNlZEVmthME1HZkNXSlNJNUd4LWhlSUFDVVZzS1NudGEwSG1FRGxqbFdJR2xEN2kwRXE2Q21ZeUMtVE05SGMxb2lSc0hLZmM3ZDhOOUtlM1o2cld4QUVWNGpRZWNrVHlBLVR6QWVMRHlSWlZYZw?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 03:15:10 GMT",
       "tag": "IHSG",
       "sentiment": "NEUTRAL",
       "sentiment_score": 0.0,
       "related_tickers": [],
       "metrics": [
-        "Level kunci: 6.689,"
+        "Nilai: Rp1.471"
       ],
       "reading_time_sec": 45,
-      "summary": "Warta dari Listrik Indonesia: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
+      "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
       "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan. Terpantau Level kunci: 6.689,.",
+        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan. Terpantau Nilai: Rp1.471.",
         "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
         "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
       ]
     },
     {
-      "id": "news-8",
-      "title": "IHSG Waspadai Pergerakan Volatil Hari Ini, Sebaliknya Saham UNTR, PTBA, dan JARR Layak Dilirik",
-      "source": "InvestorTrust",
-      "link": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOT0duaENUZUt4Z0t5dnlCOTNiOHhFSW5HNTNTZjZfc2t5eXJWREhoMk5Ucy1Dbmc1bkxvV2xoN05XNW0yeEpKUnhOUmplczdPZDVhZmhjaV9ORF9zb3MzTE9pWERRazUxNVFSVHZabTZHOGZZRzRwQ2RsS1QzTEZBTVVSM1Bnangzb2phZ2h6WWFsWUV5b0htY01JUG1YQkV5ZHgtY0xiTTYxY09lWUFGWkZJblo5NkhuQjZ1amlqc3ZPMzk3ZXVMSXV3?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 09:34:00 GMT",
-      "tag": "IHSG",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [
-        "UNTR",
-        "PTBA"
-      ],
-      "metrics": [],
-      "reading_time_sec": 45,
-      "summary": "Warta dari InvestorTrust: Berita mengindikasikan sentimen neutral pada saham UNTR, PTBA dengan pengaruh terhadap sektor IHSG.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
-        "Fokus pasar tertuju pada pergerakan saham $UNTR, $PTBA dengan volatilitas aktif.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-9",
-      "title": "Haluan Saham Bank Rakyat Indonesia (BBRI) Berubah Mendadak",
-      "source": "investor.id",
-      "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPN1BjY2dJYkVPY2FZMUZjelJoeDRWeVY1OTZzTGpxMmFzZkFBd21PdWwzWjhqWFl4bVpHTDdEYXVsV3FuTHpNbHJHRG1td1dqSTBoWndlSmlKZGtxaHdScEMwUlNpUV8yV3YyMTRVWERlS3huTlduWWg0VzI2LWJzNmw2cUh5TnhyT29pVGJXQzNweHhV?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 22:45:00 GMT",
-      "tag": "BANKING",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [
-        "BBRI"
-      ],
-      "metrics": [],
-      "reading_time_sec": 45,
-      "summary": "Warta dari investor.id: Berita mengindikasikan sentimen neutral pada saham BBRI dengan pengaruh terhadap sektor BANKING.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
-        "Fokus pasar tertuju pada pergerakan saham $BBRI dengan volatilitas aktif.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-10",
-      "title": "IHSG Balik Arah Jadi Merah, Terbeban Saham-saham Ini",
-      "source": "Bloomberg Technoz",
-      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQV1NnandnZTQtTmtqWXpFOHNCU1VrYUpkeFVNY2swVF9LQ2thVXlWS3pYUVJYc3h0cVRualVVaF9KdDh6Z1dGS01pN29FNVpQRG8wU0NHMjl1RDVYOUpDNFFGRkM2WkxPY0ZEaXlDSW9ZVU9LSm1wd2ZvVDRRMDY5VWd5cUpUYnA0MGQ2VzdVWjF5em8yZnZkTkJEUTRBcVIyVDE2YU5B?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 06:25:27 GMT",
-      "tag": "IHSG",
-      "sentiment": "BULLISH",
-      "sentiment_score": 0.35,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 45,
-      "summary": "Warta dari Bloomberg Technoz: Berita mengindikasikan sentimen bullish dengan pengaruh terhadap sektor IHSG.",
-      "key_takeaways": [
-        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait.",
-        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
-      ]
-    },
-    {
-      "id": "news-11",
+      "id": "news-20",
       "title": "Saham Bakrie: Daftar Emiten dan Status Kepemilikannya",
       "source": "Pluang",
       "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBPbElHNm44QkIyWjIxZFdjLWRFSkI0bzV3NW5qdzZkLWxDSEZDVms1YmV2bnB4TXBUZS0xYUhVVGdXNi1BdnNGa3lXZFNRc010UHc3amFSYy1MWDFKQlJkdjdDX21FUQ?oc=5",
@@ -336,7 +511,70 @@
       ]
     },
     {
-      "id": "news-12",
+      "id": "news-21",
+      "title": "ANALIS MARKET (11/9/2026): IHSG Berpotensi Lanjutkan Pelemahan",
+      "source": "pasardana.id",
+      "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPWWNVbks4RjFiSkxXOTAwU096VE5OM0lhd1huM29xb2Y2RUVFdHFfdW03QjNKMmhQQmtJUHlFbTVXbGQzUWtTTGtqUW9peDVvY0ZQTDctb2o4M3FVMW11ZktYQU5zT05IQTU4cFFtVTFwVkExSmswR2RxMUFCbVlDR0xkVnZFNnFHZnljWWhNZ2tGbndnaDJ2T1dmSQ?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 01:10:00 GMT",
+      "tag": "IHSG",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 45,
+      "summary": "Warta dari pasardana.id: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
+        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-22",
+      "title": "IHSG Hari Ini Anjlok 1,81%, Saham Sektor Energi Melemah 1,80%",
+      "source": "Listrik Indonesia",
+      "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPbnFmYkhidnhscjZKTXdTSXRWdllsTERDUWMwZmZ2WmFvOWdMRlVsRG5hd21YT0xXaEQwcGQ4X2lFV0s0ZTh2RkY3eXVkY0lnNUk3NWluV1BUdEtvY201Mk1MZ1otc2ItRjBWdXJkQ0pjZGJmOFZRMENwV3Jta1JURW16NEtYVUJiYzd3ZGtKRnFEdmpoU0VTdE1zV1poWTg?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 02:59:12 GMT",
+      "tag": "IHSG",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.7,
+      "related_tickers": [],
+      "metrics": [
+        "Perubahan: 1,81%, 1,80%"
+      ],
+      "reading_time_sec": 45,
+      "summary": "Warta dari Listrik Indonesia: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor IHSG.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 1,81%, 1,80%.",
+        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-23",
+      "title": "Habis Borong, Morgan Stanley Lego 7,4 Miliar Saham GOTO di Harga Rp25",
+      "source": "CNBC Indonesia",
+      "link": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQaE8tNmtWeDR5M1VoTW9HMGlvODNMQnVldUt5ZGpadTVPcThhWWY5aXVGU3pud243aWRqazZoNjdzOTBaSTdsVjg0ODBUVWl3Q1Z6b1FjelVwR2FxUGRwTlB6R2lNX2dsTm00UzdJbVFhb0dIRmszdkU2S21Xd0FudEhYak03WWtWMnBVajBOdmlTQ0tHand2QUdtYklQTXZHYTVwNXhWamZhWmpqVnNfOWRiYURjVk1RbjAzeXdPSk5GVjJpZnpDUNIBzgFBVV95cUxQa2oyMG90R2ZHSm0yVDR0OWtIX2kycmk4Q0R1bDhOUGFBengxYUo2c2VERVRXQ2NwSGxDUVdKaEhDeVR5bWhJTzdrTmF0T19XNnljMmZDTUhPcHdkczJOTm8wcmtVYWlDZ090NGNNamJfSFYydEx5U0lvZTZyTEZnSWZoLTlpeEZsSEpVNWFGczFYSEY1aXVLQnM0UjhmZmhwUDkxVEFyTkI3MzBzNU5uREQ3STJLRFNCU3B6QlZ4RkFJT3V2Q1AwT285dl9rUQ?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 02:45:44 GMT",
+      "tag": "IHSG",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [
+        "GOTO"
+      ],
+      "metrics": [
+        "Nilai: Rp25"
+      ],
+      "reading_time_sec": 45,
+      "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen neutral pada saham GOTO dengan pengaruh terhadap sektor IHSG.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan. Terpantau Nilai: Rp25.",
+        "Fokus pasar tertuju pada pergerakan saham $GOTO dengan volatilitas aktif.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-24",
       "title": "Saham-saham emas tertekan jelang rebalancing indeks acuan VanEck",
       "source": "IDNFinancials",
       "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNWXN2bXlBbWR5czNwdzgtamtRVjNQbFRDSkFaSERROE1DQmFxS3J4Vi1BdlVBUF8ybnRGdTZSUnFNM09DcnJoRjBIN1g5WWRSWkxtVXg0T3RVb25nSThTbnRIaGxrUGZoOEMyWlNEOFRFOExGSlZrbkZDSHJZdEJlYTBZVUkxNXNnNFRwOVN5NG5VTG5RdHlXdG16bXgwY3lJN2VOUnNOSE1LSGtw?oc=5",
@@ -355,66 +593,7 @@
       ]
     },
     {
-      "id": "news-13",
-      "title": "Breaking News! Tiba-Tiba IHSG Turun 1%, Ini Penyebabnya",
-      "source": "CNBC Indonesia",
-      "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOVVhUNmMyc3Y2MXJKMlhndjhodGRvS0NpSFEwd3Rkdm9tbFBKSmZjVUdYU2JQZjdoWEFIekhadVVQMnhxQmZxNkY1dGNnNkpPQ2R0WXQ2U2RXbGMxdTE0N3pYaF83bjdlV3RBWXBzdjI3cG00RFZnTUl4S2V1YkpBdXJTRWE5R0xod1hZQk9hblBrNHBoUEpGeUIxSHBUOWpjTFV1RTlRbHI2ZUNTSEY2X2pSOGjSAboBQVVfeXFMTmxHXy1FNVNiZFdLYWh3aHRqU3hzZ1ZHOTJwMGVFdng2d0hFWmtKUHEwRmZUazFVMk1FeDZ3c0l4ZUcxd1ltRmVIY2tNb0Rqd3YzRjRYTEhQWGVJVlMwbkk5RnNZRmhiSkF5dUJOaVFjQWl4UENTNFE0bFk3a0drTGhpT050UUFyVnQ4SUViaUxYVFFpUUNSU0ZiWWhQdmcwQ21wdE83cHUwQXJaQmhvU1l0NkRMbENqLW1R?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 07:37:17 GMT",
-      "tag": "IHSG",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.35,
-      "related_tickers": [],
-      "metrics": [
-        "Perubahan: 1%"
-      ],
-      "reading_time_sec": 45,
-      "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor IHSG.",
-      "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 1%.",
-        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
-      ]
-    },
-    {
-      "id": "news-14",
-      "title": "Rekomendasi Saham Amerika Hari Ini: INTC, CVX, dan MU",
-      "source": "Ajaib",
-      "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE12V0ZOV21lYXZjVVJhLUlWZk1TZFdhNElBZVZLYUlURjRWX0Z3amtmcmlSVm9uY2VpR1BfSnRtWTVselZyQVBZVkNnbDhGV2Z0Q00zQ2ZWYm5COFBQSEZjZEtMOUFkZkFiRzY2Q2xVR1l4eWY1U0E?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 16:37:44 GMT",
-      "tag": "IHSG",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 45,
-      "summary": "Warta dari Ajaib: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
-        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-15",
-      "title": "Sederet Saham yang Masih Masuk Keranjang Asing",
-      "source": "investor.id",
-      "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQUU50dmw3dlNLVzZpR2xBZ0otTnZySVVabHFYSlNUamdycEg4c2xtbkxZSGJ6My1QNWtlNGpxUGJNREUwRUpTQS1aQjdlV0puZ1luMFczQ1JGUTkzWXRNbDBvRWpnckxiXzhGejJEeGR6U1Ruc0hQMmRVMUota29YaVBiTnJQVmc?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 23:20:00 GMT",
-      "tag": "FOREIGN_FLOW",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 45,
-      "summary": "Warta dari investor.id: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor FOREIGN_FLOW.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
-        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-16",
+      "id": "news-25",
       "title": "Saham Networking Layer & Semiconductor untuk AI",
       "source": "Pluang",
       "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOdE0tNl9QelZ0OW52UDhwSTd4UVpTWk9OWlk5a1p2WmlSYlpzQzVDMjlBUFRzTElPelVESEdLR0I5SW90ek9nR2JtY0dJZVlnWUoyaDhETlVYT3FjNTd3eW9pU09WcTRmZW9qMFB5UUw5a3plSDFaQ1R4bGNIU0lDWDlwcGg3QQ?oc=5",
@@ -431,189 +610,8 @@
         "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
         "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
       ]
-    },
-    {
-      "id": "news-17",
-      "title": "IHSG turun 0,14% di sesi I, asing lepas saham-saham ini",
-      "source": "IDNFinancials",
-      "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxQRXQxeWpJMnBBTWpVX0paSFczU1U1T1JWZmZLUURmR0txLWtEVEU0R2RpcElVLWRiOXMxY0F6RzI5LUJDS1RRc3hLU3NRLTJHRm9JY1JCUmZoOWVlc2c4ZUtITlJnbWktdnV5UFFubzB3LVVGWG5xUkRFejRVSldSa09RLVd3ZFJqZmQtTlE5Q3luYzhWbG5FM29heGttUQ?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 05:51:00 GMT",
-      "tag": "FOREIGN_FLOW",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.35,
-      "related_tickers": [],
-      "metrics": [
-        "Perubahan: 0,14%"
-      ],
-      "reading_time_sec": 45,
-      "summary": "Warta dari IDNFinancials: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor FOREIGN_FLOW.",
-      "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 0,14%.",
-        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
-      ]
-    },
-    {
-      "id": "news-18",
-      "title": "Harga Minyak US$107, Eropa Kerek Bunga, AS Beri Kabar Genting Hari Ini",
-      "source": "CNBC Indonesia",
-      "link": "https://news.google.com/rss/articles/CBMizgFBVV95cUxOY1NjMjlfOFVwMHBXN1JIZ2VCNW1kWjFXNnZQV091a0NtLVJFQU56ZmhaOGxIN3Ftci1LcS0yOFo1Tmh6bmRaQTI2Tm5ZaEVLaXpqSjNlUHF6STA0RlUzeDJuc0hwOUVueWp4NzFpSERKRFhSYjVwZ0tCZE9ycTFLU3RUTVdxVmk1ckRTTHZvSlU5R2M3eWVKeFhWMXN6OElIN2VSNUx3MVdYbW0wLUwwVnhZeGExWkx2RDlWSm00V251TF9NMVQzaUNrc0pVQdIB0wFBVV95cUxPX1JFcHN1Q3pRNVFuRmhFNXp0UnozclBLVWNsWmJ6eDRROUdjcmUwT01vT25wTUtidW5JTEo2UURRMk9nbi0wdlpfbE5IMXpqUER6WEYyb1JxOVhyUkljcHQ0dHp5QTZKQmIzZllnRWs5alBsanhBRXN5QVJENU56TGdjeUZGRmRjU21vUFNBTTFWblJScFFFeEFuaUJVWlpnbkVuWGl5R0pFU01rZVEzN2k5NFF3SDRfU2N4TzZOMENhUjVtVkMtaThzMU92V3NodG9r?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 23:15:08 GMT",
-      "tag": "ENERGY",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [
-        "Nilai: US$107, "
-      ],
-      "reading_time_sec": 45,
-      "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor ENERGY.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan. Terpantau Nilai: US$107, .",
-        "Fluktuasi harga minyak mentah global memengaruhi ekspektasi marjin operasional sektor energi.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-19",
-      "title": "Anak usaha Emtek borong 803 juta BUKA, kuasai 45,68% saham",
-      "source": "IDNFinancials",
-      "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNTDRZV1dUYnJGOWdiRHhPMUswcTVqXzZSTURiT3FEUWZacWZRSGR4MmFzQnh6VkVoQ0YwVDFLdWg1cm5uVnRMNzVVOGpuZ081WVVFYWQ4MGRaRjdZWkxIRmkybEVaMHM4dUxRcnRKMEd2c3IyNmF3MzVMOFpOSS1EZ1JUc3NBSXFFUTZUZDR1bTJ4QllWRm42NmdnWGFhcTY1aXc?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 08:40:00 GMT",
-      "tag": "IHSG",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [
-        "Perubahan: 45,68%"
-      ],
-      "reading_time_sec": 45,
-      "summary": "Warta dari IDNFinancials: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan. Terpantau Perubahan: 45,68%.",
-        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-20",
-      "title": "OJK akan batasi kepemilikan saham BEI maksimal 5% usai demutualisasi",
-      "source": "IDNFinancials",
-      "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQcURkLWZ6cVMwdF9ncWI3dldjSDlnakVjLTVEZ3VtUnpMN0hyOXdnTGdFaWFtNXVxTlZ5VDh5U005dXNlT2x4Z1dQQmhQSUI2dFV2VHNtbGN6cktkdUtOVm40OXFHbWdjZkVPTl9YOGxpOFFDblB0aXV4MHlBY3l6emFNVHBadXdxY1h1VldvYUJaSDVKVzVtTExKeHVFVFdrN3RVclFVT0ZnVGZlWVMxZmZnWS13cVU3SkE?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 08:59:24 GMT",
-      "tag": "IHSG",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [
-        "Perubahan: 5%"
-      ],
-      "reading_time_sec": 45,
-      "summary": "Warta dari IDNFinancials: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan. Terpantau Perubahan: 5%.",
-        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-21",
-      "title": "IHSG Kamis dibuka menguat 9,98 poin",
-      "source": "ANTARA News Sultra",
-      "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQZmVreG9NVHFsWE1zU0RGZWVrY2RaVVBaUDk3N3lsc1BuSGpWZVRDZmdydEZ3UmpjeENyNXVha1V5d2lxcFQ1VTFMR0d6dVBSNnljQXRtRWRmRmRTeXJIZ1ktazJydFpwWUlGbk43V3NfU09Gc2IyS05BXzlDTjBNYWUwZkI?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 04:01:50 GMT",
-      "tag": "IHSG",
-      "sentiment": "BULLISH",
-      "sentiment_score": 0.7,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 45,
-      "summary": "Warta dari ANTARA News Sultra: Berita mengindikasikan sentimen bullish dengan pengaruh terhadap sektor IHSG.",
-      "key_takeaways": [
-        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait.",
-        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
-      ]
-    },
-    {
-      "id": "news-22",
-      "title": "IHSG Anjlok 1,29%! Babak Belur Dihajar Harga Minyak & Obligasi AS",
-      "source": "CNBC Indonesia",
-      "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNWERZY254cWVaU3hqZVNLQU1nejJ2NTFHOTRjUVN1Z2JpU2hYVGFfLUZKaDY3eHVWN2RUREZ4NVRNdUktc3hEWnpYNGhkaXZyYkpBSkdueFRTOWVyQ0xzbHZzWkJlQUFxVGdUM3UyaTBKNG92ZlZaV1VCVFhxVTRDQmVXWC1jbXg1ZHdlM1Azd1pISDFDd3lfYlEzRF9udE14NkpzMkw0NHN1YzJNVlhYOVZPaktqUzEtRktUcV85NNIBxAFBVV95cUxNU2pGVVl6UXlrZkRQMndMYTZDTmZud3U0dXoyaGFIUDFrb3VHb3JIeHFwMU1NNjI5SkxwNS01SWhIZU9XdW91R0NSSkc2d05MMTlGVFdPb1ptcmE5a1RJT3JFeUZ4cTlzOHFuUWo4YXItdFN4c1Vab3RIQ0xNVENnVzI1R3VZemxTTWlDRm5xVU8zbmt0cmlhZVRZYVJMTGdLbTVlbG82NmxmeFR3NWF2Mkc1X05yZU9DR1Z1d0UxV2pvdTE3?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 09:40:21 GMT",
-      "tag": "ENERGY",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.35,
-      "related_tickers": [],
-      "metrics": [
-        "Perubahan: 1,29%"
-      ],
-      "reading_time_sec": 45,
-      "summary": "Warta dari CNBC Indonesia: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor ENERGY.",
-      "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 1,29%.",
-        "Fluktuasi harga minyak mentah global memengaruhi ekspektasi marjin operasional sektor energi.",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
-      ]
-    },
-    {
-      "id": "news-23",
-      "title": "Penyebab IHSG Ditutup Melemah di 6.589",
-      "source": "Bloomberg Technoz",
-      "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPU2xCaThERm5qNlU5aUFnN3FFQ2xvN1lLcFhuV2xwUnZQVHdaMlZrUlRLZWVoN0Q2dGFyQkNWRl8wMkd2VF9EOUZndm5RTmpaSUJkSmVTd2l5OWJ5VEpvMm43VElXanpPN1JpUktaLVNFMmJfOWtQSm9FNHRraXFoejRhMC1rd3dvM29lazRqM0xtLUZL?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 11:50:53 GMT",
-      "tag": "IHSG",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.35,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 45,
-      "summary": "Warta dari Bloomberg Technoz: Berita mengindikasikan sentimen bearish dengan pengaruh terhadap sektor IHSG.",
-      "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
-        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
-      ]
-    },
-    {
-      "id": "news-24",
-      "title": "Cara Lapor Pajak Investasi Saham AS bagi Investor Indonesia",
-      "source": "Pluang",
-      "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTE51OGxjRWZYMHVBV0RzMUdNOWxmZUF1dUFrNFFVMS1veXNLV21IM1hpRFk4MkpRYzQxengwT0JnV2hWUUVfSzgyNnVhSV9iRzBnakRIeEpjb0wzRGRjUmpNOEl5THBwdG5QZUtqQ0NwVHNDMTMzUzhJ?oc=5",
-      "pub_date": "Wed, 09 Sep 2026 04:23:48 GMT",
-      "tag": "IHSG",
-      "sentiment": "BULLISH",
-      "sentiment_score": 0.35,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 45,
-      "summary": "Warta dari Pluang: Berita mengindikasikan sentimen bullish dengan pengaruh terhadap sektor IHSG.",
-      "key_takeaways": [
-        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli pada instrumen terkait.",
-        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
-      ]
-    },
-    {
-      "id": "news-25",
-      "title": "Saham Prajogo Pangestu: 6 Emiten dan Rincian Kepemilikannya",
-      "source": "Pluang",
-      "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTFBCcWhpNXhJUmswb3JjcGlOcnRPWmpncWNuaWhqSUFpUFVpMFNjRTVSZzY0cDR0czZ0eHhTMm9QTGZ2eUtQWWh3TzNuUExoUzk2cEtJT0EzWFFMLUtta2c4YnlkYWlOX1U0Qy03MUdUb1hDYUk?oc=5",
-      "pub_date": "Thu, 10 Sep 2026 00:34:32 GMT",
-      "tag": "IHSG",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 45,
-      "summary": "Warta dari Pluang: Berita mengindikasikan sentimen neutral dengan pengaruh terhadap sektor IHSG.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menjelang rilis data makro ekonomi acuan.",
-        "IHSG mempertahankan rentang konsolidasi wajar dengan selektivitas pada saham berfundamental solid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
     }
   ],
-  "full_narrative": "Global telemetry report: Gold at $4356.4 (-1.35%), Brent Crude at $109.22 (7.91%). DXY at 99.09 pts. Monitored for impact on Indonesian equities.",
-  "updated_at": "2026-09-10T23:51:53.070288"
+  "full_narrative": "Global telemetry report: Gold at $4351.4 (-1.46%), Brent Crude at $108.1 (6.81%). DXY at 99.15 pts. Monitored for impact on Indonesian equities.",
+  "updated_at": "2026-09-11T03:52:24.132900"
 }
