@@ -79,7 +79,7 @@ export default function ChangelogTab() {
               padding: '2px 8px',
               borderRadius: '4px'
             }}>
-              Active: Update Package 10092026
+              Active: {CHANGELOG_DATA[0]?.version || 'Update Package'}
             </span>
           </h2>
 
@@ -139,35 +139,23 @@ export default function ChangelogTab() {
             SEMUA PAKET ({CHANGELOG_DATA.length})
           </button>
 
-          <button
-            onClick={() => setSelectedFilter('pkg-10092026')}
-            className="telemetry-btn"
-            style={{
-              background: selectedFilter === 'pkg-10092026' ? 'var(--accent-green)' : 'var(--bg-panel-subtle)',
-              color: selectedFilter === 'pkg-10092026' ? '#ffffff' : 'var(--text-primary)',
-              borderColor: selectedFilter === 'pkg-10092026' ? 'var(--accent-green)' : 'var(--border-color)',
-              padding: '5px 12px',
-              fontSize: '11px',
-              fontWeight: '700'
-            }}
-          >
-            🚀 UPDATE PACKAGE 10092026 (AKTIF)
-          </button>
-
-          <button
-            onClick={() => setSelectedFilter('pkg-initial-launch')}
-            className="telemetry-btn"
-            style={{
-              background: selectedFilter === 'pkg-initial-launch' ? 'var(--accent-green)' : 'var(--bg-panel-subtle)',
-              color: selectedFilter === 'pkg-initial-launch' ? '#ffffff' : 'var(--text-primary)',
-              borderColor: selectedFilter === 'pkg-initial-launch' ? 'var(--accent-green)' : 'var(--border-color)',
-              padding: '5px 12px',
-              fontSize: '11px',
-              fontWeight: '700'
-            }}
-          >
-            📦 INITIAL LAUNCH (REKAP BASELINE)
-          </button>
+          {CHANGELOG_DATA.map(pkg => (
+            <button
+              key={pkg.id}
+              onClick={() => setSelectedFilter(pkg.id)}
+              className="telemetry-btn"
+              style={{
+                background: selectedFilter === pkg.id ? 'var(--accent-green)' : 'var(--bg-panel-subtle)',
+                color: selectedFilter === pkg.id ? '#ffffff' : 'var(--text-primary)',
+                borderColor: selectedFilter === pkg.id ? 'var(--accent-green)' : 'var(--border-color)',
+                padding: '5px 12px',
+                fontSize: '11px',
+                fontWeight: '700'
+              }}
+            >
+              {pkg.status === 'LATEST' ? '🚀 ' : '📦 '}{pkg.version.toUpperCase()} {pkg.status === 'LATEST' ? '(AKTIF)' : ''}
+            </button>
+          ))}
         </div>
 
         {/* Search Field */}

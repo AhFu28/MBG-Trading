@@ -1,70 +1,112 @@
 /**
  * MBG APEX Quant Terminal - Changelog & Release History Dataset
  * Formatted and grouped per user requirement:
- * 1. Update Package 10092026 (10 September 2026) - Current / Active
- * 2. Initial Launch Package (08 - 09 September 2026) - Consolidated Baseline
+ * 1. Update Package 11092026 (11 September 2026) - Current / Active
+ * 2. Update Package 10092026 (10 September 2026) - Major Evolution
+ * 3. Initial Launch Package (08 - 09 September 2026) - Consolidated Baseline
  */
 
 export const CHANGELOG_DATA = [
+  {
+    id: 'pkg-11092026',
+    version: 'Package 11092026',
+    semanticVersion: 'v2.2.0',
+    date: '11 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / ACTIVE',
+    title: 'Update Package 11092026: SoSoValue Research Desk, Dual-Stream News Wire, Spot ETF Telemetry & Layout Cockpit V2',
+    description: 'Pembaruan ekstensif menghadirkan tata letak Home Cockpit 2-kolom SoSoValue (72% Cockpit + 28% Live News) dengan zero horizontal scroll, running ticker tape tanpa jeda, telemetri ETF Spot BTC/ETH, Active Windowing dividen, dan dukungan multi-aset kripto di Charting Desk.',
+    highlights: [
+      {
+        tag: 'RUNNING TICKER',
+        tagColor: 'var(--accent-green)',
+        icon: '📈',
+        title: 'Continuous Running Ticker Tape & Dark Scrollbars',
+        desc: 'Running ticker tape pasar atas terminal yang bergerak dinamis tanpa jeda dengan status indeks global, IHSG, serta styling scrollbars subtle blend Bloomberg.'
+      },
+      {
+        tag: 'COCKPIT LAYOUT',
+        tagColor: 'var(--accent-amber)',
+        icon: '🏛️',
+        title: 'Home Cockpit 2-Kolom SoSoValue (72% Cockpit + 28% Live News)',
+        desc: 'Adopsi tata letak terpadu 2-kolom dengan zero horizontal scroll. Menampilkan struktur asli Top 5 Foreign Flow, Bandarmology radar cards, dan telemetry strip pengisi tinggi layar penuh.'
+      },
+      {
+        tag: 'ETF TELEMETRY',
+        tagColor: 'var(--accent-cyan)',
+        icon: '⚡',
+        title: 'SoSoValue Spot ETF Net Flow & Turnover Telemetry',
+        desc: 'Widget telemetri institusional pemantau aliran dana bersih harian (Net Inflow/Outflow) Bitcoin & Ethereum Spot ETF serta turnover pasar global.'
+      },
+      {
+        tag: 'RESEARCH DESK',
+        tagColor: 'var(--accent-purple)',
+        icon: '📰',
+        title: 'SoSoValue-Style Research Desk (24/7 Dual-Stream Live News)',
+        desc: 'Integrasi stream ganda berita live wire 24/7 dari Bloomberg/Reuters & Stockbit Snips dengan 3 poin kunci (Key Takeaways) dan sentimen pasar.'
+      },
+      {
+        tag: 'DIVIDEND V2',
+        tagColor: 'var(--accent-amber)',
+        icon: '💰',
+        title: 'Dividen Hunter Active Windowing (-1 Bln s/d +6 Bln)',
+        desc: 'Jendela waktu aktif dividen dinamis yang hanya menampilkan emiten pasca-Ex 1 bulan terakhir hingga proyeksi 6 bulan ke depan dengan live countdown H-X.'
+      },
+      {
+        tag: 'GLOBAL MACRO',
+        tagColor: '#38bdf8',
+        icon: '🌍',
+        title: 'Pasar Global & Macro Barometer Enrichment',
+        desc: 'Topbar session ticker waktu riil (WIB, NYSE, LSE, TKY), barometer risiko makro, serta pemantauan komoditas energi (Brent/WTI) dan logam mulia (Gold).'
+      },
+      {
+        tag: 'CHARTING & RISK',
+        tagColor: 'var(--accent-purple)',
+        icon: '🪙',
+        title: 'Multi-Asset Crypto Spot di Charting Desk & Lot Calculator',
+        desc: 'Dukungan penuh simbol Crypto Spot di workspace layar penuh TradingView dan kalkulator ukuran lot otomatis berbasis margin serta saldo portofolio.'
+      },
+      {
+        tag: 'BRAND IDENTITY',
+        tagColor: 'var(--accent-green)',
+        icon: '💎',
+        title: 'Official MBG APEX Tri-Loop Vector Rebranding',
+        desc: 'Peluncuran identitas resmi MBG APEX Market Brain Grid dengan Quantum Emerald Tri-Loop vector logo murni dan pembersihan seluruh residu legacy.'
+      }
+    ]
+  },
   {
     id: 'pkg-10092026',
     version: 'Package 10092026',
     semanticVersion: 'v2.1.0',
     date: '10 September 2026',
-    status: 'LATEST',
-    statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / ACTIVE',
-    title: 'Update Package 10092026: Telegram Serverless, Command Center & Changelog Engine',
-    description: 'Pembaruan arsitektur generasi kedua menghadirkan integrasi Bot Telegram serverless 24/7 di Cloudflare Pages, Command Center Home bento-grid, Zero-Scroll Sidebar, serta sistem Changelog Update terpadu.',
+    status: 'STABLE',
+    statusColor: '#38bdf8',
+    badgeLabel: 'STABLE EVOLUTION',
+    title: 'Update Package 10092026: Telegram Serverless, Command Center, Charting Desk & Changelog Engine',
+    description: 'Pembaruan arsitektur generasi kedua menghadirkan integrasi Bot Telegram serverless 24/7 di Cloudflare Pages, Command Center Home bento-grid, Institutional Charting Desk TradingView, Level 2 Market Depth, dan sistem Changelog Registry.',
     highlights: [
       {
         tag: 'CHARTING DESK',
         tagColor: 'var(--accent-purple)',
         icon: '📊',
         title: 'Institutional Charting Desk & 4 Strategy Presets (TradingView Engine)',
-        desc: 'Menu baru workspace layar penuh didukung TradingView Advanced Real-Time Chart 100% gratis dengan full drawing toolbar (Trendline, Fibonacci, Position Tool). Dilengkapi 4 Strategy Presets (SMC Desk, Trend Following, Bandar Flow, Mean Reversion), telemetri setup terpadu, dan 1-klik kalkulator lot MBG Apex.'
+        desc: 'Workspace layar penuh didukung TradingView Advanced Real-Time Chart 100% gratis dengan full drawing toolbar, 4 Strategy Presets (SMC, Trend, Bandar, Mean Reversion), dan 1-klik kalkulator lot.'
       },
       {
         tag: 'ORDERBOOK & FLOW',
         tagColor: '#3b82f6',
         icon: '📊',
         title: 'Level 2 Real Market Depth & Broker Summary (Stockbit/NeoBDM Model)',
-        desc: 'Eliminasi total simulator acak. Integrasi 100% data riil: Real-time Live Orderbook Kripto via Tokocrypto/Indodax Bappebti API & Official Best Quote BEI. Dilengkapi Radar Detektif Bandar (Broker Summary 2 Kolom Buyer vs Seller, CR3 Konsentrasi Akumulasi, dan Foreign Flow).'
+        desc: 'Integrasi data riil: Real-time Live Orderbook Kripto via Tokocrypto/Indodax & Official Best Quote BEI dengan Radar Detektif Bandar (Broker Summary 2 Kolom Buyer vs Seller & CR3 Akumulasi).'
       },
       {
         tag: 'SAHAM IDX RESTRUCTURE',
         tagColor: 'var(--accent-green)',
         icon: '🏛️',
         title: 'Restrukturisasi Saham IDX & Penyatuan Semesta (Unified Universe)',
-        desc: 'Konsolidasi seluruh saham dan 12 grup konglomerasi ke dalam semesta "SEMUA SAHAM". Kolom dinamis diubah menjadi "Grup" (saham) dan "Klaster" (kripto). Sub-filter diperingkas menjadi 3: SEMUA SAHAM, 🎯 TOP TRADE PLANS (murni rekomendasi buy setup), dan 💰 DIVIDEN HUNTER.'
-      },
-      {
-        tag: 'DIVIDEN HUNTER V2',
-        tagColor: 'var(--accent-amber)',
-        icon: '💰',
-        title: 'Dividen Hunter V2: Active Windowing, Dynamic Countdown & Telegram Alert',
-        desc: 'Kalender dividen dinamis berbasis jendela waktu nyata: hanya menampilkan dividen 1 bulan terakhir (pasca-Ex Date) dan perkiraan 3-6 bulan kedepan. Dilengkapi sub-filter (Semua Aktif, Mendatang, 1 Bln Terakhir), kalkulasi live countdown H-X / Pasca-Ex H+X, Worth to Buy scoring, dan bot Telegram /dividend.'
-      },
-      {
-        tag: 'FOREIGN FLOW',
-        tagColor: 'var(--accent-cyan)',
-        icon: '🌐',
-        title: 'Sentralisasi Foreign Flow Macro ke Home Command Center',
-        desc: 'Eliminasi baris pseudo-trade plan dari tabel saham. Dialihkan menjadi widget makro likuiditas terpadu di Home Command Center: Net Foreign Flow Harian & 5-Hari (Triliun Rp), status Regime, serta Top 5 Inflow vs Outflow.'
-      },
-      {
-        tag: 'NEWS & SNIPS',
-        tagColor: '#a855f7',
-        icon: '📰',
-        title: 'NewsTab V2 & Stockbit Snips Daily Recap',
-        desc: 'Tampilan feed vertikal satu kolom dengan 3 poin penting (Key Takeaways) per berita, Stockbit Snips Daily Recap di header, sentimen pasar, dan Web Speech Audio Narrator.'
-      },
-      {
-        tag: 'CHANGELOG',
-        tagColor: 'var(--accent-green)',
-        icon: '📜',
-        title: 'Interactive Changelog & Release Notes Engine',
-        desc: 'Menu khusus di sidebar untuk pemantauan rilis berkala, filter versi terstruktur, dan rekapitulasi paket rilis dengan visual timeline interaktif.'
+        desc: 'Konsolidasi seluruh saham dan 12 grup konglomerasi ke dalam semesta "SEMUA SAHAM". Sub-filter diperingkas: SEMUA SAHAM, 🎯 TOP TRADE PLANS, dan 💰 DIVIDEN HUNTER.'
       },
       {
         tag: 'TELEGRAM',
@@ -74,32 +116,18 @@ export const CHANGELOG_DATA = [
         desc: 'Webhook /api/telegram-webhook berjalan di edge Cloudflare tanpa runtime cost, melayani query real-time command /saham, /crypto, /macro, /plan, /dividend, dan /help.'
       },
       {
-        tag: 'DASHBOARD',
-        tagColor: 'var(--accent-amber)',
-        icon: '🏠',
-        title: 'Home Command Center (Bento-Grid Cockpit)',
-        desc: 'Tampilan terpadu eksekutif dengan widget Market Pulse, Top 5 Alpha Picks, Radar Foreign Flow Inflow/Outflow, Radar Klaster Konglomerat, dan Live News Wire.'
-      },
-      {
-        tag: 'NAVIGATION',
-        tagColor: '#38bdf8',
-        icon: '📐',
-        title: 'Zero-Scroll Sidebar & Quick Header Tools',
-        desc: 'Struktur sidebar compact 100vh tanpa scrolling vertikal berlebih, serta penambahan tombol pintas cepat "LAUNCH CHART" & "KALKULATOR LOT" pada top header.'
+        tag: 'CHANGELOG',
+        tagColor: 'var(--accent-green)',
+        icon: '📜',
+        title: 'Interactive Changelog & Release Notes Engine',
+        desc: 'Menu khusus di sidebar untuk pemantauan rilis berkala, filter versi terstruktur, dan rekapitulasi paket rilis dengan visual timeline interaktif.'
       },
       {
         tag: 'QUANT LAB',
         tagColor: 'var(--accent-purple)',
         icon: '🧪',
-        title: 'Unified Testing Hub',
-        desc: 'Konsolidasi menyeluruh antara Forward Paper Trading Portfolio dan Backtest Performance Lab (5-year walkforward) dalam satu alur kerja pengujian terpadu.'
-      },
-      {
-        tag: 'STABILITY',
-        tagColor: '#ef4444',
-        icon: '🛡️',
-        title: 'React ErrorBoundary & Crash Hardening',
-        desc: 'Proteksi komponen dari blank screen jika terjadi data parsing error, pembersihan mojibake encoding, dan sinkronisasi telemetri engine instan.'
+        title: 'Unified Testing Hub & ErrorBoundary Hardening',
+        desc: 'Konsolidasi Forward Paper Trading Portfolio dan Backtest Performance Lab dalam satu alur kerja terpadu dengan proteksi React ErrorBoundary.'
       }
     ]
   },
