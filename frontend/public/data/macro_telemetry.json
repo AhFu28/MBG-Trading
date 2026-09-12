@@ -27,7 +27,7 @@
   "event_category": "FED",
   "sentiment": "NEUTRAL",
   "severity": "NORMAL",
-  "gold_price": 4390.0,
+  "gold_price": 4390,
   "gold_change_pct": 0.58,
   "brent_oil_price": 104.42,
   "brent_oil_change_pct": -2.98,
@@ -94,7 +94,7 @@
         "type": "ETH",
         "price": 19.16,
         "change_pct": 3.23,
-        "turnover_m": 1847.0,
+        "turnover_m": 1847,
         "volume": 96396910,
         "net_status": "HIGH_INFLOW"
       },
@@ -115,13 +115,13 @@
     "generated_at": "2026-09-11T23:05:36.739190",
     "market_verdict": {
       "stance": "CONSOLIDATIVE",
-      "badge": "\u26aa KONSOLIDASI PASAR SEHAT",
+      "badge": "⚪ KONSOLIDASI PASAR SEHAT",
       "confidence": "HIGH",
       "narrative": "IHSG bergerak variatif dengan kecenderungan konsolidasi menjelang rilis data inflasi dan suku bunga acuan."
     },
     "macro_pulse": {
       "gold": {
-        "price": 4390.0,
+        "price": 4390,
         "change_pct": 0.58,
         "status": "RALLY"
       },
@@ -178,7 +178,7 @@
       "tag": "FOREIGN_FLOW",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 1,49%"
@@ -200,7 +200,7 @@
       "tag": "BANKING",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BBRI"
       ],
@@ -330,7 +330,7 @@
       "tag": "FOREIGN_FLOW",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
@@ -350,7 +350,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 0,7%"
@@ -372,7 +372,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 5,62%"
@@ -438,7 +438,7 @@
       "tag": "ENERGY",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -458,7 +458,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 0,7%"
@@ -502,7 +502,7 @@
       "tag": "FOREIGN_FLOW",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Perubahan: 1,49%"
@@ -524,7 +524,7 @@
       "tag": "ENERGY",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -544,7 +544,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Nilai: Rp250 "
@@ -633,7 +633,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -653,7 +653,7 @@
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [
         "Level kunci: 6.541"
@@ -761,7 +761,7 @@
       "tag": "METALS",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BUMI"
       ],
@@ -825,7 +825,7 @@
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -863,14 +863,14 @@
     },
     {
       "id": "news-33",
-      "title": "Crypto\u2019s Latest Rebound is Fueled By More Liquidations",
+      "title": "Crypto’s Latest Rebound is Fueled By More Liquidations",
       "source": "Bloomberg.com",
       "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPcTZKMERXNUtEc1UtZTlmNy1RS21TYTV1ZXJuUzF3Rjkza1Zwbk4yWW5aRmxQSDRoWW4wU0ZadTVydVdiS01pNGlnYjZ3R0loMmp4YzNQT0N4TjVsNERrLWhzRm5QWEJFNFVFZ2lxZzNtRkM0c3Q5RkV6YzlubW9RSFZ6SFF0OHJXdHlONS1TS2Itd0JSaG5IVHJmdzNOY3l1RjNsNHFsckU?oc=5",
       "pub_date": "Fri, 11 Sep 2026 15:48:23 GMT",
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -890,7 +890,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
@@ -903,14 +903,14 @@
     },
     {
       "id": "news-35",
-      "title": "Reform UK given record \u00a336m donation by British crypto billionaire",
+      "title": "Reform UK given record £36m donation by British crypto billionaire",
       "source": "The Guardian",
       "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOTk5BY0d4bG9Xb285b0hCZW9RSWRBZVAyYUh1UXE5QV9JOEltb18tWXhOVm4tOWtZOUZEa1U4SnhNOEJmWEtDc3V4cXJyNDk4c21YanAtY0pkV01GNEI2Mlc3SkZiN1llTFZ3RzY4NEItMTBfNldNQlNqZDJId0lPSlZOSXJwN05Vb1o3QzRBSjVWejVGUElYNzJxMkstXzhCYi13THVINVlJZ0NJQkJMaU41NVM?oc=5",
       "pub_date": "Fri, 11 Sep 2026 22:24:00 GMT",
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -950,7 +950,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -970,7 +970,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
@@ -990,7 +990,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
@@ -1010,7 +1010,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "ETH"
       ],
@@ -1032,7 +1032,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "XRP",
         "BTC"
@@ -1055,7 +1055,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1077,7 +1077,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "XRP",
         "BTC"
@@ -1123,7 +1123,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "ETH"
       ],
@@ -1145,7 +1145,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1160,14 +1160,14 @@
     },
     {
       "id": "news-47",
-      "title": "Bitcoin\u2019s \u2018Unusual Mix\u2019: Bearish Inflation Print, Bullish Buyback Failure",
+      "title": "Bitcoin’s ‘Unusual Mix’: Bearish Inflation Print, Bullish Buyback Failure",
       "source": "Bitcoin Magazine",
       "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5kd3B6QTVtNTZTWUtpN2tiUlNFWXJCYmxhZnFwajN1YS00X3pRcFJjOWpXSW96QmlXU3Mycmk4elVsMzAxT1hFQWFfUzI0U1RpY3hZZVdpZ1B1NTlNdUhzSEh6TDFVMWVwWV9CVmFKVFlVQkgyVnFWTktyZUc?oc=5",
       "pub_date": "Fri, 11 Sep 2026 21:23:57 GMT",
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1182,14 +1182,14 @@
     },
     {
       "id": "news-48",
-      "title": "Ripple\u2019s David Schwartz Says XRP Can Flip Bitcoin. Here\u2019s the $24.50 Math",
+      "title": "Ripple’s David Schwartz Says XRP Can Flip Bitcoin. Here’s the $24.50 Math",
       "source": "24/7 Wall St.",
       "link": "https://news.google.com/rss/articles/CBMixwFBVV95cUxPd3dBb25kWjZGVHFPVkZQMEtuNnhvVXYyQUpOWEdlaWRDQ1dyV1pfUXFyYkhfSEFialA3Mml3eXNpNkZkRVZKTnVKcUZJd3JPU1A1NG1HekVIM1FVMFZRWW80UnE4cDNKNUVORTNjY1kyQ3BBZDNabjZzVFdLS0lEOTI3ZjRhbjk5c1BkYjhPa2UyN3B5MjZHaDlBckhvU1lmc29mYk5PWW1wT3ZtTng0NmZfaHpLY0FCbHpCbGJCZmJtaGYtbmFz?oc=5",
       "pub_date": "Fri, 11 Sep 2026 22:29:00 GMT",
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "XRP",
         "BTC"
@@ -1207,7 +1207,7 @@
     },
     {
       "id": "news-49",
-      "title": "Crypto investor pardoned by Trump donates \u00a336 million to Farage's Reform UK",
+      "title": "Crypto investor pardoned by Trump donates £36 million to Farage's Reform UK",
       "source": "Reuters",
       "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxONzRlSHNoSkdzQ0gtcllVY1RmRVRHWFRRSGo2R1hLaGRQR0htY2pTLVN6RVpfNWdMcnNTMVZDSEZ1MlV2UFRnWDNfSFJ0MGtLbVBOYWpkb3gtUEdUaEdvbGR2M05ja0h6dk1BQ3g0TUswVVkyWkIwVVBsZHFDM2FkanhZeUZKRG45TENvdXhxa1BfbmlId2VnV2w0MTNUNW5zeVB4aElkb3J3ZnhlTkVabGtDSnBocjNUeUpB?oc=5",
       "pub_date": "Fri, 11 Sep 2026 21:39:12 GMT",
@@ -1234,7 +1234,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "ETH"
       ],
@@ -1256,7 +1256,7 @@
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1278,7 +1278,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [
         "BTC"
       ],
@@ -1302,7 +1302,7 @@
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -1322,7 +1322,7 @@
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
@@ -1342,7 +1342,7 @@
       "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "BULLISH",
-      "sentiment_score": 1.0,
+      "sentiment_score": 1,
       "related_tickers": [
         "ETH"
       ],
@@ -1359,5 +1359,7 @@
     }
   ],
   "full_narrative": "Global telemetry report: Gold at $4390.0 (0.58%), Brent Crude at $104.42 (-2.98%). DXY at 99.1 pts. Monitored for impact on Indonesian equities.",
-  "updated_at": "2026-09-11T23:05:36.739210"
+  "updated_at": "2026-09-11T23:05:36.739210",
+  "ihsg_price": 6506.4,
+  "ihsg_change_pct": -1.29
 }

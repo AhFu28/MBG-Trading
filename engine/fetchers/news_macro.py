@@ -539,6 +539,8 @@ class NewsMacroFetcher:
             "dxy_index": macro.get("dxy_index"),
             "dxy_change_pct": macro.get("dxy_change_pct"),
             "us10y_yield": macro.get("us10y_yield"),
+            "ihsg_price": macro.get("ihsg_price", 6506.40),
+            "ihsg_change_pct": macro.get("ihsg_change_pct", -1.29),
             "idx_affected_sectors": affected_sectors,
             "idx_affected_stocks": affected_stocks,
             "etf_flows": macro.get("etf_flows", {}),
