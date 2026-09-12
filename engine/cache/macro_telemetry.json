@@ -27,35 +27,17 @@
   "event_category": "FED",
   "sentiment": "NEUTRAL",
   "severity": "NORMAL",
-  "gold_price": 4390.0,
-  "gold_change_pct": 0.58,
-  "brent_oil_price": 104.42,
-  "brent_oil_change_pct": -2.98,
-  "dxy_index": 99.1,
-  "dxy_change_pct": 0.01,
+  "gold_price": 4366.2,
+  "gold_change_pct": 0.04,
+  "brent_oil_price": 104.61,
+  "brent_oil_change_pct": -2.81,
+  "dxy_index": 99.12,
+  "dxy_change_pct": 0.03,
   "us10y_yield": 4.97,
   "ihsg_price": 6541.38,
   "ihsg_change_pct": -0.73,
-  "idx_affected_sectors": [
-    "MINING_GOLD"
-  ],
-  "idx_affected_stocks": [
-    {
-      "ticker": "ANTM",
-      "impact": "BULLISH",
-      "reason": "Gold +0.58% boosts mining realized selling price"
-    },
-    {
-      "ticker": "BRMS",
-      "impact": "BULLISH",
-      "reason": "High leverage to spot gold rallies"
-    },
-    {
-      "ticker": "MDKA",
-      "impact": "BULLISH",
-      "reason": "Copper/gold production hedge"
-    }
-  ],
+  "idx_affected_sectors": [],
+  "idx_affected_stocks": [],
   "etf_flows": {
     "btc_etf_turnover_usd_m": 2366.1,
     "eth_etf_turnover_usd_m": 2022.3,
@@ -114,7 +96,7 @@
   },
   "daily_snips": {
     "edition": "MORNING_BRIEF",
-    "generated_at": "2026-09-12T03:54:50.774306",
+    "generated_at": "2026-09-12T08:31:13.856505",
     "market_verdict": {
       "stance": "CONSOLIDATIVE",
       "badge": "\u26aa KONSOLIDASI PASAR SEHAT",
@@ -123,18 +105,18 @@
     },
     "macro_pulse": {
       "gold": {
-        "price": 4390.0,
-        "change_pct": 0.58,
+        "price": 4366.2,
+        "change_pct": 0.04,
         "status": "RALLY"
       },
       "brent": {
-        "price": 104.42,
-        "change_pct": -2.98,
+        "price": 104.61,
+        "change_pct": -2.81,
         "status": "COOLING"
       },
       "dxy": {
-        "val": 99.1,
-        "change_pct": 0.01,
+        "val": 99.12,
+        "change_pct": 0.03,
         "status": "SOFT"
       },
       "us10y": {
@@ -155,13 +137,13 @@
       {
         "rank": 2,
         "topic": "IHSG",
-        "highlight": "Cegah Defisit Belanja, Negara Ini Pilih Jual Saham BUMN",
+        "highlight": "IHSG Sepekan Anjlok 1,43% Ke 6.541, Transaksi Pasar Lesu",
         "tickers": []
       },
       {
         "rank": 3,
-        "topic": "FOREIGN_FLOW",
-        "highlight": "Asing Rotasi ke Saham Ini",
+        "topic": "IHSG",
+        "highlight": "Perdagangan Saham Pekan ini Negatif, Rata-rata Transaksi Harian Anjlok 14,88 Persen",
         "tickers": []
       }
     ],
@@ -195,26 +177,89 @@
     },
     {
       "id": "news-2",
-      "title": "Cegah Defisit Belanja, Negara Ini Pilih Jual Saham BUMN",
-      "source": "CNBC Indonesia",
-      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOb1RfTUViSTNZT1VIV2dkbkZwbGxscE44QXVrMGdESmtYcnJpOGVLNTNPZWtkbHpwcmZpSTFjclBIdVZFQnkwUkM4dE5YWGxkTE1PNENIX3dxY0dRQlRzWjlHVXV1Nm0xa0Q5bjQ4Tmk1N09tX0NtWnNLTUFBUE5XNy1aemU3ZDhoYWd4MDU2UlR6NF81MFEtR1Qydk1BR2pfLTlyMUxSQ0pYMTF5RlNlRjJONmxMa2vSAbwBQVVfeXFMUExYWC1XUmZ5c3pReDJGa2hEeUZkc2ZySUhyU1V4X19VaHRPQS1SU3JJZ2x1WlV1QVctRHhXOWNxY0RNUGJWVXVRenpwbGhwNXNTNE5xaksxc053VHhCaXFzZlhLYktXYWRfSWlOSTBpZXg1dkgyMGtrU3ZmWk4zYVI1LXoxM2dWSXNDS1dXTElGV2F4LUhCNlNIaVJqbUtfUDEzMDliTkhINGFtX0pvNGs4YkdXZ1F5UFBWSlM?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 03:15:00 GMT",
+      "title": "IHSG Sepekan Anjlok 1,43% Ke 6.541, Transaksi Pasar Lesu",
+      "source": "Validnews.id",
+      "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPR011SDRHbks5OHplM0xfZV8zd1ZIeElOM0xVSE5RRXJfX01QWEJOVmRqZFQ4ZDhQRUgtQllWM0VTVUF5THpMNUF1NHV1Q1IxR3hwTjFTVW5mWDRSaHBJUnlwQi0xSUZEUTI3Qk85dXFPeDhEQ1FtY2ZaTGNadmR3TXp0bjhaS2tZbGo0QmFn?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 05:38:00 GMT",
       "tag": "IHSG",
       "stream": "IDX",
-      "sentiment": "BULLISH",
-      "sentiment_score": 0.35,
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
       "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 34,
-      "summary": "Research Intelligence (CNBC Indonesia): Indikasi sentimen bullish mempengaruhi klaster IHSG.",
+      "metrics": [
+        "Perubahan: 1,43%",
+        "Level kunci: 6.541,"
+      ],
+      "reading_time_sec": 36,
+      "summary": "Research Intelligence (Validnews.id): Indikasi sentimen bearish mempengaruhi klaster IHSG.",
       "key_takeaways": [
-        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 1,43%; Level kunci: 6.541,.",
         "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
       ]
     },
     {
       "id": "news-3",
+      "title": "Perdagangan Saham Pekan ini Negatif, Rata-rata Transaksi Harian Anjlok 14,88 Persen",
+      "source": "KabarBursa.com",
+      "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxPTzMyR003amRRUklpYVZOblE2RGo5b09OLVdpYjQ1bXRyS3dEbVY0ZHBjc0FFc01CQkR3OXVaUlhrcVRlVkM0QldxTE1MbjBKeWxpaXNEcWFmREZ5UVROLVRKODFOYjRlbzJQdkhQalAwbUVXUFQ1QlljZVQ1ZTJQdm1DeWdVQ21XNXFRd2huTzdPbzF1c0ItRVBlWkxGX0NfZGY5NWs1ZUlsVzZ1Vi13aDBlSThGZ0hyVGFkNDMyU1gyQQ?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 04:34:00 GMT",
+      "tag": "IHSG",
+      "stream": "IDX",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 35,
+      "summary": "Research Intelligence (KabarBursa.com): Indikasi sentimen bearish mempengaruhi klaster IHSG.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-4",
+      "title": "BEI: Data Perdagangan Saham Periode 7\u201411 September 2026 Ditutup Negatif",
+      "source": "topbusiness.id",
+      "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQZkhYcmhlUzI4ekVtTUlWZjFkOUIxY3VXMjFuS25jY1N5QVpvWFVNY016UTFWaWdfMXZha2gtQWxlZFRDWm1PS0JLS1hlM2t6YmozQXZDMXNZQ2Z6MVg2bEpDZlg3VGVDSGVWV19MR3lVRmtyalNQaHlQYkowNk0zNnNrUWRlakR4ajVjX3hzejBUd0FIVkplUXhEZzYta1Q5QWFfc3o2U1BCelVDYkE?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 04:02:00 GMT",
+      "tag": "IHSG",
+      "stream": "IDX",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 34,
+      "summary": "Research Intelligence (topbusiness.id): Indikasi sentimen neutral mempengaruhi klaster IHSG.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-5",
+      "title": "Ricuh Kuota Kehadiran Pemegang Saham di Agenda RUPSLB, RANS Jawab",
+      "source": "bloombergtechnoz.com",
+      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOWGNGdnlBdkZPWXUxU190N3p6YW9XdzNNdlNuWlZ4ZDg0NjJjODA4alBlcS1HUVJ1cGN1S2FNZlM5aDN5aXlfSWJCRG5OcXlPOWRiX2MxRDdMUS0tTGx3QUZobXNUOG4zLVpzVjFJT0FVZE54dHZMWnB0VnhrRnV4Zk9OXzY2R2d0UVNUdW0taWFSMTlkSHQ3OFowdGNtei1KTEUtRGFxR25FeDVpZFJud21GdHQybHc?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 05:40:00 GMT",
+      "tag": "IHSG",
+      "stream": "IDX",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 34,
+      "summary": "Research Intelligence (bloombergtechnoz.com): Indikasi sentimen neutral mempengaruhi klaster IHSG.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-6",
       "title": "Asing Rotasi ke Saham Ini",
       "source": "investor.id",
       "link": "https://news.google.com/rss/articles/CBMia0FVX3lxTFBVME5nWElzNUlZV2dfaUlVbTRGQjlKa3EtYWo0LTdDdUhBRndiRm9VN1F4dGtSNnpuWjM4SzFraW9LSXl2UGpjRjh0b3VlbmJ4VFJSaEZVd2dQZThndGVrcmRuN2JnTVRnWGRn?oc=5",
@@ -234,7 +279,115 @@
       ]
     },
     {
-      "id": "news-4",
+      "id": "news-7",
+      "title": "IHSG Pekan Ini Melemah ke 6.541,3",
+      "source": "Tempo.co",
+      "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTE91YXFoT2pzSl9NSkRnWDhrbDdKNGh3VlRudEFJODgwWHB4aWVXRlJaVy1ub3hLYjFzSGdJMHZzaHcyWmowcGRrdHJid0drS0pXZ3B3cldOeVhSdUtmYXhWSjh1RC1mbXdqMXVnMU5TTklPTTBnaDhRSzFB?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 07:49:00 GMT",
+      "tag": "IHSG",
+      "stream": "IDX",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
+      "related_tickers": [],
+      "metrics": [
+        "Level kunci: 6.541,3"
+      ],
+      "reading_time_sec": 35,
+      "summary": "Research Intelligence (Tempo.co): Indikasi sentimen bearish mempengaruhi klaster IHSG.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Level kunci: 6.541,3.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-8",
+      "title": "Investor Asing Net Sell Rp 3,36 Triliun, Sebaliknya BBRI Justru Diborong Rp 190,28 Miliar",
+      "source": "InvestorTrust",
+      "link": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOMlJtRmRERkFkYS1tR3d6SVJBaTZjSnJZMEdQTUZPdEtVT25jUHI2TkNRUjBaeE1RS3JJbVVmcUh0RGZwdXZ2ejBENlY5d0Jsai04TV9CTnhnMlkyczN0ZERQc2VqNG83NGh2NW1UNXlkS1ktWUhfZmdxZ2x3N3FqbHZXQ2JVMVd5bGNGQzhjZU9SVXphV1FWdGpGM0pHTnh6d2NybUZTa2FBb1RpUmZxTmdWcmliYWE4Z3lMWFg3TjRXZUpmV0E?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 17:29:00 GMT",
+      "tag": "BANKING",
+      "stream": "IDX",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
+      "related_tickers": [
+        "BBRI"
+      ],
+      "metrics": [
+        "Nilai: Rp 3,36 Triliun"
+      ],
+      "reading_time_sec": 38,
+      "summary": "Research Intelligence (InvestorTrust): Indikasi sentimen bearish pada $BBRI mempengaruhi klaster BANKING.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Nilai: Rp 3,36 Triliun.",
+        "Fokus pasar tertuju pada pergerakan saham $BBRI dengan aktivitas transaksi aktif.",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-9",
+      "title": "10 Saham yang Paling Banyak Dijual Asing Saat IHSG Anjlok",
+      "source": "money.kompas.com",
+      "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOYTN6YU00UWc2azA4S3g2ZjI3YmQxNmtVR0V1c1Vob080bE83dzJWU3pobkF2M1MzcnNTTGYwWjV5SXZ2TnMwY3FuN0xkNk5fQkVfT292OGZzaTVVN19lTklrLVA2dFBKb0lremQ2RW1VUWdiS3BLbjZ1Ymt1clFCaEl0RWxwOFBISW5kNllTdTk2b0pQREpTa0trblVvRW1OM3NnZ3lkMlNscmxy?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 05:15:00 GMT",
+      "tag": "FOREIGN_FLOW",
+      "stream": "IDX",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.7,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 35,
+      "summary": "Research Intelligence (money.kompas.com): Indikasi sentimen bearish mempengaruhi klaster FOREIGN_FLOW.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
+        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-10",
+      "title": "Cegah Defisit Belanja, Negara Ini Pilih Jual Saham BUMN",
+      "source": "cnbcindonesia.com",
+      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOb1RfTUViSTNZT1VIV2dkbkZwbGxscE44QXVrMGdESmtYcnJpOGVLNTNPZWtkbHpwcmZpSTFjclBIdVZFQnkwUkM4dE5YWGxkTE1PNENIX3dxY0dRQlRzWjlHVXV1Nm0xa0Q5bjQ4Tmk1N09tX0NtWnNLTUFBUE5XNy1aemU3ZDhoYWd4MDU2UlR6NF81MFEtR1Qydk1BR2pfLTlyMUxSQ0pYMTF5RlNlRjJONmxMa2vSAbwBQVVfeXFMUExYWC1XUmZ5c3pReDJGa2hEeUZkc2ZySUhyU1V4X19VaHRPQS1SU3JJZ2x1WlV1QVctRHhXOWNxY0RNUGJWVXVRenpwbGhwNXNTNE5xaksxc053VHhCaXFzZlhLYktXYWRfSWlOSTBpZXg1dkgyMGtrU3ZmWk4zYVI1LXoxM2dWSXNDS1dXTElGV2F4LUhCNlNIaVJqbUtfUDEzMDliTkhINGFtX0pvNGs4YkdXZ1F5UFBWSlM?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 03:15:00 GMT",
+      "tag": "IHSG",
+      "stream": "IDX",
+      "sentiment": "BULLISH",
+      "sentiment_score": 0.35,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 34,
+      "summary": "Research Intelligence (cnbcindonesia.com): Indikasi sentimen bullish mempengaruhi klaster IHSG.",
+      "key_takeaways": [
+        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
+        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+      ]
+    },
+    {
+      "id": "news-11",
+      "title": "Asing Net Sell Rp 2,70 Triliun, Cermati Saham yang Banyak Dijual Sepekan Terakhir",
+      "source": "kontan.co.id",
+      "link": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPSWdxT3d1Q04yN3hyX0libXhMQXFDM0lIZ3ZJU2NXOEtDVDljVlpxRy1ObGFseFJqZWV4MW9IU3ludU5wSjRKWnBWc01jWE52M2dySHVsb0ZpYXE1SlFpSWM1VVR4dHByQzBFczZqanhjS2ZwX3BIczhoaWQtLXFOc2dCR0VwZHZSbC1GRDE1WHh6RExKbGh4cm1QN2NObzhiNlliTXBLZzMwXzlyMXJYTC1zeW5TSFZDd3VFTnZnVFhFWUdmTFhMRm01dFNTclBi?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 05:03:09 GMT",
+      "tag": "FOREIGN_FLOW",
+      "stream": "IDX",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.7,
+      "related_tickers": [],
+      "metrics": [
+        "Nilai: Rp 2,70 Triliun"
+      ],
+      "reading_time_sec": 38,
+      "summary": "Research Intelligence (kontan.co.id): Indikasi sentimen bearish mempengaruhi klaster FOREIGN_FLOW.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Nilai: Rp 2,70 Triliun.",
+        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-12",
       "title": "Daftar Saham yang Bagi Dividen Interim 2026, Ada BMRI, BBCA, hingga TAPG",
       "source": "Ajaib",
       "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNa1B0cmpXQ1NBdXBnZlF3SkFyWkdWWk8yLU42ZnRGRWd6MTAtMFhzM21MYmhPWHp5WEV0cFZVM3ltZzJMQjlkazBYR3dGUGx0TDVUVHFYT3JWZGlIUVNLN2xzazd1RVVaY01GU3RzWTh0RzFzNkNUelQxaV94SnVSLUlFN003UG85SVp1WjNqNDVoU2dsMnNB?oc=5",
@@ -258,29 +411,27 @@
       ]
     },
     {
-      "id": "news-5",
-      "title": "Kinerja Bulanan Saham BBRI: Rangkuman & Fundamental",
-      "source": "Pluang",
-      "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE40YW96SkNwUlpSb014ZV9fTUFaUFJBR2EwVm5OeTlsNmVPNkxCdlJ1Vi1McUI0TkZsSUdhckhveHd4R3lDZWwyN3JRdEs2TzJzaWYxU04xLTUxR3J0anVDbXVsNHdaUVJBRWRRdy10QTBzSnNVSC1JdQ?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 05:45:46 GMT",
+      "id": "news-13",
+      "title": "IHSG Turun Lebih dari 1 Persen Sepekan, Saham Bank Besar dan Konglo Jadi Pemberat",
+      "source": "RCTI+",
+      "link": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQMmRQRFc4X0U5VVNNVHpxRlMzTUxpWWJJWDlKYVFnR2ZrWlpjemRkM1FYdkN0a3hXcG9CcExzeDRoUjlfdzRBNGtqdFdhTEZkM0c4dEtMZ3FlRk9aZTE5V1FXSUZUd0drOUJEOHdZZ0hUUGJ0eGdiZEZvdXdJX0VQUkRUT2h2cWQ0VHJSMjFMZi11OFp0a0pVZjRkTVRFclc3MG1UWHpqSndTVzRDcER0N3Y1VThIZnAwcmwzLVg3Y1l0NTljTnRKSEpTMS02OW8?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 03:14:05 GMT",
       "tag": "BANKING",
       "stream": "IDX",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [
-        "BBRI"
-      ],
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.7,
+      "related_tickers": [],
       "metrics": [],
-      "reading_time_sec": 33,
-      "summary": "Research Intelligence (Pluang): Indikasi sentimen neutral pada $BBRI mempengaruhi klaster BANKING.",
+      "reading_time_sec": 36,
+      "summary": "Research Intelligence (RCTI+): Indikasi sentimen bearish mempengaruhi klaster BANKING.",
       "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Fokus pasar tertuju pada pergerakan saham $BBRI dengan aktivitas transaksi aktif.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
+        "Saham perbankan berkapitalisasi besar menjadi penopang stabilitas pergerakan indeks IHSG.",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
       ]
     },
     {
-      "id": "news-6",
+      "id": "news-14",
       "title": "Populer: Komitmen Djarum untuk Indonesia; IHSG Melemah ke 6.541 - kumparan.com",
       "source": "Kumparan.com",
       "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOOHEtUzFjeFB1YVU1ZDV2Tlk2VDlZcUxyc01ZS1oybktMLXF6SnFYNVEzZ2plNHY5UmZ4eVExQzkzNUFFLUhSUlZXYmVZd0JabERSNjBkVHV4R3JpQVlrN0xsYldIdFFKWmVja1RONnZEM2hlbmlDNnc1Ynl1WXpMaXpVYl8yMnZHZll3VDVmSVVuckZyRUpVS1NMc2duMDFNQktxUlhxa3M3cW1CaFHSAbYBQVVfeXFMTnRZQlFCLWo0RTk0SEljeks3SWxLUGtYX3NDWWNESzlsaERzY2E1MnRfd1pUZGRrTDJ1SUMyT2JOazBUUDNlcHh2YXVyQ0dycEgtMnl4c0ZFTVc1di1KX3ZiNWlCRWVGNXNpanF6SEhHZEl4RllRay0yMmU3M1BfN0M0dmRsTUsxR21tQzl1MU9za2k1ZGc5TlNXMlRFZWw4NXRXVEhPUXVFNGRVRDZETklsOEMwUEE?oc=5",
@@ -302,132 +453,7 @@
       ]
     },
     {
-      "id": "news-7",
-      "title": "IHSG Anjlok 1,43 Persen dalam Sepekan, Kapitalisasi Pasar Jadi Rp 11.446 Triliun",
-      "source": "money.kompas.com",
-      "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNUUVXbG8xWk4yTVB3UkFzSlZJMEpOcHQzV2d1ZnoyblpqVDRjY1lhRlpnTGpUTV9pSUU2SlBycG13UUtRUzktSkJfQmVpWFNtZE50X2JSV2NPUk9QQ0plVElnZTgwcTVTak9KOUpNZW9pT0VtblFaX05SMnAyeXRaTlkzWGlkS21qdWRuUk95UFVfZ18tcHhRRFZJZmd4QTlnS09IQjVyOFJ1YmEyUjR4cFdXVGJ1bjlIY0JkbkFVWQ?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 00:07:00 GMT",
-      "tag": "IHSG",
-      "stream": "IDX",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.35,
-      "related_tickers": [],
-      "metrics": [
-        "Nilai: Rp 11.446 Triliun"
-      ],
-      "reading_time_sec": 37,
-      "summary": "Research Intelligence (money.kompas.com): Indikasi sentimen bearish mempengaruhi klaster IHSG.",
-      "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Nilai: Rp 11.446 Triliun.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
-      ]
-    },
-    {
-      "id": "news-8",
-      "title": "IHSG Turun Lebih dari 1 Persen Sepekan, Saham Bank Besar dan Konglo Jadi Pemberat",
-      "source": "RCTI+",
-      "link": "https://news.google.com/rss/articles/CBMirgJBVV95cUxQMGc5QnNWRmY5eWhiU2lHdTRaNFFSREFSVENOaC1vRUpmdjNpb0xhS3phbEVSSldIZUxoODlId3lnR0RlMFRtVUtRRG5GWlFGc3c0SENGMHBRQmdLNUZPQy15VlBwUGxoZERxcXFyNkVjc215c0pDVFhnaFdUQ21HdW1sTGI0cFVPZHQ0cnlLVDhXM0gyb3FLV3VuOW9INmJkWDk3MjJnaFZNX0s4STlMbnEyTWhiVDdLd1IxYnl6X0Jlc2wtcUZ3UkQ1WG1reU1mNTFDaTVzRmpNTG95SkxtTGgzc2w1bDRCclhXUmUweGxWSDlpNFlkZHl4UjNwcUVCbDNldFlqeElLNjNSN2ZHamJkbW9iSk5NbU9VcjY5Y21HTGJYdU9Lel9UZlB0UQ?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 03:14:05 GMT",
-      "tag": "BANKING",
-      "stream": "IDX",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.7,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 36,
-      "summary": "Research Intelligence (RCTI+): Indikasi sentimen bearish mempengaruhi klaster BANKING.",
-      "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
-        "Saham perbankan berkapitalisasi besar menjadi penopang stabilitas pergerakan indeks IHSG.",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
-      ]
-    },
-    {
-      "id": "news-9",
-      "title": "Investor Asing Net Sell Capai Rp3,36 Triliun, IHSG Turun 1,43% dan Aktivitas Pasar Ikut Menyusut",
-      "source": "topik.id",
-      "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNY0EwTFZVcl9LQVl4ZnhndUw5dV9nMnlTbVVUbjJiNzRicDRxdXZjSmNTN2UxeDJ3SnRSLWQ3Y3hBOVhFQWZoeHNXVkQtckh6RUZiYlpjMVBtRVVsSUlva0VpUjBZdDR4RkZiekRFbXdhT0RFMkY1alQxUk9GY1V2c0JWNWdWbF9Ua1hfTlJzcUtrbmhQLVozNndtNlFob0RKUW9reEhaMzFQc2tfQlM2YlpoUQ?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 03:14:53 GMT",
-      "tag": "FOREIGN_FLOW",
-      "stream": "IDX",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.7,
-      "related_tickers": [],
-      "metrics": [
-        "Perubahan: 1,43%",
-        "Nilai: Rp3,36 Triliun"
-      ],
-      "reading_time_sec": 39,
-      "summary": "Research Intelligence (topik.id): Indikasi sentimen bearish mempengaruhi klaster FOREIGN_FLOW.",
-      "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 1,43%; Nilai: Rp3,36 Triliun.",
-        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
-      ]
-    },
-    {
-      "id": "news-10",
-      "title": "Data Center Makin Marak, 16 Saham BEI Ini Berpotensi Jadi Penerima Manfaat",
-      "source": "kontan.co.id",
-      "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNbkxHYlRrM3BVSnBaVW9YTVRscmlYMDBpT3M1QVQ3aFNXN3NZTFdpdmZDZWRTY3VuanV6MHA1QmdzQXdCNDFxZFlLek1VUjBPRmQ4RUVTcDFVaVRjbHRRd2ZuWDgzUjc3Q1JlbVRMaUw5WERGOERjOXk0dzI0TW4tdzNCalp4UmN4amRFaGxObWpLVjBmRUZpSklBQW45azBfTXBKQ2pzMi1OU05QSVHSAaYBQVVfeXFMTl9OMG1WLXM1QVZScVFFLWhrNFExdGE2NGV3bkd3dS10WE5wRTUzU3pubEIzUjV5ZVZmdHJ5SXFFcW40ckQ3X0JfNTBUUjRVa1pneHIzZVhoTnIyQjd4aVlEdlozd0JSWGduSWdmdkM5YjhFSGo4MHRGMU9Va2pEOHN2MjQyTUx2Vk5OMlB5bm4xdFZ3dF9MYUpTYURiYnVYcUVWd1FMZw?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 00:15:36 GMT",
-      "tag": "IHSG",
-      "stream": "IDX",
-      "sentiment": "BULLISH",
-      "sentiment_score": 0.35,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 35,
-      "summary": "Research Intelligence (kontan.co.id): Indikasi sentimen bullish mempengaruhi klaster IHSG.",
-      "key_takeaways": [
-        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
-      ]
-    },
-    {
-      "id": "news-11",
-      "title": "Saham Grup Djarum, Low Tuck Kwong, hingga Prajogo Tekan IHSG Sepekan - Bisnis.com",
-      "source": "Market",
-      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQbWlKTmdyUTh3UXc3cUQ4dkJYcEpTRXpBSjlkZDgzQUZXT3V4dktiTjB1SFp1VlkyS1FTSDJRa1NLQWRrMUhjZWdUc2tMUTM2QmR2clVKdDFEczRIaHJGRWk2aVVFaDNrTktuYkZVeklzSTl5ZS02ekN0YXZfMENlaDQ3eWJLMmR0SXRENk4teVVDTXlDU0Q0b2w1QWZzVVYxd2JpVXJKSmlOMlRvb3RjSW1qU1JlTEk?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 01:12:27 GMT",
-      "tag": "IHSG",
-      "stream": "IDX",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 35,
-      "summary": "Research Intelligence (Market): Indikasi sentimen neutral mempengaruhi klaster IHSG.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-12",
-      "title": "IHSG Jumat dibuka melemah 36,55 poin",
-      "source": "ANTARA News Sultra",
-      "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOWGdrb0NvOEJqZ1JjS2hMeDJJYUFsblplU0VFVVVfSElUSEluNTRmNFpJSkJPTkloVlo2SHhCN3dDaWZERmxMN3JMUzBDY3dTNTg0dXBLWU5CQk00U182cXl5TGl3ODZrTDhoZk56MUI1UlZhaHZPTU1FTXlYNlhSR1QzSVRrZw?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 05:57:54 GMT",
-      "tag": "IHSG",
-      "stream": "IDX",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.35,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 33,
-      "summary": "Research Intelligence (ANTARA News Sultra): Indikasi sentimen bearish mempengaruhi klaster IHSG.",
-      "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
-      ]
-    },
-    {
-      "id": "news-13",
+      "id": "news-15",
       "title": "IDR3.36tn outflow weighs on IHSG; AMMN, MDKA provide support",
       "source": "IDNFinancials",
       "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOd2JxZ2JzQXA1UkNPLU9iSlZDZW5GMkZwSTV2SU1xVS1Uem9YeU5pR1NWbFN6OE1uRlBiYWpENmJpdTlUWjBnaW0zaVNESTc3dUtMSVFQNTF1VnFPaFMtNkpLQUZ0UjhQQkJOY3N3ZWV5NHhrWTRpUDRCTERfWkZpVEZ4dmVYYTVJY0VNd2hoVmlDM1gwd2dINnBBRWY3NVhu?oc=5",
@@ -450,73 +476,49 @@
       ]
     },
     {
-      "id": "news-14",
-      "title": "IHSG Turun 1,43 Persen dalam Sepekan, Kapitalisasi Pasar Jadi Rp 11.446 Triliun - kumparan.com",
-      "source": "Kumparan.com",
-      "link": "https://news.google.com/rss/articles/CBMixAFBVV95cUxON0JiX1dhTkN5NFRfRTVFX1A1cE41d2N1eU00YVRBUUdDYjBDN2hwR2ljMlFKSmxwWHZsd1lYdHA2MjcxZ2VuOThjcXREMXRaY3hVRVVRdjZJY0JTN0RQWVZEdGJ5RHFYRmNEYzRGbEVmV0ZWOE5tMFhHbDZKM0I2SDhHQWpkSjk5V0FvbTZEa0x3N3JzeWcycmoxZG84dUZRaXZqbGk0UkVDU2ljM3NkRkNkenp0UzVuNl9aUE5aUzRUdTJL0gHMAUFVX3lxTE5XQ2dTNlJNWEttR0tZZFl1MGFVZmhwU2t6aGdtazFLdmFZWWt3U2EtcEs0TmVwLV85X0dFNENPbUZ6UTh1NmNmQjNTMnl4a09ZSWJwTFVBaVJaZUpKY2NLelB3WkZ5VjFRdU9DOENLcHlXNTREMTZ2Z2g4b1Mwb1RRVWJkcnBuZGRsQ1ROZVRsTkZBR3FPOUMwQkRXWktZbmxMOFhpVl9PbDU5b3FzRTlYOEZYM3pHYjlORTB2LWRzQmJ0dklXOHZZVHBqdA?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 23:23:00 GMT",
+      "id": "news-16",
+      "title": "Head of Research Kiwoom Beber Proyeksi IHSG Semester II 2026, Historis Rawan Koreksi?",
+      "source": "KabarBursa.com",
+      "link": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPR1E0SFY2VnBZNmptT3QwREpSU1JNN2tCOXFNZDNoRnJTSTdxWENhU2ZHOXUweTl6YXZXRVYzazlZanhRbF9tTUVxN3lPSEZPTzRNSndEUkl0czEwcG44VzhlVXN4WFpIYm0wRFlnNXhGUWpDWXJCU0VJbUJtamVXVm9QWlAwR2JuR0RnOWNsUWtpZklNSE4wV0xkVlpMcWZ0amFIM3lob2FxSmY1YXl1WTdWRW9QNW5XWGVOYVBoUXpSeF9r?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 05:06:31 GMT",
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
       "sentiment_score": 0.0,
       "related_tickers": [],
-      "metrics": [
-        "Nilai: Rp 11.446 Triliun"
-      ],
-      "reading_time_sec": 37,
-      "summary": "Research Intelligence (Kumparan.com): Indikasi sentimen neutral mempengaruhi klaster IHSG.",
+      "metrics": [],
+      "reading_time_sec": 35,
+      "summary": "Research Intelligence (KabarBursa.com): Indikasi sentimen neutral mempengaruhi klaster IHSG.",
       "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru. Terpantau Nilai: Rp 11.446 Triliun.",
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
         "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
         "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
       ]
     },
     {
-      "id": "news-15",
-      "title": "3 Bank Siapkan Buyback Saham hingga Rp 6,3 Triliun, Apa Dampaknya?",
+      "id": "news-17",
+      "title": "IHSG Anjlok 1,43 Persen dalam Sepekan, Kapitalisasi Pasar Jadi Rp 11.446 Triliun",
       "source": "money.kompas.com",
-      "link": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxOMHRMQTFQUnVSV0FyUTkwTjZBQUhpZlhWR3FhQXBUMV95MmlmNUJlQ0w3bnRMQmkzU2E5cnNoMjhyM3NNamNvZ0VqTW5sQlFqaGUzZ3R0aGRQTUFVQ1JBMEtzVlpnTE1VV2pVdGlZN19lZmlYVnlBRlRaOVVqQVFUcnNrRkVIT1JMSWJNQURNOU9reUZJa2g4SHBBM0JuTHBiZmNSN2Q1MmVHTmZXWGZYN0RMaW5TNXh0c0J3TlRGTGJPZy0yZEdLQnduYU9abU1xd3pSZA?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 03:00:00 GMT",
-      "tag": "BANKING",
+      "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNUUVXbG8xWk4yTVB3UkFzSlZJMEpOcHQzV2d1ZnoyblpqVDRjY1lhRlpnTGpUTV9pSUU2SlBycG13UUtRUzktSkJfQmVpWFNtZE50X2JSV2NPUk9QQ0plVElnZTgwcTVTak9KOUpNZW9pT0VtblFaX05SMnAyeXRaTlkzWGlkS21qdWRuUk95UFVfZ18tcHhRRFZJZmd4QTlnS09IQjVyOFJ1YmEyUjR4cFdXVGJ1bjlIY0JkbkFVWQ?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 00:07:00 GMT",
+      "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "BEARISH",
       "sentiment_score": -0.35,
       "related_tickers": [],
       "metrics": [
-        "Nilai: Rp 6,3 Triliun"
+        "Nilai: Rp 11.446 Triliun"
       ],
       "reading_time_sec": 37,
-      "summary": "Research Intelligence (money.kompas.com): Indikasi sentimen bearish mempengaruhi klaster BANKING.",
+      "summary": "Research Intelligence (money.kompas.com): Indikasi sentimen bearish mempengaruhi klaster IHSG.",
       "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Nilai: Rp 6,3 Triliun.",
-        "Saham perbankan berkapitalisasi besar menjadi penopang stabilitas pergerakan indeks IHSG.",
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Nilai: Rp 11.446 Triliun.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
         "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
       ]
     },
     {
-      "id": "news-16",
-      "title": "IHSG merosot 1,49% di sesi I, investor asing pilih saham-saham ini",
-      "source": "IDNFinancials",
-      "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNYzNWMVRUTXVvLXZJdHhfU1dIeWVzX2hLWkRDT1NxS0RiUzdqVkgtTEFsSFpxY2o4NGtaMFhob0lDYlNsWHhXd1dfeS1vV04zWkxsNVpoTTRBR2hibjUtMFRXS0k4ZkNUQXp1OFlYYmhWUS02c1NKNmw4Y29mLU5BOEpwQmhrZE13VUk3QTZTek5hQVJ1dk1FVnZNekhJOUtaVlZwbFNzcUlJdHc3?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 05:45:00 GMT",
-      "tag": "FOREIGN_FLOW",
-      "stream": "IDX",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [
-        "Perubahan: 1,49%"
-      ],
-      "reading_time_sec": 36,
-      "summary": "Research Intelligence (IDNFinancials): Indikasi sentimen neutral mempengaruhi klaster FOREIGN_FLOW.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru. Terpantau Perubahan: 1,49%.",
-        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-17",
+      "id": "news-18",
       "title": "IHSG turun 0,73% imbas sentimen harga minyak dan arah bank sentral",
       "source": "IDNFinancials",
       "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOMURYUUdHdDhiRHBBaFBFUVlhQUNBQmZwZVp2c2tTb1VRRWl3ZGtlU2c3MXpQajVpZmk4NVY3LV9xVC13SVcyOHNta3V4SkJNaXZLbFFDalpncmM2NldkZHNCRUR0N0pobmpGSFdTTUp3Z0REYURteGlONERMZ1R4eTVUQ002TFZ2cUFURUFRSjdVdmdYTENYTjJ3UWhMUVF1aTFENXk1X0JNT2lhdUE?oc=5",
@@ -538,195 +540,166 @@
       ]
     },
     {
-      "id": "news-18",
-      "title": "Grab tambah 3 juta lembar SUPA, kini pegang 16,87% Superbank",
-      "source": "IDNFinancials",
-      "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPaVBxOFg5ZThScURZbHlrajl3aGJCa3ZFWFQ1dENpWVdPdEo4UWY3bVVXYmlyT3dnejludENIb1d5TktzVjY5UG5iRGRZRlkwcmk1aUNKMWFSNU5tY2RndXhiVEtSSV85djVUeEJmNVN2Sm5YR0dSa1NfZzZWcTluTDVwYTFDai1nUVlITGJFT056aERkSXJyWHhfR0ZxQ0h3RW5ldg?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 08:20:00 GMT",
+      "id": "news-19",
+      "title": "Daftar 10 Saham Paling Banyak Dilego Asing Sepekan",
+      "source": "RCTI+",
+      "link": "https://news.google.com/rss/articles/CBMihgJBVV95cUxOUnI0aGlZUmtINVY4WG94V3o1OTBXbFc5VkVrUjBqRXB6YUpScmZ0bnIyNXUtcW9MOVFCdFdPY2s3N1hPUWdYbFpWeDFzNVFqNGJJbVM4Mm1IdjBwVjhrenRZTkVILUF4dzJRS0JzSzNYbHJCUXBnbEhZYnFYYU5pN0JQbGdTbmpwUWpSa3VMTENVa2JoVGpCYU56TFlxZU1SSl9BSFR3Tm1hTkZyUGtiMlk5SGR6T01sbUNmbkx0V0xBalJpMDdySGpUR1k3V2NyMVpQY0pZMURpQzdrbllrNkpmeDIzay0yeFUyS1dKaEFKS2pscUJiektIU0M4RnlJVEF4NGRR?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 05:10:05 GMT",
+      "tag": "FOREIGN_FLOW",
+      "stream": "IDX",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 35,
+      "summary": "Research Intelligence (RCTI+): Indikasi sentimen bearish mempengaruhi klaster FOREIGN_FLOW.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
+        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+      ]
+    },
+    {
+      "id": "news-20",
+      "title": "Rans Entertainmen (RANS) Buka Suara Soal Pemegang Saham Tak Bisa Masuk RUPSLB",
+      "source": "kontan.co.id",
+      "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxORXNQSkQ2dzM2cjc5WHBtNV8xQlhCcG50VDVRSFV6M2Y0elZkTGkySzhXTktrcE5HeGIzZkIyOWtSY2hKTGxrblh2MTd2Nzg3UGFyX2lMTU91SXhPT09HYXZPcEw2SDlOYWFNQU1Fb2hyQkhEdTVCWEZmNnhCdWFkX1c0YmtuWERlR0E0RmJGb0dfdklyamd2Um1ua3VQLUJTRGFHcHlUM1BKVjREMUh5ZtIBqAFBVV95cUxOUmJTZ1h1T2Flem8yT01acG8xbFg0SU1zZlI1dzFaQjZiT3VUQmgwYXNNTjVMQlBYdEpWN2xsUkFZZlR0RUxiaWRHdWZpNG1ybmZQRlIyMG1STU1BRzNNY01EeWtwQmZVRGR2c08xcTFSeG8tWndMUWI2YlV3QTRObWEzUUREZzFOMnRSVjB1QUdoOFUwbUJTY283T1VnNF83THRPTUZMbXI?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 04:33:23 GMT",
+      "tag": "IHSG",
+      "stream": "IDX",
+      "sentiment": "BULLISH",
+      "sentiment_score": 0.35,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 35,
+      "summary": "Research Intelligence (kontan.co.id): Indikasi sentimen bullish mempengaruhi klaster IHSG.",
+      "key_takeaways": [
+        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
+        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+      ]
+    },
+    {
+      "id": "news-21",
+      "title": "Cermati Rekomendasi Saham dan Prospek Empat Emiten MIND ID yang Gencar Ekspansi",
+      "source": "kontan.co.id",
+      "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPeEMzMWg5UGE1R1cyNzUzOFV3Y3pUbHdFY3NydWNRaXVNTndjbnl6dU9JSl9xQ0drTm84emhGRWE2aUVtM3o2WHFRVURHUkNhZVViTlk5UDNyUlpoWDEtNUxPN1pQb0xud2hhN2ZSS3ZlMjFnRldOZHRUb1B6a1FiZmR1cGRPZjBuZS02aU5JeUlOVTF6MlB0S1B1NldfcGpTSGg0ZEpHckduSmhjQ01OWmVkT1J2Z9IBrgFBVV95cUxQWmpqVmZfOEpwY0tJZVBUWUxSbm8zYUpPVmM3Y0lUSXlxZnphMmtSM3kwWDllVTdWY1FWYWRHUExhSEh5aXN6UmtveHZsQkRjZm5VblBqMi1Xd0R2eE9wSXdfVXlVdnFnQ0ktSTRNRTlrYlVsQ2ZnZEFlLWc3a2NLcF9RU1RJaXczWUxJT0ZPU2gxNU9ZV2xjN3AtWGFFYTVQUTNyMFlIdFBzSXBRVnc?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 06:33:51 GMT",
+      "tag": "IHSG",
+      "stream": "IDX",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 35,
+      "summary": "Research Intelligence (kontan.co.id): Indikasi sentimen neutral mempengaruhi klaster IHSG.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-22",
+      "title": "3 Bank Siapkan Buyback Saham hingga Rp 6,3 Triliun, Apa Dampaknya?",
+      "source": "money.kompas.com",
+      "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPbV8wckZScHF5amV4akNjdWxjVEZ0dHZxN0RuQjF1LUdndjlFTzViUWcyVFFEYlAtRDhjTnQyR2Z1bld3akE3VTBVXzVjWHQ3M2hwbGs1ejBLTDVPYXVsWEw0TEkxT3BFM24wOVY1SEIyb3B2c1ZpTkJublM5TFNWQkY5bHhxVl9tR256bVRLck5Hdkx2M3F2V3hVakVINm5EYTFraWlSbHo5TngyUXMtNTVoNy1HRHdFZ2cxbWlaVU82UXc?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 03:00:00 GMT",
       "tag": "BANKING",
       "stream": "IDX",
       "sentiment": "BEARISH",
       "sentiment_score": -0.35,
       "related_tickers": [],
       "metrics": [
-        "Perubahan: 16,87%"
+        "Nilai: Rp 6,3 Triliun"
       ],
-      "reading_time_sec": 36,
-      "summary": "Research Intelligence (IDNFinancials): Indikasi sentimen bearish mempengaruhi klaster BANKING.",
+      "reading_time_sec": 37,
+      "summary": "Research Intelligence (money.kompas.com): Indikasi sentimen bearish mempengaruhi klaster BANKING.",
       "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 16,87%.",
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Nilai: Rp 6,3 Triliun.",
         "Saham perbankan berkapitalisasi besar menjadi penopang stabilitas pergerakan indeks IHSG.",
         "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
       ]
     },
     {
-      "id": "news-19",
-      "title": "IPAC bidik go private, APAC siapkan tender Rp250 per saham",
-      "source": "IDNFinancials",
-      "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOZU1aaUQ5SlJ0QkxOUkpHejVnSlRLMV93WEsyS2FmLWl4TGtPSEVkQm51VEctSHZINWd5WWh3OUJFQlAwZTczT3VnZzJ2c2lfSGxZMlVRTlN6b19nWnktaU96UWJIa0w4Xy1XQnFDYVF1czUtYW9OVC1NSTZOdDBUdksxVzBnYjBVUnltdmdvc1hSOWZ3STJiMVh4SWRiSmhWc1lv?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 08:00:00 GMT",
-      "tag": "IHSG",
-      "stream": "IDX",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [
-        "Nilai: Rp250 "
-      ],
-      "reading_time_sec": 35,
-      "summary": "Research Intelligence (IDNFinancials): Indikasi sentimen neutral mempengaruhi klaster IHSG.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru. Terpantau Nilai: Rp250 .",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-20",
-      "title": "Deretan Saham Top Losers Sepekan, HOPE Anjlok 25% hingga APIC Tertekan 12% - Bisnis.com",
-      "source": "Market",
-      "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQTlpvZXZtbUZBUF9xSnRhVHphMmp1SkliMi1mSWdfRU1yaUtlR3g5bHFnMXh6RV9qNHlVYTlxYXR1QTJGemF3eDV6cXowU2JFZkJKcHRmdjY2andXbFQtRzhlLTBWZVR4Vk5CTnRZMHY2ZDZzYzhrZ01XSTVWbVhBVU8xYW5xc2lSMVdCdE5vcmJfN1FjRWh2dkhYNVRxMnhQZzE3eFdOdHZScGpxbGVPeS11Ulh1OVR1WWJORUZR?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 01:42:10 GMT",
-      "tag": "IHSG",
+      "id": "news-23",
+      "title": "Investor Asing Net Sell Capai Rp3,36 Triliun, IHSG Turun 1,43% dan Aktivitas Pasar Ikut Menyusut",
+      "source": "topik.id",
+      "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNY0EwTFZVcl9LQVl4ZnhndUw5dV9nMnlTbVVUbjJiNzRicDRxdXZjSmNTN2UxeDJ3SnRSLWQ3Y3hBOVhFQWZoeHNXVkQtckh6RUZiYlpjMVBtRVVsSUlva0VpUjBZdDR4RkZiekRFbXdhT0RFMkY1alQxUk9GY1V2c0JWNWdWbF9Ua1hfTlJzcUtrbmhQLVozNndtNlFob0RKUW9reEhaMzFQc2tfQlM2YlpoUQ?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 03:14:53 GMT",
+      "tag": "FOREIGN_FLOW",
       "stream": "IDX",
       "sentiment": "BEARISH",
       "sentiment_score": -0.7,
       "related_tickers": [],
       "metrics": [
-        "Perubahan: 25%, 12%"
+        "Perubahan: 1,43%",
+        "Nilai: Rp3,36 Triliun"
       ],
-      "reading_time_sec": 37,
-      "summary": "Research Intelligence (Market): Indikasi sentimen bearish mempengaruhi klaster IHSG.",
+      "reading_time_sec": 39,
+      "summary": "Research Intelligence (topik.id): Indikasi sentimen bearish mempengaruhi klaster FOREIGN_FLOW.",
       "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 25%, 12%.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
-      ]
-    },
-    {
-      "id": "news-21",
-      "title": "IHSG Pangkas Koreksi, Turun 0,73% di Akhir Sesi 2",
-      "source": "CNBC Indonesia",
-      "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPd2MzWjB2MUdKYTZTR1RGdWZQZGZaOUFpdndxLUhtblBGblhDaW1aS3djMkhvVWVLa0poYjhHV0ZyZXo0cUwwQUJ4S2llcjdfbl8yYlh3eUQ4OEVQZ1FKbW4zVWdYbm93VmZwdk9zOS1ZMWhVcEk1T05rb3ZBTVZtVXBndmZuU0xNemRlUmxpVXJjNXNXTkdNejFmNDNCYlhsTGxoSlZSOFBpUUg00gGyAUFVX3lxTE1pbUx0UG5xZDNOYklaWmpMY0pGdnV5UlRYU1pmdW54Y1lNOFJLZTExVkVsZ0Y5WlBkWFhpT0tucTNRQ3QzVEhhd3JjREdKNHU0ZExScjkzZTlFaXBPbzViRVY0blR1N1JyQk1aM2JZSU5rTXVNMVhVRmxzQnY3VmdlNlU5ZFk5SDc2blhCMGtZSlZWY3QyRmJEX2UxSmFkUE1Ja0lEX24yekxjU2ZrakdvNEE?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 09:45:34 GMT",
-      "tag": "IHSG",
-      "stream": "IDX",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.35,
-      "related_tickers": [],
-      "metrics": [
-        "Perubahan: 0,73%"
-      ],
-      "reading_time_sec": 35,
-      "summary": "Research Intelligence (CNBC Indonesia): Indikasi sentimen bearish mempengaruhi klaster IHSG.",
-      "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 0,73%.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
-      ]
-    },
-    {
-      "id": "news-22",
-      "title": "BUMI, GOTO, INET Masuk Daftar Saham Terlaris Sepekan - Bisnis.com",
-      "source": "Market",
-      "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNYzhNVE5odGo3N3FKRDhNME9DVlZWNEd6WVB5TF92aWV5TUZoRnNwUzNWdWlpcjRvVlgxZGJXM29IRTFKZzNRM0tYREhvNm8taFVaMjY1bGtQeTg0Y1FKUzFfYng5VGFYZWNpTXlIQlYxcHY1cV9EVmVkWnR2NDdsM3lmUUNmUklVRTJMcko5dVR3cXRvR3ZQaGlDN0VRcURFUnc?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 23:49:39 GMT",
-      "tag": "IHSG",
-      "stream": "IDX",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [
-        "BUMI",
-        "GOTO"
-      ],
-      "metrics": [],
-      "reading_time_sec": 35,
-      "summary": "Research Intelligence (Market): Indikasi sentimen neutral pada $BUMI, $GOTO mempengaruhi klaster IHSG.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Fokus pasar tertuju pada pergerakan saham $BUMI, $GOTO dengan aktivitas transaksi aktif.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-23",
-      "title": "Saham Tambang AMMN, MDKA, UNTR, ANTM Topang IHSG Sepekan - Bisnis.com",
-      "source": "Market",
-      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPaXVxN2JYblhLekJ1c0RUeWthLThiY3FxQWdjNzN6TTIzNXFjWnpTVEJKanNRMEg4MzZMYU1NTl9tdnVjd0ZrU2dSanp4WHZ5X0stczJiMEdGM0dSY0dXR1c4VFV0UklNcEVxWTRFdHJBR2FfVHRIM3pGeTJSZy1UQUlnRkVLWWowbjhvX2JrWUdjanp2eElQeUx2NUNwTDlyMWhwYWFR?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 00:00:21 GMT",
-      "tag": "METALS",
-      "stream": "IDX",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.35,
-      "related_tickers": [
-        "AMMN",
-        "MDKA",
-        "UNTR",
-        "ANTM"
-      ],
-      "metrics": [],
-      "reading_time_sec": 36,
-      "summary": "Research Intelligence (Market): Indikasi sentimen bearish pada $AMMN, $MDKA, $UNTR, $ANTM mempengaruhi klaster METALS.",
-      "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
-        "Fokus pasar tertuju pada pergerakan saham $AMMN, $MDKA, $UNTR, $ANTM dengan aktivitas transaksi aktif.",
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 1,43%; Nilai: Rp3,36 Triliun.",
+        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
         "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
       ]
     },
     {
       "id": "news-24",
-      "title": "Dampak Lonjakan Harga Minyak dan Arah IHSG Terkini",
-      "source": "maybanktrade.co.id",
-      "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxPSkN2OTlYVmprQ1BFR1JkRUp4cEpmel85ZDdoUDFrc0NnNDJSUUVHcV94bVdqbDBWUHNxdVNGZXVYSXVXOEJmNF9uVlZiTVJienNDdHJobnhIcncxU1k1VVJXZ1czcW85RjV2TEpURG5EOUtGT0Z4enpiaUFHOFVFNThaWnBTTDRNQ0ZtTFBLVzl0Zlk?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 07:36:00 GMT",
-      "tag": "ENERGY",
+      "title": "IHSG Turun 1,43 Persen dalam Sepekan, Kapitalisasi Pasar Jadi Rp 11.446 Triliun - kumparan.com",
+      "source": "Kumparan.com",
+      "link": "https://news.google.com/rss/articles/CBMixAFBVV95cUxON0JiX1dhTkN5NFRfRTVFX1A1cE41d2N1eU00YVRBUUdDYjBDN2hwR2ljMlFKSmxwWHZsd1lYdHA2MjcxZ2VuOThjcXREMXRaY3hVRVVRdjZJY0JTN0RQWVZEdGJ5RHFYRmNEYzRGbEVmV0ZWOE5tMFhHbDZKM0I2SDhHQWpkSjk5V0FvbTZEa0x3N3JzeWcycmoxZG84dUZRaXZqbGk0UkVDU2ljM3NkRkNkenp0UzVuNl9aUE5aUzRUdTJL0gHMAUFVX3lxTE5XQ2dTNlJNWEttR0tZZFl1MGFVZmhwU2t6aGdtazFLdmFZWWt3U2EtcEs0TmVwLV85X0dFNENPbUZ6UTh1NmNmQjNTMnl4a09ZSWJwTFVBaVJaZUpKY2NLelB3WkZ5VjFRdU9DOENLcHlXNTREMTZ2Z2g4b1Mwb1RRVWJkcnBuZGRsQ1ROZVRsTkZBR3FPOUMwQkRXWktZbmxMOFhpVl9PbDU5b3FzRTlYOEZYM3pHYjlORTB2LWRzQmJ0dklXOHZZVHBqdA?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 23:23:00 GMT",
+      "tag": "IHSG",
       "stream": "IDX",
-      "sentiment": "BULLISH",
-      "sentiment_score": 0.35,
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
       "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 34,
-      "summary": "Research Intelligence (maybanktrade.co.id): Indikasi sentimen bullish mempengaruhi klaster ENERGY.",
+      "metrics": [
+        "Nilai: Rp 11.446 Triliun"
+      ],
+      "reading_time_sec": 37,
+      "summary": "Research Intelligence (Kumparan.com): Indikasi sentimen neutral mempengaruhi klaster IHSG.",
       "key_takeaways": [
-        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
-        "Fluktuasi harga minyak mentah global memengaruhi ekspektasi marjin operasional sektor energi.",
-        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru. Terpantau Nilai: Rp 11.446 Triliun.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
       ]
     },
     {
       "id": "news-25",
-      "title": "IHSG melemah dipicu naiknya harga minyak dan ekspektasi \"hawkish\" Fed",
-      "source": "ANTARA News Jambi",
-      "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNa3RLRTROay05S1Q3NTVCc0ZHOENOejhpOWlkR2Z0ZllLWFFEdXp5M29IblBUM1hPT1dNeUpxazlKckJ6Z1kxM2poSzJFVS1QWXRMNVNYTS1qODhKNUkyc1dHcmZRUWNhNDkxSUM4U3pZZnBqeVZic0JHWjBTSFI2WXFfZk5DU09WbUFCZDJoRmJBS1hTc3YzZFlMR3RmamZIMG1tOXM1VUYtbFVJd0000gG0AUFVX3lxTE1pM3EtWVVDbEV4akhqd1BqNUpoVWdzSlFFQ0s2bWZXX1UzN3lVT2szYjd1XzYzb3ZvZ1haZ1BxS1c1WDhzLVphU3dzWU50cnpKVXFwMEtnTVo4cU1DZVR4S3QzRFV5VjVldzRxU3NpUkFEc1hUNmIwdkI3UDV6UWJJSDNJaHVnTkVGNEVnUGVyVFF4OTlzNEhlV1N0TWh3V05hV0FQbUVLMmZfSXN1R1ZaYlNvTA?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 07:06:40 GMT",
-      "tag": "ENERGY",
+      "title": "Saham Grup Djarum, Low Tuck Kwong, hingga Prajogo Tekan IHSG Sepekan - Bisnis.com",
+      "source": "Market",
+      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQbWlKTmdyUTh3UXc3cUQ4dkJYcEpTRXpBSjlkZDgzQUZXT3V4dktiTjB1SFp1VlkyS1FTSDJRa1NLQWRrMUhjZWdUc2tMUTM2QmR2clVKdDFEczRIaHJGRWk2aVVFaDNrTktuYkZVeklzSTl5ZS02ekN0YXZfMENlaDQ3eWJLMmR0SXRENk4teVVDTXlDU0Q0b2w1QWZzVVYxd2JpVXJKSmlOMlRvb3RjSW1qU1JlTEk?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 01:12:27 GMT",
+      "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "NEUTRAL",
       "sentiment_score": 0.0,
       "related_tickers": [],
       "metrics": [],
-      "reading_time_sec": 34,
-      "summary": "Research Intelligence (ANTARA News Jambi): Indikasi sentimen neutral mempengaruhi klaster ENERGY.",
+      "reading_time_sec": 35,
+      "summary": "Research Intelligence (Market): Indikasi sentimen neutral mempengaruhi klaster IHSG.",
       "key_takeaways": [
         "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Fluktuasi harga minyak mentah global memengaruhi ekspektasi marjin operasional sektor energi.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
         "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
       ]
     },
     {
       "id": "news-26",
-      "title": "Jajaran Saham Top Gainers Sepekan, dari SAPX, MSJA hingga DPUM - Bisnis.com",
-      "source": "Market",
-      "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNLU44eDJ3NUZDQi1xemQxMzNrZURlY3dHbC1LUy1ZVTMybUFuWV9TVVJWTlFvX3ZaN0h4NHlIT3l1ZVowLWIxbXJXUjZKbTloNXZWTzd2ODJLRjBhU2FPeThzRmhrREo3UXJkdG9SWVU3dWMwM00zRzBRb0djbFpGMHpqVTlWbUpiLW40akV6eEZaV3JKMVJhVnRNMHBvQUFFS3F5dVY3TXllOV9nY0lv?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 02:05:39 GMT",
+      "title": "Data Center Makin Marak, 16 Saham BEI Ini Berpotensi Jadi Penerima Manfaat",
+      "source": "kontan.co.id",
+      "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNbkxHYlRrM3BVSnBaVW9YTVRscmlYMDBpT3M1QVQ3aFNXN3NZTFdpdmZDZWRTY3VuanV6MHA1QmdzQXdCNDFxZFlLek1VUjBPRmQ4RUVTcDFVaVRjbHRRd2ZuWDgzUjc3Q1JlbVRMaUw5WERGOERjOXk0dzI0TW4tdzNCalp4UmN4amRFaGxObWpLVjBmRUZpSklBQW45azBfTXBKQ2pzMi1OU05QSVHSAaYBQVVfeXFMTl9OMG1WLXM1QVZScVFFLWhrNFExdGE2NGV3bkd3dS10WE5wRTUzU3pubEIzUjV5ZVZmdHJ5SXFFcW40ckQ3X0JfNTBUUjRVa1pneHIzZVhoTnIyQjd4aVlEdlozd0JSWGduSWdmdkM5YjhFSGo4MHRGMU9Va2pEOHN2MjQyTUx2Vk5OMlB5bm4xdFZ3dF9MYUpTYURiYnVYcUVWd1FMZw?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 00:15:36 GMT",
       "tag": "IHSG",
       "stream": "IDX",
       "sentiment": "BULLISH",
-      "sentiment_score": 0.7,
+      "sentiment_score": 0.35,
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
-      "summary": "Research Intelligence (Market): Indikasi sentimen bullish mempengaruhi klaster IHSG.",
+      "summary": "Research Intelligence (kontan.co.id): Indikasi sentimen bullish mempengaruhi klaster IHSG.",
       "key_takeaways": [
         "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
         "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
@@ -735,46 +708,26 @@
     },
     {
       "id": "news-27",
-      "title": "Saham JARR meroket, ini 15 broker yang net buy sebulan terakhir",
-      "source": "IDNFinancials",
-      "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPX1lVR1hZdktRVTNGTDk4OGlHX2Zfa2wxZXpZb21kekUtcHBIaFRhY2hpTHRRc0dVelkyUXdVS0g4cU9UMi1MVW4tVGx0NUpiRjgtOFpOWWdDTnJwR0ZWc21QSzdUaXFRcnZLN3dYRVY4UE81TDhFM1Z1UThYUGs4VlY3MjNocEJKOHVMeGw3UkNjY1RoU2twQ2xQWm91QUVDZHA3VWdsRjRCZw?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 08:05:00 GMT",
-      "tag": "FOREIGN_FLOW",
+      "title": "Saham Indonesia mencatat penurunan terdalam seiring IHSG melemah pada pekan 7-11 September 2026",
+      "source": "Traders Union",
+      "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPbnBkbzhfTWVHWS1ZYzhLcmd5VFpzMWtNZENac3lyQlpBVmZHbEJ5M2RVb2dPUzhycVducW1pZTN6RkF2VzFPRUxsS3FvNWFDSnBGamxzNWRLQlZkSFhKdHJKLThaMUtKaF9ISG4wY0tTMl9iYU5hUUlmcW8ycDlkamZaeU80dmRlQUFWS3lZWWowcFJfNTZTZlpqT2hOR0MydmdqVHZiZklBNzg?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 06:01:19 GMT",
+      "tag": "IHSG",
       "stream": "IDX",
-      "sentiment": "BULLISH",
-      "sentiment_score": 0.35,
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
       "related_tickers": [],
       "metrics": [],
-      "reading_time_sec": 35,
-      "summary": "Research Intelligence (IDNFinancials): Indikasi sentimen bullish mempengaruhi klaster FOREIGN_FLOW.",
+      "reading_time_sec": 36,
+      "summary": "Research Intelligence (Traders Union): Indikasi sentimen bearish mempengaruhi klaster IHSG.",
       "key_takeaways": [
-        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
-        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
-        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
+        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
       ]
     },
     {
       "id": "news-28",
-      "title": "IHSG Tumbang Jelang Akhir Pekan (11/9), Saham-Saham Ini Jadi Sasaran Jual Asing",
-      "source": "Pusat Data Kontan",
-      "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxONlZEX2JSZWpaUWhyVHdxNmh6bDNSUTRtREljTld1bDZ2QVA5S1dGUmw3RDVndEV4QVd6VWVxdGlLNEZlWEdXNjlKSWJHX1pLUUxTYUstSEdIaHJMaExkbjk3ZUFGSnU5bWE5bWdDbXVjdXl1OTd0UEpzaXZkNWo5UGZsVE9BTzJZMC1fRjVBMkF3aXNmeE9xY0ZZMWJkbWl4SXZtUHVVeHJXTlc3cElGMQ?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 11:59:32 GMT",
-      "tag": "FOREIGN_FLOW",
-      "stream": "IDX",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 35,
-      "summary": "Research Intelligence (Pusat Data Kontan): Indikasi sentimen neutral mempengaruhi klaster FOREIGN_FLOW.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite).",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-29",
       "title": "Era Graharealty (IPAC) Bersiap Delisting, Pengendali Ajukan Tender Rp 250 per Saham",
       "source": "kontan.co.id",
       "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNZnhyUjlOc3BfMzRldWNxSTJrdkY2ZTgyN0dLUHBzeHdHVjhpU2pEb0lIUHhYY3VRWVhIQXJ2RmllaWc3Z0lIRW5yaXVhd19SZllxU19YVlIxZ1FMaHFZYm9SUHdkWUkzS3o2eHFtRGk3RGRHWVBsYVVkYm1QMlktUmNjakttR2c1blVtUVpNUkVzSzZYV2hZQ25IOGIyWXpqdUJHNnQ1bWx3Mi1ubF9GdHh0RGloZ3PSAa8BQVVfeXFMUGVxZEV1REJIMXFMeF9nUWZwbXVLOFB3WHdlbEdIcU1nanRuQXN0cHZFN0tpeEQ4MHdxckJ0VzFOWlVVOWNBblg2WEZYeWw1V3JVSHR4czBjcmF4NG9yNVhTUEdDeDdwc3J1WUlLN3FOS1BSMXdEN25BUWZRZTFzRjlXU25TbW5rUVNuWDVRVlBQcVV4VmZ3WGZkTDEzYlpwOFBNWWVkakppajR0V09iWQ?oc=5",
@@ -796,30 +749,27 @@
       ]
     },
     {
-      "id": "news-30",
-      "title": "IHSG Terkoreksi 1,43% Sepekan, Kapitalisasi Turun Jadi Rp11.446 Triliun - Bisnis.com",
-      "source": "Market",
-      "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPRTVDMmphN2dqdHA4dTFhdVhjeGpZTV9lR2ZzbHJLYWJSaTZ6QzFpaVFZM1BrNkJjWVJyMW0wcmEtaE52MDFhWU41d0d2b2VoZ2JsYXU5M3JCbXhXT1B2a0o5djZUTDhuQzZ4SEVEX01pSWFrSm1ieGpYOVRydWl0czJqbFhZNmVoWG5nYzMyYUlBQk1DaUticEVkV1VGVnY3SVN0Q3BJVG9OR0FnbHlGc0hZUWhKRmpH?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 23:08:57 GMT",
+      "id": "news-29",
+      "title": "VISI, Raffi Ahmad, Boy Thohir dan Pieter Tanuri: Prospeknya",
+      "source": "mikirduit.com",
+      "link": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxPSllUSzBGeU5DaUZPZWdfS0Z1TGZyU0NhV0VxdTRPRGpqN0dSVXVhUEJ6a2VlanFJTlhTcXhlR0EyWm5hbjVlU2hyX1M5OXRMbGR0TXU4NXBnYjBPdVlWa2tvWnZZVjhiUDNUV1gxNy16ZmpwQUVDY3NBV2dpMkNReE1odGl4R0hiSUxSMDdidjlsSlVzeHVHckN0SlJZaTNOME9MbDBUQ0ZkVWpnU3ZvdVNidmFSNnV6b19XSlNydk8tSG5WdnVTOA?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 05:17:46 GMT",
       "tag": "IHSG",
       "stream": "IDX",
-      "sentiment": "BEARISH",
-      "sentiment_score": -0.7,
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
       "related_tickers": [],
-      "metrics": [
-        "Perubahan: 1,43%",
-        "Nilai: Rp11.446 Triliun"
-      ],
-      "reading_time_sec": 37,
-      "summary": "Research Intelligence (Market): Indikasi sentimen bearish mempengaruhi klaster IHSG.",
+      "metrics": [],
+      "reading_time_sec": 34,
+      "summary": "Research Intelligence (mikirduit.com): Indikasi sentimen neutral mempengaruhi klaster IHSG.",
       "key_takeaways": [
-        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Perubahan: 1,43%; Nilai: Rp11.446 Triliun.",
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
         "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
       ]
     },
     {
-      "id": "news-31",
+      "id": "news-30",
       "title": "Bitcoin is back, but potential Clarity Act fail and Dem midterms win could come for crypto prices",
       "source": "CNBC",
       "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPZWdQS3QwTUFlRXBkY3FIWk1oSjBlcHlXMW8xOUhEM2Y5VlFjQ3JVVzF6c0txTjBSMkswSV94NlI4bTZYRy1NQk1Jdi15YkdpcVZyVFRTR0V3S3dpVEl6OXlsRDR2TWw4SWRQU3BHR0J3SW9CbzB0b2RPa2RBdndZNGpUUXjSAYoBQVVfeXFMUGl5WUJ0dVBFbHZXS0lQZU9uV2FWQ0NiSnBPMUluNnZPaUU2bFJ5aFJIemQ1amRmYlVKRUpCb2RVekFmS2YyYzhVbFQ3NnpFR01udGpxM0tvTTc5eTRmUS1adlh1NFM1SE9Qd0JmTVh6akEyODVzNHRoVGU0THY4VXA3NmdDY2lrM3ln?oc=5",
@@ -841,7 +791,7 @@
       ]
     },
     {
-      "id": "news-32",
+      "id": "news-31",
       "title": "Ethereum\u2019s Price Surges Past $2,600 For First Time In 8 Months: Outruns Bitcoin, XRP, Solana",
       "source": "Yahoo Finance",
       "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNT05oSWNrMFp4ZDNuVFQ1X1UxTHNGUHVScEZOQmxQbV9iYjFzQ05ISnA3c0hHYUZpWE13eGdiVUZibVhJNFdRU0Zjd0lEYjFuNlFHR3JGSThUTVA0UFZidzRZR2JyaGhqdEd4dlFtQzhQRmNKR1pHWkJMVVpQTzhmNVB3c09oWDF4OWhMNEV4ZzYwTl9jSmVYTA?oc=5",
@@ -868,11 +818,141 @@
       ]
     },
     {
+      "id": "news-32",
+      "title": "Current price of Ethereum for Sept. 11, 2026",
+      "source": "fortune.com",
+      "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE0zWnFhS2JFclROTWQ1NUFOTTdyVUlxb1IxbUFoRHE1WFNuVjhGMmtDb0FheHQ2SUJxSkhSenlBX051R1FfSVZxaXR2YUxwOC1aRlBIRE03NFdxTnZRZDg4ZktpZ3NkMkRV?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 13:30:00 GMT",
+      "tag": "CRYPTO_L1",
+      "stream": "CRYPTO",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [
+        "ETH"
+      ],
+      "metrics": [],
+      "reading_time_sec": 34,
+      "summary": "Research Intelligence (fortune.com): Indikasi sentimen neutral pada $ETH mempengaruhi klaster CRYPTO_L1.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
+        "Volatilitas aset kripto $ETH merespons likuiditas global dan arus modal spot ETF.",
+        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
+      ]
+    },
+    {
       "id": "news-33",
+      "title": "Chinese crypto investor was seller of \u00a3190mn London mansion",
+      "source": "Financial Times",
+      "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNS0R0WjlSNmNUdmxoWFRwaU9QakZLdGZ0RUV5c0VmSkVEbGxFTzRMMUpJMS16bEdkWWphWmJzVlpXOEVGWWlkYlZvUEdWMU8zSnFOckIwdTd0YnlSZUh6bGszZjNXSXUyRFgtcHIzdW5RVGxGdlo1cExjT2JoM2NhekpHUWc?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 04:00:23 GMT",
+      "tag": "CRYPTO",
+      "stream": "CRYPTO",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 35,
+      "summary": "Research Intelligence (Financial Times): Indikasi sentimen neutral mempengaruhi klaster CRYPTO.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
+        "Volatilitas aset kripto $Web3 merespons likuiditas global dan arus modal spot ETF.",
+        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
+      ]
+    },
+    {
+      "id": "news-34",
+      "title": "Coinbase co-founder\u2019s Venezuela oil bet could ripple into crypto",
+      "source": "CGEP",
+      "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNNmtoV0RMbjZYUng1eUtxOGVGQjU1UHBEQ2p3dGN2c2FIRzVZSWI2RlJDcExpR1FOcmxrNl90Yk5NNDZsNkFGYVl1TXJyZ1F6LWJPelgwS2drTnB6bkpmcWVZSEUzNzc3U0NnZVR5Ny00U2tUeVltRlZjQk5wVzhFXzRuc0J2ZXdiTXNTVFUtQjlPN2cybHpLdnM2bTQ3VTBlWWVNNA?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 04:18:32 GMT",
+      "tag": "CRYPTO",
+      "stream": "CRYPTO",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [
+        "XRP"
+      ],
+      "metrics": [],
+      "reading_time_sec": 35,
+      "summary": "Research Intelligence (CGEP): Indikasi sentimen neutral pada $XRP mempengaruhi klaster CRYPTO.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
+        "Volatilitas aset kripto $XRP merespons likuiditas global dan arus modal spot ETF.",
+        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
+      ]
+    },
+    {
+      "id": "news-35",
+      "title": "Crypto\u2019s Latest Rebound is Fueled By More Liquidations",
+      "source": "bloomberg.com",
+      "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPcTZKMERXNUtEc1UtZTlmNy1RS21TYTV1ZXJuUzF3Rjkza1Zwbk4yWW5aRmxQSDRoWW4wU0ZadTVydVdiS01pNGlnYjZ3R0loMmp4YzNQT0N4TjVsNERrLWhzRm5QWEJFNFVFZ2lxZzNtRkM0c3Q5RkV6YzlubW9RSFZ6SFF0OHJXdHlONS1TS2Itd0JSaG5IVHJmdzNOY3l1RjNsNHFsckU?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 20:43:56 GMT",
+      "tag": "CRYPTO",
+      "stream": "CRYPTO",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 34,
+      "summary": "Research Intelligence (bloomberg.com): Indikasi sentimen neutral mempengaruhi klaster CRYPTO.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
+        "Volatilitas aset kripto $Web3 merespons likuiditas global dan arus modal spot ETF.",
+        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
+      ]
+    },
+    {
+      "id": "news-36",
+      "title": "New Crypto: Pepeto Announces $10.96M Raised While Ethereum Price Prediction Climbs to $40,000",
+      "source": "markets.businessinsider.com",
+      "link": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxONDlRVnM0V0JvbVZkYjEwTFhNdTFXM2RyNHR0c0d6SHhLYVBrX0ZqTTVwaHBrTFpuNDA1NmZzNEtRWEp4YnpTcGE5UTN1NWYtakFoT213UnhfSDVCX3pBQnIyUm5VRmg5anEtOTdGVkFWRU41MXc2dHFacGVHaThZazlTRmlPNWl3MEVnRVZMQWdNVDBReE9CU1UtZ3NISVdOTHhlVWxFb1JmMFE1ZkREYnlaOW13VlFHbUh1X0VyaThoaUMzWlBlQ1llejV3dDcxaHBqNDlVZ1hKdzM3cWlXcm9VMA?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 07:31:13 GMT",
+      "tag": "CRYPTO_L1",
+      "stream": "CRYPTO",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [
+        "ETH"
+      ],
+      "metrics": [
+        "Nilai: $10.96"
+      ],
+      "reading_time_sec": 37,
+      "summary": "Research Intelligence (markets.businessinsider.com): Indikasi sentimen neutral pada $ETH mempengaruhi klaster CRYPTO_L1.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru. Terpantau Nilai: $10.96.",
+        "Volatilitas aset kripto $ETH merespons likuiditas global dan arus modal spot ETF.",
+        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
+      ]
+    },
+    {
+      "id": "news-37",
+      "title": "ETH price range on Sep 12, 2026 at 5am EDT Crypto Prediction Market",
+      "source": "Robinhood",
+      "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOckJPcjBZQ0R2S2RWQnFZZVhHVkxuZTkxRzU1QUw0aUFsMUlDYlV6UHBvcGhFc1VsY0RNdzBlX3JDYjFhY2RvR0o0WTZvVDhFTzdTemhxcE00UFpBN1ZwcWFvY0tNMU8xTFJ2d21BdGdubWRKVkhxY0FNNVB3UU1ldlJlajBweWhNY0EtOHNqczJ6U1NmQ2VzUEowZ1dhRGhiaDJPcTVKRVZjRF9ZOUFxNnAyS2JEUQ?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 08:10:31 GMT",
+      "tag": "CRYPTO_L1",
+      "stream": "CRYPTO",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [
+        "ETH"
+      ],
+      "metrics": [],
+      "reading_time_sec": 36,
+      "summary": "Research Intelligence (Robinhood): Indikasi sentimen neutral pada $ETH mempengaruhi klaster CRYPTO_L1.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
+        "Volatilitas aset kripto $ETH merespons likuiditas global dan arus modal spot ETF.",
+        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
+      ]
+    },
+    {
+      "id": "news-38",
       "title": "Reform UK given record \u00a336m donation by British crypto billionaire",
       "source": "The Guardian",
       "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOTk5BY0d4bG9Xb285b0hCZW9RSWRBZVAyYUh1UXE5QV9JOEltb18tWXhOVm4tOWtZOUZEa1U4SnhNOEJmWEtDc3V4cXJyNDk4c21YanAtY0pkV01GNEI2Mlc3SkZiN1llTFZ3RzY4NEItMTBfNldNQlNqZDJId0lPSlZOSXJwN05Vb1o3QzRBSjVWejVGUElYNzJxMkstXzhCYi13THVINVlJZ0NJQkJMaU41NVM?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 01:30:00 GMT",
+      "pub_date": "Fri, 11 Sep 2026 22:00:00 GMT",
       "tag": "DEFI_AI",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
@@ -888,31 +968,98 @@
       ]
     },
     {
-      "id": "news-34",
-      "title": "McCracken County Sheriff's Office warns of bitcoin, bond scams",
-      "source": "WPSD Local 6",
-      "link": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNaXZTNzBIZTVRWU1GZnB2WnEtd1lLcUVyVFpCRXNsNFZTV0pESXdrbEM1ZXFFbzY0UURQV1hJN01ZTGxRc25KbjFvWUJ6eUVITV9ENzVBM3JuZzJZQWNxZDItZzRfNml6U1R6b2hhazlwemMxa0ZQTkprT3QtMkwyaHlORi1qLTRxOXFJSVI4YmZ3RE9Wak9OTUdqeDVGYlRtOW9ZQW5MbVVHbmZtdVFIYnRueWplODZSSjFmbWNRbjFrNkttYzJSSXJCOV84c25YWUhMMWpmRjh5Zw?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 00:47:00 GMT",
-      "tag": "CRYPTO",
+      "id": "news-39",
+      "title": "Reform receives record \u00a336m donation from crypto billionaire",
+      "source": "bbc.com",
+      "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE1zV2szSFNIUzVwcEswWGpmNFdUVW1sR1M0ME13TkF0bldRR3lJTllmOGVDTUFhdm5OM2VJeVNOc2FiOHhjTm5RbkUtcGEyaGhEVWRYa0tKdEZ6UQ?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 23:27:18 GMT",
+      "tag": "DEFI_AI",
+      "stream": "CRYPTO",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 33,
+      "summary": "Research Intelligence (bbc.com): Indikasi sentimen neutral mempengaruhi klaster DEFI_AI.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
+        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+      ]
+    },
+    {
+      "id": "news-40",
+      "title": "Bitcoin ETFs lose $462.7M as Ethereum funds gain $196.9M",
+      "source": "Crypto News",
+      "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPVGtlY1dUNXNfS3RLelF2MzBKeHFjM0NYMUdpZUg3ZlVucTg5OXZObzU3SHo0dUNmSW9HeVBxQUdyeHZlYzhwNUtEdXdoWVJqUGJBaG5nV2U0ZmRDencyTTF3ZnZvRi1LQmNlSm9SRnU1UEtlOVRTZENRMU8zdk0ycg?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 05:49:00 GMT",
+      "tag": "CRYPTO_ETF",
+      "stream": "CRYPTO",
+      "sentiment": "BULLISH",
+      "sentiment_score": 0.35,
+      "related_tickers": [
+        "BTC",
+        "ETH"
+      ],
+      "metrics": [
+        "Nilai: $462.7"
+      ],
+      "reading_time_sec": 37,
+      "summary": "Research Intelligence (Crypto News): Indikasi sentimen bullish pada $BTC, $ETH mempengaruhi klaster CRYPTO_ETF.",
+      "key_takeaways": [
+        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait. Terpantau Nilai: $462.7.",
+        "Volatilitas aset kripto $BTC, $ETH merespons likuiditas global dan arus modal spot ETF.",
+        "Fokus pada Spot USDT murni tanpa leverage berlebih; kawal profit dengan trailing stop 2.5%."
+      ]
+    },
+    {
+      "id": "news-41",
+      "title": "\ud83d\udea8\ud835\udddd\ud835\udde8\ud835\udde6\ud835\udde7 \ud835\udddc\ud835\udde1:\ud83c\uddfa\ud83c\uddf8Bitcoin spot ETFs recorded a net outflow of $13.2M on September 11.",
+      "source": "Moomoo",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQTXM0R0JXSTN5MUtpRXlGUlRacTZJNzFZODV4NmhhXzdBcjExTDdSeDd4SEtrZmxxRGk1MlZJN0l1SEJPcmFveDM4WVdqSDZremNfUDBVRkdUeFJPUEdJUUJrYzFYZU1rTXFEN19uZjYwN2tqYXJfOUpVREJwd3VUZnVIX0xOeXMzQjJZRS1QdnRwaWx4aE4yUWxNM2lvNld3bEJZYUpR?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 06:12:52 GMT",
+      "tag": "CRYPTO_ETF",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
       "sentiment_score": 0.0,
       "related_tickers": [
         "BTC"
       ],
-      "metrics": [],
-      "reading_time_sec": 35,
-      "summary": "Research Intelligence (WPSD Local 6): Indikasi sentimen neutral pada $BTC mempengaruhi klaster CRYPTO.",
+      "metrics": [
+        "Nilai: $13.2"
+      ],
+      "reading_time_sec": 37,
+      "summary": "Research Intelligence (Moomoo): Indikasi sentimen neutral pada $BTC mempengaruhi klaster CRYPTO_ETF.",
       "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru. Terpantau Nilai: $13.2.",
         "Volatilitas aset kripto $BTC merespons likuiditas global dan arus modal spot ETF.",
         "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
       ]
     },
     {
-      "id": "news-35",
+      "id": "news-42",
+      "title": "The CLARITY Act Changed Again: New Crypto Bill Impacts DeFi",
+      "source": "Bitcoin Foundation",
+      "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxOZ2lQYVdITEEyS2UtU29nX1NOVm9tVHZUclpuMFBueG1YbmdsNGpIWTV3MEVMN182ODNsM1hRMkRmdlA1bW95VDZJUXJuVDdQbElMRDJfR2dSTEFxRXl0YjQxR2l4eVhTX1U5Rmp3Qk1WS3BrSDAtNk9RTEpiZVZIQmlyUQ?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 15:25:27 GMT",
+      "tag": "DEFI_AI",
+      "stream": "CRYPTO",
+      "sentiment": "BULLISH",
+      "sentiment_score": 0.35,
+      "related_tickers": [],
+      "metrics": [],
+      "reading_time_sec": 34,
+      "summary": "Research Intelligence (Bitcoin Foundation): Indikasi sentimen bullish mempengaruhi klaster DEFI_AI.",
+      "key_takeaways": [
+        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
+        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
+        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+      ]
+    },
+    {
+      "id": "news-43",
       "title": "Albuquerque bans crypto ATMs after scams cost New Mexicans millions",
-      "source": "KOAT",
+      "source": "koat.com",
       "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOU19LNnp6SHJldHYxamVMRzVONm1jREdBM0k3XzA0bUt2SFZQNE5FZ194ZlBRdlBpRGM1aGdZZzVOZ1daazgxRVA2WUZYQnU4dThJVlpfS1lhWmgxbjBydnRVVFFrYmpyNWVDTVNHODQyd0Q0UzgzLXEyZC1ZTzBqUDVCN0dick8wcGo3YmlWX1pWLURPemFlZldyNzZ4Yzk1cjBOUzdmaWI?oc=5",
       "pub_date": "Sat, 12 Sep 2026 00:25:00 GMT",
       "tag": "CRYPTO",
@@ -922,7 +1069,7 @@
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 35,
-      "summary": "Research Intelligence (KOAT): Indikasi sentimen bearish mempengaruhi klaster CRYPTO.",
+      "summary": "Research Intelligence (koat.com): Indikasi sentimen bearish mempengaruhi klaster CRYPTO.",
       "key_takeaways": [
         "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait.",
         "Volatilitas aset kripto $Web3 merespons likuiditas global dan arus modal spot ETF.",
@@ -930,47 +1077,7 @@
       ]
     },
     {
-      "id": "news-36",
-      "title": "Crypto\u2019s Latest Rebound is Fueled By More Liquidations",
-      "source": "Bloomberg.com",
-      "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPcTZKMERXNUtEc1UtZTlmNy1RS21TYTV1ZXJuUzF3Rjkza1Zwbk4yWW5aRmxQSDRoWW4wU0ZadTVydVdiS01pNGlnYjZ3R0loMmp4YzNQT0N4TjVsNERrLWhzRm5QWEJFNFVFZ2lxZzNtRkM0c3Q5RkV6YzlubW9RSFZ6SFF0OHJXdHlONS1TS2Itd0JSaG5IVHJmdzNOY3l1RjNsNHFsckU?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 15:48:23 GMT",
-      "tag": "CRYPTO",
-      "stream": "CRYPTO",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 34,
-      "summary": "Research Intelligence (Bloomberg.com): Indikasi sentimen neutral mempengaruhi klaster CRYPTO.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Volatilitas aset kripto $Web3 merespons likuiditas global dan arus modal spot ETF.",
-        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
-      ]
-    },
-    {
-      "id": "news-37",
-      "title": "Crypto investor pardoned by Trump donates \u00a336 million to Farage's Reform UK",
-      "source": "Reuters",
-      "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxONzRlSHNoSkdzQ0gtcllVY1RmRVRHWFRRSGo2R1hLaGRQR0htY2pTLVN6RVpfNWdMcnNTMVZDSEZ1MlV2UFRnWDNfSFJ0MGtLbVBOYWpkb3gtUEdUaEdvbGR2M05ja0h6dk1BQ3g0TUswVVkyWkIwVVBsZHFDM2FkanhZeUZKRG45TENvdXhxa1BfbmlId2VnV2w0MTNUNW5zeVB4aElkb3J3ZnhlTkVabGtDSnBocjNUeUpB?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 21:39:12 GMT",
-      "tag": "CRYPTO",
-      "stream": "CRYPTO",
-      "sentiment": "BULLISH",
-      "sentiment_score": 0.35,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 37,
-      "summary": "Research Intelligence (Reuters): Indikasi sentimen bullish mempengaruhi klaster CRYPTO.",
-      "key_takeaways": [
-        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
-        "Volatilitas aset kripto $Web3 merespons likuiditas global dan arus modal spot ETF.",
-        "Fokus pada Spot USDT murni tanpa leverage berlebih; kawal profit dengan trailing stop 2.5%."
-      ]
-    },
-    {
-      "id": "news-38",
+      "id": "news-44",
       "title": "5 Best Bitcoin Casinos Reviewed \u2013 Top Crypto Sites That Actually Pay Fast in 2026",
       "source": "Muddy River Sports",
       "link": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNRkp6aWFHSmxLMGZpdFRzc2lXT3pOcFVKaHA2SW8xM200S1RIVjhZV291ME5mUDFnMWl0TE5MNmVFWW1TWmxsTnVWN2pSR05JdEJYTk5nSzItRFNEanBSSml1QmZfVEY0eTd0RG1HN05RWGhHLURIQUdSUFA3ZnBKMmlhdktaTHVYZ2NpTjN3OEtUdVl0NDR5OTh5R01WbU1MODA5RGpVNFVXVUpPeUN6T200OFNZbDh0dmU0NW5MWEpwU3VLdmVkb2pOWk9xRnI1Tk5HNi1VbUVPdw?oc=5",
@@ -992,134 +1099,52 @@
       ]
     },
     {
-      "id": "news-39",
-      "title": "Senate Republicans Introduce Clarity Act Changes Ahead Of Key Vote",
-      "source": "Investor's Business Daily",
-      "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOclViTG02QlVSU1NsSUVmOV8xd1BlaGpyOGJnTFdibkkwUzVRdFRUQmxydEVRRHZiN2xJT3ZKMDdfUS1NNDZFUlNzRlg3TWM0WWdhMk9NLWJxdndMVjhQeU9jUXVPQVZtYndMWVo2cTUwMjJEWGNCQTRGN1psdmdjQklJalp3QkRlUzZ1dEgwaUd2TF83TkdwYw?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 20:33:00 GMT",
-      "tag": "CRYPTO",
-      "stream": "CRYPTO",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 35,
-      "summary": "Research Intelligence (Investor's Business Daily): Indikasi sentimen neutral mempengaruhi klaster CRYPTO.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Volatilitas aset kripto $Web3 merespons likuiditas global dan arus modal spot ETF.",
-        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
-      ]
-    },
-    {
-      "id": "news-40",
-      "title": "The CLARITY Act Changed Again: New Crypto Bill Impacts DeFi",
-      "source": "bitcoinfoundation.org",
-      "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxOZ2lQYVdITEEyS2UtU29nX1NOVm9tVHZUclpuMFBueG1YbmdsNGpIWTV3MEVMN182ODNsM1hRMkRmdlA1bW95VDZJUXJuVDdQbElMRDJfR2dSTEFxRXl0YjQxR2l4eVhTX1U5Rmp3Qk1WS3BrSDAtNk9RTEpiZVZIQmlyUQ?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 15:25:27 GMT",
-      "tag": "DEFI_AI",
+      "id": "news-45",
+      "title": "We Asked ChatGPT Whether Ethereum or Bitcoin Ends September Higher",
+      "source": "Yahoo Finance",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOMFFwTmNHVmpFYnh4NjhBX0hNNmJwRFVCYkRXekZWZkdMdVpxLThGUkdDTUJPV1Zrem1uN0FUdEdpYWZXR2l2eTBYSFV0LVNwZFVELVh4TGZuak5tbkNZOHpTalc1aWtqZnNoMlAxenk3Wm12UHFpWFFZcF9oc3d2cU9zZ252X1NnYW1DanptVjctejluRWJSV3hjSEEwcTJxZHZ3VXRR?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 22:03:18 GMT",
+      "tag": "CRYPTO_L1",
       "stream": "CRYPTO",
       "sentiment": "BULLISH",
       "sentiment_score": 0.35,
-      "related_tickers": [],
+      "related_tickers": [
+        "BTC",
+        "ETH"
+      ],
       "metrics": [],
-      "reading_time_sec": 34,
-      "summary": "Research Intelligence (bitcoinfoundation.org): Indikasi sentimen bullish mempengaruhi klaster DEFI_AI.",
+      "reading_time_sec": 36,
+      "summary": "Research Intelligence (Yahoo Finance): Indikasi sentimen bullish pada $BTC, $ETH mempengaruhi klaster CRYPTO_L1.",
       "key_takeaways": [
         "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+        "Volatilitas aset kripto $BTC, $ETH merespons likuiditas global dan arus modal spot ETF.",
+        "Fokus pada Spot USDT murni tanpa leverage berlebih; kawal profit dengan trailing stop 2.5%."
       ]
     },
     {
-      "id": "news-41",
-      "title": "We Asked ChatGPT Which Has More Upside From Here: XRP or Bitcoin?",
-      "source": "24/7 Wall St.",
-      "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQSVRlWTlJaWpCRUZaLTVUd0s2M21ZMVNNX2JVc1I4UHBOdmZ2WFZ4Nkdfb0hWUXlDUG5FRmVDRnQtR1k1Z3RqR2ctV3FpeWxSM2RXU2Nmbk0yai1XTGQ4RGx0bWE2ZTQ1RlNmaVNiNFQ1WjdqWHFiT1JzRDdzbXJOMmRpX2RIVDdYTGFRNlVWWndwaF9idUZGQmZ0X2JXcldSeDZrT3JRaWdOU1lyQ2VaY2gwMFI3ZFo4Y2NVY3RlNA?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 21:56:00 GMT",
-      "tag": "CRYPTO",
-      "stream": "CRYPTO",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [
-        "XRP",
-        "BTC"
-      ],
-      "metrics": [],
-      "reading_time_sec": 36,
-      "summary": "Research Intelligence (24/7 Wall St.): Indikasi sentimen neutral pada $XRP, $BTC mempengaruhi klaster CRYPTO.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Volatilitas aset kripto $XRP, $BTC merespons likuiditas global dan arus modal spot ETF.",
-        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
-      ]
-    },
-    {
-      "id": "news-42",
-      "title": "SEC Proposes Framework for Crypto Asset Offerings",
-      "source": "Legis1",
-      "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9xOUZ4ZmFjei1WVTVORThpbk9OX244eUJ2S2tESXpCRGU4cUV3X0kyRGNRYzk0dTItaEo3dUstSU1CZENKV1hDWDM5X0ttNUdoOGQ2SFFyLTI5NVFyTkw1ZXRKaXhtd3YxUzlGM2RxaFd1ZENDX256b0lPTU9Hdw?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 18:32:13 GMT",
-      "tag": "CRYPTO",
-      "stream": "CRYPTO",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 34,
-      "summary": "Research Intelligence (Legis1): Indikasi sentimen neutral mempengaruhi klaster CRYPTO.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Volatilitas aset kripto $Web3 merespons likuiditas global dan arus modal spot ETF.",
-        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
-      ]
-    },
-    {
-      "id": "news-43",
-      "title": "ETH price on Sep 12, 2026 at 12am EDT Crypto Prediction Market",
+      "id": "news-46",
+      "title": "Dogecoin price on Sep 12, 2026 at 5am EDT Crypto Prediction Market",
       "source": "Robinhood",
-      "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPa1p2ajZBMVVndW1PRjR4MVBYSHc4Q0ljSE5lLWJsV0FNQ05iZ2oyS3dld1VUclluREs1cE13d1Nmd0pxc3FxSWhvYU5OS3FsdXJGQUplX1VEcTZ6SkFvb3ZvN2gyZXFNZzY2dlFaRmRnSlVFb05mWVFLMDlrM3ZVVDZ4SlRvc1RrYzZoaUR1TDhRWTdjNnNtRk13el9xMXhocjBvX2hmNGhlMkptTkM4?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 03:03:09 GMT",
-      "tag": "CRYPTO_L1",
+      "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPTERPTVZrcURXSnFhVlE5Q21xSWs2bDIzNjJpR3pib0tkZWRva0dPX1I5YUZLNm1LbWtuc0E1UV9DUWk1cFdnbUU3R3g5LVZQdFRmYUg1dlBNN3BWMmNWVldjdnY3VTlJeVB5ckZHVW1HbjNwWUN5c0U5V0U4bW0yaGNwUW5wZ1RUcXZ3Qk9CTWpESzhPU1NSckJhdk1RVWZXaDdsSkszVUtyekNuRHpieDZIN2c?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 08:14:33 GMT",
+      "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
       "sentiment_score": 0.0,
       "related_tickers": [
-        "ETH"
+        "DOGE"
       ],
       "metrics": [],
       "reading_time_sec": 36,
-      "summary": "Research Intelligence (Robinhood): Indikasi sentimen neutral pada $ETH mempengaruhi klaster CRYPTO_L1.",
+      "summary": "Research Intelligence (Robinhood): Indikasi sentimen neutral pada $DOGE mempengaruhi klaster CRYPTO.",
       "key_takeaways": [
         "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Volatilitas aset kripto $ETH merespons likuiditas global dan arus modal spot ETF.",
+        "Volatilitas aset kripto $DOGE merespons likuiditas global dan arus modal spot ETF.",
         "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
       ]
     },
     {
-      "id": "news-44",
-      "title": "Current price of Ethereum for September 11, 2026",
-      "source": "Fortune",
-      "link": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE0zWnFhS2JFclROTWQ1NUFOTTdyVUlxb1IxbUFoRHE1WFNuVjhGMmtDb0FheHQ2SUJxSkhSenlBX051R1FfSVZxaXR2YUxwOC1aRlBIRE03NFdxTnZRZDg4ZktpZ3NkMkRV?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 13:30:00 GMT",
-      "tag": "CRYPTO_L1",
-      "stream": "CRYPTO",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [
-        "ETH"
-      ],
-      "metrics": [],
-      "reading_time_sec": 34,
-      "summary": "Research Intelligence (Fortune): Indikasi sentimen neutral pada $ETH mempengaruhi klaster CRYPTO_L1.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Volatilitas aset kripto $ETH merespons likuiditas global dan arus modal spot ETF.",
-        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
-      ]
-    },
-    {
-      "id": "news-45",
+      "id": "news-47",
       "title": "Bitcoin vs Zcash: Grayscale Reveals Which Is More Profitable to Mine",
       "source": "Yahoo Finance",
       "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNdVZoQ3NWTEdkQ3pjZEhjZTVyLXgtSUxBLWJoaGYzM09CRWFxZVVwUGlZNUFmZVRSOGY2S0NpMUd3TUdFTjJsYS1pMVRiVHVjRFg4Sy00ZUIzNGZ2eEFIZmdyekhyRFB1T1lKeEtZXzdOemJ1Y2tZSmU5MHBzUGdJdDhBckhIRTAtSTY4TXVTYktOamQzSkJsc04zdDZGU3Fh?oc=5",
@@ -1141,125 +1166,72 @@
       ]
     },
     {
-      "id": "news-46",
-      "title": "We Asked ChatGPT Whether Ethereum or Bitcoin Ends September Higher",
-      "source": "24/7 Wall St.",
-      "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNUUw3S2x3eWNjQXh4a3gyVm02WDhBb2sxT2RlUG9kSzVKTFZoMTVkZGNONHo5NTA1MUI0SVhmQ3FvV0x3aXpYWm1WZmZDQkZOQkQtSXhMTVpfWF9tRzhRb3VCQlpzUkI1eFZUX1p6SjFkaW5YMUI2ZHQ3MHNrNk5lZy1XcXlGcXp0Ri1CUzd3UVVoanRLczh5SlZvc0I5ZE9pRExON2NxV0xla2tJVGllVUlZZ3RIZHl2bWVhaVRTV20yMVk?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 22:03:00 GMT",
-      "tag": "CRYPTO_L1",
-      "stream": "CRYPTO",
-      "sentiment": "BULLISH",
-      "sentiment_score": 0.35,
-      "related_tickers": [
-        "BTC",
-        "ETH"
-      ],
-      "metrics": [],
-      "reading_time_sec": 36,
-      "summary": "Research Intelligence (24/7 Wall St.): Indikasi sentimen bullish pada $BTC, $ETH mempengaruhi klaster CRYPTO_L1.",
-      "key_takeaways": [
-        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
-        "Volatilitas aset kripto $BTC, $ETH merespons likuiditas global dan arus modal spot ETF.",
-        "Fokus pada Spot USDT murni tanpa leverage berlebih; kawal profit dengan trailing stop 2.5%."
-      ]
-    },
-    {
-      "id": "news-47",
-      "title": "ETH price range on Sep 12, 2026 at 12am EDT Crypto Prediction Market",
-      "source": "Robinhood",
-      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQdkViU2lwRF81ZURYWTJ3ZXZkbDdNUE0zODktTmVkU1NZQU9MbVFfTlBlQkRkczNvM1RlbDFRS0J6eTBqdWxxVzI4QXJPdWlhTG9mUk0zZFR6SXNpRVJkeTQyenpzWVR1WDF4TjVOX2ktRmJJd01KS2JtUmFLY2RkeHBibUEweFBRXzFiTHNjdkVSUWdrU3luSHgtQ3VKS19OT2J6bEg4bnhSNEJLSlEtdGV0czZUekU?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 03:03:08 GMT",
-      "tag": "CRYPTO_L1",
-      "stream": "CRYPTO",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [
-        "ETH"
-      ],
-      "metrics": [],
-      "reading_time_sec": 36,
-      "summary": "Research Intelligence (Robinhood): Indikasi sentimen neutral pada $ETH mempengaruhi klaster CRYPTO_L1.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Volatilitas aset kripto $ETH merespons likuiditas global dan arus modal spot ETF.",
-        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
-      ]
-    },
-    {
       "id": "news-48",
-      "title": "Current price of Bitcoin for Sept. 11, 2026",
-      "source": "Fortune",
-      "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBzdXZINHB2Z3h2a3pmd3JQUFY5TlRvZk8zcnhBdGxUQ2FDb3BiZWNiREprRGRscFViVUhhNTI0VXE5NWxDandwN1JOazJLeWt0YWVpTmJCRkdHRUdtQVVMNTQ4RWhuQVU?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 13:30:00 GMT",
+      "title": "SEC Proposes Framework for Crypto Asset Offerings",
+      "source": "Legis1",
+      "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9xOUZ4ZmFjei1WVTVORThpbk9OX244eUJ2S2tESXpCRGU4cUV3X0kyRGNRYzk0dTItaEo3dUstSU1CZENKV1hDWDM5X0ttNUdoOGQ2SFFyLTI5NVFyTkw1ZXRKaXhtd3YxUzlGM2RxaFd1ZENDX256b0lPTU9Hdw?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 18:32:13 GMT",
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
       "sentiment_score": 0.0,
-      "related_tickers": [
-        "BTC"
-      ],
+      "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
-      "summary": "Research Intelligence (Fortune): Indikasi sentimen neutral pada $BTC mempengaruhi klaster CRYPTO.",
+      "summary": "Research Intelligence (Legis1): Indikasi sentimen neutral mempengaruhi klaster CRYPTO.",
       "key_takeaways": [
         "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Volatilitas aset kripto $BTC merespons likuiditas global dan arus modal spot ETF.",
+        "Volatilitas aset kripto $Web3 merespons likuiditas global dan arus modal spot ETF.",
         "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
       ]
     },
     {
       "id": "news-49",
-      "title": "Bitcoin Miner Atlantic HPC Lands $150M SPAC Merger",
-      "source": "Law360",
-      "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE1VeWswV2xhRXd5NFg0RmkxNlBoNGpDQkxlRzFYekQyNHZfLTdVUlhjc0tsVGJJcjdsLXRmUC1LNDNBamN4amt6cGNBODBXUjB0M1VFS1Vn0gFWQVVfeXFMTVV5azBXbGFFd3k0WDRGaTE2UGg0akNCTGVHMVh6RDI0dl8tN1VSWGNzS2xUYklyN2wtdGZQLUs0M0FqY3hqa3pwY0E4MFdSMHQzVUVLVWc?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 00:59:00 GMT",
+      "title": "Senate Republicans Introduce Clarity Act Changes Ahead Of Key Vote",
+      "source": "Investor's Business Daily",
+      "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOclViTG02QlVSU1NsSUVmOV8xd1BlaGpyOGJnTFdibkkwUzVRdFRUQmxydEVRRHZiN2xJT3ZKMDdfUS1NNDZFUlNzRlg3TWM0WWdhMk9NLWJxdndMVjhQeU9jUXVPQVZtYndMWVo2cTUwMjJEWGNCQTRGN1psdmdjQklJalp3QkRlUzZ1dEgwaUd2TF83TkdwYw?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 20:33:00 GMT",
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
       "sentiment_score": 0.0,
-      "related_tickers": [
-        "BTC"
-      ],
-      "metrics": [
-        "Nilai: $150"
-      ],
+      "related_tickers": [],
+      "metrics": [],
       "reading_time_sec": 35,
-      "summary": "Research Intelligence (Law360): Indikasi sentimen neutral pada $BTC mempengaruhi klaster CRYPTO.",
+      "summary": "Research Intelligence (Investor's Business Daily): Indikasi sentimen neutral mempengaruhi klaster CRYPTO.",
       "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru. Terpantau Nilai: $150.",
-        "Volatilitas aset kripto $BTC merespons likuiditas global dan arus modal spot ETF.",
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
+        "Volatilitas aset kripto $Web3 merespons likuiditas global dan arus modal spot ETF.",
         "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
       ]
     },
     {
       "id": "news-50",
-      "title": "Ethereum\u2019s Glamsterdam Upgrade Slipped Again. Sepolia Now Targets October 6",
-      "source": "24/7 Wall St.",
-      "link": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOMHNtclpCdDM2TkZuTmNwZFZNNkp4VGw1RnJQanJCSVJjRWJpeTNyWjRsZFp0aHlBNHNJYUR5YVZfUVMteklsVWtIV084QTV5TTFiaktka3FIT3cxZmRMY1hza2RCSmV0TDI2eW5LOGIyRFZ6dXo1M0IzZU40dG5yU1M0UXkyeTBJeDNsemJzVngzYTUzYTVHLUhQZGR5U3JZSXR2NGp2ZWlzRmdJNWdqdWp0TFJCMkxBTldYQllSd09iS3RuNTRieEFnbFQ?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 22:19:00 GMT",
-      "tag": "CRYPTO_L1",
+      "title": "Crypto investor pardoned by Trump donates \u00a336 million to Farage's Reform UK",
+      "source": "reuters.com",
+      "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxONzRlSHNoSkdzQ0gtcllVY1RmRVRHWFRRSGo2R1hLaGRQR0htY2pTLVN6RVpfNWdMcnNTMVZDSEZ1MlV2UFRnWDNfSFJ0MGtLbVBOYWpkb3gtUEdUaEdvbGR2M05ja0h6dk1BQ3g0TUswVVkyWkIwVVBsZHFDM2FkanhZeUZKRG45TENvdXhxa1BfbmlId2VnV2w0MTNUNW5zeVB4aElkb3J3ZnhlTkVabGtDSnBocjNUeUpB?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 21:39:12 GMT",
+      "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "BULLISH",
       "sentiment_score": 0.35,
-      "related_tickers": [
-        "ETH"
-      ],
+      "related_tickers": [],
       "metrics": [],
-      "reading_time_sec": 36,
-      "summary": "Research Intelligence (24/7 Wall St.): Indikasi sentimen bullish pada $ETH mempengaruhi klaster CRYPTO_L1.",
+      "reading_time_sec": 37,
+      "summary": "Research Intelligence (reuters.com): Indikasi sentimen bullish mempengaruhi klaster CRYPTO.",
       "key_takeaways": [
         "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
-        "Volatilitas aset kripto $ETH merespons likuiditas global dan arus modal spot ETF.",
+        "Volatilitas aset kripto $Web3 merespons likuiditas global dan arus modal spot ETF.",
         "Fokus pada Spot USDT murni tanpa leverage berlebih; kawal profit dengan trailing stop 2.5%."
       ]
     },
     {
       "id": "news-51",
-      "title": "Bitcoin Suisse Cuts Up to 60 Swiss Jobs, Closes Copenhagen IT Site: 16 outlets compared",
-      "source": "NewsCord",
-      "link": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxOTWVHUXQzQ21pSzJ4eTItSzc5dWJpVFA4ZGlEZVRySTk3RmFfbURqaEY3RWI0ZFpmajRlbWloS1lVdjlXWkFJT2tQYks0V2tQWU8yUFM1Rzh6Sm51blFMamxqOHo1UjFyck44NV9tRVdlUFVROUo0ejNaX21ESDhMM1FteVpYOE5md1lQZDZfTFVpbFd6dmNTQUlzTVNqQ05xY2JKTlozc0RkOV9mcmZqcWJ1Yy03QU5qenhBRUpkMjV3bHA1bWpQMzRQRlItX3FhUXJBUFBR?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 01:14:57 GMT",
-      "tag": "DEFI_AI",
+      "title": "Bitcoin Price Prediction: We Asked ChatGPT and Grok Where BTC Trades by the End of September",
+      "source": "Yahoo Finance",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOTmM0SnBBQTJSeEdmV1IyYzhUYzZWQ3NXdnBoeHdGa081X2Q3TVRrUmh3LW8xR0xydWtaM1VTOUxzY19iaHRpWjdXaksxU0NURmYzTGlkOG1iRHJFSE8zSlJmUWhMc2hYMUhzRXFDNVNsUTNkQ2xYMnlEQ09NVk45SHF6b3VpelRCVUg3UFBCcEdmWGFqNnIxalhNTmJyd3ZGM1VjSmJ3?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 22:25:43 GMT",
+      "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
       "sentiment_score": 0.0,
@@ -1268,7 +1240,7 @@
       ],
       "metrics": [],
       "reading_time_sec": 37,
-      "summary": "Research Intelligence (NewsCord): Indikasi sentimen neutral pada $BTC mempengaruhi klaster DEFI_AI.",
+      "summary": "Research Intelligence (Yahoo Finance): Indikasi sentimen neutral pada $BTC mempengaruhi klaster CRYPTO.",
       "key_takeaways": [
         "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
         "Volatilitas aset kripto $BTC merespons likuiditas global dan arus modal spot ETF.",
@@ -1299,55 +1271,10 @@
     },
     {
       "id": "news-53",
-      "title": "Binance's Bitcoin Reserves Hit a Two-Year High. Santiment Says Exchange Balances Told You Nothing All Summer.",
+      "title": "We Asked ChatGPT Which Has More Upside From Here: XRP or Bitcoin?",
       "source": "24/7 Wall St.",
-      "link": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxOMnhSOW1ZNktpbm1YdzRYYVpVb1dXckZXcGQ4bzdTdmxlcldkeGlhYnQ2aHMtYWNzNGRXRzJ5eGlMVEpsd1pIa3RfbGJ6RThGRHo4Tk1LeGducFU5X2VoZWhXSkRkVDdmenRlMDFteWljUWU2dWEzYzl0TWxoZW1iV2cwQ2hfMFBnQmpzNURfRlJnb0llM1pIV2o2WllXNlIzdlpMNlktQWtlZ3FjV2prMXMzaTd0YU9PcTRYNUNJQUFvQUZ5Uk1aTF80VGZhbHZJbTc4c1pFMFJzU0RhenIyVzEwXzNreWd2QlpWMnFuS2ZSdW5jY1Jsdg?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 22:14:00 GMT",
-      "tag": "CRYPTO",
-      "stream": "CRYPTO",
-      "sentiment": "BULLISH",
-      "sentiment_score": 0.35,
-      "related_tickers": [
-        "BTC",
-        "BNB"
-      ],
-      "metrics": [],
-      "reading_time_sec": 38,
-      "summary": "Research Intelligence (24/7 Wall St.): Indikasi sentimen bullish pada $BTC, $BNB mempengaruhi klaster CRYPTO.",
-      "key_takeaways": [
-        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
-        "Volatilitas aset kripto $BTC, $BNB merespons likuiditas global dan arus modal spot ETF.",
-        "Fokus pada Spot USDT murni tanpa leverage berlebih; kawal profit dengan trailing stop 2.5%."
-      ]
-    },
-    {
-      "id": "news-54",
-      "title": "Bitmine Just Made Its Largest Ethereum Purchase Since June. Here's Why That Matters For Ethereum Investors.",
-      "source": "Yahoo Finance",
-      "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPUzg2a3Y0NVlxQnQ1QWRkUkI3aUJDcnFfQWlsakZxY1AyRTJoRDBLUXlpcDBJazlBdVFtTGdWU25qVWNWM3dtNTVxYWw0WlEtbVBNT1ZpLU5rWVk4dmJWVER1d0FYLXNkU0ppcDJDMWtZN3J6SDdPWi1HR1NVUlNPZzh3dkdmMm4zeDBoLUNEcHBpbW5vSDV4SFFsZ1RDSlpU?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 11:30:00 GMT",
-      "tag": "CRYPTO_L1",
-      "stream": "CRYPTO",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [
-        "ETH"
-      ],
-      "metrics": [],
-      "reading_time_sec": 37,
-      "summary": "Research Intelligence (Yahoo Finance): Indikasi sentimen neutral pada $ETH mempengaruhi klaster CRYPTO_L1.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Volatilitas aset kripto $ETH merespons likuiditas global dan arus modal spot ETF.",
-        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
-      ]
-    },
-    {
-      "id": "news-55",
-      "title": "What Is the Best Crypto to Buy Right Now: XRP or Bitcoin?",
-      "source": "Yahoo Finance",
-      "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxORC1zUTBWWk9mZTlJVFYtc1N3dUNvaHh6TzJjZlFyd0kyZWhjYlZSRVd2MkJCXzNYSDBBNllNSEFHSktSRzFZQjI4dWYwOFRtYi1SdUF1YjRBdHlxWGxteHJaalFXWVk3MDFqNlk0UkdVemJOSTUwOE9CRVdJRmJBYVJTejZHbEdpRkhGWHh1Vlp6Zw?oc=5",
-      "pub_date": "Fri, 11 Sep 2026 22:38:41 GMT",
+      "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQSVRlWTlJaWpCRUZaLTVUd0s2M21ZMVNNX2JVc1I4UHBOdmZ2WFZ4Nkdfb0hWUXlDUG5FRmVDRnQtR1k1Z3RqR2ctV3FpeWxSM2RXU2Nmbk0yai1XTGQ4RGx0bWE2ZTQ1RlNmaVNiNFQ1WjdqWHFiT1JzRDdzbXJOMmRpX2RIVDdYTGFRNlVWWndwaF9idUZGQmZ0X2JXcldSeDZrT3JRaWdOU1lyQ2VaY2gwMFI3ZFo4Y2NVY3RlNA?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 21:56:00 GMT",
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
@@ -1358,7 +1285,7 @@
       ],
       "metrics": [],
       "reading_time_sec": 36,
-      "summary": "Research Intelligence (Yahoo Finance): Indikasi sentimen neutral pada $XRP, $BTC mempengaruhi klaster CRYPTO.",
+      "summary": "Research Intelligence (24/7 Wall St.): Indikasi sentimen neutral pada $XRP, $BTC mempengaruhi klaster CRYPTO.",
       "key_takeaways": [
         "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
         "Volatilitas aset kripto $XRP, $BTC merespons likuiditas global dan arus modal spot ETF.",
@@ -1366,11 +1293,11 @@
       ]
     },
     {
-      "id": "news-56",
-      "title": "Bitcoin Volatility Anchors Wall Street: 24-Hour Market Aligns with Traditional Trading Hours",
-      "source": "Moomoo",
-      "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQajk1UU8zRlVUaDFNcDJhMmRLaS1NdWNOUVVOU0JNTDY0cXR5dzNWckMzYUdVajc5Qmc0RDNBdzZxcDBtQW5EQXdOcktDZS1fTFpKX3doRE1yeTdNUzQ0RmNUZGg2SGpuejBsLXZNSmU3eXB5NXllSUpoNjFTeHRJbEx5MUUtMG1QNVludnEwS3F4TzJIUUprZ3JWVFAxY3BlVVJJVUh4aU1odTA?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 01:41:33 GMT",
+      "id": "news-54",
+      "title": "Current price of Bitcoin for Sept. 11, 2026",
+      "source": "fortune.com",
+      "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBzdXZINHB2Z3h2a3pmd3JQUFY5TlRvZk8zcnhBdGxUQ2FDb3BiZWNiREprRGRscFViVUhhNTI0VXE5NWxDandwN1JOazJLeWt0YWVpTmJCRkdHRUdtQVVMNTQ4RWhuQVU?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 13:30:00 GMT",
       "tag": "CRYPTO",
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
@@ -1379,8 +1306,8 @@
         "BTC"
       ],
       "metrics": [],
-      "reading_time_sec": 36,
-      "summary": "Research Intelligence (Moomoo): Indikasi sentimen neutral pada $BTC mempengaruhi klaster CRYPTO.",
+      "reading_time_sec": 34,
+      "summary": "Research Intelligence (fortune.com): Indikasi sentimen neutral pada $BTC mempengaruhi klaster CRYPTO.",
       "key_takeaways": [
         "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
         "Volatilitas aset kripto $BTC merespons likuiditas global dan arus modal spot ETF.",
@@ -1388,30 +1315,99 @@
       ]
     },
     {
-      "id": "news-57",
-      "title": "$5,000 'Trump Dividend' Echoes Past Promises: Will Bitcoin Rally Again?",
-      "source": "Yahoo Finance",
-      "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOaC1tU1k5TlB6TDFqNUlPYjRKMjNYeFFhbnp0VDhZelUzM3M4bTR2UGRNQ211VVNyNzNZY1ExbjRPV0VCTTg2UGQ4aWgyTmQyNUY0NXJfb0wwQjN5N0NOX1ZTVVRDVjJtUnh2T0JyMHJZMW9hbzc5UXNCcTA1SjRNNnpES2VaWG0xU1VYV0ZBZVFub1FneEJj?oc=5",
-      "pub_date": "Sat, 12 Sep 2026 00:30:00 GMT",
-      "tag": "DEFI_AI",
+      "id": "news-55",
+      "title": "XRP price at Sep 12, 2026 at 3am EDT Crypto Prediction Market",
+      "source": "Robinhood",
+      "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPcjEyaWdyendMekg1WnllTHp6VWc3RWlkR0huaFNmZWdxbDlWZXRJM3IzWXdVamduNXExX1QzWXVxSk14ZU9qQkpCTGJ2VmtGQnVJVUZnVXVsYnFZcWdiVmxJMURyTUJ5bUpwRk5HZnA0d3ktX3p6OWNNMGs5a3VXVUhrdFYtUlFmNlZRYUl0VDNkSk9yNkpNNHIxd2pEa2xoYV9TMDFzRFc2Xy1wN3c?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 06:04:07 GMT",
+      "tag": "CRYPTO",
       "stream": "CRYPTO",
-      "sentiment": "BULLISH",
-      "sentiment_score": 1.0,
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
+      "related_tickers": [
+        "XRP"
+      ],
+      "metrics": [],
+      "reading_time_sec": 36,
+      "summary": "Research Intelligence (Robinhood): Indikasi sentimen neutral pada $XRP mempengaruhi klaster CRYPTO.",
+      "key_takeaways": [
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
+        "Volatilitas aset kripto $XRP merespons likuiditas global dan arus modal spot ETF.",
+        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
+      ]
+    },
+    {
+      "id": "news-56",
+      "title": "Bitcoin Miner Atlantic HPC Lands $150M SPAC Merger",
+      "source": "law360.com",
+      "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE1VeWswV2xhRXd5NFg0RmkxNlBoNGpDQkxlRzFYekQyNHZfLTdVUlhjc0tsVGJJcjdsLXRmUC1LNDNBamN4amt6cGNBODBXUjB0M1VFS1Vn0gFWQVVfeXFMTVV5azBXbGFFd3k0WDRGaTE2UGg0akNCTGVHMVh6RDI0dl8tN1VSWGNzS2xUYklyN2wtdGZQLUs0M0FqY3hqa3pwY0E4MFdSMHQzVUVLVWc?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 00:59:00 GMT",
+      "tag": "CRYPTO",
+      "stream": "CRYPTO",
+      "sentiment": "NEUTRAL",
+      "sentiment_score": 0.0,
       "related_tickers": [
         "BTC"
       ],
       "metrics": [
-        "Nilai: $5,000 "
+        "Nilai: $150"
       ],
-      "reading_time_sec": 37,
-      "summary": "Research Intelligence (Yahoo Finance): Indikasi sentimen bullish pada $BTC mempengaruhi klaster DEFI_AI.",
+      "reading_time_sec": 35,
+      "summary": "Research Intelligence (law360.com): Indikasi sentimen neutral pada $BTC mempengaruhi klaster CRYPTO.",
       "key_takeaways": [
-        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait. Terpantau Nilai: $5,000 .",
+        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru. Terpantau Nilai: $150.",
         "Volatilitas aset kripto $BTC merespons likuiditas global dan arus modal spot ETF.",
+        "Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
+      ]
+    },
+    {
+      "id": "news-57",
+      "title": "Ethereum\u2019s Glamsterdam Upgrade Slipped Again. Sepolia Now Targets October 6",
+      "source": "24/7 Wall St.",
+      "link": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOMHNtclpCdDM2TkZuTmNwZFZNNkp4VGw1RnJQanJCSVJjRWJpeTNyWjRsZFp0aHlBNHNJYUR5YVZfUVMteklsVWtIV084QTV5TTFiaktka3FIT3cxZmRMY1hza2RCSmV0TDI2eW5LOGIyRFZ6dXo1M0IzZU40dG5yU1M0UXkyeTBJeDNsemJzVngzYTUzYTVHLUhQZGR5U3JZSXR2NGp2ZWlzRmdJNWdqdWp0TFJCMkxBTldYQllSd09iS3RuNTRieEFnbFQ?oc=5",
+      "pub_date": "Fri, 11 Sep 2026 22:19:00 GMT",
+      "tag": "CRYPTO_L1",
+      "stream": "CRYPTO",
+      "sentiment": "BULLISH",
+      "sentiment_score": 0.35,
+      "related_tickers": [
+        "ETH"
+      ],
+      "metrics": [],
+      "reading_time_sec": 36,
+      "summary": "Research Intelligence (24/7 Wall St.): Indikasi sentimen bullish pada $ETH mempengaruhi klaster CRYPTO_L1.",
+      "key_takeaways": [
+        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
+        "Volatilitas aset kripto $ETH merespons likuiditas global dan arus modal spot ETF.",
         "Fokus pada Spot USDT murni tanpa leverage berlebih; kawal profit dengan trailing stop 2.5%."
+      ]
+    },
+    {
+      "id": "news-58",
+      "title": "Bitcoin ETFs see $13M outflows while Ethereum ETFs pull in $216M in a single day",
+      "source": "TradingView",
+      "link": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxNUDA5QUZVS3AyUGZGR05Nejhjcnp4dWo1STFuVmk3N1BrT2dyOUNLeTFKeU5RMjdwZ3lpYmpTZHh2bmowUlZ0cmFjcXpaYnZTbUpKa19aZ0NabzNPMlVSUS01ajJDZFBReXlsbkV2UW5OVUdFS2s2YWFMODF1aUVRZlZqdXNDUXBMdG5EMkNZV2FjNWpHMXIyTTc4ZUc0Rm1TWVRCZDFURXZVWmlTc05xc3J4ZEF5YXMzZ1cxU2tYNWFCbmxEVTc0MkFwenljQUU3R0tQSl9sT1dueGc?oc=5",
+      "pub_date": "Sat, 12 Sep 2026 04:27:00 GMT",
+      "tag": "CRYPTO_ETF",
+      "stream": "CRYPTO",
+      "sentiment": "BEARISH",
+      "sentiment_score": -0.35,
+      "related_tickers": [
+        "BTC",
+        "ETH"
+      ],
+      "metrics": [
+        "Nilai: $13"
+      ],
+      "reading_time_sec": 38,
+      "summary": "Research Intelligence (TradingView): Indikasi sentimen bearish pada $BTC, $ETH mempengaruhi klaster CRYPTO_ETF.",
+      "key_takeaways": [
+        "Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait. Terpantau Nilai: $13.",
+        "Volatilitas aset kripto $BTC, $ETH merespons likuiditas global dan arus modal spot ETF.",
+        "Antisipasi risiko likuidasi leverage derivatif; amankan cash USDT dan tunggu support 4H teruji."
       ]
     }
   ],
-  "full_narrative": "Global telemetry report: Gold at $4390.0 (0.58%), Brent Crude at $104.42 (-2.98%). DXY at 99.1 pts. Monitored for impact on Indonesian equities.",
-  "updated_at": "2026-09-12T03:54:50.774326"
+  "full_narrative": "Global telemetry report: Gold at $4366.2 (0.04%), Brent Crude at $104.61 (-2.81%). DXY at 99.12 pts. Monitored for impact on Indonesian equities.",
+  "updated_at": "2026-09-12T08:31:13.856526"
 }
