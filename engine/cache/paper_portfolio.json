@@ -1247,6 +1247,21 @@
       "closed_at": null,
       "pnl": 0,
       "pnl_pct": 0
+    },
+    {
+      "id": "71b91370-796d-48c5-b4ce-5b17979ae55b",
+      "ticker": "BNBUSDT",
+      "entry_price": 736.07,
+      "sl_price": 721.35,
+      "tp1_price": 765.51,
+      "tp2_price": 783.18,
+      "lots": 278,
+      "strategy_type": "Astra",
+      "status": "PENDING",
+      "opened_at": "2026-09-12T14:17:20.868556",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
     }
   ]
 }
