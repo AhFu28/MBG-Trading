@@ -1262,6 +1262,21 @@
       "closed_at": null,
       "pnl": 0,
       "pnl_pct": 0
+    },
+    {
+      "id": "ee9d38e5-d668-45ec-a203-979e637c2f0c",
+      "ticker": "LINKUSDT",
+      "entry_price": 11.311,
+      "sl_price": 11.08,
+      "tp1_price": 11.76,
+      "tp2_price": 12.03,
+      "lots": 18126,
+      "strategy_type": "Astra",
+      "status": "PENDING",
+      "opened_at": "2026-09-13T14:58:20.406511",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
     }
   ]
 }
