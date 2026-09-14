@@ -42,11 +42,11 @@
       "tp2_price": 347.0,
       "lots": 1666,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T19:59:53.995171",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681658",
+      "pnl": -2201785.6,
+      "pnl_pct": -0.04347368421052632
     },
     {
       "id": "3866ad4a-80e3-4e10-ad3b-7a76ca9e3c4f",
@@ -102,11 +102,11 @@
       "tp2_price": 1978.0,
       "lots": 289,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T19:59:54.000409",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681668",
+      "pnl": -2194088.0,
+      "pnl_pct": -0.04388439306358381
     },
     {
       "id": "fddeddae-41b1-4aa6-99e1-10c1ad8cb84a",
@@ -117,11 +117,11 @@
       "tp2_price": 2207.0,
       "lots": 259,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T19:59:54.001833",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681675",
+      "pnl": -2194248.0,
+      "pnl_pct": -0.04389637305699482
     },
     {
       "id": "a4fd211c-39cb-4db3-a621-338cf6d06f62",
@@ -132,11 +132,11 @@
       "tp2_price": 3775.0,
       "lots": 151,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T19:59:54.003354",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681680",
+      "pnl": -2192520.0,
+      "pnl_pct": -0.044
     },
     {
       "id": "472bb1f4-f219-4bb0-804f-ad8c04b697d9",
@@ -147,11 +147,11 @@
       "tp2_price": 6235.0,
       "lots": 91,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T19:59:54.004839",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681683",
+      "pnl": -2182180.0,
+      "pnl_pct": -0.044
     },
     {
       "id": "f11943fe-79ee-4e1c-990f-bb895cf10415",
@@ -342,11 +342,11 @@
       "tp2_price": 347.0,
       "lots": 1666,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T20:18:46.055820",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681690",
+      "pnl": -2201785.6,
+      "pnl_pct": -0.04347368421052632
     },
     {
       "id": "cb76c7cf-1638-4f30-bb2d-c52bb95f1c01",
@@ -402,11 +402,11 @@
       "tp2_price": 1978.0,
       "lots": 289,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T20:18:46.072725",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681693",
+      "pnl": -2194088.0,
+      "pnl_pct": -0.04388439306358381
     },
     {
       "id": "1bd4d851-9ac2-4a3e-b06c-f5e45f27eff4",
@@ -417,11 +417,11 @@
       "tp2_price": 2207.0,
       "lots": 259,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T20:18:46.076556",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681696",
+      "pnl": -2194248.0,
+      "pnl_pct": -0.04389637305699482
     },
     {
       "id": "a836bb2b-981d-4ada-ac10-0cef83f047d8",
@@ -432,11 +432,11 @@
       "tp2_price": 3775.0,
       "lots": 151,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T20:18:46.079737",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681698",
+      "pnl": -2192520.0,
+      "pnl_pct": -0.044
     },
     {
       "id": "bc051177-77e0-4b1d-92d3-0b2672c92f43",
@@ -447,11 +447,11 @@
       "tp2_price": 6235.0,
       "lots": 91,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T20:18:46.082435",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681701",
+      "pnl": -2182180.0,
+      "pnl_pct": -0.044
     },
     {
       "id": "5a1a51d4-9399-40e3-bd32-4a0924a7c6b4",
@@ -642,11 +642,11 @@
       "tp2_price": 347.0,
       "lots": 1666,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T15:05:20.376491",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681705",
+      "pnl": -2201785.6,
+      "pnl_pct": -0.04347368421052632
     },
     {
       "id": "101b0234-6bb6-4518-b1cb-996d19e4cc5a",
@@ -702,11 +702,11 @@
       "tp2_price": 1978.0,
       "lots": 289,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T15:05:20.379756",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681709",
+      "pnl": -2194088.0,
+      "pnl_pct": -0.04388439306358381
     },
     {
       "id": "b624cdbd-2949-4e64-bec0-6986d24cd6d2",
@@ -717,11 +717,11 @@
       "tp2_price": 2207.0,
       "lots": 259,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T15:05:20.380542",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681711",
+      "pnl": -2194248.0,
+      "pnl_pct": -0.04389637305699482
     },
     {
       "id": "b26e214e-11cf-44e9-8895-4f5fc475edca",
@@ -732,11 +732,11 @@
       "tp2_price": 3775.0,
       "lots": 151,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T15:05:20.381368",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681713",
+      "pnl": -2192520.0,
+      "pnl_pct": -0.044
     },
     {
       "id": "d7243542-4322-4c47-ba10-97f178f3a1a1",
@@ -747,11 +747,11 @@
       "tp2_price": 6235.0,
       "lots": 91,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "SL_HIT",
       "opened_at": "2026-09-10T15:05:20.382293",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681715",
+      "pnl": -2182180.0,
+      "pnl_pct": -0.044
     },
     {
       "id": "9bc41a02-3405-4ba1-84bc-6c162132c67e",
@@ -1212,11 +1212,11 @@
       "tp2_price": 4256.0,
       "lots": 55,
       "strategy_type": "Astra",
-      "status": "ACTIVE",
+      "status": "TP2_HIT",
       "opened_at": "2026-09-11T09:44:52.583943",
-      "closed_at": null,
-      "pnl": 0,
-      "pnl_pct": 0
+      "closed_at": "2026-09-14T04:56:44.681727",
+      "pnl": 2866160.0,
+      "pnl_pct": 0.14008602150537636
     },
     {
       "id": "5c1b6445-a808-4545-9913-832db6fe4263",
@@ -1274,6 +1274,66 @@
       "strategy_type": "Astra",
       "status": "PENDING",
       "opened_at": "2026-09-13T14:58:20.406511",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
+    },
+    {
+      "id": "c2c33386-fbe8-4eae-a882-edfb699680dc",
+      "ticker": "ASGR",
+      "entry_price": 2100.0,
+      "sl_price": 2016.0,
+      "tp1_price": 2285.0,
+      "tp2_price": 2402.0,
+      "lots": 97,
+      "strategy_type": "Astra",
+      "status": "ACTIVE",
+      "opened_at": "2026-09-14T04:56:44.675877",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
+    },
+    {
+      "id": "538112f9-a7d1-4405-a16e-8eabba4cd734",
+      "ticker": "BBCA",
+      "entry_price": 6325.0,
+      "sl_price": 6072.0,
+      "tp1_price": 6882.0,
+      "tp2_price": 7236.0,
+      "lots": 32,
+      "strategy_type": "Astra",
+      "status": "ACTIVE",
+      "opened_at": "2026-09-14T04:56:44.677302",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
+    },
+    {
+      "id": "7c1a29e2-e19a-4011-873f-495c690cac9f",
+      "ticker": "SINI",
+      "entry_price": 13150.0,
+      "sl_price": 12624.0,
+      "tp1_price": 14307.0,
+      "tp2_price": 15044.0,
+      "lots": 15,
+      "strategy_type": "Astra",
+      "status": "ACTIVE",
+      "opened_at": "2026-09-14T04:56:44.678723",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
+    },
+    {
+      "id": "d6a797bb-9e02-40c0-87e8-4983de2a573c",
+      "ticker": "ENRG",
+      "entry_price": 1465.0,
+      "sl_price": 1406.0,
+      "tp1_price": 1595.0,
+      "tp2_price": 1677.0,
+      "lots": 139,
+      "strategy_type": "Astra",
+      "status": "ACTIVE",
+      "opened_at": "2026-09-14T04:56:44.680211",
       "closed_at": null,
       "pnl": 0,
       "pnl_pct": 0
