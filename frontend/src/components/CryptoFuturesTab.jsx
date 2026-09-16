@@ -16,7 +16,7 @@ const DEFAULT_FUTURES_PAIRS = [
   'IOUSDT', 'TONUSDT', 'BOMEUSDT', 'POPCATUSDT', 'TRXUSDT'
 ];
 
-export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, allCryptoSpot = [] }) {
+export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, flashMap = {}, allCryptoSpot = [] }) {
   const [activeTab, setActiveTab] = useState('funding'); // 'funding' | 'dexscreener' | 'oi' | 'ls' | 'liquidations'
   const [liveFundingRates, setLiveFundingRates] = useState([]);
   const [liveLiquidations, setLiveLiquidations] = useState([]);
@@ -862,17 +862,11 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
                       ? Number(f.mark_price)
                       : (liveQuote?.price && Number(liveQuote.price) > 0 ? Number(liveQuote.price) : 0);
 
-                    const flash = flashingPairs[f.symbol];
-                    const flashBg = flash === 'up'
-                      ? 'rgba(0, 208, 132, 0.18)'
-                      : flash === 'down'
-                        ? 'rgba(239, 68, 68, 0.18)'
-                        : getFundingBg(f.funding_rate_pct);
-
+                    const flash = flashingPairs[f.symbol] || flashMap?.[f.symbol] || flashMap?.[base];
                     const isUp24 = (f.change_24h_pct || 0) >= 0;
 
                     return (
-                      <tr key={idx} style={{ borderBottom: 'var(--border-hairline)', background: flashBg, transition: 'background 0.4s ease' }}>
+                      <tr key={idx} style={{ borderBottom: 'var(--border-hairline)' }}>
                         <td style={{ padding: '10px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <button
@@ -901,7 +895,12 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
                         </td>
 
                         <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
-                          <div style={{ fontWeight: '800', fontSize: '13px', color: 'var(--text-primary)' }}>
+                          <div style={{
+                            fontWeight: '800',
+                            fontSize: '13px',
+                            color: flash === 'up' ? 'var(--accent-green)' : flash === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)',
+                            transition: 'color 0.4s ease'
+                          }}>
                             {markVal > 0 ? (
                               <>
                                 {formatPriceSmart(markVal)}
