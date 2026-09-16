@@ -645,6 +645,30 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
               </div>
             </div>
 
+            {/* Regulatory Protocol Banner (Broker Masking BEI) */}
+            <div style={{
+              padding: '9px 18px',
+              background: 'rgba(15, 23, 42, 0.45)',
+              borderBottom: 'var(--border-hairline)',
+              fontSize: '11px',
+              color: 'var(--text-secondary)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '10px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ color: 'var(--accent-gold)', fontSize: '13px' }}>⚖️</span>
+                <span>
+                  <strong>Protokol Broker Masking BEI:</strong> Sesuai regulasi resmi Bursa Efek Indonesia, rincian kode broker (AK, BK, CS) diumumkan setiap sore pasca-penutupan pasar pukul <strong>16:15 WIB (EOD)</strong>. Total nilai net buy/sell asing diperbarui secara berkala.
+                </span>
+              </div>
+              <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                EOD CLOSING SUMMARY + INTRADAY NET FLOW
+              </span>
+            </div>
+
             {/* Table with Explicit Date & Time Column */}
             <div style={{ padding: '0', overflowX: 'auto' }}>
               <table className="quant-table">
