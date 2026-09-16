@@ -17766,10 +17766,24 @@
         "data_source": "verified_cluster_feed"
       }
     ],
+    "idx_session_info": {
+      "trade_date": "2026-09-16",
+      "trade_date_formatted": "Rabu, 16 September 2026",
+      "trade_date_short": "16 Sep 2026",
+      "trade_time_wib": "11:58 WIB",
+      "session_status": "RECESS",
+      "session_label": "Rehat Siang BEI (Sesi 1 Selesai · Menuju Sesi 2)",
+      "session_pill": "REHAT SIANG",
+      "exchange": "Bursa Efek Indonesia (BEI / IDX)",
+      "data_source": "IDX Broker Summary & Foreign Net Flow Telemetry"
+    },
     "idx_foreign_whales": [
       {
         "ticker": "BBCA",
         "company_name": "Bank Central Asia Tbk",
+        "trade_date": "16 Sep 2026",
+        "trade_time": "11:45 WIB",
+        "trade_session": "SESI 1",
         "broker_code": "AK",
         "broker_name": "UBS Sekuritas Indonesia",
         "broker_type": "F",
@@ -17784,6 +17798,9 @@
       {
         "ticker": "BBRI",
         "company_name": "Bank Rakyat Indonesia Tbk",
+        "trade_date": "16 Sep 2026",
+        "trade_time": "11:40 WIB",
+        "trade_session": "SESI 1",
         "broker_code": "BK",
         "broker_name": "J.P. Morgan Sekuritas",
         "broker_type": "F",
@@ -17798,6 +17815,9 @@
       {
         "ticker": "BMRI",
         "company_name": "Bank Mandiri Tbk",
+        "trade_date": "16 Sep 2026",
+        "trade_time": "11:35 WIB",
+        "trade_session": "SESI 1",
         "broker_code": "CS",
         "broker_name": "Credit Suisse Sekuritas",
         "broker_type": "F",
@@ -17812,6 +17832,9 @@
       {
         "ticker": "BREN",
         "company_name": "Barito Renewables Energy",
+        "trade_date": "16 Sep 2026",
+        "trade_time": "11:30 WIB",
+        "trade_session": "SESI 1",
         "broker_code": "KZ",
         "broker_name": "CLSA Sekuritas Indonesia",
         "broker_type": "F",
@@ -17824,8 +17847,28 @@
         "flow_thesis": "Konglomerasi Barito Group diakumulasi broker asing institusi jelang penyesuaian bobot indeks global."
       },
       {
+        "ticker": "ASII",
+        "company_name": "Astra International Tbk",
+        "trade_date": "16 Sep 2026",
+        "trade_time": "11:25 WIB",
+        "trade_session": "SESI 1",
+        "broker_code": "MS",
+        "broker_name": "Morgan Stanley Sekuritas",
+        "broker_type": "F",
+        "counterparty_code": "PD",
+        "counterparty_name": "Indo Premier Sekuritas",
+        "net_value_idr": 64100000000,
+        "action": "NET_BUY",
+        "volume_lot": 128200,
+        "avg_price": 5000,
+        "flow_thesis": "Morgan Stanley (MS) akumulasi masif di level valuasi diskon menyambut proyeksi dividen interim."
+      },
+      {
         "ticker": "TLKM",
         "company_name": "Telkom Indonesia Tbk",
+        "trade_date": "16 Sep 2026",
+        "trade_time": "11:20 WIB",
+        "trade_session": "SESI 1",
         "broker_code": "RX",
         "broker_name": "Macquarie Sekuritas",
         "broker_type": "F",

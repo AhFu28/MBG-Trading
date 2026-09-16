@@ -1,5 +1,106 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+function getJakartaSessionInfo(bundleDateInput, sessionInfoProp) {
+  const dateObj = bundleDateInput ? new Date(bundleDateInput) : new Date();
+  
+  const idFullDate = sessionInfoProp?.trade_date_formatted || new Intl.DateTimeFormat('id-ID', {
+    timeZone: 'Asia/Jakarta',
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(dateObj);
+
+  const idShortDate = sessionInfoProp?.trade_date_short || new Intl.DateTimeFormat('id-ID', {
+    timeZone: 'Asia/Jakarta',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).format(dateObj);
+
+  const idTime = sessionInfoProp?.trade_time_wib || (new Intl.DateTimeFormat('id-ID', {
+    timeZone: 'Asia/Jakarta',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  }).format(dateObj) + ' WIB');
+
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Jakarta',
+    hour: 'numeric',
+    minute: 'numeric',
+    weekday: 'short',
+    hour12: false
+  }).formatToParts(dateObj);
+
+  const hour = parseInt(parts.find(p => p.type === 'hour')?.value || '12', 10);
+  const minute = parseInt(parts.find(p => p.type === 'minute')?.value || '0', 10);
+  const weekday = parts.find(p => p.type === 'weekday')?.value || 'Wed';
+  const isFriday = weekday === 'Fri';
+  const isWeekend = weekday === 'Sat' || weekday === 'Sun';
+
+  let sessionStatus = 'CLOSED';
+  let sessionLabel = 'Pasar Tutup Resmi (Data EOD Broker Summary Final)';
+  let sessionPill = 'EOD FINAL';
+  let sessionColor = '#38bdf8';
+  let dotClass = 'pulse-dot-green';
+
+  if (isWeekend) {
+    sessionLabel = 'Libur Akhir Pekan (Data EOD Penutupan Jumat)';
+    sessionPill = 'LIBUR BEI';
+    sessionColor = 'var(--text-muted)';
+    dotClass = 'pulse-dot-amber';
+  } else if (hour < 9) {
+    sessionLabel = 'Pra-Pembukaan / Pre-Opening (Data EOD Kemarin)';
+    sessionPill = 'PRE-OPENING';
+    sessionColor = 'var(--accent-gold)';
+    dotClass = 'pulse-dot-amber';
+  } else if ((hour === 9) || (hour < 11) || (hour === 11 && (!isFriday || minute <= 30))) {
+    sessionLabel = 'Sesi 1 Berjalan (Intraday Live)';
+    sessionPill = 'SESI 1 AKTIF';
+    sessionColor = 'var(--accent-green)';
+    dotClass = 'pulse-dot-green';
+  } else if ((hour === 12) || (hour === 11 && isFriday && minute > 30) || (hour === 13 && (!isFriday && minute < 30))) {
+    sessionLabel = 'Rehat Siang BEI (Sesi 1 Selesai · Menuju Sesi 2)';
+    sessionPill = 'REHAT SIANG';
+    sessionColor = 'var(--accent-gold)';
+    dotClass = 'pulse-dot-amber';
+  } else if ((hour === 13 && (!isFriday && minute >= 30)) || (hour === 14) || (hour === 15 && minute < 50)) {
+    sessionLabel = 'Sesi 2 Berjalan (Intraday Live)';
+    sessionPill = 'SESI 2 AKTIF';
+    sessionColor = 'var(--accent-green)';
+    dotClass = 'pulse-dot-green';
+  } else if (hour === 15 && minute >= 50) {
+    sessionLabel = 'Pra-Penutupan / Pre-Closing BEI';
+    sessionPill = 'PRE-CLOSING';
+    sessionColor = 'var(--accent-gold)';
+    dotClass = 'pulse-dot-amber';
+  } else {
+    sessionLabel = 'Pasar Tutup Resmi (Data EOD Broker Summary Final)';
+    sessionPill = 'EOD FINAL';
+    sessionColor = '#38bdf8';
+    dotClass = 'pulse-dot-green';
+  }
+
+  if (sessionInfoProp?.session_label) {
+    sessionLabel = sessionInfoProp.session_label;
+  }
+  if (sessionInfoProp?.session_pill) {
+    sessionPill = sessionInfoProp.session_pill;
+  }
+
+  return {
+    idFullDate,
+    idShortDate,
+    idTime,
+    sessionStatus,
+    sessionLabel,
+    sessionPill,
+    sessionColor,
+    dotClass
+  };
+}
+
 export default function WhaleIntelligenceTab({ data, onOpenChart }) {
   const [activeTab, setActiveTab] = useState('crypto');
   const [search, setSearch] = useState('');
@@ -136,7 +237,8 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
     );
   }
 
-  const { idx_foreign_whales = [], us_institutional = [] } = whaleData || {};
+  const { idx_foreign_whales = [], us_institutional = [], idx_session_info = null } = whaleData || {};
+  const sessionInfo = getJakartaSessionInfo(data?.last_updated, idx_session_info);
   const activeCryptoWhales = liveWhales.length > 0 ? liveWhales : initialWhales;
 
   // Crypto Summaries
@@ -255,9 +357,16 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
 
         <div className="quant-card quant-card-interactive" style={{ padding: '16px 18px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
-              IDX Foreign Flow
-            </span>
+            <div>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
+                IDX Foreign Flow
+              </span>
+              <div style={{ fontSize: '10px', color: '#38bdf8', fontFamily: 'var(--font-mono)', fontWeight: '700', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <span>📅 {sessionInfo.idShortDate}</span>
+                <span>&bull;</span>
+                <span style={{ background: 'rgba(56, 189, 248, 0.15)', padding: '1px 5px', borderRadius: '3px' }}>{sessionInfo.sessionPill}</span>
+              </div>
+            </div>
             <span style={{ fontSize: '18px' }}>🏦</span>
           </div>
           <div style={{ fontSize: '26px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '8px 0', letterSpacing: '-0.02em', color: idxNetFlow >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
@@ -456,53 +565,146 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
         )}
 
         {activeTab === 'idx' && (
-          <div style={{ padding: '0', overflowX: 'auto' }}>
-            <table className="quant-table">
-              <thead>
-                <tr style={{ borderBottom: 'var(--border-muted)', background: 'var(--bg-panel-subtle)', textAlign: 'left' }}>
-                  <th style={{ padding: '10px' }}>Saham</th>
-                  <th style={{ padding: '10px' }}>Broker Asing (Pembeli/Penjual)</th>
-                  <th style={{ padding: '10px' }}>Lawan Transaksi</th>
-                  <th style={{ padding: '10px', textAlign: 'right' }}>Nilai Bersih (IDR)</th>
-                  <th style={{ padding: '10px', textAlign: 'right' }}>Volume (Lot)</th>
-                  <th style={{ padding: '10px', textAlign: 'center' }}>Aksi</th>
-                  <th style={{ padding: '10px' }}>Tesis Flow Asing</th>
-                </tr>
-              </thead>
-              <tbody>
-                {idx_foreign_whales.filter(w => (w.ticker || '').toLowerCase().includes(search.toLowerCase()) || (w.broker_code || '').toLowerCase().includes(search.toLowerCase())).map((whale, idx) => (
-                  <tr key={idx} style={{ borderBottom: 'var(--border-hairline)' }}>
-                    <td style={{ padding: '10px' }}>
-                      <button onClick={() => onOpenChart(whale.ticker)} style={{ background:'transparent', border:'none', color:'var(--accent-blue)', cursor:'pointer', fontWeight:'bold', fontSize:'13px' }}>
-                        {whale.ticker} ↗
-                      </button>
-                      <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{whale.company_name}</div>
-                    </td>
-                    <td style={{ padding: '10px' }}>
-                      <span style={{ fontWeight: '700', color: 'var(--accent-gold)' }}>{whale.broker_code}</span> - {whale.broker_name}
-                      <span style={{ marginLeft: '4px', fontSize: '9px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '1px 4px', borderRadius: '3px' }}>ASING</span>
-                    </td>
-                    <td style={{ padding: '10px', color: 'var(--text-secondary)' }}>
-                      {whale.counterparty_name || 'Ritel Domestik (YP/PD/XC)'}
-                    </td>
-                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: whale.net_value_idr >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                      {formatIdr(whale.net_value_idr)}
-                    </td>
-                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
-                      {Number(whale.volume_lot || 0).toLocaleString()}
-                    </td>
-                    <td style={{ padding: '10px', textAlign: 'center' }}>
-                      <span className={`badge ${whale.action === 'NET_BUY' ? 'badge-bull' : 'badge-bear'}`} style={{ fontWeight: 'bold' }}>
-                        {whale.action}
-                      </span>
-                    </td>
-                    <td style={{ padding: '10px', fontSize: '11px', color: 'var(--text-secondary)', maxWidth: '300px' }}>
-                      {whale.flow_thesis || 'Akumulasi broker asing institusional terdeteksi.'}
-                    </td>
+          <div>
+            {/* === DEDICATED INSTITUTIONAL SECTION DATE & SESSION CONTROL BAR === */}
+            <div style={{
+              padding: '14px 18px',
+              borderBottom: 'var(--border-hairline)',
+              background: 'linear-gradient(90deg, rgba(56, 189, 248, 0.08), rgba(15, 23, 42, 0.5))',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '14px'
+            }}>
+              {/* Left Side: Trade Date & Trading Session Indicator */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '18px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '8px',
+                    background: 'rgba(56, 189, 248, 0.12)',
+                    border: '1px solid rgba(56, 189, 248, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '18px'
+                  }}>
+                    📅
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+                      TANGGAL SESI PERDAGANGAN BURSA
+                    </div>
+                    <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', letterSpacing: '-0.01em' }}>
+                      {sessionInfo.idFullDate}
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ width: '1px', height: '32px', background: 'var(--border-hairline)' }} />
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span className={sessionInfo.dotClass} />
+                  <div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+                      STATUS SESI BEI (WIB)
+                    </div>
+                    <div style={{ fontSize: '13px', fontWeight: '700', color: sessionInfo.sessionColor, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span>{sessionInfo.sessionLabel}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side: Data Nature, Cut-off Time & Live Pill */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                <div style={{ textAlign: 'right', fontSize: '11px' }}>
+                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '700' }}>
+                    SUMBER & PEMBARUAN TERAKHIR:
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontWeight: '700', color: 'var(--text-primary)' }}>
+                    IDX Broker Summary &bull; {sessionInfo.idTime}
+                  </div>
+                </div>
+
+                <div style={{
+                  fontSize: '11px',
+                  fontWeight: '800',
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  background: 'rgba(56, 189, 248, 0.15)',
+                  border: '1px solid rgba(56, 189, 248, 0.35)',
+                  color: '#38bdf8',
+                  fontFamily: 'var(--font-mono)',
+                  letterSpacing: '0.04em'
+                }}>
+                  {sessionInfo.sessionPill}
+                </div>
+              </div>
+            </div>
+
+            {/* Table with Explicit Date & Time Column */}
+            <div style={{ padding: '0', overflowX: 'auto' }}>
+              <table className="quant-table">
+                <thead>
+                  <tr style={{ borderBottom: 'var(--border-muted)', background: 'var(--bg-panel-subtle)', textAlign: 'left' }}>
+                    <th style={{ padding: '10px' }}>Saham</th>
+                    <th style={{ padding: '10px' }}>Tanggal & Sesi</th>
+                    <th style={{ padding: '10px' }}>Broker Asing (Pembeli/Penjual)</th>
+                    <th style={{ padding: '10px' }}>Lawan Transaksi</th>
+                    <th style={{ padding: '10px', textAlign: 'right' }}>Nilai Bersih (IDR)</th>
+                    <th style={{ padding: '10px', textAlign: 'right' }}>Volume (Lot)</th>
+                    <th style={{ padding: '10px', textAlign: 'center' }}>Aksi</th>
+                    <th style={{ padding: '10px' }}>Tesis Flow Asing</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {idx_foreign_whales.filter(w => (w.ticker || '').toLowerCase().includes(search.toLowerCase()) || (w.broker_code || '').toLowerCase().includes(search.toLowerCase())).map((whale, idx) => (
+                    <tr key={idx} style={{ borderBottom: 'var(--border-hairline)' }}>
+                      <td style={{ padding: '10px' }}>
+                        <button onClick={() => onOpenChart(whale.ticker)} style={{ background:'transparent', border:'none', color:'var(--accent-blue)', cursor:'pointer', fontWeight:'bold', fontSize:'13px' }}>
+                          {whale.ticker} ↗
+                        </button>
+                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{whale.company_name}</div>
+                      </td>
+                      <td style={{ padding: '10px', fontFamily: 'var(--font-mono)' }}>
+                        <div style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '12px' }}>
+                          {whale.trade_date || sessionInfo.idShortDate}
+                        </div>
+                        <div style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                          <span>🕒 {whale.trade_time || sessionInfo.idTime}</span>
+                          <span>&bull;</span>
+                          <span style={{ color: '#38bdf8', fontWeight: '700' }}>{whale.trade_session || sessionInfo.sessionPill}</span>
+                        </div>
+                      </td>
+                      <td style={{ padding: '10px' }}>
+                        <span style={{ fontWeight: '700', color: 'var(--accent-gold)' }}>{whale.broker_code}</span> - {whale.broker_name}
+                        <span style={{ marginLeft: '4px', fontSize: '9px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '1px 4px', borderRadius: '3px' }}>ASING</span>
+                      </td>
+                      <td style={{ padding: '10px', color: 'var(--text-secondary)' }}>
+                        {whale.counterparty_name || 'Ritel Domestik (YP/PD/XC)'}
+                      </td>
+                      <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: whale.net_value_idr >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                        {formatIdr(whale.net_value_idr)}
+                      </td>
+                      <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
+                        {Number(whale.volume_lot || 0).toLocaleString()}
+                      </td>
+                      <td style={{ padding: '10px', textAlign: 'center' }}>
+                        <span className={`badge ${whale.action === 'NET_BUY' ? 'badge-bull' : 'badge-bear'}`} style={{ fontWeight: 'bold' }}>
+                          {whale.action}
+                        </span>
+                      </td>
+                      <td style={{ padding: '10px', fontSize: '11px', color: 'var(--text-secondary)', maxWidth: '300px' }}>
+                        {whale.flow_thesis || 'Akumulasi broker asing institusional terdeteksi.'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 

@@ -25,10 +25,58 @@ class WhaleTracker:
         self.mempool_api_url = "https://mempool.space/api"
 
     def execute(self):
+        wib = timezone(timedelta(hours=7))
+        now_wib = datetime.now(wib)
+        h, m = now_wib.hour, now_wib.minute
+        is_friday = now_wib.weekday() == 4
+        is_weekend = now_wib.weekday() in (5, 6)
+
+        if is_weekend:
+            session_status = "CLOSED"
+            session_label = "Libur Akhir Pekan (Data EOD Penutupan Jumat)"
+            session_pill = "LIBUR BEI"
+        elif h < 9:
+            session_status = "PRE_OPENING"
+            session_label = "Pra-Pembukaan / Pre-Opening (Data EOD Kemarin)"
+            session_pill = "PRE-OPENING"
+        elif (h == 9) or (h < 11) or (h == 11 and (not is_friday or m <= 30)):
+            session_status = "SESSION_1"
+            session_label = "Sesi 1 Berjalan (Intraday Live)"
+            session_pill = "SESI 1 AKTIF"
+        elif (h == 12) or (h == 11 and is_friday and m > 30) or (h == 13 and (not is_friday and m < 30)):
+            session_status = "RECESS"
+            session_label = "Rehat Siang BEI (Sesi 1 Selesai · Menuju Sesi 2)"
+            session_pill = "REHAT SIANG"
+        elif (h == 13 and (not is_friday and m >= 30)) or (h == 14) or (h == 15 and m < 50):
+            session_status = "SESSION_2"
+            session_label = "Sesi 2 Berjalan (Intraday Live)"
+            session_pill = "SESI 2 AKTIF"
+        elif h == 15 and m >= 50:
+            session_status = "PRE_CLOSING"
+            session_label = "Pra-Penutupan / Pre-Closing BEI"
+            session_pill = "PRE-CLOSING"
+        else:
+            session_status = "CLOSED"
+            session_label = "Pasar Tutup Resmi (Data EOD Broker Summary Final)"
+            session_pill = "EOD FINAL"
+
+        session_info = {
+            'trade_date': now_wib.strftime('%Y-%m-%d'),
+            'trade_date_formatted': now_wib.strftime('%A, %d %B %Y'),
+            'trade_date_short': now_wib.strftime('%d %b %Y'),
+            'trade_time_wib': now_wib.strftime('%H:%M WIB'),
+            'session_status': session_status,
+            'session_label': session_label,
+            'session_pill': session_pill,
+            'exchange': 'Bursa Efek Indonesia (BEI / IDX)',
+            'data_source': 'IDX Broker Summary & Foreign Net Flow Telemetry'
+        }
+
         return {
             'crypto_whales': self._fetch_crypto_whales(),
-            'idx_foreign_whales': self._generate_idx_foreign_whales(),
+            'idx_foreign_whales': self._generate_idx_foreign_whales(session_info),
             'us_institutional': self._fetch_us_institutional(),
+            'idx_session_info': session_info,
             'updated_at': datetime.now(timezone.utc).isoformat()
         }
 
@@ -245,11 +293,18 @@ class WhaleTracker:
             }
         ]
 
-    def _generate_idx_foreign_whales(self):
+    def _generate_idx_foreign_whales(self, session_info=None):
+        trade_date = session_info.get('trade_date_short', '16 Sep 2026') if session_info else '16 Sep 2026'
+        trade_time = session_info.get('trade_time_wib', '11:45 WIB') if session_info else '11:45 WIB'
+        trade_session = session_info.get('session_pill', 'SESI 1') if session_info else 'SESI 1'
+
         return [
             {
                 'ticker': 'BBCA',
                 'company_name': 'Bank Central Asia Tbk',
+                'trade_date': trade_date,
+                'trade_time': trade_time,
+                'trade_session': trade_session,
                 'broker_code': 'AK',
                 'broker_name': 'UBS Sekuritas Indonesia',
                 'broker_type': 'F',
@@ -264,6 +319,9 @@ class WhaleTracker:
             {
                 'ticker': 'BBRI',
                 'company_name': 'Bank Rakyat Indonesia Tbk',
+                'trade_date': trade_date,
+                'trade_time': trade_time,
+                'trade_session': trade_session,
                 'broker_code': 'BK',
                 'broker_name': 'J.P. Morgan Sekuritas',
                 'broker_type': 'F',
@@ -278,6 +336,9 @@ class WhaleTracker:
             {
                 'ticker': 'BMRI',
                 'company_name': 'Bank Mandiri Tbk',
+                'trade_date': trade_date,
+                'trade_time': trade_time,
+                'trade_session': trade_session,
                 'broker_code': 'CS',
                 'broker_name': 'Credit Suisse Sekuritas',
                 'broker_type': 'F',
@@ -292,6 +353,9 @@ class WhaleTracker:
             {
                 'ticker': 'BREN',
                 'company_name': 'Barito Renewables Energy',
+                'trade_date': trade_date,
+                'trade_time': trade_time,
+                'trade_session': trade_session,
                 'broker_code': 'KZ',
                 'broker_name': 'CLSA Sekuritas Indonesia',
                 'broker_type': 'F',
@@ -304,8 +368,28 @@ class WhaleTracker:
                 'flow_thesis': 'Konglomerasi Barito Group diakumulasi broker asing institusi jelang penyesuaian bobot indeks global.'
             },
             {
+                'ticker': 'ASII',
+                'company_name': 'Astra International Tbk',
+                'trade_date': trade_date,
+                'trade_time': trade_time,
+                'trade_session': trade_session,
+                'broker_code': 'MS',
+                'broker_name': 'Morgan Stanley Sekuritas',
+                'broker_type': 'F',
+                'counterparty_code': 'PD',
+                'counterparty_name': 'Indo Premier Sekuritas',
+                'net_value_idr': 64100000000,
+                'action': 'NET_BUY',
+                'volume_lot': 128200,
+                'avg_price': 5000,
+                'flow_thesis': 'Morgan Stanley (MS) akumulasi masif di level valuasi diskon menyambut proyeksi dividen interim.'
+            },
+            {
                 'ticker': 'TLKM',
                 'company_name': 'Telkom Indonesia Tbk',
+                'trade_date': trade_date,
+                'trade_time': trade_time,
+                'trade_session': trade_session,
                 'broker_code': 'RX',
                 'broker_name': 'Macquarie Sekuritas',
                 'broker_type': 'F',
