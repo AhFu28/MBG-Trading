@@ -12,7 +12,8 @@ export default function NewsTab({
   macro = {},
   foreignFlow = {},
   onSelectTicker,
-  onOpenOrderBook
+  onOpenOrderBook,
+  onSelectNews
 }) {
   const [newsFilter, setNewsFilter] = useState('ALL');
   const [newsSearch, setNewsSearch] = useState('');
@@ -719,13 +720,21 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan hindari FOMO.
                 </div>
 
                 {/* News Headline */}
-                <h4 style={{
-                  fontSize: '13px',
-                  fontWeight: '700',
-                  color: 'var(--text-primary)',
-                  margin: '2px 0 0 0',
-                  lineHeight: 1.35
-                }}>
+                <h4
+                  onClick={() => onSelectNews && onSelectNews(news)}
+                  style={{
+                    fontSize: '13px',
+                    fontWeight: '700',
+                    color: 'var(--text-primary)',
+                    margin: '2px 0 0 0',
+                    lineHeight: 1.35,
+                    cursor: onSelectNews ? 'pointer' : 'default',
+                    transition: 'color 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => { if (onSelectNews) e.currentTarget.style.color = 'var(--accent-blue)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-primary)'; }}
+                  title="Klik untuk membuka pop-up detail & analisis berita ini"
+                >
                   {news.title}
                 </h4>
 
@@ -845,6 +854,26 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan hindari FOMO.
                     >
                       {copiedId === newsId ? '✓ Disalin' : '📋 Salin'}
                     </button>
+
+                    {onSelectNews && (
+                      <button
+                        onClick={() => onSelectNews(news)}
+                        className='telemetry-btn'
+                        style={{
+                          fontSize: '9px',
+                          padding: '2px 7px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '3px',
+                          color: 'var(--accent-blue)',
+                          borderColor: 'rgba(59, 130, 246, 0.4)'
+                        }}
+                        title='Buka di Pop-up Modal Interaktif'
+                      >
+                        <span>🔍</span>
+                        <span>Pop-up</span>
+                      </button>
+                    )}
 
                     {(news.link || news.url) && (
                       <a

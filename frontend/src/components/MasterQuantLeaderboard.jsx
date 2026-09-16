@@ -27,7 +27,8 @@ export default function MasterQuantLeaderboard({
   brokerSummary = {},
   bundle = null,
   onSelectTicker,
-  onOpenLotCalc
+  onOpenLotCalc,
+  onSelectNews
 }) {
   // Alias for internal use — reads from controlled prop
   const activeMainTab = activeTab;
@@ -446,6 +447,7 @@ export default function MasterQuantLeaderboard({
             macro={macro} 
             foreignFlow={foreignFlow}
             onSelectTicker={onSelectTicker} 
+            onSelectNews={onSelectNews}
           />
         </div>
       )}

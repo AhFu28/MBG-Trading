@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export default function BloombergNewsWire({ macro, bundle, onSelectTicker }) {
+export default function BloombergNewsWire({ macro, bundle, onSelectTicker, onSelectNews }) {
   if (!macro) return null;
 
   const affectedStocks = macro.idx_affected_stocks || [];
@@ -93,9 +93,41 @@ export default function BloombergNewsWire({ macro, bundle, onSelectTicker }) {
           <span className='badge' style={{ background: '#ff9500', color: '#ffffff', border: 'none', fontSize: '8px', fontWeight: '800', padding: '1px 5px' }}>
             FLASH
           </span>
-          <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            ⚡ {typeof headlines[headlineIndex] === 'object' ? (headlines[headlineIndex]?.title || headlines[headlineIndex]?.headline) : headlines[headlineIndex]}
-          </span>
+          {(() => {
+            const currentItem = typeof headlines[headlineIndex] === 'object'
+              ? headlines[headlineIndex]
+              : (macro.live_news || []).find(n => n.title === headlines[headlineIndex]) || {
+                  id: `wire-${headlineIndex}`,
+                  title: typeof headlines[headlineIndex] === 'string' ? headlines[headlineIndex] : 'Pasar Memantau Sentimen Makro',
+                  source: 'MBG MACRO WIRE',
+                  sentiment: macro.sentiment || 'NEUTRAL',
+                  tag: 'MACRO',
+                  summary: macro.full_narrative || 'Dinamika makro ekonomi dan pasar finansial terkini.',
+                  related_tickers: (affectedStocks || []).map(s => s.ticker),
+                  pub_date: new Date().toISOString()
+                };
+
+            return (
+              <span
+                onClick={() => onSelectNews && onSelectNews(currentItem)}
+                style={{
+                  fontSize: '11px',
+                  fontWeight: '700',
+                  color: 'var(--text-primary)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  cursor: onSelectNews ? 'pointer' : 'default',
+                  transition: 'color 0.15s ease'
+                }}
+                onMouseEnter={(e) => { if (onSelectNews) e.currentTarget.style.color = 'var(--accent-blue)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-primary)'; }}
+                title="Klik untuk melihat detail & analisis berita ini"
+              >
+                ⚡ {typeof headlines[headlineIndex] === 'object' ? (headlines[headlineIndex]?.title || headlines[headlineIndex]?.headline) : headlines[headlineIndex]}
+              </span>
+            );
+          })()}
           <span style={{ fontSize: '9px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
             ({headlineIndex + 1}/{headlines.length})
           </span>

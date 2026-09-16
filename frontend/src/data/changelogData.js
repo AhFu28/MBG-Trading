@@ -1,20 +1,55 @@
 /**
  * MBG APEX Quant Terminal - Changelog & Release History Dataset
- * Formatted and grouped per user requirement:
- * 1. Update Package 11092026 (11 September 2026) - Current / Active
- * 2. Update Package 10092026 (10 September 2026) - Major Evolution
- * 3. Initial Launch Package (08 - 09 September 2026) - Consolidated Baseline
+ * Formatted and grouped by push date:
+ * 1. Update Package 16092026 (16 September 2026) - Latest / Active
+ * 2. Update Package 11092026 (11 September 2026) - Stable Evolution
+ * 3. Update Package 10092026 (10 September 2026) - Major Evolution
+ * 4. Initial Launch Package (08 - 09 September 2026) - Consolidated Baseline
  */
 
 export const CHANGELOG_DATA = [
+  {
+    id: 'pkg-16092026',
+    version: 'Package 16092026',
+    semanticVersion: 'v2.3.0',
+    date: '16 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / ACTIVE',
+    title: 'Update Package 16092026: Interactive News Detail Modal, Stockbit Snips Takeaways & Dual-Modal Connectivity',
+    description: 'Pembaruan interaktivitas modal menghadirkan pop-up detail berita interaktif saat mengklik berita di Live News maupun headline wire, ringkasan 3 poin kunci Stockbit Snips, audio TTS, navigasi keyboard cepat, serta trigger langsung ke TradingView Chart.',
+    highlights: [
+      {
+        tag: 'NEWS MODAL',
+        tagColor: 'var(--accent-blue)',
+        icon: '📰',
+        title: 'Interactive News Detail Modal (Pop-up Detail Berita)',
+        desc: 'Klik pada kartu berita Live News, running headline bar, maupun feed riset memunculkan modal overlay detail berita: 3 poin Stockbit Snips, narasi lengkap, audio TTS, navigasi artikel cepat, dan link instan ke chart TradingView.'
+      },
+      {
+        tag: 'DUAL-MODAL CONNECTIVITY',
+        tagColor: 'var(--accent-green)',
+        icon: '⚡',
+        title: 'Direct TradingView Chart Trigger',
+        desc: 'Chip ticker emiten terdampak ($BELI, $BBRI, $BTC) di dalam feed maupun modal berita dapat diklik langsung untuk memunculkan chart interaktif tanpa saling mengganggu.'
+      },
+      {
+        tag: 'ACCESSIBILITY & TTS',
+        tagColor: 'var(--accent-cyan)',
+        icon: '🔊',
+        title: 'Native Audio Reader (TTS) & Fast Navigation',
+        desc: 'Fitur Text-to-Speech untuk mendengarkan rangkuman berita secara audio, dukungan navigasi keyboard panah kiri/kanan dan ESC, serta tombol salin instan ke clipboard.'
+      }
+    ]
+  },
   {
     id: 'pkg-11092026',
     version: 'Package 11092026',
     semanticVersion: 'v2.2.0',
     date: '11 September 2026',
-    status: 'LATEST',
-    statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / ACTIVE',
+    status: 'STABLE',
+    statusColor: 'var(--accent-blue)',
+    badgeLabel: 'STABLE EVOLUTION',
     title: 'Update Package 11092026: SoSoValue Research Desk, Dual-Stream News Wire, Spot ETF Telemetry & Layout Cockpit V2',
     description: 'Pembaruan ekstensif menghadirkan tata letak Home Cockpit 2-kolom SoSoValue (72% Cockpit + 28% Live News) dengan zero horizontal scroll, running ticker tape tanpa jeda, telemetri ETF Spot BTC/ETH, Active Windowing dividen, dan dukungan multi-aset kripto di Charting Desk.',
     highlights: [

@@ -29,7 +29,7 @@ export default function Sidebar({
 }) {
 
   const getBadge = (id) => {
-    if (id === 'CHANGELOG') return '11092026';
+    if (id === 'CHANGELOG') return '16092026';
     if (id === 'CHARTING') return 'PRO';
     if (id === 'STOCK') return stockCount > 0 ? stockCount : null;
     if (id === 'CRYPTO') return cryptoCount > 0 ? cryptoCount : null;
