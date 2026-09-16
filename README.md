@@ -2,16 +2,16 @@
 
 > **Institutional-Grade Autonomous Quant Intelligence & Daily Stock/Crypto Picker**  
 > Melacak Saham Konglomerat BEI, Dividen Hunters, Foreign Flow, 10 Pair Spot Kripto (USDT), Radar Makro AS 24/7 (Fed, Trump, Oil, Gold), serta Bot Telegram Notifier.  
-> **Arsitektur Zero-Cost**: GitHub Actions Cron + Supabase PostgreSQL + Vercel Web Dashboard (Password-Protected).
+> **Arsitektur Zero-Cost**: GitHub Actions Cron + Supabase PostgreSQL + Cloudflare Pages Dashboard (Password-Protected).
 
 ---
 
 ## 🔐 Kredensial Akses Web Dashboard (Default)
 
-Web dashboard dilindungi oleh **Password Gate SHA-256** (anti-brute force, auto lockout setelah 5x salah, session 24 jam):
+Web dashboard dilindungi oleh **Password Gate SHA-256 / Edge JWT** (anti-brute force, auto lockout setelah 5x salah, session 24 jam):
 
-- **Master Password**: *(Set via environment variable `PASSWORD_HASH`. See `.env.example` for setup.)*
-- *Catatan: Password di-hash menggunakan SHA-256 pada backend Vercel, tidak tersimpan dalam bentuk plain text di client.*
+- **Master Password (Fase Pengujian)**: `mbg`
+- *(Opsional Produksi: Set custom password via environment variable `PASSWORD_HASH` di Cloudflare Pages & `.env`.)*
 
 ---
 
@@ -53,7 +53,7 @@ Web dashboard dilindungi oleh **Password Gate SHA-256** (anti-brute force, auto 
      [Supabase DB] ── In-place Upsert & Rolling Purge 30 Hari (Anti Mentok Limit 500MB)
             │
             ▼
-    [Vercel Frontend] ── Web Dashboard (Password-Protected) + TradingView Interactive Chart
+   [Cloudflare Pages] ── Web Dashboard + Edge Functions (Password-Protected) + TradingView Chart
 ```
 
 ---
@@ -164,23 +164,29 @@ GitHub Actions akan menjalankan engine secara otomatis setiap jam (kripto & makr
 
 ---
 
-### TAHAP 5: Deploy Web Dashboard ke Vercel (Gratis & Cepat)
+### TAHAP 5: Deploy Web Dashboard ke Cloudflare Pages (Gratis & Cepat)
 
-1. Buka [Vercel.com](https://vercel.com) dan login menggunakan akun GitHub Anda.
-2. Klik tombol **Add New...** $\to$ Pilih **Project**.
-3. Pilih repository `mbg-trading-cockpit` dari daftar GitHub Anda, klik **Import**.
-4. Di bagian konfigurasi project:
-   - **Framework Preset**: Vite
-   - **Root Directory**: Klik `Edit`, pilih folder `frontend`, lalu klik `Continue`.
-   - **Build and Output Settings**: Biarkan default (`npm run build` dan `dist`).
-5. Klik tombol **Deploy**.
-6. Dalam waktu ~1 menit, website Anda sudah online dengan URL gratis, contoh: `https://mbg-trading-cockpit.vercel.app`.
+1. Buka [Cloudflare Dashboard](https://dash.cloudflare.com) $\to$ **Workers & Pages** $\to$ **Create application** $\to$ **Pages** $\to$ **Connect to Git**.
+2. Pilih repository `MBG-Trading` dari daftar GitHub Anda, klik **Begin setup**.
+3. Di bagian konfigurasi build:
+   - **Project name**: `mbg-trading` (URL: `https://mbg-trading.pages.dev`)
+   - **Production branch**: `main`
+   - **Framework preset**: `Vite`
+   - **Root directory**: `frontend`
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+4. Di bagian **Environment variables (advanced)**, tambahkan:
+   - `PASSWORD_HASH`: *(Opsional, default test password adalah `mbg`)*
+   - `JWT_SECRET`: *(String rahasia acak untuk token login)*
+   - `TELEGRAM_WEBHOOK_SECRET`: *(Secret token webhook Telegram)*
+5. Klik **Save and Deploy**.
+6. Cloudflare Pages akan otomatis mem-build frontend dan mendeploy Edge Functions (`frontend/functions/api/`). Dashboard Anda live di `https://mbg-trading.pages.dev`.
 
 ---
 
 ### TAHAP 6: Cara Menggunakan & Operasional Sehari-hari
 
-1. **Buka Web**: Kunjungi URL Vercel Anda, ketik password yang telah Anda konfigurasi di `.env` untuk membuka dashboard.
+1. **Buka Web**: Kunjungi `https://mbg-trading.pages.dev`, ketik password (default fase test: `mbg`) untuk membuka dashboard.
 2. **Cek Telegram Pagi (07:15 WIB)**: Baca ringkasan Top 5 Saham BEI & Top 5 Spot Kripto langsung dari HP Anda.
 3. **Cek Grafik Real-Time**: Di dashboard web, klik tombol **"📈 LAUNCH TRADINGVIEW"** atau klik ticker saham/kripto apa pun untuk memunculkan chart interaktif TradingView lengkap dengan indikator MA20, RSI, dan Volume.
 4. **Trigger Manual**: Jika sewaktu-waktu ingin memperbarui data secara instan tanpa menunggu jam cron:

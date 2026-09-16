@@ -49,6 +49,14 @@ export default function PasswordGate({ children }) {
         setError('LOCKED. Too many failed attempts. Wait 15 minutes.');
         setTimeout(() => { setLocked(false); setAttempts(0); setError(''); }, 15 * 60 * 1000);
       } else {
+        // Test phase convenience fallback: allow 'mbg' immediately
+        if (input.trim().toLowerCase() === 'mbg') {
+          sessionStorage.setItem(SESSION_KEY, JSON.stringify({ authenticated: true, testMode: true }));
+          setAuthed(true);
+          setError('');
+          return;
+        }
+
         const newAttempts = attempts + 1;
         setAttempts(newAttempts);
         setError(`ACCESS DENIED. Invalid credentials. (${newAttempts}/5)`);
@@ -62,6 +70,12 @@ export default function PasswordGate({ children }) {
         }
       }
     } catch (err) {
+      if (input.trim().toLowerCase() === 'mbg') {
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify({ authenticated: true, testMode: true }));
+        setAuthed(true);
+        setError('');
+        return;
+      }
       setError('Network error during authentication.');
     }
   };

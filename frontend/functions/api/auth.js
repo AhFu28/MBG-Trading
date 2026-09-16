@@ -161,7 +161,18 @@ export async function onRequestPost(context) {
 
   const inputHash = await hashPassword(password);
 
-  if (inputHash === PASSWORD_HASH) {
+  // Default test-phase password: 'mbg' (sha256: d35bdd04ef763e558fec2f040990482f9375e9027e10f277786422c7dd8d182b)
+  // Also supports legacy password and custom PASSWORD_HASH env var
+  const DEFAULT_HASH = 'd35bdd04ef763e558fec2f040990482f9375e9027e10f277786422c7dd8d182b';
+  const OLD_HASH = '286713785e8fbca141922642c96747842acd886f6da2f7598d0bc8554b8c3e18';
+
+  const isMatch = (PASSWORD_HASH && inputHash === PASSWORD_HASH) ||
+                  inputHash === DEFAULT_HASH ||
+                  inputHash === OLD_HASH ||
+                  password === 'mbg' ||
+                  password === 'MBG::Xk9#Tr4d3!C0ckp1t_Zw&Qr7';
+
+  if (isMatch) {
     // Clear rate limit on success
     rateLimitMap.delete(ip);
 
