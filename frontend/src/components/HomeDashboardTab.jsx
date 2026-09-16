@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BloombergNewsWire from './BloombergNewsWire.jsx';
+import CryptoIcon from './CryptoIcon.jsx';
 
 export default function HomeDashboardTab({
   data,
@@ -249,10 +250,13 @@ export default function HomeDashboardTab({
                       <span className="badge badge-alert" style={{ fontSize: '8px', padding: '1px 5px' }}>NO LEV · SPOT</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <CryptoIcon symbol={topCrypto?.pair || 'BTC'} size={20} />
                         <span style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                           {topCrypto?.pair || 'BTC/USDT'}
                         </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
                         <span style={{
                           fontSize: '11px',
                           fontWeight: '800',
@@ -701,9 +705,12 @@ export default function HomeDashboardTab({
                       {topCryptoPicks.slice(0, 5).map(c => (
                         <tr key={c.pair} style={{ borderBottom: 'rgba(255,255,255,0.03)' }}>
                           <td style={{ padding: '4px', fontWeight: '800' }}>
-                            <span style={{ color: '#60a5fa', cursor: 'pointer' }} onClick={() => onSelectTicker(c.pair, 'CRYPTO')}>
-                              {c.pair}
-                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                              <CryptoIcon symbol={c.pair} size={14} />
+                              <span style={{ color: '#60a5fa', cursor: 'pointer' }} onClick={() => onSelectTicker(c.pair, 'CRYPTO')}>
+                                {c.pair}
+                              </span>
+                            </div>
                           </td>
                           <td style={{ padding: '4px' }}>
                             <span className="badge badge-alert" style={{ fontSize: '7px', padding: '1px 3px' }}>

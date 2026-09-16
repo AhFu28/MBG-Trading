@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, Suspense, lazy } from 'react';
 import NewsTab from './NewsTab.jsx';
 import PersonalWatchlistTab from './PersonalWatchlistTab.jsx';
 import PearsonCorrelationWidget from './PearsonCorrelationWidget.jsx';
+import CryptoIcon from './CryptoIcon.jsx';
 
 const VirtualForwardPortfolio = lazy(() => import('./VirtualForwardPortfolio.jsx'));
 const BacktestPerformanceLab = lazy(() => import('./BacktestPerformanceLab.jsx'));
@@ -948,7 +949,10 @@ export default function MasterQuantLeaderboard({
                             {idx + 1}
                           </td>
                           <td style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '13px' }}>
-                            ${item.ticker}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              {item.market === 'CRYPTO' && <CryptoIcon symbol={item.ticker} size={18} />}
+                              <span>${item.ticker}</span>
+                            </div>
                           </td>
                           <td>
                             <span className='badge' style={{

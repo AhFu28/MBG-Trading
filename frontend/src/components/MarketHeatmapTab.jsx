@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { getCryptoIcon } from '../data/crypto-icons.js';
+import CryptoIcon from './CryptoIcon.jsx';
 
 // Top crypto coins with approximate market cap weights (relative)
 const CRYPTO_UNIVERSE = [
@@ -79,15 +79,6 @@ function getChangeColor(pct) {
   return 'hsl(0, 70%, 35%)';
 }
 
-function CryptoSvgIcon({ symbol, size = 14 }) {
-  const path = getCryptoIcon(symbol);
-  if (!path) return null;
-  return (
-    <svg viewBox="0 0 32 32" width={size} height={size} style={{ opacity: 0.6 }}>
-      <path d={path} fill="rgba(255,255,255,0.7)" />
-    </svg>
-  );
-}
 
 export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSelectTicker, data }) {
   const [activeMarket, setActiveMarket] = useState('CRYPTO');
@@ -241,9 +232,9 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
               }}
               title={`${tile.name} (${tile.symbol})\n${tile.changePct >= 0 ? '+' : ''}${tile.changePct}%\n${tile.price ? formatPrice(tile.price, activeMarket) : 'Memuat...'}`}
             >
-              {/* Crypto icon for large tiles */}
-              {activeMarket === 'CRYPTO' && isLarge && (
-                <CryptoSvgIcon symbol={tile.symbol} size={isLarge ? 20 : 14} />
+              {/* Crypto icon for tiles */}
+              {activeMarket === 'CRYPTO' && (isLarge || isMedium) && (
+                <CryptoIcon symbol={tile.symbol} size={isLarge ? 24 : 16} style={{ marginBottom: '3px' }} />
               )}
 
               {/* Symbol */}
