@@ -10,6 +10,10 @@ const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'))
 const LotCalculatorModal = lazy(() => import('./components/LotCalculatorModal.jsx'));
 const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
 const ChartingDeskTab = lazy(() => import('./components/ChartingDeskTab.jsx'));
+const WhaleIntelligenceTab = lazy(() => import('./components/WhaleIntelligenceTab.jsx'));
+const CryptoFuturesTab = lazy(() => import('./components/CryptoFuturesTab.jsx'));
+const ForexCommandTab = lazy(() => import('./components/ForexCommandTab.jsx'));
+const USStockTab = lazy(() => import('./components/USStockTab.jsx'));
 
 const jakartaTimeFormatter = new Intl.DateTimeFormat('id-ID', {
   timeZone: 'Asia/Jakarta',
@@ -370,6 +374,26 @@ export default function App() {
               /* SYSTEM CHANGELOG & VERSION RELEASES */
               <main>
                 <ChangelogTab />
+              </main>
+            ) : activeTab === 'WHALES' ? (
+              /* v3.0 WHALE INTELLIGENCE HUB */
+              <main>
+                <WhaleIntelligenceTab data={data} onOpenChart={handleOpenChart} />
+              </main>
+            ) : activeTab === 'FUTURES' ? (
+              /* v3.0 CRYPTO FUTURES INTELLIGENCE */
+              <main>
+                <CryptoFuturesTab data={data} onOpenChart={handleOpenChart} />
+              </main>
+            ) : activeTab === 'FOREX' ? (
+              /* v3.0 FOREX COMMAND CENTER */
+              <main>
+                <ForexCommandTab data={data} onOpenChart={handleOpenChart} />
+              </main>
+            ) : activeTab === 'US_STOCKS' ? (
+              /* v3.0 US STOCK INTELLIGENCE */
+              <main>
+                <USStockTab data={data} onOpenChart={handleOpenChart} />
               </main>
             ) : (
               /* DEEP-DIVE SCREENER / TESTING / RESEARCH TABS */

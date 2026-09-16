@@ -5,6 +5,10 @@ const NAV_ITEMS = [
   { id: 'HOME',                icon: '🏠', label: 'Home',            section: 'COMMAND CENTER' },
   { id: 'STOCK',               icon: '📈', label: 'Saham IDX',       section: 'MARKETS' },
   { id: 'CRYPTO',              icon: '⚡', label: 'Crypto Spot',      section: 'MARKETS' },
+  { id: 'FUTURES',             icon: '🔥', label: 'Crypto Futures',   section: 'MARKETS' },
+  { id: 'FOREX',               icon: '💱', label: 'Forex',            section: 'MARKETS' },
+  { id: 'US_STOCKS',           icon: '🇺🇸', label: 'US Stocks',       section: 'MARKETS' },
+  { id: 'WHALES',              icon: '🐋', label: 'Whale Tracker',    section: 'MARKETS' },
   { id: 'CHARTING',            icon: '📊', label: 'Charting Desk',    section: 'MARKETS' },
   { id: 'WATCHLIST',           icon: '⭐', label: 'Watchlist',        section: 'MARKETS' },
   { id: 'GLOBAL_MARKETS',      icon: '🌍', label: 'Pasar Global',     section: 'MARKETS' },
@@ -29,8 +33,12 @@ export default function Sidebar({
 }) {
 
   const getBadge = (id) => {
-    if (id === 'CHANGELOG') return '11092026';
+    if (id === 'CHANGELOG') return 'v3.0';
     if (id === 'CHARTING') return 'PRO';
+    if (id === 'WHALES') return 'NEW';
+    if (id === 'FUTURES') return 'NEW';
+    if (id === 'FOREX') return 'NEW';
+    if (id === 'US_STOCKS') return 'NEW';
     if (id === 'STOCK') return stockCount > 0 ? stockCount : null;
     if (id === 'CRYPTO') return cryptoCount > 0 ? cryptoCount : null;
     if (id === 'NEWS') return newsCount > 0 ? newsCount : null;
@@ -67,7 +75,7 @@ export default function Sidebar({
             Market Brain Grid
           </div>
           <div style={{ fontSize: '8px', color: 'var(--text-muted)', letterSpacing: '0.04em', lineHeight: 1.2 }}>
-            Tactical Quant Terminal · v2.4
+            Tactical Quant Terminal · v3.0
           </div>
         </div>
       </div>

@@ -8,13 +8,103 @@
 
 export const CHANGELOG_DATA = [
   {
+    id: 'pkg-16092026',
+    version: 'Package 16092026',
+    semanticVersion: 'v3.0.0',
+    date: '16 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / ACTIVE',
+    title: 'Update Package 16092026: Whale Intelligence Hub, Crypto Futures Dashboard, Forex Command Center & US Stock Intelligence',
+    description: 'Ekspansi besar-besaran v3.0 menghadirkan 4 modul intelijen baru: pelacakan paus kripto on-chain & institusi Wall Street, dashboard futures (Funding Rate, OI, Long/Short, Liquidations), pusat komando forex 28 pair dengan kalkulator pip & laporan COT, serta screener 30 saham AS dengan heatmap sektor dan kalender earnings.',
+    highlights: [
+      {
+        tag: 'WHALE TRACKER',
+        tagColor: '#06b6d4',
+        icon: '🐋',
+        title: 'Whale Intelligence Hub — Pelacakan Paus Multi-Pasar',
+        desc: 'Pelacakan transaksi kripto on-chain besar (>$500K) dengan sinyal Exchange Inflow/Outflow, radar asing BEI dari broker institusi (MS, JP, UBS, CS, GS), dan pemantauan 13F kepemilikan hedge fund Wall Street.'
+      },
+      {
+        tag: 'CRYPTO FUTURES',
+        tagColor: 'var(--accent-amber)',
+        icon: '🔥',
+        title: 'Crypto Futures Intelligence — Funding Rate, OI & Liquidation Radar',
+        desc: 'Dashboard futures 15 pair kripto: Funding Rate heatmap (sinyal overleveraged), Open Interest vs Price divergence, rasio Long/Short global, dan radar zona likuidasi 24 jam dari Binance Futures API.'
+      },
+      {
+        tag: 'FOREX',
+        tagColor: 'var(--accent-green)',
+        icon: '💱',
+        title: 'Forex Command Center — 28-Pair Scanner & COT Report',
+        desc: 'Screener 28 pair forex mayor & minor via TradingView Scanner, kalkulator pip interaktif, jam sesi perdagangan global (Sydney/Tokyo/London/New York), dan laporan CFTC Commitment of Traders dengan sinyal contrarian.'
+      },
+      {
+        tag: 'US STOCKS',
+        tagColor: '#818cf8',
+        icon: '🇺🇸',
+        title: 'US Stock Intelligence — 30 Saham Top & Earnings Calendar',
+        desc: 'Screener 30 saham AS terpopuler (AAPL, NVDA, TSLA, dll.) dengan analisis teknikal, heatmap performa sektor, trade plans top 5, dan kalender earnings dengan peringatan zona bahaya pre-earnings.'
+      }
+    ],
+    categories: [
+      {
+        categoryTitle: '🐋 Whale Intelligence Hub',
+        items: [
+          'Crypto On-Chain Whale Feed: timeline transaksi besar BTC/ETH/SOL/USDT (>$500K) dengan klasifikasi Exchange Inflow (bearish) vs Outflow (bullish)',
+          'IDX Foreign Whale Radar: pelacakan akumulasi/distribusi broker asing besar (Morgan Stanley, JP Morgan, UBS, Credit Suisse, Goldman Sachs)',
+          'US Institutional Tracker (13F): pemantauan perubahan kepemilikan Berkshire Hathaway, BlackRock, Citadel, Bridgewater',
+          'Aggregasi sentimen whale 24 jam dengan summary card otomatis'
+        ]
+      },
+      {
+        categoryTitle: '🔥 Crypto Futures Dashboard',
+        items: [
+          'Funding Rate heatmap untuk 15 pair kripto (hijau = negatif/bullish, merah = positif tinggi/bearish)',
+          'Open Interest tracker dengan deteksi OI-Price divergence (Bullish Confirmation vs Bearish Divergence)',
+          'Long/Short Ratio gauge visual per pair dengan bias indicator',
+          'Liquidation Zone Alert: estimasi level harga magnet likuidasi 24 jam',
+          'Signal Summary otomatis: "Short Squeeze Setup 🚀" atau "Overleveraged Longs ⚠️"'
+        ]
+      },
+      {
+        categoryTitle: '💱 Forex Command Center',
+        items: [
+          '28-Pair Screener: EURUSD, GBPUSD, USDJPY, AUDUSD + 24 crosses dengan RSI, MACD, Confluence Score',
+          'Pip Calculator interaktif: input pair + lot size + entry + SL → kalkulasi risiko USD & IDR',
+          'COT Report CFTC: posisi net spekulan vs commercial dengan sinyal contrarian',
+          'Session Clock: overlay jam sesi Sydney/Tokyo/London/New York dengan status OPEN/CLOSED'
+        ]
+      },
+      {
+        categoryTitle: '🇺🇸 US Stock Intelligence',
+        items: [
+          '30-Stock Screener: AAPL, NVDA, MSFT, TSLA, AMD, PLTR, META, AMZN, GOOGL + 21 lainnya',
+          'Sector Heatmap: grid visual performa per sektor (Technology, Finance, Healthcare, Energy, dll.)',
+          'Top 5 Trade Plans: kartu setup harian dengan Entry, SL, TP1, R:R',
+          'Earnings Calendar: countdown ke tanggal earnings dengan badge peringatan (AVOID/CAUTION/SAFE)'
+        ]
+      },
+      {
+        categoryTitle: '⚙️ Engine & Pipeline',
+        items: [
+          'Pipeline mode baru: --mode whale, --mode forex, --mode us_stocks',
+          'Whale + Futures data dijalankan setiap jam (hourly cron) bersama crypto macro',
+          'Forex + US Stocks data dijalankan harian (daily cron) bersama IDX morning',
+          'Sidebar navigasi diperluas dengan 4 menu baru + badge NEW',
+          'Versi terminal ditingkatkan dari v2.4 ke v3.0'
+        ]
+      }
+    ]
+  },
+  {
     id: 'pkg-11092026',
     version: 'Package 11092026',
     semanticVersion: 'v2.2.0',
     date: '11 September 2026',
-    status: 'LATEST',
-    statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / ACTIVE',
+    status: 'PREVIOUS',
+    statusColor: 'var(--accent-amber)',
+    badgeLabel: 'PREVIOUS',
     title: 'Update Package 11092026: SoSoValue Research Desk, Dual-Stream News Wire, Spot ETF Telemetry & Layout Cockpit V2',
     description: 'Pembaruan ekstensif menghadirkan tata letak Home Cockpit 2-kolom SoSoValue (72% Cockpit + 28% Live News) dengan zero horizontal scroll, running ticker tape tanpa jeda, telemetri ETF Spot BTC/ETH, Active Windowing dividen, dan dukungan multi-aset kripto di Charting Desk.',
     highlights: [
