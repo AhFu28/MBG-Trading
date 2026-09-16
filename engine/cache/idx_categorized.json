@@ -17,7 +17,7 @@
     "ma50": 1775.9,
     "rsi_14": 31.9,
     "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-16T09:59:12.681868"
+    "updated_at": "2026-09-16T15:27:17.798215"
   },
   {
     "ticker": "TPIA",
@@ -37,7 +37,7 @@
     "ma50": 2005.6,
     "rsi_14": 35.7,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:12.681880"
+    "updated_at": "2026-09-16T15:27:17.798228"
   },
   {
     "ticker": "BREN",
@@ -57,7 +57,7 @@
     "ma50": 3380.2,
     "rsi_14": 35.5,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:12.681886"
+    "updated_at": "2026-09-16T15:27:17.798234"
   },
   {
     "ticker": "CUAN",
@@ -77,7 +77,7 @@
     "ma50": 769.6,
     "rsi_14": 56.3,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-16T09:59:12.681891"
+    "updated_at": "2026-09-16T15:27:17.798240"
   },
   {
     "ticker": "PTRO",
@@ -97,7 +97,7 @@
     "ma50": 4845.4,
     "rsi_14": 47.2,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:12.681896"
+    "updated_at": "2026-09-16T15:27:17.798245"
   },
   {
     "ticker": "BPII",
@@ -117,7 +117,7 @@
     "ma50": 460.4,
     "rsi_14": 50.4,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:12.681902"
+    "updated_at": "2026-09-16T15:27:17.798252"
   },
   {
     "ticker": "INDF",
@@ -137,7 +137,7 @@
     "ma50": 7118.0,
     "rsi_14": 48.1,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:12.681917"
+    "updated_at": "2026-09-16T15:27:17.798265"
   },
   {
     "ticker": "ICBP",
@@ -157,7 +157,7 @@
     "ma50": 7218.0,
     "rsi_14": 37.5,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:12.681926"
+    "updated_at": "2026-09-16T15:27:17.798276"
   },
   {
     "ticker": "ROTI",
@@ -177,7 +177,7 @@
     "ma50": 592.6,
     "rsi_14": 54.8,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-16T09:59:12.681931"
+    "updated_at": "2026-09-16T15:27:17.798281"
   },
   {
     "ticker": "LSIP",
@@ -197,7 +197,7 @@
     "ma50": 1457.4,
     "rsi_14": 70.2,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-16T09:59:12.681935"
+    "updated_at": "2026-09-16T15:27:17.798286"
   },
   {
     "ticker": "SIMP",
@@ -217,7 +217,7 @@
     "ma50": 592.3,
     "rsi_14": 48.5,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:12.681939"
+    "updated_at": "2026-09-16T15:27:17.798292"
   },
   {
     "ticker": "DNET",
@@ -237,7 +237,7 @@
     "ma50": 9834.5,
     "rsi_14": 46.1,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:12.681942"
+    "updated_at": "2026-09-16T15:27:17.798297"
   },
   {
     "ticker": "DCII",
@@ -257,7 +257,7 @@
     "ma50": 197996.0,
     "rsi_14": 37.6,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:12.681946"
+    "updated_at": "2026-09-16T15:27:17.798302"
   },
   {
     "ticker": "AMMN",
@@ -277,7 +277,7 @@
     "ma50": 4254.2,
     "rsi_14": 71.1,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-16T09:59:12.681950"
+    "updated_at": "2026-09-16T15:27:17.798307"
   },
   {
     "ticker": "MEDC",
@@ -297,7 +297,7 @@
     "ma50": 1352.9,
     "rsi_14": 67.2,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:12.681954"
+    "updated_at": "2026-09-16T15:27:17.798311"
   },
   {
     "ticker": "BINA",
@@ -317,7 +317,7 @@
     "ma50": 4095.6,
     "rsi_14": 46.9,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:12.681958"
+    "updated_at": "2026-09-16T15:27:17.798316"
   },
   {
     "ticker": "EMTK",
@@ -337,7 +337,7 @@
     "ma50": 518.3,
     "rsi_14": 38.1,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:12.681962"
+    "updated_at": "2026-09-16T15:27:17.798321"
   },
   {
     "ticker": "SCMA",
@@ -357,7 +357,7 @@
     "ma50": 204.1,
     "rsi_14": 39.6,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:12.681966"
+    "updated_at": "2026-09-16T15:27:17.798326"
   },
   {
     "ticker": "ASII",
@@ -377,7 +377,7 @@
     "ma50": 4922.4,
     "rsi_14": 47.3,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:12.681970"
+    "updated_at": "2026-09-16T15:27:17.798332"
   },
   {
     "ticker": "UNTR",
@@ -397,7 +397,7 @@
     "ma50": 24881.0,
     "rsi_14": 61.8,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:12.681974"
+    "updated_at": "2026-09-16T15:27:17.798337"
   },
   {
     "ticker": "AUTO",
@@ -417,7 +417,7 @@
     "ma50": 2914.2,
     "rsi_14": 68.8,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:12.681978"
+    "updated_at": "2026-09-16T15:27:17.798342"
   },
   {
     "ticker": "AALI",
@@ -437,7 +437,7 @@
     "ma50": 7355.5,
     "rsi_14": 67.9,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-16T09:59:12.681982"
+    "updated_at": "2026-09-16T15:27:17.798347"
   },
   {
     "ticker": "ACST",
@@ -457,7 +457,7 @@
     "ma50": 88.5,
     "rsi_14": 58.6,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-16T09:59:12.681986"
+    "updated_at": "2026-09-16T15:27:17.798352"
   },
   {
     "ticker": "ASGR",
@@ -477,7 +477,7 @@
     "ma50": 1927.8,
     "rsi_14": 57.9,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-16T09:59:12.681989"
+    "updated_at": "2026-09-16T15:27:17.798358"
   },
   {
     "ticker": "HEAL",
@@ -497,7 +497,7 @@
     "ma50": 762.9,
     "rsi_14": 40.0,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:12.681993"
+    "updated_at": "2026-09-16T15:27:17.798362"
   },
   {
     "ticker": "BBCA",
@@ -517,7 +517,7 @@
     "ma50": 6389.5,
     "rsi_14": 44.5,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:12.681997"
+    "updated_at": "2026-09-16T15:27:17.798368"
   },
   {
     "ticker": "TOWR",
@@ -537,7 +537,7 @@
     "ma50": 418.2,
     "rsi_14": 48.3,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:12.682001"
+    "updated_at": "2026-09-16T15:27:17.798373"
   },
   {
     "ticker": "BELI",
@@ -557,7 +557,7 @@
     "ma50": 274.8,
     "rsi_14": 47.7,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:12.682005"
+    "updated_at": "2026-09-16T15:27:17.798377"
   },
   {
     "ticker": "RANC",
@@ -577,7 +577,7 @@
     "ma50": 527.6,
     "rsi_14": 49.9,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:12.682009"
+    "updated_at": "2026-09-16T15:27:17.798383"
   },
   {
     "ticker": "IBST",
@@ -597,7 +597,7 @@
     "ma50": 8475.0,
     "rsi_14": 0.0,
     "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-16T09:59:13.023008"
+    "updated_at": "2026-09-16T15:27:17.885543"
   },
   {
     "ticker": "RAJA",
@@ -617,7 +617,7 @@
     "ma50": 853.9,
     "rsi_14": 35.7,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023018"
+    "updated_at": "2026-09-16T15:27:17.885553"
   },
   {
     "ticker": "FORU",
@@ -637,7 +637,7 @@
     "ma50": 2868.9,
     "rsi_14": 63.3,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-16T09:59:13.023022"
+    "updated_at": "2026-09-16T15:27:17.885558"
   },
   {
     "ticker": "CBRE",
@@ -657,7 +657,7 @@
     "ma50": 706.9,
     "rsi_14": 48.7,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.023025"
+    "updated_at": "2026-09-16T15:27:17.885563"
   },
   {
     "ticker": "SINI",
@@ -677,7 +677,7 @@
     "ma50": 8763.9,
     "rsi_14": 71.0,
     "technical_signal": "BREAKOUT",
-    "updated_at": "2026-09-16T09:59:13.023029"
+    "updated_at": "2026-09-16T15:27:17.885567"
   },
   {
     "ticker": "MINA",
@@ -697,7 +697,7 @@
     "ma50": 274.5,
     "rsi_14": 39.2,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023033"
+    "updated_at": "2026-09-16T15:27:17.885571"
   },
   {
     "ticker": "PSAT",
@@ -717,7 +717,7 @@
     "ma50": 868.9,
     "rsi_14": 42.0,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023036"
+    "updated_at": "2026-09-16T15:27:17.885575"
   },
   {
     "ticker": "BUVA",
@@ -737,7 +737,7 @@
     "ma50": 794.1,
     "rsi_14": 39.8,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.023040"
+    "updated_at": "2026-09-16T15:27:17.885579"
   },
   {
     "ticker": "JARR",
@@ -757,7 +757,7 @@
     "ma50": 2435.4,
     "rsi_14": 81.2,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.023043"
+    "updated_at": "2026-09-16T15:27:17.885583"
   },
   {
     "ticker": "PGUN",
@@ -777,7 +777,7 @@
     "ma50": 8365.5,
     "rsi_14": 54.5,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023046"
+    "updated_at": "2026-09-16T15:27:17.885587"
   },
   {
     "ticker": "BYAN",
@@ -797,7 +797,7 @@
     "ma50": 12807.5,
     "rsi_14": 37.5,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023049"
+    "updated_at": "2026-09-16T15:27:17.885592"
   },
   {
     "ticker": "BUMI",
@@ -817,7 +817,7 @@
     "ma50": 180.1,
     "rsi_14": 53.0,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023053"
+    "updated_at": "2026-09-16T15:27:17.885596"
   },
   {
     "ticker": "BRMS",
@@ -837,7 +837,7 @@
     "ma50": 631.1,
     "rsi_14": 60.0,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.023056"
+    "updated_at": "2026-09-16T15:27:17.885600"
   },
   {
     "ticker": "ENRG",
@@ -857,7 +857,7 @@
     "ma50": 1334.1,
     "rsi_14": 50.3,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-16T09:59:13.023059"
+    "updated_at": "2026-09-16T15:27:17.885603"
   },
   {
     "ticker": "VKTR",
@@ -877,7 +877,7 @@
     "ma50": 796.7,
     "rsi_14": 37.0,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023062"
+    "updated_at": "2026-09-16T15:27:17.885606"
   },
   {
     "ticker": "BNBR",
@@ -897,7 +897,7 @@
     "ma50": 97.8,
     "rsi_14": 36.1,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023065"
+    "updated_at": "2026-09-16T15:27:17.885610"
   },
   {
     "ticker": "DEWA",
@@ -917,7 +917,7 @@
     "ma50": 426.1,
     "rsi_14": 30.2,
     "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-16T09:59:13.023068"
+    "updated_at": "2026-09-16T15:27:17.885613"
   },
   {
     "ticker": "MDIA",
@@ -937,7 +937,7 @@
     "ma50": 159.5,
     "rsi_14": 47.3,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023071"
+    "updated_at": "2026-09-16T15:27:17.885616"
   },
   {
     "ticker": "INKP",
@@ -957,7 +957,7 @@
     "ma50": 8326.5,
     "rsi_14": 46.7,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.023075"
+    "updated_at": "2026-09-16T15:27:17.885620"
   },
   {
     "ticker": "TKIM",
@@ -977,7 +977,7 @@
     "ma50": 7069.0,
     "rsi_14": 47.0,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023078"
+    "updated_at": "2026-09-16T15:27:17.885624"
   },
   {
     "ticker": "DSSA",
@@ -997,7 +997,7 @@
     "ma50": 968.5,
     "rsi_14": 52.7,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.023081"
+    "updated_at": "2026-09-16T15:27:17.885627"
   },
   {
     "ticker": "SMMA",
@@ -1017,7 +1017,7 @@
     "ma50": 20447.5,
     "rsi_14": 47.6,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023084"
+    "updated_at": "2026-09-16T15:27:17.885632"
   },
   {
     "ticker": "BSDE",
@@ -1037,7 +1037,7 @@
     "ma50": 605.0,
     "rsi_14": 50.9,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.023087"
+    "updated_at": "2026-09-16T15:27:17.885635"
   },
   {
     "ticker": "DMAS",
@@ -1057,7 +1057,7 @@
     "ma50": 161.3,
     "rsi_14": 55.9,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023090"
+    "updated_at": "2026-09-16T15:27:17.885639"
   },
   {
     "ticker": "SMAR",
@@ -1077,7 +1077,7 @@
     "ma50": 5813.8,
     "rsi_14": 46.9,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.023092"
+    "updated_at": "2026-09-16T15:27:17.885643"
   },
   {
     "ticker": "FREN",
@@ -1097,7 +1097,7 @@
     "ma50": 0,
     "rsi_14": 50.0,
     "technical_signal": "DATA_UNAVAILABLE",
-    "updated_at": "2026-09-16T09:59:13.734164"
+    "updated_at": "2026-09-16T15:27:18.467230"
   },
   {
     "ticker": "LPKR",
@@ -1117,7 +1117,7 @@
     "ma50": 62.0,
     "rsi_14": 37.2,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.734180"
+    "updated_at": "2026-09-16T15:27:18.467248"
   },
   {
     "ticker": "LPCK",
@@ -1137,7 +1137,7 @@
     "ma50": 568.0,
     "rsi_14": 54.8,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-16T09:59:13.734185"
+    "updated_at": "2026-09-16T15:27:18.467255"
   },
   {
     "ticker": "SILO",
@@ -1157,7 +1157,7 @@
     "ma50": 2180.9,
     "rsi_14": 36.4,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.734189"
+    "updated_at": "2026-09-16T15:27:18.467261"
   },
   {
     "ticker": "MLPL",
@@ -1177,7 +1177,7 @@
     "ma50": 92.2,
     "rsi_14": 38.8,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.734192"
+    "updated_at": "2026-09-16T15:27:18.467268"
   },
   {
     "ticker": "MPPA",
@@ -1197,7 +1197,7 @@
     "ma50": 46.4,
     "rsi_14": 31.7,
     "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-16T09:59:13.734195"
+    "updated_at": "2026-09-16T15:27:18.467274"
   },
   {
     "ticker": "LPPF",
@@ -1217,7 +1217,7 @@
     "ma50": 1584.6,
     "rsi_14": 51.2,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.734199"
+    "updated_at": "2026-09-16T15:27:18.467280"
   },
   {
     "ticker": "NOBU",
@@ -1237,7 +1237,7 @@
     "ma50": 483.3,
     "rsi_14": 50.1,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.734202"
+    "updated_at": "2026-09-16T15:27:18.467286"
   },
   {
     "ticker": "SRTG",
@@ -1257,7 +1257,7 @@
     "ma50": 1776.9,
     "rsi_14": 42.7,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.734206"
+    "updated_at": "2026-09-16T15:27:18.467294"
   },
   {
     "ticker": "MDKA",
@@ -1277,7 +1277,7 @@
     "ma50": 2828.0,
     "rsi_14": 45.8,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.734209"
+    "updated_at": "2026-09-16T15:27:18.467300"
   },
   {
     "ticker": "MBMA",
@@ -1297,7 +1297,7 @@
     "ma50": 524.7,
     "rsi_14": 42.7,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.734212"
+    "updated_at": "2026-09-16T15:27:18.467306"
   },
   {
     "ticker": "MPMX",
@@ -1317,7 +1317,7 @@
     "ma50": 1006.1,
     "rsi_14": 52.6,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.734215"
+    "updated_at": "2026-09-16T15:27:18.467312"
   },
   {
     "ticker": "TBIG",
@@ -1337,7 +1337,7 @@
     "ma50": 1435.4,
     "rsi_14": 45.7,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.734218"
+    "updated_at": "2026-09-16T15:27:18.467318"
   },
   {
     "ticker": "ADRO",
@@ -1357,7 +1357,7 @@
     "ma50": 2557.0,
     "rsi_14": 47.9,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:13.734222"
+    "updated_at": "2026-09-16T15:27:18.467324"
   },
   {
     "ticker": "ADMR",
@@ -1377,7 +1377,7 @@
     "ma50": 1580.0,
     "rsi_14": 37.8,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.734225"
+    "updated_at": "2026-09-16T15:27:18.467329"
   },
   {
     "ticker": "MEGA",
@@ -1397,7 +1397,7 @@
     "ma50": 1983.4,
     "rsi_14": 42.8,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:13.734235"
+    "updated_at": "2026-09-16T15:27:18.467336"
   },
   {
     "ticker": "ALLO",
@@ -1417,7 +1417,7 @@
     "ma50": 0,
     "rsi_14": 50.0,
     "technical_signal": "DATA_UNAVAILABLE",
-    "updated_at": "2026-09-16T09:59:14.543649"
+    "updated_at": "2026-09-16T15:27:19.065972"
   },
   {
     "ticker": "HEXA",
@@ -1449,7 +1449,7 @@
     "ma50": 4439.6,
     "rsi_14": 42.3,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:14.543738"
+    "updated_at": "2026-09-16T15:27:19.066062"
   },
   {
     "ticker": "UNTR",
@@ -1481,7 +1481,7 @@
     "ma50": 24881.0,
     "rsi_14": 61.8,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:14.543774"
+    "updated_at": "2026-09-16T15:27:19.066090"
   },
   {
     "ticker": "ASII",
@@ -1513,7 +1513,7 @@
     "ma50": 4922.4,
     "rsi_14": 47.3,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:14.543790"
+    "updated_at": "2026-09-16T15:27:19.066120"
   },
   {
     "ticker": "BBCA",
@@ -1545,7 +1545,7 @@
     "ma50": 6389.5,
     "rsi_14": 44.5,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:14.543802"
+    "updated_at": "2026-09-16T15:27:19.066137"
   },
   {
     "ticker": "BBNI",
@@ -1577,7 +1577,7 @@
     "ma50": 3642.8,
     "rsi_14": 48.6,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:14.543812"
+    "updated_at": "2026-09-16T15:27:19.066151"
   },
   {
     "ticker": "BBRI",
@@ -1609,7 +1609,7 @@
     "ma50": 3101.8,
     "rsi_14": 56.4,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:14.543822"
+    "updated_at": "2026-09-16T15:27:19.066165"
   },
   {
     "ticker": "BMRI",
@@ -1641,7 +1641,7 @@
     "ma50": 4243.8,
     "rsi_14": 47.2,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:14.543833"
+    "updated_at": "2026-09-16T15:27:19.066179"
   },
   {
     "ticker": "ITMG",
@@ -1673,7 +1673,7 @@
     "ma50": 24927.5,
     "rsi_14": 61.5,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:14.543842"
+    "updated_at": "2026-09-16T15:27:19.066191"
   },
   {
     "ticker": "BBCA",
@@ -1691,7 +1691,7 @@
     "ma50": 6389.5,
     "rsi_14": 44.5,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:14.543846",
+    "updated_at": "2026-09-16T15:27:19.066197",
     "net_value_fmt": "-Rp 1.9 M"
   },
   {
@@ -1710,7 +1710,7 @@
     "ma50": 3101.8,
     "rsi_14": 56.4,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:14.543849",
+    "updated_at": "2026-09-16T15:27:19.066200",
     "net_value_fmt": "+Rp 0.4 M"
   },
   {
@@ -1729,7 +1729,7 @@
     "ma50": 4243.8,
     "rsi_14": 47.2,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:14.543851",
+    "updated_at": "2026-09-16T15:27:19.066202",
     "net_value_fmt": "-Rp 3.9 M"
   },
   {
@@ -1748,7 +1748,7 @@
     "ma50": 2617.4,
     "rsi_14": 53.7,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-16T09:59:14.543854",
+    "updated_at": "2026-09-16T15:27:19.066206",
     "net_value_fmt": "-Rp 1.0 M"
   },
   {
@@ -1767,7 +1767,7 @@
     "ma50": 4922.4,
     "rsi_14": 47.3,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:14.543856",
+    "updated_at": "2026-09-16T15:27:19.066209",
     "net_value_fmt": "-Rp 0.5 M"
   },
   {
@@ -1786,7 +1786,7 @@
     "ma50": 2828.0,
     "rsi_14": 45.8,
     "technical_signal": "PULLBACK",
-    "updated_at": "2026-09-16T09:59:14.543859",
+    "updated_at": "2026-09-16T15:27:19.066212",
     "net_value_fmt": "+Rp 0.6 M"
   },
   {
@@ -1805,7 +1805,7 @@
     "ma50": 3056.8,
     "rsi_14": 56.1,
     "technical_signal": "CONSOLIDATION",
-    "updated_at": "2026-09-16T09:59:14.543861",
+    "updated_at": "2026-09-16T15:27:19.066216",
     "net_value_fmt": "-Rp 2.5 M"
   },
   {
@@ -1824,7 +1824,7 @@
     "ma50": 50.0,
     "rsi_14": 38.4,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:14.543868",
+    "updated_at": "2026-09-16T15:27:19.066219",
     "net_value_fmt": "+Rp 0.0 M"
   },
   {
@@ -1843,7 +1843,7 @@
     "ma50": 1786.9,
     "rsi_14": 29.2,
     "technical_signal": "OVERSOLD_REBOUND",
-    "updated_at": "2026-09-16T09:59:14.543871",
+    "updated_at": "2026-09-16T15:27:19.066223",
     "net_value_fmt": "-Rp 0.4 M"
   },
   {
@@ -1862,7 +1862,7 @@
     "ma50": 3127.4,
     "rsi_14": 48.6,
     "technical_signal": "ACCUMULATION",
-    "updated_at": "2026-09-16T09:59:14.543874",
+    "updated_at": "2026-09-16T15:27:19.066227",
     "net_value_fmt": "+Rp 0.2 M"
   }
 ]
