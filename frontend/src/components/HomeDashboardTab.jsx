@@ -586,8 +586,8 @@ export default function HomeDashboardTab({
                         {news.sentiment || 'NEUTRAL'}
                       </span>
                     </div>
-                    <span style={{ fontSize: '8px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                      {news.pub_date ? new Date(news.pub_date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '08:45'}
+                    <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                      {news.pub_date ? `${new Date(news.pub_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })} · ${new Date(news.pub_date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB` : '16 Sep · 11:45 WIB'}
                     </span>
                   </div>
 

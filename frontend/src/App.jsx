@@ -210,6 +210,10 @@ export default function App() {
       case 'PEARSON_CORRELATION': return '🔗 Korelasi Pearson';
       case 'NEWS': return '📰 Terminal Live News';
       case 'ACADEMY': return '🎓 Quant Academy';
+      case 'WHALES': return '🐋 Whale Intelligence Hub';
+      case 'FUTURES': return '🔥 Crypto Futures Intelligence';
+      case 'FOREX': return '💱 Forex Command Center';
+      case 'US_STOCKS': return '🇺🇸 US Stock Intelligence';
       case 'CHANGELOG': return '📜 Changelog Update & Catatan Rilis';
       default: return 'Institutional Desk';
     }

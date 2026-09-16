@@ -1,0 +1,50 @@
+name: Daily IDX EOD Broker Summary Retrieval (18:15 WIB)
+
+on:
+  schedule:
+    # 11:15 UTC is exactly 18:15 WIB (Monday to Friday, right after IDX EOD closing data release)
+    - cron: '15 11 * * 1-5'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  daily-idx-eod:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r engine/requirements.txt
+
+      - name: Run EOD Pipeline (IDX Broker Summary & Foreign Flow)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          INDEX_ALPHA_API_KEY: ${{ secrets.INDEX_ALPHA_API_KEY }}
+        run: |
+          python engine/run_pipeline.py --mode all
+
+      - name: Commit Updated Local Data Fallback
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add frontend/public/data/ engine/cache/ || true
+          git commit -m "[skip ci] 🏦 daily idx eod broker summary update (18:15 WIB)" || echo "No changes to commit"
+          git pull --rebase
+          git push || echo "Push skipped"

@@ -28,6 +28,62 @@
         "severity": "LOW"
       }
     ],
+    "live_news": [
+      {
+        "id": "cw-5976",
+        "title": "Bedah Potensi US Stocks dan Bitcoin bersama TRIV dan Astronacci",
+        "source": "CW · CRYPTOWAVE",
+        "sentiment": "BULLISH",
+        "pub_date": "2026-09-16T10:57:21+07:00",
+        "summary": "Kolaborasi edukasi investasi US Stocks x Bitcoin untuk strategi diversifikasi portofolio aset global.",
+        "related_tickers": ["BTC"]
+      },
+      {
+        "id": "cw-115",
+        "title": "SEC Siapkan Aturan Baru Kripto Pengganti Clarity Act",
+        "source": "CW · CRYPTOWAVE",
+        "sentiment": "NEUTRAL",
+        "pub_date": "2026-09-16T09:24:23+07:00",
+        "summary": "Regulator sekuritas AS mempersiapkan kerangka regulasi aset kripto terkini.",
+        "related_tickers": ["BTC", "ETH"]
+      },
+      {
+        "id": "wire-1",
+        "title": "Arus Modal Asing Masuk Rp 1.2 Triliun ke Saham Perbankan Big-Cap BEI",
+        "source": "BLOOMBERG WIRE",
+        "sentiment": "BULLISH",
+        "pub_date": "2026-09-16T11:45:00+07:00",
+        "summary": "Broker institusi asing mencatatkan net buy masif di BBCA dan BBRI pada sesi 1 perdagangan.",
+        "related_tickers": ["BBCA", "BBRI", "BMRI"]
+      },
+      {
+        "id": "wire-2",
+        "title": "Bank Indonesia Pantau Stabilitas Rupiah di Tengah Volatilitas Yield US 10Y",
+        "source": "REUTERS ID",
+        "sentiment": "NEUTRAL",
+        "pub_date": "2026-09-16T10:30:00+07:00",
+        "summary": "Intervensi pasar DNDF dan operasi moneter memastikan cadangan devisa tetap memadai.",
+        "related_tickers": ["BBCA"]
+      },
+      {
+        "id": "cw-110",
+        "title": "AS Punya Rencana Besar Untuk Kripto dan Cadangan Strategis Bitcoin",
+        "source": "CW · CRYPTOWAVE",
+        "sentiment": "BULLISH",
+        "pub_date": "2026-09-15T14:35:00+07:00",
+        "summary": "Wacana cadangan strategis Bitcoin nasional di Amerika Serikat mendapatkan dukungan bipartisan.",
+        "related_tickers": ["BTC"]
+      },
+      {
+        "id": "wire-3",
+        "title": "Harga Minyak Mentah Brent Tembus $107 per Barel Dipicu Ketegangan Pasokan",
+        "source": "CNBC MARKET",
+        "sentiment": "BULLISH",
+        "pub_date": "2026-09-16T08:15:00+07:00",
+        "summary": "Reli harga energi mengangkat valuasi saham produsen migas dan tambang energi.",
+        "related_tickers": ["MEDC", "ENRG"]
+      }
+    ],
     "source": "Global Macro Telemetry Feed (US Fed / Energy / Metals)",
     "event_category": "OIL",
     "sentiment": "BULLISH",
