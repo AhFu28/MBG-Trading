@@ -1427,6 +1427,36 @@
       "closed_at": null,
       "pnl": 0,
       "pnl_pct": 0
+    },
+    {
+      "id": "2782eb75-5d92-4587-a94d-282fc42d26f2",
+      "ticker": "TPIA",
+      "entry_price": 1825.0,
+      "sl_price": 1752.0,
+      "tp1_price": 1986.0,
+      "tp2_price": 2088.0,
+      "lots": 69,
+      "strategy_type": "Astra",
+      "status": "ACTIVE",
+      "opened_at": "2026-09-16T09:59:19.026206",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
+    },
+    {
+      "id": "4413ef14-2fd3-40e2-adae-5620e98c1c43",
+      "ticker": "AUTO",
+      "entry_price": 3330.0,
+      "sl_price": 3197.0,
+      "tp1_price": 3623.0,
+      "tp2_price": 3809.0,
+      "lots": 38,
+      "strategy_type": "Astra",
+      "status": "ACTIVE",
+      "opened_at": "2026-09-16T09:59:19.027685",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
     }
   ]
 }
