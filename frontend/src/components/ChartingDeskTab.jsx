@@ -208,18 +208,31 @@ export default function ChartingDeskTab({
     };
   }, [currentSymbol, currentMarket, activePreset, timeframe, presetConfigs]);
 
+  // Auto-guard: Automatically switch to Day interval if an Indonesian stock is active
+  useEffect(() => {
+    if (!isCrypto && ['1', '3', '5', '15', '30', '60', '120', '240'].includes(timeframe)) {
+      setTimeframe('D');
+    }
+  }, [isCrypto, timeframe]);
+
   const handleSelectTicker = (sym, mkt) => {
     setCurrentSymbol(sym);
     setCurrentMarket(mkt);
+    if (mkt === 'IDX') {
+      setTimeframe('D');
+    }
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const val = searchInput.trim().toUpperCase();
     if (val) {
-      const isCrypto = val.includes('USDT') || val.includes('BTC') || val.includes('ETH');
+      const isCryptoVal = val.includes('USDT') || val.includes('BTC') || val.includes('ETH') || val.includes('SOL');
       setCurrentSymbol(val);
-      setCurrentMarket(isCrypto ? 'CRYPTO' : 'IDX');
+      setCurrentMarket(isCryptoVal ? 'CRYPTO' : 'IDX');
+      if (!isCryptoVal) {
+        setTimeframe('D');
+      }
       setSearchInput('');
     }
   };
@@ -369,6 +382,45 @@ export default function ChartingDeskTab({
           }}>
             {getTvSymbol(currentSymbol, currentMarket)}
           </span>
+
+          {/* Smart Adaptive Timeframe Selector */}
+          <div style={{ display: 'flex', gap: '3px', background: 'rgba(255,255,255,0.06)', padding: '2px 4px', borderRadius: '4px', alignItems: 'center' }}>
+            {(isCrypto ? [
+              { label: '5m', val: '5' },
+              { label: '15m', val: '15' },
+              { label: '1H', val: '60' },
+              { label: '4H', val: '240' },
+              { label: '1D', val: 'D' },
+              { label: '1W', val: 'W' }
+            ] : [
+              { label: '1D (Day)', val: 'D' },
+              { label: '1W (Week)', val: 'W' },
+              { label: '1M (Month)', val: 'M' }
+            ]).map(tf => (
+              <button
+                key={tf.val}
+                onClick={() => setTimeframe(tf.val)}
+                style={{
+                  background: timeframe === tf.val ? 'var(--accent-blue, #3b82f6)' : 'transparent',
+                  color: timeframe === tf.val ? '#ffffff' : '#a0a0a5',
+                  border: 'none',
+                  padding: '2px 6px',
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  borderRadius: '3px',
+                  cursor: 'pointer'
+                }}
+                title={!isCrypto ? 'TradingView IDX hanya mendukung data EOD (Daily/Weekly/Monthly)' : `Interval ${tf.label}`}
+              >
+                {tf.label}
+              </button>
+            ))}
+            {!isCrypto && (
+              <span style={{ fontSize: '9px', color: '#8e8e93', padding: '0 4px', fontFamily: 'var(--font-mono)' }}>
+                IDX EOD Feed
+              </span>
+            )}
+          </div>
 
           <button
             className="telemetry-btn"

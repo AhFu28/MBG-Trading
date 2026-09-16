@@ -27,7 +27,8 @@ export default function MasterQuantLeaderboard({
   brokerSummary = {},
   bundle = null,
   onSelectTicker,
-  onOpenLotCalc
+  onOpenLotCalc,
+  onSelectNews
 }) {
   // Alias for internal use — reads from controlled prop
   const activeMainTab = activeTab;
@@ -141,7 +142,7 @@ export default function MasterQuantLeaderboard({
 
     // 2. Crypto Spot Pairs
     cryptoSpotList.forEach((c) => {
-      const existing = items.find(i => i.ticker === c.pair);
+      const existing = items.find(i => i.ticker === c.pair || i.ticker === c.pair.replace('/', '') || i.ticker === c.symbol);
       if (!existing) {
         const entry = c.current_price || c.entry_high || 0;
         const sl = c.stop_loss || 0;
@@ -446,6 +447,7 @@ export default function MasterQuantLeaderboard({
             macro={macro} 
             foreignFlow={foreignFlow}
             onSelectTicker={onSelectTicker} 
+            onSelectNews={onSelectNews}
           />
         </div>
       )}

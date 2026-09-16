@@ -5,7 +5,8 @@ export default function HomeDashboardTab({
   data,
   onSelectTicker,
   onOpenLotCalc,
-  onNavigateTab
+  onNavigateTab,
+  onSelectNews
 }) {
   const [dataStatus, setDataStatus] = useState('live');
 
@@ -68,6 +69,13 @@ export default function HomeDashboardTab({
       {dataStatus === 'stale' && (
         <div style={{background:'#dc2626',color:'#fff',padding:'8px 16px',borderRadius:8,marginBottom:12,display:'flex',alignItems:'center',gap:8,fontSize:13,fontWeight:600}}>
           ⚠️ DATA STALE — Last updated: {data?.last_updated ? new Date(data.last_updated).toLocaleString('id-ID') : 'Unknown'}. Pipeline may be down.
+          {data?.section_timestamps && (
+            <span style={{fontSize: '9px', marginLeft: '8px', opacity: 0.8}}>
+              IDX: {data.section_timestamps?.idx ? new Date(data.section_timestamps.idx).toLocaleTimeString('id-ID') : 'N/A'} | 
+              Crypto: {data.section_timestamps?.crypto ? new Date(data.section_timestamps.crypto).toLocaleTimeString('id-ID') : 'N/A'} | 
+              Macro: {data.section_timestamps?.macro ? new Date(data.section_timestamps.macro).toLocaleTimeString('id-ID') : 'N/A'}
+            </span>
+          )}
         </div>
       )}
       {dataStatus === 'fallback' && (
@@ -77,7 +85,7 @@ export default function HomeDashboardTab({
       )}
 
       {/* TOP: MBG MACRO INTELLIGENCE WIRE (Full Strip) */}
-      <BloombergNewsWire macro={macro} bundle={data} onSelectTicker={onSelectTicker} />
+      <BloombergNewsWire macro={macro} bundle={data} onSelectTicker={onSelectTicker} onSelectNews={onSelectNews} />
 
       {/* MAIN TWO-COLUMN CONTAINER: LEFT 72% (COCKPIT) + RIGHT 28% (LIVE NEWS STREAM) */}
       <div style={{
@@ -568,15 +576,30 @@ export default function HomeDashboardTab({
               const isBear = news.sentiment === 'BEARISH';
               const isBull = news.sentiment === 'BULLISH';
               return (
-                <div key={news.id || idx} style={{
-                  padding: '6px 8px',
-                  background: 'var(--bg-panel-subtle)',
-                  borderRadius: '3px',
-                  border: 'var(--border-hairline)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '3px'
-                }}>
+                <div
+                  key={news.id || idx}
+                  onClick={() => onSelectNews && onSelectNews(news)}
+                  style={{
+                    padding: '8px 10px',
+                    background: 'var(--bg-panel-subtle)',
+                    borderRadius: '4px',
+                    border: 'var(--border-hairline)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--accent-blue)';
+                    e.currentTarget.style.background = 'rgba(59, 130, 246, 0.06)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border-hairline)';
+                    e.currentTarget.style.background = 'var(--bg-panel-subtle)';
+                  }}
+                  title="Klik untuk melihat detail & analisis berita"
+                >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <span style={{ fontSize: '9px', fontWeight: '800', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
@@ -591,25 +614,29 @@ export default function HomeDashboardTab({
                     </span>
                   </div>
 
-                  <div style={{ fontSize: '10px', fontWeight: '600', color: 'var(--text-primary)', lineHeight: 1.3 }}>
+                  <div style={{ fontSize: '10px', fontWeight: '600', color: 'var(--text-primary)', lineHeight: 1.35 }}>
                     {news.title}
                   </div>
 
                   {news.related_tickers && news.related_tickers.length > 0 && (
-                    <div style={{ display: 'flex', gap: '3px', marginTop: '2px', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: '4px', marginTop: '2px', flexWrap: 'wrap' }}>
                       {news.related_tickers.map(t => (
                         <span
                           key={t}
-                          onClick={() => onSelectTicker(t, 'IDX')}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onSelectTicker && onSelectTicker(t, 'IDX');
+                          }}
                           style={{
                             fontSize: '8px',
                             fontFamily: 'var(--font-mono)',
                             color: 'var(--accent-blue)',
                             background: 'rgba(59, 130, 246, 0.12)',
-                            padding: '0 3px',
+                            padding: '1px 4px',
                             borderRadius: '2px',
                             cursor: 'pointer'
                           }}
+                          title={`Buka chart TradingView $${t}`}
                         >
                           ${t}
                         </span>

@@ -14,6 +14,7 @@ const WhaleIntelligenceTab = lazy(() => import('./components/WhaleIntelligenceTa
 const CryptoFuturesTab = lazy(() => import('./components/CryptoFuturesTab.jsx'));
 const ForexCommandTab = lazy(() => import('./components/ForexCommandTab.jsx'));
 const USStockTab = lazy(() => import('./components/USStockTab.jsx'));
+const NewsDetailModal = lazy(() => import('./components/NewsDetailModal.jsx'));
 
 const jakartaTimeFormatter = new Intl.DateTimeFormat('id-ID', {
   timeZone: 'Asia/Jakarta',
@@ -137,6 +138,24 @@ export default function App() {
 
   const handleCloseLotCalc = useCallback(() => {
     setLotCalcModal(prev => ({ ...prev, isOpen: false }));
+  }, []);
+
+  // News Detail Modal State
+  const [newsModal, setNewsModal] = useState({
+    isOpen: false,
+    news: null
+  });
+
+  const handleOpenNews = useCallback((newsItem) => {
+    if (!newsItem) return;
+    setNewsModal({
+      isOpen: true,
+      news: newsItem
+    });
+  }, []);
+
+  const handleCloseNews = useCallback(() => {
+    setNewsModal(prev => ({ ...prev, isOpen: false }));
   }, []);
 
   const parseSafeDate = (isoString) => {
@@ -364,6 +383,7 @@ export default function App() {
                 onSelectTicker={handleOpenChart}
                 onOpenLotCalc={handleOpenLotCalc}
                 onNavigateTab={setActiveTab}
+                onSelectNews={handleOpenNews}
               />
             ) : activeTab === 'CHARTING' ? (
               /* INSTITUTIONAL CHARTING DESK */
@@ -419,6 +439,7 @@ export default function App() {
                   bundle={data}
                   onSelectTicker={handleOpenChart}
                   onOpenLotCalc={handleOpenLotCalc}
+                  onSelectNews={handleOpenNews}
                 />
               </main>
             )}
@@ -440,6 +461,16 @@ export default function App() {
               prefillSL={lotCalcModal.sl}
               initialMarket={lotCalcModal.market}
             />
+
+            {/* 5. News Detail Modal */}
+            {newsModal.isOpen && (
+              <NewsDetailModal
+                news={newsModal.news}
+                allNews={data?.macro_telemetry?.live_news || []}
+                onClose={handleCloseNews}
+                onSelectTicker={handleOpenChart}
+              />
+            )}
           </Suspense>
 
           {/* 5. Institutional Disclaimer Footer */}

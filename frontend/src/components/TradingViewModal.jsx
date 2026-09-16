@@ -2,10 +2,29 @@ import React, { useEffect, useRef, useState } from 'react';
 
 export default function TradingViewModal({ initialSymbol, market = 'IDX', onClose }) {
   const containerRef = useRef(null);
+
+  // Helper to identify if symbol belongs to Crypto or IDX
+  const isCryptoSymbol = (sym, mkt) => {
+    if (mkt === 'CRYPTO') return true;
+    const clean = (sym || '').replace('.JK', '').replace('/', '').toUpperCase();
+    return clean.endsWith('USDT') || clean.startsWith('BTC') || clean.startsWith('ETH') || clean.startsWith('SOL');
+  };
+
+  const initialIsCrypto = isCryptoSymbol(initialSymbol, market);
   const [currentSymbol, setCurrentSymbol] = useState(initialSymbol || 'BBCA');
   const [searchInput, setSearchInput] = useState('');
-  const [chartInterval, setChartInterval] = useState('15'); // default 15m for active quant monitoring
+  // Default to 'D' (Day) for IDX stocks because TradingView free IDX feed only supports D, W, M.
+  const [chartInterval, setChartInterval] = useState(initialIsCrypto ? '15' : 'D');
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const isCurrentCrypto = isCryptoSymbol(currentSymbol, market);
+
+  // Auto-guard: Automatically switch to Day interval if an Indonesian stock is active
+  useEffect(() => {
+    if (!isCurrentCrypto && ['1', '3', '5', '15', '30', '60', '120', '240'].includes(chartInterval)) {
+      setChartInterval('D');
+    }
+  }, [currentSymbol, market, isCurrentCrypto]);
 
   // Format symbol for TradingView
   const getTvSymbol = (sym, mkt) => {
@@ -86,7 +105,11 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchInput.trim()) {
-      setCurrentSymbol(searchInput.trim().toUpperCase());
+      const sym = searchInput.trim().toUpperCase();
+      setCurrentSymbol(sym);
+      if (!isCryptoSymbol(sym, market)) {
+        setChartInterval('D');
+      }
       setSearchInput('');
     }
   };
@@ -122,15 +145,20 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
             <span style={{ color: 'var(--accent-orange)', fontWeight: '700' }}>TRADINGVIEW INTERACTIVE TELEMETRY</span>
             <span className="badge badge-alert">{getTvSymbol(currentSymbol, market)}</span>
 
-            {/* Timeframe selector */}
-            <div style={{ display: 'flex', gap: '3px', background: 'rgba(255,255,255,0.08)', padding: '2px 4px', borderRadius: '4px', marginLeft: '6px' }}>
-              {[
+            {/* Smart Adaptive Timeframe selector */}
+            <div style={{ display: 'flex', gap: '3px', background: 'rgba(255,255,255,0.08)', padding: '2px 4px', borderRadius: '4px', marginLeft: '6px', alignItems: 'center' }}>
+              {(isCurrentCrypto ? [
                 { label: '5m', val: '5' },
                 { label: '15m', val: '15' },
                 { label: '1H', val: '60' },
                 { label: '4H', val: '240' },
-                { label: '1D', val: 'D' }
-              ].map(tf => (
+                { label: '1D', val: 'D' },
+                { label: '1W', val: 'W' }
+              ] : [
+                { label: '1D (Day)', val: 'D' },
+                { label: '1W (Week)', val: 'W' },
+                { label: '1M (Month)', val: 'M' }
+              ]).map(tf => (
                 <button
                   key={tf.val}
                   onClick={() => setChartInterval(tf.val)}
@@ -144,10 +172,16 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
                     borderRadius: '3px',
                     cursor: 'pointer'
                   }}
+                  title={!isCurrentCrypto ? 'TradingView IDX hanya mendukung data EOD (Daily/Weekly/Monthly)' : `Interval ${tf.label}`}
                 >
                   {tf.label}
                 </button>
               ))}
+              {!isCurrentCrypto && (
+                <span style={{ fontSize: '9px', color: '#8e8e93', padding: '0 4px', fontFamily: 'var(--font-mono)' }}>
+                  IDX EOD Feed
+                </span>
+              )}
             </div>
 
             <button
@@ -199,7 +233,12 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
             {['BBCA', 'BREN', 'ANTM', 'MEDC', 'BTCUSDT', 'SOLUSDT'].map(preset => (
               <button 
                 key={preset}
-                onClick={() => setCurrentSymbol(preset)}
+                onClick={() => {
+                  setCurrentSymbol(preset);
+                  if (!isCryptoSymbol(preset, market)) {
+                    setChartInterval('D');
+                  }
+                }}
                 className="telemetry-btn"
                 style={{ padding: '2px 6px', fontSize: '10px' }}
               >

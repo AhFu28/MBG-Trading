@@ -1,11 +1,16 @@
 import logging
 import yfinance as yf
 from datetime import datetime
+try:
+    from fetchers.foreign_flow_fetcher import ForeignFlowFetcher
+except ImportError:
+    from engine.fetchers.foreign_flow_fetcher import ForeignFlowFetcher
 
 logger = logging.getLogger("IDXMarketFetcher")
 
 class IDXMarketFetcher:
     def __init__(self):
+        self.foreign_flow_fetcher = ForeignFlowFetcher()
         self.history_dfs = {}
         # 1. Conglomerate Groups Definition
         # 1. Conglomerate Groups Definition (Audited & M&A / Strategic Stakes)
@@ -317,7 +322,7 @@ class IDXMarketFetcher:
                             else:
                                 sig = "PULLBACK" if px < ma20 else "CONSOLIDATION"
 
-                            est_flow = round((px * vol * (chg / 100)) * 0.35, 0)
+                            flow_data = self.foreign_flow_fetcher.fetch_foreign_flow(sym, px, vol, chg)
 
                             self.tv_cache[sym] = {
                                 "price": round(px, 0),
@@ -326,7 +331,8 @@ class IDXMarketFetcher:
                                 "ma20": ma20,
                                 "ma50": ma50,
                                 "rsi_14": rsi,
-                                "foreign_net_val_idr": est_flow,
+                                "foreign_net_val_idr": flow_data["foreign_net_val_idr"],
+                                "data_source": flow_data["data_source"],
                                 "technical_signal": sig
                             }
                     logger.info(f"Successfully prefetched {len(self.tv_cache)} real-time IDX stocks from TradingView Scanner.")
@@ -386,8 +392,8 @@ class IDXMarketFetcher:
                 else:
                     signal = "PULLBACK" if price < ma20 else "CONSOLIDATION"
 
-                # Foreign flow estimate proxy (price change * institutional participation factor)
-                est_flow = round((price * volume * (change_pct / 100)) * 0.35, 0)
+                # Foreign flow fetcher (real data with estimation fallback)
+                flow_data = self.foreign_flow_fetcher.fetch_foreign_flow(ticker, price, volume, change_pct)
 
                 return {
                     "price": round(price, 0),
@@ -396,7 +402,8 @@ class IDXMarketFetcher:
                     "ma20": ma20,
                     "ma50": ma50,
                     "rsi_14": rsi,
-                    "foreign_net_val_idr": est_flow,
+                    "foreign_net_val_idr": flow_data["foreign_net_val_idr"],
+                    "data_source": flow_data["data_source"],
                     "technical_signal": signal
                 }
         except Exception as e:

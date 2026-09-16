@@ -879,3 +879,10 @@ body {
   border-bottom: none;
 }
 
+/* Responsive grid for NewsTab Cockpit */
+@media (max-width: 980px) {
+  .news-tab-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+

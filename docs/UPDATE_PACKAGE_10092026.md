@@ -144,3 +144,5 @@ MBG QUANT TERMINAL VERSION REGISTRY
 - **Companion Telemetry & 1-Klik Kalkulator Lot**:
   - Panel samping menampilkan zona Entry, Stop Loss 2% Astra, Target Profit 1-2, dan tombol `💰 Setel ke Kalkulator Lot` yang langsung menyelaraskan manajemen risiko modal.
 
+
+
