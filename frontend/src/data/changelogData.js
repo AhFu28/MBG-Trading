@@ -18,25 +18,31 @@ export const CHANGELOG_DATA = [
     status: 'LATEST',
     statusColor: 'var(--accent-green)',
     badgeLabel: 'LATEST / ACTIVE HARI INI',
-    title: 'Update Package 16092026: NewsDetailModal, Bull-Bear Debate Engine, Auth Hardening & Markdown Changelog',
-    description: 'Rekapitulasi pembaruan 16 September 2026: Integrasi modal detail berita interaktif (NewsDetailModal), Bull-Bear Debate Engine, audit keamanan Cloudflare Pages, serta penyederhanaan antarmuka Changelog ke model dokumen Markdown bersih.',
+    title: 'Update Package 16092026: Intraday 30-Min Sync, Auto 1D Chart Timeframe, 2-Column News Cockpit & Markdown Changelog',
+    description: 'Rekapitulasi pembaruan lengkap 16 September 2026: Sinkronisasi intraday 30 menit & multi-tier foreign flow, auto-timeframe 1D untuk saham IDX, layout full-width 2-kolom NewsTab, NewsDetailModal interaktif, Bull-Bear Debate Engine, serta format dokumen Markdown Changelog.',
     processFlow: [
       { step: '1. Baseline Core', label: 'Quant & Plans (08-09/09)' },
       { step: '2. Telegram & Desk', label: 'Serverless Edge (10/09)' },
       { step: '3. Cockpit V2', label: 'SoSoValue Layout (11/09)' },
-      { step: '4. AI Debate & Modal', label: 'Aktif Hari Ini (16/09)' }
+      { step: '4. Intraday & News', label: 'Aktif Hari Ini (16/09)' }
     ],
     markdownContent: `
-### 🚀 Pembaruan Utama (Highlights Hari Ini)
-- **Interactive NewsDetailModal:** Modal baca detail berita instan saat kartu berita diklik. Menampilkan narasi lengkap, sentimen pasar (*BULLISH/BEARISH/NEUTRAL*), serta 3 poin kunci (*Key Takeaways*) Stockbit Snips.
-- **Bull-Bear Debate Engine:** Engine sintesis sentimen multi-agen yang mengadu tesis Bullish vs Bearish untuk menguji ketahanan setiap sinyal trading saham IDX.
-- **Auth Hardening & Cloudflare Deployment:** Pembersihan autentikasi login (default: \`mbg\`), eliminasi celah keamanan runtime, dan verifikasi deployment Cloudflare Pages Functions.
-- **Simplified Markdown Changelog:** Restrukturisasi antarmuka riwayat versi dari kartu kotak-kotak tebal (*chunky grid*) menjadi format dokumen Markdown elegan dengan tipografi bersih, diagram alur proses, dan tabel rekapitulasi.
+### 🚀 Pembaruan Utama (Highlights 16/09)
+- **Auto 1D Timeframe & Smart Adaptive Selector:** TradingView Chart Modal dan Charting Desk kini otomatis menyetel timeframe ke \`1D\` (Harian) khusus saham IDX, menghindari jeda intraday acak dan menyesuaikan preset indikator secara cerdas.
+- **Intraday 30-Min Market Sync & Multi-Tier Foreign Flow:** Pipeline otomatisasi baru (\`intraday_idx_refresh.yml\`) memperbarui data pasar dan akumulasi asing setiap 30 menit selama jam bursa IDX dengan fetcher multi-tier yang tahan kegagalan (*fault-tolerant*).
+- **Full-Width 2-Column News Cockpit Layout:** Optimalisasi tampilan Live News menjadi layout cockpit 2-kolom layar penuh, menghilangkan whitespace berlebih dan memaksimalkan keterbacaan feed berita real-time.
+- **Interactive NewsDetailModal:** Modal pop-up detail berita saat kartu diklik, menyajikan narasi komprehensif, sentimen pasar (*BULLISH/BEARISH/NEUTRAL*), dan 3 poin kunci (*Key Takeaways*) Stockbit Snips.
+- **Bull-Bear AI Debate Engine:** Engine sintesis sentimen multi-agen yang menguji ketahanan tesis trading dengan memperdebatkan argumen Bullish vs Bearish pada saham unggulan.
+- **Auth Hardening & Cloudflare Deployment:** Pengamanan autentikasi login (default: \`mbg\`), eliminasi celah runtime, dan verifikasi deployment edge Cloudflare Pages Functions.
+- **Simplified Markdown Changelog:** Antarmuka riwayat rilis baru berformat dokumen Markdown bersih, diagram alur proses, dan tabel rekapitulasi status modul.
     `.trim(),
     table: [
-      { module: 'NewsDetailModal', status: 'PROD', category: 'UI / News', summary: 'Modal pop-up baca berita lengkap + 3 Key Takeaways' },
-      { module: 'Bull-Bear Debate', status: 'PROD', category: 'AI / Quant', summary: 'Simulasi debat multi-perspektif analisa risiko saham' },
-      { module: 'Auth & CF Pages', status: 'PROD', category: 'Security', summary: 'Hardening Cloudflare Pages edge runtime & auto-auth' },
+      { module: 'Chart Timeframe 1D', status: 'PROD', category: 'Charting', summary: 'Auto-set interval 1D untuk saham IDX + adaptive market selector' },
+      { module: 'Intraday 30-Min Sync', status: 'PROD', category: 'Engine / Cron', summary: 'Pipeline update 30 menit bursa IDX + multi-tier foreign flow' },
+      { module: 'News Cockpit 2-Col', status: 'PROD', category: 'UI / News', summary: 'Layout full-width 2-kolom responsif untuk live market feed' },
+      { module: 'NewsDetailModal', status: 'PROD', category: 'UI / News', summary: 'Modal pop-up detail berita + 3 Key Takeaways Stockbit Snips' },
+      { module: 'Bull-Bear Debate', status: 'PROD', category: 'AI / Quant', summary: 'Sintesis multi-agen analisa risiko sentimen saham IDX' },
+      { module: 'Auth & CF Pages', status: 'PROD', category: 'Security', summary: 'Hardening Cloudflare Pages edge runtime & auto-auth gate' },
       { module: 'Markdown Changelog', status: 'PROD', category: 'System', summary: 'Format dokumen Markdown bersih + diagram alur proses' }
     ]
   },
