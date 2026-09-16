@@ -87,7 +87,7 @@ export default function HomeDashboardTab({
       )}
 
       {/* TOP: MBG MACRO INTELLIGENCE WIRE (Full Strip) */}
-      <BloombergNewsWire macro={macro} bundle={data} onSelectTicker={onSelectTicker} onSelectNews={onSelectNews} />
+      <BloombergNewsWire macro={macro} bundle={data} livePrices={livePrices} onSelectTicker={onSelectTicker} onSelectNews={onSelectNews} />
 
       {/* MAIN TWO-COLUMN CONTAINER: LEFT 72% (COCKPIT) + RIGHT 28% (LIVE NEWS STREAM) */}
       <div style={{

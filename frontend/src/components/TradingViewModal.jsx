@@ -40,7 +40,8 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
 
     // Check Crypto
     if (mkt === 'CRYPTO' || clean.endsWith('USDT') || clean.startsWith('BTC') || clean.startsWith('ETH') || clean.startsWith('SOL')) {
-      return `BINANCE:${clean}`;
+      const pair = clean.endsWith('USDT') ? clean : `${clean}USDT`;
+      return `BINANCE:${pair}`;
     }
 
     // Check US Equities

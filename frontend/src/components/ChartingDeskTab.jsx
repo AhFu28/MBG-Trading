@@ -10,6 +10,8 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
  */
 export default function ChartingDeskTab({ 
   data = {}, 
+  livePrices = {},
+  flashMap = {},
   onOpenLotCalc,
   initialSymbol = 'BBCA'
 }) {
@@ -34,7 +36,8 @@ export default function ChartingDeskTab({
 
     // Check Crypto
     if (mkt === 'CRYPTO' || clean.endsWith('USDT') || clean.startsWith('BTC') || clean.startsWith('ETH') || clean.startsWith('SOL')) {
-      return `BINANCE:${clean}`;
+      const pair = clean.endsWith('USDT') ? clean : `${clean}USDT`;
+      return `BINANCE:${pair}`;
     }
 
     // Check US Equities
@@ -142,11 +145,13 @@ export default function ChartingDeskTab({
 
   // Derived price & levels
   const currentPrice = useMemo(() => {
+    const live = livePrices[cleanSym] || livePrices[`IDX:${cleanSym}`] || livePrices[`${cleanSym}USDT`] || livePrices[`${cleanSym}/USDT`];
+    if (live?.price) return live.price;
     if (activePlan?.current_price) return activePlan.current_price;
     if (activePlan?.entry_price) return activePlan.entry_price;
     if (activeBrokerSummary?.ref_price) return activeBrokerSummary.ref_price;
     return isCrypto ? 100 : 5000;
-  }, [activePlan, activeBrokerSummary, isCrypto]);
+  }, [cleanSym, livePrices, activePlan, activeBrokerSummary, isCrypto]);
 
   const entryPrice = activePlan?.entry_price || activePlan?.entry_low || currentPrice;
   const stopLossPrice = activePlan?.stop_loss || (isCrypto ? Number((currentPrice * 0.97).toFixed(4)) : Math.round(currentPrice * 0.96));

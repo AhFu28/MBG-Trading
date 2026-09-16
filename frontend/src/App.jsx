@@ -402,6 +402,8 @@ export default function App() {
               <main>
                 <ChartingDeskTab
                   data={data}
+                  livePrices={livePrices}
+                  flashMap={flashMap}
                   onOpenLotCalc={handleOpenLotCalc}
                   initialSymbol={chartModal.symbol || 'BBCA'}
                 />

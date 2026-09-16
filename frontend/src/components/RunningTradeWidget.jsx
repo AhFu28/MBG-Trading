@@ -2,28 +2,28 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 
 // Pool data emiten liquid IDX untuk generator running trade real-time
 const IDX_TICKERS = [
-  { symbol: 'BBCA', name: 'Bank Central Asia', basePrice: 10250, tick: 25, changePct: 1.23 },
-  { symbol: 'BBRI', name: 'Bank Rakyat Indonesia', basePrice: 4880, tick: 10, changePct: 0.82 },
-  { symbol: 'BMRI', name: 'Bank Mandiri', basePrice: 6575, tick: 25, changePct: 1.54 },
-  { symbol: 'BBNI', name: 'Bank Negara Indonesia', basePrice: 5350, tick: 25, changePct: 0.47 },
-  { symbol: 'BREN', name: 'Barito Renewables', basePrice: 8975, tick: 25, changePct: 3.16 },
-  { symbol: 'AMMN', name: 'Amman Mineral', basePrice: 9475, tick: 25, changePct: 2.43 },
-  { symbol: 'ASII', name: 'Astra International', basePrice: 4960, tick: 10, changePct: -0.80 },
-  { symbol: 'TLKM', name: 'Telkom Indonesia', basePrice: 3040, tick: 10, changePct: -1.30 },
+  { symbol: 'BBCA', name: 'Bank Central Asia', basePrice: 6375, tick: 25, changePct: -0.39 },
+  { symbol: 'BBRI', name: 'Bank Rakyat Indonesia', basePrice: 3340, tick: 10, changePct: 0.60 },
+  { symbol: 'BMRI', name: 'Bank Mandiri', basePrice: 4300, tick: 25, changePct: -0.92 },
+  { symbol: 'BBNI', name: 'Bank Negara Indonesia', basePrice: 4380, tick: 20, changePct: -0.45 },
+  { symbol: 'BREN', name: 'Barito Renewables', basePrice: 8975, tick: 25, changePct: 1.12 },
+  { symbol: 'AMMN', name: 'Amman Mineral', basePrice: 5150, tick: 25, changePct: 1.98 },
+  { symbol: 'ASII', name: 'Astra International', basePrice: 4880, tick: 10, changePct: -0.20 },
+  { symbol: 'TLKM', name: 'Telkom Indonesia', basePrice: 2670, tick: 10, changePct: -1.11 },
+  { symbol: 'LSIP', name: 'PP London Sumatra', basePrice: 1725, tick: 5, changePct: 2.37 },
   { symbol: 'UNTR', name: 'United Tractors', basePrice: 26800, tick: 50, changePct: 0.94 },
   { symbol: 'ICBP', name: 'Indofood CBP', basePrice: 11450, tick: 25, changePct: 0.44 },
   { symbol: 'PGAS', name: 'Perusahaan Gas Negara', basePrice: 1545, tick: 5, changePct: 2.32 },
   { symbol: 'ADRO', name: 'Adaro Energy', basePrice: 3680, tick: 10, changePct: 1.66 },
   { symbol: 'MEDC', name: 'Medco Energi', basePrice: 1320, tick: 5, changePct: 3.12 },
-  { symbol: 'PTBA', name: 'Bukit Asam', basePrice: 2710, tick: 10, changePct: 0.74 },
-  { symbol: 'BRIS', name: 'Bank Syariah Indonesia', basePrice: 2890, tick: 10, changePct: 2.12 },
+  { symbol: 'PTBA', name: 'Bukit Asam', basePrice: 2690, tick: 10, changePct: 0.74 },
+  { symbol: 'BRMS', name: 'Bumi Resources Minerals', basePrice: 398, tick: 2, changePct: 3.12 },
   { symbol: 'CPIN', name: 'Charoen Pokphand', basePrice: 5125, tick: 25, changePct: -0.49 },
   { symbol: 'KLBF', name: 'Kalbe Farma', basePrice: 1675, tick: 5, changePct: 0.60 },
   { symbol: 'MDKA', name: 'Merdeka Copper Gold', basePrice: 2340, tick: 10, changePct: 1.74 },
-  { symbol: 'ANTM', name: 'Aneka Tambang', basePrice: 1515, tick: 5, changePct: 1.34 },
-  { symbol: 'INCO', name: 'Vale Indonesia', basePrice: 3820, tick: 10, changePct: 0.79 },
-  { symbol: 'GOTO', name: 'GoTo Gojek Tokopedia', basePrice: 56, tick: 1, changePct: 1.82 },
-  { symbol: 'BUKA', name: 'Bukalapak.com', basePrice: 122, tick: 1, changePct: 0.00 }
+  { symbol: 'ANTM', name: 'Aneka Tambang', basePrice: 1530, tick: 5, changePct: 1.34 },
+  { symbol: 'CUAN', name: 'Petrindo Jaya Kreasi', basePrice: 7150, tick: 25, changePct: 2.14 },
+  { symbol: 'GOTO', name: 'GoTo Gojek Tokopedia', basePrice: 56, tick: 1, changePct: 0.00 }
 ];
 
 const FOREIGN_BROKERS = ['AK', 'BK', 'CS', 'KZ', 'RX', 'CG', 'MS', 'JP'];
