@@ -2,76 +2,162 @@ import React, { useState, useMemo } from 'react';
 import { CHANGELOG_DATA } from '../data/changelogData.js';
 
 export default function ChangelogTab() {
-  const [selectedFilter, setSelectedFilter] = useState('ALL');
+  const [selectedPackageId, setSelectedPackageId] = useState(CHANGELOG_DATA[0]?.id || 'pkg-16092026');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Filter logic
-  const filteredReleases = useMemo(() => {
-    let list = CHANGELOG_DATA;
+  // Selected package
+  const activePackage = useMemo(() => {
+    return CHANGELOG_DATA.find(p => p.id === selectedPackageId) || CHANGELOG_DATA[0];
+  }, [selectedPackageId]);
 
-    if (selectedFilter !== 'ALL') {
-      list = list.filter(pkg => pkg.id === selectedFilter);
-    }
+  // Filter package list if search is typed
+  const filteredList = useMemo(() => {
+    if (!searchTerm.trim()) return CHANGELOG_DATA;
+    const q = searchTerm.trim().toLowerCase();
+    return CHANGELOG_DATA.filter(pkg => {
+      const inTitle = pkg.title.toLowerCase().includes(q);
+      const inDesc = pkg.description.toLowerCase().includes(q);
+      const inVer = pkg.version.toLowerCase().includes(q);
+      const inMarkdown = (pkg.markdownContent || '').toLowerCase().includes(q);
+      const inTable = (pkg.table || []).some(t => 
+        t.module.toLowerCase().includes(q) || t.summary.toLowerCase().includes(q)
+      );
+      return inTitle || inDesc || inVer || inMarkdown || inTable;
+    });
+  }, [searchTerm]);
 
-    if (searchTerm.trim()) {
-      const q = searchTerm.trim().toLowerCase();
-      list = list.filter(pkg => {
-        const inTitle = pkg.title.toLowerCase().includes(q);
-        const inDesc = pkg.description.toLowerCase().includes(q);
-        const inVersion = pkg.version.toLowerCase().includes(q);
-        const inHighlights = (pkg.highlights || []).some(h => 
-          h.title.toLowerCase().includes(q) || h.desc.toLowerCase().includes(q) || h.tag.toLowerCase().includes(q)
+  // Render markdown text lines simply and cleanly
+  const renderMarkdownLines = (text) => {
+    if (!text) return null;
+    const lines = text.trim().split('\n');
+
+    return lines.map((line, idx) => {
+      const trimmed = line.trim();
+      if (!trimmed) return <div key={idx} style={{ height: '6px' }} />;
+
+      // Header 3
+      if (trimmed.startsWith('### ')) {
+        return (
+          <h3 key={idx} style={{
+            fontSize: '14px',
+            fontWeight: '800',
+            color: 'var(--accent-green)',
+            marginTop: '16px',
+            marginBottom: '8px',
+            fontFamily: 'var(--font-mono)'
+          }}>
+            {trimmed.replace('### ', '')}
+          </h3>
         );
-        const inCategories = (pkg.categories || []).some(cat => 
-          cat.categoryTitle.toLowerCase().includes(q) || (cat.items || []).some(item => item.toLowerCase().includes(q))
-        );
-        return inTitle || inDesc || inVersion || inHighlights || inCategories;
-      });
-    }
+      }
 
-    return list;
-  }, [selectedFilter, searchTerm]);
+      // Header 2
+      if (trimmed.startsWith('## ')) {
+        return (
+          <h2 key={idx} style={{
+            fontSize: '15px',
+            fontWeight: '800',
+            color: '#38bdf8',
+            marginTop: '18px',
+            marginBottom: '8px',
+            borderBottom: 'var(--border-muted)',
+            paddingBottom: '4px'
+          }}>
+            {trimmed.replace('## ', '')}
+          </h2>
+        );
+      }
+
+      // List item
+      if (trimmed.startsWith('- ')) {
+        const itemContent = trimmed.substring(2);
+        // Replace **bold** with strong and `code` with code tags
+        const parts = itemContent.split(/(\*\*.*?\*\*|`.*?`)/g);
+
+        return (
+          <li key={idx} style={{
+            fontSize: '12px',
+            color: 'var(--text-primary)',
+            lineHeight: '1.7',
+            marginBottom: '6px'
+          }}>
+            {parts.map((part, pIdx) => {
+              if (part.startsWith('**') && part.endsWith('**')) {
+                return <strong key={pIdx} style={{ color: 'var(--text-primary)', fontWeight: '700' }}>{part.slice(2, -2)}</strong>;
+              }
+              if (part.startsWith('`') && part.endsWith('`')) {
+                return (
+                  <code key={pIdx} style={{
+                    fontFamily: 'var(--font-mono)',
+                    background: 'var(--bg-panel-subtle)',
+                    border: 'var(--border-muted)',
+                    padding: '2px 5px',
+                    borderRadius: '4px',
+                    fontSize: '11px',
+                    color: '#38bdf8'
+                  }}>
+                    {part.slice(1, -1)}
+                  </code>
+                );
+              }
+              return <span key={pIdx}>{part}</span>;
+            })}
+          </li>
+        );
+      }
+
+      // Regular paragraph
+      return (
+        <p key={idx} style={{
+          fontSize: '12px',
+          color: 'var(--text-muted)',
+          lineHeight: '1.6',
+          margin: '6px 0'
+        }}>
+          {trimmed}
+        </p>
+      );
+    });
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingBottom: '24px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: '30px' }}>
       
-      {/* 1. Header Banner */}
+      {/* 1. Master Header Strip */}
       <div className="telemetry-panel" style={{
-        padding: '16px 20px',
+        padding: '12px 18px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         flexWrap: 'wrap',
-        gap: '12px'
+        gap: '10px'
       }}>
         <div>
           <div style={{
-            fontSize: '11px',
+            fontSize: '10px',
             fontFamily: 'var(--font-mono)',
             color: 'var(--text-muted)',
-            marginBottom: '4px',
+            marginBottom: '3px',
             display: 'flex',
             alignItems: 'center',
             gap: '8px'
           }}>
             <span style={{ color: 'var(--accent-green)', fontWeight: '800' }}>MBG APEX</span>
             <span style={{ opacity: 0.4 }}>//</span>
-            <span>SYSTEM CHANGELOG & VERSION REGISTRY</span>
+            <span>DAILY RELEASE REGISTRY & MARKDOWN CHANGELOG</span>
           </div>
 
-          <h2 style={{
-            margin: 0,
-            fontSize: '18px',
+          <div style={{
+            fontSize: '16px',
             fontWeight: '800',
             color: 'var(--text-primary)',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            flexWrap: 'wrap'
+            gap: '8px'
           }}>
-            <span>📜 Histori Update & Catatan Rilis</span>
+            <span>📜 Histori Update Harian</span>
             <span style={{
-              fontSize: '11px',
+              fontSize: '10px',
               fontFamily: 'var(--font-mono)',
               background: 'rgba(0, 208, 132, 0.15)',
               color: 'var(--accent-green)',
@@ -79,92 +165,63 @@ export default function ChangelogTab() {
               padding: '2px 8px',
               borderRadius: '4px'
             }}>
-              Active: {CHANGELOG_DATA[0]?.version || 'Update Package'}
+              Active: {CHANGELOG_DATA[0]?.version}
             </span>
-          </h2>
-
-          <p style={{ margin: '6px 0 0 0', fontSize: '12px', color: 'var(--text-muted)' }}>
-            Transparansi siklus pembaruan fitur, optimasi engine kuantitatif, dan arsitektur sistem MBG Trading Intelligence Cockpit.
-          </p>
+          </div>
         </div>
 
-        {/* Telemetry Quick Badges */}
-        <div style={{ display: 'flex', gap: '8px', fontFamily: 'var(--font-mono)', flexWrap: 'wrap' }}>
+        {/* Quick Telemetry */}
+        <div style={{ display: 'flex', gap: '8px', fontFamily: 'var(--font-mono)' }}>
           <div style={{
             background: 'var(--bg-panel-subtle)',
             border: 'var(--border-muted)',
-            padding: '8px 12px',
+            padding: '6px 12px',
             borderRadius: '6px',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>TOTAL PAKET</div>
-            <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--text-primary)' }}>{CHANGELOG_DATA.length} Releases</div>
+            <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>TOTAL REKAP HARIAN</div>
+            <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>{CHANGELOG_DATA.length} Packages</div>
           </div>
           <div style={{
             background: 'var(--bg-panel-subtle)',
             border: 'var(--border-muted)',
-            padding: '8px 12px',
+            padding: '6px 12px',
             borderRadius: '6px',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>RUNTIME COST</div>
-            <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--accent-green)' }}>Rp 0 (Serverless)</div>
+            <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>FORMAT MODEL</div>
+            <div style={{ fontSize: '13px', fontWeight: '800', color: '#38bdf8' }}>Clean Markdown</div>
           </div>
         </div>
       </div>
 
-      {/* 2. Filter & Search Toolbar */}
-      <div className="telemetry-panel" style={{
-        padding: '10px 14px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '10px'
+      {/* 2. Main 2-Column Markdown & Package Layout */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'minmax(240px, 280px) 1fr',
+        gap: '14px',
+        alignItems: 'start'
       }}>
-        {/* Package Filter Pills */}
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          <button
-            onClick={() => setSelectedFilter('ALL')}
-            className="telemetry-btn"
-            style={{
-              background: selectedFilter === 'ALL' ? 'var(--accent-green)' : 'var(--bg-panel-subtle)',
-              color: selectedFilter === 'ALL' ? '#ffffff' : 'var(--text-primary)',
-              borderColor: selectedFilter === 'ALL' ? 'var(--accent-green)' : 'var(--border-color)',
-              padding: '5px 12px',
-              fontSize: '11px',
-              fontWeight: '700'
-            }}
-          >
-            SEMUA PAKET ({CHANGELOG_DATA.length})
-          </button>
+        
+        {/* Left: Package List (Daily Packages) */}
+        <div className="telemetry-panel" style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{
+            fontSize: '10px',
+            fontFamily: 'var(--font-mono)',
+            fontWeight: '800',
+            color: 'var(--text-muted)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em'
+          }}>
+            Daftar Paket Harian
+          </div>
 
-          {CHANGELOG_DATA.map(pkg => (
-            <button
-              key={pkg.id}
-              onClick={() => setSelectedFilter(pkg.id)}
-              className="telemetry-btn"
-              style={{
-                background: selectedFilter === pkg.id ? 'var(--accent-green)' : 'var(--bg-panel-subtle)',
-                color: selectedFilter === pkg.id ? '#ffffff' : 'var(--text-primary)',
-                borderColor: selectedFilter === pkg.id ? 'var(--accent-green)' : 'var(--border-color)',
-                padding: '5px 12px',
-                fontSize: '11px',
-                fontWeight: '700'
-              }}
-            >
-              {pkg.status === 'LATEST' ? '🚀 ' : '📦 '}{pkg.version.toUpperCase()} {pkg.status === 'LATEST' ? '(AKTIF)' : ''}
-            </button>
-          ))}
-        </div>
-
-        {/* Search Field */}
-        <div style={{ minWidth: '220px', flex: '1 1 200px', maxWidth: '340px' }}>
+          {/* Quick Search */}
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Cari fitur, telegram, engine, makro..."
+            placeholder="Cari fitur/paket..."
             style={{
               width: '100%',
               background: 'var(--bg-panel-subtle)',
@@ -178,224 +235,239 @@ export default function ChangelogTab() {
               boxSizing: 'border-box'
             }}
           />
-        </div>
-      </div>
 
-      {/* 3. Timeline / Release Cards */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        {filteredReleases.length === 0 ? (
-          <div className="telemetry-panel" style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)' }}>
-            Tidak ada catatan rilis yang cocok dengan filter pencarian "{searchTerm}".
-          </div>
-        ) : (
-          filteredReleases.map(pkg => {
-            const isLatest = pkg.status === 'LATEST';
+          {/* Package Selector Buttons */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
+            {filteredList.map(pkg => {
+              const isSelected = selectedPackageId === pkg.id;
+              const isLatest = pkg.status === 'LATEST';
 
-            return (
-              <div
-                key={pkg.id}
-                className="telemetry-panel"
-                style={{
-                  padding: '20px',
-                  borderRadius: '8px',
-                  border: isLatest ? '1px solid rgba(0, 208, 132, 0.4)' : 'var(--border-color)',
-                  boxShadow: isLatest ? '0 0 16px rgba(0, 208, 132, 0.08)' : 'none',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '14px'
-                }}
-              >
-                {/* Header Package Card */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                  flexWrap: 'wrap',
-                  gap: '10px',
-                  borderBottom: 'var(--border-muted)',
-                  paddingBottom: '12px'
-                }}>
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                      <span style={{
-                        fontSize: '16px',
-                        fontWeight: '800',
-                        color: 'var(--text-primary)',
-                        fontFamily: 'var(--font-mono)'
-                      }}>
-                        {pkg.version}
-                      </span>
-
-                      <span style={{
-                        fontSize: '10px',
-                        fontFamily: 'var(--font-mono)',
-                        fontWeight: '800',
-                        padding: '2px 8px',
-                        borderRadius: '4px',
-                        background: isLatest ? 'rgba(0, 208, 132, 0.15)' : 'var(--bg-panel-subtle)',
-                        color: isLatest ? 'var(--accent-green)' : 'var(--text-muted)',
-                        border: isLatest ? '1px solid rgba(0, 208, 132, 0.4)' : 'var(--border-muted)'
-                      }}>
-                        {pkg.badgeLabel}
-                      </span>
-
-                      <span style={{
-                        fontSize: '11px',
-                        color: 'var(--text-muted)',
-                        fontFamily: 'var(--font-mono)'
-                      }}>
-                        • {pkg.date}
-                      </span>
-                    </div>
-
-                    <div style={{
-                      marginTop: '4px',
-                      fontSize: '13px',
-                      fontWeight: '700',
-                      color: 'var(--text-primary)'
+              return (
+                <button
+                  key={pkg.id}
+                  onClick={() => setSelectedPackageId(pkg.id)}
+                  className="telemetry-btn"
+                  style={{
+                    background: isSelected ? 'rgba(0, 208, 132, 0.15)' : 'var(--bg-panel-subtle)',
+                    borderColor: isSelected ? 'var(--accent-green)' : 'var(--border-color)',
+                    color: isSelected ? 'var(--accent-green)' : 'var(--text-primary)',
+                    textAlign: 'left',
+                    padding: '8px 10px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '3px',
+                    cursor: 'pointer',
+                    boxShadow: isSelected ? '0 0 10px rgba(0,208,132,0.1)' : 'none'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                    <span style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+                      {pkg.version}
+                    </span>
+                    <span style={{
+                      fontSize: '9px',
+                      fontFamily: 'var(--font-mono)',
+                      fontWeight: '800',
+                      padding: '1px 5px',
+                      borderRadius: '3px',
+                      background: isLatest ? 'var(--accent-green)' : 'rgba(255,255,255,0.08)',
+                      color: isLatest ? '#000000' : 'var(--text-muted)'
                     }}>
-                      {pkg.title}
+                      {pkg.status}
+                    </span>
+                  </div>
+
+                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    📅 {pkg.date}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={{
+            marginTop: '8px',
+            paddingTop: '10px',
+            borderTop: 'var(--border-muted)',
+            fontSize: '10px',
+            color: 'var(--text-muted)',
+            lineHeight: '1.5'
+          }}>
+            💡 Setiap <strong>Package</strong> merekapitulasi seluruh update yang di-push dalam 1 hari kalender secara kronologis.
+          </div>
+        </div>
+
+        {/* Right: Markdown Document Body */}
+        <div className="telemetry-panel" style={{ padding: '24px 28px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          
+          {/* Header Document */}
+          <div style={{ borderBottom: 'var(--border-muted)', paddingBottom: '14px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+              <h1 style={{
+                margin: 0,
+                fontSize: '20px',
+                fontWeight: '800',
+                color: 'var(--text-primary)',
+                fontFamily: 'var(--font-mono)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <span># {activePackage.version}</span>
+                <span style={{
+                  fontSize: '11px',
+                  background: activePackage.status === 'LATEST' ? 'rgba(0, 208, 132, 0.2)' : 'rgba(255,255,255,0.08)',
+                  color: activePackage.status === 'LATEST' ? 'var(--accent-green)' : 'var(--text-muted)',
+                  border: `1px solid ${activePackage.status === 'LATEST' ? 'var(--accent-green)' : 'var(--border-color)'}`,
+                  padding: '2px 8px',
+                  borderRadius: '4px'
+                }}>
+                  {activePackage.semanticVersion} • {activePackage.badgeLabel}
+                </span>
+              </h1>
+
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                📅 {activePackage.date}
+              </span>
+            </div>
+
+            <div style={{ marginTop: '8px', fontSize: '13px', fontWeight: '700', color: 'var(--text-primary)' }}>
+              {activePackage.title}
+            </div>
+
+            <p style={{ margin: '6px 0 0 0', fontSize: '12px', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+              {activePackage.description}
+            </p>
+          </div>
+
+          {/* 1. GRAFIK / DIAGRAM ALUR PROSES EVOLUSI (PROCESS PIPELINE) */}
+          {activePackage.processFlow && activePackage.processFlow.length > 0 && (
+            <div style={{
+              background: 'var(--bg-panel-subtle)',
+              border: 'var(--border-muted)',
+              borderRadius: '8px',
+              padding: '12px 16px'
+            }}>
+              <div style={{
+                fontSize: '10px',
+                fontFamily: 'var(--font-mono)',
+                fontWeight: '800',
+                color: 'var(--text-muted)',
+                textTransform: 'uppercase',
+                marginBottom: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
+                <span>📈</span>
+                <span>Diagram Alur Proses Evolusi Paket</span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                {activePackage.processFlow.map((step, sIdx) => (
+                  <React.Fragment key={sIdx}>
+                    <div style={{
+                      background: sIdx === activePackage.processFlow.length - 1 ? 'rgba(0, 208, 132, 0.15)' : 'rgba(255, 255, 255, 0.04)',
+                      border: sIdx === activePackage.processFlow.length - 1 ? '1px solid var(--accent-green)' : 'var(--border-muted)',
+                      borderRadius: '6px',
+                      padding: '6px 10px',
+                      fontFamily: 'var(--font-mono)'
+                    }}>
+                      <div style={{
+                        fontSize: '11px',
+                        fontWeight: '800',
+                        color: sIdx === activePackage.processFlow.length - 1 ? 'var(--accent-green)' : 'var(--text-primary)'
+                      }}>
+                        {step.step}
+                      </div>
+                      <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
+                        {step.label}
+                      </div>
                     </div>
-                  </div>
 
-                  <div style={{
-                    fontSize: '11px',
-                    fontFamily: 'var(--font-mono)',
-                    color: 'var(--text-muted)',
-                    background: 'var(--bg-panel-subtle)',
-                    padding: '4px 8px',
-                    borderRadius: '4px'
-                  }}>
-                    TAG: {pkg.semanticVersion}
-                  </div>
-                </div>
+                    {sIdx < activePackage.processFlow.length - 1 && (
+                      <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>➔</span>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          )}
 
-                {/* Description */}
-                <div style={{ fontSize: '12px', color: 'var(--text-secondary, var(--text-primary))', lineHeight: '1.6' }}>
-                  {pkg.description}
-                </div>
+          {/* 2. KONTEN DOKUMEN MODEL MARKDOWN */}
+          <div>
+            <ul style={{ margin: 0, paddingLeft: '18px' }}>
+              {renderMarkdownLines(activePackage.markdownContent)}
+            </ul>
+          </div>
 
-                {/* Consolidated Baseline Notice (For Initial Launch Package) */}
-                {pkg.consolidatedNotice && (
-                  <div style={{
-                    background: 'rgba(245, 158, 11, 0.08)',
-                    border: '1px solid rgba(245, 158, 11, 0.3)',
-                    borderRadius: '6px',
-                    padding: '10px 14px',
-                    fontSize: '12px',
-                    color: 'var(--accent-amber)',
-                    lineHeight: '1.5'
-                  }}>
-                    <strong>{pkg.consolidatedNotice}</strong>
-                  </div>
-                )}
+          {/* 3. TABEL REKAPITULASI STATUS MODUL */}
+          {activePackage.table && activePackage.table.length > 0 && (
+            <div style={{ marginTop: '8px' }}>
+              <h3 style={{
+                fontSize: '13px',
+                fontWeight: '800',
+                color: '#38bdf8',
+                marginBottom: '8px',
+                fontFamily: 'var(--font-mono)'
+              }}>
+                📊 Tabel Rekapitulasi Status Modul
+              </h3>
 
-                {/* Highlights Grid (For Update Package 10092026) */}
-                {pkg.highlights && pkg.highlights.length > 0 && (
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                    gap: '12px',
-                    marginTop: '4px'
-                  }}>
-                    {pkg.highlights.map((h, i) => (
-                      <div
-                        key={i}
-                        style={{
-                          background: 'var(--bg-panel-subtle)',
-                          border: 'var(--border-muted)',
-                          borderRadius: '6px',
-                          padding: '12px',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '6px'
-                        }}
-                      >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontSize: '16px' }}>{h.icon}</span>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  fontSize: '11px',
+                  fontFamily: 'var(--font-mono)',
+                  border: 'var(--border-muted)'
+                }}>
+                  <thead>
+                    <tr style={{ background: 'var(--bg-panel-subtle)', textAlign: 'left' }}>
+                      <th style={{ padding: '8px 10px', borderBottom: 'var(--border-muted)', color: 'var(--text-muted)' }}>MODUL</th>
+                      <th style={{ padding: '8px 10px', borderBottom: 'var(--border-muted)', color: 'var(--text-muted)' }}>STATUS</th>
+                      <th style={{ padding: '8px 10px', borderBottom: 'var(--border-muted)', color: 'var(--text-muted)' }}>KATEGORI</th>
+                      <th style={{ padding: '8px 10px', borderBottom: 'var(--border-muted)', color: 'var(--text-muted)' }}>RINGKASAN PEMBARUAN</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {activePackage.table.map((row, rIdx) => (
+                      <tr key={rIdx} style={{
+                        borderBottom: 'var(--border-muted)',
+                        background: rIdx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)'
+                      }}>
+                        <td style={{ padding: '8px 10px', fontWeight: '700', color: 'var(--text-primary)' }}>
+                          <code>{row.module}</code>
+                        </td>
+                        <td style={{ padding: '8px 10px' }}>
                           <span style={{
-                            fontSize: '9px',
-                            fontFamily: 'var(--font-mono)',
-                            fontWeight: '800',
                             padding: '1px 6px',
                             borderRadius: '3px',
-                            background: 'rgba(255,255,255,0.05)',
-                            color: h.tagColor || 'var(--accent-green)',
-                            border: `1px solid ${h.tagColor || 'var(--accent-green)'}`
+                            fontSize: '9px',
+                            fontWeight: '800',
+                            background: row.status === 'PROD' ? 'rgba(0, 208, 132, 0.15)' : 'rgba(56, 189, 248, 0.15)',
+                            color: row.status === 'PROD' ? 'var(--accent-green)' : '#38bdf8',
+                            border: `1px solid ${row.status === 'PROD' ? 'rgba(0, 208, 132, 0.4)' : 'rgba(56, 189, 248, 0.4)'}`
                           }}>
-                            {h.tag}
+                            {row.status}
                           </span>
-                        </div>
-                        <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-primary)' }}>
-                          {h.title}
-                        </div>
-                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                          {h.desc}
-                        </div>
-                      </div>
+                        </td>
+                        <td style={{ padding: '8px 10px', color: 'var(--text-muted)' }}>
+                          {row.category}
+                        </td>
+                        <td style={{ padding: '8px 10px', color: 'var(--text-primary)' }}>
+                          {row.summary}
+                        </td>
+                      </tr>
                     ))}
-                  </div>
-                )}
-
-                {/* Categories Breakdown (For Initial Launch Package) */}
-                {pkg.categories && pkg.categories.length > 0 && (
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                    gap: '12px',
-                    marginTop: '4px'
-                  }}>
-                    {pkg.categories.map((cat, idx) => (
-                      <div
-                        key={idx}
-                        style={{
-                          background: 'var(--bg-panel-subtle)',
-                          border: 'var(--border-muted)',
-                          borderRadius: '6px',
-                          padding: '12px',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '8px'
-                        }}
-                      >
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          fontSize: '11px',
-                          fontWeight: '800',
-                          fontFamily: 'var(--font-mono)',
-                          color: cat.color || 'var(--text-primary)',
-                          borderBottom: 'var(--border-muted)',
-                          paddingBottom: '6px'
-                        }}>
-                          <span>{cat.icon}</span>
-                          <span>{cat.categoryTitle}</span>
-                        </div>
-
-                        <ul style={{
-                          margin: 0,
-                          paddingLeft: '18px',
-                          fontSize: '11px',
-                          color: 'var(--text-muted)',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '4px',
-                          lineHeight: '1.4'
-                        }}>
-                          {cat.items.map((item, itemIdx) => (
-                            <li key={itemIdx}>{item}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
+                  </tbody>
+                </table>
               </div>
-            );
-          })
-        )}
+            </div>
+          )}
+
+        </div>
+
       </div>
 
     </div>
