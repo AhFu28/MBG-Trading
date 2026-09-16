@@ -160,7 +160,7 @@ export default function NewsTab({
         (item.tag && item.tag.toLowerCase().includes(q)) ||
         (item.related_tickers && item.related_tickers.some(t => t.toLowerCase().includes(q)))
       );
-    });
+    }).sort((a, b) => new Date(b.pub_date || 0) - new Date(a.pub_date || 0));
   }, [items, newsFilter, newsSearch, bookmarks]);
 
   // Daily Snips summary text for WA / Telegram export

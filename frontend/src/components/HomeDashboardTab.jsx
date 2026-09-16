@@ -34,7 +34,7 @@ export default function HomeDashboardTab({
   const macro = data?.macro_telemetry || {};
   const foreignFlow = data?.foreign_flow || {};
   const brokerSummary = data?.broker_summary || {};
-  const liveNews = macro?.live_news || [];
+  const liveNews = (macro?.live_news || []).slice().sort((a, b) => new Date(b.pub_date || 0) - new Date(a.pub_date || 0));
 
   // Sentiment and narrative
   const sentiment = macro?.impact_assessment?.overall_sentiment || macro?.sentiment || 'NEUTRAL';
