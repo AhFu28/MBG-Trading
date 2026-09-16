@@ -314,6 +314,156 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle }) {
         </div>
       </div>
 
+      {/* 2b. Bloomberg Intermarket Correlation & Rotation Matrix */}
+      <div style={{
+        background: 'var(--bg-panel-subtle)',
+        border: 'var(--border-hairline)',
+        borderRadius: '4px',
+        padding: '8px 10px',
+        marginBottom: '10px'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '12px' }}>🔄</span>
+            <span style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.5px' }}>
+              BLOOMBERG INTERMARKET CORRELATION & ROTATION MATRIX
+            </span>
+            <span style={{ fontSize: '8px', padding: '1px 5px', borderRadius: '3px', background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', fontWeight: '700' }}>
+              CROSS-ASSET FLOWS
+            </span>
+          </div>
+          <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+            INSTITUTIONAL RELATIVE PRICING
+          </span>
+        </div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          gap: '6px'
+        }}>
+          {/* Matrix Card 1: DXY vs IHSG */}
+          <div style={{
+            padding: '6px 8px',
+            background: 'var(--bg-panel)',
+            borderRadius: '3px',
+            border: 'var(--border-hairline)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '3px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>DXY ⇄ IHSG / EM</span>
+              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', fontWeight: '700' }}>
+                -0.74 INVERSE
+              </span>
+            </div>
+            <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveDxyChange >= 0 ? '#ef4444' : 'var(--accent-green)' }}>
+              {liveDxyChange >= 0 ? 'DXY ↑ ➔ Tekanan Valas BEI' : 'DXY ↓ ➔ Inflow Asing Terakselerasi'}
+            </div>
+            <div style={{ fontSize: '8px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
+              Dollar menguat memicu repatriasi modal; sebaliknya pelemahan DXY membuka pintu akumulasi BBCA & BBRI.
+            </div>
+          </div>
+
+          {/* Matrix Card 2: Gold vs Mining */}
+          <div style={{
+            padding: '6px 8px',
+            background: 'var(--bg-panel)',
+            borderRadius: '3px',
+            border: 'var(--border-hairline)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '3px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>GOLD ⇄ EMITEN LOGAM</span>
+              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: '700' }}>
+                +0.85 POSITIVE
+              </span>
+            </div>
+            <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveGoldChange >= 0 ? 'var(--accent-green)' : '#ef4444' }}>
+              {liveGoldChange >= 0 ? 'Gold Rally ➔ Margin ANTM/BRMS' : 'Gold Koreksi ➔ Konsolidasi Mining'}
+            </div>
+            <div style={{ fontSize: '8px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
+              Kenaikan harga spot bullion mengangkat average selling price (ASP) emiten tambang emas & tembaga BEI.
+            </div>
+          </div>
+
+          {/* Matrix Card 3: Crude Oil vs Energy */}
+          <div style={{
+            padding: '6px 8px',
+            background: 'var(--bg-panel)',
+            borderRadius: '3px',
+            border: 'var(--border-hairline)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '3px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>BRENT ⇄ ENERGI & LOGISTIK</span>
+              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', fontWeight: '700' }}>
+                +0.82 SECTORIAL
+              </span>
+            </div>
+            <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveBrentChange >= 0 ? '#f59e0b' : 'var(--accent-green)' }}>
+              {liveBrentChange >= 0 ? 'Oil ↑ ➔ MEDC Cuan, Aviasi Tertekan' : 'Oil ↓ ➔ Tekanan Beban BBM Berkurang'}
+            </div>
+            <div style={{ fontSize: '8px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
+              Reli minyak mentah menguntungkan emiten hulu migas (MEDC, ENRG), namun menekan biaya aviasi (GIAA) & logistik.
+            </div>
+          </div>
+
+          {/* Matrix Card 4: US 10Y Yield vs Tech Multiples */}
+          <div style={{
+            padding: '6px 8px',
+            background: 'var(--bg-panel)',
+            borderRadius: '3px',
+            border: 'var(--border-hairline)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '3px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>US 10Y ⇄ TECH / GROWTH</span>
+              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', fontWeight: '700' }}>
+                -0.68 DISCOUNT RATE
+              </span>
+            </div>
+            <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+              Yield {liveUs10yYield} ➔ Cost of Capital
+            </div>
+            <div style={{ fontSize: '8px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
+              Kenaikan risk-free rate menaikkan hurdle rate valuasi saham teknologi dengan ekspektasi cash flow jangka panjang.
+            </div>
+          </div>
+
+          {/* Matrix Card 5: BTC vs Global M2 Liquidity */}
+          <div style={{
+            padding: '6px 8px',
+            background: 'var(--bg-panel)',
+            borderRadius: '3px',
+            border: 'var(--border-hairline)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '3px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>BITCOIN ⇄ GLOBAL LIQUIDITY</span>
+              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: '700' }}>
+                +0.76 LIQUIDITY SPONGE
+              </span>
+            </div>
+            <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
+              High-Beta Central Bank Proxy
+            </div>
+            <div style={{ fontSize: '8px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
+              Aset paling sensitif terhadap ekspansi neraca bank sentral (M2 global), bergerak sebelum indeks saham merespons.
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* 3. Region Filter Switcher */}
       <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginBottom: '8px' }}>
         {regions.map(r => (

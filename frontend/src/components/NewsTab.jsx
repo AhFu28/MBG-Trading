@@ -53,7 +53,7 @@ export default function NewsTab({
 
   const items = Array.isArray(liveNews) ? liveNews : [];
 
-  // SoSoValue-style research categories
+  // SoSoValue-style research categories — Bloomberg-level multi-stream
   const categories = [
     { id: 'ALL', label: '🔥 ALL RESEARCH' },
     { id: 'CRYPTO', label: '⚡ CRYPTO & ETFS' },
@@ -61,6 +61,13 @@ export default function NewsTab({
     { id: 'BANKING', label: '🏦 PERBANKAN' },
     { id: 'COMMODITY', label: '⛏️ LOGAM & ENERGI' },
     { id: 'MACRO', label: '🌐 FED & MAKRO' },
+    { id: 'POLITIK', label: '🏛️ POLITIK' },
+    { id: 'GEOPOLITIK', label: '⚔️ GEOPOLITIK' },
+    { id: 'CENTRAL_BANK', label: '🏦 CENTRAL BANK' },
+    { id: 'US_MARKET', label: '🇺🇸 US MARKET' },
+    { id: 'CHINA', label: '🇨🇳 CHINA' },
+    { id: 'ENERGY_GEO', label: '🛢️ OPEC & ENERGY' },
+    { id: 'TECH_AI', label: '🤖 TECH & AI' },
     { id: 'SNIPS', label: '📋 DAILY RECAP' },
     { id: 'BOOKMARKS', label: `★ TERSIMPAN (${bookmarks.length})` }
   ];
@@ -145,10 +152,15 @@ export default function NewsTab({
         if (!tag.includes('BANK')) return false;
       } else if (newsFilter === 'COMMODITY') {
         const tag = (item.tag || '').toUpperCase();
-        if (!tag.includes('METALS') && !tag.includes('ENERGY')) return false;
+        if (!tag.includes('METALS') && !tag.includes('ENERGY') && !tag.includes('COMMODITIES')) return false;
       } else if (newsFilter === 'MACRO') {
         const tag = (item.tag || '').toUpperCase();
-        if (!tag.includes('MACRO') && !tag.includes('FED')) return false;
+        if (!tag.includes('MACRO') && !tag.includes('FED') && !tag.includes('CENTRAL_BANK')) return false;
+      } else if (['POLITIK', 'GEOPOLITIK', 'CENTRAL_BANK', 'REGULASI', 'FOREX_NEWS',
+                   'US_MARKET', 'CHINA', 'ENERGY_GEO', 'TECH_AI', 'COMMODITIES'].includes(newsFilter)) {
+        const tag = (item.tag || '').toUpperCase();
+        const stream = (item.stream || '').toUpperCase();
+        if (tag !== newsFilter && stream !== newsFilter) return false;
       }
 
       if (!newsSearch) return true;

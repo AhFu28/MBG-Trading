@@ -292,6 +292,175 @@ export default function HomeDashboardTab({
 
           </div>
 
+          {/* ================= BLOOMBERG SENTIMENT & RISK RADAR ================= */}
+          {(() => {
+            const sentimentRadar = macro?.sentiment_radar || {};
+            const fngVal = sentimentRadar?.fear_greed?.value ?? 62;
+            const fngLabel = sentimentRadar?.fear_greed?.label || (fngVal >= 75 ? 'Extreme Greed' : fngVal >= 55 ? 'Greed' : fngVal >= 45 ? 'Neutral' : fngVal >= 25 ? 'Fear' : 'Extreme Fear');
+            const btcDom = sentimentRadar?.btc_dominance ?? 58.4;
+            const vixVal = Number(sentimentRadar?.vix ?? 16.2);
+            const dxyVal = Number(macro?.dxy_index ?? 104.2);
+
+            const getFngColor = (val) => {
+              if (val >= 75) return '#10b981';
+              if (val >= 55) return '#34d399';
+              if (val >= 45) return '#f59e0b';
+              if (val >= 25) return '#f97316';
+              return '#ef4444';
+            };
+
+            const fngColor = getFngColor(fngVal);
+
+            return (
+              <div className="telemetry-panel" style={{
+                padding: '8px 12px',
+                background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(30, 41, 59, 0.4) 100%)',
+                border: 'var(--border-hairline)',
+                borderRadius: '4px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '12px' }}>🧭</span>
+                    <span style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.5px' }}>
+                      BLOOMBERG RISK & SENTIMENT RADAR
+                    </span>
+                    <span style={{ fontSize: '8px', padding: '1px 5px', borderRadius: '3px', background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', fontWeight: '700' }}>
+                      INSTITUTIONAL METRICS
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '8px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    LIVE MACRO SYNC
+                  </span>
+                </div>
+
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(4, 1fr)',
+                  gap: '8px',
+                  alignItems: 'center'
+                }}>
+                  {/* Gauge 1: Crypto Fear & Greed */}
+                  <div style={{
+                    padding: '6px 8px',
+                    background: 'var(--bg-panel-subtle)',
+                    borderRadius: '3px',
+                    border: 'var(--border-hairline)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Crypto Fear & Greed</span>
+                      <span style={{ fontSize: '8px', fontWeight: '800', color: fngColor }}>{fngLabel}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                      <span style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: fngColor }}>
+                        {fngVal}
+                      </span>
+                      <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>/ 100</span>
+                    </div>
+                    <div style={{ width: '100%', height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden', marginTop: '2px' }}>
+                      <div style={{ width: `${Math.min(100, Math.max(0, fngVal))}%`, height: '100%', background: fngColor, transition: 'width 0.4s ease' }} />
+                    </div>
+                  </div>
+
+                  {/* Gauge 2: VIX Volatility Index */}
+                  <div style={{
+                    padding: '6px 8px',
+                    background: 'var(--bg-panel-subtle)',
+                    borderRadius: '3px',
+                    border: 'var(--border-hairline)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>CBOE VIX (Wall St)</span>
+                      <span style={{
+                        fontSize: '8px',
+                        fontWeight: '800',
+                        color: vixVal < 15 ? 'var(--accent-green)' : vixVal < 20 ? '#60a5fa' : vixVal < 25 ? '#f59e0b' : '#ef4444'
+                      }}>
+                        {vixVal < 15 ? 'CALM' : vixVal < 20 ? 'NORMAL' : vixVal < 25 ? 'ELEVATED' : 'HIGH PANIC'}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                      <span style={{
+                        fontSize: '15px',
+                        fontWeight: '900',
+                        fontFamily: 'var(--font-mono)',
+                        color: vixVal < 20 ? 'var(--text-primary)' : '#ef4444'
+                      }}>
+                        {vixVal.toFixed(2)}
+                      </span>
+                      <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>pts</span>
+                    </div>
+                    <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                      {vixVal < 20 ? '🟢 Market Complacency' : '⚠️ Hedging Demand Naik'}
+                    </div>
+                  </div>
+
+                  {/* Gauge 3: BTC Dominance & Altseason */}
+                  <div style={{
+                    padding: '6px 8px',
+                    background: 'var(--bg-panel-subtle)',
+                    borderRadius: '3px',
+                    border: 'var(--border-hairline)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>BTC Dominance</span>
+                      <span style={{ fontSize: '8px', fontWeight: '800', color: btcDom > 55 ? '#f59e0b' : '#10b981' }}>
+                        {btcDom > 55 ? 'BTC LEADER' : 'ALTSEASON'}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                      <span style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                        {btcDom.toFixed(1)}%
+                      </span>
+                      <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>market share</span>
+                    </div>
+                    <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                      {btcDom > 55 ? 'Capital fokus di BTC ETF' : 'Altcoin Outperforming'}
+                    </div>
+                  </div>
+
+                  {/* Gauge 4: Dollar Strength DXY */}
+                  <div style={{
+                    padding: '6px 8px',
+                    background: 'var(--bg-panel-subtle)',
+                    borderRadius: '3px',
+                    border: 'var(--border-hairline)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>US Dollar Index (DXY)</span>
+                      <span style={{ fontSize: '8px', fontWeight: '800', color: dxyVal > 105 ? '#ef4444' : dxyVal < 103 ? 'var(--accent-green)' : '#60a5fa' }}>
+                        {dxyVal > 105 ? 'STRONG USD' : dxyVal < 103 ? 'SOFT USD' : 'NEUTRAL'}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                      <span style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                        {dxyVal.toFixed(2)}
+                      </span>
+                      <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>pts</span>
+                    </div>
+                    <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                      {dxyVal > 104.5 ? '🔴 Tekanan Kurs Emerging Markets' : '🟢 Likuiditas Global Melonggar'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* ROW 2: DUAL FLOW RADAR (Struktur Klasik: Top 5 Inflow vs Outflow & Polish Bandarmology) */}
           <div style={{
             display: 'grid',

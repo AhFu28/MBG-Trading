@@ -15,6 +15,7 @@ const WhaleIntelligenceTab = lazy(() => import('./components/WhaleIntelligenceTa
 const CryptoFuturesTab = lazy(() => import('./components/CryptoFuturesTab.jsx'));
 const ForexCommandTab = lazy(() => import('./components/ForexCommandTab.jsx'));
 const USStockTab = lazy(() => import('./components/USStockTab.jsx'));
+const MarketHeatmapTab = lazy(() => import('./components/MarketHeatmapTab.jsx'));
 const NewsDetailModal = lazy(() => import('./components/NewsDetailModal.jsx'));
 
 const jakartaTimeFormatter = new Intl.DateTimeFormat('id-ID', {
@@ -438,6 +439,11 @@ export default function App() {
               /* v3.0 US STOCK INTELLIGENCE */
               <main>
                 <USStockTab data={data} onOpenChart={handleOpenChart} livePrices={livePrices} />
+              </main>
+            ) : activeTab === 'HEATMAP' ? (
+              /* v4.0 MARKET HEATMAP TREEMAP */
+              <main>
+                <MarketHeatmapTab data={data} onSelectTicker={handleOpenChart} livePrices={livePrices} flashMap={flashMap} />
               </main>
             ) : (
               /* DEEP-DIVE SCREENER / TESTING / RESEARCH TABS */

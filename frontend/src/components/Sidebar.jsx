@@ -10,6 +10,7 @@ const PRIMARY_NAV_ITEMS = [
   { id: 'FOREX',               icon: '💱', label: 'Forex Scanner',   section: 'MARKETS' },
   { id: 'US_STOCKS',           icon: '🇺🇸', label: 'US Stocks',       section: 'MARKETS' },
   { id: 'WHALES',              icon: '🐋', label: 'Whale Tracker',    section: 'MARKETS' },
+  { id: 'HEATMAP',             icon: '🗺️', label: 'Market Heatmap',   section: 'MARKETS' },
   { id: 'CHARTING',            icon: '📊', label: 'Charting Desk',    section: 'MARKETS' },
   { id: 'WATCHLIST',           icon: '⭐', label: 'Watchlist',        section: 'MARKETS' },
   { id: 'GLOBAL_MARKETS',      icon: '🌍', label: 'Pasar Global',     section: 'MARKETS' },
