@@ -725,3 +725,11 @@ body {
   font-weight: 600;
 }
 
+/* Responsive grid for NewsTab Cockpit */
+@media (max-width: 980px) {
+  .news-tab-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+

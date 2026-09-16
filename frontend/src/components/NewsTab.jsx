@@ -196,420 +196,148 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan hindari FOMO.
 
   return (
     <div style={{
-      maxWidth: '920px',
-      margin: '0 auto',
+      width: '100%',
       display: 'flex',
       flexDirection: 'column',
-      gap: '14px',
+      gap: '12px',
       position: 'relative'
     }}>
 
-      {/* 1. SOSOVALUE STYLE RESEARCH HERO BAR (Aggregated Sentiment & Wire Telemetry) */}
+      {/* 1. COMPACT HERO STRIP: Wire Title + Merged Sentiment Meter */}
       <div className='telemetry-panel' style={{
-        padding: '12px 16px',
+        padding: '8px 14px',
         background: 'var(--bg-panel)',
-        borderLeft: '4px solid var(--accent-orange, #f59e0b)'
+        borderLeft: '4px solid var(--accent-orange, #f59e0b)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '10px'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-green)', display: 'inline-block' }} />
-              <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
-                SOSOVALUE-STYLE RESEARCH &amp; MACRO WIRE
-              </span>
-              <span className="badge badge-bull" style={{ fontSize: '9px', padding: '1px 6px' }}>
-                LIVE 24/7 DUAL-STREAM
-              </span>
-            </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
-              Kurasi riset institusional multi-stream: Saham IDX (BEI) &amp; Crypto Global ETF Flows dengan intisari AI Key Takeaways.
-            </div>
-          </div>
-
-          {/* Sentiment Meter Bar */}
-          <div style={{ display: 'flex', flexDirection: 'column', minWidth: '220px', gap: '4px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
-              <span style={{ color: 'var(--accent-green)' }}>BULLISH {sentimentStats.bullPct}%</span>
-              <span style={{ color: 'var(--text-muted)' }}>NETRAL {sentimentStats.neutPct}%</span>
-              <span style={{ color: 'var(--accent-rust)' }}>BEARISH {sentimentStats.bearPct}%</span>
-            </div>
-            <div style={{
-              height: '6px',
-              borderRadius: '3px',
-              display: 'flex',
-              overflow: 'hidden',
-              background: 'rgba(255,255,255,0.06)'
-            }}>
-              <div style={{ width: `${sentimentStats.bullPct}%`, background: 'var(--accent-green)' }} title={`Bullish ${sentimentStats.bullPct}%`} />
-              <div style={{ width: `${sentimentStats.neutPct}%`, background: '#8e8e93' }} title={`Netral ${sentimentStats.neutPct}%`} />
-              <div style={{ width: `${sentimentStats.bearPct}%`, background: 'var(--accent-rust)' }} title={`Bearish ${sentimentStats.bearPct}%`} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 1B. SOSOVALUE SPOT ETF INFLOW & TURNOVER TELEMETRY */}
-      <div className='telemetry-panel' style={{
-        padding: '10px 14px',
-        background: 'linear-gradient(180deg, rgba(20,25,35,0.85) 0%, rgba(12,16,24,0.95) 100%)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: '8px'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontSize: '12px' }}>📊</span>
-            <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--accent-cyan, #38bdf8)', letterSpacing: '0.04em' }}>
-              SOSOVALUE SPOT ETF NET FLOW &amp; INSTITUTIONAL TURNOVER
-            </span>
-          </div>
-          <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-            BTC Turnover: <strong style={{ color: 'var(--accent-green)' }}>${macro?.etf_flows?.btc_etf_turnover_usd_m || 1580.4}M</strong> • ETH Turnover: <strong style={{ color: 'var(--accent-green)' }}>${macro?.etf_flows?.eth_etf_turnover_usd_m || 620.5}M</strong>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-green)', display: 'inline-block', boxShadow: '0 0 6px var(--accent-green)' }} />
+          <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
+            MBG LIVE RESEARCH &amp; MACRO WIRE
+          </span>
+          <span className="badge badge-bull" style={{ fontSize: '9px', padding: '1px 6px' }}>
+            24/7 DUAL-STREAM
+          </span>
+          <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: '6px' }}>
+            // IDX Equities &amp; Global Crypto ETF Intelligence
+          </span>
         </div>
 
-        {/* ETF Cards Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
-          gap: '8px'
-        }}>
-          {(macro?.etf_flows?.etfs || [
-            { symbol: 'IBIT', name: 'BlackRock BTC ETF', price: 43.68, change_pct: -1.38, turnover_m: 1350.0, net_status: 'HIGH_LIQUIDITY' },
-            { symbol: 'FBTC', name: 'Fidelity BTC ETF', price: 67.06, change_pct: -1.44, turnover_m: 153.8, net_status: 'STEADY_FLOW' },
-            { symbol: 'GBTC', name: 'Grayscale BTC ETF', price: 54.12, change_pct: -1.36, turnover_m: 54.7, net_status: 'SETTLING' },
-            { symbol: 'ETHA', name: 'BlackRock ETH ETF', price: 18.56, change_pct: -0.11, turnover_m: 602.4, net_status: 'ACCUMULATING' },
-            { symbol: 'FETH', name: 'Fidelity ETH ETF', price: 23.40, change_pct: -0.12, turnover_m: 26.3, net_status: 'INFLOW_STABLE' }
-          ]).map((etf, idx) => {
-            const isPos = (etf.change_pct || 0) >= 0;
-            return (
-              <div
-                key={etf.symbol || idx}
-                style={{
-                  background: 'rgba(255,255,255,0.02)',
-                  border: '1px solid rgba(255,255,255,0.06)',
-                  borderRadius: '6px',
-                  padding: '8px 10px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '3px'
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
-                    ${etf.symbol}
-                  </span>
-                  <span style={{
-                    fontSize: '9px',
-                    fontWeight: 700,
-                    padding: '1px 5px',
-                    borderRadius: '4px',
-                    background: isPos ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)',
-                    color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)',
-                    fontFamily: 'var(--font-mono)'
-                  }}>
-                    {isPos ? '+' : ''}{etf.change_pct}%
-                  </span>
-                </div>
-                <div style={{ fontSize: '10px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {etf.name}
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
-                    ${etf.price?.toFixed(2)}
-                  </span>
-                  <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
-                    Vol: ${etf.turnover_m}M
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* 2. CONTROL BAR (Filter Pills + Search) */}
-      <div className='telemetry-panel' style={{ padding: '10px 14px' }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '10px'
-        }}>
-          {/* Pills */}
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-            {categories.map(cat => (
-              <button
-                key={cat.id}
-                onClick={() => setNewsFilter(cat.id)}
-                className={`telemetry-btn ${newsFilter === cat.id ? 'active' : ''}`}
-                style={{
-                  fontSize: '10px',
-                  padding: '5px 11px',
-                  borderRadius: 'var(--radius-xs)',
-                  letterSpacing: '0.04em'
-                }}
-              >
-                {cat.label}
-              </button>
-            ))}
+        {/* Compact Inline Sentiment Meter */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '240px' }}>
+          <div style={{ display: 'flex', gap: '8px', fontSize: '10px', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+            <span style={{ color: 'var(--accent-green)' }}>▲ {sentimentStats.bullPct}%</span>
+            <span style={{ color: 'var(--text-muted)' }}>● {sentimentStats.neutPct}%</span>
+            <span style={{ color: 'var(--accent-rust)' }}>▼ {sentimentStats.bearPct}%</span>
           </div>
-
-          {/* Search Box */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '1 1 220px', justifyContent: 'flex-end' }}>
-            <div style={{ position: 'relative', width: '100%', maxWidth: '240px' }}>
-              <input
-                type='text'
-                placeholder='Cari berita ($BTC, $BBCA)...'
-                value={newsSearch}
-                onChange={e => setNewsSearch(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '6px 26px 6px 10px',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  border: 'var(--border-hairline)',
-                  background: 'var(--bg-canvas)',
-                  color: 'var(--text-primary)',
-                  outline: 'none',
-                  borderRadius: 'var(--radius-xs)'
-                }}
-              />
-              {newsSearch && (
-                <button
-                  onClick={() => setNewsSearch('')}
-                  style={{
-                    position: 'absolute',
-                    right: '6px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'transparent',
-                    border: 'none',
-                    color: 'var(--text-muted)',
-                    cursor: 'pointer',
-                    fontSize: '11px'
-                  }}
-                  title='Bersihkan pencarian'
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
-              ({filteredNews.length} Riset)
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. STOCKBIT SNIPS STYLE DAILY RECAP CARD */}
-      {(newsFilter === 'ALL' || newsFilter === 'SNIPS') && (
-        <div className='telemetry-panel' style={{
-          borderLeft: '4px solid var(--accent-blue)',
-          padding: '0',
-          overflow: 'hidden',
-          boxShadow: '0 4px 18px rgba(0,0,0,0.25)'
-        }}>
-          {/* Snips Header Banner */}
           <div style={{
-            background: 'var(--bg-panel-subtle)',
-            padding: '10px 14px',
-            borderBottom: 'var(--border-muted)',
+            height: '6px',
+            flex: 1,
+            borderRadius: '3px',
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '8px'
+            overflow: 'hidden',
+            background: 'rgba(255,255,255,0.06)'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <span className='badge' style={{
-                background: 'rgba(59, 130, 246, 0.18)',
-                color: 'var(--accent-blue)',
-                border: '1px solid var(--accent-blue)',
-                fontWeight: '800',
-                fontSize: '10px',
-                letterSpacing: '0.04em'
-              }}>
-                ⚡ MBG DAILY SNIPS
-              </span>
-              <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)' }}>
-                Edisi Rekap Pasar & Analisa Saham
-              </span>
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                · ~2 Menit Baca
-              </span>
-            </div>
-
-            {/* Quick Actions for Snips */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <button
-                onClick={() => handleTTS('snips-daily', `${macro?.daily_snips?.market_verdict?.narrative || macro?.full_narrative || ''}`)}
-                className='telemetry-btn'
-                style={{
-                  fontSize: '10px',
-                  padding: '4px 9px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}
-                title='Dengarkan ringkasan via Text-to-Speech'
-              >
-                <span>{ttsState.isPlaying && ttsState.activeId === 'snips-daily' ? '⏹ Stop' : '🔊 Dengarkan Audio'}</span>
-              </button>
-              <button
-                onClick={() => handleCopy(snipsExportText, 'snips-daily', 'Rekap Snips disalin! Siap untuk WA/Telegram.')}
-                className='telemetry-btn'
-                style={{
-                  fontSize: '10px',
-                  padding: '4px 9px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}
-                title='Salin rekap untuk WhatsApp / Telegram'
-              >
-                <span>{copiedId === 'snips-daily' ? '✓ Tersalin!' : '📋 Salin Rekap'}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Snips Body */}
-          <div style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            
-            {/* Market Pulse Bellwethers */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(135px, 1fr))',
-              gap: '8px',
-              padding: '9px 12px',
-              background: 'var(--bg-canvas)',
-              borderRadius: 'var(--radius-xs)',
-              border: 'var(--border-muted)'
-            }}>
-              <div>
-                <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>XAU/USD (EMAS)</div>
-                <div style={{ fontSize: '12px', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
-                  ${macro?.gold_price || '2750.0'}
-                  <span style={{
-                    fontSize: '10px',
-                    marginLeft: '5px',
-                    color: (macro?.gold_change_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)'
-                  }}>
-                    {(macro?.gold_change_pct || 0) >= 0 ? `+${macro?.gold_change_pct}%` : `${macro?.gold_change_pct}%`}
-                  </span>
-                </div>
-              </div>
-              <div>
-                <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>BRENT OIL</div>
-                <div style={{ fontSize: '12px', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
-                  ${macro?.brent_oil_price || '74.20'}
-                  <span style={{
-                    fontSize: '10px',
-                    marginLeft: '5px',
-                    color: (macro?.brent_oil_change_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)'
-                  }}>
-                    {(macro?.brent_oil_change_pct || 0) >= 0 ? `+${macro?.brent_oil_change_pct}%` : `${macro?.brent_oil_change_pct}%`}
-                  </span>
-                </div>
-              </div>
-              <div>
-                <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>US DOLLAR (DXY)</div>
-                <div style={{ fontSize: '12px', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
-                  {macro?.dxy_index || '104.5'}
-                  <span style={{
-                    fontSize: '10px',
-                    marginLeft: '5px',
-                    color: (macro?.dxy_change_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)'
-                  }}>
-                    {(macro?.dxy_change_pct || 0) >= 0 ? `+${macro?.dxy_change_pct}%` : `${macro?.dxy_change_pct}%`}
-                  </span>
-                </div>
-              </div>
-              <div>
-                <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>US 10Y YIELD</div>
-                <div style={{ fontSize: '12px', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
-                  {macro?.us10y_yield || '4.28'}%
-                  <span style={{ fontSize: '10px', marginLeft: '5px', color: 'var(--text-muted)' }}>STABIL</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Top Macro & Market Verdict Narrative */}
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', color: 'var(--accent-orange)' }}>
-                  ⚡ MARKET VERDICT:
-                </span>
-                <span className='badge' style={{
-                  background: 'rgba(27, 138, 75, 0.15)',
-                  color: 'var(--accent-green)',
-                  border: '1px solid var(--accent-green)',
-                  fontSize: '9px',
-                  fontWeight: '700'
-                }}>
-                  {macro?.daily_snips?.market_verdict?.badge || '🟢 ROTASI KOMODITAS & ENERGI'}
-                </span>
-              </div>
-              <h3 style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-primary)', margin: '0 0 6px 0', lineHeight: 1.35 }}>
-                {macro?.headline || 'Pergerakan Pasar Modal Indonesia & Rotasi Sektoral'}
-              </h3>
-              <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
-                {macro?.daily_snips?.market_verdict?.narrative || macro?.full_narrative || 'Sentimen komoditas dan stabilitas nilai tukar Rupiah memandu pergerakan saham lapis satu.'}
-              </p>
-            </div>
-
-            {/* Stock Catalyst Focus Chips */}
-            {macro?.idx_affected_stocks && macro.idx_affected_stocks.length > 0 && (
-              <div style={{ paddingTop: '8px', borderTop: 'var(--border-muted)' }}>
-                <div style={{ fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '6px' }}>
-                  🎯 EMITEN PALING TERDAMPAK (KLIK UNTUK MEMBUKA CHART):
-                </div>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {macro.idx_affected_stocks.map((item, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => onSelectTicker && onSelectTicker(item.ticker, 'IDX')}
-                      className='telemetry-btn'
-                      style={{
-                        padding: '4px 8px',
-                        fontSize: '11px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        borderColor: item.impact === 'BULLISH' ? 'var(--accent-green)' : item.impact === 'BEARISH' ? 'var(--accent-rust)' : 'var(--accent-orange)',
-                        cursor: 'pointer'
-                      }}
-                      title={item.reason}
-                    >
-                      <span>{item.impact === 'BULLISH' ? '🟢' : item.impact === 'BEARISH' ? '🔴' : '🟡'}</span>
-                      <strong style={{ fontFamily: 'var(--font-mono)' }}>${item.ticker}</strong>
-                      <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>— {item.reason}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Actionable Guidance Note */}
-            {macro?.daily_snips?.actionable_guidance && (
-              <div style={{
-                fontSize: '10px',
-                color: 'var(--text-muted)',
-                background: 'var(--bg-canvas)',
-                padding: '6px 10px',
-                borderRadius: 'var(--radius-xs)',
-                borderLeft: '3px solid var(--accent-orange)'
-              }}>
-                💡 <strong>Tips Trader:</strong> {macro.daily_snips.actionable_guidance}
-              </div>
-            )}
-
+            <div style={{ width: `${sentimentStats.bullPct}%`, background: 'var(--accent-green)' }} title={`Bullish ${sentimentStats.bullPct}%`} />
+            <div style={{ width: `${sentimentStats.neutPct}%`, background: '#8e8e93' }} title={`Netral ${sentimentStats.neutPct}%`} />
+            <div style={{ width: `${sentimentStats.bearPct}%`, background: 'var(--accent-rust)' }} title={`Bearish ${sentimentStats.bearPct}%`} />
           </div>
         </div>
-      )}
+      </div>
 
-      {/* 3. VERTICAL TIMELINE FEED (Single Column Stream) */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      {/* 2. MAIN 2-COLUMN COCKPIT (Left 65% Research Stream + Right 35% Macro & ETF Radar) */}
+      <div className="news-tab-grid" style={{
+        display: 'grid',
+        gridTemplateColumns: 'minmax(0, 1.8fr) minmax(320px, 1fr)',
+        gap: '12px',
+        alignItems: 'start',
+        width: '100%'
+      }}>
+
+        {/* ================= LEFT COLUMN: RESEARCH FEED & FILTER TOOLBAR ================= */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minWidth: 0 }}>
+          
+          {/* Unified Filter & Search Bar */}
+          <div className='telemetry-panel' style={{ padding: '8px 12px' }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '8px'
+            }}>
+              {/* Category Pills */}
+              <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
+                {categories.map(cat => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setNewsFilter(cat.id)}
+                    className={`telemetry-btn ${newsFilter === cat.id ? 'active' : ''}`}
+                    style={{
+                      fontSize: '10px',
+                      padding: '4px 9px',
+                      borderRadius: 'var(--radius-xs)',
+                      letterSpacing: '0.03em'
+                    }}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search Box */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: '1 1 180px', justifyContent: 'flex-end' }}>
+                <div style={{ position: 'relative', width: '100%', maxWidth: '200px' }}>
+                  <input
+                    type='text'
+                    placeholder='Cari ($BTC, $BBCA)...'
+                    value={newsSearch}
+                    onChange={e => setNewsSearch(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '5px 24px 5px 8px',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '11px',
+                      border: 'var(--border-hairline)',
+                      background: 'var(--bg-canvas)',
+                      color: 'var(--text-primary)',
+                      outline: 'none',
+                      borderRadius: 'var(--radius-xs)'
+                    }}
+                  />
+                  {newsSearch && (
+                    <button
+                      onClick={() => setNewsSearch('')}
+                      style={{
+                        position: 'absolute',
+                        right: '6px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--text-muted)',
+                        cursor: 'pointer',
+                        fontSize: '11px'
+                      }}
+                      title='Bersihkan pencarian'
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+                <span style={{ fontSize: '10px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                  ({filteredNews.length})
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Research Articles Feed */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {filteredNews.length === 0 ? (
           <div className='telemetry-panel' style={{
             textAlign: 'center',
@@ -900,6 +628,232 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan hindari FOMO.
             );
           })
         )}
+          </div>
+        </div>
+
+        {/* ================= RIGHT COLUMN: SPOT ETF FLOW & DAILY SNIPS ================= */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          position: 'sticky',
+          top: '12px'
+        }}>
+
+          {/* 1. SPOT ETF FLOW & GLOBAL PULSE */}
+          <div className='telemetry-panel' style={{
+            padding: '10px 12px',
+            background: 'var(--bg-panel)',
+            border: 'var(--border-hairline)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', paddingBottom: '6px', borderBottom: 'var(--border-muted)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '12px' }}>📊</span>
+                <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--accent-blue)', letterSpacing: '0.04em' }}>
+                  SPOT ETF FLOW &amp; GLOBAL PULSE
+                </span>
+              </div>
+              <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>LIVE</span>
+            </div>
+
+            {/* Quick Turnover Stats */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              background: 'var(--bg-canvas)',
+              padding: '5px 8px',
+              borderRadius: 'var(--radius-xs)',
+              fontSize: '9.5px',
+              fontFamily: 'var(--font-mono)',
+              marginBottom: '8px',
+              border: 'var(--border-muted)'
+            }}>
+              <div>BTC Vol: <strong style={{ color: 'var(--accent-green)' }}>${macro?.etf_flows?.btc_etf_turnover_usd_m || 1580.4}M</strong></div>
+              <div>ETH Vol: <strong style={{ color: 'var(--accent-green)' }}>${macro?.etf_flows?.eth_etf_turnover_usd_m || 620.5}M</strong></div>
+            </div>
+
+            {/* ETF List */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              {(macro?.etf_flows?.etfs || [
+                { symbol: 'IBIT', name: 'BlackRock Bitcoin Trust', price: 43.11, change_pct: -3.64, turnover_m: 3314.0 },
+                { symbol: 'FBTC', name: 'Fidelity Wise Origin BTC', price: 66.20, change_pct: -3.62, turnover_m: 423.3 },
+                { symbol: 'GBTC', name: 'Grayscale Bitcoin Trust', price: 58.84, change_pct: -3.65, turnover_m: 210.1 },
+                { symbol: 'ETHA', name: 'iShares Ethereum Trust', price: 18.20, change_pct: -5.06, turnover_m: 1346.6 },
+                { symbol: 'FETH', name: 'Fidelity Ethereum Fund', price: 24.05, change_pct: -4.90, turnover_m: 156.3 }
+              ]).map((etf, idx) => {
+                const isPos = (etf.change_pct || 0) >= 0;
+                return (
+                  <div
+                    key={etf.symbol || idx}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '5px 8px',
+                      background: 'var(--bg-canvas)',
+                      borderRadius: 'var(--radius-xs)',
+                      border: 'var(--border-muted)',
+                      fontFamily: 'var(--font-mono)'
+                    }}
+                  >
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                        <strong style={{ fontSize: '11px', color: 'var(--text-primary)' }}>${etf.symbol}</strong>
+                        <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Vol: ${etf.turnover_m}M</span>
+                      </div>
+                      <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '140px' }}>
+                        {etf.name}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                        ${etf.price?.toFixed(2)}
+                      </div>
+                      <span style={{
+                        fontSize: '9px',
+                        fontWeight: 700,
+                        color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)'
+                      }}>
+                        {isPos ? '+' : ''}{etf.change_pct}%
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Global Commodities Pulse (XAU, Brent, DXY, US10Y) */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: '5px',
+              marginTop: '8px',
+              paddingTop: '8px',
+              borderTop: 'var(--border-muted)'
+            }}>
+              <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ color: 'var(--text-muted)' }}>XAU/USD: </span>
+                <strong style={{ color: 'var(--text-primary)' }}>${macro?.gold_price || '2750'}</strong>
+                <span style={{ color: (macro?.gold_change_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginLeft: '3px' }}>
+                  {(macro?.gold_change_pct || 0) >= 0 ? '+' : ''}{macro?.gold_change_pct || '+0.39'}%
+                </span>
+              </div>
+              <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ color: 'var(--text-muted)' }}>BRENT: </span>
+                <strong style={{ color: 'var(--text-primary)' }}>${macro?.brent_oil_price || '74.2'}</strong>
+                <span style={{ color: (macro?.brent_oil_change_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginLeft: '3px' }}>
+                  {(macro?.brent_oil_change_pct || 0) >= 0 ? '+' : ''}{macro?.brent_oil_change_pct || '+2.03'}%
+                </span>
+              </div>
+              <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ color: 'var(--text-muted)' }}>DXY: </span>
+                <strong style={{ color: 'var(--text-primary)' }}>{macro?.dxy_index || '99.65'}</strong>
+                <span style={{ color: (macro?.dxy_change_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginLeft: '3px' }}>
+                  {(macro?.dxy_change_pct || 0) >= 0 ? '+' : ''}{macro?.dxy_change_pct || '+0.19'}%
+                </span>
+              </div>
+              <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ color: 'var(--text-muted)' }}>US10Y: </span>
+                <strong style={{ color: 'var(--text-primary)' }}>{macro?.us10y_yield || '4.94'}%</strong>
+                <span style={{ color: 'var(--accent-green)', marginLeft: '3px' }}>+2bp</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 2. MBG DAILY SNIPS & MARKET VERDICT */}
+          <div className='telemetry-panel' style={{
+            padding: '10px 12px',
+            background: 'var(--bg-panel)',
+            borderLeft: '4px solid var(--accent-blue)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.2)'
+          }}>
+            {/* Header with TTS & Copy */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', paddingBottom: '6px', borderBottom: 'var(--border-muted)' }}>
+              <div>
+                <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-primary)' }}>⚡ MBG DAILY SNIPS</span>
+                <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Rekap Pasar &amp; Analisa Saham</div>
+              </div>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                <button
+                  onClick={() => handleTTS('snips-daily', `${macro?.daily_snips?.market_verdict?.narrative || macro?.full_narrative || ''}`)}
+                  className='telemetry-btn'
+                  style={{ fontSize: '9px', padding: '2px 6px' }}
+                  title='Putar Audio Intisari'
+                >
+                  {ttsState.isPlaying && ttsState.activeId === 'snips-daily' ? '⏹ Stop' : '🔊 Audio'}
+                </button>
+                <button
+                  onClick={() => handleCopy(snipsExportText, 'snips-daily', 'Rekap Snips disalin!')}
+                  className='telemetry-btn'
+                  style={{ fontSize: '9px', padding: '2px 6px' }}
+                  title='Salin untuk Telegram/WA'
+                >
+                  {copiedId === 'snips-daily' ? '✓' : '📋 Salin'}
+                </button>
+              </div>
+            </div>
+
+            {/* Verdict Badge & Headline */}
+            <div style={{ marginBottom: '8px' }}>
+              <span className='badge badge-bull' style={{ fontSize: '8.5px', padding: '1px 5px', display: 'inline-block', marginBottom: '4px' }}>
+                {macro?.daily_snips?.market_verdict?.badge || '🟢 VOLATILITAS ENERGI TINGGI'}
+              </span>
+              <div style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.35 }}>
+                {macro?.headline || 'Middle East Supply Tensions Drive Crude Oil Spike'}
+              </div>
+              <p style={{ fontSize: '10.5px', color: 'var(--text-muted)', margin: '4px 0 0 0', lineHeight: 1.45 }}>
+                {macro?.daily_snips?.market_verdict?.narrative || macro?.full_narrative || 'Lonjakan harga minyak mentah menguntungkan emiten hulu migas, namun menekan margin sektor transportasi.'}
+              </p>
+            </div>
+
+            {/* Impacted Stocks */}
+            {macro?.idx_affected_stocks && macro.idx_affected_stocks.length > 0 && (
+              <div style={{ paddingTop: '6px', borderTop: 'var(--border-muted)' }}>
+                <div style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  🎯 EMITEN PALING TERDAMPAK:
+                </div>
+                <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                  {macro.idx_affected_stocks.slice(0, 6).map((item, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => onSelectTicker && onSelectTicker(item.ticker, 'IDX')}
+                      className='telemetry-btn'
+                      style={{
+                        padding: '2px 6px',
+                        fontSize: '10px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        borderColor: item.impact === 'BULLISH' ? 'var(--accent-green)' : item.impact === 'BEARISH' ? 'var(--accent-rust)' : 'var(--accent-orange)'
+                      }}
+                      title={item.reason}
+                    >
+                      <span>{item.impact === 'BULLISH' ? '🟢' : '🔴'}</span>
+                      <strong style={{ fontFamily: 'var(--font-mono)' }}>${item.ticker}</strong>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Actionable Guidance Note */}
+            {macro?.daily_snips?.actionable_guidance && (
+              <div style={{
+                marginTop: '8px',
+                fontSize: '9.5px',
+                color: 'var(--text-muted)',
+                background: 'var(--bg-canvas)',
+                padding: '5px 8px',
+                borderRadius: 'var(--radius-xs)',
+                borderLeft: '2px solid var(--accent-orange)'
+              }}>
+                💡 <strong>Tips:</strong> {macro.daily_snips.actionable_guidance}
+              </div>
+            )}
+          </div>
+
+        </div>
+
       </div>
 
       {/* Toast Notification Popup */}
