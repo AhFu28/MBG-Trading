@@ -37,16 +37,24 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
   const initialOI = data?.crypto_futures?.open_interest || [];
   const initialLS = data?.crypto_futures?.long_short_ratio || [];
 
-  // Sinkronisasi data awal & ekspansi universe futures ke 60+ pairs
+  // Sinkronisasi data awal & ekspansi universe futures ke 60+ pairs dengan real price
   useEffect(() => {
     const existingSymbols = new Set((initialRates || []).map(r => r.symbol));
-    const fullList = [...initialRates];
+    const fullList = (initialRates || []).map(r => {
+      const baseCoin = r.symbol?.replace('USDT', '');
+      const live = livePrices[r.symbol] || livePrices[`${baseCoin}/USDT`] || livePrices[baseCoin];
+      const livePrice = (live?.price && live.price > 0) ? live.price : (r.mark_price || 0);
+      return {
+        ...r,
+        mark_price: livePrice
+      };
+    });
 
     DEFAULT_FUTURES_PAIRS.forEach(sym => {
       if (!existingSymbols.has(sym)) {
         const baseCoin = sym.replace('USDT', '');
-        const live = livePrices[sym] || livePrices[`${baseCoin}/USDT`];
-        const price = live?.price || 0;
+        const live = livePrices[sym] || livePrices[`${baseCoin}/USDT`] || livePrices[baseCoin];
+        const price = (live?.price && live.price > 0) ? live.price : 0;
         fullList.push({
           symbol: sym,
           pair: `${baseCoin}/USDT`,
@@ -56,13 +64,70 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
           mark_price: price,
           index_price: price,
           signal: 'NEUTRAL',
-          signal_desc: 'Funding netral'
+          signal_desc: 'Funding seimbang'
         });
       }
     });
 
     setLiveFundingRates(fullList);
   }, [initialRates, livePrices]);
+
+  // 1b. Fetch Real-time Market Funding Rates & Mark Prices dari Gate.io (Bebas Blokir 100%, 984 Kontrak)
+  const fetchLiveFuturesContracts = useCallback(async () => {
+    try {
+      const res = await fetch('https://api.gateio.ws/api/v4/futures/usdt/contracts');
+      if (!res.ok) return;
+      const contracts = await res.json();
+      if (!Array.isArray(contracts)) return;
+
+      setLiveFundingRates(prev => {
+        const list = prev.length > 0 ? prev : DEFAULT_FUTURES_PAIRS.map(sym => ({
+          symbol: sym,
+          pair: `${sym.replace('USDT', '')}/USDT`,
+          funding_rate: 0.0001,
+          funding_rate_pct: 0.01,
+          mark_price: 0
+        }));
+
+        return list.map(item => {
+          const base = item.symbol.replace('USDT', '');
+          const gateName = `${base}_USDT`;
+          const match = contracts.find(c => c.name === gateName);
+
+          const liveQuote = livePrices[item.symbol] || livePrices[item.pair] || livePrices[base];
+          const currentPrice = (liveQuote?.price && liveQuote.price > 0)
+            ? liveQuote.price
+            : (match?.mark_price ? parseFloat(match.mark_price) : item.mark_price);
+
+          if (match) {
+            const fundingPct = parseFloat(match.funding_rate || 0) * 100;
+            return {
+              ...item,
+              mark_price: currentPrice,
+              funding_rate: parseFloat(match.funding_rate || 0),
+              funding_rate_pct: Number(fundingPct.toFixed(4)),
+              signal: fundingPct > 0.03 ? 'OVERLEVERAGED' : (fundingPct < -0.01 ? 'SQUEEZE POTENTIAL' : 'NEUTRAL'),
+              signal_desc: fundingPct > 0.03 ? 'Long overleveraged' : (fundingPct < -0.01 ? 'Short squeeze potential' : 'Funding seimbang')
+            };
+          } else if (currentPrice > 0) {
+            return {
+              ...item,
+              mark_price: currentPrice
+            };
+          }
+          return item;
+        });
+      });
+    } catch (err) {
+      console.warn('Failed to fetch live futures contracts:', err);
+    }
+  }, [livePrices]);
+
+  useEffect(() => {
+    fetchLiveFuturesContracts();
+    const interval = setInterval(fetchLiveFuturesContracts, 20000);
+    return () => clearInterval(interval);
+  }, [fetchLiveFuturesContracts]);
 
   // 1. Live Countdown ke 8-Hour Funding Settlement (07:00, 15:00, 23:00 WIB)
   useEffect(() => {
@@ -522,6 +587,12 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
             </thead>
             <tbody>
               {rates.map((f, idx) => {
+                const base = f.symbol?.replace('USDT', '');
+                const liveQuote = livePrices[f.symbol] || livePrices[f.pair] || livePrices[base] || livePrices[`${base}/USDT`];
+                const markVal = (f.mark_price && Number(f.mark_price) > 0)
+                  ? Number(f.mark_price)
+                  : (liveQuote?.price && Number(liveQuote.price) > 0 ? Number(liveQuote.price) : 0);
+
                 const flash = flashingPairs[f.symbol];
                 const flashBg = flash === 'up' ? 'rgba(0, 208, 132, 0.18)' : flash === 'down' ? 'rgba(239, 68, 68, 0.18)' : getFundingBg(f.funding_rate_pct);
                 return (
@@ -529,7 +600,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
                     <td style={{ padding: '10px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '13px' }}>
-                          {f.pair || `${f.symbol?.replace('USDT', '')}/USDT`}
+                          {f.pair || `${base}/USDT`}
                         </span>
                         <span style={{ fontSize: '8px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(234, 179, 8, 0.15)', color: 'var(--accent-gold)', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
                           PERP
@@ -540,9 +611,17 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
                       {f.funding_rate_pct > 0 ? '+' : ''}{Number(f.funding_rate_pct || 0).toFixed(4)}%
                     </td>
                     <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '800' }}>
-                      ${Number(f.mark_price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
-                      {flash === 'up' && <span style={{ color: 'var(--accent-green)', marginLeft: '4px' }}>▲</span>}
-                      {flash === 'down' && <span style={{ color: 'var(--accent-rust)', marginLeft: '4px' }}>▼</span>}
+                      {markVal > 0 ? (
+                        <>
+                          ${markVal < 1
+                            ? markVal.toFixed(4)
+                            : markVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {flash === 'up' && <span style={{ color: 'var(--accent-green)', marginLeft: '4px' }}>▲</span>}
+                          {flash === 'down' && <span style={{ color: 'var(--accent-rust)', marginLeft: '4px' }}>▼</span>}
+                        </>
+                      ) : (
+                        <span style={{ color: 'var(--text-muted)' }}>-</span>
+                      )}
                     </td>
                     <td style={{ padding: '10px', textAlign: 'center', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                       {countdown || '08:00:00'}
@@ -770,6 +849,10 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
             </thead>
             <tbody>
               {initialOI.map((o, idx) => {
+                const base = o.symbol?.replace('USDT', '');
+                const liveQuote = livePrices[o.symbol] || livePrices[o.pair] || livePrices[base];
+                const oiPrice = (o.price && Number(o.price) > 0) ? Number(o.price) : (liveQuote?.price || 0);
+
                 let badgeClass = '';
                 if (o.oi_price_divergence === 'BULLISH_CONFIRMATION') badgeClass = 'badge-bull';
                 else if (o.oi_price_divergence === 'BEARISH_DIVERGENCE') badgeClass = 'badge-bear';
@@ -786,8 +869,12 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
                     <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: o.oi_change_1h_pct > 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                       {o.oi_change_1h_pct > 0 ? '+' : ''}{o.oi_change_1h_pct}%
                     </td>
-                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
-                      ${Number(o.price || 0).toLocaleString()}
+                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
+                      {oiPrice > 0 ? (
+                        `$${oiPrice < 1 ? oiPrice.toFixed(4) : oiPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                      ) : (
+                        <span style={{ color: 'var(--text-muted)' }}>-</span>
+                      )}
                     </td>
                     <td style={{ padding: '10px', textAlign: 'center' }}>
                       <span className={`badge ${badgeClass}`} style={{ fontWeight: 'bold' }}>

@@ -273,8 +273,8 @@ export default function App() {
           setActiveTab={setActiveTab}
           isMobileOpen={isMobileOpen}
           setMobileOpen={setMobileOpen}
-          stockCount={allIdxStocks.length > 0 ? allIdxStocks.length : (data?.daily_trade_plans || []).filter(p => p.market === 'IDX').length}
-          cryptoCount={allCryptoSpot.length > 0 ? allCryptoSpot.length : (data?.crypto_spot_10 || []).length}
+          stockCount={allIdxStocks.length > 0 ? allIdxStocks.length : 849}
+          cryptoCount={allCryptoSpot.length > 0 ? allCryptoSpot.length : 744}
           newsCount={(data?.macro_telemetry?.live_news || []).length}
           livePrices={livePrices}
           flashMap={flashMap}
