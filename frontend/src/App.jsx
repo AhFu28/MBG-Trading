@@ -425,6 +425,7 @@ export default function App() {
                   data={data} 
                   onOpenChart={handleOpenChart} 
                   livePrices={livePrices} 
+                  flashMap={flashMap}
                   allCryptoSpot={allCryptoSpot}
                 />
               </main>

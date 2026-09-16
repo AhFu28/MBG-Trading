@@ -25,6 +25,12 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
   const [flashingPairs, setFlashingPairs] = useState({});
   const wsRef = useRef(null);
 
+  // Futures search, filter & sorting state (Binance standard)
+  const [futuresSearch, setFuturesSearch] = useState('');
+  const [futuresSortField, setFuturesSortField] = useState('volume_24h_usd'); // 'volume_24h_usd' | 'change_24h_pct' | 'mark_price' | 'funding_rate_pct' | 'symbol'
+  const [futuresSortDir, setFuturesSortDir] = useState('desc'); // 'desc' | 'asc'
+  const [futuresFilter, setFuturesFilter] = useState('ALL'); // 'ALL' | 'VOLUME' | 'GAINERS' | 'LOSERS' | 'HIGH_FUNDING' | 'SQUEEZE'
+
   // DexScreener state
   const [dexPairs, setDexPairs] = useState([]);
   const [dexLoading, setDexLoading] = useState(false);
@@ -46,7 +52,13 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
       const livePrice = (live?.price && live.price > 0) ? live.price : (r.mark_price || 0);
       return {
         ...r,
-        mark_price: livePrice
+        mark_price: livePrice,
+        index_price: r.index_price || livePrice,
+        high_24h: r.high_24h || 0,
+        low_24h: r.low_24h || 0,
+        change_24h_pct: r.change_24h_pct || 0,
+        volume_24h_usd: r.volume_24h_usd || 0,
+        funding_next_pct: r.funding_next_pct || (r.funding_rate_pct || 0.01)
       };
     });
 
@@ -60,9 +72,14 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
           pair: `${baseCoin}/USDT`,
           funding_rate: 0.0001,
           funding_rate_pct: 0.01,
+          funding_next_pct: 0.01,
           next_funding_time: '08:00:00',
           mark_price: price,
           index_price: price,
+          high_24h: 0,
+          low_24h: 0,
+          change_24h_pct: 0,
+          volume_24h_usd: 0,
           signal: 'NEUTRAL',
           signal_desc: 'Funding seimbang'
         });
@@ -72,13 +89,13 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
     setLiveFundingRates(fullList);
   }, [initialRates, livePrices]);
 
-  // 1b. Fetch Real-time Market Funding Rates & Mark Prices dari Gate.io (Bebas Blokir 100%, 984 Kontrak)
+  // 1b. Fetch Real-time Market Funding Rates, Tickers & Metrics dari Gate.io (Bebas Blokir 100%, 984 Kontrak)
   const fetchLiveFuturesContracts = useCallback(async () => {
     try {
-      const res = await fetch('https://api.gateio.ws/api/v4/futures/usdt/contracts');
+      const res = await fetch('https://api.gateio.ws/api/v4/futures/usdt/tickers');
       if (!res.ok) return;
-      const contracts = await res.json();
-      if (!Array.isArray(contracts)) return;
+      const tickers = await res.json();
+      if (!Array.isArray(tickers)) return;
 
       setLiveFundingRates(prev => {
         const list = prev.length > 0 ? prev : DEFAULT_FUTURES_PAIRS.map(sym => ({
@@ -86,13 +103,19 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
           pair: `${sym.replace('USDT', '')}/USDT`,
           funding_rate: 0.0001,
           funding_rate_pct: 0.01,
-          mark_price: 0
+          funding_next_pct: 0.01,
+          mark_price: 0,
+          index_price: 0,
+          high_24h: 0,
+          low_24h: 0,
+          change_24h_pct: 0,
+          volume_24h_usd: 0
         }));
 
         return list.map(item => {
           const base = item.symbol.replace('USDT', '');
-          const gateName = `${base}_USDT`;
-          const match = contracts.find(c => c.name === gateName);
+          const gateContract = `${base}_USDT`;
+          const match = tickers.find(t => t.contract === gateContract);
 
           const liveQuote = livePrices[item.symbol] || livePrices[item.pair] || livePrices[base];
           const currentPrice = (liveQuote?.price && liveQuote.price > 0)
@@ -101,11 +124,24 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
 
           if (match) {
             const fundingPct = parseFloat(match.funding_rate || 0) * 100;
+            const nextFundingPct = parseFloat(match.funding_rate_indicative || match.funding_rate || 0) * 100;
+            const changePct = parseFloat(match.change_percentage || 0);
+            const high24 = parseFloat(match.high_24h || 0);
+            const low24 = parseFloat(match.low_24h || 0);
+            const volUsd = parseFloat(match.volume_24h_quote || match.volume_24h_settle || 0);
+            const indexP = parseFloat(match.index_price || currentPrice || 0);
+
             return {
               ...item,
-              mark_price: currentPrice,
+              mark_price: currentPrice || parseFloat(match.mark_price || 0),
+              index_price: indexP,
+              high_24h: high24,
+              low_24h: low24,
+              change_24h_pct: changePct,
+              volume_24h_usd: volUsd,
               funding_rate: parseFloat(match.funding_rate || 0),
               funding_rate_pct: Number(fundingPct.toFixed(4)),
+              funding_next_pct: Number(nextFundingPct.toFixed(4)),
               signal: fundingPct > 0.03 ? 'OVERLEVERAGED' : (fundingPct < -0.01 ? 'SQUEEZE POTENTIAL' : 'NEUTRAL'),
               signal_desc: fundingPct > 0.03 ? 'Long overleveraged' : (fundingPct < -0.01 ? 'Short squeeze potential' : 'Funding seimbang')
             };
@@ -119,7 +155,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
         });
       });
     } catch (err) {
-      console.warn('Failed to fetch live futures contracts:', err);
+      console.warn('Failed to fetch live futures tickers:', err);
     }
   }, [livePrices]);
 
@@ -359,6 +395,70 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
   const avgLsRatio = lsRatios.reduce((acc, curr) => acc + curr, 0) / (lsRatios.length || 1);
   const marketBias = avgLsRatio > 1.05 ? 'LONG BIASED' : avgLsRatio < 0.95 ? 'SHORT BIASED' : 'NEUTRAL';
 
+  // Helpers for Binance Futures formatting
+  const getLeverageTier = (symbol) => {
+    const s = symbol?.toUpperCase() || '';
+    if (s.startsWith('BTC') || s.startsWith('ETH')) return '125x';
+    if (s.startsWith('SOL') || s.startsWith('BNB') || s.startsWith('XRP') || s.startsWith('DOGE') || s.startsWith('ADA')) return '75x';
+    if (s.startsWith('AVAX') || s.startsWith('LINK') || s.startsWith('SUI') || s.startsWith('NEAR') || s.startsWith('PEPE')) return '50x';
+    return '20x';
+  };
+
+  const formatVolSmart = (val) => {
+    if (!val || isNaN(val)) return '$0';
+    if (val >= 1e9) return `$${(val / 1e9).toFixed(2)}B`;
+    if (val >= 1e6) return `$${(val / 1e6).toFixed(2)}M`;
+    if (val >= 1e3) return `$${(val / 1e3).toFixed(1)}K`;
+    return `$${val.toFixed(0)}`;
+  };
+
+  const formatPriceSmart = (val) => {
+    if (!val || isNaN(val)) return '-';
+    if (val < 0.0001) return `$${val.toFixed(8)}`;
+    if (val < 0.01) return `$${val.toFixed(6)}`;
+    if (val < 1) return `$${val.toFixed(4)}`;
+    return `$${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  // Top performers for Futures Bento
+  const topFuturesVolume = [...rates].sort((a, b) => (b.volume_24h_usd || 0) - (a.volume_24h_usd || 0))[0];
+  const topFuturesGainer = [...rates].sort((a, b) => (b.change_24h_pct || 0) - (a.change_24h_pct || 0))[0];
+
+  const handleFuturesSort = (field) => {
+    if (futuresSortField === field) {
+      setFuturesSortDir(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setFuturesSortField(field);
+      setFuturesSortDir(field === 'symbol' ? 'asc' : 'desc');
+    }
+  };
+
+  // Filtered & Sorted Perpetual Futures rates
+  const filteredRates = rates
+    .filter(f => {
+      if (futuresFilter === 'GAINERS' && (f.change_24h_pct || 0) <= 0) return false;
+      if (futuresFilter === 'LOSERS' && (f.change_24h_pct || 0) >= 0) return false;
+      if (futuresFilter === 'HIGH_FUNDING' && (f.funding_rate_pct || 0) <= 0.02) return false;
+      if (futuresFilter === 'SQUEEZE' && (f.funding_rate_pct || 0) >= -0.005) return false;
+
+      if (!futuresSearch) return true;
+      const q = futuresSearch.toLowerCase().trim();
+      const sym = (f.symbol || '').toLowerCase();
+      const pair = (f.pair || '').toLowerCase();
+      const sig = (f.signal || '').toLowerCase();
+      return sym.includes(q) || pair.includes(q) || sig.includes(q);
+    })
+    .sort((a, b) => {
+      let valA = a[futuresSortField];
+      let valB = b[futuresSortField];
+      if (valA === undefined || valA === null) valA = 0;
+      if (valB === undefined || valB === null) valB = 0;
+      if (typeof valA === 'string' && typeof valB === 'string') {
+        return futuresSortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
+      return futuresSortDir === 'asc' ? valA - valB : valB - valA;
+    });
+
   // DexScreener Filtered list
   const filteredDexPairs = dexPairs.filter(p => {
     const matchSearch = dexSearch === '' ||
@@ -471,53 +571,103 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
         </div>
       </div>
 
-      {/* 2. Top Summary Bento Grid (Derivatives + DexScreener) */}
+      {/* 2. Top Summary Bento Grid (Context Aware: Futures vs DexScreener) */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
-        <div className="quant-card" style={{ padding: '14px 16px' }}>
-          <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
-            Total Open Interest (Futures)
-          </div>
-          <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: 'var(--text-primary)' }}>
-            ${(totalOI / 1e9).toFixed(2)}B
-          </div>
-          <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Kontrak Terbuka CEX Aktif</div>
-        </div>
+        {activeTab === 'dexscreener' ? (
+          <>
+            <div className="quant-card" style={{ padding: '14px 16px' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+                Dex Pools Terpantau
+              </div>
+              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: 'var(--text-primary)' }}>
+                {dexPairs.length} Pools
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Multi-Chain Liquidity Radar</div>
+            </div>
 
-        <div className="quant-card" style={{ padding: '14px 16px' }}>
-          <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
-            Avg Funding Rate (Live)
-          </div>
-          <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: avgFunding < -0.01 ? 'var(--accent-green)' : avgFunding > 0.05 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
-            {avgFunding.toFixed(4)}%
-          </div>
-          <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
-            {avgFunding > 0.03 ? '⚠️ Long Padat' : avgFunding < -0.01 ? '🚀 Peluang Squeeze' : 'Kondisi Seimbang'}
-          </div>
-        </div>
+            <div className="quant-card" style={{ padding: '14px 16px' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+                Avg Funding Rate (CEX Ref)
+              </div>
+              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: avgFunding < -0.01 ? 'var(--accent-green)' : avgFunding > 0.05 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
+                {avgFunding.toFixed(4)}%
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
+                {avgFunding > 0.03 ? '⚠️ Long Padat' : avgFunding < -0.01 ? '🚀 Peluang Squeeze' : 'Kondisi Seimbang'}
+              </div>
+            </div>
 
-        <div className="quant-card" style={{ padding: '14px 16px' }}>
-          <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
-            Top Dex 24h Volume (DexScreener)
-          </div>
-          <div style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: '#c084fc', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {topDexVolume ? `${topDexVolume.baseToken} ($${(topDexVolume.volume24h / 1e6).toFixed(1)}M)` : 'Loading DEX...'}
-          </div>
-          <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
-            {topDexVolume ? `${topDexVolume.chainId.toUpperCase()} · ${topDexVolume.dexId}` : 'On-Chain Radar'}
-          </div>
-        </div>
+            <div className="quant-card" style={{ padding: '14px 16px' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+                Top Dex 24h Volume (DexScreener)
+              </div>
+              <div style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: '#c084fc', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {topDexVolume ? `${topDexVolume.baseToken} ($${(topDexVolume.volume24h / 1e6).toFixed(1)}M)` : 'Loading DEX...'}
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
+                {topDexVolume ? `${topDexVolume.chainId.toUpperCase()} · ${topDexVolume.dexId}` : 'On-Chain Radar'}
+              </div>
+            </div>
 
-        <div className="quant-card" style={{ padding: '14px 16px' }}>
-          <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
-            Top DEX Gainer 24h
-          </div>
-          <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: 'var(--accent-green)' }}>
-            {topDexGainer ? `+${topDexGainer.change24h.toFixed(1)}%` : '+0.0%'}
-          </div>
-          <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
-            {topDexGainer ? `${topDexGainer.baseToken} (${topDexGainer.chainId.toUpperCase()})` : 'Scanning...'}
-          </div>
-        </div>
+            <div className="quant-card" style={{ padding: '14px 16px' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+                Top DEX Gainer 24h
+              </div>
+              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: 'var(--accent-green)' }}>
+                {topDexGainer ? `+${topDexGainer.change24h.toFixed(1)}%` : '+0.0%'}
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
+                {topDexGainer ? `${topDexGainer.baseToken} (${topDexGainer.chainId.toUpperCase()})` : 'Scanning...'}
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="quant-card" style={{ padding: '14px 16px' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+                Total Open Interest (Futures)
+              </div>
+              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: 'var(--text-primary)' }}>
+                ${(totalOI / 1e9).toFixed(2)}B
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Kontrak Terbuka CEX Aktif</div>
+            </div>
+
+            <div className="quant-card" style={{ padding: '14px 16px' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+                Avg Funding Rate (8h Live)
+              </div>
+              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: avgFunding < -0.01 ? 'var(--accent-green)' : avgFunding > 0.05 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
+                {avgFunding.toFixed(4)}%
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
+                {avgFunding > 0.03 ? '⚠️ Long Overleveraged' : avgFunding < -0.01 ? '🚀 Squeeze Potential' : 'Sentimen Seimbang'}
+              </div>
+            </div>
+
+            <div className="quant-card" style={{ padding: '14px 16px' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+                Top 24h Futures Turnover
+              </div>
+              <div style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: 'var(--accent-gold)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {topFuturesVolume ? `${topFuturesVolume.pair || topFuturesVolume.symbol} (${formatVolSmart(topFuturesVolume.volume_24h_usd)})` : 'Loading...'}
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Turnover Tertinggi Pasar Derivatif</div>
+            </div>
+
+            <div className="quant-card" style={{ padding: '14px 16px' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+                Top 24h Perp Gainer
+              </div>
+              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: (topFuturesGainer?.change_24h_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                {topFuturesGainer ? `${(topFuturesGainer.change_24h_pct || 0) >= 0 ? '+' : ''}${Number(topFuturesGainer.change_24h_pct || 0).toFixed(2)}%` : '+0.00%'}
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
+                {topFuturesGainer ? `${topFuturesGainer.pair} · Max ${getLeverageTier(topFuturesGainer.symbol)}` : 'Scanning...'}
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* 3. Segmented Pill Navigation */}
@@ -525,7 +675,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
         <div className="quant-pill-nav" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
           <button onClick={() => setActiveTab('funding')} className={`quant-pill-btn ${activeTab === 'funding' ? 'active' : ''}`}>
             <span>💰</span>
-            <span>FUNDING RATE (LIVE 1S)</span>
+            <span>KONTRAK PERPETUAL ({filteredRates.length})</span>
           </button>
           <button onClick={() => setActiveTab('dexscreener')} className={`quant-pill-btn ${activeTab === 'dexscreener' ? 'active' : ''}`} style={{ borderColor: activeTab === 'dexscreener' ? '#c084fc' : undefined }}>
             <span>🚀</span>
@@ -572,87 +722,288 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, a
       {/* 4. Tab Contents */}
       <div className="quant-card" style={{ padding: '0', overflow: 'hidden' }}>
 
-        {/* TAB 1: FUNDING RATE (1S LIVE BINANCE) */}
+        {/* TAB 1: KONTRAK PERPETUAL & FUNDING RATE (BINANCE STANDARDS) */}
         {activeTab === 'funding' && (
-          <table className="quant-table">
-            <thead>
-              <tr style={{ borderBottom: 'var(--border-muted)', background: 'var(--bg-panel-subtle)', textAlign: 'left' }}>
-                <th style={{ padding: '10px' }}>Pair Kripto</th>
-                <th style={{ padding: '10px', textAlign: 'right' }}>Funding Rate (8h)</th>
-                <th style={{ padding: '10px', textAlign: 'right' }}>Mark Price (Live 1s)</th>
-                <th style={{ padding: '10px', textAlign: 'center' }}>Settle Countdown</th>
-                <th style={{ padding: '10px', textAlign: 'center' }}>Sinyal Leverage</th>
-                <th style={{ padding: '10px', textAlign: 'center' }}>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rates.map((f, idx) => {
-                const base = f.symbol?.replace('USDT', '');
-                const liveQuote = livePrices[f.symbol] || livePrices[f.pair] || livePrices[base] || livePrices[`${base}/USDT`];
-                const markVal = (f.mark_price && Number(f.mark_price) > 0)
-                  ? Number(f.mark_price)
-                  : (liveQuote?.price && Number(liveQuote.price) > 0 ? Number(liveQuote.price) : 0);
+          <div style={{ padding: '14px' }}>
+            {/* Search & Quick Filters Toolbar */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                {[
+                  { id: 'ALL', label: `Semua (${rates.length})` },
+                  { id: 'VOLUME', label: '🔥 Top Turnover' },
+                  { id: 'GAINERS', label: '📈 Top Gainer' },
+                  { id: 'LOSERS', label: '📉 Top Loser' },
+                  { id: 'HIGH_FUNDING', label: '⚠️ High Funding' },
+                  { id: 'SQUEEZE', label: '🚀 Squeeze Setup' }
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setFuturesFilter(tab.id);
+                      if (tab.id === 'VOLUME') {
+                        setFuturesSortField('volume_24h_usd');
+                        setFuturesSortDir('desc');
+                      } else if (tab.id === 'GAINERS') {
+                        setFuturesSortField('change_24h_pct');
+                        setFuturesSortDir('desc');
+                      } else if (tab.id === 'LOSERS') {
+                        setFuturesSortField('change_24h_pct');
+                        setFuturesSortDir('asc');
+                      } else if (tab.id === 'HIGH_FUNDING') {
+                        setFuturesSortField('funding_rate_pct');
+                        setFuturesSortDir('desc');
+                      } else if (tab.id === 'SQUEEZE') {
+                        setFuturesSortField('funding_rate_pct');
+                        setFuturesSortDir('asc');
+                      }
+                    }}
+                    style={{
+                      padding: '4px 10px',
+                      borderRadius: '4px',
+                      fontSize: '10px',
+                      fontWeight: '800',
+                      cursor: 'pointer',
+                      border: futuresFilter === tab.id ? '1px solid var(--accent-gold)' : 'var(--border-hairline)',
+                      background: futuresFilter === tab.id ? 'rgba(234, 179, 8, 0.15)' : 'var(--bg-panel-subtle)',
+                      color: futuresFilter === tab.id ? 'var(--accent-gold)' : 'var(--text-secondary)'
+                    }}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
 
-                const flash = flashingPairs[f.symbol];
-                const flashBg = flash === 'up' ? 'rgba(0, 208, 132, 0.18)' : flash === 'down' ? 'rgba(239, 68, 68, 0.18)' : getFundingBg(f.funding_rate_pct);
-                return (
-                  <tr key={idx} style={{ borderBottom: 'var(--border-hairline)', background: flashBg, transition: 'background 0.4s ease' }}>
-                    <td style={{ padding: '10px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '13px' }}>
-                          {f.pair || `${base}/USDT`}
-                        </span>
-                        <span style={{ fontSize: '8px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(234, 179, 8, 0.15)', color: 'var(--accent-gold)', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
-                          PERP
-                        </span>
-                      </div>
-                    </td>
-                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: f.funding_rate_pct < -0.01 ? 'var(--accent-green)' : f.funding_rate_pct > 0.05 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
-                      {f.funding_rate_pct > 0 ? '+' : ''}{Number(f.funding_rate_pct || 0).toFixed(4)}%
-                    </td>
-                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '800' }}>
-                      {markVal > 0 ? (
-                        <>
-                          ${markVal < 1
-                            ? markVal.toFixed(4)
-                            : markVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                          {flash === 'up' && <span style={{ color: 'var(--accent-green)', marginLeft: '4px' }}>▲</span>}
-                          {flash === 'down' && <span style={{ color: 'var(--accent-rust)', marginLeft: '4px' }}>▼</span>}
-                        </>
-                      ) : (
-                        <span style={{ color: 'var(--text-muted)' }}>-</span>
-                      )}
-                    </td>
-                    <td style={{ padding: '10px', textAlign: 'center', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                      {countdown || '08:00:00'}
-                    </td>
-                    <td style={{ padding: '10px', textAlign: 'center' }}>
-                      <span className={`badge ${f.funding_rate_pct < -0.01 ? 'badge-bull' : f.funding_rate_pct > 0.05 ? 'badge-bear' : ''}`} style={{ fontWeight: 'bold' }}>
-                        {f.funding_rate_pct > 0.05 ? '⚠️ OVERLEVERAGED' : f.funding_rate_pct < -0.01 ? '🚀 SQUEEZE POTENTIAL' : 'NEUTRAL'}
-                      </span>
-                    </td>
-                    <td style={{ padding: '10px', textAlign: 'center' }}>
-                      <button
-                        onClick={() => onOpenChart ? onOpenChart(`BINANCE:${f.symbol}.P`, 'CRYPTO') : null}
-                        style={{
-                          background: 'transparent',
-                          border: 'var(--border-hairline)',
-                          borderRadius: '4px',
-                          color: 'var(--accent-blue)',
-                          padding: '3px 8px',
-                          fontSize: '11px',
-                          fontWeight: '700',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Chart ↗
-                      </button>
-                    </td>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <input
+                  type="text"
+                  placeholder="Cari kontrak (e.g. BTC, SOL, SUI, DOGE, PEPE)..."
+                  value={futuresSearch}
+                  onChange={(e) => setFuturesSearch(e.target.value)}
+                  style={{
+                    padding: '5px 10px',
+                    borderRadius: '4px',
+                    border: 'var(--border-hairline)',
+                    background: 'var(--bg-panel-subtle)',
+                    color: 'var(--text-primary)',
+                    fontSize: '11px',
+                    width: '260px'
+                  }}
+                />
+                {futuresSearch && (
+                  <button
+                    onClick={() => setFuturesSearch('')}
+                    style={{
+                      background: 'transparent',
+                      border: 'var(--border-hairline)',
+                      borderRadius: '4px',
+                      color: 'var(--text-muted)',
+                      padding: '4px 8px',
+                      fontSize: '10px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Table */}
+            <div style={{ overflowX: 'auto' }}>
+              <table className="quant-table" style={{ width: '100%' }}>
+                <thead>
+                  <tr style={{ borderBottom: 'var(--border-muted)', background: 'var(--bg-panel-subtle)', textAlign: 'left' }}>
+                    <th
+                      onClick={() => handleFuturesSort('symbol')}
+                      style={{ padding: '10px', cursor: 'pointer', userSelect: 'none' }}
+                    >
+                      Kontrak / Pair {futuresSortField === 'symbol' && (futuresSortDir === 'asc' ? '▲' : '▼')}
+                    </th>
+                    <th
+                      onClick={() => handleFuturesSort('mark_price')}
+                      style={{ padding: '10px', textAlign: 'right', cursor: 'pointer', userSelect: 'none' }}
+                    >
+                      Mark Price (Live 1s) {futuresSortField === 'mark_price' && (futuresSortDir === 'asc' ? '▲' : '▼')}
+                    </th>
+                    <th
+                      onClick={() => handleFuturesSort('change_24h_pct')}
+                      style={{ padding: '10px', textAlign: 'right', cursor: 'pointer', userSelect: 'none' }}
+                    >
+                      24h Change % {futuresSortField === 'change_24h_pct' && (futuresSortDir === 'asc' ? '▲' : '▼')}
+                    </th>
+                    <th style={{ padding: '10px', textAlign: 'right' }}>
+                      24h High / Low
+                    </th>
+                    <th
+                      onClick={() => handleFuturesSort('volume_24h_usd')}
+                      style={{ padding: '10px', textAlign: 'right', cursor: 'pointer', userSelect: 'none' }}
+                    >
+                      24h Volume (USDT) {futuresSortField === 'volume_24h_usd' && (futuresSortDir === 'asc' ? '▲' : '▼')}
+                    </th>
+                    <th
+                      onClick={() => handleFuturesSort('funding_rate_pct')}
+                      style={{ padding: '10px', textAlign: 'right', cursor: 'pointer', userSelect: 'none' }}
+                    >
+                      Funding Rate (8h) {futuresSortField === 'funding_rate_pct' && (futuresSortDir === 'asc' ? '▲' : '▼')}
+                    </th>
+                    <th style={{ padding: '10px', textAlign: 'center' }}>
+                      Sentimen Leverage
+                    </th>
+                    <th style={{ padding: '10px', textAlign: 'center' }}>
+                      Aksi
+                    </th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                  {filteredRates.map((f, idx) => {
+                    const base = f.symbol?.replace('USDT', '');
+                    const liveQuote = livePrices[f.symbol] || livePrices[f.pair] || livePrices[base] || livePrices[`${base}/USDT`];
+                    const markVal = (f.mark_price && Number(f.mark_price) > 0)
+                      ? Number(f.mark_price)
+                      : (liveQuote?.price && Number(liveQuote.price) > 0 ? Number(liveQuote.price) : 0);
+
+                    const flash = flashingPairs[f.symbol];
+                    const flashBg = flash === 'up'
+                      ? 'rgba(0, 208, 132, 0.18)'
+                      : flash === 'down'
+                        ? 'rgba(239, 68, 68, 0.18)'
+                        : getFundingBg(f.funding_rate_pct);
+
+                    const isUp24 = (f.change_24h_pct || 0) >= 0;
+
+                    return (
+                      <tr key={idx} style={{ borderBottom: 'var(--border-hairline)', background: flashBg, transition: 'background 0.4s ease' }}>
+                        <td style={{ padding: '10px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <button
+                              onClick={() => onOpenChart ? onOpenChart(`BINANCE:${f.symbol}.P`, 'CRYPTO') : null}
+                              style={{
+                                background: 'transparent',
+                                border: 'none',
+                                padding: 0,
+                                fontWeight: '800',
+                                color: 'var(--text-primary)',
+                                fontSize: '13px',
+                                cursor: 'pointer',
+                                textAlign: 'left'
+                              }}
+                              title="Klik untuk buka chart di Charting Desk"
+                            >
+                              {f.pair || `${base}/USDT`}
+                            </button>
+                            <span style={{ fontSize: '8px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(234, 179, 8, 0.15)', color: 'var(--accent-gold)', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
+                              PERP
+                            </span>
+                            <span style={{ fontSize: '8px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-secondary)', fontWeight: '700', fontFamily: 'var(--font-mono)', border: 'var(--border-hairline)' }}>
+                              {getLeverageTier(f.symbol)}
+                            </span>
+                          </div>
+                        </td>
+
+                        <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
+                          <div style={{ fontWeight: '800', fontSize: '13px', color: 'var(--text-primary)' }}>
+                            {markVal > 0 ? (
+                              <>
+                                {formatPriceSmart(markVal)}
+                                {flash === 'up' && <span style={{ color: 'var(--accent-green)', marginLeft: '4px' }}>▲</span>}
+                                {flash === 'down' && <span style={{ color: 'var(--accent-rust)', marginLeft: '4px' }}>▼</span>}
+                              </>
+                            ) : (
+                              <span style={{ color: 'var(--text-muted)' }}>-</span>
+                            )}
+                          </div>
+                          {f.index_price > 0 && (
+                            <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                              Index: {formatPriceSmart(f.index_price)}
+                            </div>
+                          )}
+                        </td>
+
+                        <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
+                          <span
+                            style={{
+                              display: 'inline-block',
+                              padding: '2px 6px',
+                              borderRadius: '4px',
+                              fontSize: '11px',
+                              fontWeight: '800',
+                              background: isUp24 ? 'rgba(0, 208, 132, 0.12)' : 'rgba(239, 68, 68, 0.12)',
+                              color: isUp24 ? 'var(--accent-green)' : 'var(--accent-rust)',
+                              border: `1px solid ${isUp24 ? 'rgba(0, 208, 132, 0.25)' : 'rgba(239, 68, 68, 0.25)'}`
+                            }}
+                          >
+                            {isUp24 ? '+' : ''}{Number(f.change_24h_pct || 0).toFixed(2)}%
+                          </span>
+                        </td>
+
+                        <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11px' }}>
+                          <div style={{ color: 'var(--text-secondary)' }}>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '9px', marginRight: '3px' }}>H:</span>
+                            {f.high_24h > 0 ? formatPriceSmart(f.high_24h) : '-'}
+                          </div>
+                          <div style={{ color: 'var(--text-secondary)', marginTop: '2px' }}>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '9px', marginRight: '3px' }}>L:</span>
+                            {f.low_24h > 0 ? formatPriceSmart(f.low_24h) : '-'}
+                          </div>
+                        </td>
+
+                        <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
+                          <div style={{ fontWeight: '700', fontSize: '12px', color: 'var(--text-primary)' }}>
+                            {formatVolSmart(f.volume_24h_usd || 0)}
+                          </div>
+                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                            Turnover USDT
+                          </div>
+                        </td>
+
+                        <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
+                          <div style={{
+                            fontWeight: '800',
+                            fontSize: '12px',
+                            color: f.funding_rate_pct < -0.01 ? 'var(--accent-green)' : f.funding_rate_pct > 0.03 ? 'var(--accent-rust)' : 'var(--text-primary)'
+                          }}>
+                            {f.funding_rate_pct > 0 ? '+' : ''}{Number(f.funding_rate_pct || 0).toFixed(4)}%
+                          </div>
+                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                            Settle: <span style={{ color: 'var(--accent-gold)' }}>{countdown || '08:00:00'}</span>
+                            {f.funding_next_pct !== undefined && (
+                              <span style={{ marginLeft: '4px' }}>
+                                &middot; Pred: {f.funding_next_pct > 0 ? '+' : ''}{Number(f.funding_next_pct || 0).toFixed(4)}%
+                              </span>
+                            )}
+                          </div>
+                        </td>
+
+                        <td style={{ padding: '10px', textAlign: 'center' }}>
+                          <span className={`badge ${f.funding_rate_pct < -0.01 ? 'badge-bull' : f.funding_rate_pct > 0.03 ? 'badge-bear' : ''}`} style={{ fontWeight: 'bold' }}>
+                            {f.funding_rate_pct > 0.03 ? '⚠️ OVERLEVERAGED' : f.funding_rate_pct < -0.01 ? '🚀 SQUEEZE POTENTIAL' : '⚖️ BALANCED'}
+                          </span>
+                        </td>
+
+                        <td style={{ padding: '10px', textAlign: 'center' }}>
+                          <button
+                            onClick={() => onOpenChart ? onOpenChart(`BINANCE:${f.symbol}.P`, 'CRYPTO') : null}
+                            style={{
+                              background: 'transparent',
+                              border: 'var(--border-hairline)',
+                              borderRadius: '4px',
+                              color: 'var(--accent-blue)',
+                              padding: '4px 10px',
+                              fontSize: '11px',
+                              fontWeight: '700',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Chart ↗
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
         )}
 
         {/* TAB 2: DEXSCREENER RADAR (GACOR MULTI-CHAIN) */}
