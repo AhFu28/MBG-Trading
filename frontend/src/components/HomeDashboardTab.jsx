@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BloombergNewsWire from './BloombergNewsWire.jsx';
 import AssetIcon from './AssetIcon.jsx';
+import CryptoIcon from './CryptoIcon.jsx';
 
 export default function HomeDashboardTab({
   data,
