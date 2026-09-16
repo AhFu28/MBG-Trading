@@ -45,9 +45,26 @@ export const CHANGELOG_DATA = [
         icon: '🇺🇸',
         title: 'US Stock Intelligence — 30 Saham Top & Earnings Calendar',
         desc: 'Screener 30 saham AS terpopuler (AAPL, NVDA, TSLA, dll.) dengan analisis teknikal, heatmap performa sektor, trade plans top 5, dan kalender earnings dengan peringatan zona bahaya pre-earnings.'
+      },
+      {
+        tag: 'AGILE UI/UX',
+        tagColor: '#38bdf8',
+        icon: '💎',
+        title: 'Agile Quant Cockpit UI/UX & Realtime WebSockets',
+        desc: 'Redesain radikal cockpit dari kotak kaku menjadi terminal quant modern: kartu bervolume kaca, segmented pill controls, breathing live indicators, dan integrasi WebSocket zero-subscription (Mempool & Binance Futures).'
       }
     ],
     categories: [
+      {
+        categoryTitle: '💎 Agile Quant Cockpit & Realtime Streams',
+        items: [
+          'Design System Quant: .quant-card dengan subtle inner glow, backdrop blur, hover elevation, dan segmented pill navigation (.quant-pill-nav)',
+          'Realtime On-Chain WebSocket: streaming block & mempool langsung dari wss://mempool.space/api/v1/ws tanpa subscription / API key',
+          'Realtime Binance Futures WebSocket: streaming live mark price & countdown settlement langsung dari wss://fstream.binance.com',
+          'Interactive Pip Risk Calculator dengan visual risk gauge (USD & IDR) dan feedback real-time',
+          'High-density quant tables (.quant-table) dengan silky hover rows dan tipografi monospace'
+        ]
+      },
       {
         categoryTitle: '🐋 Whale Intelligence Hub',
         items: [

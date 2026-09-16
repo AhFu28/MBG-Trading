@@ -181,74 +181,78 @@ export default function CryptoFuturesTab({ data, onOpenChart }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', boxSizing: 'border-box' }}>
-      {/* Header with Live Status & Countdown */}
-      <div className="telemetry-panel" style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', width: '100%', boxSizing: 'border-box' }}>
+      {/* 1. Header with Live Status & Countdown */}
+      <div className="quant-card" style={{ padding: '18px 22px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
         <div>
-          <h2 style={{ fontSize: '18px', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            ⚡ CRYPTO FUTURES INTELLIGENCE
-          </h2>
-          <p style={{ margin: '4px 0 0 0', color: 'var(--text-muted)', fontSize: '12px' }}>
-            Funding Rate Live · Open Interest · Long/Short Ratio · Radar Likuidasi Real-time
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '20px' }}>⚡</span>
+            <h2 style={{ fontSize: '18px', margin: 0, fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
+              CRYPTO FUTURES INTELLIGENCE
+            </h2>
+            <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(234, 179, 8, 0.15)', color: '#fbbf24', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+              DERIVATIVES COCKPIT
+            </span>
+          </div>
+          <p style={{ margin: '5px 0 0 0', color: 'var(--text-secondary)', fontSize: '12px', letterSpacing: '0.01em' }}>
+            Funding Rate Live 1s &middot; Open Interest &middot; Long/Short Ratio &middot; Radar Likuidasi Real-Time
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           {/* Countdown Next Settlement */}
           <div style={{
             fontSize: '11px',
             fontFamily: 'var(--font-mono)',
-            padding: '5px 10px',
-            borderRadius: 'var(--radius-xs)',
-            background: 'var(--bg-panel-subtle)',
-            border: 'var(--border-hairline)',
+            padding: '6px 12px',
+            borderRadius: '6px',
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px'
+            gap: '8px'
           }}>
-            <span style={{ color: 'var(--text-muted)' }}>SETTLEMENT:</span>
-            <strong style={{ color: 'var(--accent-gold)' }}>{countdown || '--:--:--'}</strong>
+            <span style={{ color: 'var(--text-muted)' }}>SETTLE COUNTDOWN:</span>
+            <strong style={{ color: 'var(--accent-gold)', letterSpacing: '0.05em' }}>{countdown || '--:--:--'}</strong>
           </div>
 
           {/* WebSocket Status */}
           <div style={{
-            fontSize: '10px',
-            padding: '5px 10px',
-            borderRadius: 'var(--radius-xs)',
-            background: wsStatus === 'LIVE' ? 'rgba(0, 208, 132, 0.15)' : 'rgba(234, 179, 8, 0.15)',
+            fontSize: '11px',
+            padding: '6px 12px',
+            borderRadius: '6px',
+            background: wsStatus === 'LIVE' ? 'rgba(0, 208, 132, 0.12)' : 'rgba(234, 179, 8, 0.12)',
             color: wsStatus === 'LIVE' ? 'var(--accent-green)' : 'var(--accent-gold)',
             fontFamily: 'var(--font-mono)',
             fontWeight: '700',
-            border: `1px solid ${wsStatus === 'LIVE' ? 'var(--accent-green)' : 'var(--accent-gold)'}`,
+            border: `1px solid ${wsStatus === 'LIVE' ? 'rgba(0, 208, 132, 0.3)' : 'rgba(234, 179, 8, 0.3)'}`,
             display: 'flex',
             alignItems: 'center',
-            gap: '6px'
+            gap: '8px'
           }}>
-            <span style={{
-              width: '7px',
-              height: '7px',
-              borderRadius: '50%',
-              background: wsStatus === 'LIVE' ? 'var(--accent-green)' : 'var(--accent-gold)',
-              boxShadow: wsStatus === 'LIVE' ? '0 0 6px var(--accent-green)' : 'none'
-            }} />
-            <span>{wsStatus === 'LIVE' ? 'BINANCE FUTURES STREAM (0s)' : 'SYNCHRONIZING...'}</span>
+            <span className={wsStatus === 'LIVE' ? 'pulse-dot-green' : 'pulse-dot-amber'} />
+            <span>{wsStatus === 'LIVE' ? 'BINANCE STREAM (0s)' : 'SYNCHRONIZING...'}</span>
           </div>
         </div>
       </div>
 
-      {/* Top 4 Summary Bento */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
-        <div className="telemetry-panel" style={{ padding: '14px', borderLeft: '3px solid var(--accent-blue)' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Total Open Interest</div>
-          <div style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: 'var(--font-mono)', margin: '6px 0' }}>
+      {/* 2. Top 4 Summary Bento (Agile Fluid Cards) */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
+        <div className="quant-card quant-card-interactive" style={{ padding: '16px 18px', position: 'relative' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
+            Total Open Interest
+          </div>
+          <div style={{ fontSize: '26px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '8px 0', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
             ${(totalOI / 1e9).toFixed(2)}B
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Kontrak Berjangka Aktif</div>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Kontrak Berjangka Aktif Terbuka</div>
         </div>
 
-        <div className="telemetry-panel" style={{ padding: '14px', borderLeft: '3px solid var(--accent-gold)' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Avg Funding Rate (Live)</div>
-          <div style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: 'var(--font-mono)', margin: '6px 0', color: avgFunding < -0.01 ? 'var(--accent-green)' : avgFunding > 0.05 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
+        <div className="quant-card quant-card-interactive" style={{ padding: '16px 18px', position: 'relative' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
+            Avg Funding Rate (Live)
+          </div>
+          <div style={{ fontSize: '26px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '8px 0', letterSpacing: '-0.02em', color: avgFunding < -0.01 ? 'var(--accent-green)' : avgFunding > 0.05 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
             {avgFunding.toFixed(4)}%
           </div>
           <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
@@ -256,37 +260,56 @@ export default function CryptoFuturesTab({ data, onOpenChart }) {
           </div>
         </div>
 
-        <div className="telemetry-panel" style={{ padding: '14px', borderLeft: '3px solid var(--accent-orange)' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Market Bias (L/S Ratio)</div>
-          <div style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: 'var(--font-mono)', margin: '6px 0', color: marketBias === 'LONG BIASED' ? 'var(--accent-green)' : marketBias === 'SHORT BIASED' ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
+        <div className="quant-card quant-card-interactive" style={{ padding: '16px 18px', position: 'relative' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
+            Market Bias (L/S Ratio)
+          </div>
+          <div style={{ fontSize: '26px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '8px 0', letterSpacing: '-0.02em', color: marketBias === 'LONG BIASED' ? 'var(--accent-green)' : marketBias === 'SHORT BIASED' ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
             {marketBias}
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Rasio Akun Global {avgLsRatio.toFixed(2)}x</div>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Rasio Akun Global: <strong>{avgLsRatio.toFixed(2)}x</strong></div>
         </div>
         
-        <div className="telemetry-panel" style={{ padding: '14px', borderLeft: '3px solid var(--accent-rust)' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>24h Liquidations</div>
-          <div style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: 'var(--font-mono)', margin: '6px 0' }}>
+        <div className="quant-card quant-card-interactive" style={{ padding: '16px 18px', position: 'relative' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
+            24h Liquidations
+          </div>
+          <div style={{ fontSize: '26px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '8px 0', letterSpacing: '-0.02em', color: 'var(--accent-rust)' }}>
             ${(initialLiq.total_liquidated_usd / 1e6 || 0).toFixed(2)}M
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', gap: '8px' }}>
-            <span style={{ color: 'var(--accent-green)' }}>L: ${(initialLiq.long_liquidated_usd / 1e6 || 0).toFixed(1)}M</span>
-            <span style={{ color: 'var(--accent-rust)' }}>S: ${(initialLiq.short_liquidated_usd / 1e6 || 0).toFixed(1)}M</span>
+          <div style={{ fontSize: '11px', display: 'flex', gap: '10px' }}>
+            <span style={{ color: 'var(--accent-green)', fontWeight: '700' }}>▲ L: ${(initialLiq.long_liquidated_usd / 1e6 || 0).toFixed(1)}M</span>
+            <span style={{ color: 'var(--accent-rust)', fontWeight: '700' }}>▼ S: ${(initialLiq.short_liquidated_usd / 1e6 || 0).toFixed(1)}M</span>
           </div>
         </div>
       </div>
 
-      {/* Tab Switcher */}
-      <div style={{ display: 'flex', gap: '8px', borderBottom: 'var(--border-hairline)', paddingBottom: '8px', flexWrap: 'wrap' }}>
-        <button onClick={() => setActiveTab('funding')} style={{ background: activeTab === 'funding' ? 'var(--bg-panel-subtle)' : 'transparent', border: 'none', padding: '6px 12px', cursor: 'pointer', borderRadius: 'var(--radius-sm)', fontWeight: activeTab === 'funding' ? 'bold' : 'normal', color: activeTab === 'funding' ? 'var(--accent-gold)' : 'var(--text-secondary)' }}>💰 FUNDING RATE HEATMAP (LIVE TICK)</button>
-        <button onClick={() => setActiveTab('oi')} style={{ background: activeTab === 'oi' ? 'var(--bg-panel-subtle)' : 'transparent', border: 'none', padding: '6px 12px', cursor: 'pointer', borderRadius: 'var(--radius-sm)', fontWeight: activeTab === 'oi' ? 'bold' : 'normal', color: activeTab === 'oi' ? 'var(--accent-blue)' : 'var(--text-secondary)' }}>📊 OPEN INTEREST & DIVERGENCE</button>
-        <button onClick={() => setActiveTab('ls')} style={{ background: activeTab === 'ls' ? 'var(--bg-panel-subtle)' : 'transparent', border: 'none', padding: '6px 12px', cursor: 'pointer', borderRadius: 'var(--radius-sm)', fontWeight: activeTab === 'ls' ? 'bold' : 'normal', color: activeTab === 'ls' ? 'var(--accent-green)' : 'var(--text-secondary)' }}>⚖️ LONG / SHORT GAUGE</button>
-        <button onClick={() => setActiveTab('liquidations')} style={{ background: activeTab === 'liquidations' ? 'var(--bg-panel-subtle)' : 'transparent', border: 'none', padding: '6px 12px', cursor: 'pointer', borderRadius: 'var(--radius-sm)', fontWeight: activeTab === 'liquidations' ? 'bold' : 'normal', color: activeTab === 'liquidations' ? 'var(--accent-rust)' : 'var(--text-secondary)' }}>💀 RADAR LIKUIDASI STREAM ({liveLiquidations.length > 0 ? liveLiquidations.length : 'LIVE'})</button>
+      {/* 3. Agile Segmented Pill Navigation */}
+      <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+        <div className="quant-pill-nav">
+          <button onClick={() => setActiveTab('funding')} className={`quant-pill-btn ${activeTab === 'funding' ? 'active' : ''}`}>
+            <span>💰</span>
+            <span>FUNDING RATE LIVE</span>
+          </button>
+          <button onClick={() => setActiveTab('oi')} className={`quant-pill-btn ${activeTab === 'oi' ? 'active' : ''}`}>
+            <span>📊</span>
+            <span>OPEN INTEREST</span>
+          </button>
+          <button onClick={() => setActiveTab('ls')} className={`quant-pill-btn ${activeTab === 'ls' ? 'active' : ''}`}>
+            <span>⚖️</span>
+            <span>LONG / SHORT GAUGE</span>
+          </button>
+          <button onClick={() => setActiveTab('liquidations')} className={`quant-pill-btn ${activeTab === 'liquidations' ? 'active' : ''}`}>
+            <span>💀</span>
+            <span>RADAR LIKUIDASI ({liveLiquidations.length > 0 ? liveLiquidations.length : 'LIVE'})</span>
+          </button>
+        </div>
       </div>
 
-      <div className="telemetry-panel">
+      {/* 4. Main Table / Content Panel */}
+      <div className="quant-card" style={{ padding: '0', overflow: 'hidden' }}>
         {activeTab === 'funding' && (
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+          <table className="quant-table">
             <thead>
               <tr style={{ borderBottom: 'var(--border-muted)', background: 'var(--bg-panel-subtle)', textAlign: 'left' }}>
                 <th style={{ padding: '10px' }}>Pair Kripto</th>
@@ -331,7 +354,7 @@ export default function CryptoFuturesTab({ data, onOpenChart }) {
         )}
 
         {activeTab === 'oi' && (
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+          <table className="quant-table">
             <thead>
               <tr style={{ borderBottom: 'var(--border-muted)', background: 'var(--bg-panel-subtle)', textAlign: 'left' }}>
                 <th style={{ padding: '10px' }}>Pair</th>
