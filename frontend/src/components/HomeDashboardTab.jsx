@@ -3,6 +3,8 @@ import BloombergNewsWire from './BloombergNewsWire.jsx';
 
 export default function HomeDashboardTab({
   data,
+  livePrices = {},
+  flashMap = {},
   onSelectTicker,
   onOpenLotCalc,
   onNavigateTab,
@@ -152,92 +154,141 @@ export default function HomeDashboardTab({
             </div>
 
             {/* Card 2: #1 IDX Alpha Watchlist */}
-            <div className="telemetry-panel" style={{
-              padding: '8px 12px',
-              borderLeft: '3px solid var(--accent-green)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              minHeight: '120px'
-            }}>
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="metric-label" style={{ fontSize: '9px' }}>#1 IDX Alpha Watchlist</span>
-                  <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>{topIdx?.technical_signal || 'BREAKOUT'}</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
-                  <span style={{ fontSize: '17px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-                    ${topIdx?.clean_ticker || topIdx?.symbol || 'LSIP'}
-                  </span>
-                  <button
-                    className="telemetry-btn"
-                    onClick={() => onSelectTicker(topIdx?.clean_ticker || topIdx?.symbol || 'LSIP', 'IDX')}
-                    style={{ fontSize: '8px', padding: '1px 5px', background: 'var(--accent-blue)', color: '#fff' }}
-                  >
-                    CHART ↗
-                  </button>
-                </div>
-                <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
-                  Salim Group · IDX Equities
-                </div>
-              </div>
+            {(() => {
+              const topIdxTicker = topIdx?.clean_ticker || topIdx?.symbol?.replace('.JK', '') || 'LSIP';
+              const liveIdx = livePrices[topIdxTicker] || livePrices[`IDX:${topIdxTicker}`];
+              const liveIdxPrice = liveIdx?.price !== undefined ? liveIdx.price : (topIdx?.entry_price || 1725);
+              const liveIdxChange = liveIdx?.changePct !== undefined ? liveIdx.changePct : 2.37;
+              const isIdxFlashing = flashMap[topIdxTicker];
 
-              {/* Sparkline mini SVG */}
-              <div style={{ height: '14px', margin: '3px 0' }}>
-                <svg width="100%" height="14" viewBox="0 0 120 14" preserveAspectRatio="none">
-                  <path d="M 0 10 Q 30 12 50 8 T 90 4 L 120 2" fill="none" stroke="var(--accent-green)" strokeWidth="1.5" />
-                </svg>
-              </div>
+              return (
+                <div className="telemetry-panel" style={{
+                  padding: '8px 12px',
+                  borderLeft: '3px solid var(--accent-green)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  minHeight: '120px'
+                }}>
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span className="metric-label" style={{ fontSize: '9px' }}>#1 IDX Alpha Watchlist</span>
+                      <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>{topIdx?.technical_signal || 'BREAKOUT'}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                        <span style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                          ${topIdxTicker}
+                        </span>
+                        <span style={{
+                          fontSize: '11px',
+                          fontWeight: '800',
+                          fontFamily: 'var(--font-mono)',
+                          color: isIdxFlashing === 'up' ? 'var(--accent-green)' : isIdxFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)'
+                        }}>
+                          Rp {Math.round(liveIdxPrice).toLocaleString('id-ID')}
+                          {isIdxFlashing === 'up' && <span style={{ color: 'var(--accent-green)', marginLeft: '2px' }}>▲</span>}
+                          {isIdxFlashing === 'down' && <span style={{ color: 'var(--accent-rust)', marginLeft: '2px' }}>▼</span>}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveIdxChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                          {liveIdxChange >= 0 ? '+' : ''}{liveIdxChange.toFixed(2)}%
+                        </span>
+                        <button
+                          className="telemetry-btn"
+                          onClick={() => onSelectTicker(topIdxTicker, 'IDX')}
+                          style={{ fontSize: '8px', padding: '1px 5px', background: 'var(--accent-blue)', color: '#fff' }}
+                        >
+                          CHART ↗
+                        </button>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
+                      Salim Group · IDX Equities
+                    </div>
+                  </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '3px', borderTop: 'var(--border-muted)' }}>
-                <span>Entry: <strong style={{ color: 'var(--text-primary)' }}>{Number(topIdx?.entry_price || 1725).toLocaleString()}</strong></span>
-                <span>SL: <strong style={{ color: 'var(--accent-rust)' }}>{Number(topIdx?.stop_loss || 1656).toLocaleString()}</strong></span>
-                <span>TP: <strong style={{ color: 'var(--accent-green)' }}>{Number(topIdx?.target_1 || 1877).toLocaleString()}</strong></span>
-                <span style={{ color: 'var(--accent-orange)', fontWeight: '800' }}>R:R 1:{topIdx?.risk_reward_ratio || '2.2'}</span>
-              </div>
-            </div>
+                  {/* Sparkline mini SVG */}
+                  <div style={{ height: '14px', margin: '3px 0' }}>
+                    <svg width="100%" height="14" viewBox="0 0 120 14" preserveAspectRatio="none">
+                      <path d="M 0 10 Q 30 12 50 8 T 90 4 L 120 2" fill="none" stroke="var(--accent-green)" strokeWidth="1.5" />
+                    </svg>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '3px', borderTop: 'var(--border-muted)' }}>
+                    <span>Entry: <strong style={{ color: 'var(--text-primary)' }}>{Number(topIdx?.entry_price || 1725).toLocaleString()}</strong></span>
+                    <span>SL: <strong style={{ color: 'var(--accent-rust)' }}>{Number(topIdx?.stop_loss || 1656).toLocaleString()}</strong></span>
+                    <span>TP: <strong style={{ color: 'var(--accent-green)' }}>{Number(topIdx?.target_1 || 1877).toLocaleString()}</strong></span>
+                    <span style={{ color: 'var(--accent-orange)', fontWeight: '800' }}>R:R 1:{topIdx?.risk_reward_ratio || '2.2'}</span>
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Card 3: #1 Crypto Spot Momentum */}
-            <div className="telemetry-panel" style={{
-              padding: '8px 12px',
-              borderLeft: '3px solid var(--accent-orange)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              minHeight: '120px'
-            }}>
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="metric-label" style={{ fontSize: '9px' }}>#1 Crypto Spot Momentum</span>
-                  <span className="badge badge-alert" style={{ fontSize: '8px', padding: '1px 5px' }}>NO LEV · SPOT</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
-                  <span style={{ fontSize: '17px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-                    {topCrypto?.pair || 'BTC/USDT'}
-                  </span>
-                  <span style={{ fontSize: '10px', fontWeight: '800', color: (topCrypto?.change_24h_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                    {(topCrypto?.change_24h_pct || 0) >= 0 ? '+' : ''}{topCrypto?.change_24h_pct !== undefined ? topCrypto.change_24h_pct : '0.78'}%
-                  </span>
-                </div>
-                <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
-                  Range Accumulation
-                </div>
-              </div>
+            {(() => {
+              const cleanCrypto = topCrypto?.pair?.replace('/', '') || 'BTCUSDT';
+              const liveCrypto = livePrices[topCrypto?.pair] || livePrices[topCrypto?.symbol] || livePrices[cleanCrypto] || livePrices['BTCUSDT'];
+              const liveCryptoPrice = liveCrypto?.price !== undefined ? liveCrypto.price : (topCrypto?.current_price || 75940);
+              const liveCryptoChange = liveCrypto?.changePct !== undefined ? liveCrypto.changePct : (topCrypto?.change_24h_pct || -2.21);
+              const isCryptoFlashing = flashMap[cleanCrypto] || flashMap[topCrypto?.pair];
 
-              {/* Sparkline mini SVG */}
-              <div style={{ height: '14px', margin: '3px 0' }}>
-                <svg width="100%" height="14" viewBox="0 0 120 14" preserveAspectRatio="none">
-                  <path d="M 0 8 Q 30 11 60 7 T 90 9 L 120 5" fill="none" stroke="#60a5fa" strokeWidth="1.5" />
-                </svg>
-              </div>
+              return (
+                <div className="telemetry-panel" style={{
+                  padding: '8px 12px',
+                  borderLeft: '3px solid var(--accent-orange)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  minHeight: '120px'
+                }}>
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span className="metric-label" style={{ fontSize: '9px' }}>#1 Crypto Spot Momentum</span>
+                      <span className="badge badge-alert" style={{ fontSize: '8px', padding: '1px 5px' }}>NO LEV · SPOT</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                        <span style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                          {topCrypto?.pair || 'BTC/USDT'}
+                        </span>
+                        <span style={{
+                          fontSize: '11px',
+                          fontWeight: '800',
+                          fontFamily: 'var(--font-mono)',
+                          color: isCryptoFlashing === 'up' ? 'var(--accent-green)' : isCryptoFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)'
+                        }}>
+                          ${Number(liveCryptoPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {isCryptoFlashing === 'up' && <span style={{ color: 'var(--accent-green)', marginLeft: '2px' }}>▲</span>}
+                          {isCryptoFlashing === 'down' && <span style={{ color: 'var(--accent-rust)', marginLeft: '2px' }}>▼</span>}
+                        </span>
+                      </div>
+                      <span style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveCryptoChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                        {liveCryptoChange >= 0 ? '+' : ''}{liveCryptoChange.toFixed(2)}%
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
+                      Range Accumulation
+                    </div>
+                  </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '3px', borderTop: 'var(--border-muted)' }}>
-                <span>Entry: <strong style={{ color: 'var(--text-primary)' }}>{Math.round(topCrypto?.current_price || 77168).toLocaleString()}</strong></span>
-                <span>SL: <strong style={{ color: 'var(--accent-rust)' }}>{Math.round(topCrypto?.stop_loss || 75625).toLocaleString()}</strong></span>
-                <span>TP: <strong style={{ color: 'var(--accent-green)' }}>{Math.round(topCrypto?.take_profit_1 || 80255).toLocaleString()}</strong></span>
-                <span style={{ color: 'var(--accent-orange)', fontWeight: '800' }}>R:R 1:{topCrypto?.risk_reward_ratio || '2'}</span>
-              </div>
-            </div>
+                  {/* Sparkline mini SVG */}
+                  <div style={{ height: '14px', margin: '3px 0' }}>
+                    <svg width="100%" height="14" viewBox="0 0 120 14" preserveAspectRatio="none">
+                      <path d="M 0 8 Q 30 11 60 7 T 90 9 L 120 5" fill="none" stroke="#60a5fa" strokeWidth="1.5" />
+                    </svg>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '3px', borderTop: 'var(--border-muted)' }}>
+                    <span>Entry: <strong style={{ color: 'var(--text-primary)' }}>{Math.round(topCrypto?.current_price || 77168).toLocaleString()}</strong></span>
+                    <span>SL: <strong style={{ color: 'var(--accent-rust)' }}>{Math.round(topCrypto?.stop_loss || 75625).toLocaleString()}</strong></span>
+                    <span>TP: <strong style={{ color: 'var(--accent-green)' }}>{Math.round(topCrypto?.take_profit_1 || 80255).toLocaleString()}</strong></span>
+                    <span style={{ color: 'var(--accent-orange)', fontWeight: '800' }}>R:R 1:{topCrypto?.risk_reward_ratio || '2'}</span>
+                  </div>
+                </div>
+              );
+            })()}
 
           </div>
 

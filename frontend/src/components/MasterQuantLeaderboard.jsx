@@ -26,6 +26,8 @@ export default function MasterQuantLeaderboard({
   strategyRankings = [],
   brokerSummary = {},
   bundle = null,
+  livePrices = {},
+  flashMap = {},
   onSelectTicker,
   onOpenLotCalc,
   onSelectNews
@@ -114,10 +116,10 @@ export default function MasterQuantLeaderboard({
       const sl = plan.stop_loss || 0;
       const tp = plan.target_1 || 0;
       const realRR = plan.risk_reward_ratio || calcRR(entry, sl, tp);
-      const actualPrice = marketPriceMap[ticker] || plan.current_price || plan.last_price || plan.price || entry;
-
-      // Resolve real change % if present, fallback to neutral
-      const changePct = plan.change_pct !== undefined ? plan.change_pct : (plan.raw_change_pct !== undefined ? plan.raw_change_pct : 0.0);
+      
+      const live = livePrices[ticker] || livePrices[`IDX:${ticker}`] || livePrices[`${ticker}.JK`] || livePrices[plan.symbol];
+      const actualPrice = live?.price !== undefined ? live.price : (marketPriceMap[ticker] || plan.current_price || plan.last_price || plan.price || entry);
+      const changePct = live?.changePct !== undefined ? live.changePct : (plan.change_pct !== undefined ? plan.change_pct : (plan.raw_change_pct !== undefined ? plan.raw_change_pct : 0.0));
 
       items.push({
         id: plan.plan_id || ('plan-' + idx),
@@ -144,7 +146,11 @@ export default function MasterQuantLeaderboard({
     cryptoSpotList.forEach((c) => {
       const existing = items.find(i => i.ticker === c.pair || i.ticker === c.pair.replace('/', '') || i.ticker === c.symbol);
       if (!existing) {
-        const entry = c.current_price || c.entry_high || 0;
+        const cleanPair = c.pair?.replace('/', '');
+        const liveC = livePrices[c.pair] || livePrices[c.symbol] || livePrices[cleanPair] || livePrices[c.symbol?.replace('USDT', '')];
+        const actualCPrice = liveC?.price !== undefined ? liveC.price : (c.current_price || c.entry_high || 0);
+        const actualCChange = liveC?.changePct !== undefined ? liveC.changePct : (c.change_24h_pct || 0);
+        const entry = actualCPrice;
         const sl = c.stop_loss || 0;
         const tp = c.take_profit_1 || 0;
         const realRR = c.risk_reward_ratio || calcRR(entry, sl, tp);
@@ -157,8 +163,8 @@ export default function MasterQuantLeaderboard({
           market: 'CRYPTO',
           cluster: 'LAYER 1 / DEFI',
           categoryLabel: 'SPOT USDT (NO LEV)',
-          price: c.current_price || 0,
-          changePct: c.change_24h_pct || 0,
+          price: actualCPrice,
+          changePct: actualCChange,
           signal: c.setup_type || 'SPOT_LONG',
           signalType: 'BLUE',
           entry: entry,
@@ -178,7 +184,9 @@ export default function MasterQuantLeaderboard({
         stocks.forEach(s => {
           if (!items.find(i => i.ticker === s.ticker)) {
             const cleanGroup = group.replace('_GROUP', '').replace('_', ' ');
-            const price = s.price || 0;
+            const liveS = livePrices[s.ticker] || livePrices[`IDX:${s.ticker}`];
+            const price = liveS?.price !== undefined ? liveS.price : (s.price || 0);
+            const chg = liveS?.changePct !== undefined ? liveS.changePct : (s.change_pct || 0);
             const sl = Math.round(Number(price) * 0.95);
             const tp = Math.round(Number(price) * 1.10);
             const realRR = calcRR(price, sl, tp);
@@ -192,7 +200,7 @@ export default function MasterQuantLeaderboard({
               cluster: cleanGroup,
               categoryLabel: cleanGroup,
               price: price,
-              changePct: s.change_pct || 0,
+              changePct: chg,
               signal: s.technical_signal || 'MONITOR',
               signalType: s.technical_signal === 'BREAKOUT' ? 'BULL' : 'BLUE',
               entry: price,
@@ -241,7 +249,7 @@ export default function MasterQuantLeaderboard({
     const cryptoOnly = items.filter(i => i.market === 'CRYPTO');
 
     return { allItems: items, allStockItems: stockOnly, allCryptoItems: cryptoOnly };
-  }, [tradePlans, cryptoSpotList, conglomerates, dividendHunters, kongloLookup]);
+  }, [tradePlans, cryptoSpotList, conglomerates, dividendHunters, kongloLookup, livePrices]);
 
   const tradePlansCount = useMemo(() => allStockItems.filter(i => i.isTradePlan).length, [allStockItems]);
 
@@ -793,8 +801,8 @@ export default function MasterQuantLeaderboard({
                     <th style={{ cursor: 'pointer' }} onClick={() => handleSort('signal')}>
                       Sinyal / Setup{getSortIcon('signal')}
                     </th>
-                  <th style={{ cursor: 'pointer' }} onClick={() => handleSort('price')} title="Harga snapshot terakhir dari bundle data screener">
-                    Harga Snapshot{getSortIcon('price')}
+                  <th style={{ cursor: 'pointer' }} onClick={() => handleSort('price')} title="Harga pasar terkini (realtime tick / scanner)">
+                    Harga Terakhir (Live){getSortIcon('price')}
                   </th>
                   <th style={{ cursor: 'pointer' }} onClick={() => handleSort('changePct')}>
                     Chg %{getSortIcon('changePct')}
@@ -873,14 +881,25 @@ export default function MasterQuantLeaderboard({
                               </div>
                             )}
                           </td>
-                          <td style={{ fontWeight: '700', color: 'var(--text-primary)' }}>
-                            {item.market === 'IDX' ? ('Rp ' + Number(item.price).toLocaleString()) : ('$' + item.price)}
+                          <td style={{
+                            fontWeight: '800',
+                            fontFamily: 'var(--font-mono)',
+                            color: flashMap?.[item.ticker] === 'up' ? 'var(--accent-green)' : flashMap?.[item.ticker] === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)',
+                            background: flashMap?.[item.ticker] === 'up' ? 'rgba(0, 208, 132, 0.15)' : flashMap?.[item.ticker] === 'down' ? 'rgba(239, 68, 68, 0.15)' : 'transparent',
+                            transition: 'all 0.3s ease'
+                          }}>
+                            {item.market === 'IDX'
+                              ? ('Rp ' + Math.round(Number(item.price)).toLocaleString('id-ID'))
+                              : ('$' + Number(item.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 }))}
+                            {flashMap?.[item.ticker] === 'up' && <span style={{ color: 'var(--accent-green)', marginLeft: '3px' }}>▲</span>}
+                            {flashMap?.[item.ticker] === 'down' && <span style={{ color: 'var(--accent-rust)', marginLeft: '3px' }}>▼</span>}
                           </td>
                           <td style={{
                             fontWeight: '700',
-                            color: Number(item.changePct) >= 0 ? '#34c759' : '#ff3b30'
+                            fontFamily: 'var(--font-mono)',
+                            color: Number(item.changePct) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)'
                           }}>
-                            {Number(item.changePct) >= 0 ? '+' + item.changePct + '%' : item.changePct + '%'}
+                            {Number(item.changePct) >= 0 ? '+' + Number(item.changePct).toFixed(2) + '%' : Number(item.changePct).toFixed(2) + '%'}
                           </td>
                           <td>
                             <code>{item.entryRange ? item.entryRange : (item.market === 'IDX' ? ('Rp ' + Number(item.entry).toLocaleString()) : ('$' + item.entry))}</code>

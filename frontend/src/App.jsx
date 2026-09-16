@@ -4,6 +4,7 @@ import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
 import HomeDashboardTab from './components/HomeDashboardTab.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import GlobalMarketTicker from './components/GlobalMarketTicker.jsx';
+import { useLivePrices } from './hooks/useLivePrices.js';
 
 // Code Splitting for heavy secondary modules
 const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'));
@@ -59,6 +60,9 @@ function HeaderClock() {
 export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Unified Real-time Live Price Engine (Binance WebSocket + TradingView Scanners)
+  const { livePrices, flashMap, isWsConnected, lastUpdateTime, refetchAll } = useLivePrices(data);
 
   // Native hash routing
   const getTabFromHash = () => {
@@ -272,6 +276,9 @@ export default function App() {
           stockCount={(data?.daily_trade_plans || []).filter(p => p.market === 'IDX').length}
           cryptoCount={(data?.crypto_spot_10 || []).length}
           newsCount={(data?.macro_telemetry?.live_news || []).length}
+          livePrices={livePrices}
+          flashMap={flashMap}
+          onSelectTicker={handleOpenChart}
         />
 
         {/* ===== MAIN CONTENT AREA ===== */}
@@ -324,7 +331,10 @@ export default function App() {
 
               {/* Sync Trigger Button */}
               <button
-                onClick={() => setSyncTrigger(prev => prev + 1)}
+                onClick={() => {
+                  setSyncTrigger(prev => prev + 1);
+                  refetchAll();
+                }}
                 className="telemetry-btn"
                 style={{
                   background: 'var(--bg-panel-subtle)',
@@ -343,14 +353,14 @@ export default function App() {
                 <span>SYNC</span>
               </button>
 
-              {/* Sync Status Badge */}
+              {/* Sync & Live Stream Status Badge */}
               <div 
                 style={{ 
                   fontSize: '10px', 
                   padding: '5px 8px', 
                   borderRadius: 'var(--radius-xs)', 
                   background: 'var(--bg-panel-subtle)', 
-                  color: 'var(--accent-green)', 
+                  color: isWsConnected ? 'var(--accent-green)' : 'var(--accent-gold)', 
                   fontFamily: 'var(--font-mono)',
                   fontWeight: '700',
                   display: 'flex',
@@ -358,10 +368,10 @@ export default function App() {
                   gap: '5px',
                   border: 'var(--border-hairline)'
                 }}
-                title={data?.last_updated ? `Snapshot Pipeline: ${parseSafeDate(data.last_updated)?.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB` : 'Live Telemetry'}
+                title={lastUpdateTime ? `Last Tick: ${lastUpdateTime.toLocaleTimeString('id-ID')} WIB` : 'Live Stream'}
               >
-                <span>🟢</span>
-                <span>SYNCED</span>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: isWsConnected ? 'var(--accent-green)' : 'var(--accent-gold)', boxShadow: isWsConnected ? '0 0 5px var(--accent-green)' : 'none' }} />
+                <span>{isWsConnected ? 'STREAM 1S LIVE' : 'SYNCED'}</span>
               </div>
 
               {/* Live Real-time Clock */}
@@ -380,6 +390,8 @@ export default function App() {
               /* HOME COMMAND CENTER (Wire + Bento + Foreign Flow + Konglo + Top 5 Alpha) */
               <HomeDashboardTab
                 data={data}
+                livePrices={livePrices}
+                flashMap={flashMap}
                 onSelectTicker={handleOpenChart}
                 onOpenLotCalc={handleOpenLotCalc}
                 onNavigateTab={setActiveTab}
@@ -402,22 +414,22 @@ export default function App() {
             ) : activeTab === 'WHALES' ? (
               /* v3.0 WHALE INTELLIGENCE HUB */
               <main>
-                <WhaleIntelligenceTab data={data} onOpenChart={handleOpenChart} />
+                <WhaleIntelligenceTab data={data} onOpenChart={handleOpenChart} livePrices={livePrices} />
               </main>
             ) : activeTab === 'FUTURES' ? (
-              /* v3.0 CRYPTO FUTURES INTELLIGENCE */
+              /* v3.0 CRYPTO FUTURES INTELLIGENCE + DEXSCREENER */
               <main>
-                <CryptoFuturesTab data={data} onOpenChart={handleOpenChart} />
+                <CryptoFuturesTab data={data} onOpenChart={handleOpenChart} livePrices={livePrices} />
               </main>
             ) : activeTab === 'FOREX' ? (
               /* v3.0 FOREX COMMAND CENTER */
               <main>
-                <ForexCommandTab data={data} onOpenChart={handleOpenChart} />
+                <ForexCommandTab data={data} onOpenChart={handleOpenChart} livePrices={livePrices} />
               </main>
             ) : activeTab === 'US_STOCKS' ? (
               /* v3.0 US STOCK INTELLIGENCE */
               <main>
-                <USStockTab data={data} onOpenChart={handleOpenChart} />
+                <USStockTab data={data} onOpenChart={handleOpenChart} livePrices={livePrices} />
               </main>
             ) : (
               /* DEEP-DIVE SCREENER / TESTING / RESEARCH TABS */
@@ -437,6 +449,8 @@ export default function App() {
                   strategyRankings={data?.strategy_rankings || []}
                   brokerSummary={data?.broker_summary || {}}
                   bundle={data}
+                  livePrices={livePrices}
+                  flashMap={flashMap}
                   onSelectTicker={handleOpenChart}
                   onOpenLotCalc={handleOpenLotCalc}
                   onSelectNews={handleOpenNews}
