@@ -26,6 +26,8 @@ const DEFAULT_FOREX_TICKERS = [
 export function useLivePrices(bundleData) {
   const [livePrices, setLivePrices] = useState({});
   const [flashMap, setFlashMap] = useState({});
+  const [allIdxStocks, setAllIdxStocks] = useState([]);
+  const [allCryptoSpot, setAllCryptoSpot] = useState([]);
   const [isWsConnected, setIsWsConnected] = useState(false);
   const [lastUpdateTime, setLastUpdateTime] = useState(null);
 
@@ -41,16 +43,19 @@ export function useLivePrices(bundleData) {
     }, 700);
   }, []);
 
-  // 1. Fetch Real-time Quotes dari TradingView Indonesia Scanner
-  const fetchIdxQuotes = useCallback(async (customTickers = []) => {
+  // 1. Fetch Seluruh Alam Semesta Saham BEI (849+ Emiten Aktif) via TradingView Scanner
+  const fetchIdxQuotes = useCallback(async () => {
     try {
-      const tickers = customTickers.length > 0 ? customTickers : DEFAULT_IDX_TICKERS;
       const res = await fetch('https://scanner.tradingview.com/indonesia/scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          symbols: { tickers },
-          columns: ['name', 'close', 'change', 'volume', 'high', 'low']
+          filter: [{ left: 'active_symbol', operation: 'equal', right: true }],
+          options: { lang: 'en' },
+          symbols: { query: { types: [] }, tickers: [] },
+          columns: ['name', 'close', 'change', 'volume', 'Value.Traded', 'description', 'high', 'low', 'RSI', 'SMA20'],
+          sort: { sortBy: 'Value.Traded', sortOrder: 'desc' },
+          range: [0, 850]
         })
       });
 
@@ -58,15 +63,16 @@ export function useLivePrices(bundleData) {
       const data = await res.json();
       if (!Array.isArray(data?.data)) return;
 
+      const stocksList = [];
       setLivePrices(prev => {
         const next = { ...prev };
         data.data.forEach(item => {
           const rawSym = item.s || ''; // e.g. "IDX:BBCA"
           const clean = rawSym.replace('IDX:', '');
-          const [name, close, changePct, volume, high, low] = item.d || [];
+          const [name, close, changePct, volume, valueTraded, description, high, low, rsi, sma20] = item.d || [];
           if (close !== undefined && close !== null) {
             const oldPrice = next[clean]?.price;
-            if (oldPrice && oldPrice !== close) {
+            if (oldPrice && Math.abs(oldPrice - close) > 0.001) {
               triggerFlash(clean, close > oldPrice ? 'up' : 'down');
             }
 
@@ -76,8 +82,12 @@ export function useLivePrices(bundleData) {
               price: Number(close),
               changePct: Number((changePct || 0).toFixed(2)),
               volume: Number(volume || 0),
+              valueTraded: Number(valueTraded || 0),
+              description: description || name,
               high: Number(high || close),
               low: Number(low || close),
+              rsi: rsi ? Number(rsi.toFixed(1)) : null,
+              sma20: sma20 ? Number(sma20.toFixed(0)) : null,
               market: 'IDX',
               updatedAt: Date.now()
             };
@@ -85,15 +95,100 @@ export function useLivePrices(bundleData) {
             next[clean] = quote;
             next[`${clean}.JK`] = quote;
             next[rawSym] = quote;
+
+            stocksList.push({
+              ticker: clean,
+              fullSymbol: rawSym,
+              name: clean,
+              price: Number(close),
+              changePct: Number((changePct || 0).toFixed(2)),
+              volume: Number(volume || 0),
+              valueTraded: Number(valueTraded || 0),
+              description: description || name,
+              high: Number(high || close),
+              low: Number(low || close),
+              rsi: rsi ? Number(rsi.toFixed(1)) : null,
+              sma20: sma20 ? Number(sma20.toFixed(0)) : null
+            });
           }
         });
         return next;
       });
+
+      if (stocksList.length > 0) {
+        setAllIdxStocks(stocksList);
+      }
       setLastUpdateTime(new Date());
     } catch (err) {
       console.warn('Live IDX fetch error (will retry):', err);
     }
   }, [triggerFlash]);
+
+  // 1b. Fetch Seluruh Pasangan Spot USDT Binance (744+ Pasangan)
+  const fetchBinance24hr = useCallback(async () => {
+    try {
+      const res = await fetch('https://data-api.binance.vision/api/v3/ticker/24hr');
+      if (!res.ok) return;
+      const list = await res.json();
+      if (!Array.isArray(list)) return;
+
+      const usdtPairs = list
+        .filter(x => x.symbol && x.symbol.endsWith('USDT'))
+        .map(item => {
+          const s = item.symbol;
+          const baseCoin = s.replace('USDT', '');
+          const pairFormatted = `${baseCoin}/USDT`;
+          const price = parseFloat(item.lastPrice || 0);
+          const changePct = parseFloat(item.priceChangePercent || 0);
+          const high = parseFloat(item.highPrice || 0);
+          const low = parseFloat(item.lowPrice || 0);
+          const volume = parseFloat(item.volume || 0);
+          const quoteVolume = parseFloat(item.quoteVolume || 0);
+          return {
+            symbol: s,
+            pair: pairFormatted,
+            baseCoin,
+            price,
+            changePct,
+            high,
+            low,
+            volume,
+            quoteVolume
+          };
+        })
+        .sort((a, b) => b.quoteVolume - a.quoteVolume);
+
+      if (usdtPairs.length > 0) {
+        setAllCryptoSpot(usdtPairs);
+      }
+
+      setLivePrices(prev => {
+        const next = { ...prev };
+        usdtPairs.forEach(c => {
+          if (!next[c.symbol]) {
+            const quote = {
+              symbol: c.symbol,
+              pair: c.pair,
+              baseCoin: c.baseCoin,
+              price: c.price,
+              changePct: Number(c.changePct.toFixed(2)),
+              high: c.high,
+              low: c.low,
+              volume: c.quoteVolume,
+              market: 'CRYPTO',
+              updatedAt: Date.now()
+            };
+            next[c.symbol] = quote;
+            next[c.pair] = quote;
+            next[c.baseCoin] = quote;
+          }
+        });
+        return next;
+      });
+    } catch (err) {
+      console.warn('Binance 24hr fetch error (will retry):', err);
+    }
+  }, []);
 
   // 2. Fetch Real-time Quotes dari TradingView America Scanner
   const fetchUsQuotes = useCallback(async () => {
@@ -286,49 +381,39 @@ export function useLivePrices(bundleData) {
     };
   }, [triggerFlash]);
 
-  // 5. Polling Scanners untuk IDX, US, Forex
+  // 5. Polling Scanners untuk IDX (849 emiten), Crypto Spot (744 pairs), US, Forex
   useEffect(() => {
-    let customIdx = [];
-    if (bundleData?.daily_trade_plans) {
-      customIdx = bundleData.daily_trade_plans
-        .filter(p => p.market === 'IDX')
-        .map(p => `IDX:${p.clean_ticker || p.symbol?.replace('.JK', '')}`);
-    }
-
-    const mergedIdx = Array.from(new Set([...DEFAULT_IDX_TICKERS, ...customIdx]));
-
-    fetchIdxQuotes(mergedIdx);
+    fetchIdxQuotes();
+    fetchBinance24hr();
     fetchUsQuotes();
     fetchForexQuotes();
 
-    const idxInterval = setInterval(() => fetchIdxQuotes(mergedIdx), 15000);
-    const usInterval = setInterval(fetchUsQuotes, 25000);
-    const fxInterval = setInterval(fetchForexQuotes, 25000);
+    const idxInterval = setInterval(fetchIdxQuotes, 20000);
+    const cryptoInterval = setInterval(fetchBinance24hr, 45000);
+    const usInterval = setInterval(fetchUsQuotes, 30000);
+    const fxInterval = setInterval(fetchForexQuotes, 30000);
 
     return () => {
       clearInterval(idxInterval);
+      clearInterval(cryptoInterval);
       clearInterval(usInterval);
       clearInterval(fxInterval);
     };
-  }, [bundleData, fetchIdxQuotes, fetchUsQuotes, fetchForexQuotes]);
+  }, [fetchIdxQuotes, fetchBinance24hr, fetchUsQuotes, fetchForexQuotes]);
 
   // Manual Trigger Refresh All
   const refetchAll = useCallback(() => {
-    let customIdx = [];
-    if (bundleData?.daily_trade_plans) {
-      customIdx = bundleData.daily_trade_plans
-        .filter(p => p.market === 'IDX')
-        .map(p => `IDX:${p.clean_ticker || p.symbol?.replace('.JK', '')}`);
-    }
-    const mergedIdx = Array.from(new Set([...DEFAULT_IDX_TICKERS, ...customIdx]));
-    fetchIdxQuotes(mergedIdx);
+    fetchIdxQuotes();
+    fetchBinance24hr();
     fetchUsQuotes();
     fetchForexQuotes();
-  }, [bundleData, fetchIdxQuotes, fetchUsQuotes, fetchForexQuotes]);
+  }, [fetchIdxQuotes, fetchBinance24hr, fetchUsQuotes, fetchForexQuotes]);
 
   return {
     livePrices,
     flashMap,
+    allIdxStocks,
+    allCryptoSpot,
     isWsConnected,
     lastUpdateTime,
     refetchAll

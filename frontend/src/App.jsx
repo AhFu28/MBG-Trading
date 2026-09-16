@@ -62,7 +62,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   // Unified Real-time Live Price Engine (Binance WebSocket + TradingView Scanners)
-  const { livePrices, flashMap, isWsConnected, lastUpdateTime, refetchAll } = useLivePrices(data);
+  const { livePrices, flashMap, allIdxStocks, allCryptoSpot, isWsConnected, lastUpdateTime, refetchAll } = useLivePrices(data);
 
   // Native hash routing
   const getTabFromHash = () => {
@@ -273,8 +273,8 @@ export default function App() {
           setActiveTab={setActiveTab}
           isMobileOpen={isMobileOpen}
           setMobileOpen={setMobileOpen}
-          stockCount={(data?.daily_trade_plans || []).filter(p => p.market === 'IDX').length}
-          cryptoCount={(data?.crypto_spot_10 || []).length}
+          stockCount={allIdxStocks.length > 0 ? allIdxStocks.length : (data?.daily_trade_plans || []).filter(p => p.market === 'IDX').length}
+          cryptoCount={allCryptoSpot.length > 0 ? allCryptoSpot.length : (data?.crypto_spot_10 || []).length}
           newsCount={(data?.macro_telemetry?.live_news || []).length}
           livePrices={livePrices}
           flashMap={flashMap}
@@ -421,7 +421,12 @@ export default function App() {
             ) : activeTab === 'FUTURES' ? (
               /* v3.0 CRYPTO FUTURES INTELLIGENCE + DEXSCREENER */
               <main>
-                <CryptoFuturesTab data={data} onOpenChart={handleOpenChart} livePrices={livePrices} />
+                <CryptoFuturesTab 
+                  data={data} 
+                  onOpenChart={handleOpenChart} 
+                  livePrices={livePrices} 
+                  allCryptoSpot={allCryptoSpot}
+                />
               </main>
             ) : activeTab === 'FOREX' ? (
               /* v3.0 FOREX COMMAND CENTER */
@@ -439,6 +444,8 @@ export default function App() {
                 <MasterQuantLeaderboard
                   activeTab={activeTab}
                   onTabChange={setActiveTab}
+                  allIdxStocks={allIdxStocks}
+                  allCryptoSpot={allCryptoSpot}
                   tradePlans={data?.daily_trade_plans || []}
                   cryptoSpotList={data?.crypto_spot_10 || []}
                   conglomerates={data?.conglomerates || {}}

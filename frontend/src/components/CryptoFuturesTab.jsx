@@ -1,13 +1,22 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
-// Target 15 Binance Perpetual Futures Pairs
+// Target 60+ Binance Perpetual Futures Pairs
 const DEFAULT_FUTURES_PAIRS = [
   'BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT',
   'DOGEUSDT', 'ADAUSDT', 'AVAXUSDT', 'LINKUSDT', 'SUIUSDT',
-  'NEARUSDT', 'APTUSDT', 'RENDERUSDT', 'FETUSDT', 'PEPEUSDT'
+  'NEARUSDT', 'APTUSDT', 'RENDERUSDT', 'FETUSDT', 'PEPEUSDT',
+  'SHIBUSDT', 'WIFUSDT', 'BONKUSDT', 'NOTUSDT', 'DOGSUSDT',
+  'NEIROUSDT', 'TIAUSDT', 'INJUSDT', 'OPUSDT', 'ARBUSDT',
+  'POLUSDT', 'GALAUSDT', 'FILUSDT', 'ATOMUSDT', 'FTMUSDT',
+  'LDOUSDT', 'AAVEUSDT', 'MKRUSDT', 'CRVUSDT', 'UNIUSDT',
+  'DYDXUSDT', 'RUNEUSDT', 'KASUSDT', 'TAOUSDT', 'SEIUSDT',
+  'JUPUSDT', 'PYTHUSDT', 'WLDUSDT', 'PENDLEUSDT', 'ENAUSDT',
+  'ONDOUSDT', 'FLOKIUSDT', 'MEMEUSDT', 'ORDIUSDT', '1000SATSUSDT',
+  'JASMYUSDT', 'BEAMUSDT', 'BLURUSDT', 'STRKUSDT', 'ZROUSDT',
+  'IOUSDT', 'TONUSDT', 'BOMEUSDT', 'POPCATUSDT', 'TRXUSDT'
 ];
 
-export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {} }) {
+export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, allCryptoSpot = [] }) {
   const [activeTab, setActiveTab] = useState('funding'); // 'funding' | 'dexscreener' | 'oi' | 'ls' | 'liquidations'
   const [liveFundingRates, setLiveFundingRates] = useState([]);
   const [liveLiquidations, setLiveLiquidations] = useState([]);
@@ -20,7 +29,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {} })
   const [dexPairs, setDexPairs] = useState([]);
   const [dexLoading, setDexLoading] = useState(false);
   const [dexSearch, setDexSearch] = useState('');
-  const [dexChainFilter, setDexChainFilter] = useState('ALL'); // 'ALL' | 'solana' | 'base' | 'ethereum' | 'bsc'
+  const [dexChainFilter, setDexChainFilter] = useState('ALL'); // 'ALL' | 'solana' | 'base' | 'ethereum' | 'bsc' | 'sui' | 'arbitrum'
   const [dexLastUpdated, setDexLastUpdated] = useState(null);
 
   const initialRates = data?.crypto_futures?.funding_rates || [];
@@ -28,12 +37,32 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {} })
   const initialOI = data?.crypto_futures?.open_interest || [];
   const initialLS = data?.crypto_futures?.long_short_ratio || [];
 
-  // Sinkronisasi data awal
+  // Sinkronisasi data awal & ekspansi universe futures ke 60+ pairs
   useEffect(() => {
-    if (initialRates.length > 0 && liveFundingRates.length === 0) {
-      setLiveFundingRates(initialRates);
-    }
-  }, [initialRates]);
+    const existingSymbols = new Set((initialRates || []).map(r => r.symbol));
+    const fullList = [...initialRates];
+
+    DEFAULT_FUTURES_PAIRS.forEach(sym => {
+      if (!existingSymbols.has(sym)) {
+        const baseCoin = sym.replace('USDT', '');
+        const live = livePrices[sym] || livePrices[`${baseCoin}/USDT`];
+        const price = live?.price || 0;
+        fullList.push({
+          symbol: sym,
+          pair: `${baseCoin}/USDT`,
+          funding_rate: 0.0001,
+          funding_rate_pct: 0.01,
+          next_funding_time: '08:00:00',
+          mark_price: price,
+          index_price: price,
+          signal: 'NEUTRAL',
+          signal_desc: 'Funding netral'
+        });
+      }
+    });
+
+    setLiveFundingRates(fullList);
+  }, [initialRates, livePrices]);
 
   // 1. Live Countdown ke 8-Hour Funding Settlement (07:00, 15:00, 23:00 WIB)
   useEffect(() => {
@@ -182,17 +211,23 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {} })
     };
   }, [initialRates]);
 
-  // 3. DexScreener Live API Fetcher (Trending & High-Volume DEX Pairs)
-  const fetchDexScreener = useCallback(async () => {
+  // 3. DexScreener Live API Fetcher (Trending & High-Volume DEX Pairs Multi-Chain)
+  const fetchDexScreener = useCallback(async (customQuery = null) => {
     setDexLoading(true);
     try {
-      // Query multi-chain trending search
-      const queries = ['solana', 'base', 'pepe'];
-      const promises = queries.map(q =>
-        fetch(`https://api.dexscreener.com/latest/dex/search?q=${q}`)
+      const defaultQueries = ['solana', 'base', 'ethereum', 'bsc', 'arbitrum', 'sui', 'pepe', 'pump'];
+      const queries = customQuery ? [customQuery, ...defaultQueries.slice(0, 3)] : defaultQueries;
+
+      const promises = [
+        ...queries.map(q =>
+          fetch(`https://api.dexscreener.com/latest/dex/search?q=${encodeURIComponent(q)}`)
+            .then(r => r.ok ? r.json() : null)
+            .catch(() => null)
+        ),
+        fetch('https://api.dexscreener.com/token-boosts/top/v1')
           .then(r => r.ok ? r.json() : null)
           .catch(() => null)
-      );
+      ];
 
       const results = await Promise.all(promises);
       const pairMap = new Map();
@@ -200,7 +235,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {} })
       results.forEach(res => {
         if (res?.pairs && Array.isArray(res.pairs)) {
           res.pairs.forEach(p => {
-            if (p.pairAddress && !pairMap.has(p.pairAddress) && p.volume?.h24 > 50000) {
+            if (p.pairAddress && !pairMap.has(p.pairAddress)) {
               pairMap.set(p.pairAddress, {
                 pairAddress: p.pairAddress,
                 baseToken: p.baseToken?.symbol || 'UNKNOWN',
@@ -225,7 +260,9 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {} })
 
       // Sort by 24h volume descending
       const sorted = Array.from(pairMap.values()).sort((a, b) => b.volume24h - a.volume24h);
-      setDexPairs(sorted);
+      if (sorted.length > 0) {
+        setDexPairs(sorted);
+      }
       setDexLastUpdated(new Date());
     } catch (err) {
       console.warn('DexScreener fetch error:', err);
@@ -233,6 +270,13 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {} })
       setDexLoading(false);
     }
   }, []);
+
+  const handleDexSearchSubmit = (e) => {
+    e?.preventDefault?.();
+    if (dexSearch.trim()) {
+      fetchDexScreener(dexSearch.trim());
+    }
+  };
 
   // Fetch DexScreener on initial tab select or mount
   useEffect(() => {
@@ -539,7 +583,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {} })
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', marginRight: '4px' }}>CHAIN:</span>
-                {['ALL', 'SOLANA', 'BASE', 'ETHEREUM', 'BSC'].map(c => (
+                {['ALL', 'SOLANA', 'BASE', 'ETHEREUM', 'BSC', 'SUI', 'ARBITRUM'].map(c => (
                   <button
                     key={c}
                     onClick={() => setDexChainFilter(c)}
@@ -559,10 +603,10 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {} })
                 ))}
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <form onSubmit={handleDexSearchSubmit} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <input
                   type="text"
-                  placeholder="Cari token, simbol, atau address..."
+                  placeholder="Cari token, simbol, atau contract address (e.g. PEPE, SOL, 0x...)..."
                   value={dexSearch}
                   onChange={(e) => setDexSearch(e.target.value)}
                   style={{
@@ -572,10 +616,24 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {} })
                     background: 'var(--bg-panel-subtle)',
                     color: 'var(--text-primary)',
                     fontSize: '11px',
-                    width: '220px'
+                    width: '260px'
                   }}
                 />
-              </div>
+                <button
+                  type="submit"
+                  className="telemetry-btn"
+                  style={{
+                    padding: '5px 10px',
+                    fontSize: '10px',
+                    background: 'rgba(168, 85, 247, 0.2)',
+                    borderColor: '#c084fc',
+                    color: '#c084fc',
+                    fontWeight: '700'
+                  }}
+                >
+                  {dexLoading ? '⏳' : '🔍 CARI'}
+                </button>
+              </form>
             </div>
 
             {/* DexScreener Table */}
