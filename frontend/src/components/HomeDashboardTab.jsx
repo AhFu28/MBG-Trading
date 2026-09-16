@@ -16,7 +16,7 @@ export default function HomeDashboardTab({
     const now = new Date();
     const diffHours = (now - lastUpdate) / (1000 * 60 * 60);
     
-    if (diffHours > 2) {
+    if (diffHours > 6) {
       setDataStatus('stale');
     } else if (data?.data_sources && Object.values(data.data_sources).some(s => s === 'fallback')) {
       setDataStatus('fallback');
