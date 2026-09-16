@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import MbgLogo from './MbgLogo.jsx';
+import AssetIcon from './AssetIcon.jsx';
 
 // Core clean trading navigation — clutter removed
 const PRIMARY_NAV_ITEMS = [
@@ -10,6 +11,7 @@ const PRIMARY_NAV_ITEMS = [
   { id: 'FOREX',               icon: '💱', label: 'Forex Scanner',   section: 'MARKETS' },
   { id: 'US_STOCKS',           icon: '🇺🇸', label: 'US Stocks',       section: 'MARKETS' },
   { id: 'WHALES',              icon: '🐋', label: 'Whale Tracker',    section: 'MARKETS' },
+  { id: 'HEATMAP',             icon: '🗺️', label: 'Market Heatmap',   section: 'MARKETS' },
   { id: 'CHARTING',            icon: '📊', label: 'Charting Desk',    section: 'MARKETS' },
   { id: 'WATCHLIST',           icon: '⭐', label: 'Watchlist',        section: 'MARKETS' },
   { id: 'GLOBAL_MARKETS',      icon: '🌍', label: 'Pasar Global',     section: 'MARKETS' },
@@ -194,6 +196,7 @@ export default function Sidebar({
                           title={`Buka Chart ${t.symbol} (${t.name})`}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            <AssetIcon symbol={t.symbol} market={t.market} size={15} />
                             <span style={{
                               fontSize: '7px',
                               padding: '1px 3px',

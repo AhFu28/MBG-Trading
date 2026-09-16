@@ -339,14 +339,88 @@ class NewsMacroFetcher:
         indicators["etf_flows"] = self.fetch_etf_flows()
         return indicators
 
-    def fetch_live_financial_news(self, limit: int = 30) -> list:
-        """Fetch real-time dual-stream financial news (IDX Equities + Crypto Global ETF) via RSS feeds."""
+    def fetch_sentiment_indicators(self, macro: dict) -> dict:
+        """Fetch Fear & Greed, BTC Dominance, VIX for sentiment radar."""
+        import json as _json
+        sentiment = {
+            "fear_greed": {"value": 50, "label": "Neutral", "history": []},
+            "btc_dominance": 58.0,
+            "total_crypto_mcap_t": 2.8,
+            "vix": float(macro.get("vix_index", 18.0) or 18.0),
+        }
+        # 1. Crypto Fear & Greed Index
+        try:
+            req = urllib.request.Request("https://api.alternative.me/fng/?limit=7",
+                                        headers={"User-Agent": "MBG-Trading/4.0"})
+            with urllib.request.urlopen(req, timeout=6) as resp:
+                data = _json.loads(resp.read())
+                entries = data.get("data", [])
+                if entries:
+                    latest = entries[0]
+                    sentiment["fear_greed"]["value"] = int(latest.get("value", 50))
+                    sentiment["fear_greed"]["label"] = latest.get("value_classification", "Neutral")
+                    sentiment["fear_greed"]["history"] = [
+                        {"value": int(e.get("value", 50)), "label": e.get("value_classification", ""),
+                         "date": datetime.fromtimestamp(int(e.get("timestamp", 0))).strftime("%Y-%m-%d")}
+                        for e in entries
+                    ]
+            logger.info("Fetched Crypto Fear & Greed Index successfully.")
+        except Exception as e:
+            logger.warning(f"Failed to fetch Fear & Greed: {e}")
+
+        # 2. BTC Dominance + Total Crypto Market Cap via CoinGecko
+        try:
+            req = urllib.request.Request("https://api.coingecko.com/api/v3/global",
+                                        headers={"User-Agent": "MBG-Trading/4.0"})
+            with urllib.request.urlopen(req, timeout=6) as resp:
+                data = _json.loads(resp.read())
+                gd = data.get("data", {})
+                sentiment["btc_dominance"] = round(gd.get("market_cap_percentage", {}).get("btc", 58.0), 1)
+                sentiment["total_crypto_mcap_t"] = round(gd.get("total_market_cap", {}).get("usd", 2.8e12) / 1e12, 2)
+            logger.info("Fetched BTC Dominance from CoinGecko.")
+        except Exception as e:
+            logger.warning(f"Failed to fetch CoinGecko global: {e}")
+
+        # 3. VIX from yfinance (already in macro flow)
+        try:
+            t = yf.Ticker("^VIX")
+            hist = t.history(period="2d")
+            if not hist.empty:
+                sentiment["vix"] = round(float(hist["Close"].iloc[-1]), 2)
+        except Exception as e:
+            logger.warning(f"Failed to fetch VIX: {e}")
+
+        return sentiment
+
+    def fetch_live_financial_news(self, limit: int = 20) -> list:
+        """Fetch real-time multi-stream financial news (12 streams: IDX, Crypto, Politics, Geopolitics, Central Bank, Regulation, Commodities, Forex, US Market, China, Energy/OPEC, Tech/AI) via RSS feeds."""
         articles = []
         seen_titles = set()
 
         rss_feeds = [
+            # Core Markets
             ("IDX", "https://news.google.com/rss/search?q=IHSG+OR+saham+Indonesia+OR+%22Bank+Indonesia%22+when:1d&hl=id&gl=ID&ceid=ID:id"),
-            ("CRYPTO", "https://news.google.com/rss/search?q=crypto+OR+bitcoin+OR+ethereum+OR+%22crypto+ETF%22+when:1d&hl=en-US&gl=US&ceid=US:en")
+            ("CRYPTO", "https://news.google.com/rss/search?q=crypto+OR+bitcoin+OR+ethereum+OR+%22crypto+ETF%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            # Politics & Fiscal (Indonesia)
+            ("POLITIK", "https://news.google.com/rss/search?q=%22kebijakan+ekonomi%22+OR+%22fiskal%22+OR+%22APBN%22+OR+%22pajak%22+OR+%22presiden%22+ekonomi+when:1d&hl=id&gl=ID&ceid=ID:id"),
+            # Geopolitics & Trade War
+            ("GEOPOLITIK", "https://news.google.com/rss/search?q=geopolitics+OR+%22trade+war%22+OR+sanctions+OR+tariff+OR+%22middle+east%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            # Central Banks (Fed, ECB, BOJ, PBOC)
+            ("CENTRAL_BANK", "https://news.google.com/rss/search?q=%22Federal+Reserve%22+OR+%22ECB%22+OR+%22Bank+of+Japan%22+OR+%22interest+rate+decision%22+OR+%22rate+cut%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            # Financial Regulation (SEC, OJK)
+            ("REGULASI", "https://news.google.com/rss/search?q=%22SEC%22+%22crypto+regulation%22+OR+%22OJK%22+OR+%22financial+regulation%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            # Commodities (Gold, Oil, Copper)
+            ("COMMODITIES", "https://news.google.com/rss/search?q=%22gold+price%22+OR+%22oil+price%22+OR+%22copper%22+OR+%22commodities+market%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            # Forex & Currency
+            ("FOREX_NEWS", "https://news.google.com/rss/search?q=%22dollar+index%22+OR+%22EURUSD%22+OR+%22forex%22+OR+%22currency%22+OR+%22rupiah%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            # US Equities & Earnings
+            ("US_MARKET", "https://news.google.com/rss/search?q=%22S%26P+500%22+OR+%22Nasdaq%22+OR+%22Wall+Street%22+OR+%22earnings%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            # China Economy & PBOC
+            ("CHINA", "https://news.google.com/rss/search?q=%22China+economy%22+OR+%22PBOC%22+OR+%22China+stimulus%22+OR+%22yuan%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            # OPEC & Energy Geopolitics
+            ("ENERGY_GEO", "https://news.google.com/rss/search?q=%22OPEC%22+OR+%22crude+oil%22+OR+%22natural+gas%22+OR+%22energy+crisis%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            # Tech & AI Momentum
+            ("TECH_AI", "https://news.google.com/rss/search?q=%22AI+stocks%22+OR+%22semiconductor%22+OR+%22NVIDIA%22+OR+%22tech+earnings%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
         ]
 
         for stream_type, feed_url in rss_feeds:
@@ -373,7 +447,7 @@ class NewsMacroFetcher:
                             continue
                         seen_titles.add(norm_title)
 
-                        # Infer market tag
+                        # Infer market tag from stream + title keywords
                         upper_t = title.upper()
                         if stream_type == "CRYPTO":
                             if any(k in upper_t for k in ["ETF", "INFLOW", "OUTFLOW", "BLACKROCK", "FIDELITY"]):
@@ -384,7 +458,7 @@ class NewsMacroFetcher:
                                 tag = "DEFI_AI"
                             else:
                                 tag = "CRYPTO"
-                        else:
+                        elif stream_type == "IDX":
                             if any(k in upper_t for k in ["EMAS", "ANTM", "BRMS", "MDKA", "GOLD"]):
                                 tag = "METALS"
                             elif any(k in upper_t for k in ["MINYAK", "OIL", "MEDC", "ENRG", "BRENT"]):
@@ -397,6 +471,10 @@ class NewsMacroFetcher:
                                 tag = "MACRO"
                             else:
                                 tag = "IHSG"
+                        elif stream_type in ("POLITIK", "GEOPOLITIK", "CENTRAL_BANK", "REGULASI",
+                                             "COMMODITIES", "FOREX_NEWS", "US_MARKET", "CHINA",
+                                             "ENERGY_GEO", "TECH_AI"):
+                            tag = stream_type
 
                         summary, key_takeaways, sentiment, sentiment_score, tickers, metrics = NewsProcessor.generate_key_takeaways(title, source, tag)
 
@@ -582,4 +660,5 @@ class NewsMacroFetcher:
     def execute(self) -> dict:
         indicators = self.fetch_macro_indicators()
         assessment = self.generate_impact_assessment(indicators)
+        assessment["sentiment_radar"] = self.fetch_sentiment_indicators(indicators)
         return assessment

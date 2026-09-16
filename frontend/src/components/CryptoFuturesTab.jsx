@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import CryptoIcon from './CryptoIcon.jsx';
 
 // Target 60+ Binance Perpetual Futures Pairs
 const DEFAULT_FUTURES_PAIRS = [
@@ -869,6 +870,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                       <tr key={idx} style={{ borderBottom: 'var(--border-hairline)' }}>
                         <td style={{ padding: '10px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <CryptoIcon symbol={base} size={18} />
                             <button
                               onClick={() => onOpenChart ? onOpenChart(`BINANCE:${f.symbol}.P`, 'CRYPTO') : null}
                               style={{

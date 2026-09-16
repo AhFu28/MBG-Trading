@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AssetIcon from './AssetIcon.jsx';
 
 export default function USStockTab({ data, onOpenChart }) {
   const [activeTab, setActiveTab] = useState('screener');
@@ -187,6 +188,7 @@ export default function USStockTab({ data, onOpenChart }) {
                     <tr key={idx}>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <AssetIcon symbol={s.ticker} market="US" size={18} />
                           <span style={{ fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
                             {s.ticker}
                           </span>
@@ -305,7 +307,10 @@ export default function USStockTab({ data, onOpenChart }) {
                   return (
                     <tr key={idx}>
                       <td style={{ fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
-                        {e.ticker}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <AssetIcon symbol={e.ticker} market="US" size={16} />
+                          <span>{e.ticker}</span>
+                        </div>
                       </td>
                       <td style={{ color: 'var(--text-secondary)' }}>{e.name}</td>
                       <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontWeight: '600' }}>
@@ -351,6 +356,7 @@ export default function USStockTab({ data, onOpenChart }) {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <AssetIcon symbol={s.ticker} market="US" size={22} />
                       <span style={{ fontSize: '18px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
                         {s.ticker}
                       </span>

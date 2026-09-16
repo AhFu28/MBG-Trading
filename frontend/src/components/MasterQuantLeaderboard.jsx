@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, Suspense, lazy } from 'react';
 import NewsTab from './NewsTab.jsx';
 import PersonalWatchlistTab from './PersonalWatchlistTab.jsx';
 import PearsonCorrelationWidget from './PearsonCorrelationWidget.jsx';
+import AssetIcon from './AssetIcon.jsx';
 
 const VirtualForwardPortfolio = lazy(() => import('./VirtualForwardPortfolio.jsx'));
 const BacktestPerformanceLab = lazy(() => import('./BacktestPerformanceLab.jsx'));
@@ -760,10 +761,15 @@ export default function MasterQuantLeaderboard({
                           >
                             <td style={{ textAlign: 'center', color: 'var(--text-muted)' }}>{idx + 1}</td>
                             <td>
-                              <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '12px' }}>
-                                ${d.ticker}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <AssetIcon symbol={d.ticker} market="IDX" size={18} />
+                                <div>
+                                  <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '12px' }}>
+                                    ${d.ticker}
+                                  </div>
+                                  <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{d.company_name}</div>
+                                </div>
                               </div>
-                              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{d.company_name}</div>
                             </td>
                             <td>
                               <span className="badge badge-neutral" style={{ fontSize: '9px', fontWeight: '700' }}>
@@ -948,7 +954,10 @@ export default function MasterQuantLeaderboard({
                             {idx + 1}
                           </td>
                           <td style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '13px' }}>
-                            ${item.ticker}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <AssetIcon symbol={item.ticker} market={item.market === 'CRYPTO' ? 'CRYPTO' : 'IDX'} size={18} />
+                              <span>${item.ticker}</span>
+                            </div>
                           </td>
                           <td>
                             <span className='badge' style={{
