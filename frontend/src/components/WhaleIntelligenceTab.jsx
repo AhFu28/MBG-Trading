@@ -252,6 +252,153 @@ const ONCHAIN_ENTITIES = {
   ]
 };
 
+// Master Action Protocols for Whale Movements (> 100 BTC)
+// Menjawab instruksi spesifik trader: "Itu Kita Harus Apa?"
+export const WHALE_ACTION_PROTOCOLS = {
+  EXCHANGE_INFLOW: {
+    key: 'EXCHANGE_INFLOW',
+    badge: '🔴 INFLOW KE BURSA',
+    title: 'POTENSI DUMP / RISIKO TEKANAN JUAL TINGGI',
+    color: 'var(--accent-rust)',
+    bg: 'rgba(239, 68, 68, 0.12)',
+    border: 'rgba(239, 68, 68, 0.3)',
+    riskLevel: 'RISIKO TINGGI (HIGH SELLER PRESSURE)',
+    summary: 'Paus mentransfer 100+ BTC ke dompet bursa (Binance/Coinbase/OKX/Bybit). Entitas besar biasanya memindahkan aset ke exchange untuk merealisasikan profit (TP), memasang order jual masif, atau persiapan likuidasi.',
+    actions: [
+      {
+        icon: '🛡️',
+        title: 'Amankan Posisi Long (Buy) & Pasang Trailing Stop',
+        desc: 'Jika Anda sedang memegang posisi Long (Spot atau Futures), segera ketatkan Stop Loss ke level Breakeven atau kunci profit. Jangan biarkan profit menguap jika terjadi flash dump mendadak.'
+      },
+      {
+        icon: '🚫',
+        title: 'Dilarang Keras FOMO Beli di Area Resistance',
+        desc: 'Tahan godaan membeli saat harga sedang breakout semu. Beri jeda 15 - 45 menit untuk melihat apakah order book bursa sanggup menyerap pasokan koin dari paus tersebut.'
+      },
+      {
+        icon: '⚔️',
+        title: 'Persiapkan Skenario Scalp Short Pasca Breakdown',
+        desc: 'Untuk trader futures: pantau timeframe M15/H1. Jika support terdekat ditembus bersamaan dengan lonjakan volume jual di Binance, ikuti momentum short dengan target support berikutnya.'
+      },
+      {
+        icon: '🔬',
+        title: 'Periksa Funding Rate di Tab Crypto Futures',
+        desc: 'Jika Funding Rate berada di atas +0.03% (pasar serakah long) dan terjadi inflow 100+ BTC, probabilitas terjadinya Long Squeeze (likuidasi berantai) sangat tinggi.'
+      }
+    ]
+  },
+  EXCHANGE_OUTFLOW: {
+    key: 'EXCHANGE_OUTFLOW',
+    badge: '🟢 OUTFLOW KE COLD STORAGE',
+    title: 'SUPPLY SHOCK / AKUMULASI LEMARI BESI INSTITUSIONAL',
+    color: 'var(--accent-green)',
+    bg: 'rgba(0, 208, 132, 0.12)',
+    border: 'rgba(0, 208, 132, 0.3)',
+    riskLevel: 'PELUANG BULLISH KUAT (SUPPLY CRUNCH)',
+    summary: 'Paus menarik 100+ BTC dari bursa menuju dompet dingin (Cold Vault/Custody). Koin yang ditarik dari bursa tidak dapat langsung dijual, menciptakan kelangkaan pasokan likuid di pasar spot.',
+    actions: [
+      {
+        icon: '🛑',
+        title: 'Jangan Buka Posisi Short Melawan Arus',
+        desc: 'Menjual/shorting saat paus melakukan penarikan ratusan BTC ke cold storage memiliki risiko tinggi terkena Short Squeeze mendadak saat order book bursa menipis.'
+      },
+      {
+        icon: '🎯',
+        title: 'Akumulasi Pada Area Retest / Demand Dip',
+        desc: 'Cari konfirmasi pembalikan arah di level support kuat atau Bullish Order Block (SMC). Manfaatkan pullback minor sebagai peluang entri posisi beli (Buy on Dip).'
+      },
+      {
+        icon: '💎',
+        title: 'Tingkatkan Target Take Profit (Hold Swing)',
+        desc: 'Institusi yang memindahkan ratusan koin ke private vault umumnya memiliki horison investasi jangka menengah hingga panjang. Anda bisa memperluas target TP swing trade.'
+      },
+      {
+        icon: '📊',
+        title: 'Pantau Open Interest di Tab Crypto Futures',
+        desc: 'Jika outflow diikuti oleh kenaikan Open Interest dan harga bertahan di atas support, tren naik memiliki konfirmasi akumulasi institusional yang solid.'
+      }
+    ]
+  },
+  TREASURY_MINT: {
+    key: 'TREASURY_MINT',
+    badge: '💵 INJEKSI STABLECOIN (MINT)',
+    title: 'INJEKSI AMUNISI LIKUIDITAS SEGAR SIAP BELANJA',
+    color: '#38bdf8',
+    bg: 'rgba(56, 189, 248, 0.12)',
+    border: 'rgba(56, 189, 248, 0.3)',
+    riskLevel: 'LIKUIDITAS TINGGI (BULLISH CATALYST)',
+    summary: 'Penerbitan stablecoin baru (Tether USDT / Circle USDC) dalam skala puluhan juta dolar yang langsung dialirkan ke bursa untuk menyerap suplai aset kripto.',
+    actions: [
+      {
+        icon: '⚡',
+        title: 'Antisipasi Reli Pembelian dalam 1-6 Jam',
+        desc: 'Pencetakan stablecoin biasanya dilakukan untuk memenuhi pesanan beli OTC dari investor institusi. Bersiap menghadapi gelombang pembelian spot dalam hitungan jam.'
+      },
+      {
+        icon: '📈',
+        title: 'Prioritaskan Koin Induk (BTC & ETH)',
+        desc: 'Likuiditas baru biasanya pertama kali disalurkan ke BTC dan ETH sebelum terjadi rotasi modal ke altcoin berkapitalisasi menengah.'
+      },
+      {
+        icon: '🛡️',
+        title: 'Pasang Stop Loss Terukur di Bawah Base Terakhir',
+        desc: 'Meskipun bernada bullish, pastikan manajemen risiko tetap disiplin dengan memasang stop loss di bawah swing low terdekat.'
+      }
+    ]
+  },
+  WHALE_TO_WHALE: {
+    key: 'WHALE_TO_WHALE',
+    badge: '⚪ ROTASI OTC / DARK POOL',
+    title: 'TRANSAKSI DARK POOL / REORGANISASI CUSTODY',
+    color: 'var(--text-secondary)',
+    bg: 'rgba(255, 255, 255, 0.05)',
+    border: 'var(--border-hairline)',
+    riskLevel: 'NETRAL / WAIT AND SEE',
+    summary: 'Perpindahan 100+ BTC langsung antar alamat dompet non-bursa atau meja OTC (misal FalconX, Wintermute, Galaxy Digital). Transaksi ini tidak memakan buku order pasar spot.',
+    actions: [
+      {
+        icon: '🧘',
+        title: 'Tenang & Hindari Reaksi Panik Berlebihan',
+        desc: 'Perpindahan antar dompet pribadi tidak memicu slippage harga langsung. Hindari kepanikan atau spekulasi berlebihan sebelum ada bukti perpindahan ke bursa.'
+      },
+      {
+        icon: '🛰️',
+        title: 'Pantau Transaksi Lanjutan Alamat Penerima',
+        desc: 'Perhatikan apakah alamat tujuan memecah transaksi atau mengirim sebagian ke deposit bursa dalam 2-4 jam ke depan. Jika diteruskan ke bursa, baru aktifkan Protokol Inflow.'
+      },
+      {
+        icon: '📐',
+        title: 'Fokus Pada Struktur Chart Teknikal Utama',
+        desc: 'Biarkan analisis teknikal (support/resistance, Fibonacci, SMC) memandu keputusan trading Anda tanpa terdistraksi noise transfer OTC internal.'
+      }
+    ]
+  }
+};
+
+function playWhaleAlertChime() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.12); // A5
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.35);
+  } catch (err) {
+    // AudioContext might be muted or blocked without gesture
+  }
+}
+
 function generateInitialCryptoWhales(count = 35) {
   const list = [];
   const now = Date.now();
@@ -312,6 +459,18 @@ function generateInitialCryptoWhales(count = 35) {
       thesis = `Transfer OTC antar institusi/whale ${amount.toLocaleString()} ${chainObj.symbol} (~$${amountUsd.toLocaleString()}): Rotasi portofolio dark pool tanpa menabrak orderbook spot.`;
     }
 
+    const isMegaBtc = chainObj.symbol === 'BTC' && amount >= 100;
+    const isMegaUsd = amountUsd >= 6500000;
+    const isMegaWhale = isMegaBtc || isMegaUsd;
+    let quickAction = 'Wait & See / Pantau Transaksi Lanjutan';
+    if (signal === 'EXCHANGE_INFLOW') {
+      quickAction = 'Perketat Stop Loss Long / Dilarang FOMO Buy';
+    } else if (signal === 'EXCHANGE_OUTFLOW') {
+      quickAction = 'Akumulasi on Dip / Jangan Short Sembarangan';
+    } else if (signal === 'TREASURY_MINT') {
+      quickAction = 'Antisipasi Reli 1-6 Jam / Akumulasi BTC-ETH';
+    }
+
     list.unshift({
       hash: txHash,
       hash_short: `${txHash.slice(0, 8)}...${txHash.slice(-6)}`,
@@ -330,7 +489,9 @@ function generateInitialCryptoWhales(count = 35) {
       explorer_url: `${chainObj.explorer}${txHash}`,
       impact_thesis: thesis,
       data_source: 'live_onchain_stream',
-      isNew: false
+      isNew: false,
+      isMegaWhale: isMegaWhale,
+      quickAction: quickAction
     });
   }
   return list;
@@ -362,6 +523,22 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
   const [cryptoFilterSentiment, setCryptoFilterSentiment] = useState('ALL');
   const wsRef = useRef(null);
   const streamTimerRef = useRef(null);
+
+  // Watcher Whale (> 100 BTC) & Action Protocol States
+  const [whaleThresholdBtc, setWhaleThresholdBtc] = useState(100);
+  const [audioAlertEnabled, setAudioAlertEnabled] = useState(true);
+  const audioAlertRef = useRef(true);
+  useEffect(() => {
+    audioAlertRef.current = audioAlertEnabled;
+  }, [audioAlertEnabled]);
+
+  const [selectedPlaybookTab, setSelectedPlaybookTab] = useState('EXCHANGE_INFLOW');
+  const [alertBannerDismissed, setAlertBannerDismissed] = useState(false);
+  const [latestMegaWhaleAlert, setLatestMegaWhaleAlert] = useState(() => {
+    const initial = data?.whale_intelligence?.crypto_whales || [];
+    const found = initial.find(w => (w.symbol === 'BTC' && (w.amount || 0) >= 100) || (w.amount_usd || 0) >= 6500000);
+    return found || null;
+  });
 
   const initialWhales = data?.whale_intelligence?.crypto_whales || [];
 
@@ -429,6 +606,18 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
           thesis = `Transfer OTC institusional ${amount.toLocaleString()} ${chainObj.symbol} (~$${amountUsd.toLocaleString()}): Rotasi portofolio dark pool tanpa mengganggu harga spot.`;
         }
 
+        const isMegaBtc = chainObj.symbol === 'BTC' && amount >= 100;
+        const isMegaUsd = amountUsd >= 6500000;
+        const isMegaWhale = isMegaBtc || isMegaUsd;
+        let quickAction = 'Wait & See / Pantau Transaksi Lanjutan';
+        if (signal === 'EXCHANGE_INFLOW') {
+          quickAction = 'Perketat Stop Loss Long / Dilarang FOMO Buy';
+        } else if (signal === 'EXCHANGE_OUTFLOW') {
+          quickAction = 'Akumulasi on Dip / Jangan Short Sembarangan';
+        } else if (signal === 'TREASURY_MINT') {
+          quickAction = 'Antisipasi Reli 1-6 Jam / Akumulasi BTC-ETH';
+        }
+
         const newWhaleTx = {
           hash: txHash,
           hash_short: `${txHash.slice(0, 8)}...${txHash.slice(-6)}`,
@@ -447,8 +636,18 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
           explorer_url: `${chainObj.explorer}${txHash}`,
           impact_thesis: thesis,
           data_source: 'live_onchain_stream',
-          isNew: true
+          isNew: true,
+          isMegaWhale: isMegaWhale,
+          quickAction: quickAction
         };
+
+        if (isMegaWhale) {
+          setLatestMegaWhaleAlert(newWhaleTx);
+          setAlertBannerDismissed(false);
+          if (audioAlertRef.current) {
+            playWhaleAlertChime();
+          }
+        }
 
         setLiveWhales(prev => [newWhaleTx, ...prev.map(p => ({ ...p, isNew: false }))].slice(0, 75));
 
@@ -479,7 +678,9 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
             const usd = Math.round(btc * 65000);
             const isBuy = Math.random() > 0.48;
             const sig = isBuy ? 'EXCHANGE_OUTFLOW' : 'EXCHANGE_INFLOW';
-            liveMempoolTxs.push({
+            const isMega = btc >= 100 || usd >= 6500000;
+            const quickAction = sig === 'EXCHANGE_INFLOW' ? 'Perketat Stop Loss Long / Dilarang FOMO Buy' : 'Akumulasi on Dip / Jangan Short Sembarangan';
+            const mempoolTx = {
               hash: tx.txid,
               hash_short: `${tx.txid.slice(0, 8)}...${tx.txid.slice(-6)}`,
               blockchain: 'bitcoin',
@@ -499,8 +700,18 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
                 ? `Mempool Live: ${btc.toFixed(3)} BTC ($${usd.toLocaleString()}) disetor ke bursa (antrean blok berikutnya).`
                 : `Mempool Live: Penarikan ${btc.toFixed(3)} BTC ($${usd.toLocaleString()}) menuju Cold Storage.`,
               data_source: 'mempool_live_recent',
-              isNew: true
-            });
+              isNew: true,
+              isMegaWhale: isMega,
+              quickAction: quickAction
+            };
+            if (isMega) {
+              setLatestMegaWhaleAlert(mempoolTx);
+              setAlertBannerDismissed(false);
+              if (audioAlertRef.current) {
+                playWhaleAlertChime();
+              }
+            }
+            liveMempoolTxs.push(mempoolTx);
           }
         }
         if (liveMempoolTxs.length > 0) {
@@ -565,6 +776,22 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
   const { idx_foreign_whales = [], us_institutional = [], idx_session_info = null } = whaleData || {};
   const sessionInfo = getJakartaSessionInfo(data?.last_updated, idx_session_info);
   const activeCryptoWhales = liveWhales.length > 0 ? liveWhales : initialWhales;
+
+  // Filter khusus Watcher Whale (> threshold BTC atau ekuivalen USD)
+  const megaWhales = useMemo(() => {
+    return activeCryptoWhales.filter(w => {
+      const isBtcThreshold = (w.symbol === 'BTC' || !w.symbol) && (w.amount || 0) >= whaleThresholdBtc;
+      const isUsdThreshold = (w.amount_usd || 0) >= (whaleThresholdBtc * 65000);
+      return isBtcThreshold || isUsdThreshold;
+    });
+  }, [activeCryptoWhales, whaleThresholdBtc]);
+
+  // Pastikan latestMegaWhaleAlert terisi jika masih null
+  useEffect(() => {
+    if (!latestMegaWhaleAlert && megaWhales.length > 0) {
+      setLatestMegaWhaleAlert(megaWhales[0]);
+    }
+  }, [megaWhales, latestMegaWhaleAlert]);
 
   // Crypto Summaries
   const cryptoBullish = activeCryptoWhales.filter(w => w.sentiment === 'BULLISH').length;
@@ -765,9 +992,37 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
 
       </div>
 
-      {/* 3. Master Tab Selector (4 Core Tabs) */}
+      {/* 3. Master Tab Selector (5 Core Tabs) */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div className="quant-pill-nav">
+          <button
+            onClick={() => setActiveTab('watcher_whale')}
+            className={`quant-pill-btn ${activeTab === 'watcher_whale' ? 'active' : ''}`}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              borderColor: activeTab === 'watcher_whale' ? 'var(--accent-rust)' : undefined
+            }}
+          >
+            <span>🚨</span>
+            <span>WATCHER WHALE (&gt; 100 BTC)</span>
+            {megaWhales.length > 0 && (
+              <span
+                style={{
+                  background: 'var(--accent-rust)',
+                  color: '#fff',
+                  fontSize: '9px',
+                  fontWeight: '800',
+                  padding: '1px 6px',
+                  borderRadius: '10px',
+                  fontFamily: 'var(--font-mono)'
+                }}
+              >
+                {megaWhales.length}
+              </span>
+            )}
+          </button>
           <button onClick={() => setActiveTab('crypto')} className={`quant-pill-btn ${activeTab === 'crypto' ? 'active' : ''}`}>
             <span>🔗</span>
             <span>CRYPTO ON-CHAIN</span>
@@ -801,6 +1056,77 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
       {/* 4. Tab 1: CRYPTO ON-CHAIN (Running Trade Style Table + Metrics) */}
       {activeTab === 'crypto' && (
         <div className="quant-card" style={{ padding: '0', overflow: 'hidden' }}>
+          
+          {/* Watcher Whale Fast Radar Alert Strip */}
+          {latestMegaWhaleAlert && (
+            <div
+              style={{
+                padding: '10px 18px',
+                background: latestMegaWhaleAlert.sentiment === 'BEARISH'
+                  ? 'linear-gradient(90deg, rgba(239, 68, 68, 0.16), rgba(15, 23, 42, 0.6))'
+                  : 'linear-gradient(90deg, rgba(0, 208, 132, 0.16), rgba(15, 23, 42, 0.6))',
+                borderBottom: 'var(--border-hairline)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '10px'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                <span
+                  style={{
+                    fontSize: '10px',
+                    fontWeight: '800',
+                    padding: '2px 8px',
+                    borderRadius: '4px',
+                    background: latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'var(--accent-rust)' : 'var(--accent-green)',
+                    color: '#fff',
+                    fontFamily: 'var(--font-mono)'
+                  }}
+                >
+                  🚨 WHALE ALERT &gt; 100 BTC
+                </span>
+                <span style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                  {latestMegaWhaleAlert.amount?.toLocaleString()} {latestMegaWhaleAlert.symbol} (~${((latestMegaWhaleAlert.amount_usd || 0) / 1e6).toFixed(2)}M)
+                </span>
+                <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                  {latestMegaWhaleAlert.from_name} ➔ {latestMegaWhaleAlert.to_name}
+                </span>
+                <span
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: '700',
+                    color: latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'var(--accent-rust)' : 'var(--accent-green)'
+                  }}
+                >
+                  [{latestMegaWhaleAlert.quickAction}]
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  setSelectedPlaybookTab(latestMegaWhaleAlert.signal);
+                  setActiveTab('watcher_whale');
+                }}
+                style={{
+                  padding: '4px 12px',
+                  borderRadius: '4px',
+                  background: 'rgba(56, 189, 248, 0.18)',
+                  border: '1px solid rgba(56, 189, 248, 0.4)',
+                  color: '#38bdf8',
+                  fontSize: '11px',
+                  fontWeight: '800',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                <span>BUKA ACTION PLAYBOOK WHALE</span>
+                <span>➔</span>
+              </button>
+            </div>
+          )}
           
           {/* Filter Bar */}
           <div style={{ padding: '12px 18px', borderBottom: 'var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', background: 'var(--bg-panel-subtle)' }}>
@@ -991,6 +1317,462 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* 4b. Tab: WATCHER WHALE (> 100 BTC) & ACTION PROTOCOL PLAYBOOK */}
+      {activeTab === 'watcher_whale' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          
+          {/* Header & Controls Panel */}
+          <div className="quant-card" style={{ padding: '16px 20px', background: 'linear-gradient(90deg, rgba(239, 68, 68, 0.1), rgba(15, 23, 42, 0.6))' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ fontSize: '20px' }}>🚨</span>
+                  <h3 style={{ fontSize: '16px', margin: 0, fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+                    WATCHER WHALE & ACTION ALERT RADAR (&gt; 100 BTC)
+                  </h3>
+                  <span style={{ fontSize: '9px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.2)', color: 'var(--accent-rust)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+                    REAL-TIME RADAR
+                  </span>
+                </div>
+                <p style={{ margin: '4px 0 0 0', color: 'var(--text-secondary)', fontSize: '12px' }}>
+                  Pencatatan perpindahan koin BTC skala jumbo &bull; Panduan taktis trader ("Itu Kita Harus Apa?") &bull; Eksekusi cepat
+                </p>
+              </div>
+
+              {/* Action Buttons & Audio Toggle */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                {/* Audio Alert Toggle */}
+                <button
+                  onClick={() => {
+                    const next = !audioAlertEnabled;
+                    setAudioAlertEnabled(next);
+                    if (next) playWhaleAlertChime();
+                  }}
+                  style={{
+                    padding: '5px 12px',
+                    borderRadius: '6px',
+                    fontSize: '11px',
+                    fontWeight: '800',
+                    cursor: 'pointer',
+                    border: audioAlertEnabled ? '1px solid var(--accent-green)' : 'var(--border-hairline)',
+                    background: audioAlertEnabled ? 'rgba(0, 208, 132, 0.12)' : 'var(--bg-panel)',
+                    color: audioAlertEnabled ? 'var(--accent-green)' : 'var(--text-muted)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    transition: 'all 0.2s ease'
+                  }}
+                  title="Nyalakan/matikan sinyal audio saat perpindahan >100 BTC terdeteksi"
+                >
+                  <span>{audioAlertEnabled ? '🔔' : '🔕'}</span>
+                  <span>SUARA ALERT: {audioAlertEnabled ? 'AKTIF' : 'NONAKTIF'}</span>
+                </button>
+
+                {/* Stream Pause/Resume */}
+                <button
+                  onClick={() => setIsStreamPaused(p => !p)}
+                  style={{
+                    padding: '5px 12px',
+                    borderRadius: '6px',
+                    fontSize: '11px',
+                    fontWeight: '800',
+                    cursor: 'pointer',
+                    border: isStreamPaused ? '1px solid var(--accent-gold)' : 'var(--border-hairline)',
+                    background: isStreamPaused ? 'rgba(234, 179, 8, 0.15)' : 'var(--bg-panel)',
+                    color: isStreamPaused ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <span>{isStreamPaused ? '▶' : '⏸'}</span>
+                  <span>{isStreamPaused ? 'LANJUTKAN' : 'JEDA STREAM'}</span>
+                </button>
+
+                {/* Shortcut to Chart */}
+                <button
+                  onClick={() => onOpenChart && onOpenChart('BINANCE:BTCUSDT', 'CRYPTO')}
+                  style={{
+                    padding: '5px 12px',
+                    borderRadius: '6px',
+                    fontSize: '11px',
+                    fontWeight: '800',
+                    cursor: 'pointer',
+                    border: '1px solid var(--accent-blue)',
+                    background: 'rgba(56, 189, 248, 0.15)',
+                    color: '#38bdf8',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <span>📈</span>
+                  <span>LIHAT CHART BTC/USDT ↗</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Threshold Filter Bar */}
+            <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: 'var(--border-hairline)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '800' }}>THRESHOLD RADAR:</span>
+                {[100, 250, 500, 1000].map(th => (
+                  <button
+                    key={th}
+                    onClick={() => setWhaleThresholdBtc(th)}
+                    className={`quant-pill-btn ${whaleThresholdBtc === th ? 'active' : ''}`}
+                    style={{ fontSize: '10px', padding: '3px 8px' }}
+                  >
+                    &ge; {th} BTC {th === 100 ? '(Default)' : th === 500 ? '(Humpback)' : th === 1000 ? '(Titan)' : ''}
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                Tercatat: <strong style={{ color: 'var(--accent-rust)' }}>{megaWhales.length}</strong> transaksi paus &ge; {whaleThresholdBtc} BTC
+              </div>
+            </div>
+          </div>
+
+          {/* Top Live Alert Beacon Banner */}
+          {latestMegaWhaleAlert && (
+            <div
+              className="quant-card"
+              style={{
+                padding: '16px 20px',
+                background: latestMegaWhaleAlert.sentiment === 'BEARISH'
+                  ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(15, 23, 42, 0.7))'
+                  : 'linear-gradient(135deg, rgba(0, 208, 132, 0.15), rgba(15, 23, 42, 0.7))',
+                border: `1px solid ${latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'rgba(239, 68, 68, 0.4)' : 'rgba(0, 208, 132, 0.4)'}`,
+                borderRadius: '8px'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span className={latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'pulse-dot-amber' : 'pulse-dot-green'} />
+                    <span style={{ fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', color: latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'var(--accent-rust)' : 'var(--accent-green)', letterSpacing: '0.05em' }}>
+                      ALERT PAUS TERBARU TERDETEKSI ({new Date(latestMegaWhaleAlert.timestamp).toLocaleTimeString('id-ID')} WIB)
+                    </span>
+                    <span style={{
+                      fontSize: '9px',
+                      fontWeight: '800',
+                      padding: '2px 6px',
+                      borderRadius: '3px',
+                      background: 'rgba(255,255,255,0.08)',
+                      color: 'var(--text-primary)',
+                      fontFamily: 'var(--font-mono)'
+                    }}>
+                      {latestMegaWhaleAlert.amount >= 1000 ? '🐳 TITAN WHALE' : latestMegaWhaleAlert.amount >= 500 ? '🌊 HUMPBACK WHALE' : '🚨 MEGA WHALE'}
+                    </span>
+                  </div>
+
+                  <div style={{ fontSize: '26px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '8px 0', color: 'var(--text-primary)' }}>
+                    {latestMegaWhaleAlert.amount?.toLocaleString()} {latestMegaWhaleAlert.symbol}{' '}
+                    <span style={{ fontSize: '16px', color: 'var(--text-secondary)', fontWeight: '600' }}>
+                      (~${((latestMegaWhaleAlert.amount_usd || 0) / 1e6).toFixed(2)}M USD)
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: 'var(--text-secondary)', flexWrap: 'wrap' }}>
+                    <span><strong>Dari:</strong> {latestMegaWhaleAlert.from_name} ({latestMegaWhaleAlert.from_address ? `${latestMegaWhaleAlert.from_address.slice(0, 8)}...` : 'Vault'})</span>
+                    <span>➔</span>
+                    <span><strong>Ke:</strong> {latestMegaWhaleAlert.to_name} ({latestMegaWhaleAlert.to_address ? `${latestMegaWhaleAlert.to_address.slice(0, 8)}...` : 'Vault'})</span>
+                  </div>
+                </div>
+
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{
+                    fontSize: '11px',
+                    fontWeight: '800',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    background: latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(0, 208, 132, 0.2)',
+                    color: latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'var(--accent-rust)' : 'var(--accent-green)',
+                    border: `1px solid ${latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'rgba(239, 68, 68, 0.4)' : 'rgba(0, 208, 132, 0.4)'}`,
+                    display: 'inline-block'
+                  }}>
+                    {latestMegaWhaleAlert.signal === 'EXCHANGE_INFLOW' ? '🔴 RISIKO DUMP / INFLOW BURSA' : latestMegaWhaleAlert.signal === 'EXCHANGE_OUTFLOW' ? '🟢 SUPPLY SHOCK / AKUMULASI DINGIN' : latestMegaWhaleAlert.signal === 'TREASURY_MINT' ? '💵 INJEKSI LIKUIDITAS MINT' : '⚪ ROTASI OTC DARK POOL'}
+                  </div>
+                  <div style={{ marginTop: '6px', fontSize: '11px', color: 'var(--text-muted)' }}>
+                    Rekomendasi Cepat: <strong style={{ color: 'var(--text-primary)' }}>{latestMegaWhaleAlert.quickAction}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Interactive Action Playbook: "APA YANG HARUS KITA LAKUKAN?" */}
+          <div className="quant-card" style={{ padding: '18px 22px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '14px' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '18px' }}>🎯</span>
+                  <h3 style={{ fontSize: '15px', margin: 0, fontWeight: '800', color: 'var(--text-primary)' }}>
+                    APA YANG HARUS KITA LAKUKAN? (TRADER ACTION PLAYBOOK)
+                  </h3>
+                </div>
+                <p style={{ margin: '4px 0 0 0', color: 'var(--text-secondary)', fontSize: '12px' }}>
+                  Protokol eksekusi taktis saat terjadi perpindahan &gt; 100 BTC. Pilih skenario untuk membaca panduan lengkap.
+                </p>
+              </div>
+
+              {/* Skenario Switcher Pills */}
+              <div className="quant-pill-nav" style={{ margin: 0 }}>
+                {Object.values(WHALE_ACTION_PROTOCOLS).map(proto => (
+                  <button
+                    key={proto.key}
+                    onClick={() => setSelectedPlaybookTab(proto.key)}
+                    className={`quant-pill-btn ${selectedPlaybookTab === proto.key ? 'active' : ''}`}
+                    style={{ fontSize: '11px', padding: '5px 10px' }}
+                  >
+                    <span>{proto.badge}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Active Playbook Content Card */}
+            {(() => {
+              const proto = WHALE_ACTION_PROTOCOLS[selectedPlaybookTab] || WHALE_ACTION_PROTOCOLS.EXCHANGE_INFLOW;
+              return (
+                <div style={{
+                  padding: '16px 18px',
+                  borderRadius: '8px',
+                  background: proto.bg,
+                  border: `1px solid ${proto.border}`,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '14px'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
+                    <div>
+                      <div style={{ fontSize: '10px', fontWeight: '800', color: proto.color, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                        {proto.riskLevel}
+                      </div>
+                      <div style={{ fontSize: '15px', fontWeight: '800', color: 'var(--text-primary)', marginTop: '2px' }}>
+                        {proto.title}
+                      </div>
+                    </div>
+                    <span style={{
+                      fontSize: '11px',
+                      fontWeight: '800',
+                      padding: '3px 8px',
+                      borderRadius: '4px',
+                      background: 'rgba(255,255,255,0.06)',
+                      color: 'var(--text-primary)'
+                    }}>
+                      {proto.badge}
+                    </span>
+                  </div>
+
+                  <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.5, background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: '6px' }}>
+                    <strong>Mekanisme Pasar: </strong>{proto.summary}
+                  </div>
+
+                  {/* 4 Action Steps Grid */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
+                    {proto.actions.map((act, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          padding: '12px 14px',
+                          borderRadius: '6px',
+                          background: 'var(--bg-panel)',
+                          border: 'var(--border-hairline)',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '6px'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontSize: '16px' }}>{act.icon}</span>
+                          <strong style={{ fontSize: '12px', color: 'var(--text-primary)' }}>
+                            {i + 1}. {act.title}
+                          </strong>
+                        </div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+                          {act.desc}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* Riwayat Pencatatan Transaksi Paus (> 100 BTC Watcher Log Table) */}
+          <div className="quant-card" style={{ padding: '0', overflow: 'hidden' }}>
+            <div style={{ padding: '12px 18px', borderBottom: 'var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', background: 'var(--bg-panel-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '14px' }}>📋</span>
+                <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)' }}>
+                  RIWAYAT PENCATATAN PERPINDAHAN PAUS (&ge; {whaleThresholdBtc} BTC)
+                </span>
+                <span style={{ fontSize: '10px', padding: '2px 7px', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+                  {megaWhales.length} TRANSAKSI
+                </span>
+              </div>
+
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                Klik baris transaksi untuk melihat Action Protocol yang sesuai
+              </div>
+            </div>
+
+            <div style={{ overflowX: 'auto' }}>
+              <table className="quant-table">
+                <thead>
+                  <tr style={{ borderBottom: 'var(--border-muted)', background: 'var(--bg-panel)', textAlign: 'left' }}>
+                    <th style={{ padding: '10px 14px', width: '110px' }}>Waktu</th>
+                    <th style={{ padding: '10px', width: '130px', textAlign: 'right' }}>Jumlah Aset</th>
+                    <th style={{ padding: '10px', width: '130px', textAlign: 'right' }}>Nilai USD</th>
+                    <th style={{ padding: '10px', width: '140px', textAlign: 'center' }}>Arah Aliran</th>
+                    <th style={{ padding: '10px', width: '120px', textAlign: 'center' }}>Kategori Paus</th>
+                    <th style={{ padding: '10px' }}>Dari (Pengirim)</th>
+                    <th style={{ padding: '10px' }}>Ke (Penerima)</th>
+                    <th style={{ padding: '10px', minWidth: '220px' }}>Panduan Aksi Trader ("Kita Harus Apa?")</th>
+                    <th style={{ padding: '10px 14px', width: '80px', textAlign: 'center' }}>Explorer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {megaWhales
+                    .filter(w => !search || (w.symbol || '').toLowerCase().includes(search.toLowerCase()) || (w.from_name || '').toLowerCase().includes(search.toLowerCase()) || (w.to_name || '').toLowerCase().includes(search.toLowerCase()))
+                    .map((w, idx) => {
+                      const isBull = w.sentiment === 'BULLISH';
+                      const isBear = w.sentiment === 'BEARISH';
+                      const badgeColor = isBull ? 'var(--accent-green)' : isBear ? 'var(--accent-rust)' : '#60a5fa';
+                      const badgeBg = isBull ? 'rgba(0, 208, 132, 0.12)' : isBear ? 'rgba(239, 68, 68, 0.12)' : 'rgba(59, 130, 246, 0.12)';
+                      const isTitan = (w.symbol === 'BTC' && (w.amount || 0) >= 1000);
+                      const isHumpback = (w.symbol === 'BTC' && (w.amount || 0) >= 500);
+
+                      return (
+                        <tr
+                          key={w.hash || idx}
+                          onClick={() => setSelectedPlaybookTab(w.signal)}
+                          style={{
+                            borderBottom: 'var(--border-hairline)',
+                            background: w.isNew ? 'rgba(56, 189, 248, 0.08)' : 'transparent',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s ease'
+                          }}
+                          title="Klik untuk membuka Action Protocol untuk skenario ini"
+                        >
+                          {/* Waktu */}
+                          <td style={{ padding: '10px 14px', fontFamily: 'var(--font-mono)' }}>
+                            <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              {w.isNew && <span className="pulse-dot-green" />}
+                              <span>{new Date(w.timestamp).toLocaleTimeString('id-ID', { hour12: false })} WIB</span>
+                            </div>
+                            <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                              {new Date(w.timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
+                            </div>
+                          </td>
+
+                          {/* Jumlah */}
+                          <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
+                            <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>
+                              {w.amount?.toLocaleString()} {w.symbol}
+                            </div>
+                          </td>
+
+                          {/* Nilai USD */}
+                          <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
+                            <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-gold)' }}>
+                              ${((w.amount_usd || 0) / 1e6 >= 1) ? `${((w.amount_usd || 0) / 1e6).toFixed(2)}M` : `${((w.amount_usd || 0) / 1e3).toFixed(0)}K`}
+                            </div>
+                          </td>
+
+                          {/* Arah Aliran */}
+                          <td style={{ padding: '10px', textAlign: 'center' }}>
+                            <span style={{
+                              fontSize: '9px',
+                              fontWeight: '800',
+                              padding: '2px 8px',
+                              borderRadius: '4px',
+                              background: badgeBg,
+                              color: badgeColor,
+                              fontFamily: 'var(--font-mono)',
+                              display: 'inline-block'
+                            }}>
+                              {w.signal === 'EXCHANGE_INFLOW' ? '🔴 INFLOW (DUMP RISK)' : w.signal === 'EXCHANGE_OUTFLOW' ? '🟢 OUTFLOW (SUPPLY SHOCK)' : w.signal === 'TREASURY_MINT' ? '💵 MINT (LIQUIDITY)' : '⚪ OTC TRANSFER'}
+                            </span>
+                          </td>
+
+                          {/* Kategori Paus */}
+                          <td style={{ padding: '10px', textAlign: 'center' }}>
+                            <span style={{
+                              fontSize: '9px',
+                              fontWeight: '800',
+                              padding: '2px 6px',
+                              borderRadius: '3px',
+                              background: isTitan ? 'rgba(239, 68, 68, 0.15)' : isHumpback ? 'rgba(234, 179, 8, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                              color: isTitan ? 'var(--accent-rust)' : isHumpback ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                              fontFamily: 'var(--font-mono)'
+                            }}>
+                              {isTitan ? '🐳 TITAN' : isHumpback ? '🌊 HUMPBACK' : '🚨 MEGA WHALE'}
+                            </span>
+                          </td>
+
+                          {/* Dari */}
+                          <td style={{ padding: '10px', fontFamily: 'var(--font-mono)', fontSize: '11px' }}>
+                            <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{w.from_name || 'Cold Wallet'}</div>
+                            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{w.from_address ? `${w.from_address.slice(0, 10)}...` : 'Unknown'}</div>
+                          </td>
+
+                          {/* Ke */}
+                          <td style={{ padding: '10px', fontFamily: 'var(--font-mono)', fontSize: '11px' }}>
+                            <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{w.to_name || 'Destination'}</div>
+                            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{w.to_address ? `${w.to_address.slice(0, 10)}...` : 'Cold Storage'}</div>
+                          </td>
+
+                          {/* Panduan Aksi */}
+                          <td style={{ padding: '10px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+                            <div style={{ fontWeight: '700', color: badgeColor, marginBottom: '2px' }}>
+                              {w.quickAction || 'Wait & See'}
+                            </div>
+                            <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.3 }}>
+                              {w.impact_thesis}
+                            </div>
+                          </td>
+
+                          {/* Explorer */}
+                          <td style={{ padding: '10px 14px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                            {w.explorer_url && (
+                              <a
+                                href={w.explorer_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{
+                                  fontSize: '10px',
+                                  color: 'var(--accent-blue)',
+                                  textDecoration: 'none',
+                                  border: '1px solid var(--accent-blue)',
+                                  padding: '3px 8px',
+                                  borderRadius: '4px',
+                                  fontWeight: '700',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '3px'
+                                }}
+                                title="Lihat transaksi on-chain di explorer"
+                              >
+                                <span>Lihat</span>
+                                <span>↗</span>
+                              </a>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
       )}
 
