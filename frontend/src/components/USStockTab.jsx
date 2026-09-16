@@ -1,0 +1,443 @@
+import React, { useState } from 'react';
+
+export default function USStockTab({ data, onOpenChart }) {
+  const [activeTab, setActiveTab] = useState('screener');
+  const [search, setSearch] = useState('');
+  const [sectorFilter, setSectorFilter] = useState('ALL');
+
+  const usData = data?.us_stocks;
+  if (!usData) {
+    return (
+      <div className="quant-card" style={{ padding: '48px', textAlign: 'center', color: 'var(--text-muted)' }}>
+        <div style={{ fontSize: '48px', marginBottom: '16px' }}>🇺🇸</div>
+        <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--text-primary)' }}>US Equities Data Hub</div>
+        <div style={{ fontSize: '13px', marginTop: '6px' }}>Menghubungkan ke pipeline analitik Wall Street...</div>
+      </div>
+    );
+  }
+
+  const { stocks = [], earnings_calendar = [], sector_performance = {} } = usData;
+  const sectors = ['ALL', ...new Set(stocks.map(s => s.sector))];
+
+  const filteredStocks = stocks.filter(s => 
+    (sectorFilter === 'ALL' || s.sector === sectorFilter) && 
+    (s.ticker.toLowerCase().includes(search.toLowerCase()) || s.name.toLowerCase().includes(search.toLowerCase()))
+  );
+
+  const bestSector = Object.entries(sector_performance).sort((a, b) => b[1] - a[1])[0];
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', boxSizing: 'border-box' }}>
+      {/* Header Cockpit Panel */}
+      <div className="quant-card" style={{ padding: '20px 24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '20px' }}>🇺🇸</span>
+              <h2 style={{ fontSize: '18px', fontWeight: '800', margin: 0, letterSpacing: '0.04em' }}>
+                US STOCK INTELLIGENCE
+              </h2>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 10px', borderRadius: '12px', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', fontSize: '11px', color: '#38bdf8', fontWeight: '700' }}>
+                <span className="pulse-dot-green" />
+                <span>WALL STREET 30 RADAR</span>
+              </div>
+            </div>
+            <p style={{ margin: '6px 0 0 0', color: 'var(--text-secondary)', fontSize: '12px', letterSpacing: '0.01em' }}>
+              Institutional Screener · Earnings Volatility Alert · S&P/Nasdaq Top Setups
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            {bestSector && (
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '6px 14px', borderRadius: '8px', border: 'var(--border-hairline)', textAlign: 'right' }}>
+                <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Leading Sector</div>
+                <div style={{ fontSize: '13px', fontWeight: '700', color: bestSector[1] >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                  {bestSector[0]}: {bestSector[1] > 0 ? '+' : ''}{bestSector[1]}%
+                </div>
+              </div>
+            )}
+            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '6px 14px', borderRadius: '8px', border: 'var(--border-hairline)', textAlign: 'right' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Active Coverage</div>
+              <div style={{ fontSize: '13px', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
+                {stocks.length} EQUITIES
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Sector Performance Grid */}
+      <div>
+        <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.06em' }}>
+          S&P Sector Breadth
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
+          {Object.entries(sector_performance).map(([sec, perf]) => {
+            const isBull = perf >= 0;
+            const isSelected = sectorFilter === sec;
+            return (
+              <div 
+                key={sec} 
+                onClick={() => setSectorFilter(isSelected ? 'ALL' : sec)}
+                className="quant-card-interactive" 
+                style={{ 
+                  padding: '10px 12px', 
+                  cursor: 'pointer',
+                  borderColor: isSelected ? 'var(--accent-blue)' : undefined,
+                  background: isSelected 
+                    ? 'rgba(56, 189, 248, 0.08)' 
+                    : isBull ? 'rgba(34, 197, 94, 0.03)' : 'rgba(239, 68, 68, 0.03)'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', color: isSelected ? 'var(--accent-blue)' : 'var(--text-secondary)' }}>
+                    {sec}
+                  </span>
+                  <span style={{ fontSize: '8px', opacity: 0.7 }}>{isBull ? '▲' : '▼'}</span>
+                </div>
+                <div style={{ fontSize: '15px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: isBull ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                  {isBull ? '+' : ''}{perf}%
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Segmented Pill Navigation */}
+      <div className="quant-pill-nav">
+        <button 
+          onClick={() => setActiveTab('screener')} 
+          className={`quant-pill-btn ${activeTab === 'screener' ? 'active' : ''}`}
+        >
+          📊 SCREENER ({filteredStocks.length})
+        </button>
+        <button 
+          onClick={() => setActiveTab('earnings')} 
+          className={`quant-pill-btn ${activeTab === 'earnings' ? 'active' : ''}`}
+        >
+          📅 EARNINGS CALENDAR ({earnings_calendar.length})
+        </button>
+        <button 
+          onClick={() => setActiveTab('plans')} 
+          className={`quant-pill-btn ${activeTab === 'plans' ? 'active' : ''}`}
+        >
+          🎯 TOP 5 INSTITUTIONAL PLANS
+        </button>
+      </div>
+
+      {/* Tab Contents */}
+      {activeTab === 'screener' && (
+        <div className="quant-card" style={{ padding: '0', overflow: 'hidden' }}>
+          <div style={{ padding: '12px 16px', borderBottom: 'var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>SECTOR:</span>
+              <select 
+                value={sectorFilter} 
+                onChange={e => setSectorFilter(e.target.value)} 
+                className="quant-input"
+                style={{ padding: '5px 10px', fontSize: '12px' }}
+              >
+                {sectors.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <input 
+                type="text" 
+                placeholder="Search US ticker or company..." 
+                value={search} 
+                onChange={(e) => setSearch(e.target.value)} 
+                className="quant-input"
+                style={{ width: '220px', padding: '6px 12px', fontSize: '12px' }} 
+              />
+              {search && (
+                <button 
+                  onClick={() => setSearch('')} 
+                  style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '12px' }}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div style={{ overflowX: 'auto' }}>
+            <table className="quant-table">
+              <thead>
+                <tr>
+                  <th>TICKER</th>
+                  <th>COMPANY NAME</th>
+                  <th>SECTOR</th>
+                  <th style={{ textAlign: 'right' }}>PRICE</th>
+                  <th style={{ textAlign: 'right' }}>CHG %</th>
+                  <th style={{ textAlign: 'right' }}>MKT CAP</th>
+                  <th style={{ textAlign: 'right' }}>P/E</th>
+                  <th style={{ textAlign: 'right' }}>RSI (14)</th>
+                  <th style={{ textAlign: 'center' }}>QUANT SETUP</th>
+                  <th style={{ textAlign: 'center' }}>ACTION</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredStocks.map((s, idx) => {
+                  const isPositive = s.change_pct >= 0;
+                  const rsiColor = s.rsi_14 < 30 ? 'var(--accent-green)' : s.rsi_14 > 70 ? 'var(--accent-rust)' : 'var(--text-primary)';
+                  const rsiBg = s.rsi_14 < 30 ? 'rgba(34, 197, 94, 0.1)' : s.rsi_14 > 70 ? 'rgba(239, 68, 68, 0.1)' : 'transparent';
+                  
+                  return (
+                    <tr key={idx}>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
+                            {s.ticker}
+                          </span>
+                        </div>
+                      </td>
+                      <td style={{ color: 'var(--text-secondary)' }}>{s.name}</td>
+                      <td>
+                        <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>
+                          {s.sector}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
+                        ${Number(s.price).toFixed(2)}
+                      </td>
+                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: isPositive ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                        {isPositive ? '+' : ''}{s.change_pct}%
+                      </td>
+                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+                        {(s.market_cap / 1e9).toFixed(1)}B
+                      </td>
+                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+                        {s.pe_ratio || 'N/A'}
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <span style={{ 
+                          fontFamily: 'var(--font-mono)', 
+                          fontWeight: '700', 
+                          color: rsiColor,
+                          background: rsiBg,
+                          padding: '2px 6px',
+                          borderRadius: '4px'
+                        }}>
+                          {s.rsi_14}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span style={{ 
+                          fontSize: '11px', 
+                          fontWeight: '700', 
+                          padding: '3px 8px', 
+                          borderRadius: '4px', 
+                          background: s.setup_type.includes('BULL') || s.setup_type.includes('BREAKOUT') ? 'rgba(34, 197, 94, 0.1)' : 'rgba(56, 189, 248, 0.1)',
+                          color: s.setup_type.includes('BULL') || s.setup_type.includes('BREAKOUT') ? 'var(--accent-green)' : 'var(--accent-blue)',
+                          border: `1px solid ${s.setup_type.includes('BULL') || s.setup_type.includes('BREAKOUT') ? 'rgba(34, 197, 94, 0.2)' : 'rgba(56, 189, 248, 0.2)'}`
+                        }}>
+                          {s.setup_type}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <button 
+                          onClick={() => onOpenChart(`NASDAQ:${s.ticker}`)}
+                          style={{
+                            padding: '4px 10px',
+                            background: 'rgba(56, 189, 248, 0.1)',
+                            border: '1px solid rgba(56, 189, 248, 0.25)',
+                            borderRadius: '4px',
+                            color: '#38bdf8',
+                            fontSize: '11px',
+                            fontWeight: '700',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          CHART ↗
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'earnings' && (
+        <div className="quant-card" style={{ padding: '0', overflow: 'hidden' }}>
+          <div style={{ padding: '14px 16px', borderBottom: 'var(--border-hairline)', background: 'rgba(255,255,255,0.02)' }}>
+            <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+              ⚡ <strong>Earnings Volatility Protocol:</strong> Hindari posisi baru &lt; 3 hari sebelum rilis earning untuk mitigasi gap risk.
+            </span>
+          </div>
+
+          <div style={{ overflowX: 'auto' }}>
+            <table className="quant-table">
+              <thead>
+                <tr>
+                  <th>TICKER</th>
+                  <th>COMPANY NAME</th>
+                  <th style={{ textAlign: 'center' }}>REPORT DATE</th>
+                  <th style={{ textAlign: 'center' }}>COUNTDOWN</th>
+                  <th style={{ textAlign: 'center' }}>VOLATILITY STATUS</th>
+                  <th style={{ textAlign: 'center' }}>ACTION</th>
+                </tr>
+              </thead>
+              <tbody>
+                {earnings_calendar.map((e, idx) => {
+                  let badge = (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 8px', borderRadius: '4px', background: 'rgba(34, 197, 94, 0.1)', color: 'var(--accent-green)', fontSize: '11px', fontWeight: '700' }}>
+                      <span className="pulse-dot-green" /> SAFE TO TRADE
+                    </span>
+                  );
+                  if (e.days_until <= 3) {
+                    badge = (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 8px', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.15)', color: 'var(--accent-rust)', fontSize: '11px', fontWeight: '700', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+                        <span className="pulse-dot-red" /> 🔴 AVOID TRADING (HIGH RISK)
+                      </span>
+                    );
+                  } else if (e.days_until <= 7) {
+                    badge = (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 8px', borderRadius: '4px', background: 'rgba(234, 179, 8, 0.15)', color: 'var(--accent-gold)', fontSize: '11px', fontWeight: '700' }}>
+                        <span className="pulse-dot-amber" /> 🟡 CAUTION (APPROACHING)
+                      </span>
+                    );
+                  }
+
+                  return (
+                    <tr key={idx}>
+                      <td style={{ fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
+                        {e.ticker}
+                      </td>
+                      <td style={{ color: 'var(--text-secondary)' }}>{e.name}</td>
+                      <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontWeight: '600' }}>
+                        {e.earnings_date}
+                      </td>
+                      <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontWeight: '700', color: e.days_until <= 3 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
+                        {e.days_until} DAYS
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        {badge}
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <button 
+                          onClick={() => onOpenChart(`NASDAQ:${e.ticker}`)}
+                          style={{
+                            padding: '4px 10px',
+                            background: 'rgba(255,255,255,0.05)',
+                            border: '1px solid var(--border-hairline)',
+                            borderRadius: '4px',
+                            color: 'var(--text-primary)',
+                            fontSize: '11px',
+                            fontWeight: '600',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          CHART ↗
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'plans' && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+          {stocks.slice(0, 5).map((s, idx) => (
+            <div key={idx} className="quant-card-interactive" style={{ padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '18px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
+                        {s.ticker}
+                      </span>
+                      <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)' }}>
+                        {s.sector}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                      {s.name}
+                    </div>
+                  </div>
+                  <span style={{ 
+                    fontSize: '10px', 
+                    fontWeight: '800', 
+                    padding: '3px 8px', 
+                    borderRadius: '6px', 
+                    background: 'rgba(56, 189, 248, 0.1)', 
+                    color: '#38bdf8',
+                    border: '1px solid rgba(56, 189, 248, 0.25)' 
+                  }}>
+                    {s.setup_type}
+                  </span>
+                </div>
+
+                <div style={{ 
+                  margin: '16px 0', 
+                  display: 'grid', 
+                  gridTemplateColumns: '1fr 1fr', 
+                  gap: '10px',
+                  background: 'rgba(0,0,0,0.25)', 
+                  padding: '12px', 
+                  borderRadius: '8px', 
+                  border: '1px solid rgba(255,255,255,0.04)' 
+                }}>
+                  <div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>ENTRY ZONE</div>
+                    <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
+                      ${s.entry_price}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>RISK / REWARD</div>
+                    <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)' }}>
+                      1 : {s.risk_reward_ratio}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>STOP LOSS</div>
+                    <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>
+                      ${s.stop_loss}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>TARGET (TP1)</div>
+                    <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
+                      ${s.take_profit_1}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => onOpenChart(`NASDAQ:${s.ticker}`)} 
+                style={{ 
+                  width: '100%', 
+                  padding: '10px', 
+                  background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(56, 189, 248, 0.05))', 
+                  border: '1px solid rgba(56, 189, 248, 0.3)', 
+                  borderRadius: '6px', 
+                  color: '#38bdf8', 
+                  fontWeight: '700', 
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                <span>OPEN TRADINGVIEW DESK</span>
+                <span>↗</span>
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

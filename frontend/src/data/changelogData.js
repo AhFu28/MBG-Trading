@@ -1,49 +1,51 @@
-/**
- * MBG APEX Quant Terminal - Changelog & Release History Dataset
- * Daily package model: each package recaps all updates pushed on that specific day.
- * 
- * 1. Package 16092026 (16 September 2026) - LATEST / ACTIVE HARI INI
- * 2. Package 12092026 (12 September 2026) - STABLE
- * 3. Package 11092026 (11 September 2026) - STABLE
- * 4. Package 10092026 (10 September 2026) - STABLE
- * 5. Initial Launch Package (08 - 09 September 2026) - CONSOLIDATED BASELINE
- */
+// Master Changelog Data Registry (Official Documentation & Release History)
 
 export const CHANGELOG_DATA = [
   {
-    id: 'pkg-16092026',
+    id: 'pkg-16092026-v3',
     version: 'Package 16092026',
-    semanticVersion: 'v2.4.0',
+    semanticVersion: 'v3.0.0',
     date: '16 September 2026',
     status: 'LATEST',
     statusColor: 'var(--accent-green)',
     badgeLabel: 'LATEST / ACTIVE HARI INI',
-    title: 'Update Package 16092026: Intraday 30-Min Sync, Auto 1D Chart Timeframe, 2-Column News Cockpit & Markdown Changelog',
-    description: 'Rekapitulasi pembaruan lengkap 16 September 2026: Sinkronisasi intraday 30 menit & multi-tier foreign flow, auto-timeframe 1D untuk saham IDX, layout full-width 2-kolom NewsTab, NewsDetailModal interaktif, Bull-Bear Debate Engine, serta format dokumen Markdown Changelog.',
+    title: 'Update Package 16092026 (v3.0 APEX): Whale Intelligence Hub, Running Trade BEI, Crypto Futures, Forex & Intraday Sync',
+    description: 'Rilis akbar v3.0 menghadirkan integrasi holistik: Pelacakan Paus Kripto On-Chain (0s delay Mempool WS), Broker Summary & Portofolio Tracker BEI (Stockbit Style), Live Running Trade BEI, Dashboard Crypto Futures, Forex Command Center 28-Pair, US Stock Intelligence, Kalender Makro 40+ Event, CryptoWave Live News, NewsDetailModal, dan sinkronisasi intraday 30 menit.',
     processFlow: [
       { step: '1. Baseline Core', label: 'Quant & Plans (08-09/09)' },
       { step: '2. Telegram & Desk', label: 'Serverless Edge (10/09)' },
-      { step: '3. Cockpit V2', label: 'SoSoValue Layout (11/09)' },
-      { step: '4. Intraday & News', label: 'Aktif Hari Ini (16/09)' }
+      { step: '3. Cockpit V2', label: 'SoSoValue Layout (11-12/09)' },
+      { step: '4. APEX v3.0', label: 'Whale, Futures & Forex (16/09)' }
     ],
     markdownContent: `
-### 🚀 Pembaruan Utama (Highlights 16/09)
-- **Auto 1D Timeframe & Smart Adaptive Selector:** TradingView Chart Modal dan Charting Desk kini otomatis menyetel timeframe ke \`1D\` (Harian) khusus saham IDX, menghindari jeda intraday acak dan menyesuaikan preset indikator secara cerdas.
-- **Intraday 30-Min Market Sync & Multi-Tier Foreign Flow:** Pipeline otomatisasi baru (\`intraday_idx_refresh.yml\`) memperbarui data pasar dan akumulasi asing setiap 30 menit selama jam bursa IDX dengan fetcher multi-tier yang tahan kegagalan (*fault-tolerant*).
-- **Full-Width 2-Column News Cockpit Layout:** Optimalisasi tampilan Live News menjadi layout cockpit 2-kolom layar penuh, menghilangkan whitespace berlebih dan memaksimalkan keterbacaan feed berita real-time.
-- **Interactive NewsDetailModal:** Modal pop-up detail berita saat kartu diklik, menyajikan narasi komprehensif, sentimen pasar (*BULLISH/BEARISH/NEUTRAL*), dan 3 poin kunci (*Key Takeaways*) Stockbit Snips.
-- **Bull-Bear AI Debate Engine:** Engine sintesis sentimen multi-agen yang menguji ketahanan tesis trading dengan memperdebatkan argumen Bullish vs Bearish pada saham unggulan.
-- **Auth Hardening & Cloudflare Deployment:** Pengamanan autentikasi login (default: \`mbg\`), eliminasi celah runtime, dan verifikasi deployment edge Cloudflare Pages Functions.
-- **Simplified Markdown Changelog:** Antarmuka riwayat rilis baru berformat dokumen Markdown bersih, diagram alur proses, dan tabel rekapitulasi status modul.
+### 🚀 Pembaruan Akbar v3.0 (Highlights 16/09)
+- **Whale Intelligence Hub & Real-time Mempool WS:** Pelacakan paus on-chain Bitcoin & Ethereum real-time tanpa delay via WebSocket \`wss://mempool.space/api/v1/ws\` (100% gratis, tanpa API key) dengan deteksi Exchange Inflow/Outflow, verifikasi hash transaksi langsung ke Blockchain Explorer, dan analisis dampak likuiditas.
+- **Running Trade Live Saham BEI (Stockbit Style):** Streaming tick transaksi pasar modal Indonesia real-time dengan aksi BUY (Haka)/SELL (Haki), filter lot cerdas (Whale ≥500 lot, Mega Whale ≥1.000 lot), identifikasi broker Buyer & Seller (Asing/Domestik), dan kontrol Pause/Resume.
+- **Radar Asing & Portofolio Broker Tracker:** Rekapitulasi lengkap 18+ broker anggota bursa (AK, BK, CS, KZ, RX, CC, NI, YP, PD, SQ, dll.) dengan filter rentang waktu (1D EOD, 3D, 1W, 1M MTD), perhitungan harga beli rata-rata (*Avg Buy*), harga jual rata-rata (*Avg Sell*), net lot pegang barang, dan harga rata-rata akumulasi (*Avg Hold*).
+- **Wall Street 13F Hedge Fund Desk:** Pemantauan portofolio institusi global tier-1 (Berkshire Hathaway / Warren Buffett, Citadel / Ken Griffin, Bridgewater / Ray Dalio, Renaissance Technologies / Jim Simons Desk) dengan rincian saham, nilai pasar USD, bobot portofolio (% AUM), dan estimasi avg cost.
+- **Crypto Futures Intelligence:** Dashboard komprehensif 15 pair futures dari Binance: Funding Rate heatmap (sinyal overleveraged/squeeze), Open Interest vs Price divergence, rasio Long/Short global, dan radar likuidasi 24 jam.
+- **Forex Command Center:** Pemindai 28 pair mata uang via TradingView Scanner, kalkulator risiko pip interaktif (USD & IDR), jam sesi pasar global (Sydney/Tokyo/London/New York), dan laporan CFTC Commitment of Traders (COT).
+- **US Stock Intelligence:** Pemindai 30 emiten terpopuler AS (AAPL, NVDA, MSFT, TSLA, GOOGL, dll.) dengan heatmap performa sektor, setup top 5 trade plans, dan kalender earnings dengan countdown zona bahaya.
+- **Kalender Makro Global 40+ Event:** Jadwal rilis kebijakan moneter lengkap (US, ID, EU, GB, JP, CN, AU, OPEC+) dengan filter multi-negara, klasifikasi dampak (Tinggi/Sedang/Rendah), status rilis, dan kartu edukasi analisis dampak ke instrumen Forex, Saham, Emas, dan Kripto.
+- **CryptoWave Live News & Interactive NewsDetailModal:** Scraper berita terkini dari CryptoWave Indonesia terintegrasi dengan modal detail interaktif dan 3 Key Takeaways Stockbit Snips.
+- **Otomasi EOD BEI & Intraday 30-Min Sync:** Workflow otomatisasi GitHub Actions penarikan data resmi Broker Summary EOD pukul **18:15 WIB** pasca tutup pasar dan refresh intraday setiap 30 menit.
+- **Auto 1D Timeframe Charting:** TradingView Chart Modal dan Institutional Charting Desk otomatis menyetel interval ke \`1D\` untuk saham IDX dan mengenali prefix pasar \`FX:\`, \`NASDAQ:\`, \`BINANCE:\`, dan \`IDX:\`.
     `.trim(),
     table: [
+      { module: 'Whale Hub & Mempool WS', status: 'PROD', category: 'Intelligence', summary: 'On-chain stream real-time 0s delay + verifikasi explorer tx' },
+      { module: 'Running Trade BEI', status: 'PROD', category: 'Trading Desk', summary: 'Stockbit style streaming trade + filter lot whale & kode broker' },
+      { module: 'Broker Summary & Portfolio', status: 'PROD', category: 'Bandarmology', summary: 'Rekap semua broker + avg buy/sell price + net lot holding' },
+      { module: 'Wall Street 13F Desk', status: 'PROD', category: 'Institutional', summary: 'Breakdown portofolio Berkshire, Citadel, Bridgewater, Simons' },
+      { module: 'Crypto Futures Hub', status: 'PROD', category: 'Futures', summary: 'Funding rate 15 pairs + Open Interest + Liquidation radar' },
+      { module: 'Forex Command Center', status: 'PROD', category: 'Forex', summary: '28-pair scanner + Pip calculator + CFTC COT positioning' },
+      { module: 'US Stock Screener', status: 'PROD', category: 'US Equities', summary: '30 top US stocks + Earnings calendar + Sector heatmap' },
+      { module: 'Kalender Makro 40+ Event', status: 'PROD', category: 'Macro', summary: '40+ event US, ID, EU, GB, JP, CN + multi-filter negara & impact' },
+      { module: 'CryptoWave News', status: 'PROD', category: 'News', summary: 'Scraper live news CryptoWave + NewsDetailModal + Stockbit takeaways' },
+      { module: 'EOD Automation (18:15 WIB)', status: 'PROD', category: 'Cron / Workflow', summary: 'Penarikan data harian resmi EOD BEI otomatis pasca jam 18:00' },
       { module: 'Chart Timeframe 1D', status: 'PROD', category: 'Charting', summary: 'Auto-set interval 1D untuk saham IDX + adaptive market selector' },
       { module: 'Intraday 30-Min Sync', status: 'PROD', category: 'Engine / Cron', summary: 'Pipeline update 30 menit bursa IDX + multi-tier foreign flow' },
-      { module: 'News Cockpit 2-Col', status: 'PROD', category: 'UI / News', summary: 'Layout full-width 2-kolom responsif untuk live market feed' },
       { module: 'NewsDetailModal', status: 'PROD', category: 'UI / News', summary: 'Modal pop-up detail berita + 3 Key Takeaways Stockbit Snips' },
-      { module: 'Bull-Bear Debate', status: 'PROD', category: 'AI / Quant', summary: 'Sintesis multi-agen analisa risiko sentimen saham IDX' },
-      { module: 'Auth & CF Pages', status: 'PROD', category: 'Security', summary: 'Hardening Cloudflare Pages edge runtime & auto-auth gate' },
-      { module: 'Markdown Changelog', status: 'PROD', category: 'System', summary: 'Format dokumen Markdown bersih + diagram alur proses' }
+      { module: 'Bull-Bear Debate', status: 'PROD', category: 'AI / Quant', summary: 'Sintesis multi-agen analisa risiko sentimen saham IDX' }
     ]
   },
   {
@@ -81,12 +83,11 @@ export const CHANGELOG_DATA = [
     status: 'STABLE',
     statusColor: '#38bdf8',
     badgeLabel: 'STABLE',
-    title: 'Update Package 11092026: SoSoValue Research Desk, Dual-Stream News Wire, Spot ETF Telemetry & Cockpit V2',
-    description: 'Rekapitulasi pembaruan 11 September 2026: Tata letak Home Cockpit 2-kolom SoSoValue (72% Cockpit + 28% Live News), continuous running ticker tape, telemetri Spot ETF BTC/ETH, Active Windowing dividen, dan technical indicators suite.',
+    title: 'Update Package 11092026: SoSoValue Research Desk, Dual-Stream News Wire, Spot ETF Telemetry & Layout Cockpit V2',
+    description: 'Pembaruan ekstensif menghadirkan tata letak Home Cockpit 2-kolom SoSoValue (72% Cockpit + 28% Live News) dengan zero horizontal scroll, running ticker tape tanpa jeda, telemetri ETF Spot BTC/ETH, Active Windowing dividen, dan dukungan multi-aset kripto di Charting Desk.',
     processFlow: [
       { step: '1. Baseline Core', label: 'Quant & Plans' },
-      { step: '2. Telegram & Desk', label: 'Serverless Edge' },
-      { step: '3. Cockpit V2 & ETF', label: 'SoSoValue Layout (11/09)' }
+      { step: '2. Cockpit V2', label: 'SoSoValue Layout (11/09)' }
     ],
     markdownContent: `
 ### 🚀 Pembaruan Utama (Highlights 11/09)

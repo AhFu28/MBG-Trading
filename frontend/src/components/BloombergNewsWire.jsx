@@ -1,27 +1,37 @@
 import React, { useState, useEffect } from 'react';
 
-export default function BloombergNewsWire({ macro, bundle, onSelectTicker, onSelectNews }) {
+export default function BloombergNewsWire({ macro, bundle, livePrices = {}, onSelectTicker, onSelectNews }) {
   if (!macro) return null;
 
   const affectedStocks = macro.idx_affected_stocks || [];
   const goldChange = Number(macro.gold_change_pct || 0);
   const oilChange = Number(macro.brent_oil_change_pct || 0);
   const dxyChange = Number(macro.dxy_change_pct || 0);
-  const ihsgVal = macro.ihsg_price || macro.jkse_price ? Number(macro.ihsg_price || macro.jkse_price).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '6,506.40';
-  const ihsgChange = macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29;
+  
+  // Real-time IHSG from livePrices or macro fallback
+  const ihsgLive = livePrices['IHSG'] || livePrices['.JKSE'] || livePrices['IDX:COMPOSITE'];
+  const ihsgPriceVal = ihsgLive?.price !== undefined ? ihsgLive.price : (macro.ihsg_price || macro.jkse_price || 6484.1);
+  const ihsgVal = Number(ihsgPriceVal).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const ihsgChange = ihsgLive?.changePct !== undefined ? Number(ihsgLive.changePct) : (macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : 0.36);
   const isIhsgUp = ihsgChange >= 0;
   
-  // Try to get crypto prices from bundle
+  // Real-time Crypto from livePrices (WebSocket)
+  const btcLive = livePrices['BTCUSDT'] || livePrices['BTC/USDT'] || livePrices['BTC'];
+  const ethLive = livePrices['ETHUSDT'] || livePrices['ETH/USDT'] || livePrices['ETH'];
   const btcData = bundle?.crypto_spot_10?.find(c => c.pair === 'BTC/USDT' || c.pair === 'BTC');
   const ethData = bundle?.crypto_spot_10?.find(c => c.pair === 'ETH/USDT' || c.pair === 'ETH');
   
-  const btcPrice = btcData?.current_price ? `$${Number(btcData.current_price).toLocaleString()}` : '$77,168 [DEMO]';
-  const btcChg = btcData?.change_24h_pct !== undefined ? `${btcData.change_24h_pct >= 0 ? '+' : ''}${btcData.change_24h_pct}%` : '+0.78%';
-  const btcIsUp = btcData?.change_24h_pct !== undefined ? btcData.change_24h_pct >= 0 : true;
+  const btcPriceNum = btcLive?.price !== undefined ? btcLive.price : (btcData?.current_price || 75942);
+  const btcPrice = `$${Number(btcPriceNum).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const btcChgNum = btcLive?.changePct !== undefined ? btcLive.changePct : (btcData?.change_24h_pct !== undefined ? btcData.change_24h_pct : -2.21);
+  const btcChg = `${btcChgNum >= 0 ? '+' : ''}${btcChgNum.toFixed(2)}%`;
+  const btcIsUp = btcChgNum >= 0;
 
-  const ethPrice = ethData?.current_price ? `$${Number(ethData.current_price).toLocaleString()}` : '$2,463 [DEMO]';
-  const ethChg = ethData?.change_24h_pct !== undefined ? `${ethData.change_24h_pct >= 0 ? '+' : ''}${ethData.change_24h_pct}%` : '+1.04%';
-  const ethIsUp = ethData?.change_24h_pct !== undefined ? ethData.change_24h_pct >= 0 : true;
+  const ethPriceNum = ethLive?.price !== undefined ? ethLive.price : (ethData?.current_price || 2406);
+  const ethPrice = `$${Number(ethPriceNum).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const ethChgNum = ethLive?.changePct !== undefined ? ethLive.changePct : (ethData?.change_24h_pct !== undefined ? ethData.change_24h_pct : -3.67);
+  const ethChg = `${ethChgNum >= 0 ? '+' : ''}${ethChgNum.toFixed(2)}%`;
+  const ethIsUp = ethChgNum >= 0;
 
   // Multi-headline support
   const headlines = Array.isArray(macro.headlines) && macro.headlines.length > 0 
@@ -41,10 +51,10 @@ export default function BloombergNewsWire({ macro, bundle, onSelectTicker, onSel
   const [isExpanded, setIsExpanded] = useState(false);
   
   const tickerItems = [
-    { label: 'XAU/USD', val: `$${macro.gold_price || '4,374.4'}`, chg: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isUp: goldChange >= 0 },
-    { label: 'BRENT', val: `$${macro.brent_oil_price || '107.0'}`, chg: `${oilChange >= 0 ? '+' : ''}${oilChange}%`, isUp: oilChange >= 0 },
-    { label: 'DXY', val: `${macro.dxy_index || '99.08'}`, chg: `${dxyChange >= 0 ? '+' : ''}${dxyChange}%`, isUp: dxyChange >= 0 },
-    { label: 'US10Y', val: `${macro.us10y_yield || '4.94'}%`, chg: '+2 bp', isUp: true },
+    { label: 'XAU/USD', val: `$${macro.gold_price || '4,368.5'}`, chg: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isUp: goldChange >= 0 },
+    { label: 'BRENT', val: `$${macro.brent_oil_price || '108.01'}`, chg: `${oilChange >= 0 ? '+' : ''}${oilChange}%`, isUp: oilChange >= 0 },
+    { label: 'DXY', val: `${macro.dxy_index || '99.61'}`, chg: `${dxyChange >= 0 ? '+' : ''}${dxyChange}%`, isUp: dxyChange >= 0 },
+    { label: 'US10Y', val: `${macro.us10y_yield || '5.00'}%`, chg: '+0.01%', isUp: true },
     { label: 'IHSG', val: ihsgVal, chg: `${ihsgChange >= 0 ? '+' : ''}${ihsgChange}%`, isUp: isIhsgUp },
     { label: 'BTC/USD', val: btcPrice, chg: btcChg, isUp: btcIsUp },
     { label: 'ETH/USD', val: ethPrice, chg: ethChg, isUp: ethIsUp }

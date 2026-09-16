@@ -28,10 +28,28 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
 
   // Format symbol for TradingView
   const getTvSymbol = (sym, mkt) => {
-    const clean = sym.replace('.JK', '').replace('/', '').toUpperCase();
-    if (mkt === 'CRYPTO' || clean.endsWith('USDT')) {
-      return `BINANCE:${clean}`;
+    if (!sym) return 'IDX:BBCA';
+    const s = sym.trim();
+    if (s.includes(':')) return s;
+    const clean = s.replace('.JK', '').replace('/', '').toUpperCase();
+    
+    // Check forex
+    const FOREX_CURRENCIES = ['EUR', 'USD', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'NZD'];
+    const isForex = mkt === 'FOREX' || (clean.length === 6 && FOREX_CURRENCIES.some(c => clean.startsWith(c)) && FOREX_CURRENCIES.some(c => clean.endsWith(c)));
+    if (isForex) return `FX:${clean}`;
+
+    // Check Crypto
+    if (mkt === 'CRYPTO' || clean.endsWith('USDT') || clean.startsWith('BTC') || clean.startsWith('ETH') || clean.startsWith('SOL')) {
+      const pair = clean.endsWith('USDT') ? clean : `${clean}USDT`;
+      return `BINANCE:${pair}`;
     }
+
+    // Check US Equities
+    const US_TOP = ['AAPL', 'NVDA', 'MSFT', 'META', 'GOOGL', 'GOOG', 'AMZN', 'TSLA', 'AMD', 'PLTR', 'SMCI', 'AVGO', 'CRM', 'NFLX', 'COIN', 'SOFI', 'JPM', 'GS', 'V', 'MA', 'UNH', 'JNJ', 'PFE', 'LLY', 'XOM', 'CVX', 'BA', 'GE', 'CAT', 'MU', 'INTC', 'ARM'];
+    if (mkt === 'US_STOCKS' || mkt === 'US_EQUITY' || US_TOP.includes(clean)) {
+      return `NASDAQ:${clean}`;
+    }
+
     return `IDX:${clean}`;
   };
 

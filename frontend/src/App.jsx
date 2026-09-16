@@ -4,12 +4,17 @@ import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
 import HomeDashboardTab from './components/HomeDashboardTab.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import GlobalMarketTicker from './components/GlobalMarketTicker.jsx';
+import { useLivePrices } from './hooks/useLivePrices.js';
 
 // Code Splitting for heavy secondary modules
 const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'));
 const LotCalculatorModal = lazy(() => import('./components/LotCalculatorModal.jsx'));
 const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
 const ChartingDeskTab = lazy(() => import('./components/ChartingDeskTab.jsx'));
+const WhaleIntelligenceTab = lazy(() => import('./components/WhaleIntelligenceTab.jsx'));
+const CryptoFuturesTab = lazy(() => import('./components/CryptoFuturesTab.jsx'));
+const ForexCommandTab = lazy(() => import('./components/ForexCommandTab.jsx'));
+const USStockTab = lazy(() => import('./components/USStockTab.jsx'));
 const NewsDetailModal = lazy(() => import('./components/NewsDetailModal.jsx'));
 
 const jakartaTimeFormatter = new Intl.DateTimeFormat('id-ID', {
@@ -55,6 +60,9 @@ function HeaderClock() {
 export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Unified Real-time Live Price Engine (Binance WebSocket + TradingView Scanners)
+  const { livePrices, flashMap, allIdxStocks, allCryptoSpot, isWsConnected, lastUpdateTime, refetchAll } = useLivePrices(data);
 
   // Native hash routing
   const getTabFromHash = () => {
@@ -225,6 +233,10 @@ export default function App() {
       case 'PEARSON_CORRELATION': return '🔗 Korelasi Pearson';
       case 'NEWS': return '📰 Terminal Live News';
       case 'ACADEMY': return '🎓 Quant Academy';
+      case 'WHALES': return '🐋 Whale Intelligence Hub';
+      case 'FUTURES': return '🔥 Crypto Futures Intelligence';
+      case 'FOREX': return '💱 Forex Command Center';
+      case 'US_STOCKS': return '🇺🇸 US Stock Intelligence';
       case 'CHANGELOG': return '📜 Changelog Update & Catatan Rilis';
       default: return 'Institutional Desk';
     }
@@ -261,9 +273,12 @@ export default function App() {
           setActiveTab={setActiveTab}
           isMobileOpen={isMobileOpen}
           setMobileOpen={setMobileOpen}
-          stockCount={(data?.daily_trade_plans || []).filter(p => p.market === 'IDX').length}
-          cryptoCount={(data?.crypto_spot_10 || []).length}
+          stockCount={allIdxStocks.length > 0 ? allIdxStocks.length : 849}
+          cryptoCount={allCryptoSpot.length > 0 ? allCryptoSpot.length : 744}
           newsCount={(data?.macro_telemetry?.live_news || []).length}
+          livePrices={livePrices}
+          flashMap={flashMap}
+          onSelectTicker={handleOpenChart}
         />
 
         {/* ===== MAIN CONTENT AREA ===== */}
@@ -316,7 +331,10 @@ export default function App() {
 
               {/* Sync Trigger Button */}
               <button
-                onClick={() => setSyncTrigger(prev => prev + 1)}
+                onClick={() => {
+                  setSyncTrigger(prev => prev + 1);
+                  refetchAll();
+                }}
                 className="telemetry-btn"
                 style={{
                   background: 'var(--bg-panel-subtle)',
@@ -335,14 +353,14 @@ export default function App() {
                 <span>SYNC</span>
               </button>
 
-              {/* Sync Status Badge */}
+              {/* Sync & Live Stream Status Badge */}
               <div 
                 style={{ 
                   fontSize: '10px', 
                   padding: '5px 8px', 
                   borderRadius: 'var(--radius-xs)', 
                   background: 'var(--bg-panel-subtle)', 
-                  color: 'var(--accent-green)', 
+                  color: isWsConnected ? 'var(--accent-green)' : 'var(--accent-gold)', 
                   fontFamily: 'var(--font-mono)',
                   fontWeight: '700',
                   display: 'flex',
@@ -350,10 +368,10 @@ export default function App() {
                   gap: '5px',
                   border: 'var(--border-hairline)'
                 }}
-                title={data?.last_updated ? `Snapshot Pipeline: ${parseSafeDate(data.last_updated)?.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB` : 'Live Telemetry'}
+                title={lastUpdateTime ? `Last Tick: ${lastUpdateTime.toLocaleTimeString('id-ID')} WIB` : 'Live Stream'}
               >
-                <span>🟢</span>
-                <span>SYNCED</span>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: isWsConnected ? 'var(--accent-green)' : 'var(--accent-gold)', boxShadow: isWsConnected ? '0 0 5px var(--accent-green)' : 'none' }} />
+                <span>{isWsConnected ? 'STREAM 1S LIVE' : 'SYNCED'}</span>
               </div>
 
               {/* Live Real-time Clock */}
@@ -372,6 +390,8 @@ export default function App() {
               /* HOME COMMAND CENTER (Wire + Bento + Foreign Flow + Konglo + Top 5 Alpha) */
               <HomeDashboardTab
                 data={data}
+                livePrices={livePrices}
+                flashMap={flashMap}
                 onSelectTicker={handleOpenChart}
                 onOpenLotCalc={handleOpenLotCalc}
                 onNavigateTab={setActiveTab}
@@ -382,6 +402,8 @@ export default function App() {
               <main>
                 <ChartingDeskTab
                   data={data}
+                  livePrices={livePrices}
+                  flashMap={flashMap}
                   onOpenLotCalc={handleOpenLotCalc}
                   initialSymbol={chartModal.symbol || 'BBCA'}
                 />
@@ -391,12 +413,40 @@ export default function App() {
               <main>
                 <ChangelogTab />
               </main>
+            ) : activeTab === 'WHALES' ? (
+              /* v3.0 WHALE INTELLIGENCE HUB */
+              <main>
+                <WhaleIntelligenceTab data={data} onOpenChart={handleOpenChart} livePrices={livePrices} />
+              </main>
+            ) : activeTab === 'FUTURES' ? (
+              /* v3.0 CRYPTO FUTURES INTELLIGENCE + DEXSCREENER */
+              <main>
+                <CryptoFuturesTab 
+                  data={data} 
+                  onOpenChart={handleOpenChart} 
+                  livePrices={livePrices} 
+                  flashMap={flashMap}
+                  allCryptoSpot={allCryptoSpot}
+                />
+              </main>
+            ) : activeTab === 'FOREX' ? (
+              /* v3.0 FOREX COMMAND CENTER */
+              <main>
+                <ForexCommandTab data={data} onOpenChart={handleOpenChart} livePrices={livePrices} />
+              </main>
+            ) : activeTab === 'US_STOCKS' ? (
+              /* v3.0 US STOCK INTELLIGENCE */
+              <main>
+                <USStockTab data={data} onOpenChart={handleOpenChart} livePrices={livePrices} />
+              </main>
             ) : (
               /* DEEP-DIVE SCREENER / TESTING / RESEARCH TABS */
               <main>
                 <MasterQuantLeaderboard
                   activeTab={activeTab}
                   onTabChange={setActiveTab}
+                  allIdxStocks={allIdxStocks}
+                  allCryptoSpot={allCryptoSpot}
                   tradePlans={data?.daily_trade_plans || []}
                   cryptoSpotList={data?.crypto_spot_10 || []}
                   conglomerates={data?.conglomerates || {}}
@@ -409,6 +459,8 @@ export default function App() {
                   strategyRankings={data?.strategy_rankings || []}
                   brokerSummary={data?.broker_summary || {}}
                   bundle={data}
+                  livePrices={livePrices}
+                  flashMap={flashMap}
                   onSelectTicker={handleOpenChart}
                   onOpenLotCalc={handleOpenLotCalc}
                   onSelectNews={handleOpenNews}

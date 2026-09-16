@@ -12,6 +12,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetchers.news_macro import NewsMacroFetcher
 from fetchers.idx_market import IDXMarketFetcher
 from fetchers.crypto_spot import CryptoSpotFetcher
+from fetchers.whale_tracker import WhaleTracker
+from fetchers.crypto_futures import CryptoFuturesFetcher
+from fetchers.forex_scanner import ForexScanner
+from fetchers.us_market import USMarketFetcher
 from analyzer.llm_brain import LLMBrain
 from analyzer.backtest_engine import BacktestEngine
 from analyzer.technical_indicators import TechnicalIndicators
@@ -42,7 +46,7 @@ def main():
         load_dotenv(env_path)
 
     parser = argparse.ArgumentParser(description="Market Brain Grid & Cockpit Engine Runner")
-    parser.add_argument("--mode", choices=["all", "hourly_crypto_macro", "daily_idx_morning", "intraday_idx_refresh"], default="all")
+    parser.add_argument("--mode", choices=["all", "hourly_crypto_macro", "daily_idx_morning", "intraday_idx_refresh", "whale", "forex", "us_stocks"], default="all")
     args = parser.parse_args()
 
     logger.info(f"Starting Market Brain Grid Pipeline in mode: {args.mode.upper()}")
@@ -69,6 +73,40 @@ def main():
         logger.info("Scanning & Generating Top 10 Crypto Spot Pairs (USDT)...")
         crypto_spot_10 = crypto_fetcher.execute()
         db.upsert_crypto_spot_10(crypto_spot_10)
+
+    # v3.0 — Whale Intelligence + Crypto Futures (runs on hourly & all & whale modes)
+    whale_data = {}
+    crypto_futures_data = {}
+    if args.mode in ["all", "hourly_crypto_macro", "whale"]:
+        try:
+            logger.info("Scanning Whale Intelligence (Crypto On-Chain + IDX Foreign + US Institutional)...")
+            whale_data = WhaleTracker().execute()
+        except Exception as e:
+            logger.warning(f"WhaleTracker failed: {e}")
+
+        try:
+            logger.info("Fetching Crypto Futures Intelligence (Funding Rate, OI, Long/Short, Liquidations)...")
+            crypto_futures_data = CryptoFuturesFetcher().execute()
+        except Exception as e:
+            logger.warning(f"CryptoFuturesFetcher failed: {e}")
+
+    # v3.0 — Forex Scanner (runs on daily & all & forex modes)
+    forex_data = {}
+    if args.mode in ["all", "daily_idx_morning", "forex"]:
+        try:
+            logger.info("Scanning 28 Forex Pairs + COT Report...")
+            forex_data = ForexScanner().execute()
+        except Exception as e:
+            logger.warning(f"ForexScanner failed: {e}")
+
+    # v3.0 — US Market Intelligence (runs on daily & all & us_stocks modes)
+    us_data = {}
+    if args.mode in ["all", "daily_idx_morning", "us_stocks"]:
+        try:
+            logger.info("Scanning 30 US Stocks + Earnings Calendar...")
+            us_data = USMarketFetcher().execute()
+        except Exception as e:
+            logger.warning(f"USMarketFetcher failed: {e}")
 
     # 2. IDX Categorized Market (Runs on morning & all modes)
     if args.mode in ["all", "daily_idx_morning"]:
@@ -342,6 +380,10 @@ def main():
         "strategy_rankings": strategy_rankings or existing_bundle.get("strategy_rankings", {}),
         "backtest_lab": backtest_lab or existing_bundle.get("backtest_lab", {}),
         "correlation_matrix": correlation_data or existing_bundle.get("correlation_matrix"),
+        "whale_intelligence": whale_data or existing_bundle.get("whale_intelligence", {}),
+        "crypto_futures": crypto_futures_data or existing_bundle.get("crypto_futures", {}),
+        "forex_intelligence": forex_data or existing_bundle.get("forex_intelligence", {}),
+        "us_stocks": us_data or existing_bundle.get("us_stocks", {}),
         "mode": args.mode,
         "section_timestamps": {
             "idx": datetime.now(timezone.utc).isoformat() if idx_data else existing_bundle.get("section_timestamps", {}).get("idx"),

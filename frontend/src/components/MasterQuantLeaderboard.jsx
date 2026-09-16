@@ -14,6 +14,8 @@ const TestingHubTab = lazy(() => import('./TestingHubTab.jsx'));
 export default function MasterQuantLeaderboard({
   activeTab = 'STOCK',          // controlled from App.jsx (via Sidebar)
   onTabChange,                  // callback so inner navigation still works
+  allIdxStocks = [],
+  allCryptoSpot = [],
   tradePlans = [],
   cryptoSpotList = [],
   conglomerates = {},
@@ -26,6 +28,8 @@ export default function MasterQuantLeaderboard({
   strategyRankings = [],
   brokerSummary = {},
   bundle = null,
+  livePrices = {},
+  flashMap = {},
   onSelectTicker,
   onOpenLotCalc,
   onSelectNews
@@ -35,6 +39,7 @@ export default function MasterQuantLeaderboard({
   const setActiveMainTab = (tab) => onTabChange?.(tab);
 
   const [stockSubFilter, setStockSubFilter] = useState('ALL_STOCKS');
+  const [cryptoSubFilter, setCryptoSubFilter] = useState('ALL_CRYPTO');
   const [dividendWindow, setDividendWindow] = useState('ALL'); // 'ALL' | 'UPCOMING' | 'PAST_MONTH'
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedId, setExpandedId] = useState(null);
@@ -114,10 +119,10 @@ export default function MasterQuantLeaderboard({
       const sl = plan.stop_loss || 0;
       const tp = plan.target_1 || 0;
       const realRR = plan.risk_reward_ratio || calcRR(entry, sl, tp);
-      const actualPrice = marketPriceMap[ticker] || plan.current_price || plan.last_price || plan.price || entry;
-
-      // Resolve real change % if present, fallback to neutral
-      const changePct = plan.change_pct !== undefined ? plan.change_pct : (plan.raw_change_pct !== undefined ? plan.raw_change_pct : 0.0);
+      
+      const live = livePrices[ticker] || livePrices[`IDX:${ticker}`] || livePrices[`${ticker}.JK`] || livePrices[plan.symbol];
+      const actualPrice = live?.price !== undefined ? live.price : (marketPriceMap[ticker] || plan.current_price || plan.last_price || plan.price || entry);
+      const changePct = live?.changePct !== undefined ? live.changePct : (plan.change_pct !== undefined ? plan.change_pct : (plan.raw_change_pct !== undefined ? plan.raw_change_pct : 0.0));
 
       items.push({
         id: plan.plan_id || ('plan-' + idx),
@@ -144,7 +149,11 @@ export default function MasterQuantLeaderboard({
     cryptoSpotList.forEach((c) => {
       const existing = items.find(i => i.ticker === c.pair || i.ticker === c.pair.replace('/', '') || i.ticker === c.symbol);
       if (!existing) {
-        const entry = c.current_price || c.entry_high || 0;
+        const cleanPair = c.pair?.replace('/', '');
+        const liveC = livePrices[c.pair] || livePrices[c.symbol] || livePrices[cleanPair] || livePrices[c.symbol?.replace('USDT', '')];
+        const actualCPrice = liveC?.price !== undefined ? liveC.price : (c.current_price || c.entry_high || 0);
+        const actualCChange = liveC?.changePct !== undefined ? liveC.changePct : (c.change_24h_pct || 0);
+        const entry = actualCPrice;
         const sl = c.stop_loss || 0;
         const tp = c.take_profit_1 || 0;
         const realRR = c.risk_reward_ratio || calcRR(entry, sl, tp);
@@ -157,8 +166,8 @@ export default function MasterQuantLeaderboard({
           market: 'CRYPTO',
           cluster: 'LAYER 1 / DEFI',
           categoryLabel: 'SPOT USDT (NO LEV)',
-          price: c.current_price || 0,
-          changePct: c.change_24h_pct || 0,
+          price: actualCPrice,
+          changePct: actualCChange,
           signal: c.setup_type || 'SPOT_LONG',
           signalType: 'BLUE',
           entry: entry,
@@ -178,7 +187,9 @@ export default function MasterQuantLeaderboard({
         stocks.forEach(s => {
           if (!items.find(i => i.ticker === s.ticker)) {
             const cleanGroup = group.replace('_GROUP', '').replace('_', ' ');
-            const price = s.price || 0;
+            const liveS = livePrices[s.ticker] || livePrices[`IDX:${s.ticker}`];
+            const price = liveS?.price !== undefined ? liveS.price : (s.price || 0);
+            const chg = liveS?.changePct !== undefined ? liveS.changePct : (s.change_pct || 0);
             const sl = Math.round(Number(price) * 0.95);
             const tp = Math.round(Number(price) * 1.10);
             const realRR = calcRR(price, sl, tp);
@@ -192,7 +203,7 @@ export default function MasterQuantLeaderboard({
               cluster: cleanGroup,
               categoryLabel: cleanGroup,
               price: price,
-              changePct: s.change_pct || 0,
+              changePct: chg,
               signal: s.technical_signal || 'MONITOR',
               signalType: s.technical_signal === 'BREAKOUT' ? 'BULL' : 'BLUE',
               entry: price,
@@ -237,11 +248,87 @@ export default function MasterQuantLeaderboard({
       }
     });
 
+    // 5. Seluruh Alam Semesta Saham BEI (849+ Emiten dari TradingView Scanner)
+    (allIdxStocks || []).forEach(s => {
+      const existing = items.find(i => i.ticker === s.ticker || i.ticker === s.name);
+      if (!existing && s.ticker) {
+        const liveS = livePrices[s.ticker] || livePrices[`IDX:${s.ticker}`];
+        const price = liveS?.price !== undefined ? liveS.price : (s.price || 0);
+        const chg = liveS?.changePct !== undefined ? liveS.changePct : (s.changePct || 0);
+        const sl = Math.round(Number(price) * 0.95);
+        const tp = Math.round(Number(price) * 1.08);
+        const realRR = calcRR(price, sl, tp);
+
+        const sig = chg > 2.5 ? 'MOMENTUM BUY' : (chg < -2.5 ? 'OVERSOLD WATCH' : (chg > 0 ? 'ACCUMULATION' : 'NEUTRAL'));
+        const sigType = chg > 0 ? 'BULL' : (chg < -2 ? 'WARN' : 'BLUE');
+
+        items.push({
+          id: 'idx-all-' + s.ticker,
+          rank: items.length + 1,
+          ticker: s.ticker,
+          fullSymbol: s.fullSymbol || ('IDX:' + s.ticker),
+          market: 'IDX',
+          cluster: kongloLookup[s.ticker] || (s.valueTraded > 50000000000 ? 'BEI LIQUID' : 'BEI REGULER'),
+          categoryLabel: s.description || 'EMITEN BEI',
+          price: price,
+          changePct: chg,
+          signal: sig,
+          signalType: sigType,
+          entry: price,
+          stopLoss: sl,
+          target1: tp,
+          riskReward: realRR,
+          volume: s.volume || 0,
+          valueTraded: s.valueTraded || 0,
+          rsi: s.rsi || null,
+          isTradePlan: false,
+          rawStock: s
+        });
+      }
+    });
+
+    // 6. Seluruh Alam Semesta Crypto Spot Binance (744+ Pasangan USDT)
+    (allCryptoSpot || []).forEach(c => {
+      const existing = items.find(i => i.ticker === c.pair || i.ticker === c.symbol || i.ticker === c.baseCoin);
+      if (!existing && c.symbol) {
+        const liveC = livePrices[c.symbol] || livePrices[c.pair];
+        const price = liveC?.price !== undefined ? liveC.price : (c.price || 0);
+        const chg = liveC?.changePct !== undefined ? liveC.changePct : (c.changePct || 0);
+        const sl = Number((price * 0.94).toFixed(4));
+        const tp = Number((price * 1.12).toFixed(4));
+        const realRR = calcRR(price, sl, tp);
+
+        const sig = chg > 5 ? 'STRONG MOMENTUM' : (chg < -5 ? 'DIP WATCH' : 'CONSOLIDATION');
+        const sigType = chg > 0 ? 'BULL' : (chg < -3 ? 'WARN' : 'BLUE');
+
+        items.push({
+          id: 'crypto-all-' + c.symbol,
+          rank: items.length + 1,
+          ticker: c.pair || (`${c.baseCoin}/USDT`),
+          fullSymbol: c.symbol,
+          market: 'CRYPTO',
+          cluster: c.quoteVolume > 10000000 ? 'TOP LIQUIDITY' : 'ALTCOIN',
+          categoryLabel: 'SPOT USDT (BINANCE)',
+          price: price,
+          changePct: chg,
+          signal: sig,
+          signalType: sigType,
+          entry: price,
+          stopLoss: sl,
+          target1: tp,
+          riskReward: realRR,
+          volume: c.quoteVolume || 0,
+          isTradePlan: false,
+          rawCrypto: c
+        });
+      }
+    });
+
     const stockOnly = items.filter(i => i.market === 'IDX');
     const cryptoOnly = items.filter(i => i.market === 'CRYPTO');
 
     return { allItems: items, allStockItems: stockOnly, allCryptoItems: cryptoOnly };
-  }, [tradePlans, cryptoSpotList, conglomerates, dividendHunters, kongloLookup]);
+  }, [tradePlans, cryptoSpotList, conglomerates, dividendHunters, kongloLookup, livePrices, allIdxStocks, allCryptoSpot]);
 
   const tradePlansCount = useMemo(() => allStockItems.filter(i => i.isTradePlan).length, [allStockItems]);
 
@@ -308,17 +395,25 @@ export default function MasterQuantLeaderboard({
     });
   }, [dividendHunters, dividendWindow, searchTerm, kongloLookup, sortField, sortDirection]);
 
-  // Robust filtering using Membership Sets (No deduplication data loss)
+  // Robust filtering using Membership Sets & Full Multi-Asset Universe
   const currentDataset = useMemo(() => {
     let list = [];
     if (activeMainTab === 'STOCK') {
       if (stockSubFilter === 'PLANS') {
         list = allStockItems.filter(i => i.isTradePlan);
+      } else if (stockSubFilter === 'TOP_TURNOVER') {
+        list = [...allStockItems].sort((a, b) => (b.valueTraded || 0) - (a.valueTraded || 0)).slice(0, 50);
       } else {
         list = allStockItems;
       }
     } else if (activeMainTab === 'CRYPTO') {
-      list = allCryptoItems;
+      if (cryptoSubFilter === 'MOMENTUM_10') {
+        list = allCryptoItems.filter(i => i.rawCrypto?.setup_type || i.rawCrypto?.conviction);
+      } else if (cryptoSubFilter === 'TOP_VOLUME') {
+        list = [...allCryptoItems].sort((a, b) => (b.volume || 0) - (a.volume || 0)).slice(0, 30);
+      } else {
+        list = allCryptoItems;
+      }
     } else {
       list = allItems;
     }
@@ -327,8 +422,11 @@ export default function MasterQuantLeaderboard({
       const q = searchTerm.trim().toLowerCase();
       list = list.filter(i => 
         (i.ticker && i.ticker.toLowerCase().includes(q)) ||
+        (i.fullSymbol && i.fullSymbol.toLowerCase().includes(q)) ||
         (i.cluster && i.cluster.toLowerCase().includes(q)) ||
-        (i.signal && i.signal.toLowerCase().includes(q))
+        (i.categoryLabel && i.categoryLabel.toLowerCase().includes(q)) ||
+        (i.signal && i.signal.toLowerCase().includes(q)) ||
+        (i.rawStock?.description && i.rawStock.description.toLowerCase().includes(q))
       );
     }
 
@@ -336,7 +434,7 @@ export default function MasterQuantLeaderboard({
       let valA = a[sortField];
       let valB = b[sortField];
 
-      if (sortField === 'price' || sortField === 'changePct' || sortField === 'riskReward' || sortField === 'rank') {
+      if (sortField === 'price' || sortField === 'changePct' || sortField === 'riskReward' || sortField === 'rank' || sortField === 'volume' || sortField === 'valueTraded') {
         valA = Number(valA) || 0;
         valB = Number(valB) || 0;
       } else {
@@ -348,7 +446,7 @@ export default function MasterQuantLeaderboard({
       if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [activeMainTab, stockSubFilter, searchTerm, allStockItems, allCryptoItems, allItems, sortField, sortDirection, kongloLookup, dividendTickerSet, foreignTickerSet]);
+  }, [activeMainTab, stockSubFilter, cryptoSubFilter, searchTerm, allStockItems, allCryptoItems, allItems, sortField, sortDirection, kongloLookup, dividendTickerSet, foreignTickerSet]);
 
   const handleSort = (field) => {
     if (sortField === field) {
@@ -376,8 +474,8 @@ export default function MasterQuantLeaderboard({
         <div className='telemetry-header' style={{ background: 'var(--bg-panel-subtle)', borderBottom: 'var(--border-hairline)', fontSize: '10px', color: 'var(--text-muted)' }}>
           <span>
             {activeMainTab === 'STOCK'
-              ? `📈 Saham IDX · ${allStockItems.length} stocks · KLIK BARIS UNTUK DETAIL · TRADINGVIEW & ORDER BOOK`
-              : `⚡ Crypto Spot · ${allCryptoItems.length} pairs · KLIK BARIS UNTUK DETAIL`}
+              ? `📈 Saham IDX · ${allStockItems.length} emiten aktif BEI · SCANNER TRADINGVIEW REALTIME · KLIK BARIS UNTUK CHART & ORDER BOOK`
+              : `⚡ Crypto Spot · ${allCryptoItems.length} pasangan USDT Binance · LIVE WEBSOCKET 1 DETIK`}
           </span>
         </div>
       )}
@@ -471,13 +569,14 @@ export default function MasterQuantLeaderboard({
             alignItems: 'center',
             justifyContent: 'space-between'
           }}>
-            {/* Sub-pills for Stock tab (3 SUB-FILTERS: SEMUA SAHAM, TOP TRADE PLANS, DIVIDEN HUNTER) */}
+            {/* Sub-pills for Stock / Crypto tabs */}
             {activeMainTab === 'STOCK' ? (
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                 {[
-                  { id: 'ALL_STOCKS', label: `SEMUA SAHAM (${allStockItems.length})` },
-                  { id: 'PLANS', label: `🎯 TOP TRADE PLANS (${tradePlansCount})` },
-                  { id: 'DIVIDEND', label: `💰 DIVIDEN HUNTER (${filteredDividends.length})` }
+                  { id: 'ALL_STOCKS', label: `🏛️ SEMUA SAHAM BEI (${allStockItems.length})` },
+                  { id: 'PLANS', label: `🎯 TOP 20 ALPHA PLANS (${tradePlansCount})` },
+                  { id: 'DIVIDEND', label: `💰 DIVIDEN HUNTER (${filteredDividends.length})` },
+                  { id: 'TOP_TURNOVER', label: `🔥 TOP TURNOVER BEI (50)` }
                 ].map(btn => (
                   <button
                     key={btn.id}
@@ -490,8 +589,21 @@ export default function MasterQuantLeaderboard({
                 ))}
               </div>
             ) : (
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                ⚡ SPOT TRADING USDT MURNI (BEBAS RISIKO LIKUIDASI LEVERAGE)
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                {[
+                  { id: 'ALL_CRYPTO', label: `⚡ SEMUA SPOT USDT (${allCryptoItems.length})` },
+                  { id: 'MOMENTUM_10', label: `🎯 TOP 10 MOMENTUM PICKS (${cryptoSpotList.length})` },
+                  { id: 'TOP_VOLUME', label: `🔥 TOP VOLUME (30)` }
+                ].map(btn => (
+                  <button
+                    key={btn.id}
+                    onClick={() => setCryptoSubFilter(btn.id)}
+                    className={'telemetry-btn ' + (cryptoSubFilter === btn.id ? 'active' : '')}
+                    style={{ fontSize: '10px', padding: '3px 8px' }}
+                  >
+                    {btn.label}
+                  </button>
+                ))}
               </div>
             )}
 
@@ -793,8 +905,8 @@ export default function MasterQuantLeaderboard({
                     <th style={{ cursor: 'pointer' }} onClick={() => handleSort('signal')}>
                       Sinyal / Setup{getSortIcon('signal')}
                     </th>
-                  <th style={{ cursor: 'pointer' }} onClick={() => handleSort('price')} title="Harga snapshot terakhir dari bundle data screener">
-                    Harga Snapshot{getSortIcon('price')}
+                  <th style={{ cursor: 'pointer' }} onClick={() => handleSort('price')} title="Harga pasar terkini (realtime tick / scanner)">
+                    Harga Terakhir (Live){getSortIcon('price')}
                   </th>
                   <th style={{ cursor: 'pointer' }} onClick={() => handleSort('changePct')}>
                     Chg %{getSortIcon('changePct')}
@@ -873,14 +985,25 @@ export default function MasterQuantLeaderboard({
                               </div>
                             )}
                           </td>
-                          <td style={{ fontWeight: '700', color: 'var(--text-primary)' }}>
-                            {item.market === 'IDX' ? ('Rp ' + Number(item.price).toLocaleString()) : ('$' + item.price)}
+                          <td style={{
+                            fontWeight: '800',
+                            fontFamily: 'var(--font-mono)',
+                            color: flashMap?.[item.ticker] === 'up' ? 'var(--accent-green)' : flashMap?.[item.ticker] === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)',
+                            background: flashMap?.[item.ticker] === 'up' ? 'rgba(0, 208, 132, 0.15)' : flashMap?.[item.ticker] === 'down' ? 'rgba(239, 68, 68, 0.15)' : 'transparent',
+                            transition: 'all 0.3s ease'
+                          }}>
+                            {item.market === 'IDX'
+                              ? ('Rp ' + Math.round(Number(item.price)).toLocaleString('id-ID'))
+                              : ('$' + Number(item.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 }))}
+                            {flashMap?.[item.ticker] === 'up' && <span style={{ color: 'var(--accent-green)', marginLeft: '3px' }}>▲</span>}
+                            {flashMap?.[item.ticker] === 'down' && <span style={{ color: 'var(--accent-rust)', marginLeft: '3px' }}>▼</span>}
                           </td>
                           <td style={{
                             fontWeight: '700',
-                            color: Number(item.changePct) >= 0 ? '#34c759' : '#ff3b30'
+                            fontFamily: 'var(--font-mono)',
+                            color: Number(item.changePct) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)'
                           }}>
-                            {Number(item.changePct) >= 0 ? '+' + item.changePct + '%' : item.changePct + '%'}
+                            {Number(item.changePct) >= 0 ? '+' + Number(item.changePct).toFixed(2) + '%' : Number(item.changePct).toFixed(2) + '%'}
                           </td>
                           <td>
                             <code>{item.entryRange ? item.entryRange : (item.market === 'IDX' ? ('Rp ' + Number(item.entry).toLocaleString()) : ('$' + item.entry))}</code>
