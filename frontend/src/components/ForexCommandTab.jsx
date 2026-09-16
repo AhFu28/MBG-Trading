@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import AssetIcon from './AssetIcon.jsx';
+import { CURRENCY_FLAGS } from '../data/forex-flags.js';
 
 function getZoneInfo(date, timeZone) {
   try {
@@ -166,9 +168,12 @@ export default function ForexCommandTab({ data, onOpenChart }) {
                 {pairs.filter(p => p.pair.toLowerCase().includes(search.toLowerCase())).map((p, idx) => (
                   <tr key={idx}>
                     <td>
-                      <button onClick={() => onOpenChart(`FX:${p.pair}`)} style={{ background: 'transparent', border: 'none', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px' }}>
-                        {p.pair} ↗
-                      </button>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <AssetIcon symbol={p.pair} market="FOREX" size={16} />
+                        <button onClick={() => onOpenChart(`FX:${p.pair}`)} style={{ background: 'transparent', border: 'none', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px', padding: 0 }}>
+                          {p.pair} ↗
+                        </button>
+                      </div>
                     </td>
                     <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>{p.price}</td>
                     <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: p.change_24h_pct > 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
@@ -277,7 +282,12 @@ export default function ForexCommandTab({ data, onOpenChart }) {
                   
                   return (
                     <tr key={idx}>
-                      <td style={{ fontWeight: 'bold' }}>{c.currency}</td>
+                      <td style={{ fontWeight: 'bold' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span style={{ fontSize: '15px' }}>{CURRENCY_FLAGS[c.currency]?.flag || '🌐'}</span>
+                          <span>{c.currency}</span>
+                        </div>
+                      </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', paddingRight: '4px' }}>

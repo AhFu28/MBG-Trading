@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MbgLogo from './MbgLogo.jsx';
-import CryptoIcon from './CryptoIcon.jsx';
+import AssetIcon from './AssetIcon.jsx';
 
 // Core clean trading navigation — clutter removed
 const PRIMARY_NAV_ITEMS = [
@@ -196,7 +196,7 @@ export default function Sidebar({
                           title={`Buka Chart ${t.symbol} (${t.name})`}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                            {t.market === 'CRYPTO' && <CryptoIcon symbol={t.symbol} size={14} />}
+                            <AssetIcon symbol={t.symbol} market={t.market} size={15} />
                             <span style={{
                               fontSize: '7px',
                               padding: '1px 3px',

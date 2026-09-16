@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import CryptoIcon from './CryptoIcon.jsx';
+import AssetIcon from './AssetIcon.jsx';
 
 // Top crypto coins with approximate market cap weights (relative)
 const CRYPTO_UNIVERSE = [
@@ -232,9 +232,9 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
               }}
               title={`${tile.name} (${tile.symbol})\n${tile.changePct >= 0 ? '+' : ''}${tile.changePct}%\n${tile.price ? formatPrice(tile.price, activeMarket) : 'Memuat...'}`}
             >
-              {/* Crypto icon for tiles */}
-              {activeMarket === 'CRYPTO' && (isLarge || isMedium) && (
-                <CryptoIcon symbol={tile.symbol} size={isLarge ? 24 : 16} style={{ marginBottom: '3px' }} />
+              {/* Asset logo for tiles */}
+              {(isLarge || isMedium) && (
+                <AssetIcon symbol={tile.symbol} market={activeMarket} size={isLarge ? 24 : 16} style={{ marginBottom: '3px' }} />
               )}
 
               {/* Symbol */}

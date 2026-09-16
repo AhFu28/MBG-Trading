@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BloombergNewsWire from './BloombergNewsWire.jsx';
-import CryptoIcon from './CryptoIcon.jsx';
+import AssetIcon from './AssetIcon.jsx';
 
 export default function HomeDashboardTab({
   data,
@@ -177,10 +177,13 @@ export default function HomeDashboardTab({
                       <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>{topIdx?.technical_signal || 'BREAKOUT'}</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <AssetIcon symbol={topIdxTicker} market="IDX" size={20} />
                         <span style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                           ${topIdxTicker}
                         </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
                         <span style={{
                           fontSize: '11px',
                           fontWeight: '800',
@@ -518,8 +521,9 @@ export default function HomeDashboardTab({
                     </div>
                     {topInflow.map((f, i) => (
                       <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0', borderBottom: 'var(--border-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
-                        <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--accent-blue)' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>
-                          ${f.ticker}
+                        <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--accent-blue)', display: 'inline-flex', alignItems: 'center', gap: '4px' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>
+                          <AssetIcon symbol={f.ticker} market="IDX" size={12} />
+                          <span>${f.ticker}</span>
                         </span>
                         <span style={{ color: (f.foreign_net_val_idr || 0) >= 0 ? 'var(--accent-green)' : 'var(--text-muted)' }}>
                           {formatFlowIdr(f.foreign_net_val_idr)}
@@ -535,8 +539,9 @@ export default function HomeDashboardTab({
                     </div>
                     {topOutflow.map((f, i) => (
                       <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0', borderBottom: 'var(--border-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
-                        <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--accent-blue)' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>
-                          ${f.ticker}
+                        <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--accent-blue)', display: 'inline-flex', alignItems: 'center', gap: '4px' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>
+                          <AssetIcon symbol={f.ticker} market="IDX" size={12} />
+                          <span>${f.ticker}</span>
                         </span>
                         <span style={{ color: 'var(--accent-rust)' }}>
                           {formatFlowIdr(f.foreign_net_val_idr)}
