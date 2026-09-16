@@ -69,6 +69,13 @@ export default function HomeDashboardTab({
       {dataStatus === 'stale' && (
         <div style={{background:'#dc2626',color:'#fff',padding:'8px 16px',borderRadius:8,marginBottom:12,display:'flex',alignItems:'center',gap:8,fontSize:13,fontWeight:600}}>
           ⚠️ DATA STALE — Last updated: {data?.last_updated ? new Date(data.last_updated).toLocaleString('id-ID') : 'Unknown'}. Pipeline may be down.
+          {data?.section_timestamps && (
+            <span style={{fontSize: '9px', marginLeft: '8px', opacity: 0.8}}>
+              IDX: {data.section_timestamps?.idx ? new Date(data.section_timestamps.idx).toLocaleTimeString('id-ID') : 'N/A'} | 
+              Crypto: {data.section_timestamps?.crypto ? new Date(data.section_timestamps.crypto).toLocaleTimeString('id-ID') : 'N/A'} | 
+              Macro: {data.section_timestamps?.macro ? new Date(data.section_timestamps.macro).toLocaleTimeString('id-ID') : 'N/A'}
+            </span>
+          )}
         </div>
       )}
       {dataStatus === 'fallback' && (

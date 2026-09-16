@@ -229,7 +229,7 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle }) {
 
   return (
     <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', padding: '12px 14px', fontFamily: 'var(--font-mono)' }}>
-      {!bundle?.global_markets && <div style={{fontSize:11,color:'#f59e0b',marginBottom:8}}>📊 Showing cached market data — live feed not available</div>}
+      {!bundle?.global_markets && !macro?.gold_price && <div style={{fontSize:11,color:'#f59e0b',marginBottom:8}}>📊 Showing cached market data — live feed not available</div>}
       {/* 1. Global Session Clocks & Live Master Clock */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', padding: '5px 8px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: 'var(--text-muted)' }}>

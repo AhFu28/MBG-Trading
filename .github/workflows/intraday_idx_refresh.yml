@@ -1,0 +1,43 @@
+name: Intraday IDX Price Refresh (30min during market hours)
+
+on:
+  schedule:
+    # Every 30 min during IDX market hours (09:00-16:00 WIB = UTC 02:00-09:00), Mon-Fri
+    - cron: '*/30 2-9 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  intraday-refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run intraday IDX refresh
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          INDEX_ALPHA_API_KEY: ${{ secrets.INDEX_ALPHA_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python engine/run_pipeline.py --mode intraday_idx_refresh
+
+      - name: Commit & push updated data
+        run: |
+          git config user.name "MBG Bot"
+          git config user.email "bot@mbg-trading.dev"
+          git add frontend/public/data/ engine/cache/
+          git diff --cached --quiet || (
+            git commit -m "chore(intraday): refresh IDX prices & crypto [skip ci]" &&
+            git pull --rebase origin main &&
+            git push
+          )

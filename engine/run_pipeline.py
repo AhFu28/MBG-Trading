@@ -42,7 +42,7 @@ def main():
         load_dotenv(env_path)
 
     parser = argparse.ArgumentParser(description="Market Brain Grid & Cockpit Engine Runner")
-    parser.add_argument("--mode", choices=["all", "hourly_crypto_macro", "daily_idx_morning"], default="all")
+    parser.add_argument("--mode", choices=["all", "hourly_crypto_macro", "daily_idx_morning", "intraday_idx_refresh"], default="all")
     args = parser.parse_args()
 
     logger.info(f"Starting Market Brain Grid Pipeline in mode: {args.mode.upper()}")
@@ -81,6 +81,62 @@ def main():
         logger.info("Generating Astra-standard Daily Trade Plans...")
         trade_plans = brain.generate_daily_trade_plans(idx_data, crypto_spot_10, macro_data)
         db.upsert_trade_plans(trade_plans)
+
+    # 2b. Intraday IDX Price Refresh (lightweight, only updates current prices)
+    if args.mode == "intraday_idx_refresh":
+        logger.info("Running intraday IDX price refresh...")
+        # Fetch latest IDX prices
+        idx_data = idx_fetcher.execute()
+        current_prices_map = {r["ticker"]: r for r in idx_data.get("all_records", [])}
+        
+        # Also fetch crypto + macro for freshness
+        logger.info("Also refreshing crypto & macro...")
+        macro_data = news_fetcher.execute()
+        db.upsert_macro_telemetry(macro_data)
+        crypto_spot_10 = crypto_fetcher.execute()
+        db.upsert_crypto_spot_10(crypto_spot_10)
+        
+        # Load existing bundle and update current prices in trade plans
+        bundle_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "public", "data", "latest_cockpit_bundle.json")
+        if os.path.exists(bundle_path):
+            with open(bundle_path, "r", encoding="utf-8") as bf:
+                existing_bundle = json.load(bf)
+            
+            # Inject current_price into trade plans
+            for plan in existing_bundle.get("daily_trade_plans", []):
+                ticker = plan.get("clean_ticker") or plan.get("symbol", "").replace(".JK", "")
+                rec = current_prices_map.get(ticker) or current_prices_map.get(ticker + ".JK")
+                if rec:
+                    plan["current_price"] = rec.get("price", plan.get("entry_price", 0))
+                    plan["change_pct"] = rec.get("change_pct", 0)
+                    plan["volume"] = rec.get("volume", 0)
+            
+            # Update sections
+            from datetime import timezone
+            now_iso = datetime.now(timezone.utc).isoformat()
+            existing_bundle["last_updated"] = now_iso
+            existing_bundle["macro_telemetry"] = macro_data or existing_bundle.get("macro_telemetry", {})
+            existing_bundle["crypto_spot_10"] = crypto_spot_10 or existing_bundle.get("crypto_spot_10", [])
+            existing_bundle["conglomerates"] = idx_data.get("conglomerates") or existing_bundle.get("conglomerates", {})
+            existing_bundle["foreign_flow"] = idx_data.get("foreign_flow") or existing_bundle.get("foreign_flow", {})
+            existing_bundle["section_timestamps"] = {
+                "idx": now_iso,
+                "crypto": now_iso,
+                "macro": now_iso,
+                "trade_plans": existing_bundle.get("section_timestamps", {}).get("trade_plans", now_iso)
+            }
+            existing_bundle["mode"] = args.mode
+            existing_bundle["execution_duration_sec"] = round((datetime.now() - start_time).total_seconds(), 2)
+            
+            # Write back
+            with open(bundle_path, "w", encoding="utf-8") as bf:
+                json.dump(existing_bundle, bf, ensure_ascii=False, indent=2)
+            db.sync_complete_bundle(existing_bundle)
+            
+            logger.info(f"Intraday refresh done. Updated {len([p for p in existing_bundle.get('daily_trade_plans',[]) if 'current_price' in p])} trade plan prices.")
+        
+        logger.info(f"Intraday IDX refresh completed in {round((datetime.now() - start_time).total_seconds(), 2)} seconds.")
+        return  # Exit early, no need for advanced analytics
 
     technical_analysis = {}
     smc_analysis = {}
@@ -255,6 +311,17 @@ def main():
             logger.warning(f"Could not load existing bundle to merge: {be}")
 
     from datetime import timezone
+
+    # Inject current_price into trade plans from IDX all_records
+    all_records = idx_data.get("all_records", []) if idx_data else []
+    current_prices_map = {r["ticker"]: r for r in all_records}
+    for plan in (trade_plans or []):
+        ticker = plan.get("clean_ticker") or plan.get("symbol", "").replace(".JK", "")
+        rec = current_prices_map.get(ticker) or current_prices_map.get(ticker + ".JK")
+        if rec:
+            plan["current_price"] = rec.get("price", plan.get("entry_price", 0))
+            plan["change_pct"] = rec.get("change_pct", 0)
+
     bundle = {
         "last_updated": datetime.now(timezone.utc).isoformat(),
         "data_sources": {
@@ -276,6 +343,12 @@ def main():
         "backtest_lab": backtest_lab or existing_bundle.get("backtest_lab", {}),
         "correlation_matrix": correlation_data or existing_bundle.get("correlation_matrix"),
         "mode": args.mode,
+        "section_timestamps": {
+            "idx": datetime.now(timezone.utc).isoformat() if idx_data else existing_bundle.get("section_timestamps", {}).get("idx"),
+            "crypto": datetime.now(timezone.utc).isoformat() if crypto_spot_10 else existing_bundle.get("section_timestamps", {}).get("crypto"),
+            "macro": datetime.now(timezone.utc).isoformat() if macro_data else existing_bundle.get("section_timestamps", {}).get("macro"),
+            "trade_plans": datetime.now(timezone.utc).isoformat() if trade_plans else existing_bundle.get("section_timestamps", {}).get("trade_plans"),
+        },
         "execution_duration_sec": round((datetime.now() - start_time).total_seconds(), 2)
     }
     db.sync_complete_bundle(bundle)
