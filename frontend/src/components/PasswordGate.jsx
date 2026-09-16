@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-// SHA-256 hash of the access password — plaintext NEVER stored in source
-const PASS_HASH = '286713785e8fbca141922642c96747842acd886f6da2f7598d0bc8554b8c3e18';
 const SESSION_KEY = 'mbg_cockpit_auth';
-const SESSION_HOURS = 24;
-
-async function sha256(text) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
 
 export default function PasswordGate({ children }) {
   const [authed, setAuthed] = useState(false);
@@ -20,53 +12,69 @@ export default function PasswordGate({ children }) {
 
   // Check existing session on mount
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(SESSION_KEY);
-      if (raw) {
-        const { exp } = JSON.parse(raw);
-        if (Date.now() < exp) {
+    async function verifySession() {
+      try {
+        const res = await fetch('/api/auth');
+        if (res.ok) {
           setAuthed(true);
         } else {
-          localStorage.removeItem(SESSION_KEY);
+          sessionStorage.removeItem(SESSION_KEY);
         }
+      } catch (err) {
+        sessionStorage.removeItem(SESSION_KEY);
       }
-    } catch { localStorage.removeItem(SESSION_KEY); }
-    setLoading(false);
+      setLoading(false);
+    }
+    verifySession();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (locked || !input.trim()) return;
 
-    const hash = await sha256(input.trim());
-    if (hash === PASS_HASH) {
-      localStorage.setItem(SESSION_KEY, JSON.stringify({
-        exp: Date.now() + SESSION_HOURS * 3600000
-      }));
-      setAuthed(true);
-      setError('');
-    } else {
-      const newAttempts = attempts + 1;
-      setAttempts(newAttempts);
-      setError(`ACCESS DENIED. Invalid credentials. (${newAttempts}/5)`);
-      setInput('');
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: input.trim() })
+      });
 
-      // Lock after 5 failed attempts for 60 seconds
-      if (newAttempts >= 5) {
+      if (res.ok) {
+        const data = await res.json();
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+        setAuthed(true);
+        setError('');
+      } else if (res.status === 429) {
         setLocked(true);
-        setError('LOCKED. Too many failed attempts. Wait 60 seconds.');
-        setTimeout(() => { setLocked(false); setAttempts(0); setError(''); }, 60000);
+        setError('LOCKED. Too many failed attempts. Wait 15 minutes.');
+        setTimeout(() => { setLocked(false); setAttempts(0); setError(''); }, 15 * 60 * 1000);
+      } else {
+        const newAttempts = attempts + 1;
+        setAttempts(newAttempts);
+        setError(`ACCESS DENIED. Invalid credentials. (${newAttempts}/5)`);
+        setInput('');
+
+        // Lock after 5 failed attempts for 60 seconds (local enforcement, server will enforce at 15m)
+        if (newAttempts >= 5) {
+          setLocked(true);
+          setError('LOCKED. Too many failed attempts. Wait 60 seconds.');
+          setTimeout(() => { setLocked(false); setAttempts(0); setError(''); }, 60000);
+        }
       }
+    } catch (err) {
+      setError('Network error during authentication.');
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+    // Ideally we'd hit a logout endpoint to clear the cookie as well
     setAuthed(false);
     setInput('');
   };
 
   if (loading) return null;
+
 
   if (authed) {
     return (
@@ -174,12 +182,8 @@ export default function PasswordGate({ children }) {
         </form>
 
         {/* Footer */}
-        <div style={{
-          marginTop: '24px', paddingTop: '14px', borderTop: '1px solid #e5e5e5',
-          fontSize: '9px', color: '#b0b0b0', textAlign: 'center', letterSpacing: '0.03em'
-        }}>
-          SHA-256 CLIENT-SIDE VERIFICATION · SESSION: {SESSION_HOURS}H · ANTI-BRUTE: 5 ATTEMPTS/LOCKOUT
-        </div>
+          SERVER-SIDE JWT VERIFICATION · SESSION: 24H · ANTI-BRUTE: 5 ATTEMPTS/LOCKOUT
+
       </div>
     </div>
   );

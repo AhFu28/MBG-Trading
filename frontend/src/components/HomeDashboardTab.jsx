@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BloombergNewsWire from './BloombergNewsWire.jsx';
 
 export default function HomeDashboardTab({
@@ -7,6 +7,23 @@ export default function HomeDashboardTab({
   onOpenLotCalc,
   onNavigateTab
 }) {
+  const [dataStatus, setDataStatus] = useState('live');
+
+  useEffect(() => {
+    if (!data?.last_updated) return;
+    const lastUpdate = new Date(data.last_updated);
+    const now = new Date();
+    const diffHours = (now - lastUpdate) / (1000 * 60 * 60);
+    
+    if (diffHours > 2) {
+      setDataStatus('stale');
+    } else if (data?.data_sources && Object.values(data.data_sources).some(s => s === 'fallback')) {
+      setDataStatus('fallback');
+    } else {
+      setDataStatus('live');
+    }
+  }, [data]);
+
   const topIdxPlans = (data?.daily_trade_plans || []).filter(p => p.market === 'IDX');
   const topCryptoPicks = data?.crypto_spot_10 || [];
   const topIdx = topIdxPlans[0];
@@ -48,8 +65,19 @@ export default function HomeDashboardTab({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', boxSizing: 'border-box' }}>
 
+      {dataStatus === 'stale' && (
+        <div style={{background:'#dc2626',color:'#fff',padding:'8px 16px',borderRadius:8,marginBottom:12,display:'flex',alignItems:'center',gap:8,fontSize:13,fontWeight:600}}>
+          ⚠️ DATA STALE — Last updated: {data?.last_updated ? new Date(data.last_updated).toLocaleString('id-ID') : 'Unknown'}. Pipeline may be down.
+        </div>
+      )}
+      {dataStatus === 'fallback' && (
+        <div style={{background:'#d97706',color:'#fff',padding:'8px 16px',borderRadius:8,marginBottom:12,display:'flex',alignItems:'center',gap:8,fontSize:13,fontWeight:600}}>
+          📡 OFFLINE MODE — Some market data using cached/fallback values. Live feeds may be disrupted.
+        </div>
+      )}
+
       {/* TOP: MBG MACRO INTELLIGENCE WIRE (Full Strip) */}
-      <BloombergNewsWire macro={macro} onSelectTicker={onSelectTicker} />
+      <BloombergNewsWire macro={macro} bundle={data} onSelectTicker={onSelectTicker} />
 
       {/* MAIN TWO-COLUMN CONTAINER: LEFT 72% (COCKPIT) + RIGHT 28% (LIVE NEWS STREAM) */}
       <div style={{

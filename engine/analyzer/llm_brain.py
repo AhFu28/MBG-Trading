@@ -191,3 +191,143 @@ class LLMBrain:
                     p["ai_market_sentiment"] = "Netral - menunggu konfirmasi arah pasar."
 
         return plans
+
+    def _call_gemini(self, prompt: str, max_tokens: int = 300) -> str:
+        if not self.use_llm:
+            return ""
+        from google import genai
+        client = genai.Client(api_key=self.api_key)
+        response = client.models.generate_content(
+            model='gemini-2.0-flash',
+            contents=prompt,
+            config={
+                'temperature': 0.7,
+                'max_output_tokens': max_tokens
+            }
+        )
+        return response.text
+
+    def run_bull_bear_debate(self, ticker: str, entry: float, sl: float, tp1: float, 
+                              technical_data: dict, macro_context: str = "") -> dict:
+        """
+        Adversarial Bull vs Bear debate engine.
+        Bull Advocate argues FOR the trade. Bear Red-Teamer attacks it.
+        System Arbiter decides: APPROVED, CONDITIONAL, or VETOED.
+        
+        Returns dict with debate transcript and final verdict.
+        """
+        if not self.use_llm:
+            # No LLM available - return neutral pass-through
+            return {
+                "verdict": "APPROVED",
+                "reason": "LLM unavailable — auto-approved (deterministic only)",
+                "bull_score": 50,
+                "bear_score": 50,
+                "debate_transcript": [],
+                "data_source": "fallback"
+            }
+        
+        risk_reward = round((tp1 - entry) / (entry - sl), 2) if entry != sl else 0
+        
+        # Round 1: Bull presents the case
+        bull_prompt = f"""You are a BULL ADVOCATE for this trade setup. Present your STRONGEST case.
+
+Ticker: {ticker}
+Entry: {entry} | Stop Loss: {sl} | Take Profit: {tp1}
+Risk:Reward = 1:{risk_reward}
+Technical: RSI={technical_data.get('rsi','-')}, MACD={technical_data.get('macd_signal','-')}, Trend={technical_data.get('trend','-')}
+Macro Context: {macro_context}
+
+Present 3 bullet points arguing WHY this trade should be taken. Be specific with data."""
+        
+        # Round 2: Bear attacks
+        bear_prompt = f"""You are a BEAR RED-TEAMER. Your job is to DESTROY this trade thesis.
+
+Ticker: {ticker}
+Entry: {entry} | Stop Loss: {sl} | Take Profit: {tp1}
+Risk:Reward = 1:{risk_reward}
+Technical: RSI={technical_data.get('rsi','-')}, MACD={technical_data.get('macd_signal','-')}, Trend={technical_data.get('trend','-')}
+Macro Context: {macro_context}
+
+{{bull_argument}}
+
+Present 3 bullet points arguing WHY this trade should be REJECTED. Attack weak assumptions."""
+        
+        # Round 3: Arbiter decides
+        arbiter_prompt = f"""You are a neutral RISK ARBITER. Based on the Bull and Bear arguments below, 
+decide the verdict for this trade:
+
+Ticker: {ticker} | R:R = 1:{risk_reward}
+
+BULL CASE:
+{{bull_argument}}
+
+BEAR CASE:
+{{bear_argument}}
+
+Your verdict MUST be exactly one of:
+- APPROVED (Bull wins, trade is valid)
+- CONDITIONAL (Trade valid but needs modification — specify what)
+- VETOED (Bear wins, trade is too risky)
+
+Also score: Bull (0-100) and Bear (0-100).
+
+Format your response as:
+VERDICT: [APPROVED/CONDITIONAL/VETOED]
+BULL_SCORE: [0-100]
+BEAR_SCORE: [0-100]
+REASON: [one sentence explanation]"""
+        
+        try:
+            # Execute debate rounds
+            bull_response = self._call_gemini(bull_prompt, max_tokens=300)
+            
+            bear_filled = bear_prompt.replace("{bull_argument}", bull_response)
+            bear_response = self._call_gemini(bear_filled, max_tokens=300)
+            
+            arbiter_filled = arbiter_prompt.replace("{bull_argument}", bull_response).replace("{bear_argument}", bear_response)
+            arbiter_response = self._call_gemini(arbiter_filled, max_tokens=200)
+            
+            # Parse arbiter response
+            verdict = "APPROVED"  # default
+            bull_score = 50
+            bear_score = 50
+            reason = arbiter_response
+            
+            for line in arbiter_response.split('\n'):
+                line = line.strip()
+                if line.startswith('VERDICT:'):
+                    v = line.split(':', 1)[1].strip().upper()
+                    if v in ('APPROVED', 'CONDITIONAL', 'VETOED'):
+                        verdict = v
+                elif line.startswith('BULL_SCORE:'):
+                    try: bull_score = int(line.split(':', 1)[1].strip())
+                    except: pass
+                elif line.startswith('BEAR_SCORE:'):
+                    try: bear_score = int(line.split(':', 1)[1].strip())
+                    except: pass
+                elif line.startswith('REASON:'):
+                    reason = line.split(':', 1)[1].strip()
+            
+            return {
+                "verdict": verdict,
+                "reason": reason,
+                "bull_score": bull_score,
+                "bear_score": bear_score,
+                "debate_transcript": [
+                    {"role": "bull", "content": bull_response},
+                    {"role": "bear", "content": bear_response},
+                    {"role": "arbiter", "content": arbiter_response}
+                ],
+                "data_source": "live"
+            }
+        except Exception as e:
+            logger.warning(f"Bull/Bear debate failed for {ticker}: {e}")
+            return {
+                "verdict": "APPROVED",
+                "reason": f"Debate engine error: {e} — auto-approved",
+                "bull_score": 50,
+                "bear_score": 50,
+                "debate_transcript": [],
+                "data_source": "error"
+            }

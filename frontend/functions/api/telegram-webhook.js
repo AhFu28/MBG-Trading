@@ -118,9 +118,14 @@ export async function onRequestGet(context) {
 export async function onRequestPost(context) {
   const { request, env } = context;
 
-  // Security check: secret token header if configured
+  // Security: ENFORCE webhook secret — reject if not configured
+  const webhookSecret = env.TELEGRAM_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error("TELEGRAM_WEBHOOK_SECRET not configured — rejecting all webhook requests");
+    return new Response("Webhook secret not configured", { status: 500 });
+  }
   const secretHeader = request.headers.get("x-telegram-bot-api-secret-token");
-  if (env.TELEGRAM_WEBHOOK_SECRET && secretHeader !== env.TELEGRAM_WEBHOOK_SECRET) {
+  if (secretHeader !== webhookSecret) {
     return new Response("Unauthorized", { status: 403 });
   }
 

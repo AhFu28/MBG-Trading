@@ -89,6 +89,7 @@ def main():
     portfolio_summary = {}
     strategy_rankings = {}
     backtest_lab = {}
+    correlation_data = None
 
     try:
         logger.info("Running Advanced Analytics & Paper Portfolio...")
@@ -153,6 +154,19 @@ def main():
             if t in smc_analysis: plan["smc"] = smc_analysis[t]
             if t in bandarmology_iifs: plan["iifs"] = bandarmology_iifs[t]
             if t in forecasts: plan["forecast"] = forecasts[t]
+            
+            if brain:
+                debate_result = brain.run_bull_bear_debate(
+                    ticker=t,
+                    entry=plan.get('entry_price', 0),
+                    sl=plan.get('stop_loss', 0),
+                    tp1=plan.get('target_1', 0) or plan.get('take_profit_1', 0),
+                    technical_data=plan.get('technicals', {}),
+                    macro_context=macro_data.get('headline', '') if macro_data else ''
+                )
+                plan['debate'] = debate_result
+                if debate_result.get('verdict') == 'VETOED':
+                    plan['status'] = 'VETOED_BY_BEAR'
 
         if portfolio:
             for plan in trade_plans:
@@ -189,7 +203,7 @@ def main():
             
         try:
             logger.info("Running Archetype Backtests...")
-            backtest_lab = BacktestEngine().run_all_archetypes()
+            backtest_lab = BacktestEngine(history_dfs=history_dfs).run_all_archetypes()
         except Exception as e:
             logger.warning(f"BacktestEngine failed: {e}")
 
@@ -197,15 +211,35 @@ def main():
         broker_summaries = {}
         try:
             bs_fetcher = BrokerSummaryFetcher()
+            # 1. Fetch live IndexAlpha broker summary for top trade plan setups (efficient quota utilization)
+            priority_tickers = set()
+            for p in trade_plans[:5]:
+                ptick = p.get("clean_ticker") or p.get("ticker") or p.get("symbol", "").replace(".JK", "")
+                if ptick:
+                    priority_tickers.add(ptick)
+
+            for ptick in priority_tickers:
+                try:
+                    broker_summaries[ptick] = bs_fetcher.fetch_broker_summary(ptick)
+                except Exception as pe:
+                    logger.warning(f"Priority live broker summary failed for {ptick}: {pe}")
+
+            # 2. Fill the rest of the market universe with simulated coverage
             for rec in idx_data.get("all_records", []):
-                tick = rec.get("ticker", "")
+                tick = rec.get("ticker", "").replace(".JK", "")
                 pr = rec.get("price", 5000)
                 vol = rec.get("volume", 500000)
-                if tick:
+                if tick and tick not in broker_summaries:
                     broker_summaries[tick] = bs_fetcher.generate_broker_summary(tick, pr, vol)
-            logger.info(f"Generated {len(broker_summaries)} Broker Summaries.")
+            logger.info(f"Generated {len(broker_summaries)} Broker Summaries ({len(priority_tickers)} priority checked).")
         except Exception as e:
             logger.warning(f"BrokerSummary generation failed: {e}")
+
+        try:
+            from analyzer.correlation_matrix import compute_correlation_matrix
+            correlation_data = compute_correlation_matrix(history_dfs)
+        except Exception as e:
+            logger.warning(f"Correlation matrix failed: {e}")
 
     except Exception as e:
         logger.error(f"Advanced integration pipeline error: {e}")
@@ -220,7 +254,12 @@ def main():
         except Exception as be:
             logger.warning(f"Could not load existing bundle to merge: {be}")
 
+    from datetime import timezone
     bundle = {
+        "last_updated": datetime.now(timezone.utc).isoformat(),
+        "data_sources": {
+            "macro": macro_data.get("data_source", "unknown") if macro_data else "unknown"
+        },
         "macro_telemetry": macro_data or existing_bundle.get("macro_telemetry", {}),
         "conglomerates": idx_data.get("conglomerates") or existing_bundle.get("conglomerates", {}),
         "dividend_hunters": idx_data.get("dividend_hunters") or existing_bundle.get("dividend_hunters", []),
@@ -235,6 +274,7 @@ def main():
         "paper_portfolio": portfolio_summary or existing_bundle.get("paper_portfolio", {}),
         "strategy_rankings": strategy_rankings or existing_bundle.get("strategy_rankings", {}),
         "backtest_lab": backtest_lab or existing_bundle.get("backtest_lab", {}),
+        "correlation_matrix": correlation_data or existing_bundle.get("correlation_matrix"),
         "mode": args.mode,
         "execution_duration_sec": round((datetime.now() - start_time).total_seconds(), 2)
     }

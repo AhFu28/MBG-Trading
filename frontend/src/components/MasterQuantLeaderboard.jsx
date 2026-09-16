@@ -25,6 +25,7 @@ export default function MasterQuantLeaderboard({
   backtestLab = {},
   strategyRankings = [],
   brokerSummary = {},
+  bundle = null,
   onSelectTicker,
   onOpenLotCalc
 }) {
@@ -416,7 +417,7 @@ export default function MasterQuantLeaderboard({
 
       {activeMainTab === 'GLOBAL_MARKETS' && (
         <div style={{ padding: '12px' }}>
-          <GlobalMarketsTab onSelectTicker={onSelectTicker} macro={macro} />
+          <GlobalMarketsTab onSelectTicker={onSelectTicker} macro={macro} bundle={bundle} />
         </div>
       )}
 
@@ -428,7 +429,7 @@ export default function MasterQuantLeaderboard({
 
       {activeMainTab === 'PEARSON_CORRELATION' && (
         <div style={{ padding: '12px' }}>
-          <PearsonCorrelationWidget />
+          <PearsonCorrelationWidget correlationData={bundle?.correlation_data} />
         </div>
       )}
 

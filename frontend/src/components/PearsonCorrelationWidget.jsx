@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 
 const ASSETS = [
     { ticker: 'SPY', name: 'S&P 500', group: 'Equity' },
@@ -49,12 +49,16 @@ const getCellStyle = (val) => {
     return { background: '#3f121d', color: '#fecaca' };
 };
 
-export default function PearsonCorrelationWidget() {
+export default function PearsonCorrelationWidget({ correlationData }) {
     const [timeframe, setTimeframe] = useState('1M');
     const [activeTooltip, setActiveTooltip] = useState(null);
+    
+    const displayData = correlationData || CORRELATION_DATA;
 
     return (
         <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', padding: '16px', fontFamily: 'var(--font-mono)' }}>
+            {!correlationData && <div style={{fontSize:11,color:'#f59e0b',marginBottom:8}}>📊 Showing demo correlation data</div>}
+            
             {/* Header Controls */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -128,7 +132,7 @@ export default function PearsonCorrelationWidget() {
                                 </td>
                                 {ASSETS.map(col => {
                                     const key = `${row.ticker}-${col.ticker}`;
-                                    const val = CORRELATION_DATA[timeframe][key] !== undefined ? CORRELATION_DATA[timeframe][key] : 0.0;
+                                    const val = displayData[timeframe][key] !== undefined ? displayData[timeframe][key] : 0.0;
                                     const style = getCellStyle(val);
                                     return (
                                         <td

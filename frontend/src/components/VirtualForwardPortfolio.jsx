@@ -327,14 +327,14 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
             </tr>
           </thead>
           <tbody>
-            {activePositions.map((p, i) => {
+            {activePositions.map((p) => {
               const currentPrice = currentPrices[p.ticker] || p.currentPrice || p.entryPrice;
               const qty = p.allocation ? p.allocation / p.entryPrice : 0;
               const pnl = (currentPrice - p.entryPrice) * qty;
               const pnlPct = ((currentPrice - p.entryPrice) / p.entryPrice) * 100;
               
               return (
-                <tr key={i} style={{ borderBottom: '1px solid #222' }}>
+                <tr key={p.id || p.ticker} style={{ borderBottom: '1px solid #222' }}>
                   <td style={{ padding: '10px', fontWeight: 'bold' }}>{p.ticker}</td>
                   <td style={{ padding: '10px', color: '#aaa' }}>{p.strategy}</td>
                   <td style={{ padding: '10px' }}>{p.entryPrice}</td>
@@ -402,7 +402,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
             </tr>
           </thead>
           <tbody>
-            {closedPositions.map((p, i) => {
+            {closedPositions.map((p) => {
               const pnl = p.realizedPnL || 0;
               const result = pnl > 0 ? 'WIN' : pnl < 0 ? 'LOSS' : 'FLAT';
               let rr = '-';
@@ -412,7 +412,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
                 if (risk > 0) rr = `1:${(reward/risk).toFixed(2)}`;
               }
               return (
-                <tr key={i} style={{ borderBottom: '1px solid #222' }}>
+                <tr key={p.id || p.ticker} style={{ borderBottom: '1px solid #222' }}>
                   <td style={{ padding: '10px', color: '#888' }}>{p.date ? new Date(p.date).toLocaleDateString() : '-'}</td>
                   <td style={{ padding: '10px', fontWeight: 'bold' }}>{p.ticker}</td>
                   <td style={{ padding: '10px', color: getPnLColor(pnl) }}>{result} ({p.status})</td>

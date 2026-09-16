@@ -1,6 +1,8 @@
 import logging
 import json
 import urllib.request
+import requests
+import time
 from datetime import datetime
 
 logger = logging.getLogger("CryptoSpotFetcher")
@@ -51,8 +53,6 @@ class CryptoSpotFetcher:
         """Fetch live tick prices directly via TradingView Crypto Scanner (Bypasses ISP/Kominfo bans, 0 delay)"""
         prices = {}
         try:
-            import urllib.request
-            import json
             tv_tickers = [f"BINANCE:{pair}" for pair in self.target_pairs]
             payload = {
                 "symbols": {"tickers": tv_tickers},
@@ -108,9 +108,17 @@ class CryptoSpotFetcher:
         prices = {}
         try:
             url = "https://api.binance.com/api/v3/ticker/24hr"
-            resp = requests.get(url, timeout=6)
-            resp.raise_for_status()
-            data = resp.json()
+            data = None
+            for attempt in range(3):
+                try:
+                    resp = requests.get(url, timeout=6)
+                    resp.raise_for_status()
+                    data = resp.json()
+                    break
+                except requests.RequestException:
+                    if attempt == 2:
+                        raise
+                    time.sleep(2 ** attempt)
             for item in data:
                 sym = item.get("symbol")
                 if sym in self.target_pairs:
@@ -132,20 +140,9 @@ class CryptoSpotFetcher:
         if cg_prices:
             return cg_prices
 
-        logger.warning("Using calibrated reference baseline prices (2026 Live Checked).")
-        # 4. Fallback calibrated 2026 baseline prices
-        prices = {
-            "BTCUSDT": {"price": 76750.0, "change_24h": -2.0, "high_24h": 78500.0, "low_24h": 76500.0},
-            "ETHUSDT": {"price": 2415.0, "change_24h": -2.1, "high_24h": 2485.0, "low_24h": 2400.0},
-            "SOLUSDT": {"price": 99.2, "change_24h": -2.5, "high_24h": 102.5, "low_24h": 98.0},
-            "BNBUSDT": {"price": 575.0, "change_24h": -1.2, "high_24h": 585.0, "low_24h": 570.0},
-            "SUIUSDT": {"price": 0.75, "change_24h": -2.9, "high_24h": 0.78, "low_24h": 0.74},
-            "NEARUSDT": {"price": 2.45, "change_24h": -1.8, "high_24h": 2.55, "low_24h": 2.38},
-            "AVAXUSDT": {"price": 18.4, "change_24h": -1.5, "high_24h": 19.2, "low_24h": 17.9},
-            "LINKUSDT": {"price": 11.8, "change_24h": -1.1, "high_24h": 12.2, "low_24h": 11.5},
-            "RENDERUSDT": {"price": 2.85, "change_24h": -2.4, "high_24h": 3.05, "low_24h": 2.75},
-            "FETUSDT": {"price": 0.165, "change_24h": -3.7, "high_24h": 0.175, "low_24h": 0.160}
-        }
+        logger.critical("All sources failed. Returning empty list instead of hardcoded fallback prices.")
+        # 4. Fallback calibrated 2026 baseline prices removed to prevent silent fallback
+        prices = {}
         return prices
 
     def generate_top_10_spot_recommendations(self) -> list:

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export default function BloombergNewsWire({ macro, onSelectTicker }) {
+export default function BloombergNewsWire({ macro, bundle, onSelectTicker }) {
   if (!macro) return null;
 
   const affectedStocks = macro.idx_affected_stocks || [];
@@ -10,6 +10,18 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
   const ihsgVal = macro.ihsg_price || macro.jkse_price ? Number(macro.ihsg_price || macro.jkse_price).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '6,506.40';
   const ihsgChange = macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29;
   const isIhsgUp = ihsgChange >= 0;
+  
+  // Try to get crypto prices from bundle
+  const btcData = bundle?.crypto_spot_10?.find(c => c.pair === 'BTC/USDT' || c.pair === 'BTC');
+  const ethData = bundle?.crypto_spot_10?.find(c => c.pair === 'ETH/USDT' || c.pair === 'ETH');
+  
+  const btcPrice = btcData?.current_price ? `$${Number(btcData.current_price).toLocaleString()}` : '$77,168 [DEMO]';
+  const btcChg = btcData?.change_24h_pct !== undefined ? `${btcData.change_24h_pct >= 0 ? '+' : ''}${btcData.change_24h_pct}%` : '+0.78%';
+  const btcIsUp = btcData?.change_24h_pct !== undefined ? btcData.change_24h_pct >= 0 : true;
+
+  const ethPrice = ethData?.current_price ? `$${Number(ethData.current_price).toLocaleString()}` : '$2,463 [DEMO]';
+  const ethChg = ethData?.change_24h_pct !== undefined ? `${ethData.change_24h_pct >= 0 ? '+' : ''}${ethData.change_24h_pct}%` : '+1.04%';
+  const ethIsUp = ethData?.change_24h_pct !== undefined ? ethData.change_24h_pct >= 0 : true;
 
   // Multi-headline support
   const headlines = Array.isArray(macro.headlines) && macro.headlines.length > 0 
@@ -27,6 +39,16 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
   }, [headlines.length]);
 
   const [isExpanded, setIsExpanded] = useState(false);
+  
+  const tickerItems = [
+    { label: 'XAU/USD', val: `$${macro.gold_price || '4,374.4'}`, chg: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isUp: goldChange >= 0 },
+    { label: 'BRENT', val: `$${macro.brent_oil_price || '107.0'}`, chg: `${oilChange >= 0 ? '+' : ''}${oilChange}%`, isUp: oilChange >= 0 },
+    { label: 'DXY', val: `${macro.dxy_index || '99.08'}`, chg: `${dxyChange >= 0 ? '+' : ''}${dxyChange}%`, isUp: dxyChange >= 0 },
+    { label: 'US10Y', val: `${macro.us10y_yield || '4.94'}%`, chg: '+2 bp', isUp: true },
+    { label: 'IHSG', val: ihsgVal, chg: `${ihsgChange >= 0 ? '+' : ''}${ihsgChange}%`, isUp: isIhsgUp },
+    { label: 'BTC/USD', val: btcPrice, chg: btcChg, isUp: btcIsUp },
+    { label: 'ETH/USD', val: ethPrice, chg: ethChg, isUp: ethIsUp }
+  ];
 
   return (
     <div className='telemetry-panel' style={{ marginBottom: '8px', border: 'var(--border-hairline)' }}>
@@ -53,23 +75,7 @@ export default function BloombergNewsWire({ macro, onSelectTicker }) {
         {/* Continuous Running Marquee Ticker Tape */}
         <div className="marquee-ticker-container" title="Continuous Macro Feed (Hover to Pause)">
           <div className="marquee-ticker-track">
-            {[
-              { label: 'XAU/USD', val: `$${macro.gold_price || '4,374.4'}`, chg: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isUp: goldChange >= 0 },
-              { label: 'BRENT', val: `$${macro.brent_oil_price || '107.0'}`, chg: `${oilChange >= 0 ? '+' : ''}${oilChange}%`, isUp: oilChange >= 0 },
-              { label: 'DXY', val: `${macro.dxy_index || '99.08'}`, chg: `${dxyChange >= 0 ? '+' : ''}${dxyChange}%`, isUp: dxyChange >= 0 },
-              { label: 'US10Y', val: `${macro.us10y_yield || '4.94'}%`, chg: '+2 bp', isUp: true },
-              { label: 'IHSG', val: ihsgVal, chg: `${ihsgChange >= 0 ? '+' : ''}${ihsgChange}%`, isUp: isIhsgUp },
-              { label: 'BTC/USD', val: '$77,168', chg: '+0.78%', isUp: true },
-              { label: 'ETH/USD', val: '$2,463', chg: '+1.04%', isUp: true },
-              // Duplicate once to ensure seamless loop
-              { label: 'XAU/USD', val: `$${macro.gold_price || '4,374.4'}`, chg: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isUp: goldChange >= 0 },
-              { label: 'BRENT', val: `$${macro.brent_oil_price || '107.0'}`, chg: `${oilChange >= 0 ? '+' : ''}${oilChange}%`, isUp: oilChange >= 0 },
-              { label: 'DXY', val: `${macro.dxy_index || '99.08'}`, chg: `${dxyChange >= 0 ? '+' : ''}${dxyChange}%`, isUp: dxyChange >= 0 },
-              { label: 'US10Y', val: `${macro.us10y_yield || '4.94'}%`, chg: '+2 bp', isUp: true },
-              { label: 'IHSG', val: ihsgVal, chg: `${ihsgChange >= 0 ? '+' : ''}${ihsgChange}%`, isUp: isIhsgUp },
-              { label: 'BTC/USD', val: '$77,168', chg: '+0.78%', isUp: true },
-              { label: 'ETH/USD', val: '$2,463', chg: '+1.04%', isUp: true }
-            ].map((t, i) => (
+            {[...tickerItems, ...tickerItems].map((t, i) => (
               <span key={i} className="marquee-ticker-item">
                 <b>{t.label}</b> {t.val}
                 <span style={{ color: t.isUp ? '#34c759' : '#ff3b30' }}>

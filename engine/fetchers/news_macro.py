@@ -269,18 +269,34 @@ class NewsMacroFetcher:
 
     def fetch_macro_indicators(self) -> dict:
         """Fetch current prices and daily % changes for macro bellwethers"""
-        indicators = {
-            "gold_price": 2750.0,
-            "gold_change_pct": 0.45,
-            "brent_oil_price": 74.20,
-            "brent_oil_change_pct": 1.15,
-            "dxy_index": 104.50,
-            "dxy_change_pct": -0.10,
-            "us10y_yield": 4.28,
-            "us10y_change_pct": 0.05,
-            "ihsg_price": 6506.40,
-            "ihsg_change_pct": -1.29
-        }
+        import os, json
+        cache_file = os.path.join(os.path.dirname(__file__), "..", "cache", "last_known_macro.json")
+        indicators = {}
+        
+        try:
+            if os.path.exists(cache_file):
+                with open(cache_file, "r") as f:
+                    indicators = json.load(f)
+        except Exception as e:
+            logger.warning(f"Failed to read macro cache: {e}")
+
+        if not indicators:
+            logger.warning("No cache found, using absolute last resort hardcoded macro values.")
+            indicators = {
+                "gold_price": 2750.0,
+                "gold_change_pct": 0.45,
+                "brent_oil_price": 74.20,
+                "brent_oil_change_pct": 1.15,
+                "dxy_index": 104.50,
+                "dxy_change_pct": -0.10,
+                "us10y_yield": 4.28,
+                "us10y_change_pct": 0.05,
+                "ihsg_price": 6506.40,
+                "ihsg_change_pct": -1.29,
+                "data_source": "fallback"
+            }
+        else:
+            indicators["data_source"] = "cached"
 
         try:
             for key, symbol in self.tickers.items():
@@ -306,9 +322,18 @@ class NewsMacroFetcher:
                     elif key == "ihsg":
                         indicators["ihsg_price"] = round(current, 2)
                         indicators["ihsg_change_pct"] = change_pct
+            indicators["data_source"] = "live"
             logger.info("Successfully fetched live macro indicators from yfinance.")
+            
+            try:
+                os.makedirs(os.path.dirname(cache_file), exist_ok=True)
+                with open(cache_file, "w") as f:
+                    json.dump(indicators, f)
+            except Exception as e:
+                logger.warning(f"Failed to write macro cache: {e}")
+                
         except Exception as e:
-            logger.warning(f"Error fetching macro indicators via yfinance: {e}. Using calibrated fallback values.")
+            logger.warning(f"Error fetching macro indicators via yfinance: {e}. Using cached/fallback values.")
 
         # Also fetch ETF flows
         indicators["etf_flows"] = self.fetch_etf_flows()

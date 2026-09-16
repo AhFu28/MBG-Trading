@@ -6,6 +6,9 @@ on:
     - cron: '0 * * * *'
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
+permissions:
+  contents: write
+
 jobs:
   hourly-radar:
     runs-on: ubuntu-latest
@@ -33,6 +36,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          INDEX_ALPHA_API_KEY: ${{ secrets.INDEX_ALPHA_API_KEY }}
         run: |
           python engine/run_pipeline.py --mode hourly_crypto_macro
 
@@ -42,4 +46,5 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add frontend/public/data/ engine/cache/ || true
           git commit -m "chore(cron): sync hourly crypto & macro telemetry [skip ci]" || echo "No changes to commit"
+          git pull --rebase
           git push || echo "Push skipped"

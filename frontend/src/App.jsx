@@ -141,52 +141,55 @@ export default function App() {
     return new Date(safeIso);
   };
 
-  const loadBundle = async (silent = false) => {
-    try {
-      if (!silent) setLoading(true);
-      const res = await fetch('/data/latest_cockpit_bundle.json');
-      if (res.ok) {
-        const json = await res.json();
-        // Fallback if bundle is partial
-        if (!json.daily_trade_plans || !json.daily_trade_plans.length) {
-          try {
-            const fallbackPlans = await fetch('/data/daily_trade_plans.json');
-            if (fallbackPlans.ok) {
-              json.daily_trade_plans = await fallbackPlans.json();
-            }
-          } catch (e) {
-            console.warn('Fallback daily_trade_plans fetch failed:', e);
-          }
-        }
-        if (!json.crypto_spot_10 || !json.crypto_spot_10.length) {
-          try {
-            const fallbackCrypto = await fetch('/data/crypto_spot_10.json');
-            if (fallbackCrypto.ok) {
-              json.crypto_spot_10 = await fallbackCrypto.json();
-            }
-          } catch (e) {
-            console.warn('Fallback crypto_spot_10 fetch failed:', e);
-          }
-        }
-        setData(json);
-      } else {
-        console.error('Failed to load local bundle:', res.status);
-      }
-    } catch (err) {
-      console.error('Error fetching latest bundle:', err);
-    } finally {
-      if (!silent) setLoading(false);
-    }
-  };
+  const [syncTrigger, setSyncTrigger] = useState(0);
 
   useEffect(() => {
-    loadBundle();
-    // Auto-poll fresh telemetry every 300 seconds (5 mins) with HTTP caching
-    const interval = setInterval(() => {
+    const loadBundle = async (silent = false) => {
+      try {
+        if (!silent) setLoading(true);
+        const res = await fetch('/data/latest_cockpit_bundle.json');
+        if (res.ok) {
+          const json = await res.json();
+          // Fallback if bundle is partial
+          if (!json.daily_trade_plans || !json.daily_trade_plans.length) {
+            try {
+              const fallbackPlans = await fetch('/data/daily_trade_plans.json');
+              if (fallbackPlans.ok) {
+                json.daily_trade_plans = await fallbackPlans.json();
+              }
+            } catch (e) {
+              console.warn('Fallback daily_trade_plans fetch failed:', e);
+            }
+          }
+          if (!json.crypto_spot_10 || !json.crypto_spot_10.length) {
+            try {
+              const fallbackCrypto = await fetch('/data/crypto_spot_10.json');
+              if (fallbackCrypto.ok) {
+                json.crypto_spot_10 = await fallbackCrypto.json();
+              }
+            } catch (e) {
+              console.warn('Fallback crypto_spot_10 fetch failed:', e);
+            }
+          }
+          setData(json);
+        } else {
+          console.error('Failed to load local bundle:', res.status);
+        }
+      } catch (err) {
+        console.error('Error fetching latest bundle:', err);
+      } finally {
+        if (!silent) setLoading(false);
+      }
+    };
+
+    loadBundle(syncTrigger !== 0 ? false : false);
+
+    const intervalId = setInterval(() => {
       loadBundle(true);
     }, 300000);
-    return () => clearInterval(interval);
-  }, []);
+
+    return () => clearInterval(intervalId);
+  }, [syncTrigger]);
 
   const getTabLabel = (tab) => {
     switch (tab) {
@@ -294,7 +297,7 @@ export default function App() {
 
               {/* Sync Trigger Button */}
               <button
-                onClick={() => loadBundle(false)}
+                onClick={() => setSyncTrigger(prev => prev + 1)}
                 className="telemetry-btn"
                 style={{
                   background: 'var(--bg-panel-subtle)',
@@ -385,6 +388,7 @@ export default function App() {
                   backtestLab={data?.backtest_lab || {}}
                   strategyRankings={data?.strategy_rankings || []}
                   brokerSummary={data?.broker_summary || {}}
+                  bundle={data}
                   onSelectTicker={handleOpenChart}
                   onOpenLotCalc={handleOpenLotCalc}
                 />

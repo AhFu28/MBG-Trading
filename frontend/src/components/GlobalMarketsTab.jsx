@@ -25,7 +25,7 @@ function getZoneInfo(date, timeZone) {
   }
 }
 
-export default function GlobalMarketsTab({ onSelectTicker, macro }) {
+export default function GlobalMarketsTab({ onSelectTicker, macro, bundle }) {
   const [activeRegion, setActiveRegion] = useState('ALL');
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -166,7 +166,7 @@ export default function GlobalMarketsTab({ onSelectTicker, macro }) {
   const liveIhsgChange = macro?.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29;
 
   // Comprehensive Cross-Market Asset Universe
-  const assets = [
+  const fallbackAssets = [
     // Major World Indices
     { ticker: '^GSPC', name: 'S&P 500 Index', flag: '🇺🇸', price: '5,548.20', change: 0.64, high: '5,562.10', low: '5,520.40', region: 'MAJOR INDICES', market: 'GLOBAL' },
     { ticker: '^IXIC', name: 'Nasdaq Composite', flag: '🇺🇸', price: '17,420.50', change: 1.12, high: '17,490.00', low: '17,310.20', region: 'MAJOR INDICES', market: 'GLOBAL' },
@@ -215,10 +215,12 @@ export default function GlobalMarketsTab({ onSelectTicker, macro }) {
     { ticker: 'SGD/IDR', name: 'Singapore Dollar / Rupiah', flag: '🇸🇬/🇮🇩', price: '11.820', change: 0.08, high: '11.850', low: '11.800', region: 'FOREX & CURRENCIES', market: 'FX' },
   ];
 
+  const assets = bundle?.global_markets?.assets || fallbackAssets;
+
   const filtered = activeRegion === 'ALL' ? assets : assets.filter(a => a.region === activeRegion);
 
   // Currency Converter State
-  const rates = { USD: 1, IDR: 15680, EUR: 0.922, JPY: 154.2, SGD: 1.326, BTC: 0.000015, ETH: 0.00038 };
+  const rates = bundle?.global_markets?.rates || { USD: 1, IDR: 15680, EUR: 0.922, JPY: 154.2, SGD: 1.326, BTC: 0.000015, ETH: 0.00038 };
   const [fromCurr, setFromCurr] = useState('USD');
   const [toCurr, setToCurr] = useState('IDR');
   const [amount, setAmount] = useState(100);
@@ -227,7 +229,7 @@ export default function GlobalMarketsTab({ onSelectTicker, macro }) {
 
   return (
     <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', padding: '12px 14px', fontFamily: 'var(--font-mono)' }}>
-      
+      {!bundle?.global_markets && <div style={{fontSize:11,color:'#f59e0b',marginBottom:8}}>📊 Showing cached market data — live feed not available</div>}
       {/* 1. Global Session Clocks & Live Master Clock */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', padding: '5px 8px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: 'var(--text-muted)' }}>

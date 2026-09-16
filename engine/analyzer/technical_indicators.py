@@ -20,8 +20,8 @@ class TechnicalIndicators:
         
         # Exponential smoothing (Wilder's method)
         for i in range(period, len(series)):
-            avg_gain.iloc[i] = (avg_gain.iloc[i - 1] * (period - 1) + gain.iloc[i]) / period
-            avg_loss.iloc[i] = (avg_loss.iloc[i - 1] * (period - 1) + loss.iloc[i]) / period
+            avg_gain.iat[i] = (avg_gain.iat[i - 1] * (period - 1) + gain.iat[i]) / period
+            avg_loss.iat[i] = (avg_loss.iat[i - 1] * (period - 1) + loss.iat[i]) / period
             
         rs = avg_gain / (avg_loss + 1e-9)
         rsi = 100.0 - (100.0 / (1.0 + rs))

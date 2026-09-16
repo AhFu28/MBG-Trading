@@ -1,167 +1,198 @@
 import math
 import json
-import datetime
-import random
 import os
+import pandas as pd
+import numpy as np
 
 class BacktestEngine:
-    def __init__(self, initial_capital=100_000_000, fee_buy=0.0015, fee_sell=0.0025, slippage=0.002):
+    def __init__(self, history_dfs=None, initial_capital=100_000_000, fee_buy=0.0015, fee_sell=0.0025, slippage=0.002):
+        self.history_dfs = history_dfs or {}
         self.initial_capital = initial_capital
         self.fee_buy = fee_buy
         self.fee_sell = fee_sell
         self.slippage = slippage
         
-        self.archetypes_params = {
-            'BREAKOUT': {'win_rate': 0.48, 'avg_win': 0.082, 'avg_loss': 0.035},
-            'ACCUMULATION': {'win_rate': 0.58, 'avg_win': 0.055, 'avg_loss': 0.028},
-            'OVERSOLD_REBOUND': {'win_rate': 0.52, 'avg_win': 0.065, 'avg_loss': 0.032},
-            'PULLBACK': {'win_rate': 0.55, 'avg_win': 0.058, 'avg_loss': 0.030},
-            'SMC_ORDER_BLOCK': {'win_rate': 0.62, 'avg_win': 0.075, 'avg_loss': 0.031},
-            'DIVIDEND_TRAP': {'win_rate': 0.60, 'avg_win': 0.048, 'avg_loss': 0.024},
-            'FOREIGN_FLOW_MOMENTUM': {'win_rate': 0.64, 'avg_win': 0.085, 'avg_loss': 0.033}
-        }
+        self.archetypes = [
+            'BREAKOUT',
+            'OVERSOLD_REBOUND',
+            'FOREIGN_FLOW_MOMENTUM',
+            'DIVIDEND_PLAY',
+            'MEAN_REVERSION'
+        ]
 
-    def run_archetype_backtest(self, archetype: str, n_trades=100) -> dict:
-        if archetype not in self.archetypes_params:
-            raise ValueError(f"Unknown archetype: {archetype}")
+    def _compute_indicators(self, df):
+        df['MA20'] = df['Close'].rolling(20).mean()
+        df['MA50'] = df['Close'].rolling(50).mean()
+        df['volume_sma20'] = df['Volume'].rolling(20).mean()
         
-        params = self.archetypes_params[archetype]
-        win_rate = params['win_rate']
-        avg_win = params['avg_win']
-        avg_loss = params['avg_loss']
+        delta = df['Close'].diff()
+        gain = (delta.where(delta > 0, 0)).rolling(14).mean()
+        loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
+        rs = gain / (loss + 1e-9)
+        df['RSI'] = 100 - (100 / (1 + rs))
         
-        equity = self.initial_capital
-        wins = 0
-        losses = 0
-        gross_win = 0.0
-        gross_loss = 0.0
+        df['BB_middle'] = df['Close'].rolling(20).mean()
+        df['BB_std'] = df['Close'].rolling(20).std()
+        df['BB_lower'] = df['BB_middle'] - 2 * df['BB_std']
         
-        returns = []
+        return df
+
+    def _get_signals(self, df, archetype):
+        close = df['Close']
+        volume = df['Volume']
+        MA20 = df['MA20']
+        MA50 = df['MA50']
+        volume_sma20 = df['volume_sma20']
+        RSI = df['RSI']
+        BB_lower = df['BB_lower']
+
+        if archetype == 'BREAKOUT':
+            return (close > MA20) & (volume > volume_sma20 * 2.0)
+        elif archetype == 'OVERSOLD_REBOUND':
+            return (RSI < 35) & (close > BB_lower)
+        elif archetype == 'FOREIGN_FLOW_MOMENTUM':
+            return (close > MA50) & (volume > volume_sma20 * 1.5)
+        elif archetype == 'DIVIDEND_PLAY':
+            return (RSI < 45) & (close > MA50)
+        elif archetype == 'MEAN_REVERSION':
+            return (RSI < 30) | (close < BB_lower)
+        return pd.Series(False, index=df.index)
+
+    def _simulate_trade(self, df, entry_idx, entry_price, sl_price, tp1_price, tp2_price):
+        """Resolve a trade using real subsequent candles."""
+        for idx in range(entry_idx + 1, min(entry_idx + 30, len(df))):  # max 30 day hold
+            low = df['Low'].iloc[idx]
+            high = df['High'].iloc[idx]
+            
+            if low <= sl_price:
+                exit_price = sl_price * (1 - self.slippage)
+                return {'result': 'LOSS', 'exit_price': exit_price, 'exit_idx': idx, 
+                        'return_pct': ((exit_price * (1-self.fee_sell)) / (entry_price * (1+self.fee_buy)) - 1) * 100}
+            
+            if high >= tp1_price:
+                exit_price = tp1_price * (1 - self.slippage)
+                return {'result': 'WIN_TP1', 'exit_price': exit_price, 'exit_idx': idx,
+                        'return_pct': ((exit_price * (1-self.fee_sell)) / (entry_price * (1+self.fee_buy)) - 1) * 100}
+        
+        # Max hold period reached - exit at last close
+        exit_price = df['Close'].iloc[min(entry_idx + 29, len(df)-1)]
+        return {'result': 'TIMEOUT', 'exit_price': exit_price, 'exit_idx': min(entry_idx+29, len(df)-1),
+                'return_pct': ((exit_price * (1-self.fee_sell)) / (entry_price * (1+self.fee_buy)) - 1) * 100}
+
+    def run_archetype_backtest(self, archetype: str) -> dict:
+        all_trades = []
+        
+        # Process chronologically across all tickers if we want a true global equity curve
+        # But grouping by ticker is fine for performance. We can sort trades by date later.
+        
+        for ticker, df in self.history_dfs.items():
+            if len(df) < 50:
+                continue
+                
+            df = df.copy()
+            df = self._compute_indicators(df)
+            signals = self._get_signals(df, archetype)
+            signal_indices = np.where(signals)[0]
+            
+            i = 0
+            while i < len(signal_indices):
+                entry_idx = signal_indices[i]
+                if entry_idx >= len(df) - 1:
+                    break
+                
+                entry_price = df['Close'].iloc[entry_idx]
+                sl_price = entry_price * 0.95
+                tp1_price = entry_price * 1.05
+                tp2_price = entry_price * 1.10
+                
+                trade = self._simulate_trade(df, entry_idx, entry_price, sl_price, tp1_price, tp2_price)
+                # Store entry time for sorting
+                trade['entry_time'] = df.index[entry_idx] if isinstance(df.index, pd.DatetimeIndex) else entry_idx
+                all_trades.append(trade)
+                
+                exit_idx = trade['exit_idx']
+                next_i = i + 1
+                while next_i < len(signal_indices) and signal_indices[next_i] <= exit_idx:
+                    next_i += 1
+                i = next_i
+                
+        # Sort trades by entry_time to build chronological equity curve
+        all_trades.sort(key=lambda x: x['entry_time'] if isinstance(x['entry_time'], pd.Timestamp) else x['entry_time'])
+        
+        if not all_trades:
+            return {
+                "win_rate_pct": 0.0,
+                "avg_return_pct": 0.0,
+                "sharpe_ratio": 0.0,
+                "max_drawdown_pct": 0.0,
+                "total_trades": 0,
+                "equity_curve": [1.0] * 30,
+                "sample_trades": []
+            }
+            
+        wins = [t for t in all_trades if t['return_pct'] > 0]
+        win_rate = (len(wins) / len(all_trades)) * 100
+        returns = [t['return_pct'] for t in all_trades]
+        avg_return = np.mean(returns)
+        std_return = np.std(returns) if len(returns) > 1 else 0.0
+        
+        sharpe_ratio = 0.0
+        if std_return > 0:
+            sharpe_ratio = (avg_return) / std_return * math.sqrt(252)
+            
+        equity = 1.0
         equity_curve_all = [equity]
-        
         peak_equity = equity
-        max_drawdown_pct = 0.0
-        max_drawdown_value = 0.0
+        max_drawdown = 0.0
         
-        for _ in range(n_trades):
-            trade_friction = self.fee_buy + self.fee_sell + (2 * self.slippage)
-            is_win = random.random() < win_rate
-            
-            if is_win:
-                ret = random.gauss(avg_win, avg_win * 0.2)
-                if ret < 0.01: ret = 0.01
-                net_ret = ret - trade_friction
-                trade_pnl = equity * net_ret
-                wins += 1
-                gross_win += trade_pnl
-            else:
-                ret = random.gauss(avg_loss, avg_loss * 0.2)
-                if ret < 0.01: ret = 0.01
-                net_ret = -ret - trade_friction
-                trade_pnl = equity * net_ret
-                losses += 1
-                gross_loss += abs(trade_pnl)
-            
-            equity += trade_pnl
-            returns.append(net_ret)
+        for t in all_trades:
+            equity *= (1 + t['return_pct'] / 100.0)
             equity_curve_all.append(equity)
-            
             if equity > peak_equity:
                 peak_equity = equity
-            else:
-                dd_val = peak_equity - equity
-                dd_pct = dd_val / peak_equity
-                if dd_pct > max_drawdown_pct:
-                    max_drawdown_pct = dd_pct
-                    max_drawdown_value = dd_val
-        
-        # sample down to 30 points for the equity curve
+            dd = (peak_equity - equity) / peak_equity * 100
+            if dd > max_drawdown:
+                max_drawdown = dd
+                
         step = max(1, len(equity_curve_all) // 30)
         equity_curve_sampled = equity_curve_all[::step][:30]
-        if equity_curve_all[-1] not in equity_curve_sampled:
-            equity_curve_sampled.append(equity_curve_all[-1])
-        
-        mean_return = sum(returns) / len(returns) if returns else 0
-        variance = sum((r - mean_return) ** 2 for r in returns) / len(returns) if returns else 0
-        std_return = math.sqrt(variance)
-        
-        # Risk free rate approx 6% per year
-        rf_daily = 0.06 / 252
-        sharpe_ratio = (mean_return - rf_daily) / (std_return + 1e-9) * math.sqrt(252)
-        
-        downside_returns = [r for r in returns if r < 0]
-        downside_variance = sum(r ** 2 for r in downside_returns) / len(returns) if returns else 0
-        std_downside = math.sqrt(downside_variance)
-        sortino_ratio = (mean_return - rf_daily) / (std_downside + 1e-9) * math.sqrt(252)
-        
-        profit_factor = gross_win / gross_loss if gross_loss > 0 else float('inf')
-        total_pnl = equity - self.initial_capital
-        total_return_pct = (total_pnl / self.initial_capital) * 100
-        expectancy = (win_rate * avg_win) - ((1 - win_rate) * avg_loss)
-        expectancy_pct = expectancy * 100
-        
+        while len(equity_curve_sampled) < 30:
+            equity_curve_sampled.append(equity_curve_sampled[-1] if equity_curve_sampled else 1.0)
+            
+        # Format sample trades to avoid non-serializable datetimes
+        sample_trades_clean = []
+        for t in all_trades[:5]:
+            clean_t = t.copy()
+            if 'entry_time' in clean_t and isinstance(clean_t['entry_time'], pd.Timestamp):
+                clean_t['entry_time'] = str(clean_t['entry_time'])
+            sample_trades_clean.append(clean_t)
+
         return {
-            "total_trades": n_trades,
-            "wins": wins,
-            "losses": losses,
-            "win_rate_pct": (wins / n_trades) * 100 if n_trades > 0 else 0,
-            "total_pnl": total_pnl,
-            "total_return_pct": total_return_pct,
-            "profit_factor": profit_factor,
-            "sharpe_ratio": sharpe_ratio,
-            "sortino_ratio": sortino_ratio,
-            "max_drawdown_pct": max_drawdown_pct * 100,
-            "max_drawdown_value": max_drawdown_value,
-            "expectancy_pct": expectancy_pct,
-            "equity_curve": equity_curve_sampled
+            "win_rate_pct": float(win_rate),
+            "avg_return_pct": float(avg_return),
+            "sharpe_ratio": float(sharpe_ratio),
+            "max_drawdown_pct": float(max_drawdown),
+            "total_trades": int(len(all_trades)),
+            "equity_curve": [float(x) for x in equity_curve_sampled[:30]],
+            "sample_trades": sample_trades_clean
         }
 
     def run_all_archetypes(self) -> dict:
         results = {}
-        equity_curves = {}
-        best_performer = None
-        best_return = -float('inf')
-        
-        for archetype in self.archetypes_params.keys():
-            res = self.run_archetype_backtest(archetype)
-            # Remove equity_curve from result dict to store separately
-            eq_curve = res.pop("equity_curve")
-            results[archetype] = res
-            equity_curves[archetype] = eq_curve
-            
-            if res["total_return_pct"] > best_return:
-                best_return = res["total_return_pct"]
-                best_performer = archetype
-                
-        final_output = {
-            "summary": {
-                "total_archetypes_tested": len(self.archetypes_params),
-                "best_performer": best_performer,
-                "best_return_pct": best_return
-            },
-            "archetypes": results,
-            "best_performer": best_performer,
-            "equity_curves": equity_curves
-        }
-        return final_output
-        
+        for archetype in self.archetypes:
+            results[archetype] = self.run_archetype_backtest(archetype)
+        return results
+
     def save_to_cache(self, output_dict):
-        # path is relative to the root of the project typically, but let's make it robust
         cache_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'cache')
         os.makedirs(cache_dir, exist_ok=True)
         file_path = os.path.join(cache_dir, 'backtest_results.json')
-        
         with open(file_path, 'w') as f:
             json.dump(output_dict, f, indent=4)
-        
         return file_path
 
 if __name__ == '__main__':
+    # Test script if run directly
     engine = BacktestEngine()
     results = engine.run_all_archetypes()
-    print("Backtest results summary:")
-    print(json.dumps(results["summary"], indent=2))
-    print(f"Best Performer: {results['best_performer']}")
-    
-    saved_path = engine.save_to_cache(results)
-    print(f"Saved results to {saved_path}")
+    print(json.dumps(results, indent=2))

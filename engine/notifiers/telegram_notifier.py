@@ -2,6 +2,8 @@ import os
 import json
 import logging
 import urllib.request
+import urllib.error
+import html
 from typing import List, Dict, Any, Optional
 
 logger = logging.getLogger("TelegramNotifier")
@@ -70,6 +72,18 @@ class TelegramNotifier:
                 else:
                     logger.warning(f"Telegram API responded with status: {resp.status}")
                     return False
+        except urllib.error.HTTPError as e:
+            try:
+                err_resp = json.loads(e.read().decode("utf-8"))
+                migrate_id = err_resp.get("parameters", {}).get("migrate_to_chat_id")
+                if migrate_id:
+                    logger.info(f"Telegram group upgraded to supergroup. Migrating chat_id from {target_chat} to {migrate_id} and retrying...")
+                    self.chat_id = str(migrate_id)
+                    return self.send_html_message(html_text, chat_id=str(migrate_id), reply_to_message_id=reply_to_message_id)
+            except Exception as parse_err:
+                logger.debug(f"Error parsing Telegram error response: {parse_err}")
+            logger.error(f"Failed to send Telegram message: {e}")
+            return False
         except Exception as e:
             logger.error(f"Failed to send Telegram message: {e}")
             return False
@@ -90,19 +104,19 @@ class TelegramNotifier:
         ]
 
         for p in idx_plans:
-            sym = p.get("clean_ticker", p.get("symbol"))
+            sym = str(p.get("clean_ticker", p.get("symbol")))
             entry = p.get("entry_price", 0)
             sl = p.get("stop_loss", 0)
             tp1 = p.get("target_1", 0)
             rr = p.get("risk_reward_ratio", 2.0)
-            signal = p.get("technical_signal", "BUY")
+            signal = str(p.get("technical_signal", "BUY"))
 
             # Calculate safe lot size
             risk = max(1, entry - sl)
             safe_lots = max(1, int(1000000 / (risk * 100)))
 
             lines.append(
-                f"🟢 <b>${sym}</b> — Rekomendasi: <b>{signal}</b>\n"
+                f"🟢 <b>${html.escape(sym)}</b> — Rekomendasi: <b>{html.escape(signal)}</b>\n"
                 f"  ▫️ Buy Area   : Rp {entry:,}\n"
                 f"  🔴 Stop Loss (SL) : Rp {sl:,}\n"
                 f"  🟢 Take Profit (TP): Rp {tp1:,} (R:R 1:{rr})\n"
@@ -113,12 +127,12 @@ class TelegramNotifier:
             lines.append("━━━━━━━━━━━━━━━━━━━━━")
             lines.append("🪙 <b>KRIPTO PILIHAN (SPOT USDT):</b>")
             for c in crypto_plans:
-                sym = c.get("symbol")
+                sym = str(c.get("symbol"))
                 c_entry = c.get("entry_price")
                 c_sl = c.get("stop_loss")
                 c_tp1 = c.get("target_1")
                 lines.append(
-                    f"🟢 <b>{sym}</b> — Rekomendasi: <b>Beli Spot</b>\n"
+                    f"🟢 <b>{html.escape(sym)}</b> — Rekomendasi: <b>Beli Spot</b>\n"
                     f"  ▫️ Buy Area   : ${c_entry}\n"
                     f"  🔴 Stop Loss  : ${c_sl}\n"
                     f"  🟢 Take Profit: ${c_tp1}\n"
@@ -148,7 +162,7 @@ class TelegramNotifier:
 
         lines = [
             f"🚨 <b>KABAR PASAR KILAT [{severity}]</b>\n",
-            f"📌 <b>Headline:</b> {macro_data.get('headline', 'Pergerakan Pasar Global')}\n",
+            f"📌 <b>Headline:</b> {html.escape(str(macro_data.get('headline', 'Pergerakan Pasar Global')))}\n",
             "🌍 <b>Kondisi Pasar Dunia:</b>",
             f"  • Emas Dunia  : ${gold_p:,.2f} ({'+' if gold_c > 0 else ''}{gold_c}%) {'🟢' if gold_c > 0 else '🔴'}",
             f"  • Minyak Brent: ${oil_p:,.2f} ({'+' if oil_c > 0 else ''}{oil_c}%) {'🟢' if oil_c > 0 else '🔴'}",
@@ -160,9 +174,12 @@ class TelegramNotifier:
         if affected_stocks:
             for s in affected_stocks:
                 impact_emoji = "🟢" if s.get("impact") == "BULLISH" else "🔴" if s.get("impact") == "BEARISH" else "🟡"
-                lines.append(f"  {impact_emoji} <b>${s.get('ticker')}</b>: {s.get('reason')}")
+                tck = html.escape(str(s.get('ticker', '')))
+                rsn = html.escape(str(s.get('reason', '')))
+                lines.append(f"  {impact_emoji} <b>${tck}</b>: {rsn}")
         else:
-            lines.append("  • Sektor: " + ", ".join(macro_data.get("idx_affected_sectors", ["PASAR GLOBAL"])))
+            sectors = macro_data.get("idx_affected_sectors", ["PASAR GLOBAL"])
+            lines.append("  • Sektor: " + html.escape(", ".join(sectors)))
 
         lines.append("\n💡 <i>Saran: Cermati harga saat pembukaan. Hindari FOMO jika harga sudah naik tinggi!</i>")
         msg = "\n".join(lines)
@@ -175,11 +192,11 @@ class TelegramNotifier:
 
         lines = [
             "☕ <b>MIDDAY MARKET RECAP (SESI 1)</b>",
-            f"IHSG Sesi 1: <b>{ihsg_change}</b>\n",
+            f"IHSG Sesi 1: <b>{html.escape(str(ihsg_change))}</b>\n",
             "━━━━━━━━━━━━━━━━━━━━━",
             "🐳 <b>FOREIGN FLOW TRACKER (ARUS DANA ASING):</b>",
-            f"  🟢 Net Foreign Buy  : {', '.join(top_buy) if top_buy else '-'}",
-            f"  🔴 Net Foreign Sell : {', '.join(top_sell) if top_sell else '-'}\n",
+            f"  🟢 Net Foreign Buy  : {html.escape(', '.join(top_buy)) if top_buy else '-'}",
+            f"  🔴 Net Foreign Sell : {html.escape(', '.join(top_sell)) if top_sell else '-'}\n",
             "📋 <b>STRATEGI SESI 2 (13:30 WIB):</b>",
             "  • Cermati saham yang konsisten diakumulasi asing.",
             "  • Tetap tunggu konfirmasi volume sebelum masuk."
@@ -194,7 +211,7 @@ class TelegramNotifier:
         lines = [
             "⚠️ <b>PERINGATAN RISIKO PASAR</b>",
             f"Status: 🔴 <b>VOLATILITAS TINGGI</b>\n",
-            f"📌 <b>Kondisi:</b> {reason}\n",
+            f"📌 <b>Kondisi:</b> {html.escape(str(reason))}\n",
             "🛡️ <b>ACTION PLAN UNTUK TRADER:</b>",
             "  🔴 Jangan serok bawah (Catching Falling Knife) sebelum ada pantulan.",
             "  🔴 Pasang Trailing Stop untuk mengamankan posisi yang masih profit.",

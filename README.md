@@ -10,8 +10,8 @@
 
 Web dashboard dilindungi oleh **Password Gate SHA-256** (anti-brute force, auto lockout setelah 5x salah, session 24 jam):
 
-- **Master Password**: `MBG::Xk9#Tr4d3!C0ckp1t_Zw&Qr7`
-- *Catatan: Password di-hash menggunakan Web Crypto API, tidak tersimpan dalam bentuk plain text di client.*
+- **Master Password**: *(Set via environment variable `PASSWORD_HASH`. See `.env.example` for setup.)*
+- *Catatan: Password di-hash menggunakan SHA-256 pada backend Vercel, tidak tersimpan dalam bentuk plain text di client.*
 
 ---
 
@@ -84,7 +84,7 @@ npm run dev
 ```
 1. Buka browser di `http://localhost:3000`.
 2. Halaman terkunci oleh **Password Gate**.
-3. Masukkan password: `MBG::Xk9#Tr4d3!C0ckp1t_Zw&Qr7` lalu klik **AUTHENTICATE**.
+3. Masukkan password yang telah Anda konfigurasi di `.env` lalu klik **AUTHENTICATE**.
 4. Dashboard telemetry akan terbuka penuh.
 
 ---
@@ -180,7 +180,7 @@ GitHub Actions akan menjalankan engine secara otomatis setiap jam (kripto & makr
 
 ### TAHAP 6: Cara Menggunakan & Operasional Sehari-hari
 
-1. **Buka Web**: Kunjungi URL Vercel Anda, ketik password `MBG::Xk9#Tr4d3!C0ckp1t_Zw&Qr7` untuk membuka dashboard.
+1. **Buka Web**: Kunjungi URL Vercel Anda, ketik password yang telah Anda konfigurasi di `.env` untuk membuka dashboard.
 2. **Cek Telegram Pagi (07:15 WIB)**: Baca ringkasan Top 5 Saham BEI & Top 5 Spot Kripto langsung dari HP Anda.
 3. **Cek Grafik Real-Time**: Di dashboard web, klik tombol **"📈 LAUNCH TRADINGVIEW"** atau klik ticker saham/kripto apa pun untuk memunculkan chart interaktif TradingView lengkap dengan indikator MA20, RSI, dan Volume.
 4. **Trigger Manual**: Jika sewaktu-waktu ingin memperbarui data secara instan tanpa menunggu jam cron:

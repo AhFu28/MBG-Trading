@@ -465,11 +465,11 @@ const OrderBookSimulator = ({
                   </div>
 
                   <div>
-                    {bidsWithCumulative.map((bid, i) => {
+                    {bidsWithCumulative.map((bid) => {
                       const depthPercent = ((bid.cumulative / maxCumulativeVol) * 100).toFixed(1);
                       return (
                         <div 
-                          key={i} 
+                          key={`bid-${bid.price}`} 
                           style={{
                             display: 'grid',
                             gridTemplateColumns: '1fr 1.2fr 1fr',
@@ -529,11 +529,11 @@ const OrderBookSimulator = ({
                   </div>
 
                   <div>
-                    {asksWithCumulative.map((ask, i) => {
+                    {asksWithCumulative.map((ask) => {
                       const depthPercent = ((ask.cumulative / maxCumulativeVol) * 100).toFixed(1);
                       return (
                         <div 
-                          key={i} 
+                          key={`ask-${ask.price}`} 
                           style={{
                             display: 'grid',
                             gridTemplateColumns: '1fr 1.2fr 1fr',
@@ -638,8 +638,8 @@ const OrderBookSimulator = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {activeBrokerSummary.top_buyers.map((b, i) => (
-                      <tr key={i} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.03)' }}>
+                    {activeBrokerSummary.top_buyers.map((b) => (
+                      <tr key={`buyer-${b.broker}`} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.03)' }}>
                         <td style={{ padding: '5px 0', fontWeight: 800, color: '#fff' }}>
                           <span style={{ background: 'rgba(0, 208, 132, 0.15)', color: '#00d084', padding: '1px 4px', borderRadius: '3px', marginRight: '4px' }}>
                             {b.broker}
@@ -679,8 +679,8 @@ const OrderBookSimulator = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {activeBrokerSummary.top_sellers.map((s, i) => (
-                      <tr key={i} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.03)' }}>
+                    {activeBrokerSummary.top_sellers.map((s) => (
+                      <tr key={`seller-${s.broker}`} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.03)' }}>
                         <td style={{ padding: '5px 0', fontWeight: 800, color: '#fff' }}>
                           <span style={{ background: 'rgba(255, 77, 77, 0.15)', color: '#ff4d4d', padding: '1px 4px', borderRadius: '3px', marginRight: '4px' }}>
                             {s.broker}
