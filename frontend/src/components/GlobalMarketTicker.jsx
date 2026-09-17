@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function getZoneInfo(date, timeZone) {
   try {
@@ -122,7 +122,10 @@ export default function GlobalMarketTicker({ onNavigateGlobal }) {
         border: 'var(--border-hairline)',
         cursor: 'pointer',
         userSelect: 'none',
-        flexWrap: 'nowrap'
+        flexWrap: 'nowrap',
+        maxWidth: '100%',
+        overflowX: 'auto',
+        WebkitOverflowScrolling: 'touch'
       }}
     >
       <span style={{
