@@ -18,14 +18,7 @@ export default function HomeDashboardTab({
   const [newsViewMode, setNewsViewMode] = useState('scroll'); // 'scroll' (all items scrollable) or 'compact' (top 15)
 
   useEffect(() => {
-    if (!data?.last_updated) return;
-    const lastUpdate = new Date(data.last_updated);
-    const now = new Date();
-    const diffHours = (now - lastUpdate) / (1000 * 60 * 60);
-    
-    if (diffHours > 6) {
-      setDataStatus('stale');
-    } else if (data?.data_sources && Object.values(data.data_sources).some(s => s === 'fallback')) {
+    if (data?.data_sources && Object.values(data.data_sources).some(s => s === 'fallback')) {
       setDataStatus('fallback');
     } else {
       setDataStatus('live');
@@ -135,18 +128,6 @@ export default function HomeDashboardTab({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', boxSizing: 'border-box' }}>
 
-      {dataStatus === 'stale' && (
-        <div style={{background:'#dc2626',color:'#fff',padding:'8px 16px',borderRadius:8,marginBottom:12,display:'flex',alignItems:'center',gap:8,fontSize:13,fontWeight:600}}>
-          ⚠️ DATA STALE — Last updated: {data?.last_updated ? new Date(data.last_updated).toLocaleString('id-ID') : 'Unknown'}. Pipeline may be down.
-          {data?.section_timestamps && (
-            <span style={{fontSize: '9px', marginLeft: '8px', opacity: 0.8}}>
-              IDX: {data.section_timestamps?.idx ? new Date(data.section_timestamps.idx).toLocaleTimeString('id-ID') : 'N/A'} | 
-              Crypto: {data.section_timestamps?.crypto ? new Date(data.section_timestamps.crypto).toLocaleTimeString('id-ID') : 'N/A'} | 
-              Macro: {data.section_timestamps?.macro ? new Date(data.section_timestamps.macro).toLocaleTimeString('id-ID') : 'N/A'}
-            </span>
-          )}
-        </div>
-      )}
       {dataStatus === 'fallback' && (
         <div style={{background:'#d97706',color:'#fff',padding:'8px 16px',borderRadius:8,marginBottom:12,display:'flex',alignItems:'center',gap:8,fontSize:13,fontWeight:600}}>
           📡 OFFLINE MODE — Some market data using cached/fallback values. Live feeds may be disrupted.
