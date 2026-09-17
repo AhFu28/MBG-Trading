@@ -157,10 +157,10 @@ GitHub Actions akan menjalankan engine secara otomatis setiap jam (kripto & makr
 | `SUPABASE_URL` | URL project Supabase Anda | Opsional (fallback otomatis ke file JSON) |
 | `SUPABASE_KEY` | Service Role Key Supabase Anda | Opsional |
 
-4. Aktifkan Workflow Permissions:
+4. Workflow Permissions:
    - Masih di tab **Settings** $\to$ **Actions** $\to$ **General**.
    - Di bagian **Workflow permissions**, pilih **Read and write permissions**.
-   - Klik **Save**. *(Ini diperlukan agar GitHub Actions dapat meng-commit file data terbaru ke repositori).*
+   - Klik **Save**. *(Digunakan jika ingin memicu eksekusi on-demand pipeline analitik).*
 
 ---
 
