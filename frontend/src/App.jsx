@@ -17,6 +17,7 @@ const ForexCommandTab = lazy(() => import('./components/ForexCommandTab.jsx'));
 const USStockTab = lazy(() => import('./components/USStockTab.jsx'));
 const MarketHeatmapTab = lazy(() => import('./components/MarketHeatmapTab.jsx'));
 const NewsDetailModal = lazy(() => import('./components/NewsDetailModal.jsx'));
+const SecurityHubDrawer = lazy(() => import('./components/SecurityHubDrawer.jsx'));
 
 const jakartaTimeFormatter = new Intl.DateTimeFormat('id-ID', {
   timeZone: 'Asia/Jakarta',
@@ -163,6 +164,25 @@ export default function App() {
     setNewsModal(prev => ({ ...prev, isOpen: false }));
   }, []);
 
+  // Institutional Security Hub Drawer State
+  const [securityHub, setSecurityHub] = useState({
+    isOpen: false,
+    symbol: 'BBCA',
+    market: 'IDX'
+  });
+
+  const handleOpenSecurityHub = useCallback((symbol = 'BBCA', market = 'IDX') => {
+    setSecurityHub({
+      isOpen: true,
+      symbol: symbol,
+      market: market
+    });
+  }, []);
+
+  const handleCloseSecurityHub = useCallback(() => {
+    setSecurityHub(prev => ({ ...prev, isOpen: false }));
+  }, []);
+
   const parseSafeDate = (isoString) => {
     if (!isoString) return null;
     const safeIso = isoString.endsWith('Z') || isoString.includes('+') ? isoString : isoString + 'Z';
@@ -279,7 +299,7 @@ export default function App() {
           newsCount={(data?.macro_telemetry?.live_news || []).length}
           livePrices={livePrices}
           flashMap={flashMap}
-          onSelectTicker={handleOpenChart}
+          onSelectTicker={handleOpenSecurityHub}
         />
 
         {/* ===== MAIN CONTENT AREA ===== */}
@@ -309,91 +329,84 @@ export default function App() {
               {/* Bursa Luar Negeri (Global Market Sessions Ticker) */}
               <GlobalMarketTicker onNavigateGlobal={() => setActiveTab('GLOBAL_MARKETS')} />
 
-              {/* Theme Toggle Button */}
-              <button
-                onClick={toggleTheme}
-                className="telemetry-btn"
-                style={{
-                  background: 'var(--bg-panel-subtle)',
-                  borderColor: 'var(--border-color)',
-                  color: 'var(--text-primary)',
-                  padding: '5px 10px',
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px'
-                }}
-                title="Ganti Mode Gelap / Terang"
-              >
-                <span>{theme === 'dark' ? '☀️' : '🌙'}</span>
-                <span>{theme === 'dark' ? 'LIGHT' : 'DARK'}</span>
-              </button>
-
-              {/* Sync Trigger Button */}
-              <button
-                onClick={() => {
-                  setSyncTrigger(prev => prev + 1);
-                  refetchAll();
-                }}
-                className="telemetry-btn"
-                style={{
-                  background: 'var(--bg-panel-subtle)',
-                  borderColor: 'var(--border-color)',
-                  color: 'var(--text-primary)',
-                  padding: '5px 10px',
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px'
-                }}
-                title="Sinkronkan & Refresh Telemetri Terbaru"
-              >
-                <span>🔄</span>
-                <span>SYNC</span>
-              </button>
-
-              {/* Sync & Live Stream Status Badge */}
-              <div 
-                style={{ 
-                  fontSize: '10px', 
-                  padding: '5px 8px', 
-                  borderRadius: 'var(--radius-xs)', 
-                  background: 'var(--bg-panel-subtle)', 
-                  color: isWsConnected ? 'var(--accent-green)' : 'var(--accent-gold)', 
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: '700',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  border: 'var(--border-hairline)'
-                }}
-                title={lastUpdateTime ? `Last Tick: ${lastUpdateTime.toLocaleTimeString('id-ID')} WIB` : 'Live Stream'}
-              >
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: isWsConnected ? 'var(--accent-green)' : 'var(--accent-gold)', boxShadow: isWsConnected ? '0 0 5px var(--accent-green)' : 'none' }} />
-                <span>{isWsConnected ? 'STREAM 1S LIVE' : 'SYNCED'}</span>
-              </div>
-
-              {/* Live Real-time Clock */}
+              {/* Master Terminal Time */}
               <HeaderClock />
 
+              {/* Quick Launch Lot Calculator Modal */}
+              <button 
+                className="telemetry-btn"
+                onClick={() => handleOpenLotCalc()}
+                style={{ 
+                  fontSize: '11px', 
+                  padding: '5px 10px', 
+                  color: 'var(--accent-gold)', 
+                  borderColor: 'var(--accent-gold)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+                title="Kalkulator Ukuran Lot & Manajemen Risiko MBG Apex"
+              >
+                <span>💰</span>
+                <span>Lot Calc</span>
+              </button>
+
+              {/* Manual Refresh / Sync Button */}
+              <button 
+                className="telemetry-btn"
+                onClick={() => {
+                  refetchAll();
+                  setSyncTrigger(prev => prev + 1);
+                }}
+                style={{ fontSize: '11px', padding: '5px 8px' }}
+                title="Sinkronisasi Ulang Seluruh Data Ticker"
+              >
+                🔄
+              </button>
+
+              {/* Dark / Light Mode Switcher */}
+              <button
+                className="telemetry-btn"
+                onClick={toggleTheme}
+                style={{
+                  fontSize: '11px',
+                  padding: '5px 10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px'
+                }}
+                title={theme === 'dark' ? 'Ganti ke Mode Terang' : 'Ganti ke Mode Gelap'}
+              >
+                <span>{theme === 'dark' ? '☀️' : '🌙'}</span>
+                <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
+              </button>
             </div>
           </header>
 
-          {/* 2. Main Tab Body with Suspense */}
-          <Suspense fallback={<div className="telemetry-panel" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-primary)' }}>Memuat modul MBG APEX...</div>}>
-            {loading ? (
-              <div className="telemetry-panel" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-primary)' }}>
-                Memuat Telemetri MBG APEX Quant Terminal...
-              </div>
+          {/* 2. Main Content View Routing with Suspense fallback */}
+          <Suspense fallback={
+            <div style={{ padding: '60px', textAlign: 'center', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '24px', marginBottom: '8px' }}>⚡</div>
+              <div style={{ fontWeight: '700', fontFamily: 'var(--font-mono)' }}>MEMUAT MODUL KUANTITATIF...</div>
+            </div>
+          }>
+            {activeTab === 'WATCHLIST' ? (
+              /* PERSONAL WATCHLIST (Star Marked Items) */
+              <main>
+                <PersonalWatchlistTab
+                  data={data}
+                  onOpenChart={handleOpenSecurityHub}
+                  onOpenLotCalc={handleOpenLotCalc}
+                  onNavigateTab={setActiveTab}
+                />
+              </main>
             ) : activeTab === 'HOME' ? (
               /* HOME COMMAND CENTER (Wire + Bento + Foreign Flow + Konglo + Top 5 Alpha) */
               <HomeDashboardTab
                 data={data}
                 livePrices={livePrices}
                 flashMap={flashMap}
-                onSelectTicker={handleOpenChart}
+                onSelectTicker={handleOpenSecurityHub}
                 onOpenLotCalc={handleOpenLotCalc}
                 onNavigateTab={setActiveTab}
                 onSelectNews={handleOpenNews}
@@ -417,14 +430,14 @@ export default function App() {
             ) : activeTab === 'WHALES' ? (
               /* v3.0 WHALE INTELLIGENCE HUB */
               <main>
-                <WhaleIntelligenceTab data={data} onOpenChart={handleOpenChart} livePrices={livePrices} />
+                <WhaleIntelligenceTab data={data} onOpenChart={handleOpenSecurityHub} livePrices={livePrices} />
               </main>
             ) : activeTab === 'FUTURES' ? (
               /* v3.0 CRYPTO FUTURES INTELLIGENCE + DEXSCREENER */
               <main>
                 <CryptoFuturesTab 
                   data={data} 
-                  onOpenChart={handleOpenChart} 
+                  onOpenChart={handleOpenSecurityHub} 
                   livePrices={livePrices} 
                   flashMap={flashMap}
                   allCryptoSpot={allCryptoSpot}
@@ -433,17 +446,17 @@ export default function App() {
             ) : activeTab === 'FOREX' ? (
               /* v3.0 FOREX COMMAND CENTER */
               <main>
-                <ForexCommandTab data={data} onOpenChart={handleOpenChart} livePrices={livePrices} />
+                <ForexCommandTab data={data} onOpenChart={handleOpenSecurityHub} livePrices={livePrices} />
               </main>
             ) : activeTab === 'US_STOCKS' ? (
               /* v3.0 US STOCK INTELLIGENCE */
               <main>
-                <USStockTab data={data} onOpenChart={handleOpenChart} livePrices={livePrices} />
+                <USStockTab data={data} onOpenChart={handleOpenSecurityHub} livePrices={livePrices} />
               </main>
             ) : activeTab === 'HEATMAP' ? (
               /* v4.0 MARKET HEATMAP TREEMAP */
               <main>
-                <MarketHeatmapTab data={data} onSelectTicker={handleOpenChart} livePrices={livePrices} flashMap={flashMap} />
+                <MarketHeatmapTab data={data} onSelectTicker={handleOpenSecurityHub} livePrices={livePrices} flashMap={flashMap} />
               </main>
             ) : (
               /* DEEP-DIVE SCREENER / TESTING / RESEARCH TABS */
@@ -467,7 +480,7 @@ export default function App() {
                   bundle={data}
                   livePrices={livePrices}
                   flashMap={flashMap}
-                  onSelectTicker={handleOpenChart}
+                  onSelectTicker={handleOpenSecurityHub}
                   onOpenLotCalc={handleOpenLotCalc}
                   onSelectNews={handleOpenNews}
                 />
@@ -498,7 +511,32 @@ export default function App() {
                 news={newsModal.news}
                 allNews={data?.macro_telemetry?.live_news || []}
                 onClose={handleCloseNews}
-                onSelectTicker={handleOpenChart}
+                onSelectTicker={handleOpenSecurityHub}
+              />
+            )}
+
+            {/* 6. Institutional Security Hub Drawer */}
+            {securityHub.isOpen && (
+              <SecurityHubDrawer
+                isOpen={securityHub.isOpen}
+                symbol={securityHub.symbol}
+                market={securityHub.market}
+                onClose={handleCloseSecurityHub}
+                data={data}
+                livePrices={livePrices}
+                flashMap={flashMap}
+                onOpenChart={(sym, mkt) => {
+                  handleCloseSecurityHub();
+                  handleOpenChart(sym, mkt);
+                }}
+                onOpenLotCalc={(entry, sl, mkt) => {
+                  handleCloseSecurityHub();
+                  handleOpenLotCalc(entry, sl, mkt);
+                }}
+                onNavigateTab={(tab) => {
+                  handleCloseSecurityHub();
+                  setActiveTab(tab);
+                }}
               />
             )}
           </Suspense>

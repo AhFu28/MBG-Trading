@@ -450,37 +450,82 @@ body {
   position: fixed;
   top: 10px;
   left: 10px;
-  z-index: 200;
+  z-index: 250;
+  width: 40px;
+  height: 40px;
   background: var(--bg-panel);
-  border: var(--border-hairline);
-  border-radius: var(--radius-xs);
-  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   color: var(--text-primary);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
-/* Mobile: hide sidebar, full width content, show hamburger */
+.sidebar-hamburger:hover {
+  background: var(--bg-panel-subtle);
+  border-color: var(--accent-blue);
+}
+
+/* Tablet (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .sidebar {
+    width: 200px;
+  }
+  .main-content {
+    margin-left: 200px;
+    padding: 10px 12px;
+  }
+}
+
+/* Mobile (< 768px): clean drawer, full width content, touch-friendly */
 @media (max-width: 768px) {
   .sidebar {
+    width: 260px;
     transform: translateX(-100%);
-    transition: transform 0.25s ease;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 8px 0 24px rgba(0, 0, 0, 0.6);
   }
   .sidebar.open {
     transform: translateX(0);
   }
   .main-content {
-    margin-left: 0;
-    padding-top: 50px;
+    margin-left: 0 !important;
+    padding: 10px 8px 60px 8px !important;
+    padding-top: 56px !important;
   }
   .sidebar-hamburger {
     display: flex;
-    align-items: center;
-    justify-content: center;
+  }
+  /* Auto-stack bento grid cards */
+  .telemetry-grid-4,
+  .telemetry-grid-3 {
+    grid-template-columns: 1fr !important;
   }
 }
 
-/* Dark mode sidebar tweaks */
+/* Slide-in Right Animation for Security Hub */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Table scroll container for responsive horizontal scrolling */
+.table-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 /* Dark mode sidebar tweaks */
 [data-theme="dark"] .sidebar {

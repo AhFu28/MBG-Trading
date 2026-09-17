@@ -1,176 +1,27 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { getTvSymbol, cleanSymbolStr } from '../data/tv-helpers.js';
 
 /**
- * ChartingDeskTab - Full-Screen Institutional Charting Terminal
- * Features:
- * - TradingView Advanced Real-Time Chart Widget with full drawing tools (Trendlines, Fibs, Position Tool)
- * - 4 Strategy Preset Shortcuts: Smart Money (SMC), Trend Following, Bandar Flow, Mean Reversion
- * - Quick Ticker Selector for IDX Equities & Crypto Spot
- * - Companion Strategy Telemetry Panel with Entry, SL, TP, and 1-Click Lot Calculator
+ * ChartPane - Individual TradingView Chart Instance for Multi-Grid Workstation
  */
-export default function ChartingDeskTab({ 
-  data = {}, 
-  livePrices = {},
-  flashMap = {},
-  onOpenLotCalc,
-  initialSymbol = 'BBCA'
+function ChartPane({
+  paneId,
+  symbol,
+  market,
+  timeframe,
+  preset,
+  studies = [],
+  onSelectTicker,
+  onChangeTimeframe,
+  isActive,
+  onActivate
 }) {
   const containerRef = useRef(null);
-  const [currentSymbol, setCurrentSymbol] = useState(initialSymbol || 'BBCA');
-  const [currentMarket, setCurrentMarket] = useState('IDX');
-  const [activePreset, setActivePreset] = useState('SMC');
-  const [searchInput, setSearchInput] = useState('');
-  const [timeframe, setTimeframe] = useState('D');
+  const clean = cleanSymbolStr(symbol);
+  const isCrypto = market === 'CRYPTO' || clean.endsWith('USDT') || clean.startsWith('BTC') || clean.startsWith('ETH') || clean.startsWith('SOL');
 
-  // Format symbol for TradingView
-  const getTvSymbol = (sym, mkt) => {
-    if (!sym) return 'IDX:BBCA';
-    const s = sym.trim();
-    if (s.includes(':')) return s;
-    const clean = s.replace('.JK', '').replace('/', '').toUpperCase();
-    
-    // Check forex
-    const FOREX_CURRENCIES = ['EUR', 'USD', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'NZD'];
-    const isForex = mkt === 'FOREX' || (clean.length === 6 && FOREX_CURRENCIES.some(c => clean.startsWith(c)) && FOREX_CURRENCIES.some(c => clean.endsWith(c)));
-    if (isForex) return `FX:${clean}`;
-
-    // Check Crypto
-    if (mkt === 'CRYPTO' || clean.endsWith('USDT') || clean.startsWith('BTC') || clean.startsWith('ETH') || clean.startsWith('SOL')) {
-      const pair = clean.endsWith('USDT') ? clean : `${clean}USDT`;
-      return `BINANCE:${pair}`;
-    }
-
-    // Check US Equities
-    const US_TOP = ['AAPL', 'NVDA', 'MSFT', 'META', 'GOOGL', 'GOOG', 'AMZN', 'TSLA', 'AMD', 'PLTR', 'SMCI', 'AVGO', 'CRM', 'NFLX', 'COIN', 'SOFI', 'JPM', 'GS', 'V', 'MA', 'UNH', 'JNJ', 'PFE', 'LLY', 'XOM', 'CVX', 'BA', 'GE', 'CAT', 'MU', 'INTC', 'ARM'];
-    if (mkt === 'US_STOCKS' || mkt === 'US_EQUITY' || US_TOP.includes(clean)) {
-      return `NASDAQ:${clean}`;
-    }
-
-    return `IDX:${clean}`;
-  };
-
-  // Strategy Preset Configurations with verified TradingView Study IDs
-  const presetConfigs = useMemo(() => ({
-    SMC: {
-      badge: 'SMC DESK',
-      badgeColor: 'var(--accent-purple, #a855f7)',
-      studies: [
-        "MASimple@tv-basicstudies",
-        "Volume@tv-basicstudies"
-      ],
-      indicators: [
-        '• Bullish & Bearish Order Blocks (Gunakan Rectangle Tool di Toolbar Kiri)',
-        '• Fair Value Gap (FVG Imbalance Zone)',
-        '• Market Structure Break (BOS / CHoCH)',
-        '• Baseline Volume Profile & Dynamic MA Baseline'
-      ],
-      thesis: 'Mendeteksi jejak gajah institusi pada zona diskon SMC dengan risk-reward minimal 1:2. Gunakan Toolbar Gambar (Rectangle / Fib) di sisi kiri untuk menandai OB.',
-      setupStatus: 'BULLISH ORDER BLOCK READY'
-    },
-    TREND: {
-      badge: 'TREND FOLLOWING',
-      badgeColor: 'var(--accent-blue, #3b82f6)',
-      studies: [
-        "MAExp@tv-basicstudies",
-        "MACD@tv-basicstudies",
-        "Volume@tv-basicstudies"
-      ],
-      indicators: [
-        '• Exponential Moving Average (EMA Dynamic)',
-        '• MACD (12, 26, 9) Momentum Histogram',
-        '• Volume Confirmation'
-      ],
-      thesis: 'Mengikuti arah tren dominan. Beli saat pullback ke support dinamis EMA selama MACD histogram mengonfirmasi momentum ekspansi.',
-      setupStatus: 'TREND EXPANSION VERIFIED'
-    },
-    FLOW: {
-      badge: 'BANDAR FLOW',
-      badgeColor: 'var(--accent-cyan, #06b6d4)',
-      studies: [
-        "VWAP@tv-basicstudies",
-        "RSI@tv-basicstudies",
-        "Volume@tv-basicstudies"
-      ],
-      indicators: [
-        '• Rolling Session VWAP (Patokan Modal Bandar/Asing)',
-        '• Relative Strength Index (RSI 14 Momentum)',
-        '• Volume Accumulation Flow'
-      ],
-      thesis: 'Menunggangi akumulasi bandar & asing saat harga berada dekat harga modal rata-rata VWAP dengan konfirmasi net foreign flow.',
-      setupStatus: 'STEALTH ACCUMULATION'
-    },
-    MEAN: {
-      badge: 'MEAN REVERSION',
-      badgeColor: 'var(--accent-amber, #f59e0b)',
-      studies: [
-        "BollingerBands@tv-basicstudies",
-        "RSI@tv-basicstudies"
-      ],
-      indicators: [
-        '• Bollinger Bands (20, 2.0 Standard Deviation)',
-        '• RSI 14 Oversold (< 30) & Overbought (> 70)',
-        '• Mean Target Rebound ke Middle Band SMA 20'
-      ],
-      thesis: 'Membeli saat harga terpental menembus Lower Bollinger Band dengan konfirmasi RSI jenuh jual (oversold) untuk swing cepat.',
-      setupStatus: 'OVERSOLD REBOUND CANDIDATE'
-    }
-  }), []);
-
-  const cleanSym = useMemo(() => {
-    return currentSymbol.replace('.JK', '').replace('/', '').toUpperCase();
-  }, [currentSymbol]);
-
-  const isCrypto = useMemo(() => {
-    return currentMarket === 'CRYPTO' || cleanSym.endsWith('USDT') || cleanSym.startsWith('BTC') || cleanSym.startsWith('ETH') || cleanSym.startsWith('SOL');
-  }, [currentMarket, cleanSym]);
-
-  // Find active trade plan for IDX or crypto
-  const activePlan = useMemo(() => {
-    if (isCrypto) {
-      const cryptoList = data?.crypto_spot_10 || [];
-      return cryptoList.find(c => {
-        const cSym = (c.symbol || c.pair || '').replace('/', '').toUpperCase();
-        return cSym === cleanSym || cleanSym.startsWith(cSym.replace('USDT', ''));
-      });
-    }
-    const plans = data?.daily_trade_plans || [];
-    return plans.find(p => (p.symbol || p.clean_ticker) === cleanSym);
-  }, [data, cleanSym, isCrypto]);
-
-  // Find broker summary from master bundle (IDX only)
-  const activeBrokerSummary = useMemo(() => {
-    if (isCrypto) return null;
-    return data?.broker_summary?.[cleanSym] || null;
-  }, [data, cleanSym, isCrypto]);
-
-  // Derived price & levels
-  const currentPrice = useMemo(() => {
-    const live = livePrices[cleanSym] || livePrices[`IDX:${cleanSym}`] || livePrices[`${cleanSym}USDT`] || livePrices[`${cleanSym}/USDT`];
-    if (live?.price) return live.price;
-    if (activePlan?.current_price) return activePlan.current_price;
-    if (activePlan?.entry_price) return activePlan.entry_price;
-    if (activeBrokerSummary?.ref_price) return activeBrokerSummary.ref_price;
-    return isCrypto ? 100 : 5000;
-  }, [cleanSym, livePrices, activePlan, activeBrokerSummary, isCrypto]);
-
-  const entryPrice = activePlan?.entry_price || activePlan?.entry_low || currentPrice;
-  const stopLossPrice = activePlan?.stop_loss || (isCrypto ? Number((currentPrice * 0.97).toFixed(4)) : Math.round(currentPrice * 0.96));
-  const target1Price = activePlan?.take_profit_1 || activePlan?.target_1 || (isCrypto ? Number((currentPrice * 1.06).toFixed(4)) : Math.round(currentPrice * 1.08));
-  const target2Price = activePlan?.take_profit_2 || activePlan?.target_2 || (isCrypto ? Number((currentPrice * 1.12).toFixed(4)) : Math.round(currentPrice * 1.15));
-
-  const formatPriceVal = (val) => {
-    const num = Number(val || 0);
-    if (isCrypto) {
-      return `$${num < 1 ? num.toFixed(6) : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`;
-    }
-    return `Rp ${Math.round(num).toLocaleString('id-ID')}`;
-  };
-
-  // Invalidate and inject TradingView Widget on parameter change
   useEffect(() => {
-    const tvSymbol = getTvSymbol(currentSymbol, currentMarket);
-    const conf = presetConfigs[activePreset];
-
+    const tvSymbol = getTvSymbol(symbol, market);
     if (containerRef.current) {
       containerRef.current.innerHTML = '';
     }
@@ -183,17 +34,17 @@ export default function ChartingDeskTab({
       autosize: true,
       symbol: tvSymbol,
       interval: timeframe,
-      timezone: "Asia/Jakarta",
-      theme: "dark",
-      style: "1", // Candlesticks
-      locale: "id",
+      timezone: 'Asia/Jakarta',
+      theme: 'dark',
+      style: '1',
+      locale: 'id',
       enable_publishing: false,
       hide_top_toolbar: false,
-      hide_side_toolbar: false, // FULL DRAWING TOOLBAR VISIBLE (Trendline, Fibo, Position Tool, etc.)
+      hide_side_toolbar: false,
       allow_symbol_change: true,
       save_image: true,
-      studies: conf.studies,
-      support_host: "https://www.tradingview.com"
+      studies: studies,
+      support_host: 'https://www.tradingview.com'
     });
 
     const widgetWrapper = document.createElement('div');
@@ -207,25 +58,194 @@ export default function ChartingDeskTab({
     }
 
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = '';
-      }
+      if (containerRef.current) containerRef.current.innerHTML = '';
     };
-  }, [currentSymbol, currentMarket, activePreset, timeframe, presetConfigs]);
+  }, [symbol, market, timeframe, studies]);
 
-  // Auto-guard: Automatically switch to Day interval if an Indonesian stock is active
-  useEffect(() => {
-    if (!isCrypto && ['1', '3', '5', '15', '30', '60', '120', '240'].includes(timeframe)) {
-      setTimeframe('D');
+  return (
+    <div
+      onClick={onActivate}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        minHeight: '340px',
+        background: '#0b0e14',
+        border: isActive ? '1px solid var(--accent-blue, #3b82f6)' : '1px solid rgba(255, 255, 255, 0.08)',
+        borderRadius: '6px',
+        overflow: 'hidden',
+        position: 'relative'
+      }}
+    >
+      {/* Mini Pane Topbar */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '4px 8px',
+        background: 'rgba(18, 23, 34, 0.95)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        fontSize: '10px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{
+            fontFamily: 'var(--font-mono)',
+            fontWeight: 800,
+            color: isActive ? '#60a5fa' : 'var(--text-primary)',
+            background: 'rgba(255, 255, 255, 0.06)',
+            padding: '1px 5px',
+            borderRadius: '3px'
+          }}>
+            {getTvSymbol(symbol, market)}
+          </span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>
+            {market}
+          </span>
+        </div>
+
+        {/* Timeframe selector */}
+        <div style={{ display: 'flex', gap: '2px' }}>
+          {(isCrypto ? ['15', '60', '240', 'D'] : ['D', 'W', 'M']).map(tf => (
+            <button
+              key={tf}
+              onClick={(e) => {
+                e.stopPropagation();
+                onChangeTimeframe && onChangeTimeframe(paneId, tf);
+              }}
+              style={{
+                background: timeframe === tf ? 'var(--accent-blue, #3b82f6)' : 'transparent',
+                color: timeframe === tf ? '#fff' : 'var(--text-muted)',
+                border: 'none',
+                borderRadius: '2px',
+                padding: '1px 5px',
+                fontSize: '9px',
+                fontWeight: 700,
+                cursor: 'pointer'
+              }}
+            >
+              {tf === '60' ? '1H' : tf === '240' ? '4H' : tf}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Chart Canvas */}
+      <div style={{ flex: 1, width: '100%', height: '100%', position: 'relative' }}>
+        <div
+          ref={containerRef}
+          className="tradingview-widget-container"
+          style={{ width: '100%', height: '100%' }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * ChartingDeskTab - Institutional Multi-Panel Chart Workstation
+ * Features:
+ * - Multi-Chart Grid Switcher: Single (1-Chart), Dual (2-Split), Quad (4-Grid)
+ * - Independent Symbol, Market, and Timeframe per Pane
+ * - 4 Strategy Preset Shortcuts: SMC, Trend Following, Bandar Flow, Mean Reversion
+ * - Companion Strategy Telemetry Panel & 1-Click Lot Calculator
+ */
+export default function ChartingDeskTab({
+  data = {},
+  livePrices = {},
+  flashMap = {},
+  onOpenLotCalc,
+  initialSymbol = 'BBCA'
+}) {
+  const [layoutMode, setLayoutMode] = useState('1'); // '1' | '2' | '4'
+  const [showCompanion, setShowCompanion] = useState(true);
+  const [activePreset, setActivePreset] = useState('SMC');
+  const [searchInput, setSearchInput] = useState('');
+  const [activePaneId, setActivePaneId] = useState(1);
+
+  // Pane configurations
+  const [panes, setPanes] = useState({
+    1: { symbol: initialSymbol || 'BBCA', market: 'IDX', timeframe: 'D' },
+    2: { symbol: 'BTCUSDT', market: 'CRYPTO', timeframe: '15' },
+    3: { symbol: 'NVDA', market: 'US', timeframe: 'D' },
+    4: { symbol: 'EURUSD', market: 'FOREX', timeframe: '60' }
+  });
+
+  const activePane = panes[activePaneId] || panes[1];
+  const cleanSym = cleanSymbolStr(activePane.symbol);
+  const isCrypto = activePane.market === 'CRYPTO' || cleanSym.endsWith('USDT') || cleanSym.startsWith('BTC') || cleanSym.startsWith('ETH') || cleanSym.startsWith('SOL');
+
+  // Strategy Presets
+  const presetConfigs = useMemo(() => ({
+    SMC: {
+      badge: 'SMC DESK',
+      badgeColor: 'var(--accent-purple, #a855f7)',
+      studies: ["MASimple@tv-basicstudies", "Volume@tv-basicstudies"],
+      indicators: [
+        '• Bullish & Bearish Order Blocks (Gunakan Rectangle Tool)',
+        '• Fair Value Gap (FVG Imbalance Zone)',
+        '• Market Structure Break (BOS / CHoCH)',
+        '• Baseline Volume Profile & Dynamic MA'
+      ],
+      setupStatus: 'BULLISH ORDER BLOCK READY'
+    },
+    TREND: {
+      badge: 'TREND FOLLOWING',
+      badgeColor: 'var(--accent-blue, #3b82f6)',
+      studies: ["MAExp@tv-basicstudies", "MACD@tv-basicstudies", "Volume@tv-basicstudies"],
+      indicators: [
+        '• Exponential Moving Average (EMA Dynamic)',
+        '• MACD (12, 26, 9) Momentum Histogram',
+        '• Volume Confirmation'
+      ],
+      setupStatus: 'TREND EXPANSION VERIFIED'
+    },
+    FLOW: {
+      badge: 'BANDAR FLOW',
+      badgeColor: 'var(--accent-cyan, #06b6d4)',
+      studies: ["VWAP@tv-basicstudies", "RSI@tv-basicstudies", "Volume@tv-basicstudies"],
+      indicators: [
+        '• Rolling Session VWAP (Modal Bandar)',
+        '• Relative Strength Index (RSI 14)',
+        '• Volume Accumulation Flow'
+      ],
+      setupStatus: 'STEALTH ACCUMULATION'
+    },
+    MEAN: {
+      badge: 'MEAN REVERSION',
+      badgeColor: 'var(--accent-amber, #f59e0b)',
+      studies: ["BollingerBands@tv-basicstudies", "RSI@tv-basicstudies"],
+      indicators: [
+        '• Bollinger Bands (20, 2.0 Deviation)',
+        '• RSI 14 Oversold / Overbought',
+        '• Mean Rebound ke Middle Band'
+      ],
+      setupStatus: 'OVERSOLD REBOUND CANDIDATE'
     }
-  }, [isCrypto, timeframe]);
+  }), []);
+
+  // Update Pane Symbol
+  const updatePaneSymbol = (id, sym, mkt) => {
+    setPanes(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        symbol: sym,
+        market: mkt,
+        timeframe: mkt === 'IDX' ? 'D' : prev[id].timeframe
+      }
+    }));
+  };
+
+  // Update Pane Timeframe
+  const updatePaneTimeframe = (id, tf) => {
+    setPanes(prev => ({
+      ...prev,
+      [id]: { ...prev[id], timeframe: tf }
+    }));
+  };
 
   const handleSelectTicker = (sym, mkt) => {
-    setCurrentSymbol(sym);
-    setCurrentMarket(mkt);
-    if (mkt === 'IDX') {
-      setTimeframe('D');
-    }
+    updatePaneSymbol(activePaneId, sym, mkt);
   };
 
   const handleSearchSubmit = (e) => {
@@ -233,13 +253,45 @@ export default function ChartingDeskTab({
     const val = searchInput.trim().toUpperCase();
     if (val) {
       const isCryptoVal = val.includes('USDT') || val.includes('BTC') || val.includes('ETH') || val.includes('SOL');
-      setCurrentSymbol(val);
-      setCurrentMarket(isCryptoVal ? 'CRYPTO' : 'IDX');
-      if (!isCryptoVal) {
-        setTimeframe('D');
-      }
+      updatePaneSymbol(activePaneId, val, isCryptoVal ? 'CRYPTO' : 'IDX');
       setSearchInput('');
     }
+  };
+
+  // Active Plan & Telemetry for active pane
+  const activePlan = useMemo(() => {
+    if (isCrypto) {
+      const list = data?.crypto_spot_10 || [];
+      return list.find(c => {
+        const cSym = (c.symbol || c.pair || '').replace('/', '').toUpperCase();
+        return cSym === cleanSym || cleanSym.startsWith(cSym.replace('USDT', ''));
+      });
+    }
+    const plans = data?.daily_trade_plans || [];
+    return plans.find(p => (p.symbol || p.clean_ticker) === cleanSym);
+  }, [data, cleanSym, isCrypto]);
+
+  const activeBrokerSummary = useMemo(() => {
+    if (isCrypto) return null;
+    return data?.broker_summary?.[cleanSym] || null;
+  }, [data, cleanSym, isCrypto]);
+
+  const currentPrice = useMemo(() => {
+    const live = livePrices[cleanSym] || livePrices[`IDX:${cleanSym}`] || livePrices[`${cleanSym}USDT`];
+    if (live?.price) return live.price;
+    if (activePlan?.current_price) return activePlan.current_price;
+    return isCrypto ? 100 : 5000;
+  }, [cleanSym, livePrices, activePlan, isCrypto]);
+
+  const entryPrice = activePlan?.entry_price || activePlan?.entry_low || currentPrice;
+  const stopLossPrice = activePlan?.stop_loss || (isCrypto ? Number((currentPrice * 0.97).toFixed(4)) : Math.round(currentPrice * 0.96));
+  const target1Price = activePlan?.take_profit_1 || activePlan?.target_1 || (isCrypto ? Number((currentPrice * 1.06).toFixed(4)) : Math.round(currentPrice * 1.08));
+  const target2Price = activePlan?.take_profit_2 || activePlan?.target_2 || (isCrypto ? Number((currentPrice * 1.12).toFixed(4)) : Math.round(currentPrice * 1.15));
+
+  const formatPriceVal = (val) => {
+    const num = Number(val || 0);
+    if (isCrypto) return `$${num < 1 ? num.toFixed(6) : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`;
+    return `Rp ${Math.round(num).toLocaleString('id-ID')}`;
   };
 
   return (
@@ -254,22 +306,22 @@ export default function ChartingDeskTab({
     }}>
       {/* 1. TOP CONTROL BAR */}
       <div style={{
-        padding: '10px 16px',
+        padding: '8px 14px',
         background: 'var(--bg-panel, #121722)',
         borderBottom: 'var(--border-hairline)',
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '10px',
-        shrink: 0
+        gap: '8px',
+        flexShrink: 0
       }}>
-        {/* Left: Ticker Quick Switch & Search */}
+        {/* Left: Quick Tickers & Search */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-green, #00d084)', display: 'inline-block' }} />
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-green, #00d084)' }} />
             <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
-              CHARTING DESK
+              CHART WORKSTATION
             </span>
           </div>
 
@@ -287,19 +339,18 @@ export default function ChartingDeskTab({
               { sym: 'BBRI', mkt: 'IDX' },
               { sym: 'BMRI', mkt: 'IDX' },
               { sym: 'BREN', mkt: 'IDX' },
-              { sym: 'BRMS', mkt: 'IDX' },
               { sym: 'BTCUSDT', mkt: 'CRYPTO', label: 'BTC' },
               { sym: 'ETHUSDT', mkt: 'CRYPTO', label: 'ETH' },
               { sym: 'SOLUSDT', mkt: 'CRYPTO', label: 'SOL' }
             ].map(item => {
-              const isSelected = currentSymbol.replace('.JK', '').toUpperCase() === item.sym;
+              const isSelected = cleanSym === item.sym;
               return (
                 <button
                   key={item.sym}
                   onClick={() => handleSelectTicker(item.sym, item.mkt)}
                   style={{
-                    padding: '3px 8px',
-                    fontSize: '11px',
+                    padding: '3px 7px',
+                    fontSize: '10px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: 700,
                     borderRadius: '4px',
@@ -316,125 +367,119 @@ export default function ChartingDeskTab({
             })}
           </div>
 
-          {/* Manual Input Search */}
           <form onSubmit={handleSearchSubmit} style={{ margin: 0 }}>
             <input
               type="text"
-              placeholder="Cari Ticker (cth: TLKM, ASII)..."
+              placeholder="Cari Ticker (cth: TLKM)..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               style={{
                 background: 'var(--bg-panel-subtle, #18202e)',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 color: 'var(--text-primary)',
-                padding: '4px 10px',
+                padding: '4px 8px',
                 fontSize: '11px',
                 fontFamily: 'var(--font-mono)',
                 borderRadius: '4px',
-                width: '180px',
+                width: '140px',
                 outline: 'none'
               }}
             />
           </form>
         </div>
 
-        {/* Center: 4 Strategy Presets Switcher */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-            STRATEGY PRESETS:
-          </span>
+        {/* Center: Presets & Grid Mode Selector */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          {/* Layout Grid Buttons */}
+          <div style={{
+            display: 'flex',
+            background: 'rgba(14, 18, 26, 0.85)',
+            padding: '2px',
+            borderRadius: '6px',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            gap: '2px'
+          }}>
+            {[
+              { mode: '1', label: '⬛ Single (1)' },
+              { mode: '2', label: '🪟 2-Split' },
+              { mode: '4', label: '⊞ 4-Grid' }
+            ].map(l => (
+              <button
+                key={l.mode}
+                onClick={() => {
+                  setLayoutMode(l.mode);
+                  if (l.mode !== '1') setShowCompanion(false);
+                }}
+                style={{
+                  padding: '3px 8px',
+                  fontSize: '10px',
+                  fontWeight: 800,
+                  borderRadius: '4px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  background: layoutMode === l.mode ? 'rgba(59, 130, 246, 0.25)' : 'transparent',
+                  color: layoutMode === l.mode ? '#60a5fa' : 'var(--text-muted)'
+                }}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
 
-          {[
-            { id: 'SMC', label: '🏛️ SMC (Order Block)', color: 'var(--accent-purple, #a855f7)' },
-            { id: 'TREND', label: '📈 Trend (3 EMA + MACD)', color: 'var(--accent-blue, #3b82f6)' },
-            { id: 'FLOW', label: '🌊 Bandar Flow (VWAP+MFI)', color: 'var(--accent-cyan, #06b6d4)' },
-            { id: 'MEAN', label: '🎯 Mean Reversion (BB+RSI)', color: 'var(--accent-amber, #f59e0b)' }
-          ].map(p => {
-            const isActive = activePreset === p.id;
-            return (
+          {/* Strategy Presets */}
+          <div style={{ display: 'flex', gap: '4px' }}>
+            {[
+              { id: 'SMC', label: '🏛️ SMC' },
+              { id: 'TREND', label: '📈 Trend' },
+              { id: 'FLOW', label: '🌊 Flow' },
+              { id: 'MEAN', label: '🎯 Mean' }
+            ].map(p => (
               <button
                 key={p.id}
                 onClick={() => setActivePreset(p.id)}
                 style={{
-                  padding: '3px 8px',
-                  fontSize: '11px',
+                  padding: '3px 6px',
+                  fontSize: '10px',
                   fontWeight: 700,
                   borderRadius: '4px',
-                  border: isActive ? `1px solid ${p.color}` : '1px solid rgba(255, 255, 255, 0.08)',
-                  background: isActive ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-                  color: isActive ? '#ffffff' : 'var(--text-muted)',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
+                  border: activePreset === p.id ? '1px solid var(--accent-blue)' : '1px solid rgba(255, 255, 255, 0.08)',
+                  background: activePreset === p.id ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
+                  color: activePreset === p.id ? '#60a5fa' : 'var(--text-muted)',
+                  cursor: 'pointer'
                 }}
               >
                 {p.label}
               </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
 
-        {/* Right: Active Symbol Badge & Quick Action */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{
-            fontSize: '11px',
-            fontFamily: 'var(--font-mono)',
-            fontWeight: 800,
-            color: 'var(--accent-orange, #f59e0b)',
-            background: 'rgba(245, 158, 11, 0.12)',
-            padding: '3px 8px',
-            borderRadius: '4px',
-            border: '1px solid rgba(245, 158, 11, 0.25)'
-          }}>
-            {getTvSymbol(currentSymbol, currentMarket)}
-          </span>
-
-          {/* Smart Adaptive Timeframe Selector */}
-          <div style={{ display: 'flex', gap: '3px', background: 'rgba(255,255,255,0.06)', padding: '2px 4px', borderRadius: '4px', alignItems: 'center' }}>
-            {(isCrypto ? [
-              { label: '5m', val: '5' },
-              { label: '15m', val: '15' },
-              { label: '1H', val: '60' },
-              { label: '4H', val: '240' },
-              { label: '1D', val: 'D' },
-              { label: '1W', val: 'W' }
-            ] : [
-              { label: '1D (Day)', val: 'D' },
-              { label: '1W (Week)', val: 'W' },
-              { label: '1M (Month)', val: 'M' }
-            ]).map(tf => (
-              <button
-                key={tf.val}
-                onClick={() => setTimeframe(tf.val)}
-                style={{
-                  background: timeframe === tf.val ? 'var(--accent-blue, #3b82f6)' : 'transparent',
-                  color: timeframe === tf.val ? '#ffffff' : '#a0a0a5',
-                  border: 'none',
-                  padding: '2px 6px',
-                  fontSize: '10px',
-                  fontWeight: 700,
-                  borderRadius: '3px',
-                  cursor: 'pointer'
-                }}
-                title={!isCrypto ? 'TradingView IDX hanya mendukung data EOD (Daily/Weekly/Monthly)' : `Interval ${tf.label}`}
-              >
-                {tf.label}
-              </button>
-            ))}
-            {!isCrypto && (
-              <span style={{ fontSize: '9px', color: '#8e8e93', padding: '0 4px', fontFamily: 'var(--font-mono)' }}>
-                IDX EOD Feed
-              </span>
-            )}
-          </div>
+        {/* Right: Companion Toggle & Lot Calculator */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <button
+            onClick={() => setShowCompanion(prev => !prev)}
+            style={{
+              background: showCompanion ? 'rgba(59, 130, 246, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              color: showCompanion ? '#60a5fa' : 'var(--text-muted)',
+              padding: '3px 8px',
+              fontSize: '10px',
+              fontWeight: 700,
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            📋 Radar Panel
+          </button>
 
           <button
             className="telemetry-btn"
-            onClick={() => onOpenLotCalc && onOpenLotCalc(entryPrice, stopLossPrice)}
+            onClick={() => onOpenLotCalc && onOpenLotCalc(entryPrice, stopLossPrice, isCrypto ? 'CRYPTO' : 'IDX')}
             style={{
               background: 'var(--accent-green, #00d084)',
               color: '#ffffff',
-              padding: '4px 10px',
-              fontSize: '11px',
+              padding: '3px 9px',
+              fontSize: '10px',
               fontWeight: 700,
               display: 'flex',
               alignItems: 'center',
@@ -443,216 +488,205 @@ export default function ChartingDeskTab({
               borderRadius: '4px',
               cursor: 'pointer'
             }}
-            title="Hitung ukuran lot aman berdasarkan batas risiko 2% MBG Apex"
           >
             💰 Hitung Lot
           </button>
         </div>
       </div>
 
-      {/* 2. MAIN WORKSPACE: CHART STAGE + COMPANION DESK */}
+      {/* 2. MAIN WORKSPACE: GRID STAGE + COMPANION PANEL */}
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        
-        {/* Main Chart Canvas (TradingView Live Advanced Widget) */}
-        <div style={{ flex: 1, height: '100%', position: 'relative', background: '#0b0e14' }}>
-          <div 
-            key={`tv-stage-${currentSymbol}-${currentMarket}-${activePreset}-${timeframe}`}
-            ref={containerRef} 
-            className="tradingview-widget-container"
-            style={{ width: '100%', height: '100%' }}
-          >
-            {/* Widget automatically injected here */}
-          </div>
-        </div>
-
-        {/* Right Companion Strategy Telemetry Panel */}
+        {/* Chart Stage Grid */}
         <div style={{
-          width: '280px',
-          background: 'var(--bg-panel, #121722)',
-          borderLeft: 'var(--border-hairline)',
-          padding: '14px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
+          flex: 1,
+          height: '100%',
           overflowY: 'auto',
-          shrink: 0
+          display: 'grid',
+          gap: '4px',
+          padding: '4px',
+          background: '#07090d',
+          gridTemplateColumns: layoutMode === '1' ? '1fr' : 'repeat(auto-fit, minmax(360px, 1fr))',
+          gridTemplateRows: layoutMode === '4' ? '1fr 1fr' : '1fr'
         }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {/* Strategy Title */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '8px', borderBottom: 'var(--border-hairline)' }}>
-              <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                RADAR STRATEGI
-              </span>
-              <span style={{
-                fontSize: '10px',
-                fontWeight: 800,
-                color: presetConfigs[activePreset].badgeColor,
-                background: 'rgba(255, 255, 255, 0.05)',
-                padding: '2px 6px',
-                borderRadius: '4px',
-                border: `1px solid ${presetConfigs[activePreset].badgeColor}`
-              }}>
-                {presetConfigs[activePreset].badge}
-              </span>
-            </div>
+          {/* Pane 1 */}
+          <ChartPane
+            paneId={1}
+            symbol={panes[1].symbol}
+            market={panes[1].market}
+            timeframe={panes[1].timeframe}
+            preset={activePreset}
+            studies={presetConfigs[activePreset].studies}
+            onChangeTimeframe={updatePaneTimeframe}
+            isActive={activePaneId === 1}
+            onActivate={() => setActivePaneId(1)}
+          />
 
-            {/* Setup Status Box */}
-            <div style={{
-              background: 'var(--bg-panel-subtle, #18202e)',
-              padding: '10px',
-              borderRadius: '6px',
-              border: '1px solid rgba(255, 255, 255, 0.05)'
-            }}>
-              <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
-                STATUS SINYAL TERKONFIRMASI
-              </span>
-              <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--accent-green, #00d084)', marginTop: '2px' }}>
-                {activePlan?.direction === 'BUY' ? '🔥 BUY SIGNAL CONFIRMED' : presetConfigs[activePreset].setupStatus}
-              </div>
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                Confluence Score: {activePlan?.risk_reward_ratio ? '85%' : '78%'}
-              </span>
-            </div>
+          {/* Pane 2 (if 2-Split or 4-Grid) */}
+          {(layoutMode === '2' || layoutMode === '4') && (
+            <ChartPane
+              paneId={2}
+              symbol={panes[2].symbol}
+              market={panes[2].market}
+              timeframe={panes[2].timeframe}
+              preset={activePreset}
+              studies={presetConfigs[activePreset].studies}
+              onChangeTimeframe={updatePaneTimeframe}
+              isActive={activePaneId === 2}
+              onActivate={() => setActivePaneId(2)}
+            />
+          )}
 
-            {/* Key Price Levels */}
-            <div style={{
-              background: 'var(--bg-panel-subtle, #18202e)',
-              padding: '10px',
-              borderRadius: '6px',
-              border: '1px solid rgba(255, 255, 255, 0.05)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '6px',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11px'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Entry Zone:</span>
-                <strong style={{ color: 'var(--text-primary)' }}>{formatPriceVal(entryPrice)}</strong>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Stop Loss:</span>
-                <strong style={{ color: 'var(--accent-red, #ff4d4d)' }}>{formatPriceVal(stopLossPrice)}</strong>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Target 1:</span>
-                <strong style={{ color: 'var(--accent-green, #00d084)' }}>{formatPriceVal(target1Price)}</strong>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Target 2:</span>
-                <strong style={{ color: 'var(--accent-green, #00d084)' }}>{formatPriceVal(target2Price)}</strong>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '4px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                <span style={{ color: 'var(--text-muted)' }}>R:R Rasio:</span>
-                <strong style={{ color: 'var(--accent-orange, #f59e0b)' }}>
-                  1 : {activePlan?.risk_reward_ratio ? Number(activePlan.risk_reward_ratio).toFixed(1) : '2.0+'}
-                </strong>
-              </div>
-            </div>
-
-            {/* Crypto Volatility & On-Chain Telemetry (If Crypto) */}
-            {isCrypto && activePlan && (
-              <div style={{
-                background: 'var(--bg-panel-subtle, #18202e)',
-                padding: '10px',
-                borderRadius: '6px',
-                border: '1px solid rgba(255, 255, 255, 0.05)'
-              }}>
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
-                  CRYPTO VOLATILITY TELEMETRY
-                </span>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', fontSize: '10px' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>RSI(14):</span>
-                  <strong style={{ color: activePlan.rsi_14 < 40 ? 'var(--accent-green)' : 'var(--text-primary)' }}>
-                    {activePlan.rsi_14 || '52.4'}
-                  </strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2px', fontSize: '10px' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>24h Range:</span>
-                  <strong style={{ color: 'var(--text-primary)' }}>
-                    {formatPriceVal(activePlan.low_24h)} - {formatPriceVal(activePlan.high_24h)}
-                  </strong>
-                </div>
-                {activePlan.volume_quote > 0 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2px', fontSize: '10px' }}>
-                    <span style={{ color: 'var(--text-muted)' }}>24h Vol (USDT):</span>
-                    <strong style={{ color: 'var(--accent-blue)' }}>
-                      ${(activePlan.volume_quote / 1e6).toFixed(1)}M
-                    </strong>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Broker Summary / Bandarmology Highlight (IDX only) */}
-            {!isCrypto && activeBrokerSummary && (
-              <div style={{
-                background: 'var(--bg-panel-subtle, #18202e)',
-                padding: '10px',
-                borderRadius: '6px',
-                border: '1px solid rgba(255, 255, 255, 0.05)'
-              }}>
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
-                  RADAR BANDARMOLOGI
-                </span>
-                <div style={{ fontSize: '11px', fontWeight: 700, color: '#00d084', marginTop: '2px' }}>
-                  {activeBrokerSummary.bandar_accumulation_grade?.replace('_', ' ')}
-                </div>
-                <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                  Modal Bandar: <strong style={{ color: 'var(--accent-orange)' }}>Rp {activeBrokerSummary.bandar_avg_price?.toLocaleString()}</strong>
-                </div>
-              </div>
-            )}
-
-            {/* Indicator Details */}
-            <div style={{
-              background: 'var(--bg-panel-subtle, #18202e)',
-              padding: '10px',
-              borderRadius: '6px',
-              border: '1px solid rgba(255, 255, 255, 0.05)'
-            }}>
-              <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>
-                INDIKATOR AKTIF
-              </span>
-              <ul style={{ margin: 0, paddingLeft: '14px', fontSize: '10px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                {presetConfigs[activePreset].indicators.map((ind, i) => (
-                  <li key={i}>{ind}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom Action Button */}
-          <div style={{ paddingTop: '10px', borderTop: 'var(--border-hairline)' }}>
-            <button
-              onClick={() => onOpenLotCalc && onOpenLotCalc(entryPrice, stopLossPrice, isCrypto ? 'CRYPTO' : 'IDX')}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                background: 'var(--accent-green, #00d084)',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '4px',
-                fontSize: '11px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px',
-                boxShadow: '0 2px 6px rgba(0, 208, 132, 0.25)'
-              }}
-            >
-              <span>💰</span>
-              <span>{isCrypto ? 'Setel Kalkulator Sizing (USDT)' : 'Setel ke Kalkulator Lot'}</span>
-            </button>
-            <div style={{ fontSize: '9px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '6px', fontFamily: 'var(--font-mono)' }}>
-              MBG APEX RISK GUARD · MAX 2% EQUITY
-            </div>
-          </div>
-
+          {/* Panes 3 & 4 (if 4-Grid) */}
+          {layoutMode === '4' && (
+            <>
+              <ChartPane
+                paneId={3}
+                symbol={panes[3].symbol}
+                market={panes[3].market}
+                timeframe={panes[3].timeframe}
+                preset={activePreset}
+                studies={presetConfigs[activePreset].studies}
+                onChangeTimeframe={updatePaneTimeframe}
+                isActive={activePaneId === 3}
+                onActivate={() => setActivePaneId(3)}
+              />
+              <ChartPane
+                paneId={4}
+                symbol={panes[4].symbol}
+                market={panes[4].market}
+                timeframe={panes[4].timeframe}
+                preset={activePreset}
+                studies={presetConfigs[activePreset].studies}
+                onChangeTimeframe={updatePaneTimeframe}
+                isActive={activePaneId === 4}
+                onActivate={() => setActivePaneId(4)}
+              />
+            </>
+          )}
         </div>
 
+        {/* Companion Strategy Telemetry Panel (Collapsible) */}
+        {showCompanion && (
+          <div style={{
+            width: '280px',
+            background: 'var(--bg-panel, #121722)',
+            borderLeft: 'var(--border-hairline)',
+            padding: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            overflowY: 'auto',
+            flexShrink: 0
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '6px', borderBottom: 'var(--border-hairline)' }}>
+                <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  RADAR STRATEGI: {cleanSym}
+                </span>
+                <span style={{
+                  fontSize: '9px',
+                  fontWeight: 800,
+                  color: presetConfigs[activePreset].badgeColor,
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  padding: '1px 5px',
+                  borderRadius: '3px',
+                  border: `1px solid ${presetConfigs[activePreset].badgeColor}`
+                }}>
+                  {presetConfigs[activePreset].badge}
+                </span>
+              </div>
+
+              <div style={{
+                background: 'var(--bg-panel-subtle, #18202e)',
+                padding: '8px',
+                borderRadius: '6px',
+                border: '1px solid rgba(255, 255, 255, 0.05)'
+              }}>
+                <span style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
+                  STATUS SINYAL
+                </span>
+                <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--accent-green, #00d084)', marginTop: '2px' }}>
+                  {activePlan?.direction === 'BUY' ? '🔥 BUY SIGNAL CONFIRMED' : presetConfigs[activePreset].setupStatus}
+                </div>
+              </div>
+
+              {/* Key Price Levels */}
+              <div style={{
+                background: 'var(--bg-panel-subtle, #18202e)',
+                padding: '8px',
+                borderRadius: '6px',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '10px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Entry Zone:</span>
+                  <strong style={{ color: 'var(--text-primary)' }}>{formatPriceVal(entryPrice)}</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Stop Loss:</span>
+                  <strong style={{ color: 'var(--accent-red, #ff4d4d)' }}>{formatPriceVal(stopLossPrice)}</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Target 1:</span>
+                  <strong style={{ color: 'var(--accent-green, #00d084)' }}>{formatPriceVal(target1Price)}</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Target 2:</span>
+                  <strong style={{ color: 'var(--accent-green, #00d084)' }}>{formatPriceVal(target2Price)}</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '4px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>R:R Rasio:</span>
+                  <strong style={{ color: 'var(--accent-orange, #f59e0b)' }}>
+                    1 : {activePlan?.risk_reward_ratio ? Number(activePlan.risk_reward_ratio).toFixed(1) : '2.0+'}
+                  </strong>
+                </div>
+              </div>
+
+              {/* Bandarmology or Crypto Radar */}
+              {!isCrypto && activeBrokerSummary && (
+                <div style={{
+                  background: 'var(--bg-panel-subtle, #18202e)',
+                  padding: '8px',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(255, 255, 255, 0.05)'
+                }}>
+                  <span style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
+                    RADAR BANDARMOLOGI
+                  </span>
+                  <div style={{ fontSize: '10px', fontWeight: 700, color: '#00d084', marginTop: '2px' }}>
+                    {activeBrokerSummary.bandar_accumulation_grade?.replace('_', ' ')}
+                  </div>
+                  <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    Modal Bandar: <strong style={{ color: 'var(--accent-orange)' }}>Rp {activeBrokerSummary.bandar_avg_price?.toLocaleString()}</strong>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div style={{ paddingTop: '8px', borderTop: 'var(--border-hairline)' }}>
+              <button
+                onClick={() => onOpenLotCalc && onOpenLotCalc(entryPrice, stopLossPrice, isCrypto ? 'CRYPTO' : 'IDX')}
+                style={{
+                  width: '100%',
+                  padding: '7px 10px',
+                  background: 'var(--accent-green, #00d084)',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '4px',
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                💰 {isCrypto ? 'Kalkulator Sizing USDT' : 'Kalkulator Lot BEI'}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
