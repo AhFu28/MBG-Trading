@@ -160,122 +160,120 @@ export default function HomeDashboardTab({
       <div className="home-dashboard-layout">
 
         {/* ================= LEFT MAIN WORKSPACE ================= */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 }}>
 
-          {/* ROW 1: 3 BENTO CARDS (Regime, #1 IDX, #1 Crypto) */}
+          {/* ROW 1: 4 BENTO CARDS (Regime, Global Commodities, #1 Crypto, #1 IDX Alpha) */}
           <div className="home-bento-row">
 
             {/* Card 1: IHSG & Global Regime */}
             <div className="telemetry-panel" style={{
-              padding: '10px 14px',
+              padding: '9px 11px',
               borderLeft: '3px solid var(--accent-green)',
               background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(0,208,132,0.04) 100%)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              minHeight: '128px'
+              minHeight: '128px',
+              minWidth: 0,
+              overflow: 'hidden'
             }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="metric-label" style={{ fontSize: '9.5px' }}>IHSG & Global Regime</span>
-                  <span className="badge badge-bull" style={{ fontSize: '8px', padding: '2px 6px' }}>ACTIVE</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '4px' }}>
+                  <span className="metric-label" style={{ fontSize: '9px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>IHSG & Global Regime</span>
+                  <span className="badge badge-bull" style={{ fontSize: '7.5px', padding: '1.5px 5px', whiteSpace: 'nowrap', flexShrink: 0 }}>ACTIVE</span>
                 </div>
-                <div style={{ fontSize: '17px', fontWeight: '900', marginTop: '3px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ fontSize: '16px', fontWeight: '900', marginTop: '3px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {sentiment}
                 </div>
-                <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginTop: '3px', lineHeight: 1.4 }}>
-                  {narrative.length > 110 ? narrative.slice(0, 110) + '...' : narrative}
+                <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.35, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                  {narrative.length > 105 ? narrative.slice(0, 105) + '...' : narrative}
                 </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)', fontSize: '9.5px', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)', fontSize: '9px', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>
                 <div>
                   <span style={{ color: 'var(--text-muted)' }}>.JKSE: </span>
-                  <strong style={{ color: 'var(--text-primary)' }}>
+                  <strong style={{ color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
                     {macro.ihsg_price || macro.jkse_price ? Number(macro.ihsg_price || macro.jkse_price).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '6,506.40'}
                   </strong>
                 </div>
                 <div>
                   <span style={{ color: 'var(--text-muted)' }}>Chg: </span>
-                  <strong style={{ color: (macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29) >= 0 ? 'var(--accent-green)' : '#ff3b30' }}>
+                  <strong style={{ color: (macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29) >= 0 ? 'var(--accent-green)' : '#ff3b30', fontVariantNumeric: 'tabular-nums' }}>
                     {(macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29) >= 0 ? '+' : ''}
                     {macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct).toFixed(2) : '-1.29'}%
                   </strong>
                 </div>
                 <div>
-                  <span style={{ color: 'var(--text-muted)' }}>Vol Bursa: </span>
-                  <strong style={{ color: 'var(--text-primary)' }}>2.1T</strong>
+                  <span style={{ color: 'var(--text-muted)' }}>Vol: </span>
+                  <strong style={{ color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>2.1T</strong>
                 </div>
               </div>
             </div>
 
-            {/* Card 2: #1 IDX Alpha Watchlist */}
+            {/* Card 2: Global Commodities (Brent Oil & Gold — Sinkron Geopolitik & Perang) */}
             {(() => {
-              const topIdxTicker = topIdx?.clean_ticker || topIdx?.symbol?.replace('.JK', '') || 'LSIP';
-              const liveIdx = livePrices[topIdxTicker] || livePrices[`IDX:${topIdxTicker}`];
-              const liveIdxPrice = liveIdx?.price !== undefined ? liveIdx.price : (topIdx?.entry_price || 1725);
-              const liveIdxChange = liveIdx?.changePct !== undefined ? liveIdx.changePct : 2.37;
-              const isIdxFlashing = flashMap[topIdxTicker];
+              const brentPrice = macro?.brent_oil_price ? Number(macro.brent_oil_price) : 87.40;
+              const brentChg = macro?.brent_oil_change_pct !== undefined ? Number(macro.brent_oil_change_pct) : 2.10;
+              const goldPrice = macro?.gold_price ? Number(macro.gold_price) : 2680.50;
+              const goldChg = macro?.gold_change_pct !== undefined ? Number(macro.gold_change_pct) : 0.80;
 
               return (
                 <div className="telemetry-panel" style={{
-                  padding: '10px 14px',
-                  borderLeft: '3px solid var(--accent-green)',
+                  padding: '9px 11px',
+                  borderLeft: '3px solid var(--accent-orange)',
+                  background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(245, 158, 11, 0.05) 100%)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  minHeight: '128px'
+                  minHeight: '128px',
+                  minWidth: 0,
+                  overflow: 'hidden'
                 }}>
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="metric-label" style={{ fontSize: '9px' }}>#1 IDX Alpha Watchlist</span>
-                      <span className="badge badge-bull" style={{ fontSize: '7.5px', padding: '1px 5px' }}>{topIdx?.technical_signal || 'BREAKOUT'}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '4px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', minWidth: 0 }}>
+                        <span style={{ fontSize: '11px', flexShrink: 0 }}>🛢️</span>
+                        <span className="metric-label" style={{ fontSize: '9px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>COMMODITIES</span>
+                      </div>
+                      <span style={{ fontSize: '7.5px', padding: '1px 5px', borderRadius: '3px', background: 'rgba(245, 158, 11, 0.18)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: '800', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                        OIL & GOLD
+                      </span>
                     </div>
+
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', gap: '4px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-                        <AssetIcon symbol={topIdxTicker} market="IDX" size={18} />
-                        <span style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
-                          ${topIdxTicker}
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px', whiteSpace: 'nowrap', minWidth: 0 }}>
+                        <span style={{ fontSize: '11.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#f59e0b', fontVariantNumeric: 'tabular-nums' }}>
+                          OIL ${brentPrice.toFixed(1)}
+                        </span>
+                        <span style={{ fontSize: '8.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: brentChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', fontVariantNumeric: 'tabular-nums' }}>
+                          {brentChg >= 0 ? '+' : ''}{brentChg.toFixed(1)}%
                         </span>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'nowrap', justifyContent: 'flex-end' }}>
-                        <span style={{
-                          fontSize: '11px',
-                          fontWeight: '800',
-                          fontFamily: 'var(--font-mono)',
-                          whiteSpace: 'nowrap',
-                          color: isIdxFlashing === 'up' ? 'var(--accent-green)' : isIdxFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)'
-                        }}>
-                          Rp {Math.round(liveIdxPrice).toLocaleString('id-ID')}
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px', whiteSpace: 'nowrap', minWidth: 0 }}>
+                        <span style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#facc15', fontVariantNumeric: 'tabular-nums' }}>
+                          GOLD ${Math.round(goldPrice).toLocaleString()}
                         </span>
-                        <span style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap', color: liveIdxChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                          {liveIdxChange >= 0 ? '+' : ''}{liveIdxChange.toFixed(2)}%
+                        <span style={{ fontSize: '8.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: goldChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', fontVariantNumeric: 'tabular-nums' }}>
+                          {goldChg >= 0 ? '+' : ''}{goldChg.toFixed(1)}%
                         </span>
-                        <button
-                          className="telemetry-btn"
-                          onClick={() => onSelectTicker(topIdxTicker, 'IDX')}
-                          style={{ fontSize: '7.5px', padding: '1.5px 5px', background: 'var(--accent-blue)', color: '#fff', whiteSpace: 'nowrap' }}
-                        >
-                          CHART ↗
-                        </button>
                       </div>
                     </div>
-                    <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                      Salim Group · IDX Equities
+
+                    <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      Korelasi Geopolitik & Energi
                     </div>
                   </div>
 
                   {/* Sparkline mini SVG */}
                   <div style={{ height: '14px', margin: '3px 0' }}>
                     <svg width="100%" height="14" viewBox="0 0 120 14" preserveAspectRatio="none">
-                      <path d="M 0 10 Q 30 12 50 8 T 90 4 L 120 2" fill="none" stroke="var(--accent-green)" strokeWidth="1.5" />
+                      <path d="M 0 12 Q 25 10 50 11 T 85 4 L 120 2" fill="none" stroke="#f59e0b" strokeWidth="1.5" />
                     </svg>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '4px', borderTop: 'var(--border-muted)' }}>
-                    <span>Entry: <strong style={{ color: 'var(--text-primary)' }}>{Number(topIdx?.entry_price || 1725).toLocaleString()}</strong></span>
-                    <span>SL: <strong style={{ color: 'var(--accent-rust)' }}>{Number(topIdx?.stop_loss || 1656).toLocaleString()}</strong></span>
-                    <span>TP: <strong style={{ color: 'var(--accent-green)' }}>{Number(topIdx?.target_1 || 1877).toLocaleString()}</strong></span>
-                    <span style={{ color: 'var(--accent-orange)', fontWeight: '800' }}>R:R 1:{topIdx?.risk_reward_ratio || '2.2'}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '4px', borderTop: 'var(--border-muted)', whiteSpace: 'nowrap' }}>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Sektor: <strong style={{ color: 'var(--accent-green)', cursor: 'pointer' }} onClick={() => onSelectTicker('MEDC', 'IDX')}>$MEDC</strong> <strong style={{ color: 'var(--accent-green)', cursor: 'pointer' }} onClick={() => onSelectTicker('ELSA', 'IDX')}>$ELSA</strong> <strong style={{ color: 'var(--accent-green)', cursor: 'pointer' }} onClick={() => onSelectTicker('ANTM', 'IDX')}>$ANTM</strong></span>
+                    <span style={{ color: 'var(--accent-blue)', fontWeight: '800', flexShrink: 0 }}>BULLISH</span>
                   </div>
                 </div>
               );
@@ -291,41 +289,44 @@ export default function HomeDashboardTab({
 
               return (
                 <div className="telemetry-panel" style={{
-                  padding: '10px 14px',
-                  borderLeft: '3px solid var(--accent-orange)',
+                  padding: '9px 11px',
+                  borderLeft: '3px solid #3b82f6',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  minHeight: '128px'
+                  minHeight: '128px',
+                  minWidth: 0,
+                  overflow: 'hidden'
                 }}>
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="metric-label" style={{ fontSize: '9px' }}>#1 Crypto Spot Momentum</span>
-                      <span className="badge badge-alert" style={{ fontSize: '7.5px', padding: '1px 5px' }}>NO LEV · SPOT</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '4px' }}>
+                      <span className="metric-label" style={{ fontSize: '9px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>#1 CRYPTO SPOT</span>
+                      <span className="badge badge-alert" style={{ fontSize: '7.5px', padding: '1.5px 5px', whiteSpace: 'nowrap', flexShrink: 0, lineHeight: 1 }}>NO LEV · SPOT</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', gap: '4px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-                        <CryptoIcon symbol={topCrypto?.pair || 'BTC'} size={18} />
-                        <span style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', minWidth: 0 }}>
+                        <CryptoIcon symbol={topCrypto?.pair || 'BTC'} size={16} />
+                        <span style={{ fontSize: '13.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
                           {topCrypto?.pair || 'BTC/USDT'}
                         </span>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'nowrap', justifyContent: 'flex-end' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'nowrap', justifyContent: 'flex-end', minWidth: 0 }}>
                         <span style={{
                           fontSize: '11px',
                           fontWeight: '800',
                           fontFamily: 'var(--font-mono)',
                           whiteSpace: 'nowrap',
+                          fontVariantNumeric: 'tabular-nums',
                           color: isCryptoFlashing === 'up' ? 'var(--accent-green)' : isCryptoFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)'
                         }}>
                           ${Number(liveCryptoPrice).toLocaleString(undefined, { minimumFractionDigits: Number(liveCryptoPrice) > 100 ? 0 : 2, maximumFractionDigits: 2 })}
                         </span>
-                        <span style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap', color: liveCryptoChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                        <span style={{ fontSize: '9.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums', color: liveCryptoChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                           {liveCryptoChange >= 0 ? '+' : ''}{liveCryptoChange.toFixed(2)}%
                         </span>
                       </div>
                     </div>
-                    <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       Range Accumulation
                     </div>
                   </div>
@@ -337,78 +338,87 @@ export default function HomeDashboardTab({
                     </svg>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '4px', borderTop: 'var(--border-muted)' }}>
-                    <span>Entry: <strong style={{ color: 'var(--text-primary)' }}>{Math.round(topCrypto?.current_price || 77168).toLocaleString()}</strong></span>
-                    <span>SL: <strong style={{ color: 'var(--accent-rust)' }}>{Math.round(topCrypto?.stop_loss || 75625).toLocaleString()}</strong></span>
-                    <span>TP: <strong style={{ color: 'var(--accent-green)' }}>{Math.round(topCrypto?.take_profit_1 || 80255).toLocaleString()}</strong></span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '4px', borderTop: 'var(--border-muted)', whiteSpace: 'nowrap' }}>
+                    <span>Entry: <strong style={{ color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>{Math.round(topCrypto?.current_price || 77168).toLocaleString()}</strong></span>
+                    <span>SL: <strong style={{ color: 'var(--accent-rust)', fontVariantNumeric: 'tabular-nums' }}>{Math.round(topCrypto?.stop_loss || 75625).toLocaleString()}</strong></span>
+                    <span>TP: <strong style={{ color: 'var(--accent-green)', fontVariantNumeric: 'tabular-nums' }}>{Math.round(topCrypto?.take_profit_1 || 80255).toLocaleString()}</strong></span>
                     <span style={{ color: 'var(--accent-orange)', fontWeight: '800' }}>R:R 1:{topCrypto?.risk_reward_ratio || '2'}</span>
                   </div>
                 </div>
               );
             })()}
 
-            {/* Card 4: Global Commodities (Brent Oil & Gold — Sinkron Geopolitik & Perang) */}
+            {/* Card 4: #1 IDX Alpha Watchlist */}
             {(() => {
-              const brentPrice = macro?.brent_oil_price ? Number(macro.brent_oil_price) : 87.40;
-              const brentChg = macro?.brent_oil_change_pct !== undefined ? Number(macro.brent_oil_change_pct) : 2.10;
-              const goldPrice = macro?.gold_price ? Number(macro.gold_price) : 2680.50;
-              const goldChg = macro?.gold_change_pct !== undefined ? Number(macro.gold_change_pct) : 0.80;
+              const topIdxTicker = topIdx?.clean_ticker || topIdx?.symbol?.replace('.JK', '') || 'LSIP';
+              const liveIdx = livePrices[topIdxTicker] || livePrices[`IDX:${topIdxTicker}`];
+              const liveIdxPrice = liveIdx?.price !== undefined ? liveIdx.price : (topIdx?.entry_price || 1725);
+              const liveIdxChange = liveIdx?.changePct !== undefined ? liveIdx.changePct : 2.37;
+              const isIdxFlashing = flashMap[topIdxTicker];
 
               return (
                 <div className="telemetry-panel" style={{
-                  padding: '10px 14px',
-                  borderLeft: '3px solid var(--accent-orange)',
-                  background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(245, 158, 11, 0.05) 100%)',
+                  padding: '9px 11px',
+                  borderLeft: '3px solid var(--accent-green)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  minHeight: '128px'
+                  minHeight: '128px',
+                  minWidth: 0,
+                  overflow: 'hidden'
                 }}>
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span style={{ fontSize: '11px' }}>🛢️</span>
-                        <span className="metric-label" style={{ fontSize: '9px' }}>GLOBAL COMMODITIES</span>
-                      </div>
-                      <span style={{ fontSize: '7.5px', padding: '1px 5px', borderRadius: '3px', background: 'rgba(245, 158, 11, 0.18)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: '800' }}>
-                        OIL & GOLD
-                      </span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '4px' }}>
+                      <span className="metric-label" style={{ fontSize: '9px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>#1 IDX ALPHA</span>
+                      <span className="badge badge-bull" style={{ fontSize: '7.5px', padding: '1px 5px', whiteSpace: 'nowrap', flexShrink: 0 }}>{topIdx?.technical_signal || 'BREAKOUT'}</span>
                     </div>
-
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', gap: '4px' }}>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', whiteSpace: 'nowrap' }}>
-                        <span style={{ fontSize: '13px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#f59e0b' }}>
-                          BRENT ${brentPrice.toFixed(2)}
-                        </span>
-                        <span style={{ fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: brentChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                          {brentChg >= 0 ? '+' : ''}{brentChg.toFixed(1)}%
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', minWidth: 0 }}>
+                        <AssetIcon symbol={topIdxTicker} market="IDX" size={16} />
+                        <span style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                          ${topIdxTicker}
                         </span>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', whiteSpace: 'nowrap' }}>
-                        <span style={{ fontSize: '11.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#facc15' }}>
-                          GOLD ${Math.round(goldPrice).toLocaleString()}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '3px', flexWrap: 'nowrap', justifyContent: 'flex-end', minWidth: 0 }}>
+                        <span style={{
+                          fontSize: '10.5px',
+                          fontWeight: '800',
+                          fontFamily: 'var(--font-mono)',
+                          whiteSpace: 'nowrap',
+                          fontVariantNumeric: 'tabular-nums',
+                          color: isIdxFlashing === 'up' ? 'var(--accent-green)' : isIdxFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)'
+                        }}>
+                          Rp {Math.round(liveIdxPrice).toLocaleString('id-ID')}
                         </span>
-                        <span style={{ fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: goldChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                          {goldChg >= 0 ? '+' : ''}{goldChg.toFixed(1)}%
+                        <span style={{ fontSize: '9.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums', color: liveIdxChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                          {liveIdxChange >= 0 ? '+' : ''}{liveIdxChange.toFixed(2)}%
                         </span>
+                        <button
+                          className="telemetry-btn"
+                          onClick={() => onSelectTicker(topIdxTicker, 'IDX')}
+                          style={{ fontSize: '7px', padding: '1.5px 4px', background: 'var(--accent-blue)', color: '#fff', whiteSpace: 'nowrap', flexShrink: 0 }}
+                        >
+                          ↗
+                        </button>
                       </div>
                     </div>
-
-                    <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                      Korelasi Geopolitik & Energi
+                    <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      Salim Group · IDX Equities
                     </div>
                   </div>
 
                   {/* Sparkline mini SVG */}
                   <div style={{ height: '14px', margin: '3px 0' }}>
                     <svg width="100%" height="14" viewBox="0 0 120 14" preserveAspectRatio="none">
-                      <path d="M 0 12 Q 25 10 50 11 T 85 4 L 120 2" fill="none" stroke="#f59e0b" strokeWidth="1.5" />
+                      <path d="M 0 10 Q 30 12 50 8 T 90 4 L 120 2" fill="none" stroke="var(--accent-green)" strokeWidth="1.5" />
                     </svg>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '4px', borderTop: 'var(--border-muted)' }}>
-                    <span>Sektor: <strong style={{ color: 'var(--accent-green)', cursor: 'pointer' }} onClick={() => onSelectTicker('MEDC', 'IDX')}>$MEDC</strong> <strong style={{ color: 'var(--accent-green)', cursor: 'pointer' }} onClick={() => onSelectTicker('ELSA', 'IDX')}>$ELSA</strong> <strong style={{ color: 'var(--accent-green)', cursor: 'pointer' }} onClick={() => onSelectTicker('ANTM', 'IDX')}>$ANTM</strong></span>
-                    <span style={{ color: 'var(--accent-blue)', fontWeight: '800' }}>BULLISH</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '4px', borderTop: 'var(--border-muted)', whiteSpace: 'nowrap' }}>
+                    <span>Entry: <strong style={{ color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>{Number(topIdx?.entry_price || 1725).toLocaleString()}</strong></span>
+                    <span>SL: <strong style={{ color: 'var(--accent-rust)', fontVariantNumeric: 'tabular-nums' }}>{Number(topIdx?.stop_loss || 1656).toLocaleString()}</strong></span>
+                    <span>TP: <strong style={{ color: 'var(--accent-green)', fontVariantNumeric: 'tabular-nums' }}>{Number(topIdx?.target_1 || 1877).toLocaleString()}</strong></span>
+                    <span style={{ color: 'var(--accent-orange)', fontWeight: '800' }}>R:R 1:{topIdx?.risk_reward_ratio || '2.2'}</span>
                   </div>
                 </div>
               );

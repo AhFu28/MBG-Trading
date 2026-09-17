@@ -79,6 +79,8 @@ body {
   text-transform: uppercase;
   border-radius: var(--radius-full);
   border: var(--border-hairline);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .badge-bull {
@@ -888,7 +890,7 @@ body {
 .home-dashboard-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 260px;
-  gap: 10px;
+  gap: 6px;
   width: 100%;
   box-sizing: border-box;
   align-items: stretch;
@@ -896,15 +898,22 @@ body {
 
 .home-bento-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
   min-width: 0;
+  width: 100%;
+}
+
+.home-bento-row > * {
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .home-tri-bento-grid {
   display: grid;
   grid-template-columns: 31% 37% 32%;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
   align-items: stretch;
 }
@@ -912,14 +921,14 @@ body {
 .home-radar-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  gap: 6px;
   align-items: center;
 }
 
 .home-radar-grid-2x2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5px;
+  gap: 6px;
   padding: 6px 8px;
   flex-grow: 1;
 }
@@ -927,14 +936,14 @@ body {
 .home-dual-flow-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
 }
 
 .home-flow-columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 6px;
 }
 
 .home-news-sidebar {
