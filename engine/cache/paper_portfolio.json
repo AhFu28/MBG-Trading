@@ -1667,6 +1667,66 @@
       "closed_at": null,
       "pnl": 0,
       "pnl_pct": 0
+    },
+    {
+      "id": "14cb2f39-9c67-458f-9131-a25ad6251e8c",
+      "ticker": "ASGR",
+      "entry_price": 2160.0,
+      "sl_price": 2074.0,
+      "tp1_price": 2349.0,
+      "tp2_price": 2470.0,
+      "lots": 93,
+      "strategy_type": "Astra",
+      "status": "ACTIVE",
+      "opened_at": "2026-09-17T10:01:35.331083",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
+    },
+    {
+      "id": "0c8bebb1-d0ed-4400-9da3-86fdc83802ae",
+      "ticker": "SINI",
+      "entry_price": 16800.0,
+      "sl_price": 16128.0,
+      "tp1_price": 18278.0,
+      "tp2_price": 19219.0,
+      "lots": 11,
+      "strategy_type": "Astra",
+      "status": "ACTIVE",
+      "opened_at": "2026-09-17T10:01:35.333054",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
+    },
+    {
+      "id": "f7095782-48fc-4938-bf7a-e2c546504f00",
+      "ticker": "JARR",
+      "entry_price": 4190.0,
+      "sl_price": 4022.0,
+      "tp1_price": 4560.0,
+      "tp2_price": 4795.0,
+      "lots": 48,
+      "strategy_type": "Astra",
+      "status": "ACTIVE",
+      "opened_at": "2026-09-17T10:01:35.334835",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
+    },
+    {
+      "id": "bb511acd-7d2f-4ebe-a765-a39608d3f815",
+      "ticker": "SMAR",
+      "entry_price": 6400.0,
+      "sl_price": 6144.0,
+      "tp1_price": 6963.0,
+      "tp2_price": 7322.0,
+      "lots": 31,
+      "strategy_type": "Astra",
+      "status": "ACTIVE",
+      "opened_at": "2026-09-17T10:01:35.336582",
+      "closed_at": null,
+      "pnl": 0,
+      "pnl_pct": 0
     }
   ]
 }
