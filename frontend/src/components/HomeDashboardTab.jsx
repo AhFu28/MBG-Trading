@@ -345,222 +345,238 @@ export default function HomeDashboardTab({
               );
             })()}
 
-          </div>
+            {/* Card 4: Global Commodities (Brent Oil & Gold — Sinkron Geopolitik & Perang) */}
+            {(() => {
+              const brentPrice = macro?.brent_oil_price ? Number(macro.brent_oil_price) : 87.40;
+              const brentChg = macro?.brent_oil_change_pct !== undefined ? Number(macro.brent_oil_change_pct) : 2.10;
+              const goldPrice = macro?.gold_price ? Number(macro.gold_price) : 2680.50;
+              const goldChg = macro?.gold_change_pct !== undefined ? Number(macro.gold_change_pct) : 0.80;
 
-          {/* ================= BLOOMBERG SENTIMENT & RISK RADAR ================= */}
-          {(() => {
-            const sentimentRadar = macro?.sentiment_radar || {};
-            const fngVal = sentimentRadar?.fear_greed?.value ?? 62;
-            const fngLabel = sentimentRadar?.fear_greed?.label || (fngVal >= 75 ? 'Extreme Greed' : fngVal >= 55 ? 'Greed' : fngVal >= 45 ? 'Neutral' : fngVal >= 25 ? 'Fear' : 'Extreme Fear');
-            const btcDom = sentimentRadar?.btc_dominance ?? 58.4;
-            const vixVal = Number(sentimentRadar?.vix ?? 16.2);
-            const dxyVal = Number(macro?.dxy_index ?? 104.2);
-
-            const getFngColor = (val) => {
-              if (val >= 75) return '#10b981';
-              if (val >= 55) return '#34d399';
-              if (val >= 45) return '#f59e0b';
-              if (val >= 25) return '#f97316';
-              return '#ef4444';
-            };
-
-            const fngColor = getFngColor(fngVal);
-
-            return (
-              <div className="telemetry-panel" style={{
-                padding: '8px 12px',
-                background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(30, 41, 59, 0.4) 100%)',
-                border: 'var(--border-hairline)',
-                borderRadius: '4px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '6px'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ fontSize: '12px' }}>🧭</span>
-                    <span style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.5px' }}>
-                      BLOOMBERG RISK & SENTIMENT RADAR
-                    </span>
-                    <span style={{ fontSize: '8px', padding: '1px 5px', borderRadius: '3px', background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', fontWeight: '700' }}>
-                      INSTITUTIONAL METRICS
-                    </span>
-                  </div>
-                  <span style={{ fontSize: '8px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                    LIVE MACRO SYNC
-                  </span>
-                </div>
-
-                <div className="home-radar-grid">
-                  {/* Gauge 1: Crypto Fear & Greed */}
-                  <div style={{
-                    padding: '6px 8px',
-                    background: 'var(--bg-panel-subtle)',
-                    borderRadius: '3px',
-                    border: 'var(--border-hairline)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '2px'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Crypto Fear & Greed</span>
-                      <span style={{ fontSize: '8px', fontWeight: '800', color: fngColor }}>{fngLabel}</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                      <span style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: fngColor }}>
-                        {fngVal}
-                      </span>
-                      <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>/ 100</span>
-                    </div>
-                    <div style={{ width: '100%', height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden', marginTop: '2px' }}>
-                      <div style={{ width: `${Math.min(100, Math.max(0, fngVal))}%`, height: '100%', background: fngColor, transition: 'width 0.4s ease' }} />
-                    </div>
-                  </div>
-
-                  {/* Gauge 2: VIX Volatility Index */}
-                  <div style={{
-                    padding: '6px 8px',
-                    background: 'var(--bg-panel-subtle)',
-                    borderRadius: '3px',
-                    border: 'var(--border-hairline)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '2px'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>CBOE VIX (Wall St)</span>
-                      <span style={{
-                        fontSize: '8px',
-                        fontWeight: '800',
-                        color: vixVal < 15 ? 'var(--accent-green)' : vixVal < 20 ? '#60a5fa' : vixVal < 25 ? '#f59e0b' : '#ef4444'
-                      }}>
-                        {vixVal < 15 ? 'CALM' : vixVal < 20 ? 'NORMAL' : vixVal < 25 ? 'ELEVATED' : 'HIGH PANIC'}
-                      </span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                      <span style={{
-                        fontSize: '15px',
-                        fontWeight: '900',
-                        fontFamily: 'var(--font-mono)',
-                        color: vixVal < 20 ? 'var(--text-primary)' : '#ef4444'
-                      }}>
-                        {vixVal.toFixed(2)}
-                      </span>
-                      <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>pts</span>
-                    </div>
-                    <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                      {vixVal < 20 ? '🟢 Market Complacency' : '⚠️ Hedging Demand Naik'}
-                    </div>
-                  </div>
-
-                  {/* Gauge 3: BTC Dominance & Altseason */}
-                  <div style={{
-                    padding: '6px 8px',
-                    background: 'var(--bg-panel-subtle)',
-                    borderRadius: '3px',
-                    border: 'var(--border-hairline)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '2px'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>BTC Dominance</span>
-                      <span style={{ fontSize: '8px', fontWeight: '800', color: btcDom > 55 ? '#f59e0b' : '#10b981' }}>
-                        {btcDom > 55 ? 'BTC LEADER' : 'ALTSEASON'}
-                      </span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                      <span style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-                        {btcDom.toFixed(1)}%
-                      </span>
-                      <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>market share</span>
-                    </div>
-                    <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                      {btcDom > 55 ? 'Capital fokus di BTC ETF' : 'Altcoin Outperforming'}
-                    </div>
-                  </div>
-
-                  {/* Gauge 4: Dollar Strength DXY */}
-                  <div style={{
-                    padding: '6px 8px',
-                    background: 'var(--bg-panel-subtle)',
-                    borderRadius: '3px',
-                    border: 'var(--border-hairline)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '2px'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>US Dollar Index (DXY)</span>
-                      <span style={{ fontSize: '8px', fontWeight: '800', color: dxyVal > 105 ? '#ef4444' : dxyVal < 103 ? 'var(--accent-green)' : '#60a5fa' }}>
-                        {dxyVal > 105 ? 'STRONG USD' : dxyVal < 103 ? 'SOFT USD' : 'NEUTRAL'}
-                      </span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                      <span style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-                        {dxyVal.toFixed(2)}
-                      </span>
-                      <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>pts</span>
-                    </div>
-                    <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                      {dxyVal > 104.5 ? '🔴 Tekanan Kurs Emerging Markets' : '🟢 Likuiditas Global Melonggar'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
-
-          {/* ROW 2: DUAL FLOW RADAR (Struktur Klasik: Top 5 Inflow vs Outflow & Polish Bandarmology) */}
-          <div className="home-dual-flow-grid">
-
-            {/* Left Box: IDX Foreign Capital Flow (Struktur Lama: Top 5 Inflow & Top 5 Outflow Sempurna) */}
-            <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column' }}>
-              <div className="telemetry-header" style={{ padding: '6px 10px', fontSize: '11px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span>🌐 IDX FOREIGN CAPITAL FLOW</span>
-                </div>
-                <span className="badge badge-bear" style={{ fontSize: '8px', padding: '1px 5px' }}>
-                  {totalNetForeign >= 0 ? 'NET BUY' : 'NET SELL'}
-                </span>
-              </div>
-              <div style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {/* Stats Header Bar */}
-                <div style={{
+              return (
+                <div className="telemetry-panel" style={{
+                  padding: '10px 14px',
+                  borderLeft: '3px solid var(--accent-orange)',
+                  background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(245, 158, 11, 0.05) 100%)',
                   display: 'flex',
+                  flexDirection: 'column',
                   justifyContent: 'space-between',
-                  padding: '4px 8px',
-                  background: 'var(--bg-panel-subtle)',
-                  borderRadius: '3px',
-                  border: 'var(--border-hairline)',
-                  fontSize: '10px',
-                  fontFamily: 'var(--font-mono)'
+                  minHeight: '128px'
                 }}>
                   <div>
-                    <span style={{ color: 'var(--text-muted)', fontSize: '8px', display: 'block' }}>NET ASING TERPANTAU</span>
-                    <span style={{ fontWeight: '800', color: totalNetForeign >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                      {formatFlowIdr(totalNetForeign)}
-                    </span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ fontSize: '11px' }}>🛢️</span>
+                        <span className="metric-label" style={{ fontSize: '9.5px' }}>GLOBAL COMMODITIES</span>
+                      </div>
+                      <span style={{ fontSize: '7.5px', padding: '1px 5px', borderRadius: '3px', background: 'rgba(245, 158, 11, 0.18)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: '800' }}>
+                        OIL & GOLD
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '4px' }}>
+                      <div>
+                        <span style={{ fontSize: '13.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#f59e0b' }}>
+                          BRENT ${brentPrice.toFixed(2)}
+                        </span>
+                        <span style={{ fontSize: '9.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: brentChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginLeft: '4px' }}>
+                          {brentChg >= 0 ? '+' : ''}{brentChg.toFixed(1)}%
+                        </span>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '11.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#facc15' }}>
+                          GOLD ${Math.round(goldPrice).toLocaleString()}
+                        </span>
+                        <span style={{ fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: goldChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginLeft: '3px' }}>
+                          {goldChg >= 0 ? '+' : ''}{goldChg.toFixed(1)}%
+                        </span>
+                      </div>
+                    </div>
+
+                    <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '3px' }}>
+                      Korelasi Geopolitik & Energi
+                    </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <span style={{ color: 'var(--text-muted)', fontSize: '8px', display: 'block' }}>AKUMULASI INFLOW TOP 6</span>
-                    <span style={{ fontWeight: '800', color: 'var(--accent-green)' }}>
-                      {formatFlowIdr(netInflowSum)}
-                    </span>
+
+                  {/* Sparkline mini SVG */}
+                  <div style={{ height: '14px', margin: '3px 0' }}>
+                    <svg width="100%" height="14" viewBox="0 0 120 14" preserveAspectRatio="none">
+                      <path d="M 0 12 Q 25 10 50 11 T 85 4 L 120 2" fill="none" stroke="#f59e0b" strokeWidth="1.5" />
+                    </svg>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '4px', borderTop: 'var(--border-muted)' }}>
+                    <span>Sektor: <strong style={{ color: 'var(--accent-green)', cursor: 'pointer' }} onClick={() => onSelectTicker('MEDC', 'IDX')}>$MEDC</strong> <strong style={{ color: 'var(--accent-green)', cursor: 'pointer' }} onClick={() => onSelectTicker('ELSA', 'IDX')}>$ELSA</strong> <strong style={{ color: 'var(--accent-green)', cursor: 'pointer' }} onClick={() => onSelectTicker('ANTM', 'IDX')}>$ANTM</strong></span>
+                    <span style={{ color: 'var(--accent-blue)', fontWeight: '800' }}>BULLISH</span>
+                  </div>
+                </div>
+              );
+            })()}
+
+          </div>
+
+          {/* ================= ROW 2: TRI-BENTO HORIZONTAL MATRIX (3-KOLOM 1-BARIS) ================= */}
+          <div className="home-tri-bento-grid">
+
+            {/* Col 1: BLOOMBERG RISK & SENTIMENT RADAR (2x2 Matrix) */}
+            {(() => {
+              const sentimentRadar = macro?.sentiment_radar || {};
+              const fngVal = sentimentRadar?.fear_greed?.value ?? 62;
+              const fngLabel = sentimentRadar?.fear_greed?.label || (fngVal >= 75 ? 'Extreme Greed' : fngVal >= 55 ? 'Greed' : fngVal >= 45 ? 'Neutral' : fngVal >= 25 ? 'Fear' : 'Extreme Fear');
+              const btcDom = sentimentRadar?.btc_dominance ?? 58.4;
+              const vixVal = Number(sentimentRadar?.vix ?? 16.2);
+              const dxyVal = Number(macro?.dxy_index ?? 104.2);
+
+              const getFngColor = (val) => {
+                if (val >= 75) return '#10b981';
+                if (val >= 55) return '#34d399';
+                if (val >= 45) return '#f59e0b';
+                if (val >= 25) return '#f97316';
+                return '#ef4444';
+              };
+
+              const fngColor = getFngColor(fngVal);
+
+              return (
+                <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div className="telemetry-header" style={{ padding: '6px 10px', fontSize: '10.5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span>🧭</span>
+                      <span style={{ fontWeight: '800' }}>RISK & SENTIMENT RADAR</span>
+                    </div>
+                    <span style={{ fontSize: '7.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>LIVE MACRO</span>
+                  </div>
+
+                  <div className="home-radar-grid-2x2">
+                    {/* Gauge 1: Crypto Fear & Greed */}
+                    <div style={{ padding: '5px 7px', background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7.5px', color: 'var(--text-muted)' }}>
+                        <span>FEAR & GREED</span>
+                        <span style={{ color: fngColor, fontWeight: '800' }}>{fngLabel.toUpperCase()}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+                        <span style={{ fontSize: '13.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: fngColor }}>{fngVal}</span>
+                        <span style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>/ 100</span>
+                      </div>
+                      <div style={{ width: '100%', height: '2.5px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden', marginTop: '1px' }}>
+                        <div style={{ width: `${Math.min(100, Math.max(0, fngVal))}%`, height: '100%', background: fngColor }} />
+                      </div>
+                    </div>
+
+                    {/* Gauge 2: VIX */}
+                    <div style={{ padding: '5px 7px', background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7.5px', color: 'var(--text-muted)' }}>
+                        <span>CBOE VIX</span>
+                        <span style={{ color: vixVal < 15 ? 'var(--accent-green)' : vixVal < 20 ? '#60a5fa' : vixVal < 25 ? '#f59e0b' : '#ef4444', fontWeight: '800' }}>
+                          {vixVal < 15 ? 'CALM' : vixVal < 20 ? 'NORMAL' : vixVal < 25 ? 'ELEVATED' : 'PANIC'}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+                        <span style={{ fontSize: '13.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: vixVal < 20 ? 'var(--text-primary)' : '#ef4444' }}>
+                          {vixVal.toFixed(2)}
+                        </span>
+                        <span style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>pts</span>
+                      </div>
+                      <div style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>
+                        {vixVal < 20 ? '🟢 Complacency' : '⚠️ Hedging Demand'}
+                      </div>
+                    </div>
+
+                    {/* Gauge 3: BTC DOM */}
+                    <div style={{ padding: '5px 7px', background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7.5px', color: 'var(--text-muted)' }}>
+                        <span>BTC DOM</span>
+                        <span style={{ color: btcDom > 55 ? '#f59e0b' : '#10b981', fontWeight: '800' }}>
+                          {btcDom > 55 ? 'BTC LEAD' : 'ALTSEASON'}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+                        <span style={{ fontSize: '13.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                          {btcDom.toFixed(1)}%
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>
+                        {btcDom > 55 ? 'Capital fokus BTC' : 'Altcoins Leading'}
+                      </div>
+                    </div>
+
+                    {/* Gauge 4: DXY */}
+                    <div style={{ padding: '5px 7px', background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7.5px', color: 'var(--text-muted)' }}>
+                        <span>USD (DXY)</span>
+                        <span style={{ color: dxyVal > 105 ? '#ef4444' : dxyVal < 103 ? 'var(--accent-green)' : '#60a5fa', fontWeight: '800' }}>
+                          {dxyVal > 105 ? 'STRONG' : dxyVal < 103 ? 'SOFT' : 'NEUTRAL'}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+                        <span style={{ fontSize: '13.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                          {dxyVal.toFixed(2)}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>
+                        {dxyVal > 104.5 ? '🔴 Tekanan Kurs EM' : '🟢 Likuiditas Melonggar'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ padding: '4px 8px', borderTop: 'var(--border-muted)', fontSize: '8px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'rgba(0,0,0,0.15)' }}>
+                    <span>Macro Regime: <strong style={{ color: 'var(--accent-green)' }}>Risk-On Equities</strong></span>
+                    <span style={{ color: 'var(--accent-blue)' }}>+1.4σ Bullish</span>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Col 2: IDX FOREIGN CAPITAL FLOW (Top 5 Inflow vs Outflow + 5D Trend Sparkline Strip) */}
+            <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div className="telemetry-header" style={{ padding: '6px 10px', fontSize: '10.5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <span>🌐</span>
+                  <span style={{ fontWeight: '800' }}>FOREIGN CAPITAL FLOW</span>
+                </div>
+                <span className={totalNetForeign >= 0 ? 'badge badge-bull' : 'badge badge-bear'} style={{ fontSize: '7.5px', padding: '1px 5px' }}>
+                  {totalNetForeign >= 0 ? 'NET BUY' : 'NET SELL'} {formatFlowIdr(totalNetForeign)}
+                </span>
+              </div>
+
+              <div style={{ padding: '5px 8px', display: 'flex', flexDirection: 'column', gap: '4px', flexGrow: 1 }}>
+                {/* Micro Stats & Sparkline Strip (Ultra Compact: Zero Added Height) */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3px 6px', background: 'var(--bg-panel-subtle)', borderRadius: '3px', border: 'var(--border-hairline)', fontSize: '8px', fontFamily: 'var(--font-mono)' }}>
+                  {/* Ratio Distribution Micro Meter */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <span style={{ color: 'var(--accent-green)', fontWeight: '800' }}>42% B</span>
+                    <div style={{ width: '32px', height: '3.5px', display: 'flex', borderRadius: '2px', overflow: 'hidden', background: 'rgba(255,255,255,0.1)' }}>
+                      <div style={{ width: '42%', height: '100%', background: 'var(--accent-green)' }} />
+                      <div style={{ width: '58%', height: '100%', background: 'var(--accent-rust)' }} />
+                    </div>
+                    <span style={{ color: 'var(--accent-rust)', fontWeight: '800' }}>58% S</span>
+                  </div>
+
+                  {/* 5D Micro Spark-Bars Histogram */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '7px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>5D Trend:</span>
+                    <svg width="46" height="12" viewBox="0 0 46 12" style={{ display: 'block' }}>
+                      <line x1="0" y1="6" x2="46" y2="6" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5" strokeDasharray="1,1" />
+                      <rect x="2" y="6" width="5" height="4" fill="#ef4444" rx="0.5" />
+                      <rect x="11" y="2" width="5" height="4" fill="#10b981" rx="0.5" />
+                      <rect x="20" y="3" width="5" height="3" fill="#10b981" rx="0.5" />
+                      <rect x="29" y="6" width="5" height="3" fill="#ef4444" rx="0.5" />
+                      <rect x="38" y="6" width="6" height="5" fill="#f87171" stroke="#ef4444" strokeWidth="0.5" rx="0.5" />
+                    </svg>
+                    <span style={{ fontSize: '7.5px', color: 'var(--accent-green)', fontWeight: '800' }}>+12.9B</span>
                   </div>
                 </div>
 
-                {/* 2-Columns: Top Inflow (Buy) vs Top Outflow (Sell) */}
-                <div className="home-flow-columns">
+                {/* Top Inflow vs Outflow Columns */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginTop: '1px' }}>
                   {/* Top Inflow */}
                   <div>
-                    <div style={{ fontSize: '9px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '3px' }}>
-                      ▲ TOP INFLOW (BUY)
+                    <div style={{ fontSize: '7.5px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '2px' }}>
+                      ▲ TOP INFLOW
                     </div>
-                    {topInflow.map((f, i) => (
-                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '3.5px 0', borderBottom: 'var(--border-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
-                        <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--accent-blue)', display: 'inline-flex', alignItems: 'center', gap: '4px' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>
-                          <AssetIcon symbol={f.ticker} market="IDX" size={12} />
+                    {topInflow.slice(0, 5).map((f, i) => (
+                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3.2px 0', borderBottom: 'var(--border-muted)', fontSize: '9.5px', fontFamily: 'var(--font-mono)' }}>
+                        <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--accent-blue)', display: 'inline-flex', alignItems: 'center', gap: '3px' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>
+                          <AssetIcon symbol={f.ticker} market="IDX" size={11} />
                           <span>${f.ticker}</span>
                         </span>
                         <span style={{ color: (f.foreign_net_val_idr || 0) >= 0 ? 'var(--accent-green)' : 'var(--text-muted)' }}>
@@ -572,13 +588,13 @@ export default function HomeDashboardTab({
 
                   {/* Top Outflow */}
                   <div>
-                    <div style={{ fontSize: '9px', fontWeight: '800', color: 'var(--accent-rust)', marginBottom: '3px' }}>
-                      ▼ TOP OUTFLOW (SELL)
+                    <div style={{ fontSize: '7.5px', fontWeight: '800', color: 'var(--accent-rust)', marginBottom: '2px' }}>
+                      ▼ TOP OUTFLOW
                     </div>
-                    {topOutflow.map((f, i) => (
-                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '3.5px 0', borderBottom: 'var(--border-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
-                        <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--accent-blue)', display: 'inline-flex', alignItems: 'center', gap: '4px' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>
-                          <AssetIcon symbol={f.ticker} market="IDX" size={12} />
+                    {topOutflow.slice(0, 5).map((f, i) => (
+                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3.2px 0', borderBottom: 'var(--border-muted)', fontSize: '9.5px', fontFamily: 'var(--font-mono)' }}>
+                        <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--accent-blue)', display: 'inline-flex', alignItems: 'center', gap: '3px' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>
+                          <AssetIcon symbol={f.ticker} market="IDX" size={11} />
                           <span>${f.ticker}</span>
                         </span>
                         <span style={{ color: 'var(--accent-rust)' }}>
@@ -589,49 +605,55 @@ export default function HomeDashboardTab({
                   </div>
                 </div>
               </div>
+
+              <div style={{ padding: '3.5px 8px', borderTop: 'var(--border-muted)', fontSize: '8px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'rgba(0,0,0,0.15)' }}>
+                <span>Arus Harian: <strong style={{ color: totalNetForeign >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{formatFlowIdr(totalNetForeign)}</strong></span>
+                <span>Regime: <strong style={{ color: 'var(--accent-green)' }}>Akumulasi Selektif</strong></span>
+              </div>
             </div>
 
-            {/* Right Box: Bandarmology Broker Accumulation (Optimasi Rapi, Padat & Simetris) */}
-            <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column' }}>
-              <div className="telemetry-header" style={{ padding: '6px 10px', fontSize: '11px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span>🐳 BANDARMOLOGY (BROKER FLOW)</span>
-                  <span style={{ fontSize: '7.5px', padding: '1px 5px', borderRadius: '3px', background: 'rgba(234, 179, 8, 0.12)', color: '#facc15', border: '1px solid rgba(234, 179, 8, 0.25)', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
-                    SIMULASI EOD
+            {/* Col 3: BANDARMOLOGY (BROKER FLOW) (5 Compact Items) */}
+            <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div className="telemetry-header" style={{ padding: '6px 10px', fontSize: '10.5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <span>🐳</span>
+                  <span style={{ fontWeight: '800' }}>BANDARMOLOGY (BROKER)</span>
+                  <span style={{ fontSize: '7.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(234, 179, 8, 0.15)', color: '#facc15', border: '1px solid rgba(234, 179, 8, 0.3)', fontWeight: '800' }}>
+                    SIM EOD
                   </span>
                 </div>
-                <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>TOP BUYERS</span>
+                <span className="badge badge-bull" style={{ fontSize: '7.5px', padding: '1px 5px' }}>TOP BUYERS</span>
               </div>
 
-              <div style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {/* Stats Header Bar (Simetris dengan Box Kiri) */}
+              <div style={{ padding: '5px 8px', display: 'flex', flexDirection: 'column', gap: '3.5px', flexGrow: 1 }}>
+                {/* Stats Bar */}
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  padding: '4px 8px',
+                  padding: '3px 6px',
                   background: 'var(--bg-panel-subtle)',
                   borderRadius: '3px',
                   border: 'var(--border-hairline)',
-                  fontSize: '10px',
+                  fontSize: '8px',
                   fontFamily: 'var(--font-mono)'
                 }}>
                   <div>
-                    <span style={{ color: 'var(--text-muted)', fontSize: '8px', display: 'block' }}>TOTAL VALUE AKUMULASI</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '7.5px', display: 'block' }}>TOTAL AKUMULASI</span>
                     <span style={{ fontWeight: '800', color: 'var(--accent-green)' }}>
                       {formatFlowIdr(totalBandarAccumValue)}
                     </span>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <span style={{ color: 'var(--text-muted)', fontSize: '8px', display: 'block' }}>KONSENTRASI BROKER</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '7.5px', display: 'block' }}>KONSENTRASI BROKER</span>
                     <span style={{ fontWeight: '800', color: '#60a5fa' }}>
-                      CR3 AVG 68.4% (KUAT)
+                      CR3 AVG 68.4%
                     </span>
                   </div>
                 </div>
 
                 {/* List Items Broker Accumulation */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4.5px' }}>
-                  {accumulatingBrokers.map((b, idx) => {
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  {accumulatingBrokers.slice(0, 5).map((b, idx) => {
                     const topB = b.top_buyers?.[0];
                     const cleanBroker = (topB?.broker || 'CC').replace('[SIMULATED] ', '').trim();
                     const lotsK = topB?.lots ? Math.round(topB.lots / 1000).toLocaleString() + 'k lot' : '-';
@@ -642,32 +664,32 @@ export default function HomeDashboardTab({
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
-                          padding: '4.5px 8px',
+                          padding: '3.8px 7px',
                           background: 'var(--bg-panel-subtle)',
                           borderRadius: '3px',
                           border: 'var(--border-hairline)',
-                          fontSize: '10px',
+                          fontSize: '9.5px',
                           fontFamily: 'var(--font-mono)'
                         }}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <span
-                            style={{ fontWeight: '900', color: 'var(--accent-blue)', cursor: 'pointer', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                            style={{ fontWeight: '800', color: 'var(--accent-blue)', cursor: 'pointer', fontSize: '10.5px', display: 'inline-flex', alignItems: 'center', gap: '3px' }}
                             onClick={() => onSelectTicker(b.ticker, 'IDX')}
                           >
-                            <AssetIcon symbol={b.ticker} market="IDX" size={12} />
+                            <AssetIcon symbol={b.ticker} market="IDX" size={11} />
                             <span>${b.ticker}</span>
                           </span>
-                          <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
-                            Avg: <strong style={{ color: 'var(--text-primary)' }}>Rp {Number(b.bandar_avg_price || b.ref_price).toLocaleString()}</strong>
+                          <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                            Avg: <strong style={{ color: 'var(--text-primary)' }}>{Number(b.bandar_avg_price || b.ref_price).toLocaleString()}</strong>
                           </span>
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ fontSize: '9px', color: 'var(--text-secondary)', fontWeight: '700' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                          <span style={{ fontSize: '8.5px', color: 'var(--text-secondary)', fontWeight: '700' }}>
                             {cleanBroker} <span style={{ color: 'var(--text-muted)', fontWeight: '500' }}>({lotsK})</span>
                           </span>
-                          <span className="badge badge-bull" style={{ fontSize: '7.5px', padding: '1px 5px', fontWeight: '800' }}>
+                          <span className="badge badge-bull" style={{ fontSize: '7px', padding: '0 3px', fontWeight: '800' }}>
                             BIG ACC
                           </span>
                         </div>
@@ -675,6 +697,11 @@ export default function HomeDashboardTab({
                     );
                   })}
                 </div>
+              </div>
+
+              <div style={{ padding: '3.5px 8px', borderTop: 'var(--border-muted)', fontSize: '8px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'rgba(0,0,0,0.15)' }}>
+                <span>Total Akumulasi: <strong style={{ color: 'var(--accent-green)' }}>{formatFlowIdr(totalBandarAccumValue)}</strong></span>
+                <span>Top: <strong style={{ color: '#60a5fa' }}>5 Emiten</strong></span>
               </div>
             </div>
 
