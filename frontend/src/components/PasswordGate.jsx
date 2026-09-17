@@ -91,26 +91,7 @@ export default function PasswordGate({ children }) {
 
 
   if (authed) {
-    return (
-      <>
-        {/* Floating logout button */}
-        <button
-          onClick={handleLogout}
-          title="Logout"
-          style={{
-            position: 'fixed', bottom: '16px', right: '16px', zIndex: 10000,
-            background: '#1c1d22', color: '#fff', border: 'none', cursor: 'pointer',
-            fontFamily: 'var(--font-mono, monospace)', fontSize: '10px', padding: '6px 12px',
-            letterSpacing: '0.05em', opacity: 0.6
-          }}
-          onMouseEnter={e => e.target.style.opacity = 1}
-          onMouseLeave={e => e.target.style.opacity = 0.6}
-        >
-          🔓 LOGOUT
-        </button>
-        {children}
-      </>
-    );
+    return children;
   }
 
   // Login Gate UI

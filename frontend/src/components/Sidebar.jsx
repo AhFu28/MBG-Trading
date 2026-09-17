@@ -55,6 +55,7 @@ export default function Sidebar({
   onSelectTicker
 }) {
   const [showMoreTools, setShowMoreTools] = useState(false);
+  const [showAllTickers, setShowAllTickers] = useState(false);
 
   const getBadge = (id) => {
     if (id === 'CHARTING') return 'PRO';
@@ -170,7 +171,7 @@ export default function Sidebar({
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    {DEFAULT_RADAR_TICKERS.map(t => {
+                    {(showAllTickers ? DEFAULT_RADAR_TICKERS : DEFAULT_RADAR_TICKERS.slice(0, 4)).map(t => {
                       const quote = livePrices[t.symbol] || livePrices[`IDX:${t.symbol}`] || livePrices[`${t.symbol}USDT`];
                       const chg = quote?.changePct !== undefined ? quote.changePct : t.defaultChange;
                       const isUp = chg >= 0;
@@ -232,6 +233,27 @@ export default function Sidebar({
                         </div>
                       );
                     })}
+
+                    {DEFAULT_RADAR_TICKERS.length > 4 && (
+                      <button
+                        onClick={() => setShowAllTickers(prev => !prev)}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: 'var(--accent-blue)',
+                          fontSize: '8px',
+                          cursor: 'pointer',
+                          padding: '3px 0 0',
+                          fontFamily: 'var(--font-mono)',
+                          fontWeight: '700',
+                          textAlign: 'center',
+                          width: '100%',
+                          opacity: 0.85
+                        }}
+                      >
+                        {showAllTickers ? '▲ Ringkas Radar' : `+${DEFAULT_RADAR_TICKERS.length - 4} Ticker Lainnya ▼`}
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
