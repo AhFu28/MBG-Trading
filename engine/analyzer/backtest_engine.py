@@ -79,7 +79,7 @@ class BacktestEngine:
         return {'result': 'TIMEOUT', 'exit_price': exit_price, 'exit_idx': min(entry_idx+29, len(df)-1),
                 'return_pct': ((exit_price * (1-self.fee_sell)) / (entry_price * (1+self.fee_buy)) - 1) * 100}
 
-    def run_archetype_backtest(self, archetype: str) -> dict:
+    def run_archetype_backtest(self, archetype: str, n_trades: int = None) -> dict:
         all_trades = []
         
         # Process chronologically across all tickers if we want a true global equity curve
@@ -118,12 +118,15 @@ class BacktestEngine:
                 
         # Sort trades by entry_time to build chronological equity curve
         all_trades.sort(key=lambda x: x['entry_time'] if isinstance(x['entry_time'], pd.Timestamp) else x['entry_time'])
+        if n_trades and len(all_trades) > n_trades:
+            all_trades = all_trades[:n_trades]
         
         if not all_trades:
             return {
                 "win_rate_pct": 0.0,
                 "avg_return_pct": 0.0,
                 "sharpe_ratio": 0.0,
+                "sortino_ratio": 0.0,
                 "max_drawdown_pct": 0.0,
                 "total_trades": 0,
                 "equity_curve": [1.0] * 30,
@@ -139,6 +142,10 @@ class BacktestEngine:
         sharpe_ratio = 0.0
         if std_return > 0:
             sharpe_ratio = (avg_return) / std_return * math.sqrt(252)
+
+        downside_returns = [r for r in returns if r < 0]
+        downside_std = np.std(downside_returns) if len(downside_returns) > 1 else (std_return if std_return > 0 else 1e-6)
+        sortino_ratio = (avg_return / downside_std * math.sqrt(252)) if downside_std > 0 else 0.0
             
         equity = 1.0
         equity_curve_all = [equity]
@@ -171,6 +178,7 @@ class BacktestEngine:
             "win_rate_pct": float(win_rate),
             "avg_return_pct": float(avg_return),
             "sharpe_ratio": float(sharpe_ratio),
+            "sortino_ratio": float(sortino_ratio),
             "max_drawdown_pct": float(max_drawdown),
             "total_trades": int(len(all_trades)),
             "equity_curve": [float(x) for x in equity_curve_sampled[:30]],

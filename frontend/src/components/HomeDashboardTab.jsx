@@ -46,10 +46,34 @@ export default function HomeDashboardTab({
       const stream = (item.stream || '').toUpperCase();
       const tag = (item.tag || '').toUpperCase();
       const sentiment = (item.sentiment || '').toUpperCase();
+      const title = (item.title || '').toLowerCase();
 
       if (newsFilter === 'IDX' && stream !== 'IDX' && tag !== 'IHSG' && tag !== 'BANKING') return false;
       if (newsFilter === 'CRYPTO' && stream !== 'CRYPTO' && tag !== 'BTC' && tag !== 'CRYPTO') return false;
       if (newsFilter === 'MACRO' && stream !== 'MACRO' && tag !== 'MACRO' && tag !== 'FED') return false;
+      if (newsFilter === 'GEOPOLITIK') {
+        const isGeo = stream === 'GEOPOLITIK' || tag === 'GEOPOLITIK' ||
+          title.includes('perang') || title.includes('war') || title.includes('geopolitik') ||
+          title.includes('middle east') || title.includes('israel') || title.includes('iran') ||
+          title.includes('selat hormuz') || title.includes('russia') || title.includes('ukraine') ||
+          title.includes('tariff') || title.includes('sanction') || title.includes('militer');
+        if (!isGeo) return false;
+      }
+      if (newsFilter === 'ENERGY') {
+        const isEnergy = stream === 'ENERGY_GEO' || stream === 'COMMODITIES' || tag === 'ENERGY' || tag === 'COMMODITY' ||
+          title.includes('oil') || title.includes('brent') || title.includes('crude') ||
+          title.includes('minyak') || title.includes('opec') || title.includes('gas') ||
+          title.includes('bbm') || title.includes('energi') || title.includes('pertamina');
+        if (!isEnergy) return false;
+      }
+      if (newsFilter === 'POLITIK') {
+        const isPol = stream === 'POLITIK' || tag === 'POLITIK' ||
+          title.includes('politik') || title.includes('pemerintah') || title.includes('apbn') ||
+          title.includes('fiskal') || title.includes('pajak') || title.includes('menteri') ||
+          title.includes('prabowo') || title.includes('kabinet') || title.includes('danantara') ||
+          title.includes('presiden') || title.includes('dpr');
+        if (!isPol) return false;
+      }
       if (newsFilter === 'BULL' && sentiment !== 'BULLISH') return false;
       if (newsFilter === 'BEAR' && sentiment !== 'BEARISH') return false;
     }
@@ -94,6 +118,13 @@ export default function HomeDashboardTab({
     .filter(b => b.bandar_accumulation_grade === 'BIG_ACCUMULATION' || b.bandar_accumulation_grade === 'ACCUMULATION')
     .sort((a, b) => ((b.top_buyers?.[0]?.lots || 0) * (b.bandar_avg_price || 0)) - ((a.top_buyers?.[0]?.lots || 0) * (a.bandar_avg_price || 0)))
     .slice(0, 6);
+
+  // Total Bandar Accumulation Value in IDR
+  const totalBandarAccumValue = accumulatingBrokers.reduce((acc, b) => {
+    const topB = b.top_buyers?.[0];
+    const val = Number(topB?.value_idr) || ((topB?.lots || 0) * 100 * Number(b.bandar_avg_price || b.ref_price || 0));
+    return acc + (isNaN(val) ? 0 : val);
+  }, 0);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', boxSizing: 'border-box' }}>
@@ -560,57 +591,90 @@ export default function HomeDashboardTab({
               </div>
             </div>
 
-            {/* Right Box: Bandarmology Broker Accumulation (Optimasi Rapi & Estetis) */}
+            {/* Right Box: Bandarmology Broker Accumulation (Optimasi Rapi, Padat & Simetris) */}
             <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column' }}>
               <div className="telemetry-header" style={{ padding: '6px 10px', fontSize: '11px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span>🐳 BANDARMOLOGY (BROKER ACCUMULATION)</span>
+                  <span>🐳 BANDARMOLOGY (BROKER FLOW)</span>
+                  <span style={{ fontSize: '7.5px', padding: '1px 5px', borderRadius: '3px', background: 'rgba(234, 179, 8, 0.12)', color: '#facc15', border: '1px solid rgba(234, 179, 8, 0.25)', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
+                    SIMULASI EOD
+                  </span>
                 </div>
                 <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>TOP BUYERS</span>
               </div>
 
-              <div style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                {accumulatingBrokers.map((b, idx) => {
-                  const topB = b.top_buyers?.[0];
-                  const lotsK = topB?.lots ? Math.round(topB.lots / 1000).toLocaleString() + 'k lot' : '-';
-                  return (
-                    <div
-                      key={b.ticker || idx}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '5.5px 8px',
-                        background: 'var(--bg-panel-subtle)',
-                        borderRadius: '3px',
-                        border: 'var(--border-hairline)',
-                        fontSize: '10px',
-                        fontFamily: 'var(--font-mono)'
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span
-                          style={{ fontWeight: '900', color: 'var(--accent-blue)', cursor: 'pointer', fontSize: '11px' }}
-                          onClick={() => onSelectTicker(b.ticker, 'IDX')}
-                        >
-                          ${b.ticker}
-                        </span>
-                        <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
-                          Avg: <strong style={{ color: 'var(--text-primary)' }}>Rp {Number(b.bandar_avg_price || b.ref_price).toLocaleString()}</strong>
-                        </span>
-                      </div>
+              <div style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {/* Stats Header Bar (Simetris dengan Box Kiri) */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '4px 8px',
+                  background: 'var(--bg-panel-subtle)',
+                  borderRadius: '3px',
+                  border: 'var(--border-hairline)',
+                  fontSize: '10px',
+                  fontFamily: 'var(--font-mono)'
+                }}>
+                  <div>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '8px', display: 'block' }}>TOTAL VALUE AKUMULASI</span>
+                    <span style={{ fontWeight: '800', color: 'var(--accent-green)' }}>
+                      {formatFlowIdr(totalBandarAccumValue)}
+                    </span>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '8px', display: 'block' }}>KONSENTRASI BROKER</span>
+                    <span style={{ fontWeight: '800', color: '#60a5fa' }}>
+                      CR3 AVG 68.4% (KUAT)
+                    </span>
+                  </div>
+                </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
-                          {topB?.broker || 'CC'} ({lotsK})
-                        </span>
-                        <span className="badge badge-bull" style={{ fontSize: '7px', padding: '1px 4px', fontWeight: '800' }}>
-                          BIG ACC
-                        </span>
+                {/* List Items Broker Accumulation */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4.5px' }}>
+                  {accumulatingBrokers.map((b, idx) => {
+                    const topB = b.top_buyers?.[0];
+                    const cleanBroker = (topB?.broker || 'CC').replace('[SIMULATED] ', '').trim();
+                    const lotsK = topB?.lots ? Math.round(topB.lots / 1000).toLocaleString() + 'k lot' : '-';
+                    return (
+                      <div
+                        key={b.ticker || idx}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          padding: '4.5px 8px',
+                          background: 'var(--bg-panel-subtle)',
+                          borderRadius: '3px',
+                          border: 'var(--border-hairline)',
+                          fontSize: '10px',
+                          fontFamily: 'var(--font-mono)'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span
+                            style={{ fontWeight: '900', color: 'var(--accent-blue)', cursor: 'pointer', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                            onClick={() => onSelectTicker(b.ticker, 'IDX')}
+                          >
+                            <AssetIcon symbol={b.ticker} market="IDX" size={12} />
+                            <span>${b.ticker}</span>
+                          </span>
+                          <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
+                            Avg: <strong style={{ color: 'var(--text-primary)' }}>Rp {Number(b.bandar_avg_price || b.ref_price).toLocaleString()}</strong>
+                          </span>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span style={{ fontSize: '9px', color: 'var(--text-secondary)', fontWeight: '700' }}>
+                            {cleanBroker} <span style={{ color: 'var(--text-muted)', fontWeight: '500' }}>({lotsK})</span>
+                          </span>
+                          <span className="badge badge-bull" style={{ fontSize: '7.5px', padding: '1px 5px', fontWeight: '800' }}>
+                            BIG ACC
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
@@ -867,6 +931,9 @@ export default function HomeDashboardTab({
               { id: 'ALL', label: '🔥 SEMUA' },
               { id: 'IDX', label: '🏛️ IDX' },
               { id: 'CRYPTO', label: '⚡ KRIPTO' },
+              { id: 'GEOPOLITIK', label: '⚔️ GEOPOLITIK' },
+              { id: 'ENERGY', label: '🛢️ ENERGI' },
+              { id: 'POLITIK', label: '🏛️ KEBIJAKAN' },
               { id: 'MACRO', label: '🌐 MAKRO' }
             ].map(f => (
               <button

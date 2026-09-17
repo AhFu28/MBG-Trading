@@ -185,27 +185,36 @@ export default function Sidebar({
                             }}
                             style={{
                               display: 'flex',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                              padding: '2px 3.5px',
+                              flexDirection: 'column',
+                              gap: '1.5px',
+                              padding: '2.5px 4px',
                               borderRadius: '3px',
                               cursor: 'pointer',
                               background: isFlashing === 'up' ? 'rgba(0, 208, 132, 0.22)' : isFlashing === 'down' ? 'rgba(239, 68, 68, 0.22)' : 'rgba(255, 255, 255, 0.02)',
-                              transition: 'background 0.2s ease',
-                              minHeight: '18px'
+                              transition: 'all 0.2s ease',
+                              border: '1px solid transparent'
                             }}
+                            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                            onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
                             title={`Buka Chart ${t.symbol} (${t.name}) - ${formatTickerPrice(t.symbol, t.market, t.defaultPrice)}`}
                           >
-                            <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-primary)' }}>
-                              {t.symbol}
-                            </span>
-                            <span style={{
-                              fontSize: '7.5px',
-                              fontWeight: '700',
-                              color: isUp ? 'var(--accent-green)' : 'var(--accent-rust)'
-                            }}>
-                              {formatTickerChange(t.symbol, t.defaultChange)}
-                            </span>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', lineHeight: 1.1 }}>
+                              <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-primary)' }}>
+                                {t.symbol}
+                              </span>
+                              <span style={{
+                                fontSize: '7.5px',
+                                fontWeight: '800',
+                                color: isUp ? 'var(--accent-green)' : 'var(--accent-rust)'
+                              }}>
+                                {formatTickerChange(t.symbol, t.defaultChange)}
+                              </span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', lineHeight: 1 }}>
+                              <span style={{ fontSize: '7.5px', color: 'var(--text-muted)', fontWeight: '600' }}>
+                                {formatTickerPrice(t.symbol, t.market, t.defaultPrice)}
+                              </span>
+                            </div>
                           </div>
                         );
                       })}
@@ -232,31 +241,40 @@ export default function Sidebar({
                             }}
                             style={{
                               display: 'flex',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                              padding: '2px 3.5px',
+                              flexDirection: 'column',
+                              gap: '1.5px',
+                              padding: '2.5px 4px',
                               borderRadius: '3px',
                               cursor: 'pointer',
                               background: isFlashing === 'up' ? 'rgba(0, 208, 132, 0.22)' : isFlashing === 'down' ? 'rgba(239, 68, 68, 0.22)' : 'rgba(255, 255, 255, 0.02)',
-                              transition: 'background 0.2s ease',
-                              minHeight: '18px'
+                              transition: 'all 0.2s ease',
+                              border: '1px solid transparent'
                             }}
+                            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                            onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
                             title={`Buka Chart ${t.symbol} (${t.name}) - ${formatTickerPrice(t.symbol, t.market, t.defaultPrice)}`}
                           >
-                            <span style={{
-                              fontSize: '8px',
-                              fontWeight: '800',
-                              color: t.market === 'CRYPTO' ? '#fde047' : t.market === 'US' ? '#93c5fd' : '#a5f3fc'
-                            }}>
-                              {t.symbol}
-                            </span>
-                            <span style={{
-                              fontSize: '7.5px',
-                              fontWeight: '700',
-                              color: isUp ? 'var(--accent-green)' : 'var(--accent-rust)'
-                            }}>
-                              {formatTickerChange(t.symbol, t.defaultChange)}
-                            </span>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', lineHeight: 1.1 }}>
+                              <span style={{
+                                fontSize: '8px',
+                                fontWeight: '800',
+                                color: t.market === 'CRYPTO' ? '#fde047' : t.market === 'US' ? '#93c5fd' : '#a5f3fc'
+                              }}>
+                                {t.symbol}
+                              </span>
+                              <span style={{
+                                fontSize: '7.5px',
+                                fontWeight: '800',
+                                color: isUp ? 'var(--accent-green)' : 'var(--accent-rust)'
+                              }}>
+                                {formatTickerChange(t.symbol, t.defaultChange)}
+                              </span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', lineHeight: 1 }}>
+                              <span style={{ fontSize: '7.5px', color: 'var(--text-muted)', fontWeight: '600' }}>
+                                {formatTickerPrice(t.symbol, t.market, t.defaultPrice)}
+                              </span>
+                            </div>
                           </div>
                         );
                       })}

@@ -98,26 +98,84 @@ export default function BloombergNewsWire({ macro, bundle, livePrices = {}, onSe
       </div>
 
       {/* 2. Compact Headline Bar */}
-      <div style={{ padding: '6px 12px', background: 'var(--bg-panel)', borderTop: 'var(--border-muted)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '1 1 auto', overflow: 'hidden' }}>
-          <span className='badge' style={{ background: '#ff9500', color: '#ffffff', border: 'none', fontSize: '8px', fontWeight: '800', padding: '1px 5px' }}>
-            FLASH
-          </span>
-          {(() => {
-            const currentItem = typeof headlines[headlineIndex] === 'object'
-              ? headlines[headlineIndex]
-              : (macro.live_news || []).find(n => n.title === headlines[headlineIndex]) || {
-                  id: `wire-${headlineIndex}`,
-                  title: typeof headlines[headlineIndex] === 'string' ? headlines[headlineIndex] : 'Pasar Memantau Sentimen Makro',
-                  source: 'MBG MACRO WIRE',
-                  sentiment: macro.sentiment || 'NEUTRAL',
-                  tag: 'MACRO',
-                  summary: macro.full_narrative || 'Dinamika makro ekonomi dan pasar finansial terkini.',
-                  related_tickers: (affectedStocks || []).map(s => s.ticker),
-                  pub_date: new Date().toISOString()
-                };
+      {(() => {
+        const activeHeadline = headlines[headlineIndex];
+        const activeHeadlineText = typeof activeHeadline === 'object'
+          ? (activeHeadline?.title || activeHeadline?.headline || '')
+          : (typeof activeHeadline === 'string' ? activeHeadline : '');
 
-            return (
+        const currentItem = typeof activeHeadline === 'object'
+          ? activeHeadline
+          : (macro.live_news || []).find(n => n.title === activeHeadline) || {
+              id: `wire-${headlineIndex}`,
+              title: activeHeadlineText || 'Pasar Memantau Sentimen Makro',
+              source: 'MBG MACRO WIRE',
+              sentiment: macro.sentiment || 'NEUTRAL',
+              tag: 'MACRO',
+              summary: macro.full_narrative || 'Dinamika makro ekonomi dan pasar finansial terkini.',
+              related_tickers: [],
+              pub_date: new Date().toISOString()
+            };
+
+        // Derive dynamic contextual tickers for the currently displayed headline
+        const getContextualTickers = () => {
+          if (Array.isArray(currentItem.related_tickers) && currentItem.related_tickers.length > 0) {
+            return currentItem.related_tickers.slice(0, 3).map(t => ({
+              ticker: t.replace('$', '').toUpperCase(),
+              impact: currentItem.sentiment === 'BEARISH' ? 'BEARISH' : 'BULLISH',
+              reason: `Relevan dengan ${currentItem.title || 'headline'}`
+            }));
+          }
+
+          const textLower = activeHeadlineText.toLowerCase();
+          if (textLower.includes('perbankan') || textLower.includes('bank') || textLower.includes('keuangan')) {
+            return [
+              { ticker: 'BBCA', impact: 'BULLISH', reason: 'Pilar Perbankan Swasta' },
+              { ticker: 'BBRI', impact: 'BULLISH', reason: 'Pilar Perbankan Mikro BUMN' },
+              { ticker: 'BMRI', impact: 'BULLISH', reason: 'Pilar Perbankan Korporasi' }
+            ];
+          }
+          if (textLower.includes('minyak') || textLower.includes('oil') || textLower.includes('brent') || textLower.includes('energi') || textLower.includes('opec')) {
+            return [
+              { ticker: 'MEDC', impact: 'BULLISH', reason: 'Eksplorasi Migas Terbesar' },
+              { ticker: 'ELSA', impact: 'BULLISH', reason: 'Jasa Hulu & Hilir Migas' },
+              { ticker: 'AKRA', impact: 'BULLISH', reason: 'Distribusi BBM & Logistik' }
+            ];
+          }
+          if (textLower.includes('emas') || textLower.includes('gold') || textLower.includes('logam') || textLower.includes('komoditas')) {
+            return [
+              { ticker: 'ANTM', impact: 'BULLISH', reason: 'Produsen Emas & Logam Mulia' },
+              { ticker: 'BRMS', impact: 'BULLISH', reason: 'Tambang Emas Palu' },
+              { ticker: 'MDKA', impact: 'BULLISH', reason: 'Tambang Emas Tujuh Bukit' }
+            ];
+          }
+          if (textLower.includes('konglomerat') || textLower.includes('konglo') || textLower.includes('barito')) {
+            return [
+              { ticker: 'AMMN', impact: 'BULLISH', reason: 'Tambang Tembaga Amman' },
+              { ticker: 'CUAN', impact: 'BULLISH', reason: 'Klaster Barito Renewables' },
+              { ticker: 'PTRO', impact: 'BULLISH', reason: 'Petrosea Mining & EPC' }
+            ];
+          }
+
+          if (affectedStocks.length > 0) {
+            return affectedStocks.slice(0, 3);
+          }
+
+          return [
+            { ticker: 'BBCA', impact: 'BULLISH', reason: 'Pilar Utama IHSG' },
+            { ticker: 'BBRI', impact: 'BULLISH', reason: 'Pilar Likuiditas IHSG' },
+            { ticker: 'ASII', impact: 'BULLISH', reason: 'Konglomerasi Astra' }
+          ];
+        };
+
+        const activeTickers = getContextualTickers();
+
+        return (
+          <div style={{ padding: '6px 12px', background: 'var(--bg-panel)', borderTop: 'var(--border-muted)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '1 1 auto', overflow: 'hidden' }}>
+              <span className='badge' style={{ background: '#ff9500', color: '#ffffff', border: 'none', fontSize: '8px', fontWeight: '800', padding: '1px 5px' }}>
+                FLASH
+              </span>
               <span
                 onClick={() => onSelectNews && onSelectNews(currentItem)}
                 style={{
@@ -134,36 +192,35 @@ export default function BloombergNewsWire({ macro, bundle, livePrices = {}, onSe
                 onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-primary)'; }}
                 title="Klik untuk melihat detail & analisis berita ini"
               >
-                ⚡ {typeof headlines[headlineIndex] === 'object' ? (headlines[headlineIndex]?.title || headlines[headlineIndex]?.headline) : headlines[headlineIndex]}
+                ⚡ {activeHeadlineText}
               </span>
-            );
-          })()}
-          <span style={{ fontSize: '9px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
-            ({headlineIndex + 1}/{headlines.length})
-          </span>
-        </div>
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                ({headlineIndex + 1}/{headlines.length})
+              </span>
+            </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
-          {/* Affected tickers in-line */}
-          {affectedStocks.slice(0, 3).map((item, idx) => (
-            <button
-              key={idx}
-              onClick={() => onSelectTicker(item.ticker, 'IDX')}
-              className='telemetry-btn'
-              style={{
-                padding: '1px 5px',
-                fontSize: '9px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '3px',
-                borderColor: item.impact === 'BULLISH' ? '#34c759' : '#ff3b30'
-              }}
-              title={item.reason}
-            >
-              <span>{item.impact === 'BULLISH' ? '🟢' : '🔴'}</span>
-              <strong>${item.ticker}</strong>
-            </button>
-          ))}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+              {/* Contextually mapped affected tickers */}
+              {activeTickers.map((item, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => onSelectTicker(item.ticker, 'IDX')}
+                  className='telemetry-btn'
+                  style={{
+                    padding: '1.5px 6px',
+                    fontSize: '9px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '3px',
+                    borderColor: item.impact === 'BULLISH' ? 'var(--accent-green)' : 'var(--accent-rust)',
+                    background: 'var(--bg-panel-subtle)'
+                  }}
+                  title={item.reason}
+                >
+                  <span style={{ fontSize: '7px' }}>{item.impact === 'BULLISH' ? '🟢' : '🔴'}</span>
+                  <strong>${item.ticker}</strong>
+                </button>
+              ))}
 
           {headlines.length > 1 && (
             <div style={{ display: 'flex', gap: '2px' }}>
@@ -195,6 +252,8 @@ export default function BloombergNewsWire({ macro, bundle, livePrices = {}, onSe
           </button>
         </div>
       </div>
+      );
+      })()}
 
       {/* Expandable Macro Narrative Drawer */}
       {isExpanded && (

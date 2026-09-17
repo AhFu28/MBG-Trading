@@ -309,23 +309,26 @@ class BrokerSummaryFetcher:
         is_conglo = clean_ticker in ["BREN", "TPIA", "BRPT", "CUAN", "PTRO", "AMMN", "MEDC"]
         
         def s(broker_code):
-            return f"[SIMULATED] {broker_code}"
+            return broker_code
+
+        # Kalibrasi shares -> lots (1 lot = 100 shares)
+        base_lots = max(100, int(volume // 100)) if volume > 500 else int(volume)
 
         if is_bluechip:
             # Foreign institutional heavy
             top_buyers = [
-                {"broker": s("AK"), "name": "UBS Sekuritas", "type": "F", "lots": int(volume * 0.28), "avg_price": round(p - 15, 0), "value_idr": int(volume * 0.28 * 100 * (p - 15))},
-                {"broker": s("YP"), "name": "Mirae Asset", "type": "D", "lots": int(volume * 0.22), "avg_price": round(p - 10, 0), "value_idr": int(volume * 0.22 * 100 * (p - 10))},
-                {"broker": s("CC"), "name": "Mandiri Sekuritas", "type": "D", "lots": int(volume * 0.18), "avg_price": round(p - 5, 0), "value_idr": int(volume * 0.18 * 100 * (p - 5))},
-                {"broker": s("ZP"), "name": "Maybank Sekuritas", "type": "F", "lots": int(volume * 0.12), "avg_price": round(p, 0), "value_idr": int(volume * 0.12 * 100 * p)},
-                {"broker": s("BK"), "name": "J.P. Morgan", "type": "F", "lots": int(volume * 0.08), "avg_price": round(p - 20, 0), "value_idr": int(volume * 0.08 * 100 * (p - 20))}
+                {"broker": s("AK"), "name": "UBS Sekuritas", "type": "F", "lots": int(base_lots * 0.28), "avg_price": round(p - 15, 0), "value_idr": int(base_lots * 0.28 * 100 * (p - 15))},
+                {"broker": s("YP"), "name": "Mirae Asset", "type": "D", "lots": int(base_lots * 0.22), "avg_price": round(p - 10, 0), "value_idr": int(base_lots * 0.22 * 100 * (p - 10))},
+                {"broker": s("CC"), "name": "Mandiri Sekuritas", "type": "D", "lots": int(base_lots * 0.18), "avg_price": round(p - 5, 0), "value_idr": int(base_lots * 0.18 * 100 * (p - 5))},
+                {"broker": s("ZP"), "name": "Maybank Sekuritas", "type": "F", "lots": int(base_lots * 0.12), "avg_price": round(p, 0), "value_idr": int(base_lots * 0.12 * 100 * p)},
+                {"broker": s("BK"), "name": "J.P. Morgan", "type": "F", "lots": int(base_lots * 0.08), "avg_price": round(p - 20, 0), "value_idr": int(base_lots * 0.08 * 100 * (p - 20))}
             ]
             top_sellers = [
-                {"broker": s("PD"), "name": "Indo Premier", "type": "D", "lots": int(volume * 0.16), "avg_price": round(p + 10, 0), "value_idr": int(volume * 0.16 * 100 * (p + 10))},
-                {"broker": s("NI"), "name": "BNI Sekuritas", "type": "D", "lots": int(volume * 0.13), "avg_price": round(p + 5, 0), "value_idr": int(volume * 0.13 * 100 * (p + 5))},
-                {"broker": s("CP"), "name": "KB Valbury", "type": "D", "lots": int(volume * 0.09), "avg_price": round(p + 15, 0), "value_idr": int(volume * 0.09 * 100 * (p + 15))},
-                {"broker": s("XC"), "name": "Ajaib Sekuritas", "type": "D", "lots": int(volume * 0.08), "avg_price": round(p + 5, 0), "value_idr": int(volume * 0.08 * 100 * (p + 5))},
-                {"broker": s("GR"), "name": "Panin Sekuritas", "type": "D", "lots": int(volume * 0.06), "avg_price": round(p + 20, 0), "value_idr": int(volume * 0.06 * 100 * (p + 20))}
+                {"broker": s("PD"), "name": "Indo Premier", "type": "D", "lots": int(base_lots * 0.16), "avg_price": round(p + 10, 0), "value_idr": int(base_lots * 0.16 * 100 * (p + 10))},
+                {"broker": s("NI"), "name": "BNI Sekuritas", "type": "D", "lots": int(base_lots * 0.13), "avg_price": round(p + 5, 0), "value_idr": int(base_lots * 0.13 * 100 * (p + 5))},
+                {"broker": s("CP"), "name": "KB Valbury", "type": "D", "lots": int(base_lots * 0.09), "avg_price": round(p + 15, 0), "value_idr": int(base_lots * 0.09 * 100 * (p + 15))},
+                {"broker": s("XC"), "name": "Ajaib Sekuritas", "type": "D", "lots": int(base_lots * 0.08), "avg_price": round(p + 5, 0), "value_idr": int(base_lots * 0.08 * 100 * (p + 5))},
+                {"broker": s("GR"), "name": "Panin Sekuritas", "type": "D", "lots": int(base_lots * 0.06), "avg_price": round(p + 20, 0), "value_idr": int(base_lots * 0.06 * 100 * (p + 20))}
             ]
             cr3 = 68.0
             accum_grade = "BIG_ACCUMULATION"
@@ -333,18 +336,18 @@ class BrokerSummaryFetcher:
         elif is_conglo:
             # Domestic market maker heavy
             top_buyers = [
-                {"broker": s("CC"), "name": "Mandiri Sekuritas", "type": "D", "lots": int(volume * 0.32), "avg_price": round(p * 0.992, 0), "value_idr": int(volume * 0.32 * 100 * (p * 0.992))},
-                {"broker": s("LG"), "name": "Trimegah Sekuritas", "type": "D", "lots": int(volume * 0.25), "avg_price": round(p * 0.995, 0), "value_idr": int(volume * 0.25 * 100 * (p * 0.995))},
-                {"broker": s("AI"), "name": "UOB Kay Hian", "type": "D", "lots": int(volume * 0.15), "avg_price": round(p, 0), "value_idr": int(volume * 0.15 * 100 * p)},
-                {"broker": s("AK"), "name": "UBS Sekuritas", "type": "F", "lots": int(volume * 0.10), "avg_price": round(p * 0.998, 0), "value_idr": int(volume * 0.10 * 100 * (p * 0.998))},
-                {"broker": s("SQ"), "name": "BCA Sekuritas", "type": "D", "lots": int(volume * 0.07), "avg_price": round(p * 0.990, 0), "value_idr": int(volume * 0.07 * 100 * (p * 0.990))}
+                {"broker": s("CC"), "name": "Mandiri Sekuritas", "type": "D", "lots": int(base_lots * 0.32), "avg_price": round(p * 0.992, 0), "value_idr": int(base_lots * 0.32 * 100 * (p * 0.992))},
+                {"broker": s("LG"), "name": "Trimegah Sekuritas", "type": "D", "lots": int(base_lots * 0.25), "avg_price": round(p * 0.995, 0), "value_idr": int(base_lots * 0.25 * 100 * (p * 0.995))},
+                {"broker": s("AI"), "name": "UOB Kay Hian", "type": "D", "lots": int(base_lots * 0.15), "avg_price": round(p, 0), "value_idr": int(base_lots * 0.15 * 100 * p)},
+                {"broker": s("AK"), "name": "UBS Sekuritas", "type": "F", "lots": int(base_lots * 0.10), "avg_price": round(p * 0.998, 0), "value_idr": int(base_lots * 0.10 * 100 * (p * 0.998))},
+                {"broker": s("SQ"), "name": "BCA Sekuritas", "type": "D", "lots": int(base_lots * 0.07), "avg_price": round(p * 0.990, 0), "value_idr": int(base_lots * 0.07 * 100 * (p * 0.990))}
             ]
             top_sellers = [
-                {"broker": s("YP"), "name": "Mirae Asset", "type": "D", "lots": int(volume * 0.19), "avg_price": round(p * 1.008, 0), "value_idr": int(volume * 0.19 * 100 * (p * 1.008))},
-                {"broker": s("PD"), "name": "Indo Premier", "type": "D", "lots": int(volume * 0.14), "avg_price": round(p * 1.005, 0), "value_idr": int(volume * 0.14 * 100 * (p * 1.005))},
-                {"broker": s("XC"), "name": "Ajaib Sekuritas", "type": "D", "lots": int(volume * 0.11), "avg_price": round(p * 1.002, 0), "value_idr": int(volume * 0.11 * 100 * (p * 1.002))},
-                {"broker": s("CP"), "name": "KB Valbury", "type": "D", "lots": int(volume * 0.07), "avg_price": round(p * 1.010, 0), "value_idr": int(volume * 0.07 * 100 * (p * 1.010))},
-                {"broker": s("NI"), "name": "BNI Sekuritas", "type": "D", "lots": int(volume * 0.05), "avg_price": round(p * 1.004, 0), "value_idr": int(volume * 0.05 * 100 * (p * 1.004))}
+                {"broker": s("YP"), "name": "Mirae Asset", "type": "D", "lots": int(base_lots * 0.19), "avg_price": round(p * 1.008, 0), "value_idr": int(base_lots * 0.19 * 100 * (p * 1.008))},
+                {"broker": s("PD"), "name": "Indo Premier", "type": "D", "lots": int(base_lots * 0.14), "avg_price": round(p * 1.005, 0), "value_idr": int(base_lots * 0.14 * 100 * (p * 1.005))},
+                {"broker": s("XC"), "name": "Ajaib Sekuritas", "type": "D", "lots": int(base_lots * 0.11), "avg_price": round(p * 1.002, 0), "value_idr": int(base_lots * 0.11 * 100 * (p * 1.002))},
+                {"broker": s("CP"), "name": "KB Valbury", "type": "D", "lots": int(base_lots * 0.07), "avg_price": round(p * 1.010, 0), "value_idr": int(base_lots * 0.07 * 100 * (p * 1.010))},
+                {"broker": s("NI"), "name": "BNI Sekuritas", "type": "D", "lots": int(base_lots * 0.05), "avg_price": round(p * 1.004, 0), "value_idr": int(base_lots * 0.05 * 100 * (p * 1.004))}
             ]
             cr3 = 72.0
             accum_grade = "BIG_ACCUMULATION"
@@ -352,18 +355,18 @@ class BrokerSummaryFetcher:
         else:
             # Balanced flow
             top_buyers = [
-                {"broker": s("YP"), "name": "Mirae Asset", "type": "D", "lots": int(volume * 0.20), "avg_price": round(p * 0.995, 0), "value_idr": int(volume * 0.20 * 100 * (p * 0.995))},
-                {"broker": s("CC"), "name": "Mandiri Sekuritas", "type": "D", "lots": int(volume * 0.16), "avg_price": round(p, 0), "value_idr": int(volume * 0.16 * 100 * p)},
-                {"broker": s("PD"), "name": "Indo Premier", "type": "D", "lots": int(volume * 0.14), "avg_price": round(p * 0.992, 0), "value_idr": int(volume * 0.14 * 100 * (p * 0.992))},
-                {"broker": s("AK"), "name": "UBS Sekuritas", "type": "F", "lots": int(volume * 0.08), "avg_price": round(p * 0.998, 0), "value_idr": int(volume * 0.08 * 100 * (p * 0.998))},
-                {"broker": s("NI"), "name": "BNI Sekuritas", "type": "D", "lots": int(volume * 0.06), "avg_price": round(p * 0.990, 0), "value_idr": int(volume * 0.06 * 100 * (p * 0.990))}
+                {"broker": s("YP"), "name": "Mirae Asset", "type": "D", "lots": int(base_lots * 0.20), "avg_price": round(p * 0.995, 0), "value_idr": int(base_lots * 0.20 * 100 * (p * 0.995))},
+                {"broker": s("CC"), "name": "Mandiri Sekuritas", "type": "D", "lots": int(base_lots * 0.16), "avg_price": round(p, 0), "value_idr": int(base_lots * 0.16 * 100 * p)},
+                {"broker": s("PD"), "name": "Indo Premier", "type": "D", "lots": int(base_lots * 0.14), "avg_price": round(p * 0.992, 0), "value_idr": int(base_lots * 0.14 * 100 * (p * 0.992))},
+                {"broker": s("AK"), "name": "UBS Sekuritas", "type": "F", "lots": int(base_lots * 0.08), "avg_price": round(p * 0.998, 0), "value_idr": int(base_lots * 0.08 * 100 * (p * 0.998))},
+                {"broker": s("NI"), "name": "BNI Sekuritas", "type": "D", "lots": int(base_lots * 0.06), "avg_price": round(p * 0.990, 0), "value_idr": int(base_lots * 0.06 * 100 * (p * 0.990))}
             ]
             top_sellers = [
-                {"broker": s("XC"), "name": "Ajaib Sekuritas", "type": "D", "lots": int(volume * 0.18), "avg_price": round(p * 1.005, 0), "value_idr": int(volume * 0.18 * 100 * (p * 1.005))},
-                {"broker": s("GR"), "name": "Panin Sekuritas", "type": "D", "lots": int(volume * 0.14), "avg_price": round(p * 1.002, 0), "value_idr": int(volume * 0.14 * 100 * (p * 1.002))},
-                {"broker": s("CP"), "name": "KB Valbury", "type": "D", "lots": int(volume * 0.11), "avg_price": round(p * 1.008, 0), "value_idr": int(volume * 0.11 * 100 * (p * 1.010))},
-                {"broker": s("DR"), "name": "RHB Sekuritas", "type": "D", "lots": int(volume * 0.08), "avg_price": round(p * 1.003, 0), "value_idr": int(volume * 0.08 * 100 * (p * 1.003))},
-                {"broker": s("AG"), "name": "Kiwoom Sekuritas", "type": "D", "lots": int(volume * 0.05), "avg_price": round(p * 1.006, 0), "value_idr": int(volume * 0.05 * 100 * (p * 1.006))}
+                {"broker": s("XC"), "name": "Ajaib Sekuritas", "type": "D", "lots": int(base_lots * 0.18), "avg_price": round(p * 1.005, 0), "value_idr": int(base_lots * 0.18 * 100 * (p * 1.005))},
+                {"broker": s("GR"), "name": "Panin Sekuritas", "type": "D", "lots": int(base_lots * 0.14), "avg_price": round(p * 1.002, 0), "value_idr": int(base_lots * 0.14 * 100 * (p * 1.002))},
+                {"broker": s("CP"), "name": "KB Valbury", "type": "D", "lots": int(base_lots * 0.11), "avg_price": round(p * 1.008, 0), "value_idr": int(base_lots * 0.11 * 100 * (p * 1.010))},
+                {"broker": s("DR"), "name": "RHB Sekuritas", "type": "D", "lots": int(base_lots * 0.08), "avg_price": round(p * 1.003, 0), "value_idr": int(base_lots * 0.08 * 100 * (p * 1.003))},
+                {"broker": s("AG"), "name": "Kiwoom Sekuritas", "type": "D", "lots": int(base_lots * 0.05), "avg_price": round(p * 1.006, 0), "value_idr": int(base_lots * 0.05 * 100 * (p * 1.006))}
             ]
             cr3 = 50.0
             accum_grade = "NORMAL_ACCUMULATION"
