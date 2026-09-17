@@ -236,20 +236,14 @@ body {
   left: 0;
   width: 230px;
   height: 100vh;
+  height: 100dvh;
   background: var(--bg-panel);
   border-right: var(--border-hairline);
   display: flex;
   flex-direction: column;
   z-index: 100;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: none; /* Hide scrollbar Firefox */
-  -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
+  overflow: hidden;
   box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
-}
-
-.sidebar::-webkit-scrollbar {
-  display: none; /* Hide scrollbar Chrome/Safari */
 }
 
 /* Logo / Brand section */
@@ -431,8 +425,10 @@ body {
 /* Sidebar footer — settings + logout */
 .sidebar-footer {
   padding: 8px 0;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   border-top: var(--border-hairline);
   flex-shrink: 0;
+  background: var(--bg-panel);
 }
 
 /* Main content area shifts right of sidebar */
@@ -930,4 +926,67 @@ body {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ============================================================
+   RESPONSIVE LAYOUT GRIDS FOR HOME DASHBOARD & MOBILE VIEWS
+   ============================================================ */
+.home-dashboard-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.home-bento-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 8px;
+  min-width: 0;
+}
+
+.home-radar-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.home-dual-flow-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  min-width: 0;
+}
+
+.home-flow-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+@media (max-width: 1024px) {
+  .home-dashboard-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .home-bento-row {
+    grid-template-columns: 1fr !important;
+  }
+  .home-radar-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .home-dual-flow-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-radar-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .home-flow-columns {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 

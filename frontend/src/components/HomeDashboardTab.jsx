@@ -91,26 +91,14 @@ export default function HomeDashboardTab({
       {/* TOP: MBG MACRO INTELLIGENCE WIRE (Full Strip) */}
       <BloombergNewsWire macro={macro} bundle={data} livePrices={livePrices} onSelectTicker={onSelectTicker} onSelectNews={onSelectNews} />
 
-      {/* MAIN TWO-COLUMN CONTAINER: LEFT 72% (COCKPIT) + RIGHT 28% (LIVE NEWS STREAM) */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1fr) 300px',
-        gap: '8px',
-        alignItems: 'stretch',
-        width: '100%',
-        boxSizing: 'border-box'
-      }}>
+      {/* MAIN TWO-COLUMN CONTAINER: LEFT (COCKPIT) + RIGHT (LIVE NEWS STREAM) */}
+      <div className="home-dashboard-layout">
 
         {/* ================= LEFT MAIN WORKSPACE ================= */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: 0 }}>
 
           {/* ROW 1: 3 BENTO CARDS (Regime, #1 IDX, #1 Crypto) */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1.2fr 1fr 1fr',
-            gap: '8px',
-            minWidth: 0
-          }}>
+          <div className="home-bento-row">
 
             {/* Card 1: IHSG & Global Regime */}
             <div className="telemetry-panel" style={{
@@ -344,12 +332,7 @@ export default function HomeDashboardTab({
                   </span>
                 </div>
 
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(4, 1fr)',
-                  gap: '8px',
-                  alignItems: 'center'
-                }}>
+                <div className="home-radar-grid">
                   {/* Gauge 1: Crypto Fear & Greed */}
                   <div style={{
                     padding: '6px 8px',
@@ -470,12 +453,7 @@ export default function HomeDashboardTab({
           })()}
 
           {/* ROW 2: DUAL FLOW RADAR (Struktur Klasik: Top 5 Inflow vs Outflow & Polish Bandarmology) */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '8px',
-            minWidth: 0
-          }}>
+          <div className="home-dual-flow-grid">
 
             {/* Left Box: IDX Foreign Capital Flow (Struktur Lama: Top 5 Inflow & Top 5 Outflow Sempurna) */}
             <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column' }}>
@@ -514,7 +492,7 @@ export default function HomeDashboardTab({
                 </div>
 
                 {/* 2-Columns: Top Inflow (Buy) vs Top Outflow (Sell) */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                <div className="home-flow-columns">
                   {/* Top Inflow */}
                   <div>
                     <div style={{ fontSize: '9px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '3px' }}>
@@ -611,12 +589,7 @@ export default function HomeDashboardTab({
           </div>
 
           {/* ROW 3: TWO SIDE-BY-SIDE TABLES (Saham IDX Signals vs Crypto Spot Signals) */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '8px',
-            minWidth: 0
-          }}>
+          <div className="home-dual-flow-grid">
 
             {/* Table 1: Saham IDX Signals */}
             <div className="telemetry-panel" style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -785,8 +758,7 @@ export default function HomeDashboardTab({
           display: 'flex',
           flexDirection: 'column',
           boxSizing: 'border-box',
-          minWidth: 0,
-          height: '100%'
+          minWidth: 0
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', paddingBottom: '4px', borderBottom: 'var(--border-hairline)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
