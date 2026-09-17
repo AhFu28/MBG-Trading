@@ -61,18 +61,18 @@ export default function BloombergNewsWire({ macro, bundle, livePrices = {}, onSe
   ];
 
   return (
-    <div className='telemetry-panel' style={{ marginBottom: '8px', border: 'var(--border-hairline)' }}>
+    <div className='telemetry-panel' style={{ marginBottom: '6px', border: 'var(--border-hairline)' }}>
       
       {/* 1. Streaming Macro Ticker Tape */}
       <div style={{
         background: 'var(--bg-panel-dark)',
         color: '#faf9f5',
-        padding: '5px 12px',
+        padding: '3.5px 10px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '10px',
+        gap: '8px',
         fontSize: '11px',
         letterSpacing: '0.04em'
       }}>

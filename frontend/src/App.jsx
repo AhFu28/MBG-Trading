@@ -39,8 +39,8 @@ function HeaderClock() {
   return (
     <div 
       style={{ 
-        fontSize: '11px', 
-        padding: '5px 10px', 
+        fontSize: '10px', 
+        padding: '3px 8px', 
         borderRadius: 'var(--radius-xs)', 
         background: 'var(--bg-panel-subtle)', 
         color: 'var(--text-primary)', 
@@ -48,7 +48,7 @@ function HeaderClock() {
         fontWeight: '700',
         display: 'flex',
         alignItems: 'center',
-        gap: '6px',
+        gap: '4px',
         border: 'var(--border-hairline)'
       }}
       title="Waktu Jakarta (WIB)"
@@ -305,26 +305,27 @@ export default function App() {
         {/* ===== MAIN CONTENT AREA ===== */}
         <div className="main-content">
 
-          {/* 1. Master Top Header Bar */}
+          {/* 1. Master Top Header Bar (Tightly Compacted HUD) */}
           <header className="telemetry-panel" style={{
-            marginBottom: '12px',
-            padding: '8px 16px',
+            marginBottom: '6px',
+            padding: '4px 12px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'wrap',
-            gap: '10px'
+            gap: '6px',
+            minHeight: '32px'
           }}>
             {/* Left: Active Module Title (Clean & Modern) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 6px var(--accent-green)' }} />
-              <div style={{ fontSize: '13px', fontWeight: '800', letterSpacing: '0.04em', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 6px var(--accent-green)' }} />
+              <div style={{ fontSize: '11.5px', fontWeight: '800', letterSpacing: '0.04em', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
                 {getTabLabel(activeTab)}
               </div>
             </div>
 
             {/* Right: Quick Launch Tools, Theme Switcher, Sync & Live Clock */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
               
               {/* Bursa Luar Negeri (Global Market Sessions Ticker) */}
               <GlobalMarketTicker onNavigateGlobal={() => setActiveTab('GLOBAL_MARKETS')} />
@@ -337,8 +338,8 @@ export default function App() {
                 className="telemetry-btn"
                 onClick={() => handleOpenLotCalc()}
                 style={{ 
-                  fontSize: '11px', 
-                  padding: '5px 10px', 
+                  fontSize: '10px', 
+                  padding: '3px 8px', 
                   color: 'var(--accent-gold)', 
                   borderColor: 'var(--accent-gold)',
                   display: 'flex',
@@ -358,7 +359,7 @@ export default function App() {
                   refetchAll();
                   setSyncTrigger(prev => prev + 1);
                 }}
-                style={{ fontSize: '11px', padding: '5px 8px' }}
+                style={{ fontSize: '10px', padding: '3px 6px' }}
                 title="Sinkronisasi Ulang Seluruh Data Ticker"
               >
                 🔄
@@ -369,11 +370,11 @@ export default function App() {
                 className="telemetry-btn"
                 onClick={toggleTheme}
                 style={{
-                  fontSize: '11px',
-                  padding: '5px 10px',
+                  fontSize: '10px',
+                  padding: '3px 8px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '5px'
+                  gap: '4px'
                 }}
                 title={theme === 'dark' ? 'Ganti ke Mode Terang' : 'Ganti ke Mode Gelap'}
               >
