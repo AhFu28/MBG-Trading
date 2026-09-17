@@ -5,6 +5,7 @@ import HomeDashboardTab from './components/HomeDashboardTab.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import GlobalMarketTicker from './components/GlobalMarketTicker.jsx';
 import { useLivePrices } from './hooks/useLivePrices.js';
+import PersonalWatchlistTab from './components/PersonalWatchlistTab.jsx';
 
 // Code Splitting for heavy secondary modules
 const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'));
@@ -397,6 +398,10 @@ export default function App() {
               <main>
                 <PersonalWatchlistTab
                   data={data}
+                  allIdxStocks={allIdxStocks}
+                  allCryptoSpot={allCryptoSpot}
+                  livePrices={livePrices}
+                  onSelectTicker={handleOpenSecurityHub}
                   onOpenChart={handleOpenSecurityHub}
                   onOpenLotCalc={handleOpenLotCalc}
                   onNavigateTab={setActiveTab}
