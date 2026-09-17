@@ -2,13 +2,59 @@
 
 export const CHANGELOG_DATA = [
   {
+    id: 'pkg-17092026-v4',
+    version: 'Package 17092026',
+    semanticVersion: 'v4.0.0',
+    date: '17 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / ACTIVE HARI INI',
+    title: 'Update Package 17092026 (v4.0 APEX): Dual-Speed Reactive Quant Engine, Live Trailing Stop to BE, Zero-Cron Architecture & 100% Cloudflare Pages',
+    description: 'Lompatan arsitektur terbesar v4.0 APEX: Mengubah sistem dari snapshot statis berbasis cron menjadi Dual-Speed Reactive Quant Platform. Menghadirkan Reactive Strategy Engine klien (dynamicStrategy.js), Dynamic Trailing Stop Loss ke Breakeven (BE 🛡️), eliminasi 100% scheduled cron jobs di GitHub Actions, pembersihan total artefak Vercel untuk standardisasi Cloudflare Pages murni, Multi-Chart Grid (2x2 / 1x2), Institutional Security Hub Drawer, Bloomberg v4.0 12-Stream News Intelligence, Market Heatmap Treemap, Authentic Brand Logos (IDX, US, Forex), Watcher Whale Radar (>100 BTC) dengan Audio Chime, dan Anti-Stale Cache-Busting.',
+    processFlow: [
+      { step: '1. Baseline & Cron', label: 'Static Snapshots (08-12/09)' },
+      { step: '2. APEX v3.0', label: 'Whale, Futures & Forex (16/09)' },
+      { step: '3. Zero-Cron Decouple', label: 'Eliminate Cron & Git Skip (17/09)' },
+      { step: '4. APEX v4.0', label: 'Reactive Engine & Cloudflare (17/09)' }
+    ],
+    markdownContent: `
+### 🚀 Pembaruan Akbar v4.0 APEX (Highlights 17/09)
+- **Client-Side Reactive Strategy Engine (\`dynamicStrategy.js\`):** Mesin kuantitatif adaptif yang mengevaluasi sinyal trading plan secara seketika (< 1 detik via Binance WebSocket, 20 detik via TradingView Scanner) langsung di peramban pengguna. Menghadirkan State Machine Sinyal 7-fase (\`ENTRY_TRIGGER\`, \`IN_POSITION\`, \`TP1_HIT\`, \`TP2_HIT\`, \`EXTENDED / NO FOMO\`, \`STOPPED_OUT\`, \`WAITING_PULLBACK\`).
+- **Dynamic Trailing Stop Loss ke Breakeven (BE 🛡️):** Perlindungan modal otomatis tingkat lanjut. Begitu harga live menyentuh Target 1 (TP1), level Stop Loss otomatis diratchet naik ke level Entry (*Risk-Free Trade*), mengunci modal pokok trader dari pembalikan harga mendadak.
+- **Floating Risk/Reward & Live PnL:** Perhitungan dinamis rasio Risk-to-Reward aktual dan floating profit/loss secara instan mengikuti fluktuasi tick harga pasar.
+- **100% Eliminasi Scheduled Cron Jobs di GitHub Actions:** Seluruh 6 workflow otomatisasi berkala (\`hourly_crypto_macro\`, \`intraday_idx_refresh\`, \`daily_idx_morning\`, \`midday_sesi1_recap\`, \`daily_idx_eod\`, \`evening_global_watch\`) telah dinonaktifkan dari jadwal cron otomatis dan dialihkan ke pemicu manual (*workflow_dispatch*). Menghilangkan ketergantungan pada bot git-commit \`[skip ci]\` yang sebelumnya membekukan deployment dan memicu konflik cache.
+- **Pembersihan Total Artefak Vercel & Penyelarasan Cloudflare Pages Murni:** Menghapus seluruh file konfigurasi usang \`vercel.json\` dan \`frontend/vercel.json\`. Seluruh ekosistem MBG Trading kini terstandarisasi 100% pada infrastruktur **Cloudflare Pages & Edge Functions** (\`https://mbg-trading.pages.dev\`) tanpa jejak Vercel.
+- **Multi-Chart Grid & Institutional Security Hub Drawer:** Visualisasi teknikal tingkat lanjut dengan grid multi-grafik interaktif (2x2 / 1x2) TradingView dan Security Hub Drawer geser komprehensif yang menampilkan data fundamental, rekapitulasi bandarmologi, dan metrik teknikal emiten.
+- **Bloomberg Terminal v4.0 (12-Stream News Intelligence):** 12 saluran stream berita terklasifikasi (IHSG, Perbankan, Komoditas, Makro AS, Kripto, The Fed, Geopolitik) yang dilengkapi radar sentimen multi-agen dan korelasi antar-pasar (*Intermarket Correlation Matrix*).
+- **Market Heatmap Treemap Dinamis:** Peta visual interaktif saham BEI dan pasar Kripto dengan pewarnaan gradasi performa harga serta proporsi bobot nilai transaksi (*turnover*).
+- **Authentic Brand Logos & Multi-Market Badges:** Integrasi aset logo SVG otentik emiten blue-chip BEI (BBCA, BBRI, BMRI, BBNI, ASII, TLKM, dll.), saham teknologi AS, dan lencana bendera ganda (*dual-flag badges*) untuk pasangan mata uang Forex.
+- **Watcher Whale Radar (>100 BTC) & Audio Chime:** Radar pelacak transaksi paus on-chain berukuran raksasa (>100 BTC) dilengkapi lonceng audio instan dan verifikasi hash transaksi langsung ke Blockchain Explorer.
+- **Anti-Stale Cache-Busting:** Pemasangan parameter timestamp dinamis \`?v=\${Date.now()}\` serta header \`{ cache: 'no-cache' }\` pada pemuatan bundle data di \`App.jsx\`, menjamin browser tidak terjebak dalam respons HTTP 304 Not Modified.
+- **Dividend Hunter Live Binding:** Harga saham pada radar dividen kini terhubung dinamis dengan data kuotasi TradingView Scanner, memastikan kalkulasi estimasi yield selalu akurat mengikuti harga pasar berjalan.
+    `.trim(),
+    table: [
+      { module: 'Reactive Strategy Engine', status: 'PROD', category: 'Engine / Quant', summary: 'State machine adaptif real-time (<1s Crypto, 20s IDX) via dynamicStrategy.js' },
+      { module: 'Dynamic Trailing Stop (BE)', status: 'PROD', category: 'Risk Management', summary: 'SL otomatis naik ke level Entry saat TP1 tercapai (Risk-Free Trade)' },
+      { module: 'Zero-Cron Architecture', status: 'PROD', category: 'CI/CD', summary: 'Menghapus 6 jadwal cron otomatis; bebas bot commit [skip ci]' },
+      { module: 'Pembersihan Vercel', status: 'PROD', category: 'Platform', summary: '100% Cloudflare Pages native; vercel.json root & frontend dihapus' },
+      { module: 'Multi-Chart Grid', status: 'PROD', category: 'Charting', summary: 'Grid multi-grafik interaktif (2x2 / 1x2) TradingView' },
+      { module: 'Security Hub Drawer', status: 'PROD', category: 'Research', summary: 'Drawer fakta fundamental, bandarmologi, dan metrik teknikal' },
+      { module: 'Bloomberg v4.0 Terminal', status: 'PROD', category: 'News Intelligence', summary: '12 stream berita interaktif + radar sentimen multi-agen' },
+      { module: 'Market Heatmap Treemap', status: 'PROD', category: 'Visualization', summary: 'Peta panas pasar saham BEI & kripto berbasis nilai transaksi' },
+      { module: 'Brand Logos & Badges', status: 'PROD', category: 'UI / Asset', summary: 'Logo SVG emiten BEI, saham US, dan bendera ganda Forex' },
+      { module: 'Watcher Whale (>100 BTC)', status: 'PROD', category: 'On-Chain Alert', summary: 'Deteksi transfer paus raksasa + audio alert chime + tx explorer' },
+      { module: 'Cache-Busting Anti-304', status: 'PROD', category: 'Networking', summary: 'Timestamp query parameter ?v= menjamin data selalu fresh' },
+      { module: 'Dividend Live Binding', status: 'PROD', category: 'Data Desk', summary: 'Harga saham dividen terhubung langsung ke TradingView Scanner' }
+    ]
+  },
+  {
     id: 'pkg-16092026-v3',
     version: 'Package 16092026',
     semanticVersion: 'v3.0.0',
     date: '16 September 2026',
-    status: 'LATEST',
-    statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / ACTIVE HARI INI',
+    status: 'STABLE',
+    statusColor: '#38bdf8',
+    badgeLabel: 'STABLE',
     title: 'Update Package 16092026 (v3.0 APEX): Whale Intelligence Hub, Running Trade BEI, Crypto Futures, Forex & Intraday Sync',
     description: 'Rilis akbar v3.0 menghadirkan integrasi holistik: Pelacakan Paus Kripto On-Chain (0s delay Mempool WS), Broker Summary & Portofolio Tracker BEI (Stockbit Style), Live Running Trade BEI, Dashboard Crypto Futures, Forex Command Center 28-Pair, US Stock Intelligence, Kalender Makro 40+ Event, CryptoWave Live News, NewsDetailModal, dan sinkronisasi intraday 30 menit.',
     processFlow: [
