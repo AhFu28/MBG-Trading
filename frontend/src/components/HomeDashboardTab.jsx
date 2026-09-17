@@ -15,6 +15,7 @@ export default function HomeDashboardTab({
   const [dataStatus, setDataStatus] = useState('live');
   const [newsFilter, setNewsFilter] = useState('ALL');
   const [newsSearch, setNewsSearch] = useState('');
+  const [newsViewMode, setNewsViewMode] = useState('scroll'); // 'scroll' (all items scrollable) or 'compact' (top 15)
 
   useEffect(() => {
     if (!data?.last_updated) return;
@@ -62,6 +63,9 @@ export default function HomeDashboardTab({
     return true;
   });
 
+  // News items to display: in 'scroll' mode, all matching news items are scrollable inside the fixed height panel
+  const displayNews = newsViewMode === 'compact' ? filteredNews.slice(0, 15) : filteredNews;
+
   // Sentiment and narrative
   const sentiment = macro?.impact_assessment?.overall_sentiment || macro?.sentiment || 'NEUTRAL';
   const narrative = macro?.impact_assessment?.narrative || macro?.headline || 'US markets konsolidasi jelang pernyataan kebijakan Fed; harga komoditas stabil.';
@@ -78,21 +82,21 @@ export default function HomeDashboardTab({
     return `${sign}Rp ${abs.toLocaleString('id-ID')}`;
   };
 
-  // Foreign flow calculations (Top 5 Inflow & Top 5 Outflow)
-  const topInflow = (foreignFlow.top_inflow || []).slice(0, 5);
-  const topOutflow = (foreignFlow.top_outflow || []).slice(0, 5);
+  // Foreign flow calculations (Top 6 Inflow & Top 6 Outflow for richer institutional depth)
+  const topInflow = (foreignFlow.top_inflow || []).slice(0, 6);
+  const topOutflow = (foreignFlow.top_outflow || []).slice(0, 6);
   const netInflowSum = (foreignFlow.top_inflow || []).reduce((acc, c) => acc + (Number(c.foreign_net_val_idr) || 0), 0);
   const netOutflowSum = (foreignFlow.top_outflow || []).reduce((acc, c) => acc + (Number(c.foreign_net_val_idr) || 0), 0);
   const totalNetForeign = netInflowSum + netOutflowSum;
 
-  // Broker accumulation (Top 5 institutional smart money accumulation)
+  // Broker accumulation (Top 6 institutional smart money accumulation)
   const accumulatingBrokers = Object.values(brokerSummary)
     .filter(b => b.bandar_accumulation_grade === 'BIG_ACCUMULATION' || b.bandar_accumulation_grade === 'ACCUMULATION')
     .sort((a, b) => ((b.top_buyers?.[0]?.lots || 0) * (b.bandar_avg_price || 0)) - ((a.top_buyers?.[0]?.lots || 0) * (a.bandar_avg_price || 0)))
-    .slice(0, 5);
+    .slice(0, 6);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', boxSizing: 'border-box' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', boxSizing: 'border-box' }}>
 
       {dataStatus === 'stale' && (
         <div style={{background:'#dc2626',color:'#fff',padding:'8px 16px',borderRadius:8,marginBottom:12,display:'flex',alignItems:'center',gap:8,fontSize:13,fontWeight:600}}>
@@ -126,27 +130,27 @@ export default function HomeDashboardTab({
 
             {/* Card 1: IHSG & Global Regime */}
             <div className="telemetry-panel" style={{
-              padding: '8px 12px',
+              padding: '10px 14px',
               borderLeft: '3px solid var(--accent-green)',
               background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(0,208,132,0.04) 100%)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              minHeight: '120px'
+              minHeight: '128px'
             }}>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="metric-label" style={{ fontSize: '9px' }}>IHSG & Global Regime</span>
-                  <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>ACTIVE</span>
+                  <span className="metric-label" style={{ fontSize: '9.5px' }}>IHSG & Global Regime</span>
+                  <span className="badge badge-bull" style={{ fontSize: '8px', padding: '2px 6px' }}>ACTIVE</span>
                 </div>
-                <div style={{ fontSize: '16px', fontWeight: '900', marginTop: '3px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ fontSize: '17px', fontWeight: '900', marginTop: '3px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                   {sentiment}
                 </div>
-                <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.35 }}>
-                  {narrative.length > 85 ? narrative.slice(0, 85) + '...' : narrative}
+                <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginTop: '3px', lineHeight: 1.4 }}>
+                  {narrative.length > 110 ? narrative.slice(0, 110) + '...' : narrative}
                 </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)', fontSize: '9.5px', fontFamily: 'var(--font-mono)' }}>
                 <div>
                   <span style={{ color: 'var(--text-muted)' }}>.JKSE: </span>
                   <strong style={{ color: 'var(--text-primary)' }}>
@@ -177,19 +181,19 @@ export default function HomeDashboardTab({
 
               return (
                 <div className="telemetry-panel" style={{
-                  padding: '8px 12px',
+                  padding: '10px 14px',
                   borderLeft: '3px solid var(--accent-green)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  minHeight: '120px'
+                  minHeight: '128px'
                 }}>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="metric-label" style={{ fontSize: '9px' }}>#1 IDX Alpha Watchlist</span>
-                      <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>{topIdx?.technical_signal || 'BREAKOUT'}</span>
+                      <span className="metric-label" style={{ fontSize: '9.5px' }}>#1 IDX Alpha Watchlist</span>
+                      <span className="badge badge-bull" style={{ fontSize: '8px', padding: '2px 6px' }}>{topIdx?.technical_signal || 'BREAKOUT'}</span>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '3px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <AssetIcon symbol={topIdxTicker} market="IDX" size={20} />
                         <span style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
@@ -209,13 +213,13 @@ export default function HomeDashboardTab({
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveIdxChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                        <span style={{ fontSize: '10.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveIdxChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                           {liveIdxChange >= 0 ? '+' : ''}{liveIdxChange.toFixed(2)}%
                         </span>
                         <button
                           className="telemetry-btn"
                           onClick={() => onSelectTicker(topIdxTicker, 'IDX')}
-                          style={{ fontSize: '8px', padding: '1px 5px', background: 'var(--accent-blue)', color: '#fff' }}
+                          style={{ fontSize: '8.5px', padding: '2px 6px', background: 'var(--accent-blue)', color: '#fff' }}
                         >
                           CHART ↗
                         </button>
@@ -233,7 +237,7 @@ export default function HomeDashboardTab({
                     </svg>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '3px', borderTop: 'var(--border-muted)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9.5px', fontFamily: 'var(--font-mono)', paddingTop: '4px', borderTop: 'var(--border-muted)' }}>
                     <span>Entry: <strong style={{ color: 'var(--text-primary)' }}>{Number(topIdx?.entry_price || 1725).toLocaleString()}</strong></span>
                     <span>SL: <strong style={{ color: 'var(--accent-rust)' }}>{Number(topIdx?.stop_loss || 1656).toLocaleString()}</strong></span>
                     <span>TP: <strong style={{ color: 'var(--accent-green)' }}>{Number(topIdx?.target_1 || 1877).toLocaleString()}</strong></span>
@@ -253,19 +257,19 @@ export default function HomeDashboardTab({
 
               return (
                 <div className="telemetry-panel" style={{
-                  padding: '8px 12px',
+                  padding: '10px 14px',
                   borderLeft: '3px solid var(--accent-orange)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  minHeight: '120px'
+                  minHeight: '128px'
                 }}>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="metric-label" style={{ fontSize: '9px' }}>#1 Crypto Spot Momentum</span>
-                      <span className="badge badge-alert" style={{ fontSize: '8px', padding: '1px 5px' }}>NO LEV · SPOT</span>
+                      <span className="metric-label" style={{ fontSize: '9.5px' }}>#1 Crypto Spot Momentum</span>
+                      <span className="badge badge-alert" style={{ fontSize: '8px', padding: '2px 6px' }}>NO LEV · SPOT</span>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '3px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <CryptoIcon symbol={topCrypto?.pair || 'BTC'} size={20} />
                         <span style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
@@ -284,7 +288,7 @@ export default function HomeDashboardTab({
                           {isCryptoFlashing === 'down' && <span style={{ color: 'var(--accent-rust)', marginLeft: '2px' }}>▼</span>}
                         </span>
                       </div>
-                      <span style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveCryptoChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                      <span style={{ fontSize: '10.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveCryptoChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                         {liveCryptoChange >= 0 ? '+' : ''}{liveCryptoChange.toFixed(2)}%
                       </span>
                     </div>
@@ -300,7 +304,7 @@ export default function HomeDashboardTab({
                     </svg>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9px', fontFamily: 'var(--font-mono)', paddingTop: '3px', borderTop: 'var(--border-muted)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '9.5px', fontFamily: 'var(--font-mono)', paddingTop: '4px', borderTop: 'var(--border-muted)' }}>
                     <span>Entry: <strong style={{ color: 'var(--text-primary)' }}>{Math.round(topCrypto?.current_price || 77168).toLocaleString()}</strong></span>
                     <span>SL: <strong style={{ color: 'var(--accent-rust)' }}>{Math.round(topCrypto?.stop_loss || 75625).toLocaleString()}</strong></span>
                     <span>TP: <strong style={{ color: 'var(--accent-green)' }}>{Math.round(topCrypto?.take_profit_1 || 80255).toLocaleString()}</strong></span>
@@ -508,7 +512,7 @@ export default function HomeDashboardTab({
                     </span>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <span style={{ color: 'var(--text-muted)', fontSize: '8px', display: 'block' }}>AKUMULASI INFLOW TOP 5</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '8px', display: 'block' }}>AKUMULASI INFLOW TOP 6</span>
                     <span style={{ fontWeight: '800', color: 'var(--accent-green)' }}>
                       {formatFlowIdr(netInflowSum)}
                     </span>
@@ -523,7 +527,7 @@ export default function HomeDashboardTab({
                       ▲ TOP INFLOW (BUY)
                     </div>
                     {topInflow.map((f, i) => (
-                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0', borderBottom: 'var(--border-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
+                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '3.5px 0', borderBottom: 'var(--border-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
                         <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--accent-blue)', display: 'inline-flex', alignItems: 'center', gap: '4px' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>
                           <AssetIcon symbol={f.ticker} market="IDX" size={12} />
                           <span>${f.ticker}</span>
@@ -541,7 +545,7 @@ export default function HomeDashboardTab({
                       ▼ TOP OUTFLOW (SELL)
                     </div>
                     {topOutflow.map((f, i) => (
-                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0', borderBottom: 'var(--border-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
+                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '3.5px 0', borderBottom: 'var(--border-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
                         <span style={{ fontWeight: '700', cursor: 'pointer', color: 'var(--accent-blue)', display: 'inline-flex', alignItems: 'center', gap: '4px' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>
                           <AssetIcon symbol={f.ticker} market="IDX" size={12} />
                           <span>${f.ticker}</span>
@@ -576,7 +580,7 @@ export default function HomeDashboardTab({
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        padding: '4px 6px',
+                        padding: '5.5px 8px',
                         background: 'var(--bg-panel-subtle)',
                         borderRadius: '3px',
                         border: 'var(--border-hairline)',
@@ -638,30 +642,30 @@ export default function HomeDashboardTab({
                         <th style={{ padding: '4px' }}>Ticker</th>
                         <th style={{ padding: '4px' }}>Setup</th>
                         <th style={{ padding: '4px' }}>Entry</th>
-                        <th style={{ padding: '4px' }}>SL</th>
-                        <th style={{ padding: '4px' }}>TP1</th>
-                        <th style={{ padding: '4px' }}>R:R</th>
+                        <th style={{ padding: '5.5px 5px' }}>SL</th>
+                        <th style={{ padding: '5.5px 5px' }}>TP1</th>
+                        <th style={{ padding: '5.5px 5px' }}>R:R</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {topIdxPlans.slice(0, 5).map(plan => {
+                      {topIdxPlans.slice(0, 6).map(plan => {
                         const ticker = plan.clean_ticker || plan.symbol?.replace('.JK', '');
                         return (
                           <tr key={ticker} style={{ borderBottom: 'rgba(255,255,255,0.03)' }}>
-                            <td style={{ padding: '4px', fontWeight: '800' }}>
+                            <td style={{ padding: '5.5px 5px', fontWeight: '800' }}>
                               <span style={{ color: 'var(--accent-blue)', cursor: 'pointer' }} onClick={() => onSelectTicker(ticker, 'IDX')}>
                                 {ticker}
                               </span>
                             </td>
-                            <td style={{ padding: '4px' }}>
-                              <span className="badge badge-bull" style={{ fontSize: '7px', padding: '1px 3px' }}>
+                            <td style={{ padding: '5.5px 5px' }}>
+                              <span className="badge badge-bull" style={{ fontSize: '7px', padding: '1px 4px' }}>
                                 {plan.technical_signal || 'BREAKOUT'}
                               </span>
                             </td>
-                            <td style={{ padding: '4px' }}>{Number(plan.entry_price).toLocaleString()}</td>
-                            <td style={{ padding: '4px', color: 'var(--accent-rust)' }}>{Number(plan.stop_loss).toLocaleString()}</td>
-                            <td style={{ padding: '4px', color: 'var(--accent-green)' }}>{Number(plan.target_1).toLocaleString()}</td>
-                            <td style={{ padding: '4px', fontWeight: '700', color: 'var(--accent-orange)' }}>1:{plan.risk_reward_ratio || '2.2'}</td>
+                            <td style={{ padding: '5.5px 5px' }}>{Number(plan.entry_price).toLocaleString()}</td>
+                            <td style={{ padding: '5.5px 5px', color: 'var(--accent-rust)' }}>{Number(plan.stop_loss).toLocaleString()}</td>
+                            <td style={{ padding: '5.5px 5px', color: 'var(--accent-green)' }}>{Number(plan.target_1).toLocaleString()}</td>
+                            <td style={{ padding: '5.5px 5px', fontWeight: '700', color: 'var(--accent-orange)' }}>1:{plan.risk_reward_ratio || '2.2'}</td>
                           </tr>
                         );
                       })}
@@ -670,9 +674,9 @@ export default function HomeDashboardTab({
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', color: 'var(--text-muted)', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)' }}>
                 <span>Engine TimesFM + SMC</span>
-                <span>5 / {topIdxPlans.length}</span>
+                <span>6 / {topIdxPlans.length}</span>
               </div>
             </div>
 
@@ -693,21 +697,21 @@ export default function HomeDashboardTab({
                 </div>
 
                 <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '9.5px', fontFamily: 'var(--font-mono)' }}>
                     <thead>
                       <tr style={{ color: 'var(--text-muted)', borderBottom: 'var(--border-hairline)', textAlign: 'left' }}>
-                        <th style={{ padding: '4px' }}>Pair</th>
-                        <th style={{ padding: '4px' }}>Setup</th>
-                        <th style={{ padding: '4px' }}>Entry</th>
-                        <th style={{ padding: '4px' }}>SL</th>
-                        <th style={{ padding: '4px' }}>TP1</th>
-                        <th style={{ padding: '4px' }}>R:R</th>
+                        <th style={{ padding: '5.5px 5px' }}>Pair</th>
+                        <th style={{ padding: '5.5px 5px' }}>Setup</th>
+                        <th style={{ padding: '5.5px 5px' }}>Entry</th>
+                        <th style={{ padding: '5.5px 5px' }}>SL</th>
+                        <th style={{ padding: '5.5px 5px' }}>TP1</th>
+                        <th style={{ padding: '5.5px 5px' }}>R:R</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {topCryptoPicks.slice(0, 5).map(c => (
+                      {topCryptoPicks.slice(0, 6).map(c => (
                         <tr key={c.pair} style={{ borderBottom: 'rgba(255,255,255,0.03)' }}>
-                          <td style={{ padding: '4px', fontWeight: '800' }}>
+                          <td style={{ padding: '5.5px 5px', fontWeight: '800' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                               <CryptoIcon symbol={c.pair} size={14} />
                               <span style={{ color: '#60a5fa', cursor: 'pointer' }} onClick={() => onSelectTicker(c.pair, 'CRYPTO')}>
@@ -715,15 +719,15 @@ export default function HomeDashboardTab({
                               </span>
                             </div>
                           </td>
-                          <td style={{ padding: '4px' }}>
-                            <span className="badge badge-alert" style={{ fontSize: '7px', padding: '1px 3px' }}>
+                          <td style={{ padding: '5.5px 5px' }}>
+                            <span className="badge badge-alert" style={{ fontSize: '7px', padding: '1px 4px' }}>
                               RANGE_ACC
                             </span>
                           </td>
-                          <td style={{ padding: '4px' }}>{c.current_price > 10 ? Math.round(c.current_price).toLocaleString() : c.current_price}</td>
-                          <td style={{ padding: '4px', color: 'var(--accent-rust)' }}>{c.stop_loss > 10 ? Math.round(c.stop_loss).toLocaleString() : c.stop_loss}</td>
-                          <td style={{ padding: '4px', color: 'var(--accent-green)' }}>{c.take_profit_1 > 10 ? Math.round(c.take_profit_1).toLocaleString() : c.take_profit_1}</td>
-                          <td style={{ padding: '4px', fontWeight: '700', color: 'var(--accent-orange)' }}>1:{c.risk_reward_ratio || '2'}</td>
+                          <td style={{ padding: '5.5px 5px' }}>{c.current_price > 10 ? Math.round(c.current_price).toLocaleString() : c.current_price}</td>
+                          <td style={{ padding: '5.5px 5px', color: 'var(--accent-rust)' }}>{c.stop_loss > 10 ? Math.round(c.stop_loss).toLocaleString() : c.stop_loss}</td>
+                          <td style={{ padding: '5.5px 5px', color: 'var(--accent-green)' }}>{c.take_profit_1 > 10 ? Math.round(c.take_profit_1).toLocaleString() : c.take_profit_1}</td>
+                          <td style={{ padding: '5.5px 5px', fontWeight: '700', color: 'var(--accent-orange)' }}>1:{c.risk_reward_ratio || '2'}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -731,9 +735,9 @@ export default function HomeDashboardTab({
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', color: 'var(--text-muted)', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)' }}>
                 <span>Spot USDT · no leverage</span>
-                <span>5 / {topCryptoPicks.length}</span>
+                <span>6 / {topCryptoPicks.length}</span>
               </div>
             </div>
 
@@ -776,25 +780,47 @@ export default function HomeDashboardTab({
 
         </div>
 
-        {/* ================= RIGHT SIDEBAR: LIVE NEWS STREAM ================= */}
+        {/* ================= RIGHT SIDEBAR: LIVE NEWS STREAM (INTERNALLY SCROLLABLE) ================= */}
         <div className="telemetry-panel home-news-sidebar" style={{
           padding: '8px 10px',
           display: 'flex',
           flexDirection: 'column',
           boxSizing: 'border-box',
           minWidth: 0,
-          height: '100%'
+          height: '790px',
+          maxHeight: '790px'
         }}>
-          {/* Header Bar */}
+          {/* Header Bar with Mode Toggle & Counter */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', paddingBottom: '4px', borderBottom: 'var(--border-hairline)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <span style={{ fontSize: '11px' }}>📰</span>
               <span style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.2px' }}>Live News Wire</span>
               <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--accent-green)', display: 'inline-block', boxShadow: '0 0 5px var(--accent-green)' }} />
             </div>
-            <span style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              {filteredNews.length} / {liveNewsRaw.length}
-            </span>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <button
+                onClick={() => setNewsViewMode(prev => prev === 'scroll' ? 'compact' : 'scroll')}
+                style={{
+                  background: newsViewMode === 'scroll' ? 'rgba(0, 208, 132, 0.15)' : 'var(--bg-panel-subtle)',
+                  border: newsViewMode === 'scroll' ? '1px solid rgba(0, 208, 132, 0.35)' : 'var(--border-hairline)',
+                  color: newsViewMode === 'scroll' ? 'var(--accent-green)' : 'var(--text-muted)',
+                  borderRadius: '3px',
+                  fontSize: '7.5px',
+                  padding: '1px 5px',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: '700',
+                  transition: 'all 0.15s ease'
+                }}
+                title={newsViewMode === 'scroll' ? 'Mode Scroll Aktif (Semua Berita). Klik untuk beralih ke 15 Terkini' : 'Mode 15 Terkini Aktif. Klik untuk mode scroll semua berita'}
+              >
+                {newsViewMode === 'scroll' ? '📜 SCROLL' : '⚡ TOP 15'}
+              </button>
+              <span style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                {displayNews.length} / {liveNewsRaw.length}
+              </span>
+            </div>
           </div>
 
           {/* Quick Search Bar */}
@@ -864,7 +890,7 @@ export default function HomeDashboardTab({
             ))}
           </div>
 
-          {/* Vertical scrollable list of news cards (FLEX: 1, DYNAMIC FULL HEIGHT, ZERO DEAD SPACE) */}
+          {/* Vertical scrollable list of news cards (CAPPED TO TOP 20 ITEMS, SCROLLS INTERNALLY) */}
           <div className="news-scroll-container" style={{
             display: 'flex',
             flexDirection: 'column',
@@ -874,7 +900,7 @@ export default function HomeDashboardTab({
             minHeight: 0,
             paddingRight: '3px'
           }}>
-            {filteredNews.map((news, idx) => {
+            {displayNews.map((news, idx) => {
               const isBear = news.sentiment === 'BEARISH';
               const isBull = news.sentiment === 'BULLISH';
               const borderAccent = isBull ? 'var(--accent-green)' : isBear ? 'var(--accent-rust)' : 'rgba(255,255,255,0.12)';
@@ -963,7 +989,7 @@ export default function HomeDashboardTab({
               );
             })}
 
-            {filteredNews.length === 0 && (
+            {displayNews.length === 0 && (
               <div style={{ padding: '24px 12px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '9.5px' }}>
                 Tidak ada berita yang cocok dengan filter ini.
               </div>
