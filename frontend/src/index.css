@@ -912,10 +912,18 @@ body {
 
 .home-tri-bento-grid {
   display: grid;
-  grid-template-columns: 31% 37% 32%;
+  grid-template-columns: minmax(0, 31fr) minmax(0, 37fr) minmax(0, 32fr);
   gap: 6px;
   min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
   align-items: stretch;
+}
+
+.home-tri-bento-grid > * {
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .home-radar-grid {
@@ -935,9 +943,17 @@ body {
 
 .home-dual-flow-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 6px;
   min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.home-dual-flow-grid > * {
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .home-flow-columns {
