@@ -27,15 +27,15 @@
   "event_category": "FED",
   "sentiment": "NEUTRAL",
   "severity": "NORMAL",
-  "gold_price": 4358.4,
-  "gold_change_pct": -0.66,
-  "brent_oil_price": 103.82,
-  "brent_oil_change_pct": -1.9,
+  "gold_price": 4361.4,
+  "gold_change_pct": -0.59,
+  "brent_oil_price": 103.72,
+  "brent_oil_change_pct": -1.99,
   "dxy_index": 100.16,
   "dxy_change_pct": -0.15,
   "us10y_yield": 5.01,
-  "ihsg_price": 6454.33,
-  "ihsg_change_pct": 0.27,
+  "ihsg_price": 6457.67,
+  "ihsg_change_pct": 0.32,
   "idx_affected_sectors": [],
   "idx_affected_stocks": [],
   "etf_flows": {
@@ -96,7 +96,7 @@
   },
   "daily_snips": {
     "edition": "MORNING_BRIEF",
-    "generated_at": "2026-09-17T07:23:12.926503",
+    "generated_at": "2026-09-17T07:24:27.670941",
     "market_verdict": {
       "stance": "CONSOLIDATIVE",
       "badge": "\u26aa KONSOLIDASI PASAR SEHAT",
@@ -105,13 +105,13 @@
     },
     "macro_pulse": {
       "gold": {
-        "price": 4358.4,
-        "change_pct": -0.66,
+        "price": 4361.4,
+        "change_pct": -0.59,
         "status": "PULLBACK"
       },
       "brent": {
-        "price": 103.82,
-        "change_pct": -1.9,
+        "price": 103.72,
+        "change_pct": -1.99,
         "status": "COOLING"
       },
       "dxy": {
@@ -4895,8 +4895,8 @@
       ]
     }
   ],
-  "full_narrative": "Global telemetry report: Gold at $4358.4 (-0.66%), Brent Crude at $103.82 (-1.9%). DXY at 100.16 pts. Monitored for impact on Indonesian equities.",
-  "updated_at": "2026-09-17T07:23:12.926527",
+  "full_narrative": "Global telemetry report: Gold at $4361.4 (-0.59%), Brent Crude at $103.72 (-1.99%). DXY at 100.16 pts. Monitored for impact on Indonesian equities.",
+  "updated_at": "2026-09-17T07:24:27.670965",
   "sentiment_radar": {
     "fear_greed": {
       "value": 50,
