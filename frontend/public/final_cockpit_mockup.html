@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBG Trading Cockpit - Final Architecture Mockup (Tri-Bento + 4-Card Top Row)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #06090e;
+      --bg-panel: #0d131f;
+      --bg-panel-subtle: #131b2c;
+      --bg-card: #111827;
+      --border-hairline: 1px solid rgba(255, 255, 255, 0.08);
+      --border-subtle: 1px solid rgba(255, 255, 255, 0.05);
+      --border-muted: 1px solid rgba(255, 255, 255, 0.04);
+      --accent-green: #10b981;
+      --accent-green-subtle: rgba(16, 185, 129, 0.12);
+      --accent-rust: #ef4444;
+      --accent-rust-subtle: rgba(239, 68, 68, 0.12);
+      --accent-blue: #38bdf8;
+      --accent-orange: #f59e0b;
+      --accent-yellow: #facc15;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Inter', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      line-height: 1.35;
+      padding: 14px;
+      min-height: 100vh;
+    }
+
+    /* Top Verification Bar */
+    .status-bar {
+      background: #090e17;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 10px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge-status {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    /* Wire strip */
+    .wire-strip {
+      background: #090e17;
+      border: var(--border-hairline);
+      border-radius: 5px;
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10.5px;
+      margin-bottom: 8px;
+    }
+
+    /* Cockpit Main Grid */
+    .cockpit-container {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 310px;
+      gap: 10px;
+      width: 100%;
+    }
+    .cockpit-main {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    /* Common Panel Styling */
+    .telemetry-panel {
+      background: var(--bg-panel);
+      border: var(--border-hairline);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .telemetry-header {
+      padding: 6px 10px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      border-bottom: var(--border-hairline);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Badges */
+    .badge-bull {
+      background: var(--accent-green-subtle);
+      color: var(--accent-green);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 8px;
+      font-weight: 800;
+    }
+    .badge-bear {
+      background: var(--accent-rust-subtle);
+      color: var(--accent-rust);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 8px;
+      font-weight: 800;
+    }
+    .badge-gold {
+      background: rgba(234, 179, 8, 0.15);
+      color: #facc15;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 8px;
+      font-weight: 800;
+      border: 1px solid rgba(234, 179, 8, 0.3);
+    }
+    .badge-energy {
+      background: rgba(245, 158, 11, 0.18);
+      color: #f59e0b;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 8px;
+      font-weight: 800;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* ================= ROW 1: 4 BENTO CARDS ================= */
+    .bento-row-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .mini-bento {
+      padding: 9px 12px;
+      min-height: 105px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--bg-panel);
+      border: var(--border-hairline);
+      border-radius: 5px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .mini-bento:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* ================= ROW 2: TRI-BENTO HORIZONTAL ROW (3 COLUMNS) ================= */
+    .tri-bento-grid {
+      display: grid;
+      grid-template-columns: 31% 37% 32%;
+      gap: 8px;
+      align-items: stretch;
+      min-height: 185px;
+    }
+
+    /* Radar Mini Cards inside Bento 1 */
+    .radar-grid-2x2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      padding: 6px 8px;
+      flex-grow: 1;
+    }
+    .radar-card {
+      background: var(--bg-panel-subtle);
+      border: var(--border-hairline);
+      border-radius: 4px;
+      padding: 5px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .radar-val {
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      font-weight: 900;
+    }
+
+    /* Compact Flow Rows inside Bento 2 */
+    .flow-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3.2px 0;
+      border-bottom: var(--border-muted);
+      font-size: 9.5px;
+      font-family: var(--font-mono);
+    }
+
+    /* Compact Cards inside Bento 3 */
+    .bandar-card-compact {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3.8px 7px;
+      background: var(--bg-panel-subtle);
+      border-radius: 3px;
+      border: var(--border-hairline);
+      font-size: 9.5px;
+      font-family: var(--font-mono);
+    }
+
+    /* ================= ROW 3: SIGNALS TABLE ================= */
+    .dual-signals-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .signals-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9px;
+      font-family: var(--font-mono);
+    }
+    .signals-table th {
+      padding: 4px 6px;
+      color: var(--text-muted);
+      text-align: left;
+      border-bottom: var(--border-hairline);
+    }
+    .signals-table td {
+      padding: 4px 6px;
+      border-bottom: var(--border-muted);
+    }
+
+    /* ================= RIGHT: NEWS SIDEBAR ================= */
+    .news-panel {
+      background: var(--bg-panel);
+      border: var(--border-hairline);
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: 670px;
+    }
+    .news-item {
+      padding: 6px 10px;
+      border-bottom: var(--border-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .news-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .news-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* Visual Highlighting Annotation */
+    .audit-annotation {
+      position: absolute;
+      top: -8px;
+      right: 12px;
+      background: #0284c7;
+      color: #fff;
+      font-size: 8px;
+      font-weight: 800;
+      padding: 1px 7px;
+      border-radius: 3px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .highlight-frame {
+      border: 1px solid rgba(56, 189, 248, 0.4) !important;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Verification & Audit Banner -->
+  <div class="status-bar">
+    <div class="status-left">
+      <span style="font-size: 16px;">🚀</span>
+      <div>
+        <div style="font-size: 13px; font-weight: 900; letter-spacing: 0.5px;">MBG COCKPIT FINAL ARCHITECTURE</div>
+        <div style="font-size: 10px; color: var(--text-muted);">
+          Konfigurasi Definitif: <strong>4 Bento Cards (Termasuk Global Commodities)</strong> + <strong>Tri-Bento Matrix (1 Baris 3 Kolom)</strong>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span class="badge-status">READY FOR PRODUCTION</span>
+      <span style="font-family: var(--font-mono); font-size: 9.5px; color: var(--text-muted);">HEIGHT: 670px · 6 SIGNALS ROWS · ZERO SCROLL</span>
+    </div>
+  </div>
+
+  <!-- Macro Top Strip -->
+  <div class="wire-strip">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="color: var(--accent-blue); font-weight: 800; font-family: var(--font-mono);">🔴 MACRO WIRE</span>
+      <span style="color: var(--text-secondary);">US CPI +2.9% YoY sejalan ekspektasi; BI Rate ditahan 6.00%; IHSG Rebound uji resisten 6,550.</span>
+    </div>
+    <div style="display: flex; gap: 12px; font-family: var(--font-mono); font-size: 9.5px;">
+      <span>IHSG: <strong style="color: var(--accent-green);">6,506.40 (+0.42%)</strong></span>
+      <span>USD/IDR: <strong style="color: var(--text-primary);">Rp 16,215</strong></span>
+      <span>Bursa Vol: <strong style="color: var(--text-primary);">Rp 11.4 T</strong></span>
+    </div>
+  </div>
+
+  <!-- Cockpit Container -->
+  <div class="cockpit-container">
+    
+    <!-- LEFT MAIN COCKPIT -->
+    <div class="cockpit-main">
+
+      <!-- ================= 1. TOP ROW: 4 BENTO CARDS ================= -->
+      <div class="highlight-frame" style="border-radius: 6px; padding: 2px;">
+        <span class="audit-annotation">4-COLUMN ALPHA MATRIX</span>
+
+        <div class="bento-row-4">
+          <!-- Card 1: IHSG & Regime -->
+          <div class="mini-bento" style="border-left: 3px solid var(--accent-green); background: linear-gradient(135deg, var(--bg-panel) 0%, rgba(16, 185, 129, 0.05) 100%);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 8.5px; color: var(--text-muted); font-weight: 700;">IHSG & GLOBAL REGIME</span>
+              <span class="badge-bull">BULLISH</span>
+            </div>
+            <div>
+              <div style="font-size: 14.5px; font-weight: 900; font-family: var(--font-mono); color: var(--text-primary);">BULLISH MOMENTUM</div>
+              <div style="font-size: 8.5px; color: var(--text-muted); margin-top: 2px;">Foreign Net Buy aktif di Big Banks</div>
+            </div>
+            <div style="font-size: 8px; color: var(--text-muted); font-family: var(--font-mono); border-top: var(--border-muted); padding-top: 3px; display: flex; justify-content: space-between;">
+              <span>.JKSE: <strong style="color: var(--text-primary);">6,506.40</strong> (<span style="color: var(--accent-green);">+0.42%</span>)</span>
+              <span>Vol: <strong>2.1T</strong></span>
+            </div>
+          </div>
+
+          <!-- Card 2: #1 IDX Alpha Watchlist -->
+          <div class="mini-bento" style="border-left: 3px solid var(--accent-blue);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 8.5px; color: var(--text-muted); font-weight: 700;">#1 IDX ALPHA</span>
+              <span class="badge-bull">BREAKOUT</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span style="font-size: 15px; font-weight: 900; font-family: var(--font-mono); color: var(--accent-blue);">$LSIP</span>
+              <span style="font-size: 10.5px; font-weight: 800; font-family: var(--font-mono); color: var(--accent-green);">Rp 1,725 (+2.37%)</span>
+            </div>
+            <div style="font-size: 8px; color: var(--text-muted); font-family: var(--font-mono); border-top: var(--border-muted); padding-top: 3px; display: flex; justify-content: space-between;">
+              <span>Entry: <strong>1,725</strong></span>
+              <span>SL: <strong style="color: var(--accent-rust);">1,655</strong></span>
+              <span>TP: <strong style="color: var(--accent-green);">1,880</strong></span>
+              <span style="color: var(--accent-orange); font-weight: 800;">1:2.2</span>
+            </div>
+          </div>
+
+          <!-- Card 3: #1 Crypto Spot Momentum -->
+          <div class="mini-bento" style="border-left: 3px solid var(--accent-orange);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 8.5px; color: var(--text-muted); font-weight: 700;">#1 CRYPTO SPOT</span>
+              <span class="badge-bull">ACCUM</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span style="font-size: 15px; font-weight: 900; font-family: var(--font-mono); color: #fbbf24;">BTCUSDT</span>
+              <span style="font-size: 10.5px; font-weight: 800; font-family: var(--font-mono); color: var(--accent-rust);">$75,940 (-2.21%)</span>
+            </div>
+            <div style="font-size: 8px; color: var(--text-muted); font-family: var(--font-mono); border-top: var(--border-muted); padding-top: 3px; display: flex; justify-content: space-between;">
+              <span>Entry: <strong>75,940</strong></span>
+              <span>SL: <strong style="color: var(--accent-rust);">74,500</strong></span>
+              <span>TP: <strong style="color: var(--accent-green);">79,800</strong></span>
+              <span style="color: var(--accent-orange); font-weight: 800;">1:2.7</span>
+            </div>
+          </div>
+
+          <!-- Card 4: GLOBAL COMMODITIES (SELECTED BY USER) -->
+          <div class="mini-bento" style="border-left: 3px solid var(--accent-orange); background: linear-gradient(135deg, var(--bg-panel) 0%, rgba(245, 158, 11, 0.06) 100%);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <span style="font-size: 10px;">🛢️</span>
+                <span style="font-size: 8.5px; color: var(--text-muted); font-weight: 700;">GLOBAL COMMODITIES</span>
+              </div>
+              <span class="badge-energy">OIL & GOLD</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <div>
+                <span style="font-size: 13.5px; font-weight: 900; font-family: var(--font-mono); color: #f59e0b;">BRENT $87.40</span>
+                <span style="font-size: 9.5px; font-weight: 800; font-family: var(--font-mono); color: var(--accent-green); margin-left: 3px;">+2.1%</span>
+              </div>
+              <div>
+                <span style="font-size: 11px; font-weight: 900; font-family: var(--font-mono); color: #facc15;">GOLD $2,680</span>
+                <span style="font-size: 8.5px; font-weight: 800; font-family: var(--font-mono); color: var(--accent-green); margin-left: 2px;">+0.8%</span>
+              </div>
+            </div>
+            <div style="font-size: 8px; color: var(--text-muted); font-family: var(--font-mono); border-top: var(--border-muted); padding-top: 3px; display: flex; justify-content: space-between; align-items: center;">
+              <span>Sektor Terdampak: <strong style="color: var(--accent-green);">$MEDC $ELSA $ANTM</strong></span>
+              <span style="color: var(--accent-blue); font-weight: 700;">BULLISH</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 2. MIDDLE ROW: TRI-BENTO HORIZONTAL MATRIX (OPSI 2) ================= -->
+      <div class="highlight-frame" style="border-radius: 6px; padding: 2px;">
+        <span class="audit-annotation">TRI-BENTO 3-KOLOM 1-BARIS (UNIFIED ~215px)</span>
+
+        <div class="tri-bento-grid">
+
+          <!-- Col 1: BLOOMBERG RISK & SENTIMENT RADAR (2x2 Matrix) -->
+          <div class="telemetry-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="telemetry-header">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>🧭</span>
+                <span>RISK & SENTIMENT RADAR</span>
+              </div>
+              <span style="font-size: 7.5px; color: var(--text-muted); font-family: var(--font-mono);">LIVE MACRO</span>
+            </div>
+
+            <div class="radar-grid-2x2">
+              <!-- Gauge 1: FNG -->
+              <div class="radar-card">
+                <div style="display: flex; justify-content: space-between; font-size: 7.5px; color: var(--text-muted);">
+                  <span>FEAR & GREED</span>
+                  <span style="color: var(--accent-green); font-weight: 800;">GREED</span>
+                </div>
+                <div class="radar-val" style="color: var(--accent-green);">62 <span style="font-size: 8px; color: var(--text-muted);">/100</span></div>
+                <div style="width: 100%; height: 2.5px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin-top: 1px;">
+                  <div style="width: 62%; height: 100%; background: var(--accent-green);"></div>
+                </div>
+              </div>
+
+              <!-- Gauge 2: VIX -->
+              <div class="radar-card">
+                <div style="display: flex; justify-content: space-between; font-size: 7.5px; color: var(--text-muted);">
+                  <span>CBOE VIX</span>
+                  <span style="color: var(--accent-green); font-weight: 800;">CALM</span>
+                </div>
+                <div class="radar-val">16.20 <span style="font-size: 8px; color: var(--text-muted);">pts</span></div>
+                <div style="font-size: 7.5px; color: var(--text-muted);">🟢 Complacency</div>
+              </div>
+
+              <!-- Gauge 3: BTC DOM -->
+              <div class="radar-card">
+                <div style="display: flex; justify-content: space-between; font-size: 7.5px; color: var(--text-muted);">
+                  <span>BTC DOM</span>
+                  <span style="color: #f59e0b; font-weight: 800;">BTC LEAD</span>
+                </div>
+                <div class="radar-val">58.4%</div>
+                <div style="font-size: 7.5px; color: var(--text-muted);">Capital fokus BTC</div>
+              </div>
+
+              <!-- Gauge 4: DXY -->
+              <div class="radar-card">
+                <div style="display: flex; justify-content: space-between; font-size: 7.5px; color: var(--text-muted);">
+                  <span>USD (DXY)</span>
+                  <span style="color: #60a5fa; font-weight: 800;">NEUTRAL</span>
+                </div>
+                <div class="radar-val">104.20</div>
+                <div style="font-size: 7.5px; color: var(--text-muted);">🟢 Kurs EM Aman</div>
+              </div>
+            </div>
+
+            <div style="padding: 4px 8px; border-top: var(--border-muted); font-size: 8px; color: var(--text-muted); display: flex; justify-content: space-between; font-family: var(--font-mono); background: rgba(0,0,0,0.15);">
+              <span>Macro Regime: <strong style="color: var(--accent-green);">Risk-On Equities</strong></span>
+              <span style="color: var(--accent-blue);">+1.4σ Bullish</span>
+            </div>
+          </div>
+
+          <!-- Col 2: IDX FOREIGN CAPITAL FLOW (Top 5 Inflow vs Outflow + 5D Flow Graphic) -->
+          <div class="telemetry-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="telemetry-header">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>🌐</span>
+                <span>FOREIGN CAPITAL FLOW</span>
+              </div>
+              <span class="badge-bear">NET SELL -Rp 280 B</span>
+            </div>
+
+            <div style="padding: 5px 8px; display: flex; flex-direction: column; gap: 4px; flex-grow: 1;">
+              <!-- Micro Stats & Sparkline Strip (Ultra Compact: Zero Added Height) -->
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 3px 6px; background: var(--bg-panel-subtle); border-radius: 3px; border: var(--border-hairline); font-size: 8px; font-family: var(--font-mono);">
+                <!-- Ratio Distribution Micro Meter -->
+                <div style="display: flex; align-items: center; gap: 5px;">
+                  <span style="color: var(--accent-green); font-weight: 800;">42% B</span>
+                  <div style="width: 32px; height: 3.5px; display: flex; border-radius: 2px; overflow: hidden; background: rgba(255,255,255,0.1);">
+                    <div style="width: 42%; height: 100%; background: var(--accent-green);"></div>
+                    <div style="width: 58%; height: 100%; background: var(--accent-rust);"></div>
+                  </div>
+                  <span style="color: var(--accent-rust); font-weight: 800;">58% S</span>
+                </div>
+
+                <!-- 5D Micro Spark-Bars Histogram -->
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <span style="font-size: 7px; color: var(--text-muted); text-transform: uppercase;">5D Trend:</span>
+                  <svg width="46" height="12" viewBox="0 0 46 12" style="display: block;">
+                    <line x1="0" y1="6" x2="46" y2="6" stroke="rgba(255,255,255,0.2)" stroke-width="0.5" stroke-dasharray="1,1" />
+                    <!-- D-4: -140B -->
+                    <rect x="2" y="6" width="5" height="4" fill="#ef4444" rx="0.5" />
+                    <!-- D-3: +320B -->
+                    <rect x="11" y="2" width="5" height="4" fill="#10b981" rx="0.5" />
+                    <!-- D-2: +180B -->
+                    <rect x="20" y="3" width="5" height="3" fill="#10b981" rx="0.5" />
+                    <!-- D-1: -110B -->
+                    <rect x="29" y="6" width="5" height="3" fill="#ef4444" rx="0.5" />
+                    <!-- Today: -280B -->
+                    <rect x="38" y="6" width="6" height="5" fill="#f87171" stroke="#ef4444" stroke-width="0.5" rx="0.5" />
+                  </svg>
+                  <span style="font-size: 7.5px; color: var(--accent-green); font-weight: 800;">+12.9B</span>
+                </div>
+              </div>
+
+              <!-- Top Inflow vs Outflow Columns -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 1px;">
+                <!-- Inflow -->
+                <div>
+                  <div style="font-size: 7.5px; font-weight: 800; color: var(--accent-green); margin-bottom: 2px;">▲ TOP INFLOW</div>
+                  <div class="flow-row"><span style="color: var(--accent-blue); font-weight: 700;">$BBCA</span><span style="color: var(--accent-green);">+Rp 420 B</span></div>
+                  <div class="flow-row"><span style="color: var(--accent-blue); font-weight: 700;">$ASII</span><span style="color: var(--accent-green);">+Rp 142 B</span></div>
+                  <div class="flow-row"><span style="color: var(--accent-blue); font-weight: 700;">$ADRO</span><span style="color: var(--accent-green);">+Rp 98 B</span></div>
+                  <div class="flow-row"><span style="color: var(--accent-blue); font-weight: 700;">$TLKM</span><span style="color: var(--accent-green);">+Rp 67 B</span></div>
+                  <div class="flow-row"><span style="color: var(--accent-blue); font-weight: 700;">$INCO</span><span style="color: var(--accent-green);">+Rp 45 B</span></div>
+                </div>
+
+                <!-- Outflow -->
+                <div>
+                  <div style="font-size: 7.5px; font-weight: 800; color: var(--accent-rust); margin-bottom: 2px;">▼ TOP OUTFLOW</div>
+                  <div class="flow-row"><span style="color: var(--accent-blue); font-weight: 700;">$BBRI</span><span style="color: var(--accent-rust);">-Rp 510 B</span></div>
+                  <div class="flow-row"><span style="color: var(--accent-blue); font-weight: 700;">$BMRI</span><span style="color: var(--accent-rust);">-Rp 240 B</span></div>
+                  <div class="flow-row"><span style="color: var(--accent-blue); font-weight: 700;">$BREN</span><span style="color: var(--accent-rust);">-Rp 135 B</span></div>
+                  <div class="flow-row"><span style="color: var(--accent-blue); font-weight: 700;">$AMMN</span><span style="color: var(--accent-rust);">-Rp 112 B</span></div>
+                  <div class="flow-row"><span style="color: var(--accent-blue); font-weight: 700;">$GOTO</span><span style="color: var(--accent-rust);">-Rp 55 B</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding: 3.5px 8px; border-top: var(--border-muted); font-size: 8px; color: var(--text-muted); display: flex; justify-content: space-between; font-family: var(--font-mono); background: rgba(0,0,0,0.15);">
+              <span>Arus Harian: <strong style="color: var(--accent-rust);">-Rp 280 B</strong></span>
+              <span>Regime: <strong style="color: var(--accent-green);">Akumulasi Selektif</strong></span>
+            </div>
+          </div>
+
+          <!-- Col 3: BANDARMOLOGY (BROKER FLOW) (5 Compact Items) -->
+          <div class="telemetry-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="telemetry-header">
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <span>🐳</span>
+                <span>BANDARMOLOGY (BROKER)</span>
+                <span class="badge-gold">SIM EOD</span>
+              </div>
+              <span class="badge-bull">TOP ACCUM</span>
+            </div>
+
+            <div style="padding: 6px 8px; display: flex; flex-direction: column; gap: 3.5px; flex-grow: 1;">
+              <div class="bandar-card-compact">
+                <div><strong style="color: var(--accent-blue); font-size: 10.5px;">$LSIP</strong> <span style="color: var(--text-muted); font-size: 8px;">Avg 1,710</span></div>
+                <div style="text-align: right;"><span style="color: var(--text-secondary); font-weight: 700;">CC</span> <span style="color: var(--text-muted); font-size: 8px;">(45k lot)</span> <span class="badge-bull" style="font-size: 7px; padding: 0 3px;">BIG ACC</span></div>
+              </div>
+
+              <div class="bandar-card-compact">
+                <div><strong style="color: var(--accent-blue); font-size: 10.5px;">$SIMP</strong> <span style="color: var(--text-muted); font-size: 8px;">Avg 420</span></div>
+                <div style="text-align: right;"><span style="color: var(--text-secondary); font-weight: 700;">AK</span> <span style="color: var(--text-muted); font-size: 8px;">(120k lot)</span> <span class="badge-bull" style="font-size: 7px; padding: 0 3px;">BIG ACC</span></div>
+              </div>
+
+              <div class="bandar-card-compact">
+                <div><strong style="color: var(--accent-blue); font-size: 10.5px;">$ADRO</strong> <span style="color: var(--text-muted); font-size: 8px;">Avg 3,820</span></div>
+                <div style="text-align: right;"><span style="color: var(--text-secondary); font-weight: 700;">ZP</span> <span style="color: var(--text-muted); font-size: 8px;">(88k lot)</span> <span class="badge-bull" style="font-size: 7px; padding: 0 3px;">BIG ACC</span></div>
+              </div>
+
+              <div class="bandar-card-compact">
+                <div><strong style="color: var(--accent-blue); font-size: 10.5px;">$ANTM</strong> <span style="color: var(--text-muted); font-size: 8px;">Avg 1,590</span></div>
+                <div style="text-align: right;"><span style="color: var(--text-secondary); font-weight: 700;">BK</span> <span style="color: var(--text-muted); font-size: 8px;">(62k lot)</span> <span class="badge-bull" style="font-size: 7px; padding: 0 3px;">BIG ACC</span></div>
+              </div>
+
+              <div class="bandar-card-compact">
+                <div><strong style="color: var(--accent-blue); font-size: 10.5px;">$MEDC</strong> <span style="color: var(--text-muted); font-size: 8px;">Avg 1,280</span></div>
+                <div style="text-align: right;"><span style="color: var(--text-secondary); font-weight: 700;">YU</span> <span style="color: var(--text-muted); font-size: 8px;">(39k lot)</span> <span class="badge-bull" style="font-size: 7px; padding: 0 3px;">BIG ACC</span></div>
+              </div>
+            </div>
+
+            <div style="padding: 4px 8px; border-top: var(--border-muted); font-size: 8px; color: var(--text-muted); display: flex; justify-content: space-between; font-family: var(--font-mono); background: rgba(0,0,0,0.15);">
+              <span>Total Akumulasi: <strong style="color: var(--accent-green);">Rp 354 B</strong></span>
+              <span>Konsentrasi: <strong style="color: #60a5fa;">CR3 68.4%</strong></span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================= 3. BOTTOM ROW: SIGNALS TABLES (ABOVE-THE-FOLD) ================= -->
+      <div class="dual-signals-grid">
+        <!-- Saham IDX Signals -->
+        <div class="telemetry-panel" style="padding: 8px 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <span style="font-size: 10.5px; font-weight: 800;">Saham IDX Signals (Top Plans)</span>
+              <span style="font-size: 8.5px; color: var(--text-muted);">6 Plans</span>
+            </div>
+            <span style="color: var(--accent-green); font-size: 8.5px; font-family: var(--font-mono); font-weight: 700;">▲ NAIK 120px KE LAYAR UTAMA</span>
+          </div>
+
+          <table class="signals-table">
+            <thead>
+              <tr>
+                <th>Ticker</th><th>Setup</th><th>Entry</th><th>SL</th><th>TP1</th><th>R:R</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="color: var(--accent-blue); font-weight: 800;">$LSIP</td><td><span class="badge-bull">BREAKOUT</span></td><td>1,725</td><td style="color: var(--accent-rust);">1,655</td><td style="color: var(--accent-green);">1,880</td><td style="color: var(--accent-orange); font-weight: 700;">1:2.2</td></tr>
+              <tr><td style="color: var(--accent-blue); font-weight: 800;">$SIMP</td><td><span class="badge-bull">PULLBACK</span></td><td>420</td><td style="color: var(--accent-rust);">404</td><td style="color: var(--accent-green);">456</td><td style="color: var(--accent-orange); font-weight: 700;">1:2.3</td></tr>
+              <tr><td style="color: var(--accent-blue); font-weight: 800;">$ADRO</td><td><span class="badge-bull">MOMENTUM</span></td><td>3,820</td><td style="color: var(--accent-rust);">3,710</td><td style="color: var(--accent-green);">4,050</td><td style="color: var(--accent-orange); font-weight: 700;">1:2.1</td></tr>
+              <tr><td style="color: var(--accent-blue); font-weight: 800;">$ANTM</td><td><span class="badge-bull">BREAKOUT</span></td><td>1,590</td><td style="color: var(--accent-rust);">1,530</td><td style="color: var(--accent-green);">1,720</td><td style="color: var(--accent-orange); font-weight: 700;">1:2.2</td></tr>
+              <tr><td style="color: var(--accent-blue); font-weight: 800;">$BBCA</td><td><span class="badge-bull">ACCUM</span></td><td>10,000</td><td style="color: var(--accent-rust);">9,750</td><td style="color: var(--accent-green);">10,500</td><td style="color: var(--accent-orange); font-weight: 700;">1:2.0</td></tr>
+              <tr><td style="color: var(--accent-blue); font-weight: 800;">$MEDC</td><td><span class="badge-bull">BREAKOUT</span></td><td>1,280</td><td style="color: var(--accent-rust);">1,220</td><td style="color: var(--accent-green);">1,410</td><td style="color: var(--accent-orange); font-weight: 700;">1:2.2</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Crypto Spot Signals -->
+        <div class="telemetry-panel" style="padding: 8px 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <span style="font-size: 10.5px; font-weight: 800;">Crypto Spot Signals (Top Plans)</span>
+              <span style="font-size: 8.5px; color: var(--text-muted);">6 Plans</span>
+            </div>
+            <span style="color: var(--text-muted); font-size: 8.5px;">Lihat semua →</span>
+          </div>
+
+          <table class="signals-table">
+            <thead>
+              <tr>
+                <th>Pair</th><th>Setup</th><th>Entry</th><th>SL</th><th>TP1</th><th>R:R</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="color: #fbbf24; font-weight: 800;">BTCUSDT</td><td><span class="badge-bull">RANGE</span></td><td>75,940</td><td style="color: var(--accent-rust);">74,500</td><td style="color: var(--accent-green);">79,800</td><td style="color: var(--accent-orange); font-weight: 700;">1:2.7</td></tr>
+              <tr><td style="color: #60a5fa; font-weight: 800;">ETHUSDT</td><td><span class="badge-bull">BREAKOUT</span></td><td>2,410</td><td style="color: var(--accent-rust);">2,340</td><td style="color: var(--accent-green);">2,560</td><td style="color: var(--accent-orange); font-weight: 700;">1:2.1</td></tr>
+              <tr><td style="color: var(--accent-green); font-weight: 800;">SOLUSDT</td><td><span class="badge-bull">MOMENTUM</span></td><td>145.2</td><td style="color: var(--accent-rust);">139.0</td><td style="color: var(--accent-green);">158.0</td><td style="color: var(--accent-orange); font-weight: 700;">1:2.1</td></tr>
+              <tr><td style="color: #c084fc; font-weight: 800;">AVAXUSDT</td><td><span class="badge-bull">PULLBACK</span></td><td>24.8</td><td style="color: var(--accent-rust);">23.6</td><td style="color: var(--accent-green);">27.4</td><td style="color: var(--accent-orange); font-weight: 700;">1:2.2</td></tr>
+              <tr><td style="color: #38bdf8; font-weight: 800;">SUIUSDT</td><td><span class="badge-bull">BREAKOUT</span></td><td>2.15</td><td style="color: var(--accent-rust);">2.02</td><td style="color: var(--accent-green);">2.45</td><td style="color: var(--accent-orange); font-weight: 700;">1:2.3</td></tr>
+              <tr><td style="color: #a855f7; font-weight: 800;">LINKUSDT</td><td><span class="badge-bull">ACCUM</span></td><td>12.40</td><td style="color: var(--accent-rust);">11.80</td><td style="color: var(--accent-green);">13.80</td><td style="color: var(--accent-orange); font-weight: 700;">1:2.3</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= RIGHT SIDEBAR: NEWS STREAM (645px HEIGHT SYNCED) ================= -->
+    <div class="news-panel">
+      <div class="telemetry-header">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span>📰</span>
+          <span>BLOOMBERG NEWS WIRE</span>
+        </div>
+        <span style="font-size: 7.5px; color: var(--accent-green); font-family: var(--font-mono);">● LIVE FEED</span>
+      </div>
+
+      <!-- Filter Chips -->
+      <div style="padding: 6px 8px; border-bottom: var(--border-muted); display: flex; gap: 4px; flex-wrap: wrap;">
+        <span style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; font-size: 8px; font-weight: 600; cursor: pointer;">SEMUA</span>
+        <span style="background: rgba(239,68,68,0.18); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); padding: 2px 6px; border-radius: 3px; font-size: 8px; font-weight: 700; cursor: pointer;">⚔️ GEOPOLITIK</span>
+        <span style="background: rgba(245,158,11,0.18); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); padding: 2px 6px; border-radius: 3px; font-size: 8px; font-weight: 700; cursor: pointer;">🛢️ ENERGI</span>
+        <span style="background: rgba(59,130,246,0.18); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); padding: 2px 6px; border-radius: 3px; font-size: 8px; font-weight: 700; cursor: pointer;">🏛️ KEBIJAKAN</span>
+      </div>
+
+      <!-- News Items List -->
+      <div style="overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column;">
+        <div class="news-item">
+          <span style="color: #ef4444; font-size: 7.5px; font-weight: 800;">⚔️ GEOPOLITIK & ENERGI</span>
+          <div class="news-title">Ketegangan Timur Tengah Picu Lonjakan Minyak Brent ke $87/bbl</div>
+          <div class="news-meta"><span>Bloomberg Energy</span><span>2m ago · $MEDC $ELSA</span></div>
+        </div>
+
+        <div class="news-item">
+          <span style="color: #60a5fa; font-size: 7.5px; font-weight: 800;">🏛️ KEBIJAKAN MONETER</span>
+          <div class="news-title">Bank Indonesia Pertahankan BI Rate 6.00% Jaga Stabilitas Rupiah</div>
+          <div class="news-meta"><span>Kontan News</span><span>8m ago · $BBCA $BBRI</span></div>
+        </div>
+
+        <div class="news-item">
+          <span style="color: var(--accent-green); font-size: 7.5px; font-weight: 800;">📈 SEKTOR SAWIT</span>
+          <div class="news-title">Mandatori Biodiesel B40 Berjalan Mulus, Ekspor CPO Diproyeksi Naik</div>
+          <div class="news-meta"><span>CNBC Indonesia</span><span>14m ago · $LSIP $SIMP</span></div>
+        </div>
+
+        <div class="news-item">
+          <span style="color: #facc15; font-size: 7.5px; font-weight: 800;">⚡ CRYPTO ETF</span>
+          <div class="news-title">Inflow Institusional Bitcoin ETF Tembus $420M Pekan Ini</div>
+          <div class="news-meta"><span>CoinDesk</span><span>25m ago · BTC ETH</span></div>
+        </div>
+
+        <div class="news-item">
+          <span style="color: var(--text-muted); font-size: 7.5px; font-weight: 800;">📊 PERBANKAN</span>
+          <div class="news-title">Kredit Perbankan Tumbuh 10.4% YoY, NIM Tetap Terjaga Solid</div>
+          <div class="news-meta"><span>Bisnis.com</span><span>32m ago · $BMRI $BBNI</span></div>
+        </div>
+
+        <div class="news-item">
+          <span style="color: #ef4444; font-size: 7.5px; font-weight: 800;">⚔️ PERANG DAGANG</span>
+          <div class="news-title">Tarif Impor Baru AS-China Mulai Diberlakukan untuk Sektor EV</div>
+          <div class="news-meta"><span>Reuters</span><span>45m ago · MACRO</span></div>
+        </div>
+      </div>
+
+      <!-- News Sidebar Footer -->
+      <div style="padding: 5px 8px; border-top: var(--border-hairline); background: rgba(0,0,0,0.25); font-size: 8px; color: var(--text-muted); display: flex; justify-content: space-between; font-family: var(--font-mono);">
+        <span>Ketinggian Simetris:</span>
+        <strong style="color: var(--accent-blue);">670px (Zero Dead Space)</strong>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
