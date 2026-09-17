@@ -536,10 +536,10 @@ class IDXMarketFetcher:
                 return f"{prefix}{abs_v/1e12:.2f} T"
             return f"{prefix}{abs_v/1e9:.1f} M"
 
-        # Sort top 5 inflow and top 5 outflow
+        # Sort top 6 inflow and top 6 outflow
         sorted_flow = sorted(flow_records, key=lambda x: x["foreign_net_val_idr"], reverse=True)
-        top_inflow = sorted_flow[:5]
-        top_outflow = sorted(flow_records, key=lambda x: x["foreign_net_val_idr"])[:5]
+        top_inflow = sorted_flow[:6]
+        top_outflow = sorted(flow_records, key=lambda x: x["foreign_net_val_idr"])[:6]
 
         for f in top_inflow:
             f["net_value_fmt"] = _fmt_flow(f["foreign_net_val_idr"])

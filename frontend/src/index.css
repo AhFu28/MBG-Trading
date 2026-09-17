@@ -887,7 +887,7 @@ body {
    ============================================================ */
 .home-dashboard-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 310px;
+  grid-template-columns: minmax(0, 1fr) 260px;
   gap: 10px;
   width: 100%;
   box-sizing: border-box;
