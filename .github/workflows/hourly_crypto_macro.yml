@@ -1,13 +1,10 @@
-name: 24/7 Hourly Crypto & US Macro Radar
+name: 24/7 Hourly Crypto & US Macro Radar (Manual On-Demand)
 
 on:
-  schedule:
-    # Runs at minute 0 of every hour (24 times a day)
-    - cron: '0 * * * *'
-  workflow_dispatch: # Allows manual trigger from GitHub UI
+  workflow_dispatch: # Allows manual trigger from GitHub UI (Cron scheduled runs disabled)
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   hourly-radar:
@@ -40,11 +37,3 @@ jobs:
         run: |
           python engine/run_pipeline.py --mode hourly_crypto_macro
 
-      - name: Commit Updated Local Data Fallback (Optional Sync)
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/public/data/ engine/cache/ || true
-          git commit -m "chore(cron): sync hourly crypto, futures, whale & macro telemetry [skip ci]" || echo "No changes to commit"
-          git pull --rebase
-          git push || echo "Push skipped"

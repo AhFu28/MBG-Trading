@@ -195,13 +195,14 @@ export default function App() {
     const loadBundle = async (silent = false) => {
       try {
         if (!silent) setLoading(true);
-        const res = await fetch('/data/latest_cockpit_bundle.json');
+        const cacheBuster = `?v=${Date.now()}`;
+        const res = await fetch(`/data/latest_cockpit_bundle.json${cacheBuster}`, { cache: 'no-cache' });
         if (res.ok) {
           const json = await res.json();
           // Fallback if bundle is partial
           if (!json.daily_trade_plans || !json.daily_trade_plans.length) {
             try {
-              const fallbackPlans = await fetch('/data/daily_trade_plans.json');
+              const fallbackPlans = await fetch(`/data/daily_trade_plans.json${cacheBuster}`, { cache: 'no-cache' });
               if (fallbackPlans.ok) {
                 json.daily_trade_plans = await fallbackPlans.json();
               }
@@ -211,7 +212,7 @@ export default function App() {
           }
           if (!json.crypto_spot_10 || !json.crypto_spot_10.length) {
             try {
-              const fallbackCrypto = await fetch('/data/crypto_spot_10.json');
+              const fallbackCrypto = await fetch(`/data/crypto_spot_10.json${cacheBuster}`, { cache: 'no-cache' });
               if (fallbackCrypto.ok) {
                 json.crypto_spot_10 = await fallbackCrypto.json();
               }

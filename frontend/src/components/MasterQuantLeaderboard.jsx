@@ -3,6 +3,7 @@ import NewsTab from './NewsTab.jsx';
 import PersonalWatchlistTab from './PersonalWatchlistTab.jsx';
 import PearsonCorrelationWidget from './PearsonCorrelationWidget.jsx';
 import AssetIcon from './AssetIcon.jsx';
+import { evaluateDynamicStrategy } from '../utils/dynamicStrategy.js';
 
 const VirtualForwardPortfolio = lazy(() => import('./VirtualForwardPortfolio.jsx'));
 const BacktestPerformanceLab = lazy(() => import('./BacktestPerformanceLab.jsx'));
@@ -119,11 +120,21 @@ export default function MasterQuantLeaderboard({
       const entry = plan.entry_price || 0;
       const sl = plan.stop_loss || 0;
       const tp = plan.target_1 || 0;
-      const realRR = plan.risk_reward_ratio || calcRR(entry, sl, tp);
       
       const live = livePrices[ticker] || livePrices[`IDX:${ticker}`] || livePrices[`${ticker}.JK`] || livePrices[plan.symbol];
       const actualPrice = live?.price !== undefined ? live.price : (marketPriceMap[ticker] || plan.current_price || plan.last_price || plan.price || entry);
       const changePct = live?.changePct !== undefined ? live.changePct : (plan.change_pct !== undefined ? plan.change_pct : (plan.raw_change_pct !== undefined ? plan.raw_change_pct : 0.0));
+
+      const dynamic = evaluateDynamicStrategy({
+        entryPrice: entry,
+        stopLoss: sl,
+        target1: tp,
+        target2: plan.target_2 || 0,
+        currentPrice: actualPrice,
+        market: plan.market
+      });
+
+      const realRR = dynamic.dynamicRR || plan.risk_reward_ratio || calcRR(entry, sl, tp);
 
       items.push({
         id: plan.plan_id || ('plan-' + idx),
@@ -138,11 +149,12 @@ export default function MasterQuantLeaderboard({
         signal: plan.technical_signal || 'BUY',
         signalType: 'BULL',
         entry: entry,
-        stopLoss: sl,
+        stopLoss: dynamic.effectiveSl || sl,
         target1: tp,
         riskReward: realRR,
         isTradePlan: true,
-        rawPlan: plan
+        rawPlan: plan,
+        dynamic: dynamic
       });
     });
 
@@ -154,10 +166,20 @@ export default function MasterQuantLeaderboard({
         const liveC = livePrices[c.pair] || livePrices[c.symbol] || livePrices[cleanPair] || livePrices[c.symbol?.replace('USDT', '')];
         const actualCPrice = liveC?.price !== undefined ? liveC.price : (c.current_price || c.entry_high || 0);
         const actualCChange = liveC?.changePct !== undefined ? liveC.changePct : (c.change_24h_pct || 0);
-        const entry = actualCPrice;
+        const entry = c.entry_price || c.entry_high || actualCPrice;
         const sl = c.stop_loss || 0;
         const tp = c.take_profit_1 || 0;
-        const realRR = c.risk_reward_ratio || calcRR(entry, sl, tp);
+
+        const dynamic = evaluateDynamicStrategy({
+          entryPrice: entry,
+          stopLoss: sl,
+          target1: tp,
+          target2: c.take_profit_2 || 0,
+          currentPrice: actualCPrice,
+          market: 'CRYPTO'
+        });
+
+        const realRR = dynamic.dynamicRR || c.risk_reward_ratio || calcRR(entry, sl, tp);
 
         items.push({
           id: 'crypto-' + c.pair,
@@ -173,11 +195,12 @@ export default function MasterQuantLeaderboard({
           signalType: 'BLUE',
           entry: entry,
           entryRange: c.entry_low && c.entry_high ? (c.entry_low + ' - ' + c.entry_high) : null,
-          stopLoss: sl,
+          stopLoss: dynamic.effectiveSl || sl,
           target1: tp,
           riskReward: realRR,
           isTradePlan: false,
-          rawCrypto: c
+          rawCrypto: c,
+          dynamic: dynamic
         });
       }
     });
@@ -219,10 +242,12 @@ export default function MasterQuantLeaderboard({
       }
     });
 
-    // 4. Dividend Hunters
+    // 4. Dividend Hunters (Terhubung ke livePrices)
     (dividendHunters || []).forEach(d => {
       if (!items.find(i => i.ticker === d.ticker)) {
-        const price = d.price || 0;
+        const liveD = livePrices[d.ticker] || livePrices[`IDX:${d.ticker}`] || livePrices[`${d.ticker}.JK`];
+        const price = liveD?.price !== undefined ? liveD.price : (d.price || 0);
+        const chg = liveD?.changePct !== undefined ? liveD.changePct : (d.change_pct || 0);
         const sl = Math.round(Number(price) * 0.95);
         const tp = Math.round(Number(price) * 1.10);
         const realRR = calcRR(price, sl, tp);
@@ -236,7 +261,7 @@ export default function MasterQuantLeaderboard({
           cluster: kongloLookup[d.ticker] || 'DIVIDEND QUALITY',
           categoryLabel: 'YIELD ' + d.dividend_yield_pct + '%',
           price: price,
-          changePct: d.change_pct || 0,
+          changePct: chg,
           signal: d.dividend_trap_risk === 'LOW' ? 'HIGH YIELD SAFE' : 'TRAP RISK',
           signalType: d.dividend_trap_risk === 'LOW' ? 'BULL' : 'WARN',
           entry: price,
@@ -616,13 +641,15 @@ export default function MasterQuantLeaderboard({
                   fontFamily: 'var(--font-mono)', 
                   padding: '3px 6px', 
                   borderRadius: '3px', 
-                  background: 'rgba(255,255,255,0.06)', 
-                  border: '1px solid var(--border-muted)',
-                  color: 'var(--text-muted)' 
+                  background: 'rgba(16, 185, 129, 0.12)', 
+                  border: '1px solid rgba(16, 185, 129, 0.35)',
+                  color: '#10b981',
+                  fontWeight: '800',
+                  letterSpacing: '0.3px'
                 }}
-                title="Harga di tabel merupakan snapshot sinkronisasi pipeline. Klik tombol CHART untuk streaming realtime TradingView."
+                title="Harga dan sinyal terhubung langsung ke Binance WebSocket & TradingView Scanner. Strategi beradaptasi dinamis secara real-time."
               >
-                📊 SNAPSHOT PIPELINE
+                ⚡ REALTIME QUANT STREAM
               </span>
               <input
                 type='text'
@@ -725,6 +752,9 @@ export default function MasterQuantLeaderboard({
                       const isExpanded = expandedId === ('div-' + d.ticker);
                       const bColor = d.verdict_badge === 'GREEN' ? 'badge-bull' : d.verdict_badge === 'RED' ? 'badge-warn' : 'badge-gold';
                       const grp = kongloLookup[d.ticker] || 'BLUECHIP';
+                      const liveD = livePrices[d.ticker] || livePrices[`IDX:${d.ticker}`] || livePrices[`${d.ticker}.JK`];
+                      const dPrice = liveD?.price !== undefined ? liveD.price : (d.price || 0);
+                      const dChg = liveD?.changePct !== undefined ? liveD.changePct : (d.change_pct || 0);
                       
                       // Format Countdown Badge
                       let countdownBadge = null;
@@ -764,8 +794,20 @@ export default function MasterQuantLeaderboard({
                               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <AssetIcon symbol={d.ticker} market="IDX" size={18} />
                                 <div>
-                                  <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '12px' }}>
-                                    ${d.ticker}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '12px' }}>
+                                      ${d.ticker}
+                                    </span>
+                                    {dPrice > 0 && (
+                                      <span style={{
+                                        fontSize: '10px',
+                                        fontWeight: '800',
+                                        fontFamily: 'var(--font-mono)',
+                                        color: dChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)'
+                                      }}>
+                                        Rp {Number(dPrice).toLocaleString()} ({dChg >= 0 ? '+' : ''}{Number(dChg).toFixed(2)}%)
+                                      </span>
+                                    )}
                                   </div>
                                   <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{d.company_name}</div>
                                 </div>
@@ -970,13 +1012,24 @@ export default function MasterQuantLeaderboard({
                             </span>
                           </td>
                           <td>
-                            <span className={'badge ' + (
-                              item.signal === 'BREAKOUT' || item.signal === 'HIGH YIELD SAFE' || item.signal === 'FOREIGN BUY' ? 'badge-bull' :
-                              item.signal === 'ACCUMULATION' || item.signal === 'SPOT_LONG' ? 'badge-blue' :
-                              item.signal === 'TRAP RISK' || item.signal === 'FOREIGN SELL' ? 'badge-bear' : 'badge'
-                            )}>
-                              {item.signal}
-                            </span>
+                            {item.dynamic?.statusLabel ? (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                                <span className={'badge ' + (item.dynamic.badgeClass || 'badge')} style={{ fontSize: '9px', whiteSpace: 'nowrap' }}>
+                                  {item.dynamic.statusLabel}
+                                </span>
+                                <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
+                                  {item.signal}
+                                </span>
+                              </div>
+                            ) : (
+                              <span className={'badge ' + (
+                                item.signal === 'BREAKOUT' || item.signal === 'HIGH YIELD SAFE' || item.signal === 'FOREIGN BUY' ? 'badge-bull' :
+                                item.signal === 'ACCUMULATION' || item.signal === 'SPOT_LONG' ? 'badge-blue' :
+                                item.signal === 'TRAP RISK' || item.signal === 'FOREIGN SELL' ? 'badge-bear' : 'badge'
+                              )}>
+                                {item.signal}
+                              </span>
+                            )}
                             {item.rawPlan?.technicals?.confluence_score !== undefined && (
                               <div style={{ marginTop: '3px' }}>
                                 <span style={{
@@ -1017,16 +1070,26 @@ export default function MasterQuantLeaderboard({
                           <td>
                             <code>{item.entryRange ? item.entryRange : (item.market === 'IDX' ? ('Rp ' + Number(item.entry).toLocaleString()) : ('$' + item.entry))}</code>
                           </td>
-                          <td style={{ color: '#ff3b30' }}>
-                            <code>{item.market === 'IDX' ? ('Rp ' + Number(item.stopLoss).toLocaleString()) : ('$' + item.stopLoss)}</code>
+                          <td style={{ color: item.dynamic?.isTrailingActive ? 'var(--accent-green)' : '#ff3b30' }}>
+                            <code>{item.market === 'IDX' ? ('Rp ' + Number(item.dynamic?.effectiveSl || item.stopLoss).toLocaleString()) : ('$' + (item.dynamic?.effectiveSl || item.stopLoss))}</code>
+                            {item.dynamic?.isTrailingActive && (
+                              <div style={{ fontSize: '9px', color: '#10b981', fontWeight: '800' }}>
+                                🛡️ BE LOCKED
+                              </div>
+                            )}
                           </td>
                           <td style={{ color: '#34c759', fontWeight: '700' }}>
                             <code>{item.market === 'IDX' ? ('Rp ' + Number(item.target1).toLocaleString()) : ('$' + item.target1)}</code>
                           </td>
                           <td>
                             <span style={{ fontWeight: '700', color: 'var(--accent-blue)' }}>
-                              1:{item.riskReward}
+                              1:{item.dynamic?.dynamicRR !== undefined ? item.dynamic.dynamicRR : item.riskReward}
                             </span>
+                            {item.dynamic?.floatingPnLPct !== undefined && (
+                              <div style={{ fontSize: '9px', color: item.dynamic.floatingPnLPct >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '700' }}>
+                                {item.dynamic.floatingPnLPct >= 0 ? `+${item.dynamic.floatingPnLPct}%` : `${item.dynamic.floatingPnLPct}%`} PnL
+                              </div>
+                            )}
                           </td>
                           <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
                             <button
@@ -1077,6 +1140,16 @@ export default function MasterQuantLeaderboard({
                                     <p style={{ color: 'var(--text-primary)', lineHeight: 1.45, margin: 0 }}>
                                       <strong>Emiten:</strong> {s.company_name} | <strong>MA20:</strong> Rp {s.ma20} | <strong>RSI 14:</strong> {s.rsi_14}
                                     </p>
+                                  )}
+                                  {item.dynamic?.actionAdvice && (
+                                    <div style={{ marginTop: '8px', padding: '6px 8px', borderRadius: '4px', background: 'rgba(6, 182, 212, 0.08)', border: '1px solid rgba(6, 182, 212, 0.25)' }}>
+                                      <div style={{ fontWeight: '800', color: '#06b6d4', fontSize: '9px', marginBottom: '2px' }}>
+                                        ⚡ REAKTIF LIVE ADVICE:
+                                      </div>
+                                      <div style={{ color: 'var(--text-primary)', fontSize: '10px', lineHeight: 1.4 }}>
+                                        {item.dynamic.actionAdvice}
+                                      </div>
+                                    </div>
                                   )}
                                 </div>
 

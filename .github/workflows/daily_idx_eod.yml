@@ -1,13 +1,10 @@
-name: Daily IDX EOD Broker Summary Retrieval (18:15 WIB)
+name: Daily IDX EOD Broker Summary Retrieval (Manual On-Demand)
 
 on:
-  schedule:
-    # 11:15 UTC is exactly 18:15 WIB (Monday to Friday, right after IDX EOD closing data release)
-    - cron: '15 11 * * 1-5'
-  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab (Cron scheduled runs disabled)
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   daily-idx-eod:
@@ -40,11 +37,3 @@ jobs:
         run: |
           python engine/run_pipeline.py --mode all
 
-      - name: Commit Updated Local Data Fallback
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/public/data/ engine/cache/ || true
-          git commit -m "[skip ci] 🏦 daily idx eod broker summary update (18:15 WIB)" || echo "No changes to commit"
-          git pull --rebase
-          git push || echo "Push skipped"

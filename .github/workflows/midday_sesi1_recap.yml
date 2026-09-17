@@ -1,13 +1,10 @@
-name: Midday Sesi 1 Recap (12:15 WIB)
+name: Midday Sesi 1 Recap (Manual On-Demand)
 
 on:
-  schedule:
-    # 05:15 UTC is exactly 12:15 WIB (Monday to Friday)
-    - cron: '15 5 * * 1-5'
-  workflow_dispatch: # Allows manual trigger anytime
+  workflow_dispatch: # Allows manual trigger anytime (Cron scheduled runs disabled)
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   midday-sesi1-recap:
@@ -40,11 +37,3 @@ jobs:
         run: |
           python engine/run_pipeline.py --mode daily_idx_morning
 
-      - name: Commit Updated Daily Cards & Telemetry
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/public/data/ engine/cache/ || true
-          git commit -m "[skip ci] 📊 midday sesi 1 recap update" || echo "No changes to commit"
-          git pull --rebase
-          git push || echo "Push skipped"
