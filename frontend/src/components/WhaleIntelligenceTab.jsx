@@ -497,7 +497,7 @@ function generateInitialCryptoWhales(count = 35) {
   return list;
 }
 
-export default function WhaleIntelligenceTab({ data, onOpenChart }) {
+export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {} }) {
   // Main Navigation: crypto | idx | running_trade | us
   const [activeTab, setActiveTab] = useState('crypto');
   const [search, setSearch] = useState('');
@@ -2182,7 +2182,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart }) {
 
       {/* 6. Tab 3: RUNNING TRADE BEI (Stockbit Style Live Ticker Stream) */}
       {activeTab === 'running_trade' && (
-        <RunningTradeWidget onSelectTicker={onOpenChart} />
+        <RunningTradeWidget onSelectTicker={onOpenChart} livePrices={livePrices} />
       )}
 
       {/* 7. Tab 4: WALL STREET 13F (Arus Global & Portofolio Hedge Fund Desk) */}

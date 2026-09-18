@@ -44,7 +44,8 @@ function parseCommand(rawText) {
   const clean = rawText.replace(/@\w+/g, "").trim();
   if (!clean) return { type: "UNKNOWN", arg: "" };
 
-  if (/^\/?(news|berita|makro|kabar|snips|recap|daily)$/i.test(clean)) return { type: "NEWS", arg: "" };
+  if (/^\/?(news|berita|makro|kabar|snips|recap|daily|brief)$/i.test(clean)) return { type: "NEWS", arg: "" };
+  if (/^\/?(research|riset|analisis|deepdive)$/i.test(clean)) return { type: "RESEARCH", arg: "" };
   if (/^\/?(plan|sinyal|rekomendasi)$/i.test(clean)) return { type: "PLAN", arg: "" };
   if (/^\/?(help|start|menu|bantuan)$/i.test(clean)) return { type: "HELP", arg: "" };
 
@@ -179,12 +180,14 @@ export async function onRequestPost(context) {
       reply = 
         "🤖 <b>PANDUAN PERINTAH BOT MBG TRADING (24/7 CLOUD)</b>\n\n" +
         "Ketik salah satu perintah berikut di grup kapan saja:\n" +
+        "• <code>/brief</code> ➔ Intisari pasar harian (Daily Brief) pagi & sore\n" +
+        "• <code>/research</code> ➔ Catatan riset tematik mendalam & evaluasi sepekan\n" +
         "• <code>/saham &lt;KODE&gt;</code> ➔ Cek analisa & level harga saham BEI (cth: <code>/saham BBCA</code>)\n" +
         "• <code>/dividend &lt;KODE&gt;</code> ➔ Cek kalender dividen BEI & kelayakan beli (cth: <code>/dividend PTBA</code>)\n" +
         "• <code>/crypto &lt;KOIN&gt;</code> ➔ Cek harga spot & level kripto (cth: <code>/crypto BTC</code>)\n" +
         "• <code>/news</code> (atau <code>/snips</code>) ➔ Rekap harian pasar & berita berpoin\n" +
         "• <code>/plan</code> ➔ Daftar rekomendasi saham & kripto hari ini\n\n" +
-        "💡 <i>Tips: Anda juga bisa ketik santai tanpa garis miring, contoh: <code>cek BBCA</code> atau <code>dividen PTBA</code>.</i>";
+        "💡 <i>Tips: Anda juga bisa ketik santai tanpa garis miring, contoh: <code>brief</code>, <code>research</code>, atau <code>cek BBCA</code>.</i>";
     } else if (type === "NEWS") {
       const macro = bundle.macro_telemetry || {};
       const snips = macro.daily_snips || {};
@@ -221,6 +224,34 @@ export async function onRequestPost(context) {
         `🎯 <b>Market Verdict:</b>\n<i>${narrative}</i>\n\n` +
         `🔥 <b>Berita Pilihan & Poin Kunci:</b>\n${newsFormatted || "1. Pasar finansial konsolidasi sehat.\n\n"}` +
         `💡 <b>Saran Trader:</b>\n<i>${esc(snips.actionable_guidance || "Disiplin pasang stop loss 3-4% dan hindari FOMO.")}</i>`;
+    } else if (type === "RESEARCH") {
+      const macro = bundle.macro_telemetry || {};
+      const newsList = macro.live_news || [];
+      const researchItem = newsList.find(n => n.stream === 'RESEARCH' || n.tag === 'RESEARCH') || {
+        title: "MBG Sector Research Note: Analisis Rotasi Modal Perbankan vs Komoditas",
+        summary: "Riset tematik mendalam mengenai rotasi likuiditas institusi pada klaster saham likuid BEI.",
+        key_takeaways: [
+          "Sektor Perbankan BUMN (BBRI, BMRI, BBNI): Ketahanan marjin bunga bersih (NIM) dan stabilitas rasio kredit.",
+          "Sektor Tambang & Emas (ANTM, BRMS, MDKA): Sensitivitas harga jual rata-rata (ASP) terhadap momentum kenaikan harga emas dunia.",
+          "Rekomendasi Alokasi: Terapkan strategi Barbell Strategy (defensif dividen + komoditas rally)."
+        ],
+        related_tickers: ["BBCA", "BBRI", "ANTM", "MEDC", "MDKA"]
+      };
+
+      const rTitle = esc(researchItem.title);
+      const rSummary = esc(researchItem.summary);
+      const rTakeaways = (researchItem.key_takeaways || []).map((t, idx) => `<b>[${idx+1}]</b> ${esc(t)}`).join("\n\n");
+      const rTickers = (researchItem.related_tickers || []).map(t => `$${esc(t)}`).join(", ");
+
+      reply = 
+        "🔬 <b>MBG RESEARCH INTELLIGENCE // DEEP DIVE</b>\n\n" +
+        `📑 <b>${rTitle}</b>\n\n` +
+        `💡 <i>${rSummary}</i>\n\n` +
+        "━━━━━━━━━━━━━━━━━━━━━\n" +
+        "📋 <b>TEMUAN & ANALISIS RISET:</b>\n\n" +
+        `${rTakeaways}\n\n` +
+        (rTickers ? `🏛️ <b>Klaster Emiten Fokus:</b> ${rTickers}\n\n` : "") +
+        "⚡ <i>Ketik /brief untuk melihat intisari harian pasar.</i>";
     } else if (type === "PLAN") {
       const plans = bundle.daily_trade_plans || [];
       if (!plans.length) {

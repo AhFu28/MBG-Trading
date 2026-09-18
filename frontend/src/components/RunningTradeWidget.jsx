@@ -83,7 +83,7 @@ function generateInitialTrades(count = 25) {
   return trades;
 }
 
-export default function RunningTradeWidget({ onSelectTicker, embedded = false }) {
+export default function RunningTradeWidget({ onSelectTicker, embedded = false, livePrices = {} }) {
   const [trades, setTrades] = useState(() => generateInitialTrades(30));
   const [isPaused, setIsPaused] = useState(false);
   const [minLotFilter, setMinLotFilter] = useState(0); // 0, 100, 500, 1000
@@ -91,6 +91,11 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false })
   const [searchTicker, setSearchTicker] = useState('');
   const [tradeCount, setTradeCount] = useState(0);
   const timerRef = useRef(null);
+  const livePricesRef = useRef(livePrices);
+
+  useEffect(() => {
+    livePricesRef.current = livePrices;
+  }, [livePrices]);
 
   // Live real-time tick engine
   useEffect(() => {
@@ -100,6 +105,7 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false })
       const delay = getRandomInt(800, 2200); // interval realistis antara 0.8s s/d 2.2s
       timerRef.current = setTimeout(() => {
         const emiten = getRandomItem(IDX_TICKERS);
+        const live = livePricesRef.current[emiten.symbol] || livePricesRef.current[`IDX:${emiten.symbol}`];
         const isBuy = Math.random() > 0.44;
         
         let lot = 0;
@@ -109,7 +115,8 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false })
         else if (roll < 0.96) lot = getRandomInt(800, 2800);
         else lot = getRandomInt(3200, 15000); // Whale burst
 
-        const price = emiten.basePrice;
+        const price = live?.price || emiten.basePrice;
+        const changePct = live?.changePct !== undefined ? live.changePct : emiten.changePct;
         const valueIdr = lot * 100 * price;
         const buyerBroker = isBuy ? getRandomItem([...FOREIGN_BROKERS, ...DOMESTIC_INSTITUTION]) : getRandomItem(DOMESTIC_RETAIL);
         const sellerBroker = isBuy ? getRandomItem(DOMESTIC_RETAIL) : getRandomItem([...FOREIGN_BROKERS, ...DOMESTIC_INSTITUTION]);
@@ -121,7 +128,7 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false })
           companyName: emiten.name,
           action: isBuy ? 'BUY' : 'SELL',
           price: price,
-          changePct: emiten.changePct,
+          changePct: changePct,
           lot: lot,
           valueIdr: valueIdr,
           buyer: buyerBroker,
