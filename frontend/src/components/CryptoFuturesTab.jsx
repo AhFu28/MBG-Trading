@@ -217,11 +217,19 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
             for (const item of rawList) {
               const sym = item.s;
               if (DEFAULT_FUTURES_PAIRS.includes(sym)) {
+                const closeP = parseFloat(item.c || 0);
+                const openP = parseFloat(item.o || 0);
+                const highP = parseFloat(item.h || 0);
+                const lowP = parseFloat(item.l || 0);
+                const quoteVol = parseFloat(item.q || 0);
+                const changeP = openP > 0 ? ((closeP - openP) / openP) * 100 : 0;
                 priceMap[sym] = {
-                  price: parseFloat(item.c || 0),
-                  high: parseFloat(item.h || 0),
-                  low: parseFloat(item.l || 0),
-                  open: parseFloat(item.o || 0)
+                  price: closeP,
+                  high: highP,
+                  low: lowP,
+                  open: openP,
+                  volume: quoteVol,
+                  changePct: changeP
                 };
               }
             }
@@ -241,6 +249,10 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                 return {
                   ...item,
                   mark_price: live.price,
+                  high_24h: live.high > 0 ? live.high : item.high_24h,
+                  low_24h: live.low > 0 ? live.low : item.low_24h,
+                  volume_24h_usd: live.volume > 0 ? live.volume : item.volume_24h_usd,
+                  change_24h_pct: live.changePct !== undefined ? live.changePct : item.change_24h_pct,
                   isLiveTick: true
                 };
               });
@@ -293,7 +305,8 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                 return {
                   ...item,
                   mark_price: match.d[1],
-                  changePct: match.d[2]
+                  change_24h_pct: match.d[2] !== undefined ? match.d[2] : item.change_24h_pct,
+                  volume_24h_usd: match.d[3] !== undefined ? match.d[3] : item.volume_24h_usd
                 };
               }
               return item;
@@ -454,10 +467,14 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
       let valB = b[futuresSortField];
       if (valA === undefined || valA === null) valA = 0;
       if (valB === undefined || valB === null) valB = 0;
+      let diff = 0;
       if (typeof valA === 'string' && typeof valB === 'string') {
-        return futuresSortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        diff = futuresSortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      } else {
+        diff = futuresSortDir === 'asc' ? valA - valB : valB - valA;
       }
-      return futuresSortDir === 'asc' ? valA - valB : valB - valA;
+      if (diff !== 0) return diff;
+      return (a.symbol || '').localeCompare(b.symbol || '');
     });
 
   // DexScreener Filtered list
@@ -811,52 +828,52 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
 
             {/* Table */}
             <div style={{ overflowX: 'auto' }}>
-              <table className="quant-table" style={{ width: '100%' }}>
+              <table className="quant-table" style={{ width: '100%', tableLayout: 'fixed' }}>
                 <thead>
                   <tr style={{ borderBottom: 'var(--border-muted)', background: 'var(--bg-panel-subtle)', textAlign: 'left' }}>
                     <th
                       onClick={() => handleFuturesSort('symbol')}
-                      style={{ padding: '10px', cursor: 'pointer', userSelect: 'none' }}
+                      style={{ padding: '10px', cursor: 'pointer', userSelect: 'none', width: '18%' }}
                     >
                       Kontrak / Pair {futuresSortField === 'symbol' && (futuresSortDir === 'asc' ? '▲' : '▼')}
                     </th>
                     <th
                       onClick={() => handleFuturesSort('mark_price')}
-                      style={{ padding: '10px', textAlign: 'right', cursor: 'pointer', userSelect: 'none' }}
+                      style={{ padding: '10px', textAlign: 'right', cursor: 'pointer', userSelect: 'none', width: '16%' }}
                     >
                       Mark Price (Live 1s) {futuresSortField === 'mark_price' && (futuresSortDir === 'asc' ? '▲' : '▼')}
                     </th>
                     <th
                       onClick={() => handleFuturesSort('change_24h_pct')}
-                      style={{ padding: '10px', textAlign: 'right', cursor: 'pointer', userSelect: 'none' }}
+                      style={{ padding: '10px', textAlign: 'right', cursor: 'pointer', userSelect: 'none', width: '10%' }}
                     >
                       24h Change % {futuresSortField === 'change_24h_pct' && (futuresSortDir === 'asc' ? '▲' : '▼')}
                     </th>
-                    <th style={{ padding: '10px', textAlign: 'right' }}>
+                    <th style={{ padding: '10px', textAlign: 'right', width: '12%' }}>
                       24h High / Low
                     </th>
                     <th
                       onClick={() => handleFuturesSort('volume_24h_usd')}
-                      style={{ padding: '10px', textAlign: 'right', cursor: 'pointer', userSelect: 'none' }}
+                      style={{ padding: '10px', textAlign: 'right', cursor: 'pointer', userSelect: 'none', width: '13%' }}
                     >
                       24h Volume (USDT) {futuresSortField === 'volume_24h_usd' && (futuresSortDir === 'asc' ? '▲' : '▼')}
                     </th>
                     <th
                       onClick={() => handleFuturesSort('funding_rate_pct')}
-                      style={{ padding: '10px', textAlign: 'right', cursor: 'pointer', userSelect: 'none' }}
+                      style={{ padding: '10px', textAlign: 'right', cursor: 'pointer', userSelect: 'none', width: '14%' }}
                     >
                       Funding Rate (8h) {futuresSortField === 'funding_rate_pct' && (futuresSortDir === 'asc' ? '▲' : '▼')}
                     </th>
-                    <th style={{ padding: '10px', textAlign: 'center' }}>
+                    <th style={{ padding: '10px', textAlign: 'center', width: '11%' }}>
                       Sentimen Leverage
                     </th>
-                    <th style={{ padding: '10px', textAlign: 'center' }}>
+                    <th style={{ padding: '10px', textAlign: 'center', width: '6%' }}>
                       Aksi
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredRates.map((f, idx) => {
+                  {filteredRates.map((f) => {
                     const base = f.symbol?.replace('USDT', '');
                     const liveQuote = livePrices[f.symbol] || livePrices[f.pair] || livePrices[base] || livePrices[`${base}/USDT`];
                     const markVal = (f.mark_price && Number(f.mark_price) > 0)
@@ -867,7 +884,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                     const isUp24 = (f.change_24h_pct || 0) >= 0;
 
                     return (
-                      <tr key={idx} style={{ borderBottom: 'var(--border-hairline)' }}>
+                      <tr key={f.symbol || f.pair} style={{ borderBottom: 'var(--border-hairline)' }}>
                         <td style={{ padding: '10px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <CryptoIcon symbol={base} size={18} />
@@ -901,13 +918,25 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                             fontWeight: '800',
                             fontSize: '13px',
                             color: flash === 'up' ? 'var(--accent-green)' : flash === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)',
-                            transition: 'color 0.4s ease'
+                            transition: 'color 0.4s ease',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-end',
+                            gap: '2px'
                           }}>
                             {markVal > 0 ? (
                               <>
-                                {formatPriceSmart(markVal)}
-                                {flash === 'up' && <span style={{ color: 'var(--accent-green)', marginLeft: '4px' }}>▲</span>}
-                                {flash === 'down' && <span style={{ color: 'var(--accent-rust)', marginLeft: '4px' }}>▼</span>}
+                                <span>{formatPriceSmart(markVal)}</span>
+                                <span style={{
+                                  display: 'inline-block',
+                                  width: '12px',
+                                  fontSize: '10px',
+                                  textAlign: 'center',
+                                  color: flash === 'up' ? 'var(--accent-green)' : flash === 'down' ? 'var(--accent-rust)' : 'transparent',
+                                  visibility: flash ? 'visible' : 'hidden'
+                                }}>
+                                  {flash === 'up' ? '▲' : flash === 'down' ? '▼' : '▲'}
+                                </span>
                               </>
                             ) : (
                               <span style={{ color: 'var(--text-muted)' }}>-</span>

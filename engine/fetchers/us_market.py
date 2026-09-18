@@ -47,38 +47,38 @@ class USMarketFetcher:
                         
                         close = df['Close'].iloc[-1]
                         prev_close = df['Close'].iloc[-2] if len(df) > 1 else close
-                        change_pct = ((close - prev_close) / prev_close) * 100
+                        change_pct = round(((close - prev_close) / prev_close) * 100, 2)
                         sector_changes[sector].append(change_pct)
                         
                         stocks.append({
                             'ticker': t,
                             'name': t,
                             'sector': sector,
-                            'price': float(close),
+                            'price': round(float(close), 2),
                             'change_pct': float(change_pct),
                             'market_cap': 0,
                             'pe_ratio': 0,
                             'eps': 0,
                             'volume': float(df['Volume'].iloc[-1]),
                             'avg_volume_10d': float(df['Volume'].tail(10).mean()),
-                            'high_52w': float(df['Close'].max()),
-                            'low_52w': float(df['Close'].min()),
-                            'distance_from_52w_high_pct': float((close - df['Close'].max()) / df['Close'].max() * 100),
+                            'high_52w': round(float(df['Close'].max()), 2),
+                            'low_52w': round(float(df['Close'].min()), 2),
+                            'distance_from_52w_high_pct': round(float((close - df['Close'].max()) / df['Close'].max() * 100), 2),
                             'rsi_14': 50,
-                            'sma20': float(df['Close'].tail(20).mean()) if len(df) >= 20 else 0,
-                            'sma50': float(df['Close'].tail(50).mean()) if len(df) >= 50 else 0,
-                            'sma200': float(df['Close'].tail(200).mean()) if len(df) >= 200 else 0,
+                            'sma20': round(float(df['Close'].tail(20).mean()), 2) if len(df) >= 20 else 0,
+                            'sma50': round(float(df['Close'].tail(50).mean()), 2) if len(df) >= 50 else 0,
+                            'sma200': round(float(df['Close'].tail(200).mean()), 2) if len(df) >= 200 else 0,
                             'setup_type': 'NEUTRAL',
-                            'entry_price': float(close),
-                            'stop_loss': float(close * 0.95),
-                            'take_profit_1': float(close * 1.1),
+                            'entry_price': round(float(close), 2),
+                            'stop_loss': round(float(close * 0.95), 2),
+                            'take_profit_1': round(float(close * 1.1), 2),
                             'risk_reward_ratio': 2.0,
                             'updated_at': datetime.now(timezone.utc).isoformat()
                         })
             
             for s, changes in sector_changes.items():
                 if changes:
-                    sector_perf[s] = sum(changes) / len(changes)
+                    sector_perf[s] = round(sum(changes) / len(changes), 2)
                     
         except Exception as e:
             logger.warning(f"Error fetching US market data: {e}")

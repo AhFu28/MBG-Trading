@@ -165,30 +165,44 @@ export default function ForexCommandTab({ data, onOpenChart }) {
                 </tr>
               </thead>
               <tbody>
-                {pairs.filter(p => p.pair.toLowerCase().includes(search.toLowerCase())).map((p, idx) => (
-                  <tr key={idx}>
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <AssetIcon symbol={p.pair} market="FOREX" size={16} />
-                        <button onClick={() => onOpenChart(`FX:${p.pair}`)} style={{ background: 'transparent', border: 'none', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px', padding: 0 }}>
-                          {p.pair} ↗
-                        </button>
-                      </div>
-                    </td>
-                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>{p.price}</td>
-                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: p.change_24h_pct > 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                      {p.change_24h_pct > 0 ? '+' : ''}{p.change_24h_pct}%
-                    </td>
-                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: p.rsi_14 < 30 ? 'var(--accent-green)' : p.rsi_14 > 70 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
-                      {p.rsi_14}
-                    </td>
-                    <td style={{ textAlign: 'center' }}>
-                      <span className="badge" style={{ background: 'rgba(255, 255, 255, 0.05)', fontWeight: '700' }}>{p.setup_type}</span>
-                    </td>
-                    <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{p.entry_zone_low} &ndash; {p.entry_zone_high}</td>
-                    <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>1:{p.risk_reward_ratio}</td>
-                  </tr>
-                ))}
+                {pairs.filter(p => p.pair.toLowerCase().includes(search.toLowerCase())).map((p) => {
+                  const isJpy = (p.pair || '').includes('JPY');
+                  const decimals = isJpy ? 3 : 5;
+                  const chg = Number(p.change_24h_pct || 0);
+                  const isPos = chg > 0;
+                  const rsi = Number(p.rsi_14 || 0);
+
+                  return (
+                    <tr key={p.pair}>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <AssetIcon symbol={p.pair} market="FOREX" size={16} />
+                          <button onClick={() => onOpenChart(`FX:${p.pair}`)} style={{ background: 'transparent', border: 'none', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px', padding: 0 }}>
+                            {p.pair} ↗
+                          </button>
+                        </div>
+                      </td>
+                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
+                        {Number(p.price || 0).toFixed(decimals)}
+                      </td>
+                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                        {isPos ? '+' : ''}{chg.toFixed(2)}%
+                      </td>
+                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: rsi < 30 ? 'var(--accent-green)' : rsi > 70 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
+                        {rsi.toFixed(1)}
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span className="badge" style={{ background: 'rgba(255, 255, 255, 0.05)', fontWeight: '700' }}>{p.setup_type}</span>
+                      </td>
+                      <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+                        {Number(p.entry_zone_low || 0).toFixed(decimals)} &ndash; {Number(p.entry_zone_high || 0).toFixed(decimals)}
+                      </td>
+                      <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
+                        1:{Number(p.risk_reward_ratio || 2).toFixed(1)}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

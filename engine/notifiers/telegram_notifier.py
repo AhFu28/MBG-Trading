@@ -10,6 +10,15 @@ logger = logging.getLogger("TelegramNotifier")
 
 class TelegramNotifier:
     def __init__(self):
+        if not os.getenv("TELEGRAM_BOT_TOKEN") or not os.getenv("TELEGRAM_CHAT_ID"):
+            try:
+                from dotenv import load_dotenv
+                env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".env"))
+                if os.path.exists(env_path):
+                    load_dotenv(env_path)
+            except Exception:
+                pass
+
         self.bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
         self.chat_id = os.getenv("TELEGRAM_CHAT_ID")
         self.enabled = bool(self.bot_token and self.chat_id)
@@ -27,6 +36,8 @@ class TelegramNotifier:
         commands = [
             {"command": "saham", "description": "Cek analisa saham BEI (cth: /saham BBCA)"},
             {"command": "crypto", "description": "Cek harga & support kripto (cth: /crypto BTC)"},
+            {"command": "brief", "description": "Intisari pasar harian (Daily Brief) pagi & sore"},
+            {"command": "research", "description": "Catatan riset tematik & evaluasi makro sepekan"},
             {"command": "news", "description": "Berita makro & komoditas dunia terkini"},
             {"command": "plan", "description": "Lihat saham & kripto pilihan hari ini"},
             {"command": "help", "description": "Panduan cara memakai bot di grup"}
@@ -82,7 +93,8 @@ class TelegramNotifier:
                     return self.send_html_message(html_text, chat_id=str(migrate_id), reply_to_message_id=reply_to_message_id)
             except Exception as parse_err:
                 logger.debug(f"Error parsing Telegram error response: {parse_err}")
-            logger.error(f"Failed to send Telegram message: {e}")
+                err_resp = str(e)
+            logger.error(f"Failed to send Telegram message: {e} | Details: {err_resp}")
             return False
         except Exception as e:
             logger.error(f"Failed to send Telegram message: {e}")
@@ -218,3 +230,69 @@ class TelegramNotifier:
             "  🟢 Cash is King: Perbesar porsi uang tunai sampai pasar tenang."
         ]
         self.send_html_message("\n".join(lines))
+
+    def broadcast_daily_brief(self, brief_item: Dict[str, Any]) -> bool:
+        """Pushes structured institutional Daily Brief to Telegram."""
+        if not self.enabled or not brief_item:
+            return False
+
+        title = brief_item.get("title", "MBG Daily Market Brief")
+        summary = brief_item.get("summary", "")
+        takeaways = brief_item.get("key_takeaways", [])
+        metrics = brief_item.get("metrics", [])
+        tickers = brief_item.get("related_tickers", [])
+        sentiment = brief_item.get("sentiment", "NEUTRAL")
+        sentiment_emoji = "🟢" if sentiment == "BULLISH" else ("🔴" if sentiment == "BEARISH" else "🟡")
+
+        lines = [
+            f"☕ <b>MBG DAILY BRIEF // MARKET PULSE</b>",
+            f"Sentimen: {sentiment_emoji} <b>{sentiment}</b>\n",
+            f"📌 <b>{html.escape(title)}</b>\n",
+            "📊 <b>INDIKATOR MAKRO UTAMA:</b>",
+            f"  • {html.escape(' | '.join(metrics)) if metrics else '-'}\n",
+            "🎯 <b>POIN KUNCI & STRATEGI:</b>"
+        ]
+
+        for idx, t in enumerate(takeaways, 1):
+            lines.append(f"  {idx}. {html.escape(t)}")
+
+        if tickers:
+            ticker_str = ", ".join([f"${html.escape(t)}" for t in tickers])
+            lines.append(f"\n🔍 <b>Emiten Radar:</b> {ticker_str}")
+
+        lines.append("\n━━━━━━━━━━━━━━━━━━━━━")
+        lines.append("⚡ <i>Ketik /brief di grup untuk melihat brief terkini kapan saja.</i>")
+        lines.append("💻 <i>Akses Terminal Lengkap: MBG Cockpit Web App</i>")
+
+        return self.send_html_message("\n".join(lines))
+
+    def broadcast_research_note(self, research_item: Dict[str, Any]) -> bool:
+        """Pushes thematic institutional Research Note to Telegram."""
+        if not self.enabled or not research_item:
+            return False
+
+        title = research_item.get("title", "MBG Institutional Research Note")
+        summary = research_item.get("summary", "")
+        takeaways = research_item.get("key_takeaways", [])
+        tickers = research_item.get("related_tickers", [])
+
+        lines = [
+            "🔬 <b>MBG RESEARCH DESK // DEEP DIVE</b>\n",
+            f"📑 <b>{html.escape(title)}</b>\n",
+            f"💡 <i>{html.escape(summary)}</i>\n",
+            "━━━━━━━━━━━━━━━━━━━━━",
+            "📋 <b>TEMUAN & ANALISIS RISET:</b>"
+        ]
+
+        for idx, t in enumerate(takeaways, 1):
+            lines.append(f"\n<b>[{idx}]</b> {html.escape(t)}")
+
+        if tickers:
+            ticker_str = ", ".join([f"${html.escape(t)}" for t in tickers])
+            lines.append(f"\n🏛️ <b>Klaster Emiten Fokus:</b> {ticker_str}")
+
+        lines.append("\n━━━━━━━━━━━━━━━━━━━━━")
+        lines.append("⚡ <i>Ketik /research untuk catatan riset tematik lainnya.</i>")
+
+        return self.send_html_message("\n".join(lines))
+

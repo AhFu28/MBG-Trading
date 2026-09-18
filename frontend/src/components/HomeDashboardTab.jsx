@@ -52,6 +52,8 @@ export default function HomeDashboardTab({
       const sentiment = (item.sentiment || '').toUpperCase();
       const title = (item.title || '').toLowerCase();
 
+      if (newsFilter === 'DAILY_BRIEF' && stream !== 'DAILY_BRIEF' && tag !== 'DAILY_BRIEF') return false;
+      if (newsFilter === 'RESEARCH' && stream !== 'RESEARCH' && tag !== 'RESEARCH') return false;
       if (newsFilter === 'IDX' && stream !== 'IDX' && tag !== 'IHSG' && tag !== 'BANKING') return false;
       if (newsFilter === 'CRYPTO' && stream !== 'CRYPTO' && tag !== 'BTC' && tag !== 'CRYPTO') return false;
       if (newsFilter === 'MACRO' && stream !== 'MACRO' && tag !== 'MACRO' && tag !== 'FED') return false;
@@ -1139,6 +1141,8 @@ export default function HomeDashboardTab({
           <div style={{ display: 'flex', gap: '3px', marginBottom: '6px', flexWrap: 'wrap' }}>
             {[
               { id: 'ALL', label: '🔥 SEMUA' },
+              { id: 'DAILY_BRIEF', label: '☕ DAILY BRIEF' },
+              { id: 'RESEARCH', label: '🔬 RESEARCH' },
               { id: 'IDX', label: '🏛️ IDX' },
               { id: 'CRYPTO', label: '⚡ KRIPTO' },
               { id: 'GEOPOLITIK', label: '⚔️ GEOPOLITIK' },
@@ -1155,8 +1159,8 @@ export default function HomeDashboardTab({
                   fontWeight: '700',
                   borderRadius: '3px',
                   border: 'var(--border-hairline)',
-                  background: newsFilter === f.id ? 'var(--accent-blue)' : 'var(--bg-panel-subtle)',
-                  color: newsFilter === f.id ? '#ffffff' : 'var(--text-muted)',
+                  background: newsFilter === f.id ? (f.id === 'DAILY_BRIEF' ? 'rgba(245, 158, 11, 0.25)' : f.id === 'RESEARCH' ? 'rgba(139, 92, 246, 0.25)' : 'var(--accent-blue)') : 'var(--bg-panel-subtle)',
+                  color: newsFilter === f.id ? (f.id === 'DAILY_BRIEF' ? '#f59e0b' : f.id === 'RESEARCH' ? '#c084fc' : '#ffffff') : 'var(--text-muted)',
                   cursor: 'pointer',
                   fontFamily: 'var(--font-mono)',
                   transition: 'all 0.15s ease'
@@ -1178,9 +1182,19 @@ export default function HomeDashboardTab({
             paddingRight: '3px'
           }}>
             {displayNews.map((news, idx) => {
+              const isBrief = news.stream === 'DAILY_BRIEF' || news.tag === 'DAILY_BRIEF';
+              const isResearch = news.stream === 'RESEARCH' || news.tag === 'RESEARCH';
               const isBear = news.sentiment === 'BEARISH';
               const isBull = news.sentiment === 'BULLISH';
-              const borderAccent = isBull ? 'var(--accent-green)' : isBear ? 'var(--accent-rust)' : 'rgba(255,255,255,0.12)';
+              const borderAccent = isBrief
+                ? '#f59e0b'
+                : isResearch
+                ? '#8b5cf6'
+                : isBull
+                ? 'var(--accent-green)'
+                : isBear
+                ? 'var(--accent-rust)'
+                : 'rgba(255,255,255,0.12)';
 
               return (
                 <div
@@ -1188,9 +1202,9 @@ export default function HomeDashboardTab({
                   onClick={() => onSelectNews && onSelectNews(news)}
                   style={{
                     padding: '6px 8px',
-                    background: 'var(--bg-panel-subtle)',
+                    background: isBrief ? 'rgba(245, 158, 11, 0.04)' : isResearch ? 'rgba(139, 92, 246, 0.04)' : 'var(--bg-panel-subtle)',
                     borderRadius: '3px',
-                    border: 'var(--border-hairline)',
+                    border: isBrief ? '1px solid rgba(245, 158, 11, 0.25)' : isResearch ? '1px solid rgba(139, 92, 246, 0.25)' : 'var(--border-hairline)',
                     borderLeft: `2.5px solid ${borderAccent}`,
                     display: 'flex',
                     flexDirection: 'column',
@@ -1199,25 +1213,35 @@ export default function HomeDashboardTab({
                     transition: 'all 0.15s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--accent-blue)';
+                    e.currentTarget.style.borderColor = isBrief ? '#f59e0b' : isResearch ? '#8b5cf6' : 'var(--accent-blue)';
                     e.currentTarget.style.borderLeft = `2.5px solid ${borderAccent}`;
-                    e.currentTarget.style.background = 'rgba(59, 130, 246, 0.06)';
+                    e.currentTarget.style.background = isBrief ? 'rgba(245, 158, 11, 0.08)' : isResearch ? 'rgba(139, 92, 246, 0.08)' : 'rgba(59, 130, 246, 0.06)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-hairline)';
+                    e.currentTarget.style.borderColor = isBrief ? 'rgba(245, 158, 11, 0.25)' : isResearch ? 'rgba(139, 92, 246, 0.25)' : 'var(--border-hairline)';
                     e.currentTarget.style.borderLeft = `2.5px solid ${borderAccent}`;
-                    e.currentTarget.style.background = 'var(--bg-panel-subtle)';
+                    e.currentTarget.style.background = isBrief ? 'rgba(245, 158, 11, 0.04)' : isResearch ? 'rgba(139, 92, 246, 0.04)' : 'var(--bg-panel-subtle)';
                   }}
                   title="Klik untuk melihat detail & analisis berita"
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
+                      <span style={{ fontSize: '8px', fontWeight: '800', color: isBrief ? '#f59e0b' : isResearch ? '#c084fc' : 'var(--text-primary)', textTransform: 'uppercase' }}>
                         {news.source || 'MARKET WIRE'}
                       </span>
-                      <span className={`badge ${isBear ? 'badge-bear' : isBull ? 'badge-bull' : 'badge-neutral'}`} style={{ fontSize: '6.5px', padding: '0 3px' }}>
-                        {news.sentiment || 'NEUTRAL'}
-                      </span>
+                      {isBrief ? (
+                        <span style={{ fontSize: '6.5px', padding: '0 4px', background: 'rgba(245, 158, 11, 0.25)', color: '#f59e0b', borderRadius: '3px', fontWeight: '800' }}>
+                          BRIEF
+                        </span>
+                      ) : isResearch ? (
+                        <span style={{ fontSize: '6.5px', padding: '0 4px', background: 'rgba(139, 92, 246, 0.25)', color: '#c084fc', borderRadius: '3px', fontWeight: '800' }}>
+                          RESEARCH
+                        </span>
+                      ) : (
+                        <span className={`badge ${isBear ? 'badge-bear' : isBull ? 'badge-bull' : 'badge-neutral'}`} style={{ fontSize: '6.5px', padding: '0 3px' }}>
+                          {news.sentiment || 'NEUTRAL'}
+                        </span>
+                      )}
                     </div>
                     <span style={{ fontSize: '8px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                       {news.pub_date ? `${new Date(news.pub_date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB` : '11:45 WIB'}

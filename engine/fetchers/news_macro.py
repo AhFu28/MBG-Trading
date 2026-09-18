@@ -410,7 +410,7 @@ class NewsMacroFetcher:
             # Financial Regulation (SEC, OJK)
             ("REGULASI", "https://news.google.com/rss/search?q=%22SEC%22+%22crypto+regulation%22+OR+%22OJK%22+OR+%22financial+regulation%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
             # Commodities (Gold, Oil, Copper)
-            ("COMMODITIES", "https://news.google.com/rss/search?q=%22gold+price%22+OR+%22oil+price%22+OR+%22copper%22+OR+%22commodities+market%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("COMMODITIES", "https://news.google.com/rss/search?q=%22gold+price%22+OR+%22oil+price%22+OR+%22copper+price%22+OR+%22copper+futures%22+OR+%22commodities+market%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
             # Forex & Currency
             ("FOREX_NEWS", "https://news.google.com/rss/search?q=%22dollar+index%22+OR+%22EURUSD%22+OR+%22forex%22+OR+%22currency%22+OR+%22rupiah%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
             # US Equities & Earnings
@@ -420,7 +420,7 @@ class NewsMacroFetcher:
             # OPEC & Energy Geopolitics
             ("ENERGY_GEO", "https://news.google.com/rss/search?q=%22OPEC%22+OR+%22crude+oil%22+OR+%22natural+gas%22+OR+%22energy+crisis%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
             # Tech & AI Momentum
-            ("TECH_AI", "https://news.google.com/rss/search?q=%22AI+stocks%22+OR+%22semiconductor%22+OR+%22NVIDIA%22+OR+%22tech+earnings%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("TECH_AI", "https://news.google.com/rss/search?q=%22AI+stocks%22+OR+%22semiconductor+stocks%22+OR+(%22NVIDIA%22+(stock+OR+shares+OR+earnings+OR+revenue+OR+datacenter+OR+%22market+cap%22))+OR+%22tech+earnings%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
         ]
 
         for stream_type, feed_url in rss_feeds:
@@ -624,7 +624,14 @@ class NewsMacroFetcher:
             {"title": "Akumulasi Asing Terdeteksi di Emiten Perbankan dan Klaster Konglomerasi", "category": "FOREIGN_FLOW", "severity": "LOW"}
         ]
 
-        live_news = self.fetch_live_financial_news()
+        raw_news = self.fetch_live_financial_news()
+        try:
+            from engine.agents.news_research_agent import NewsResearchAgent
+            live_news = NewsResearchAgent.sanitize_and_curate(raw_news, macro)
+        except Exception as e:
+            logger.warning(f"NewsResearchAgent curation fallback: {e}")
+            live_news = raw_news
+
         daily_snips = NewsProcessor.build_daily_snips(macro, live_news)
 
         return {

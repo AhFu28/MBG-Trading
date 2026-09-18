@@ -53,9 +53,10 @@ export default function NewsTab({
 
   const items = Array.isArray(liveNews) ? liveNews : [];
 
-  // SoSoValue-style research categories — Bloomberg-level multi-stream
   const categories = [
     { id: 'ALL', label: '🔥 ALL RESEARCH' },
+    { id: 'DAILY_BRIEF', label: '☕ DAILY BRIEF' },
+    { id: 'RESEARCH', label: '🔬 RESEARCH NOTES' },
     { id: 'CRYPTO', label: '⚡ CRYPTO & ETFS' },
     { id: 'IDX', label: '🏛️ SAHAM IDX' },
     { id: 'BANKING', label: '🏦 PERBANKAN' },
@@ -138,6 +139,14 @@ export default function NewsTab({
 
       if (newsFilter === 'BOOKMARKS') {
         if (!isBookmarked) return false;
+      } else if (newsFilter === 'DAILY_BRIEF') {
+        const stream = (item.stream || '').toUpperCase();
+        const tag = (item.tag || '').toUpperCase();
+        if (stream !== 'DAILY_BRIEF' && tag !== 'DAILY_BRIEF') return false;
+      } else if (newsFilter === 'RESEARCH') {
+        const stream = (item.stream || '').toUpperCase();
+        const tag = (item.tag || '').toUpperCase();
+        if (stream !== 'RESEARCH' && tag !== 'RESEARCH') return false;
       } else if (newsFilter === 'CRYPTO') {
         const stream = item.stream || '';
         const tag = (item.tag || '').toUpperCase();

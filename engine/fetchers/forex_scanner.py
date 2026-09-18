@@ -38,8 +38,11 @@ class ForexScanner:
                     d = row.get('d', [])
                     if len(d) >= 10:
                         pair = d[0]
-                        price = d[1]
-                        change = d[2]
+                        is_jpy = 'JPY' in pair
+                        decimals = 3 if is_jpy else 5
+                        price = round(float(d[1] or 0), decimals)
+                        change = round(float(d[2] or 0), 2)
+                        rsi = round(float(d[6] or 50), 1)
                         
                         setup = "LONG" if change > 0 else "SHORT"
                         results.append({
@@ -47,18 +50,18 @@ class ForexScanner:
                             'symbol': pair,
                             'price': price,
                             'change_24h_pct': change,
-                            'high_24h': d[3],
-                            'low_24h': d[4],
-                            'rsi_14': d[6],
-                            'sma20': d[7],
-                            'sma50': d[8],
+                            'high_24h': round(float(d[3] or 0), decimals),
+                            'low_24h': round(float(d[4] or 0), decimals),
+                            'rsi_14': rsi,
+                            'sma20': round(float(d[7] or 0), decimals),
+                            'sma50': round(float(d[8] or 0), decimals),
                             'tv_signal': d[9],
                             'setup_type': setup,
-                            'entry_zone_low': price * 0.999,
-                            'entry_zone_high': price * 1.001,
-                            'stop_loss': price * 0.995 if setup == "LONG" else price * 1.005,
-                            'take_profit_1': price * 1.01 if setup == "LONG" else price * 0.99,
-                            'take_profit_2': price * 1.02 if setup == "LONG" else price * 0.98,
+                            'entry_zone_low': round(price * 0.999, decimals),
+                            'entry_zone_high': round(price * 1.001, decimals),
+                            'stop_loss': round(price * 0.995 if setup == "LONG" else price * 1.005, decimals),
+                            'take_profit_1': round(price * 1.01 if setup == "LONG" else price * 0.99, decimals),
+                            'take_profit_2': round(price * 1.02 if setup == "LONG" else price * 0.98, decimals),
                             'risk_reward_ratio': 2.0,
                             'conviction': 'HIGH',
                             'pip_value_usd': 10,

@@ -117,7 +117,7 @@
     "generated_at": "2026-09-17T13:13:44.138517",
     "market_verdict": {
       "stance": "CONSOLIDATIVE",
-      "badge": "\u26aa KONSOLIDASI PASAR SEHAT",
+      "badge": "⚪ KONSOLIDASI PASAR SEHAT",
       "confidence": "HIGH",
       "narrative": "IHSG bergerak variatif dengan kecenderungan konsolidasi menjelang rilis data inflasi dan suku bunga acuan."
     },
@@ -165,6 +165,67 @@
     "actionable_guidance": "Fokus pada saham berorientasi ekspor atau komoditas. Terapkan stop loss disiplin 3-4% untuk membatasi risiko."
   },
   "live_news": [
+    {
+      "id": "daily-brief-202609180920",
+      "title": "☕ MBG Morning Brief: Proyeksi IHSG, Sentimen Wall Street & Dinamika Komoditas Global",
+      "source": "MBG RESEARCH DESK",
+      "link": "#daily-brief",
+      "pub_date": "Fri, 18 Sep 2026 02:20:11 GMT",
+      "tag": "DAILY_BRIEF",
+      "stream": "DAILY_BRIEF",
+      "sentiment": "BULLISH",
+      "sentiment_score": 0.4,
+      "related_tickers": [
+        "BBCA",
+        "BBRI",
+        "ANTM",
+        "MEDC"
+      ],
+      "metrics": [
+        "Emas: $4,409.5",
+        "Brent: $102.0",
+        "DXY: 100.08",
+        "IHSG: 6,462.4 (+0.4%)"
+      ],
+      "reading_time_sec": 65,
+      "summary": "MBG Morning Brief Intelligence (18 Sep 2026 09:20 WIB): Tinjauan makro global, komoditas emas & minyak mentah, serta panduan alokasi portofolio harian.",
+      "key_takeaways": [
+        "🌍 Kondisi Makro Semalam: Emas $4,409.5 (+0.5%), Minyak Brent $102.0 (-3.59%), DXY Index 100.08 pts, Yield US10Y 4.95%.",
+        "🏛️ Katalis Pembukaan IHSG: Indeks diproyeksikan menguji level psikologis 6,462. Sektor komoditas logam dan energi dalam sorotan aktif merespons fluktuasi global.",
+        "🛡️ Actionable Guidance: Disarankan fokus pada saham berorientasi ekspor dan defensif dividen; pasang trailing stop disiplin 3% untuk mengamankan modal."
+      ],
+      "is_pinned": true
+    },
+    {
+      "id": "research-note-202609180920",
+      "title": "🔬 MBG Sector Research Note: Analisis Rotasi Modal Perbankan vs Komoditas Energi & Logam",
+      "source": "MBG RESEARCH INTELLIGENCE",
+      "link": "#research-note",
+      "pub_date": "Fri, 18 Sep 2026 02:20:11 GMT",
+      "tag": "RESEARCH",
+      "stream": "RESEARCH",
+      "sentiment": "BULLISH",
+      "sentiment_score": 0.45,
+      "related_tickers": [
+        "BBCA",
+        "BBRI",
+        "ANTM",
+        "MEDC",
+        "MDKA"
+      ],
+      "metrics": [
+        "R:R Rasio >= 2.2",
+        "Alokasi Barbell 60:40"
+      ],
+      "reading_time_sec": 95,
+      "summary": "MBG Daily Research Desk (18 Sep 2026): Riset tematik mendalam mengenai rotasi likuiditas institusi pada klaster saham likuid BEI.",
+      "key_takeaways": [
+        "🏦 Sektor Perbankan BUMN (BBRI, BMRI, BBNI): Ketahanan marjin bunga bersih (NIM) dan stabilitas rasio kredit bermasalah (NPL) di tengah volatilitas suku bunga global.",
+        "⛏️ Sektor Tambang & Emas (ANTM, BRMS, MDKA): Sensitivitas harga jual rata-rata (ASP) terhadap momentum kenaikan spot emas dunia (+0.5%).",
+        "💡 Rekomendasi Alokasi: Terapkan strategi 'Barbell Strategy'—kombinasi saham defensif dividen tinggi dan komoditas dengan katalis reli harga jangka pendek."
+      ],
+      "is_pinned": true
+    },
     {
       "id": "news-1",
       "title": "Reaksi The Fed 2026: Dampak ke IHSG dan Rupiah",
@@ -601,7 +662,7 @@
     },
     {
       "id": "news-21",
-      "title": "Ranking Member Maxine Waters On the CLARITY Act\u2019s Failure to Advance in the Senate Yesterday",
+      "title": "Ranking Member Maxine Waters On the CLARITY Act’s Failure to Advance in the Senate Yesterday",
       "source": "U.S. House Committee on Financial Services Democrats (.gov)",
       "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQeE1SRjhTaXFTWjBFbmVubm5nUTVteE9yRk5scGg5MUVRT2Q3eEQxTHQxQ1B4QlJJeVlwTFZ6VXd3Nm56d0hOdVZBTlY3TGVKVl9HQ29jaV82b2Z6Q1ZnZ3JXeTZJVlh0bzFoeDhYaHo5MllmVTNHSzhfbGRXVWZ2TnRlcGJCcExId004UEt2ejdLUQ?oc=5",
       "pub_date": "Thu, 17 Sep 2026 12:12:35 GMT",
@@ -726,7 +787,7 @@
     },
     {
       "id": "news-27",
-      "title": "AI Helps Hackers Open a New Front in Crypto\u2019s Cybercrime Wave",
+      "title": "AI Helps Hackers Open a New Front in Crypto’s Cybercrime Wave",
       "source": "Bloomberg.com",
       "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNaTBIVW5KNHVtZ1RpNVJFZ1VTa2xVbTVBb2p6ODZYZ0NhR0hLeU9OVjctdmNhV0lSdUEyVEVtdHptME1fbzdVUHNBVGlfRjNZRHNMVUlpYmJDZ18ybVJEM1V2WjkxTi16X0Zlb2c5OUs1T0NEdjB5QktkSUtjOTBDRktlSFdfbjF2WDlqOHoxWGJsdzJQQUJZcmZETHUzekYwX0hHUlB2MGVOZ19vdTFCYkxR?oc=5",
       "pub_date": "Thu, 17 Sep 2026 12:00:00 GMT",
@@ -746,7 +807,7 @@
     },
     {
       "id": "news-28",
-      "title": "With hopes for crypto legislation dimming, Trump\u2019s regulators step into the fray",
+      "title": "With hopes for crypto legislation dimming, Trump’s regulators step into the fray",
       "source": "Politico",
       "link": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNbXhwclNYSWJkX1ZQdEhjVURsbWFkVUpwVGJQMWQyalZfQTJPdlJjcTlmVmRjMFkzWTFlcDg5dkNhT0ZMQUI0eTUzR290YnBreFpIRnZDMi03R3Jqc3RzTDVfdUM0ZDhObklmRzBxUUVGTklvR1V6ODBZYkJNM0x1SUhWTlZHZ2pWRFdZQkNtbFZCOWdhMUk0NzVaZ1BrU3l6SFhPTTZWS1Y2Nlo2dFZvbTNPa0daUER5S0FwbzZ6M2R0T3JiTDkw?oc=5",
       "pub_date": "Wed, 16 Sep 2026 20:14:00 GMT",
@@ -754,7 +815,9 @@
       "stream": "CRYPTO",
       "sentiment": "NEUTRAL",
       "sentiment_score": 0.0,
-      "related_tickers": [],
+      "related_tickers": [
+        "FOR"
+      ],
       "metrics": [],
       "reading_time_sec": 36,
       "summary": "Research Intelligence (Politico): Indikasi sentimen neutral mempengaruhi klaster CRYPTO.",
@@ -775,6 +838,7 @@
       "sentiment": "NEUTRAL",
       "sentiment_score": 0.0,
       "related_tickers": [
+        "FOR",
         "BTC"
       ],
       "metrics": [
@@ -790,7 +854,7 @@
     },
     {
       "id": "news-30",
-      "title": "Bitcoin\u2019s 40% decline echoes 2022 as Fed returns to rate hikes",
+      "title": "Bitcoin’s 40% decline echoes 2022 as Fed returns to rate hikes",
       "source": "CoinDesk",
       "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNSzVGUklHTVFjcUY0SEtha2VCM21tN3ZtVEJXYWpJbEhOQnJ0QlIya2VWX2lxMGdWNjB2elNRRE9MTW1kQjRCNTF5ZUR4TVh0d3M4WWtYSWdSYi1Fcm5EdzJENk9wRGl2RWZFNEp3TDZHeUpCTmFlTktxN2VlNnpsb1Y1WlE0ZFlkMk5KbnBNUFZMa1ZMeHZmdGpjV1NYazVGRDV0RWpXYnhxM3YyemxJ?oc=5",
       "pub_date": "Thu, 17 Sep 2026 09:52:00 GMT",
@@ -900,7 +964,7 @@
     },
     {
       "id": "news-35",
-      "title": "\u2018People are pissed\u2019: Crypto\u2019s political agenda hits a wall",
+      "title": "‘People are pissed’: Crypto’s political agenda hits a wall",
       "source": "Politico",
       "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOVUowMFplMTBnU0tqWWZ4NjBUYktXa0VHcERPQzZzM1VwYndtOVZEMTE3VmtpUXp4S2IxdXBjV2ZhMzhaT2R5WFBGYTFMOXZSMUtBV2c2LXg4Z2lCb2JkaUpMbjBpMEUtY0g0c25CWnphQ1BFQ2RnaXpva21Wd1IxeWxCLWdZYzF4bjA3UFlMRmJQR2NlSlI4eldFbmNENWR1SnZlMDV2Qi1QLTJzNVpuemplWQ?oc=5",
       "pub_date": "Wed, 16 Sep 2026 16:44:00 GMT",
@@ -1010,7 +1074,7 @@
     },
     {
       "id": "news-40",
-      "title": "Zcash jumps 23% as bitcoin and major tokens rise despite Fed\u2019s first hike since 2023",
+      "title": "Zcash jumps 23% as bitcoin and major tokens rise despite Fed’s first hike since 2023",
       "source": "CoinDesk",
       "link": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOS3htWG5TLXdBRmFmSGZ0X2ktSWJCaFRIdG9BVGVMeHdWQjM5UTlETVRNaVJUbDBSWXdzTjMyaUZxTzE5ZWhtSGZ6OGIyVzBoYXY0Y2kyYUN2N0hxaVExRGZLamVjeENLT2VYM292MmdOc3FOYW13U3JsV1NQQ29WSmNseF9JckQ5UEh5T0hnbVEtZ1VMcFpkMk9lUjVfdXVQNWluUEJtLUhQY3BMMzNNamZQbnRWS2ZnM3dpWG5XakpJQnpXQlE?oc=5",
       "pub_date": "Thu, 17 Sep 2026 04:47:27 GMT",
@@ -1472,26 +1536,6 @@
       "metrics": [],
       "reading_time_sec": 33,
       "summary": "Research Intelligence (DW.com): Indikasi sentimen neutral mempengaruhi klaster GEOPOLITIK.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-63",
-      "title": "Meeks Issues Statement Following Vote on Russia Sanctions & Tariffs Bill",
-      "source": "democrats-foreignaffairs.house.gov",
-      "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQdFpmdUFxQVV6ejlDMjUwajlld1JGeGxKcEhsMDZvc1hzZ0F2S3NpYVJIS3pBTEhyak5nVVhoZVFhMHl3TVBfY1U5NXVSUE1MUWtSSzFvTUhkQ25idlZTclhhQUJBMU00dU9PR19IYjVlekVaTUNTekV2bU9wVURaeVllamxsajljNGlBcDluODVSUHdycG9PNUNBY0xoX2ZCa2FldTRVQ3ZHX1RReTloMzVQRWFvZHhaME9XNQ?oc=5",
-      "pub_date": "Wed, 16 Sep 2026 23:20:04 GMT",
-      "tag": "GEOPOLITIK",
-      "stream": "GEOPOLITIK",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 34,
-      "summary": "Research Intelligence (democrats-foreignaffairs.house.gov): Indikasi sentimen neutral mempengaruhi klaster GEOPOLITIK.",
       "key_takeaways": [
         "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
         "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
@@ -2006,7 +2050,7 @@
     },
     {
       "id": "news-89",
-      "title": "ECB\u2019s Rehn Sees No Second-Round Inflation Effects From War Shock",
+      "title": "ECB’s Rehn Sees No Second-Round Inflation Effects From War Shock",
       "source": "Bloomberg.com",
       "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNZXdOV2xYVUwxV3BHQXp4aWpUTGotOGRPVmZ1emNBZ1dLaVh0Mm5vTGR1TzIxaldKUnNaV25mNU45RHJ1TVFxSmxZc1lhaFVsOGYxSXlyV3loXzZuZU11VS03WExXOGJjcUczTDEta2YwZFVNMlpXOFZla3pJdmp5VGd0TnFCTDBya0NnTGxwNFI3aHlKR3dQc1R1bkh3LW5CdHV6aXhvNnd5dkJ1R1Y4ZVdYaXk5UQ?oc=5",
       "pub_date": "Thu, 17 Sep 2026 10:34:39 GMT",
@@ -2126,7 +2170,7 @@
     },
     {
       "id": "news-95",
-      "title": "What to know about US Federal Reserve\u2019s first interest rate hike in 3 years",
+      "title": "What to know about US Federal Reserve’s first interest rate hike in 3 years",
       "source": "Al Jazeera",
       "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNR2E0YlpfSnFQZldrNGdyd3FZNUxPVjU5OHZzTElVRjdUOUhLT3JzSFFVNHQ4VXd4WVhtMUZtdGhFTVNlZXl6YVpBdFhKc1B4WTY4ZDlXalJwb0ZleE1yQzNTLWw3UXNiYk9KaDNuVDJZRXZFQkNyOG5ySG4wNjNwelFWZUwyM2ZpbERyTjRsa19vYjh1SXo3cWxWTk92THRETV9JYkJ6aWd5QjVEWGR3VkoxdW15d9IBuwFBVV95cUxOLWhIRXBrWG1GNndPR1k2SEZYcS14bzhCMWdfV01Oak95OGlFNnp1eDhSVEE3VHdrTk1DR3VzbURjSC0xU00tRTA2a1pTVEJ3cTNoLTIwVFRHWWNHcXBvVVExdDVmbFpzY1U4ZHZYY3ZkSVJNaXRFRUVwUWQyemgxQTlIcnN2MXFZeWhDYmhjOWFzeW5QSy1KUjhHblBQR1VZRzA0eUxMdVFPbkNublFOVFVFR2NRZVBjTk9J?oc=5",
       "pub_date": "Wed, 16 Sep 2026 23:18:48 GMT",
@@ -2186,7 +2230,7 @@
     },
     {
       "id": "news-98",
-      "title": "ECB\u2019s Makhlouf Says Each Meeting Is \u2018Live\u2019 Including October",
+      "title": "ECB’s Makhlouf Says Each Meeting Is ‘Live’ Including October",
       "source": "Bloomberg.com",
       "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNZFlwT1VHLTVpUGR2ZEZqZGNTdnQ1aVhRRzdSUjl2MjdvZDNmZ0FSR3RIVi1fQlBJRzVVcW5HZndxcXJvRG9WbnhxZUFldmlKeE1QVWdaUndORWV2LTI1M0xoajc4VDBRQ0paU0VtS1EwYXAzdW92dXVHMjFyRnlQSXdDSXM4NDhPdVNBZVpXaDFVcGxVcFB3bEx5ZE1zUmNZS1ZfYzJWRUI0UVk2cnNF?oc=5",
       "pub_date": "Thu, 17 Sep 2026 09:30:40 GMT",
@@ -2289,7 +2333,7 @@
     {
       "id": "news-103",
       "title": "U.S. CFTC chief says he will push crypto regulation directly",
-      "source": "\ub514\uc9c0\ud138\ud22c\ub370\uc774",
+      "source": "디지털투데이",
       "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQdzBzYWtfckFEVWxGMjdET1dOcDVnNHAyOEtqbkFhNGl5SW5nUWRIM3pmU0lhNVNPUVhzMTVqRThTdlJ6WjNFblFSb0FiTEMzclBYeWRQSzZFeWNWZDhKSVBfa0g1VU91dHVTeHREN19pdmZCSk9RNlJEMlNBT1BrMXAwcWhFbHU4QjNYRlM1YmIyTXhPMjIwVDlISnVkWW95NUFLMVVGTQ?oc=5",
       "pub_date": "Wed, 16 Sep 2026 23:10:54 GMT",
       "tag": "REGULASI",
@@ -2299,7 +2343,7 @@
       "related_tickers": [],
       "metrics": [],
       "reading_time_sec": 34,
-      "summary": "Research Intelligence (\ub514\uc9c0\ud138\ud22c\ub370\uc774): Indikasi sentimen neutral mempengaruhi klaster REGULASI.",
+      "summary": "Research Intelligence (디지털투데이): Indikasi sentimen neutral mempengaruhi klaster REGULASI.",
       "key_takeaways": [
         "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
         "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
@@ -2309,7 +2353,7 @@
     {
       "id": "news-104",
       "title": "Ripple CLO reaffirms XRP is not a security after U.S. Senate stalls Clarity Act",
-      "source": "\ub514\uc9c0\ud138\ud22c\ub370\uc774",
+      "source": "디지털투데이",
       "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQQXQxdFNvQkd2c1V0NGhhVUQ3UGZTZFY5bWV6X1JWRGIwTFloX2h1bTlGMEpaZXVOOElmcEtvbmJjZkUzbXlTRXUzWVpULUJ1NXdyWURuVkxpZjFxeFY2RUp4STZBYlpadVdGSEY2cURBRmR4cGdFaE1CMGwyV0tWa0ZWblRrN2lwck5SeE1IZk1qN0xRWERWRnkzVUg1NHM4cW04YTJnVUN4czZwWVRPcmpvU2t4TmlVbnFnT09sSjA?oc=5",
       "pub_date": "Thu, 17 Sep 2026 01:41:18 GMT",
       "tag": "REGULASI",
@@ -2321,7 +2365,7 @@
       ],
       "metrics": [],
       "reading_time_sec": 36,
-      "summary": "Research Intelligence (\ub514\uc9c0\ud138\ud22c\ub370\uc774): Indikasi sentimen neutral pada $XRP mempengaruhi klaster REGULASI.",
+      "summary": "Research Intelligence (디지털투데이): Indikasi sentimen neutral pada $XRP mempengaruhi klaster REGULASI.",
       "key_takeaways": [
         "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
         "Volatilitas aset kripto $XRP merespons likuiditas global dan arus modal spot ETF.",
@@ -2370,7 +2414,7 @@
     },
     {
       "id": "news-107",
-      "title": "US House tax committee advances crypto tax overhaul in 38\u20135 vote",
+      "title": "US House tax committee advances crypto tax overhaul in 38–5 vote",
       "source": "TradingView",
       "link": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNSjlRNGFUWU5PQkgyQlE1Rjl2cDIxZ1hPZURUcVZoWlhaVGY1X3BSR3c4VW5WUFdaeHd5M1lDb1lFcXBicUxOajlScWxzRmZSQnRFSGVjMm1KSmZrTncyZlJMOGF5TFJsQk42ck5UN1V1RmZ2bG4wSk9JRFhSR1NtclVSWHp4Q0hZR2lBSGdHMWY3bWpxWlF2a211Nm9lUWxEODdFVlFpa0d2LW91NUlkUVJwalgxajU4VkZaVjN2TWNPbWhINUZR?oc=5",
       "pub_date": "Wed, 16 Sep 2026 18:01:55 GMT",
@@ -2596,26 +2640,6 @@
       ]
     },
     {
-      "id": "news-118",
-      "title": "Alaska Science Forum: Getting to the bottom of copper\u2019s rise to the top",
-      "source": "Homer News",
-      "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOUnd6YXI4UXduUFc3bU56TkRwcHVvUkFvZEttXzJ2eUhCZEQ3RGdLdHlzQm5ZYW1SRVJheVpucnNCZnItZXFjU25VYmxJb1pCYkFXZUFWSlZlS1ByWUFLVHJTNmZIWlRyRVVQRlNNb2daOEJKLVJ4ckxwSXBSX2NSUGtIRzdkakVJY1lFc1V5b2Uzbk8yRUYwUVRKZnF3cGt3MWs2dVVaSFg2U0U?oc=5",
-      "pub_date": "Thu, 17 Sep 2026 12:33:35 GMT",
-      "tag": "COMMODITIES",
-      "stream": "COMMODITIES",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 35,
-      "summary": "Research Intelligence (Homer News): Indikasi sentimen neutral mempengaruhi klaster COMMODITIES.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
       "id": "news-119",
       "title": "ORVANA ANNOUNCES FIRST COPPER CATHODES FROM ITS OXIDES STOCKPILE PROJECT IN BOLIVIA",
       "source": "PR Newswire",
@@ -2645,9 +2669,7 @@
       "stream": "COMMODITIES",
       "sentiment": "BULLISH",
       "sentiment_score": 0.35,
-      "related_tickers": [
-        "NEAR"
-      ],
+      "related_tickers": [],
       "metrics": [
         "Perubahan: 2.6%, 2.7%"
       ],
@@ -2657,26 +2679,6 @@
         "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait. Terpantau Perubahan: 2.6%, 2.7%.",
         "Volatilitas aset kripto $NEAR merespons likuiditas global dan arus modal spot ETF.",
         "Fokus pada Spot USDT murni tanpa leverage berlebih; kawal profit dengan trailing stop 2.5%."
-      ]
-    },
-    {
-      "id": "news-121",
-      "title": "3 accused of stealing copper pipes from Fort Monroe",
-      "source": "WAVY.com",
-      "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOaDNJZDdkNjlEMkU2M2wtLXVkQTBZWXgzTWpzdklkNFlpa2VydldxRzQ4MWg1TXUwX054QU0tNzk2ZkVKRVp5cThBd2tieG01aldSbnJXZjVITG5TZmJVSUdHQmhjcWlEaWtFQUFTeVN6bkRZZDhyQ2VqT3A3M2lETEhyOFVUcV92TTZiV1hjZHNkZw?oc=5",
-      "pub_date": "Thu, 17 Sep 2026 06:35:53 GMT",
-      "tag": "COMMODITIES",
-      "stream": "COMMODITIES",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 34,
-      "summary": "Research Intelligence (WAVY.com): Indikasi sentimen neutral mempengaruhi klaster COMMODITIES.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
       ]
     },
     {
@@ -2697,46 +2699,6 @@
         "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
         "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
         "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-123",
-      "title": "27,000 feet of LADWP cable stolen as leaders push for crackdown on metal theft",
-      "source": "ABC7 Los Angeles",
-      "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOd1ZLNnMzVjVlMFo4dWVjZ3JFQkdLbnVJdmlTNEF3THgxclFZVTY0UlRUQ2VjVWZJQnJLSVlkOFRJMjdOb1RxWWJmUEhLalF5d3l4aHFyWG04cERZVHpUdGZNRm1GU01VZDgxNW9IcXcxajd0dnhCWHhXWEZ0Ukhfa05NOS1HemduR1VHT0JUNjEtZkFYeWd2bE8yVk7SAaIBQVVfeXFMT05zc2tuR3gzbWRrM0V0RDNiNlB4S3VRak9nYUhpbmlkTEJNamhaVXdUUFljcnhIWkJWZWZyXzJZcU1Pd092ZGloMHJuQnNGNVllM3JlQmN3cVpLYTVXTkxUbE91VGxhNGN1OGhSN2lUS0J3Mzl0Vmc1dEJBTlhlS1ZsakkycVgwTGJpVWlBQTlPd0haVXZfNTNpcXUzR3VFTkdB?oc=5",
-      "pub_date": "Wed, 16 Sep 2026 23:35:06 GMT",
-      "tag": "COMMODITIES",
-      "stream": "COMMODITIES",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 35,
-      "summary": "Research Intelligence (ABC7 Los Angeles): Indikasi sentimen neutral mempengaruhi klaster COMMODITIES.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-124",
-      "title": "Don\u2019t Ruin Your Expensive Copper Cookware \u2014 Here\u2019s How to Clean Your Pans So They Look New Again",
-      "source": "foodandwine.com",
-      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQR2w1Y1NsYXZDd1c4aGROM0RWZXlwcXZ2dFhKTTFyV0M3Ni1DQ29mRHh0R3pUdS1LQy1Ra0QtbDJlTGhzV0xLaFJlSkRpMlhWYXRGRmxneGxDRUFZaUc4SDJzZkQ4bVItRlNBeVVlS1VjcUtOcHhMRC1La1JYN01VandPNGVDUVNWMXFMQWZrTQ?oc=5",
-      "pub_date": "Thu, 17 Sep 2026 05:15:00 GMT",
-      "tag": "COMMODITIES",
-      "stream": "COMMODITIES",
-      "sentiment": "BULLISH",
-      "sentiment_score": 0.35,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 37,
-      "summary": "Research Intelligence (foodandwine.com): Indikasi sentimen bullish mempengaruhi klaster COMMODITIES.",
-      "key_takeaways": [
-        "Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
       ]
     },
     {
@@ -3331,7 +3293,7 @@
     },
     {
       "id": "news-154",
-      "title": "Forex trading Fed raises rates \u2013 Five reasons for lower Brent [Video]",
+      "title": "Forex trading Fed raises rates – Five reasons for lower Brent [Video]",
       "source": "FXStreet",
       "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNOFRDbXZPbVA5SHpOd3lmSFZnd0gyb3NaeHBkTU92bFZtanhjck5ZZXdpZVk0SFVkYkU0VExWcFFKU09SZktzVlBxWDRSdG54UnJWdE5mbWZ5d1M1bjFGY3F4Ny1pQlVMR1ZmQjM4eS16ckxoREs0ZnNRY2FLUVFFc21XdG91XzB4Sm9MZk9LdmxxUmpFOW93YXpxTHA4QlN4eGhPWDJad3R4d2o3a3U5VVJB?oc=5",
       "pub_date": "Thu, 17 Sep 2026 10:14:00 GMT",
@@ -3515,7 +3477,7 @@
     },
     {
       "id": "news-163",
-      "title": "3 of Wall Street\u2019s Favorite Stocks Walking a Fine Line",
+      "title": "3 of Wall Street’s Favorite Stocks Walking a Fine Line",
       "source": "finance.yahoo.com",
       "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQTlUySVlQZEJDTXBGVEdVX0RDM1NHSFZYNnB3bFBET3UzOC1ENEV4eldDcTRzM0N1bzQwTjJkcTdxZ3BobDlKa0t4bmNMWF94Y2NoMXIwUE9PSkdrZ3ptNXRIY0tBYXN0aENnTUwwSVV2Qkx4LXQxbTNHX01qUEljRDdYbDRNNjFVTnJLRlhwUndpcUxJNDg4RGtn?oc=5",
       "pub_date": "Thu, 17 Sep 2026 09:54:17 GMT",
@@ -3535,7 +3497,7 @@
     },
     {
       "id": "news-164",
-      "title": "The Startup That Built OpenAI\u2019s Biggest Data Center Is Now Making Tiny Ones",
+      "title": "The Startup That Built OpenAI’s Biggest Data Center Is Now Making Tiny Ones",
       "source": "WSJ",
       "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNT3hWLW1IUElCTmg4TGwzNXN4RkxMVjRlTXZ3Uk9NMnNFOWV3WjZFaDN1cm5XYkdBNDZXbThZeDVadWg0djZiUzc1UWZDQ21ucTVOdmhrc3RwUUhSdEI3c0cyLUM5VUE5ZE8tMm56a3dxc2VsZGxvN0ZTMkg5VjBoT1ZTdm9xRGVPbFFFZEVRdWNkVWNtclF4cE1hNjNmeEowOFBiVkZOZC0zaWNidjg5Tw?oc=5",
       "pub_date": "Thu, 17 Sep 2026 09:00:00 GMT",
@@ -3555,7 +3517,7 @@
     },
     {
       "id": "news-165",
-      "title": "S&P 500 Could Deliver Another 6% by Year-End as JPMorgan Calls Bears an \u2018Extinct Species\u2019 \u2014 Polymarket Bettors Price 35% Odds",
+      "title": "S&P 500 Could Deliver Another 6% by Year-End as JPMorgan Calls Bears an ‘Extinct Species’ — Polymarket Bettors Price 35% Odds",
       "source": "finance.yahoo.com",
       "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxORXlYUDFHU0NqRVd2N1pQWmx5ZEF0d2g4eHc1b3RxckxKSVZ3aVk3Q2dzNlVZZlNsYS0tejFsejJrZzhMenJkMHU2YUhqTVJyLUdveGhOSFlycHRrYTRRb09XdDNqTWZ0cmxMdWtYTTZPZFRlU3B6SDZCd1FZblNET3k5RExGT1lRX09OSFc5MjlJRTRPMHdj?oc=5",
       "pub_date": "Thu, 17 Sep 2026 11:20:35 GMT",
@@ -3577,7 +3539,7 @@
     },
     {
       "id": "news-166",
-      "title": "1 of Wall Street\u2019s Favorite Stocks with Exciting Potential and 2 Facing Headwinds",
+      "title": "1 of Wall Street’s Favorite Stocks with Exciting Potential and 2 Facing Headwinds",
       "source": "finance.yahoo.com",
       "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNSmYybmR0UG1WZWVXaG5zREZBTTlITHh1SEV4QUFPb0xOU0tZN014ZXVlbHhrUzRWaGtPNFNRX2xhQkNrUWRVMkg1YUJkMEZPcnJCcXRRSVMxZy1jdEhfdlNPMDhfd0haTGFQRG5oRFNMSm5LYTBKck5BcjJuUTRQQXp0Vl8xWFFNVmMxd2dRVVBUczFmWmlEOUZn?oc=5",
       "pub_date": "Thu, 17 Sep 2026 12:50:17 GMT",
@@ -3597,7 +3559,7 @@
     },
     {
       "id": "news-167",
-      "title": "Earnings Drag and Geopolitical Headwinds Weigh on Lockheed Martin\u2019s (LMT) Performance",
+      "title": "Earnings Drag and Geopolitical Headwinds Weigh on Lockheed Martin’s (LMT) Performance",
       "source": "finance.yahoo.com",
       "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQaFlzMi1YWm1BT0lQRFVLNk5TMVpLcTJTdkkzZFhsejhmOXY4OFB1anhWR2w1QV9HWjhTZTNJSk12SVlQak5TSWhpaktrTHpxWFN4SVoxQ3dTOG1OVzJlMng1QW9ZNW9tNV9nanNpWWJpcHdhLVNyS05HLVRPZGV3SGc1blZTanphZmpZMXF5NndYc3RzUDgtMDZPQl8wTUR5VmppdTJyTUdZdEU?oc=5",
       "pub_date": "Thu, 17 Sep 2026 11:55:55 GMT",
@@ -3617,7 +3579,7 @@
     },
     {
       "id": "news-168",
-      "title": "3 of Wall Street\u2019s Favorite Stocks We Approach with Caution",
+      "title": "3 of Wall Street’s Favorite Stocks We Approach with Caution",
       "source": "finance.yahoo.com",
       "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNTXo0Ukt6aG44c2VZWUt2bmJqc0o3dEgzMGRDVDhSQ0xOT0xHbDVpay0tSlA1d2hXYXdPZDZLYzZRSXZ3MGV5bEdzMFhxU08xMG5WSVFNSVRBVm9GQjg1NUlNVXBfa1kyRUtyNDRlQVNZSmZRTlZDb1JLWXFpTHNuTDFOSW5zX0VOQ183bzZTTlB4MGc3OTd4a0ZR?oc=5",
       "pub_date": "Thu, 17 Sep 2026 09:38:17 GMT",
@@ -3679,7 +3641,7 @@
     },
     {
       "id": "news-171",
-      "title": "1 of Wall Street\u2019s Favorite Stocks on Our Watchlist and 2 Facing Challenges",
+      "title": "1 of Wall Street’s Favorite Stocks on Our Watchlist and 2 Facing Challenges",
       "source": "finance.yahoo.com",
       "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPOUtkRVFGQUsxalpGMmN3N0xlcVlkTlhoY3BJTWpKOTl3Q19YOVpUbVJJeEJSQlM3QTVqcEk3a2dYVGV4NC1iR2MzUVZ6TERUSjliNW9VQmpUSWR2dk1nR21SS04wNmwxV3g3cmRvTEVCV0NsV0xQazN4WW0xX0dONFByQmg0b0ltdXFRd29DUUdOM1JSWmdqUHBn?oc=5",
       "pub_date": "Thu, 17 Sep 2026 09:22:17 GMT",
@@ -3739,7 +3701,7 @@
     },
     {
       "id": "news-174",
-      "title": "China Adds Currencies to Central Clearing in Yuan\u2019s Global Push",
+      "title": "China Adds Currencies to Central Clearing in Yuan’s Global Push",
       "source": "Bloomberg.com",
       "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPU3JSRGxaUHo3dUNyaFMzTmk5UUVoWWdhdWpTaFVFaGFZUzZLdDEzZGdHcVRPZFZTcXBHdUw5M2t4dDlwdmRSdEhzR25WRk01bGp5NHd3OHRqQW1YZ2lqWS1TY25NdGtlbWRJSm10QkRpOWRpLTliWFg1QjFTVGFVeGI0Zkg3cE4xV29waTdFaXZQeXBrcHVlOEJSMTZnemVNbnZ3QUtMT1F6Q3RqdERJelNZeDc?oc=5",
       "pub_date": "Thu, 17 Sep 2026 02:31:00 GMT",
@@ -3781,7 +3743,7 @@
     },
     {
       "id": "news-176",
-      "title": "Xi\u2019s industrial power play sees China bet big on AI, chips and smarter factories",
+      "title": "Xi’s industrial power play sees China bet big on AI, chips and smarter factories",
       "source": "South China Morning Post",
       "link": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPUng2aGxEMnR4cjJlaWtwWDNTak1qOEUzWDFkNWVmNWRUNTBvWkQ0NVlKS3UyWlRzc1NuN1ltMks4ZnhScGY0Qkg2X1MyOHQ3Sy1mZUN5VEZMZjhKNFhTZTFET0JFYXNtYlFrdnJ4a05kUDIzVXprdjlwdEFrUGo0MGVvbDQ2NkJpNm1ZMnQ1UU50RXFXYnF6ZFVSejhOclp5b3lHQ0h4RzBFUUNRMGhrdUYxazE1UVV1QjdFYk9WajY3X3pZUmJXemktbExjRUdoOWdBc0FWUGZhdzlT0gHcAUFVX3lxTE9CQmpnSzFQUHVZMGRtMjVUdWZiR3JxeDI3VTdGdjgzSVVHVWJkeUpVMGFvRjFHdHBRZEhzNkNSaV82Mm9UQ0l6WUtGZGF4c09MLXBuVGlvWnBuRVVfRzBXSDhWYTk5WkRGY3MxZlFHcHFTdW0yYTVjZ2RBVkV6bGt6TTNLeXhUZ2MtY2swUDk5Ni1WbU1aSFJodEtsempLcVIyMDd0bDlJaEZ0SUptaFEwQ3dpMG9ya3hmYUlka0szMHppN2tGWkxOQ19XRTZiVXFhWngzVGpCVkRrYmI?oc=5",
       "pub_date": "Thu, 17 Sep 2026 10:29:58 GMT",
@@ -3841,7 +3803,7 @@
     },
     {
       "id": "news-179",
-      "title": "PBOC says slower loan growth is China\u2019s new normal as financing shifts beyond banks",
+      "title": "PBOC says slower loan growth is China’s new normal as financing shifts beyond banks",
       "source": "The Asian Banker",
       "link": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQcFp3dzY1NjZwd3dYSVFRcG1tdTgtbV9LUGZvUmQxRnliSjl2QkU0ZWIybm5wRkxzcl9Ea28ybF9uSndIMXR6WGF5TUFoRnVROV9DZTlqa2M5WGJoeVppdXRPaFZqVlh3Q3F1eDhTYnl3cXRtVVdNSHROS2MxTDcxRTlJVHI2bE5RQkMwekl1Vy0xMU5GbXdYcU1lY0d0X29GZTRQbjk0SklNb2MzVDRaOFZlX0FvRGxoWDZkbXgzcWt0X1l1amxIRnl0d1l1S1ZL?oc=5",
       "pub_date": "Thu, 17 Sep 2026 10:46:50 GMT",
@@ -4181,7 +4143,7 @@
     },
     {
       "id": "news-196",
-      "title": "RANKED: The Top Crude Oil Producers in 2025 \u2013 Visual Capitalist \u2013 See How Countries Rank",
+      "title": "RANKED: The Top Crude Oil Producers in 2025 – Visual Capitalist – See How Countries Rank",
       "source": "EnergyNow.com",
       "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQc043cHk1ZjIxLWc2RVJUX2p1NnRHMmpRamNpNkVJNTBkNjliR1Z4amtCdkdVUzkzUnBRQ2ZpWFhHdGRUUWtybzFieTY2ek9qazdPaG5Ec0d3akx6a24wMlYzaDdnbjZrbmNVdTdZdXZSYlhGTVFUOHJoTGZhQ1RJR2tyaDNGckF0OWM0QW1ta2lVbnFoOFE?oc=5",
       "pub_date": "Wed, 16 Sep 2026 21:12:02 GMT",
@@ -4283,7 +4245,7 @@
     },
     {
       "id": "news-201",
-      "title": "\u2018Two Major\u2019 Natural Gas Leaks: Century To Spend Nearly $70K To Fix",
+      "title": "‘Two Major’ Natural Gas Leaks: Century To Spend Nearly $70K To Fix",
       "source": "NorthEscambia.com",
       "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNZkljV2ZiNkp2VkJJTHZxM285bjh4d3hnU2lFU1Y2NmJhbC10eU5SS19JUGNnWGk0Y0hjcXU5djgyc29vRHZTVURCU09TTWVfS0wwS2RvNHdUNmtvc1hSbzN1dEdfbjFmcmlpMWdsZk1LX21SZnFJOGFLM3pXcFNHeEpjX19GRGJIWWFBV3N1T01XOXpfSmxPN3FQeU9LdFlu?oc=5",
       "pub_date": "Thu, 17 Sep 2026 05:33:53 GMT",
@@ -4487,7 +4449,7 @@
     },
     {
       "id": "news-211",
-      "title": "Natural Gas Forecast: $2.80\u2013$3 Range Holds as Winter Nears",
+      "title": "Natural Gas Forecast: $2.80–$3 Range Holds as Winter Nears",
       "source": "FXEmpire",
       "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPMFpKcExVaXBJRVJlSzl6c1pmNFl2eWVtaXRZai03QWZWRjhyQXFYeDVzZDRnTnZYU2JIckg0dzhPYUlCaVI2dFk1RjRMNDhPN1pKenNqTFltZFEtTHVDUm5GVHlDQ1dfMUVpU29xb0dZYi0zUUtJemNFaHRla0JCem14WERLbkdzalFWMjYzVWYxMnhmcUpkLTBxMFRqdXhJa3lreHN2WUR1Zw?oc=5",
       "pub_date": "Thu, 17 Sep 2026 11:49:50 GMT",
@@ -4550,28 +4512,8 @@
       ]
     },
     {
-      "id": "news-214",
-      "title": "GTC - NVIDIA",
-      "source": "NVIDIA",
-      "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE5IX1lvZGNiMnNKQkk5dzZ1X2g5Y2xnbjgzQU56cnlNcHhMM3V4Szdncl9MVUVEVmtaZzJXUXBxNGtUQ2lBZlNWeXhIWVBad0xVeW8tTWFxQkRmbjFtRHJMdkJETQ?oc=5",
-      "pub_date": "Thu, 17 Sep 2026 10:26:45 GMT",
-      "tag": "TECH_AI",
-      "stream": "TECH_AI",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 32,
-      "summary": "Research Intelligence (NVIDIA): Indikasi sentimen neutral mempengaruhi klaster TECH_AI.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
       "id": "news-215",
-      "title": "Huawei\u2019s Plan to Become China\u2019s Nvidia",
+      "title": "Huawei’s Plan to Become China’s Nvidia",
       "source": "WSJ",
       "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9pOTh1aW5xZThBQVdPRmFtcDh5TUdPMFRFTnZmS0xpYjJFNV9WcEdUd3ZkSmRUTlBvSUhXRXQtQndSd01mOWpZUXFsUmNidUNIOXRVYU9MZVFDQ0Vidk9pSEJWNzdHUnkzVmJQZGYzaWppeC12SE1JZTBPdjRtUQ?oc=5",
       "pub_date": "Thu, 17 Sep 2026 10:29:00 GMT",
@@ -4611,7 +4553,7 @@
     },
     {
       "id": "news-217",
-      "title": "OpenAI Reveals 6 \u2018Concerning\u2019 Incidents. Why Marvell, Other Hot AI Stocks Are Rising.",
+      "title": "OpenAI Reveals 6 ‘Concerning’ Incidents. Why Marvell, Other Hot AI Stocks Are Rising.",
       "source": "Barron's",
       "link": "https://news.google.com/rss/articles/CBMidEFVX3lxTE5TZWFoOHRvRGZQR0czSk85Y1JvV0tRNzJHZV85dHZnd1EwSmRuS3p4aERmV1J6UFJ1azQ3V0t2cnBZbTlIT3hTS3QxejhUaVVrRnZBN29LSEdKRnhHUGtnZ2xmSWpLbWJFODZnYnd5NF95ZmZ1?oc=5",
       "pub_date": "Thu, 17 Sep 2026 11:42:00 GMT",
@@ -4631,7 +4573,7 @@
     },
     {
       "id": "news-218",
-      "title": "The Return-on-Capital Question Looming Over NVIDIA Corporation\u2019s (NVDA) AI Investments",
+      "title": "The Return-on-Capital Question Looming Over NVIDIA Corporation’s (NVDA) AI Investments",
       "source": "finance.yahoo.com",
       "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQTFNEeFk1eVhBNDNXTVNheC0yX2szQUdFeU5hNVdIcXRhVnRyRHhvY2U1RzZYSnlVQ3VkMktLYXo3a0t0Vm16dko2RTNmNXpSRDdBVE15a0NuUEo1QmtPMl8zUVBNMFFNNllmM0daX0VSNkxEUDNZdkFweHIwbjFkQlpGRjZKZ2RMbkdld1Z4Ylg2X0h3UjFtaVZrRU5hYnJP?oc=5",
       "pub_date": "Thu, 17 Sep 2026 11:48:08 GMT",
@@ -4711,7 +4653,7 @@
     },
     {
       "id": "news-222",
-      "title": "King Charles Wants AI Chiefs To Promise They\u2019ll Protect Mankind",
+      "title": "King Charles Wants AI Chiefs To Promise They’ll Protect Mankind",
       "source": "Bloomberg.com",
       "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNWXplMS1mRGRGYVY3ZVhpNWhkOEhWTU1UR05rU2lHTXVtbzhjVUNmRnJ2bEc1RlpqM0dtd1VNNUg5SzdPVVRYdE90UVRPWks2LWFGT3BmaEd3OXdma2Y3MlRqQ3hxS2FibUtWRUg1SkoyWmZCeUlyS0R2UFV6QllEU3ZTV3VEY28xbnFmX003clV0ajlTanphMEFUNmlvZGFqbldPZFZDOU5FOHpndkVhVnFEY0U?oc=5",
       "pub_date": "Thu, 17 Sep 2026 11:32:37 GMT",
@@ -4743,26 +4685,6 @@
       "metrics": [],
       "reading_time_sec": 35,
       "summary": "Research Intelligence (Reuters): Indikasi sentimen neutral mempengaruhi klaster TECH_AI.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-224",
-      "title": "SteamOS is Getting Native NVIDIA GPU Driver Support",
-      "source": "TechPowerUp",
-      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPMzUtdmpEckh4THZCeW5VR2lPV1BJR2htVXRETUNDdnBrbUt4YTMzZG45Mkx2MEthcFdJZEhIQUJrcWVfV3BXOTJHZ3RUZFVBaXlUYjRzTFFBclRDQ0tDQ3lIU3I4bzhyb0h1TWxMVzR2bUU2R21ZLUJnWlJmN2lENWlyWnJwbW9mb1lURUx0MNIBlAFBVV95cUxQNS1ubXB0Y29HUENtbjNnaV9Bd2k4YU03ZjRLdHVsbjBSNXBJdklGN09vOUdTVmo1VlJmVHlWaGk1Y3pRbHdnc25SM3BKZlBfS1c5ZWhqb0lud3lkZXg1VVNNOHoxcDRPYWs5UWJFN21SVzhKMTlEZTgtMHVGbzVFZF9OYkQxWDBLaFRrOVI3TXdPam1o?oc=5",
-      "pub_date": "Thu, 17 Sep 2026 08:14:47 GMT",
-      "tag": "TECH_AI",
-      "stream": "TECH_AI",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 33,
-      "summary": "Research Intelligence (TechPowerUp): Indikasi sentimen neutral mempengaruhi klaster TECH_AI.",
       "key_takeaways": [
         "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
         "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
@@ -4830,26 +4752,6 @@
       ]
     },
     {
-      "id": "news-228",
-      "title": "Cute Critters Come to the Cloud: \u2018Aniimo\u2019 Launches on GeForce NOW",
-      "source": "NVIDIA Blog",
-      "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTE02a0FvaWpHem5QUWZvcUhNY0JLWkxvWmVzTW1uRHpjRC1oNk5ybWtuVk5FWlNyTzBfMXJjbEhkeXI4V0xRMWtlbzZTRUpYTE1PMTBaa0RNRm1aUEpEZXVkaWdhN2s2MEZoTUE?oc=5",
-      "pub_date": "Thu, 17 Sep 2026 13:07:30 GMT",
-      "tag": "TECH_AI",
-      "stream": "TECH_AI",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 34,
-      "summary": "Research Intelligence (NVIDIA Blog): Indikasi sentimen neutral mempengaruhi klaster TECH_AI.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
       "id": "news-229",
       "title": "Breakout Watch: Savvy Investors Get Wired Up For This Nvidia, Amazon Partner",
       "source": "Investor's Business Daily",
@@ -4883,26 +4785,6 @@
       "metrics": [],
       "reading_time_sec": 36,
       "summary": "Research Intelligence (CNBC): Indikasi sentimen neutral mempengaruhi klaster TECH_AI.",
-      "key_takeaways": [
-        "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
-        "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
-        "Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
-      ]
-    },
-    {
-      "id": "news-231",
-      "title": "NVIDIA Reflex: Why VALORANT Pros Choose GeForce RTX",
-      "source": "NVIDIA",
-      "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxNUXh6bm1zODlNeUc3cjF0eGdRbXdWYzJhQV9sUGU0ZW9id0ltdm43TmUtbjJvT2lISHhhbzVFODJuT2ktX01Xc1JOMEVZUEpCOEVWYTItSTZKTkQ2RHliNTV3cnVKWE9yLVFsN0tuSldhV2h4T2RSazZ4MzlJRkpickFiV3IwdDlXZVdiNXJlQmU?oc=5",
-      "pub_date": "Thu, 17 Sep 2026 13:05:50 GMT",
-      "tag": "TECH_AI",
-      "stream": "TECH_AI",
-      "sentiment": "NEUTRAL",
-      "sentiment_score": 0.0,
-      "related_tickers": [],
-      "metrics": [],
-      "reading_time_sec": 33,
-      "summary": "Research Intelligence (NVIDIA): Indikasi sentimen neutral mempengaruhi klaster TECH_AI.",
       "key_takeaways": [
         "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
         "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",

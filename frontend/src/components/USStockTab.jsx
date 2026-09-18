@@ -53,7 +53,7 @@ export default function USStockTab({ data, onOpenChart }) {
               <div style={{ background: 'rgba(255,255,255,0.03)', padding: '6px 14px', borderRadius: '8px', border: 'var(--border-hairline)', textAlign: 'right' }}>
                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Leading Sector</div>
                 <div style={{ fontSize: '13px', fontWeight: '700', color: bestSector[1] >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                  {bestSector[0]}: {bestSector[1] > 0 ? '+' : ''}{bestSector[1]}%
+                  {bestSector[0]}: {bestSector[1] > 0 ? '+' : ''}{Number(bestSector[1] || 0).toFixed(2)}%
                 </div>
               </div>
             )}
@@ -74,7 +74,8 @@ export default function USStockTab({ data, onOpenChart }) {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
           {Object.entries(sector_performance).map(([sec, perf]) => {
-            const isBull = perf >= 0;
+            const numPerf = Number(perf || 0);
+            const isBull = numPerf >= 0;
             const isSelected = sectorFilter === sec;
             return (
               <div 
@@ -97,7 +98,7 @@ export default function USStockTab({ data, onOpenChart }) {
                   <span style={{ fontSize: '8px', opacity: 0.7 }}>{isBull ? '▲' : '▼'}</span>
                 </div>
                 <div style={{ fontSize: '15px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: isBull ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                  {isBull ? '+' : ''}{perf}%
+                  {isBull ? '+' : ''}{numPerf.toFixed(2)}%
                 </div>
               </div>
             );
@@ -179,13 +180,15 @@ export default function USStockTab({ data, onOpenChart }) {
                 </tr>
               </thead>
               <tbody>
-                {filteredStocks.map((s, idx) => {
-                  const isPositive = s.change_pct >= 0;
-                  const rsiColor = s.rsi_14 < 30 ? 'var(--accent-green)' : s.rsi_14 > 70 ? 'var(--accent-rust)' : 'var(--text-primary)';
-                  const rsiBg = s.rsi_14 < 30 ? 'rgba(34, 197, 94, 0.1)' : s.rsi_14 > 70 ? 'rgba(239, 68, 68, 0.1)' : 'transparent';
+                {filteredStocks.map((s) => {
+                  const chg = Number(s.change_pct || 0);
+                  const isPositive = chg >= 0;
+                  const rsiVal = Number(s.rsi_14 || 50);
+                  const rsiColor = rsiVal < 30 ? 'var(--accent-green)' : rsiVal > 70 ? 'var(--accent-rust)' : 'var(--text-primary)';
+                  const rsiBg = rsiVal < 30 ? 'rgba(34, 197, 94, 0.1)' : rsiVal > 70 ? 'rgba(239, 68, 68, 0.1)' : 'transparent';
                   
                   return (
-                    <tr key={idx}>
+                    <tr key={s.ticker}>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <AssetIcon symbol={s.ticker} market="US" size={18} />
@@ -201,13 +204,13 @@ export default function USStockTab({ data, onOpenChart }) {
                         </span>
                       </td>
                       <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
-                        ${Number(s.price).toFixed(2)}
+                        ${Number(s.price || 0).toFixed(2)}
                       </td>
                       <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: isPositive ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                        {isPositive ? '+' : ''}{s.change_pct}%
+                        {isPositive ? '+' : ''}{chg.toFixed(2)}%
                       </td>
                       <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
-                        {(s.market_cap / 1e9).toFixed(1)}B
+                        {((s.market_cap || 0) / 1e9).toFixed(1)}B
                       </td>
                       <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
                         {s.pe_ratio || 'N/A'}
@@ -221,7 +224,7 @@ export default function USStockTab({ data, onOpenChart }) {
                           padding: '2px 6px',
                           borderRadius: '4px'
                         }}>
-                          {s.rsi_14}
+                          {rsiVal.toFixed(1)}
                         </span>
                       </td>
                       <td style={{ textAlign: 'center' }}>
@@ -394,25 +397,25 @@ export default function USStockTab({ data, onOpenChart }) {
                   <div>
                     <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>ENTRY ZONE</div>
                     <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
-                      ${s.entry_price}
+                      ${Number(s.entry_price || 0).toFixed(2)}
                     </div>
                   </div>
                   <div>
                     <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>RISK / REWARD</div>
                     <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)' }}>
-                      1 : {s.risk_reward_ratio}
+                      1 : {Number(s.risk_reward_ratio || 2).toFixed(1)}
                     </div>
                   </div>
                   <div>
                     <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>STOP LOSS</div>
                     <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>
-                      ${s.stop_loss}
+                      ${Number(s.stop_loss || 0).toFixed(2)}
                     </div>
                   </div>
                   <div>
                     <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>TARGET (TP1)</div>
                     <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
-                      ${s.take_profit_1}
+                      ${Number(s.take_profit_1 || 0).toFixed(2)}
                     </div>
                   </div>
                 </div>

@@ -941,31 +941,31 @@ export default function MasterQuantLeaderboard({
               <table className='telemetry-table' style={{ width: '100%' }}>
                 <thead>
                   <tr>
-                    <th style={{ width: '40px', textAlign: 'center', cursor: 'pointer' }} onClick={() => handleSort('rank')}>
+                    <th style={{ width: '36px', textAlign: 'center', cursor: 'pointer' }} onClick={() => handleSort('rank')}>
                       #{getSortIcon('rank')}
                     </th>
-                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('ticker')}>
+                    <th style={{ width: '12%', cursor: 'pointer' }} onClick={() => handleSort('ticker')}>
                       Ticker{getSortIcon('ticker')}
                     </th>
-                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('cluster')}>
+                    <th style={{ width: '10%', cursor: 'pointer' }} onClick={() => handleSort('cluster')}>
                       {activeMainTab === 'STOCK' ? 'Grup' : 'Klaster'}{getSortIcon('cluster')}
                     </th>
-                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('signal')}>
+                    <th style={{ width: '22%', cursor: 'pointer' }} onClick={() => handleSort('signal')}>
                       Sinyal / Setup{getSortIcon('signal')}
                     </th>
-                  <th style={{ cursor: 'pointer' }} onClick={() => handleSort('price')} title="Harga pasar terkini (realtime tick / scanner)">
+                  <th style={{ width: '11%', cursor: 'pointer' }} onClick={() => handleSort('price')} title="Harga pasar terkini (realtime tick / scanner)">
                     Harga Terakhir (Live){getSortIcon('price')}
                   </th>
-                  <th style={{ cursor: 'pointer' }} onClick={() => handleSort('changePct')}>
+                  <th style={{ width: '7%', cursor: 'pointer' }} onClick={() => handleSort('changePct')}>
                     Chg %{getSortIcon('changePct')}
                   </th>
-                  <th title="Zona beli terencana berdasarkan setup teknikal quant">Entry Plan</th>
-                  <th>Hard SL</th>
-                  <th>TP1</th>
-                  <th style={{ cursor: 'pointer' }} onClick={() => handleSort('riskReward')}>
+                  <th style={{ width: '10%' }} title="Zona beli terencana berdasarkan setup teknikal quant">Entry Plan</th>
+                  <th style={{ width: '8%' }}>Hard SL</th>
+                  <th style={{ width: '7%' }}>TP1</th>
+                  <th style={{ width: '7%', cursor: 'pointer' }} onClick={() => handleSort('riskReward')}>
                     R:R{getSortIcon('riskReward')}
                   </th>
-                  <th style={{ textAlign: 'center' }}>Aksi</th>
+                  <th style={{ width: '6%', textAlign: 'center' }}>Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -1012,40 +1012,41 @@ export default function MasterQuantLeaderboard({
                             </span>
                           </td>
                           <td>
-                            {item.dynamic?.statusLabel ? (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                                <span className={'badge ' + (item.dynamic.badgeClass || 'badge')} style={{ fontSize: '9px', whiteSpace: 'nowrap' }}>
-                                  {item.dynamic.statusLabel}
-                                </span>
-                                <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
+                              {item.dynamic?.statusLabel ? (
+                                <>
+                                  <span className={'badge ' + (item.dynamic.badgeClass || 'badge')} style={{ fontSize: '9px', whiteSpace: 'nowrap' }}>
+                                    {item.dynamic.statusLabel}
+                                  </span>
+                                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '600', whiteSpace: 'nowrap' }}>
+                                    {item.signal}
+                                  </span>
+                                </>
+                              ) : (
+                                <span className={'badge ' + (
+                                  item.signal === 'BREAKOUT' || item.signal === 'HIGH YIELD SAFE' || item.signal === 'FOREIGN BUY' ? 'badge-bull' :
+                                  item.signal === 'ACCUMULATION' || item.signal === 'SPOT_LONG' ? 'badge-blue' :
+                                  item.signal === 'TRAP RISK' || item.signal === 'FOREIGN SELL' ? 'badge-bear' : 'badge'
+                                )} style={{ fontSize: '9px', whiteSpace: 'nowrap' }}>
                                   {item.signal}
                                 </span>
-                              </div>
-                            ) : (
-                              <span className={'badge ' + (
-                                item.signal === 'BREAKOUT' || item.signal === 'HIGH YIELD SAFE' || item.signal === 'FOREIGN BUY' ? 'badge-bull' :
-                                item.signal === 'ACCUMULATION' || item.signal === 'SPOT_LONG' ? 'badge-blue' :
-                                item.signal === 'TRAP RISK' || item.signal === 'FOREIGN SELL' ? 'badge-bear' : 'badge'
-                              )}>
-                                {item.signal}
-                              </span>
-                            )}
-                            {item.rawPlan?.technicals?.confluence_score !== undefined && (
-                              <div style={{ marginTop: '3px' }}>
+                              )}
+                              {item.rawPlan?.technicals?.confluence_score !== undefined && (
                                 <span style={{
                                   fontSize: '9px',
                                   fontFamily: 'var(--font-mono)',
                                   fontWeight: '800',
                                   padding: '1px 5px',
                                   borderRadius: '3px',
+                                  whiteSpace: 'nowrap',
                                   background: item.rawPlan.technicals.confluence_score >= 70 ? 'rgba(52, 199, 89, 0.15)' : item.rawPlan.technicals.confluence_score >= 40 ? 'rgba(255, 149, 0, 0.15)' : 'rgba(255, 59, 48, 0.15)',
                                   color: item.rawPlan.technicals.confluence_score >= 70 ? 'var(--accent-green)' : item.rawPlan.technicals.confluence_score >= 40 ? 'var(--accent-orange)' : '#ff3b30',
                                   border: `1px solid ${item.rawPlan.technicals.confluence_score >= 70 ? 'rgba(52, 199, 89, 0.3)' : item.rawPlan.technicals.confluence_score >= 40 ? 'rgba(255, 149, 0, 0.3)' : 'rgba(255, 59, 48, 0.3)'}`
                                 }}>
                                   ⚡ {item.rawPlan.technicals.confluence_score}% Q-Score
                                 </span>
-                              </div>
-                            )}
+                              )}
+                            </div>
                           </td>
                           <td style={{
                             fontWeight: '800',
