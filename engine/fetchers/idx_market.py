@@ -268,18 +268,33 @@ class IDXMarketFetcher:
             }
         ]
 
-        # 3. Foreign Flow Radar Candidates
+        # 3. Foreign Flow Radar Candidates (Expanded liquid universe)
         self.foreign_flow_candidates = [
             {"ticker": "BBCA.JK", "name": "Bank Central Asia"},
             {"ticker": "BBRI.JK", "name": "Bank Rakyat Indonesia"},
             {"ticker": "BMRI.JK", "name": "Bank Mandiri"},
+            {"ticker": "BBNI.JK", "name": "Bank Negara Indonesia"},
             {"ticker": "TLKM.JK", "name": "Telkom Indonesia"},
             {"ticker": "ASII.JK", "name": "Astra International"},
             {"ticker": "MDKA.JK", "name": "Merdeka Copper Gold"},
             {"ticker": "ANTM.JK", "name": "Aneka Tambang"},
             {"ticker": "GOTO.JK", "name": "GoTo Gojek Tokopedia"},
             {"ticker": "BRIS.JK", "name": "Bank Syariah Indonesia"},
-            {"ticker": "CPIN.JK", "name": "Charoen Pokphand Indonesia"}
+            {"ticker": "CPIN.JK", "name": "Charoen Pokphand Indonesia"},
+            {"ticker": "AMMN.JK", "name": "Amman Mineral Internasional"},
+            {"ticker": "MEDC.JK", "name": "Medco Energi Internasional"},
+            {"ticker": "ENRG.JK", "name": "Energi Mega Persada"},
+            {"ticker": "UNTR.JK", "name": "United Tractors"},
+            {"ticker": "ICBP.JK", "name": "Indofood CBP Sukses Makmur"},
+            {"ticker": "INDF.JK", "name": "Indofood Sukses Makmur"},
+            {"ticker": "PGAS.JK", "name": "Perusahaan Gas Negara"},
+            {"ticker": "PTBA.JK", "name": "Bukit Asam"},
+            {"ticker": "ADRO.JK", "name": "Adaro Energy Indonesia"},
+            {"ticker": "BREN.JK", "name": "Barito Renewables Energy"},
+            {"ticker": "KLBF.JK", "name": "Kalbe Farma"},
+            {"ticker": "BRMS.JK", "name": "Bumi Resources Minerals"},
+            {"ticker": "INCO.JK", "name": "Vale Indonesia"},
+            {"ticker": "ITMG.JK", "name": "Indo Tambangraya Megah"}
         ]
         self.tv_cache = {}
 
@@ -536,10 +551,12 @@ class IDXMarketFetcher:
                 return f"{prefix}{abs_v/1e12:.2f} T"
             return f"{prefix}{abs_v/1e9:.1f} M"
 
-        # Sort top 6 inflow and top 6 outflow
-        sorted_flow = sorted(flow_records, key=lambda x: x["foreign_net_val_idr"], reverse=True)
-        top_inflow = sorted_flow[:6]
-        top_outflow = sorted(flow_records, key=lambda x: x["foreign_net_val_idr"])[:6]
+        # Sort top 6 inflow and top 6 outflow (Strict non-zero validation)
+        inflow_candidates = [f for f in flow_records if f["foreign_net_val_idr"] > 0]
+        outflow_candidates = [f for f in flow_records if f["foreign_net_val_idr"] < 0]
+
+        top_inflow = sorted(inflow_candidates, key=lambda x: x["foreign_net_val_idr"], reverse=True)[:6]
+        top_outflow = sorted(outflow_candidates, key=lambda x: x["foreign_net_val_idr"])[:6]
 
         for f in top_inflow:
             f["net_value_fmt"] = _fmt_flow(f["foreign_net_val_idr"])

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import BloombergNewsWire from './BloombergNewsWire.jsx';
 import AssetIcon from './AssetIcon.jsx';
 import CryptoIcon from './CryptoIcon.jsx';
@@ -91,26 +91,66 @@ export default function HomeDashboardTab({
   const formatFlowIdr = (val) => {
     if (val === undefined || val === null || isNaN(val)) return 'Rp 0';
     const num = Number(val);
+    if (num === 0) return 'Rp 0';
     const abs = Math.abs(num);
-    const sign = num >= 0 ? '+' : '-';
+    const sign = num > 0 ? '+' : '-';
     if (abs >= 1e12) return `${sign}Rp ${(abs / 1e12).toFixed(2)} T`;
     if (abs >= 1e9) return `${sign}Rp ${(abs / 1e9).toFixed(2)} B`;
     if (abs >= 1e6) return `${sign}Rp ${(abs / 1e6).toFixed(0)} M`;
     return `${sign}Rp ${abs.toLocaleString('id-ID')}`;
   };
 
-  // Foreign flow calculations (Top 6 Inflow & Top 6 Outflow for richer institutional depth)
-  const rawInflow = foreignFlow.top_inflow || [];
-  const rawOutflow = foreignFlow.top_outflow || [];
-  const topInflow = rawInflow.length >= 6
-    ? rawInflow.slice(0, 6)
-    : [...rawInflow, { ticker: 'ADRO', foreign_net_val_idr: 98000000 }].slice(0, 6);
-  const topOutflow = rawOutflow.length >= 6
-    ? rawOutflow.slice(0, 6)
-    : [...rawOutflow, { ticker: 'BREN', foreign_net_val_idr: -135000000 }].slice(0, 6);
+  // Foreign flow calculations (Top 6 Inflow & Top 6 Outflow with strict non-zero validation)
+  const topInflow = useMemo(() => {
+    const raw = (foreignFlow.top_inflow || []).filter(f => (Number(f.foreign_net_val_idr) || 0) > 0);
+    const seen = new Set(raw.map(r => r.ticker));
+    const pool = [...raw];
+
+    // Supplement from other sectors if less than 6
+    if (pool.length < 6 && data?.conglomerates) {
+      Object.values(data.conglomerates).flat().forEach(f => {
+        const val = Number(f.foreign_net_val_idr) || 0;
+        if (val > 0 && f.ticker && !seen.has(f.ticker)) {
+          seen.add(f.ticker);
+          pool.push({ ...f, foreign_net_val_idr: val });
+        }
+      });
+    }
+    return pool.sort((a, b) => (Number(b.foreign_net_val_idr) || 0) - (Number(a.foreign_net_val_idr) || 0)).slice(0, 6);
+  }, [foreignFlow, data]);
+
+  const topOutflow = useMemo(() => {
+    const raw = (foreignFlow.top_outflow || []).filter(f => (Number(f.foreign_net_val_idr) || 0) < 0);
+    const seen = new Set(raw.map(r => r.ticker));
+    const pool = [...raw];
+
+    // Supplement from other sectors with real outflow if less than 6
+    if (pool.length < 6 && data?.conglomerates) {
+      Object.values(data.conglomerates).flat().forEach(f => {
+        const val = Number(f.foreign_net_val_idr) || 0;
+        if (val < 0 && f.ticker && !seen.has(f.ticker)) {
+          seen.add(f.ticker);
+          pool.push({ ...f, foreign_net_val_idr: val });
+        }
+      });
+    }
+    if (pool.length < 6 && data?.dividend_hunters) {
+      data.dividend_hunters.forEach(f => {
+        const val = Number(f.foreign_net_val_idr) || 0;
+        if (val < 0 && f.ticker && !seen.has(f.ticker)) {
+          seen.add(f.ticker);
+          pool.push({ ...f, foreign_net_val_idr: val });
+        }
+      });
+    }
+    return pool.sort((a, b) => (Number(a.foreign_net_val_idr) || 0) - (Number(b.foreign_net_val_idr) || 0)).slice(0, 6);
+  }, [foreignFlow, data]);
+
   const netInflowSum = topInflow.reduce((acc, c) => acc + (Number(c.foreign_net_val_idr) || 0), 0);
   const netOutflowSum = topOutflow.reduce((acc, c) => acc + (Number(c.foreign_net_val_idr) || 0), 0);
-  const totalNetForeign = netInflowSum + netOutflowSum;
+  const totalNetForeign = foreignFlow.summary?.net_today_idr !== undefined
+    ? Number(foreignFlow.summary.net_today_idr)
+    : (netInflowSum + netOutflowSum);
 
   // Broker accumulation (Top 6 institutional smart money accumulation)
   const accumulatingBrokers = Object.values(brokerSummary)
