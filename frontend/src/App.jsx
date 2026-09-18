@@ -412,6 +412,7 @@ export default function App() {
               <HomeDashboardTab
                 data={data}
                 livePrices={livePrices}
+                allIdxStocks={allIdxStocks}
                 flashMap={flashMap}
                 onSelectTicker={handleOpenSecurityHub}
                 onOpenLotCalc={handleOpenLotCalc}

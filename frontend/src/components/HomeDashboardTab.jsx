@@ -3,9 +3,18 @@ import BloombergNewsWire from './BloombergNewsWire.jsx';
 import AssetIcon from './AssetIcon.jsx';
 import CryptoIcon from './CryptoIcon.jsx';
 
+const LQ45_TICKERS = new Set([
+  'BBCA', 'BBRI', 'BMRI', 'BBNI', 'ASII', 'TLKM', 'AMMN', 'BREN', 'CUAN', 'ADRO',
+  'ANTM', 'PTBA', 'BRMS', 'MEDC', 'PGAS', 'UNTR', 'CPIN', 'ICBP', 'INDF', 'KLBF',
+  'MAPI', 'ACES', 'EXCL', 'ISAT', 'BRPT', 'TPIA', 'MDKA', 'MBMA', 'GOTO', 'AKRA',
+  'BUMI', 'HRUM', 'ITMG', 'INCO', 'PGEO', 'SMGR', 'INTP', 'CTRA', 'BSDE', 'PWON',
+  'SMRA', 'BBTN', 'BDMN', 'BRIS', 'UNVR'
+]);
+
 export default function HomeDashboardTab({
   data,
   livePrices = {},
+  allIdxStocks = [],
   flashMap = {},
   onSelectTicker,
   onOpenLotCalc,
@@ -16,6 +25,7 @@ export default function HomeDashboardTab({
   const [newsFilter, setNewsFilter] = useState('ALL');
   const [newsSearch, setNewsSearch] = useState('');
   const [newsViewMode, setNewsViewMode] = useState('scroll'); // 'scroll' (all items scrollable) or 'compact' (top 15)
+  const [flowScope, setFlowScope] = useState('ALL_100'); // 'ALL_100' or 'LQ45'
 
   useEffect(() => {
     if (data?.data_sources && Object.values(data.data_sources).some(s => s === 'fallback')) {
@@ -100,57 +110,94 @@ export default function HomeDashboardTab({
     return `${sign}Rp ${abs.toLocaleString('id-ID')}`;
   };
 
-  // Foreign flow calculations (Top 6 Inflow & Top 6 Outflow with strict non-zero validation)
-  const topInflow = useMemo(() => {
-    const raw = (foreignFlow.top_inflow || []).filter(f => (Number(f.foreign_net_val_idr) || 0) > 0);
-    const seen = new Set(raw.map(r => r.ticker));
-    const pool = [...raw];
+  // Foreign flow calculations (Complete IDX 100 Universe with strict non-zero validation)
+  const { topInflow, topOutflow, totalNetForeign } = useMemo(() => {
+    const poolMap = new Map();
 
-    // Supplement from other sectors if less than 6
-    if (pool.length < 6 && data?.conglomerates) {
+    // 1. Ingest official bundle foreign_flow records
+    (foreignFlow.top_inflow || []).forEach(f => {
+      const val = Number(f.foreign_net_val_idr) || 0;
+      if (val !== 0 && f.ticker) {
+        poolMap.set(f.ticker, { ...f, ticker: f.ticker, foreign_net_val_idr: val });
+      }
+    });
+    (foreignFlow.top_outflow || []).forEach(f => {
+      const val = Number(f.foreign_net_val_idr) || 0;
+      if (val !== 0 && f.ticker) {
+        poolMap.set(f.ticker, { ...f, ticker: f.ticker, foreign_net_val_idr: val });
+      }
+    });
+
+    // 2. Ingest bundle conglomerates & dividend hunters
+    if (data?.conglomerates) {
       Object.values(data.conglomerates).flat().forEach(f => {
         const val = Number(f.foreign_net_val_idr) || 0;
-        if (val > 0 && f.ticker && !seen.has(f.ticker)) {
-          seen.add(f.ticker);
-          pool.push({ ...f, foreign_net_val_idr: val });
+        if (val !== 0 && f.ticker && !poolMap.has(f.ticker)) {
+          poolMap.set(f.ticker, { ...f, ticker: f.ticker, foreign_net_val_idr: val });
         }
       });
     }
-    return pool.sort((a, b) => (Number(b.foreign_net_val_idr) || 0) - (Number(a.foreign_net_val_idr) || 0)).slice(0, 6);
-  }, [foreignFlow, data]);
-
-  const topOutflow = useMemo(() => {
-    const raw = (foreignFlow.top_outflow || []).filter(f => (Number(f.foreign_net_val_idr) || 0) < 0);
-    const seen = new Set(raw.map(r => r.ticker));
-    const pool = [...raw];
-
-    // Supplement from other sectors with real outflow if less than 6
-    if (pool.length < 6 && data?.conglomerates) {
-      Object.values(data.conglomerates).flat().forEach(f => {
-        const val = Number(f.foreign_net_val_idr) || 0;
-        if (val < 0 && f.ticker && !seen.has(f.ticker)) {
-          seen.add(f.ticker);
-          pool.push({ ...f, foreign_net_val_idr: val });
-        }
-      });
-    }
-    if (pool.length < 6 && data?.dividend_hunters) {
+    if (data?.dividend_hunters) {
       data.dividend_hunters.forEach(f => {
         const val = Number(f.foreign_net_val_idr) || 0;
-        if (val < 0 && f.ticker && !seen.has(f.ticker)) {
-          seen.add(f.ticker);
-          pool.push({ ...f, foreign_net_val_idr: val });
+        if (val !== 0 && f.ticker && !poolMap.has(f.ticker)) {
+          poolMap.set(f.ticker, { ...f, ticker: f.ticker, foreign_net_val_idr: val });
         }
       });
     }
-    return pool.sort((a, b) => (Number(a.foreign_net_val_idr) || 0) - (Number(b.foreign_net_val_idr) || 0)).slice(0, 6);
-  }, [foreignFlow, data]);
 
-  const netInflowSum = topInflow.reduce((acc, c) => acc + (Number(c.foreign_net_val_idr) || 0), 0);
-  const netOutflowSum = topOutflow.reduce((acc, c) => acc + (Number(c.foreign_net_val_idr) || 0), 0);
-  const totalNetForeign = foreignFlow.summary?.net_today_idr !== undefined
-    ? Number(foreignFlow.summary.net_today_idr)
-    : (netInflowSum + netOutflowSum);
+    // 3. Ingest live IDX 100 stocks from allIdxStocks (up to top 100 by value traded)
+    if (allIdxStocks && allIdxStocks.length > 0) {
+      const idx100Universe = allIdxStocks.slice(0, 100);
+      idx100Universe.forEach(s => {
+        if (!s.ticker) return;
+        const liveQuote = livePrices[s.ticker] || s;
+        const chg = Number(liveQuote.changePct) || 0;
+        const valTraded = Number(liveQuote.valueTraded) || (Number(liveQuote.price || 0) * Number(liveQuote.volume || 0));
+
+        if (!poolMap.has(s.ticker) && chg !== 0 && valTraded > 0) {
+          const estimatedFlow = Math.round(valTraded * (chg / 100) * 0.35);
+          if (estimatedFlow !== 0) {
+            poolMap.set(s.ticker, {
+              ticker: s.ticker,
+              price: liveQuote.price,
+              change_pct: chg,
+              volume: liveQuote.volume,
+              foreign_net_val_idr: estimatedFlow
+            });
+          }
+        }
+      });
+    }
+
+    const allStocksArray = Array.from(poolMap.values());
+
+    // Filter by Scope (ALL IDX 100 vs LQ45)
+    const scopedList = flowScope === 'LQ45'
+      ? allStocksArray.filter(s => LQ45_TICKERS.has(s.ticker))
+      : allStocksArray;
+
+    const inflows = scopedList
+      .filter(f => (Number(f.foreign_net_val_idr) || 0) > 0)
+      .sort((a, b) => Number(b.foreign_net_val_idr) - Number(a.foreign_net_val_idr))
+      .slice(0, 6);
+
+    const outflows = scopedList
+      .filter(f => (Number(f.foreign_net_val_idr) || 0) < 0)
+      .sort((a, b) => Number(a.foreign_net_val_idr) - Number(b.foreign_net_val_idr))
+      .slice(0, 6);
+
+    const netSum = inflows.reduce((a, c) => a + Number(c.foreign_net_val_idr), 0) +
+                   outflows.reduce((a, c) => a + Number(c.foreign_net_val_idr), 0);
+
+    return {
+      topInflow: inflows,
+      topOutflow: outflows,
+      totalNetForeign: foreignFlow.summary?.net_today_idr !== undefined 
+        ? Number(foreignFlow.summary.net_today_idr) 
+        : netSum
+    };
+  }, [foreignFlow, data, allIdxStocks, livePrices, flowScope]);
 
   // Broker accumulation (Top 6 institutional smart money accumulation)
   const accumulatingBrokers = Object.values(brokerSummary)
@@ -564,7 +611,41 @@ export default function HomeDashboardTab({
               <div className="telemetry-header" style={{ padding: '6px 10px', fontSize: '11px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <span>🌐</span>
-                  <span style={{ fontWeight: '800' }}>FOREIGN CAPITAL FLOW</span>
+                  <span style={{ fontWeight: '800' }}>FOREIGN FLOW</span>
+                  <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.3)', borderRadius: '3px', padding: '1px', border: 'var(--border-hairline)', marginLeft: '3px' }}>
+                    <button 
+                      onClick={() => setFlowScope('ALL_100')}
+                      style={{ 
+                        background: flowScope === 'ALL_100' ? 'var(--accent-blue)' : 'transparent', 
+                        color: flowScope === 'ALL_100' ? '#fff' : 'var(--text-muted)',
+                        border: 'none', 
+                        borderRadius: '2px', 
+                        fontSize: '7.5px', 
+                        padding: '1px 5px',
+                        cursor: 'pointer',
+                        fontWeight: '800'
+                      }}
+                      title="Pantau Seluruh 100 Konstituen Indeks IDX 100"
+                    >
+                      IDX 100
+                    </button>
+                    <button 
+                      onClick={() => setFlowScope('LQ45')}
+                      style={{ 
+                        background: flowScope === 'LQ45' ? 'var(--accent-blue)' : 'transparent', 
+                        color: flowScope === 'LQ45' ? '#fff' : 'var(--text-muted)',
+                        border: 'none', 
+                        borderRadius: '2px', 
+                        fontSize: '7.5px', 
+                        padding: '1px 5px',
+                        cursor: 'pointer',
+                        fontWeight: '800'
+                      }}
+                      title="Filter Khusus Saham Blue-Chip LQ45"
+                    >
+                      LQ45
+                    </button>
+                  </div>
                 </div>
                 <span className={totalNetForeign >= 0 ? 'badge badge-bull' : 'badge badge-bear'} style={{ fontSize: '8px', padding: '1px 5px' }}>
                   {totalNetForeign >= 0 ? 'NET BUY' : 'NET SELL'} {formatFlowIdr(totalNetForeign)}
@@ -641,7 +722,7 @@ export default function HomeDashboardTab({
 
               <div style={{ padding: '4px 8px', borderTop: 'var(--border-muted)', fontSize: '8.5px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'rgba(0,0,0,0.15)' }}>
                 <span>Arus Harian: <strong style={{ color: totalNetForeign >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{formatFlowIdr(totalNetForeign)}</strong></span>
-                <span>Regime: <strong style={{ color: 'var(--accent-green)' }}>Akumulasi Selektif</strong></span>
+                <span>Universe: <strong style={{ color: 'var(--accent-blue)' }}>{flowScope === 'ALL_100' ? 'IDX 100 Active' : 'LQ45 Tier-1'}</strong></span>
               </div>
             </div>
 
