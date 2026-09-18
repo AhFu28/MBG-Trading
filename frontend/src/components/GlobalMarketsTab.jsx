@@ -25,7 +25,7 @@ function getZoneInfo(date, timeZone) {
   }
 }
 
-export default function GlobalMarketsTab({ onSelectTicker, macro, bundle }) {
+export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePrices = {} }) {
   const [activeRegion, setActiveRegion] = useState('ALL');
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -162,8 +162,11 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle }) {
   const liveDxyVal = macro?.dxy_index ? Number(macro.dxy_index).toFixed(2) : '98.73';
   const liveDxyChange = Number(macro?.dxy_change_pct || -0.04);
   const liveUs10yYield = macro?.us10y_yield ? `${Number(macro.us10y_yield).toFixed(2)}%` : '4.84%';
-  const liveIhsgPrice = macro?.ihsg_price || macro?.jkse_price ? Number(macro.ihsg_price || macro.jkse_price).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '6,506.40';
-  const liveIhsgChange = macro?.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29;
+  const liveIhsg = livePrices['IHSG'] || livePrices['.JKSE'] || livePrices['IDX:COMPOSITE'];
+  const liveIhsgPrice = liveIhsg?.price !== undefined 
+    ? Number(liveIhsg.price).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    : (macro?.ihsg_price || macro?.jkse_price ? Number(macro.ihsg_price || macro.jkse_price).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '6,455.66');
+  const liveIhsgChange = liveIhsg?.changePct !== undefined ? Number(liveIhsg.changePct) : (macro?.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -0.10);
 
   // Comprehensive Cross-Market Asset Universe
   const fallbackAssets = [

@@ -272,25 +272,38 @@ export default function HomeDashboardTab({
                   {narrative.length > 105 ? narrative.slice(0, 105) + '...' : narrative}
                 </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)', fontSize: '9px', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>
-                <div>
-                  <span style={{ color: 'var(--text-muted)' }}>.JKSE: </span>
-                  <strong style={{ color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
-                    {macro.ihsg_price || macro.jkse_price ? Number(macro.ihsg_price || macro.jkse_price).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '6,506.40'}
-                  </strong>
-                </div>
-                <div>
-                  <span style={{ color: 'var(--text-muted)' }}>Chg: </span>
-                  <strong style={{ color: (macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29) >= 0 ? 'var(--accent-green)' : '#ff3b30', fontVariantNumeric: 'tabular-nums' }}>
-                    {(macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -1.29) >= 0 ? '+' : ''}
-                    {macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct).toFixed(2) : '-1.29'}%
-                  </strong>
-                </div>
-                <div>
-                  <span style={{ color: 'var(--text-muted)' }}>Vol: </span>
-                  <strong style={{ color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>2.1T</strong>
-                </div>
-              </div>
+              {(() => {
+                const liveIhsg = livePrices['IHSG'] || livePrices['.JKSE'] || livePrices['IDX:COMPOSITE'];
+                const ihsgPriceVal = liveIhsg?.price !== undefined ? liveIhsg.price : (macro.ihsg_price || macro.jkse_price || 6455.66);
+                const ihsgVal = Number(ihsgPriceVal).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const ihsgChange = liveIhsg?.changePct !== undefined ? Number(liveIhsg.changePct) : (macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -0.10);
+                const isIhsgFlash = flashMap['IHSG'] || flashMap['IDX:COMPOSITE'];
+                return (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)', fontSize: '9px', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>
+                    <div>
+                      <span style={{ color: 'var(--text-muted)' }}>.JKSE: </span>
+                      <strong style={{
+                        color: isIhsgFlash === 'up' ? 'var(--accent-green)' : isIhsgFlash === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)',
+                        fontVariantNumeric: 'tabular-nums',
+                        transition: 'color 0.3s ease'
+                      }}>
+                        {ihsgVal}
+                      </strong>
+                    </div>
+                    <div>
+                      <span style={{ color: 'var(--text-muted)' }}>Chg: </span>
+                      <strong style={{ color: ihsgChange >= 0 ? 'var(--accent-green)' : '#ff3b30', fontVariantNumeric: 'tabular-nums' }}>
+                        {ihsgChange >= 0 ? '+' : ''}
+                        {ihsgChange.toFixed(2)}%
+                      </strong>
+                    </div>
+                    <div>
+                      <span style={{ color: 'var(--text-muted)' }}>Vol: </span>
+                      <strong style={{ color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>2.1T</strong>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Card 2: Global Commodities (Brent Oil & Gold — Sinkron Geopolitik & Perang) */}
@@ -869,6 +882,10 @@ export default function HomeDashboardTab({
                     <tbody>
                       {topIdxPlans.slice(0, 6).map(plan => {
                         const ticker = plan.clean_ticker || plan.symbol?.replace('.JK', '');
+                        const live = livePrices[ticker] || livePrices[`IDX:${ticker}`];
+                        const currentPrice = live?.price !== undefined ? live.price : plan.entry_price;
+                        const changePct = live?.changePct !== undefined ? live.changePct : 0.0;
+                        const isFlashing = flashMap[ticker];
                         return (
                           <tr key={ticker} style={{ borderBottom: 'rgba(255,255,255,0.03)' }}>
                             <td style={{ padding: '4.5px 2px', fontWeight: '800' }}>
@@ -877,6 +894,15 @@ export default function HomeDashboardTab({
                                 <span style={{ color: 'var(--accent-blue)', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(ticker, 'IDX')}>
                                   {ticker}
                                 </span>
+                              </div>
+                              <div style={{
+                                fontSize: '7.5px',
+                                fontFamily: 'var(--font-mono)',
+                                color: isFlashing === 'up' ? 'var(--accent-green)' : isFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)',
+                                fontVariantNumeric: 'tabular-nums',
+                                transition: 'color 0.3s ease'
+                              }}>
+                                Rp {Math.round(currentPrice).toLocaleString('id-ID')} ({changePct >= 0 ? '+' : ''}{changePct.toFixed(1)}%)
                               </div>
                             </td>
                             <td style={{ padding: '4.5px 2px' }}>
@@ -929,16 +955,32 @@ export default function HomeDashboardTab({
                       </tr>
                     </thead>
                     <tbody>
-                      {topCryptoPicks.slice(0, 6).map(c => (
-                        <tr key={c.pair} style={{ borderBottom: 'rgba(255,255,255,0.03)' }}>
-                          <td style={{ padding: '4.5px 2px', fontWeight: '800' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', minWidth: 0 }}>
-                              <CryptoIcon symbol={c.pair} size={13} />
-                              <span style={{ color: '#60a5fa', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(c.pair, 'CRYPTO')}>
-                                {c.pair}
-                              </span>
-                            </div>
-                          </td>
+                      {topCryptoPicks.slice(0, 6).map(c => {
+                        const s = c.symbol || c.pair || '';
+                        const clean = s.replace('/', '');
+                        const live = livePrices[c.pair] || livePrices[c.symbol] || livePrices[clean];
+                        const currentPrice = live?.price !== undefined ? live.price : (c.current_price || c.entry_price);
+                        const changePct = live?.changePct !== undefined ? live.changePct : (c.change_24h_pct || 0);
+                        const isFlashing = flashMap[clean] || flashMap[c.symbol] || flashMap[c.pair];
+                        return (
+                          <tr key={c.pair} style={{ borderBottom: 'rgba(255,255,255,0.03)' }}>
+                            <td style={{ padding: '4.5px 2px', fontWeight: '800' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', minWidth: 0 }}>
+                                <CryptoIcon symbol={c.pair} size={13} />
+                                <span style={{ color: '#60a5fa', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(c.pair, 'CRYPTO')}>
+                                  {c.pair}
+                                </span>
+                              </div>
+                              <div style={{
+                                fontSize: '7.5px',
+                                fontFamily: 'var(--font-mono)',
+                                color: isFlashing === 'up' ? 'var(--accent-green)' : isFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)',
+                                fontVariantNumeric: 'tabular-nums',
+                                transition: 'color 0.3s ease'
+                              }}>
+                                ${Number(currentPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ({changePct >= 0 ? '+' : ''}{changePct.toFixed(1)}%)
+                              </div>
+                            </td>
                           <td style={{ padding: '4.5px 2px' }}>
                             <span className="badge badge-alert" style={{ fontSize: '6.5px', padding: '1px 3px' }}>
                               RANGE_ACC
@@ -948,7 +990,8 @@ export default function HomeDashboardTab({
                           <td style={{ padding: '4.5px 2px', textAlign: 'right', color: 'var(--accent-rust)', fontVariantNumeric: 'tabular-nums', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{formatCryptoPrice(c.stop_loss)}</td>
                           <td style={{ padding: '4.5px 2px', textAlign: 'right', color: 'var(--accent-green)', fontVariantNumeric: 'tabular-nums', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{formatCryptoPrice(c.take_profit_1)}</td>
                         </tr>
-                      ))}
+                      );
+                    })}
                     </tbody>
                   </table>
                 </div>

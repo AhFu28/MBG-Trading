@@ -542,7 +542,7 @@ export default function MasterQuantLeaderboard({
 
       {activeMainTab === 'GLOBAL_MARKETS' && (
         <div style={{ padding: '12px' }}>
-          <GlobalMarketsTab onSelectTicker={onSelectTicker} macro={macro} bundle={bundle} />
+          <GlobalMarketsTab onSelectTicker={onSelectTicker} macro={macro} bundle={bundle} livePrices={livePrices} />
         </div>
       )}
 

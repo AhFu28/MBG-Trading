@@ -190,6 +190,66 @@ export function useLivePrices(bundleData) {
     }
   }, [triggerFlash]);
 
+  // 1b-seed. Seed initial base prices immediately from bundleData if available (Instant Live Ready)
+  useEffect(() => {
+    if (!bundleData) return;
+    const baseMap = idxBaseMapRef.current;
+    const initialQuotes = {};
+
+    // Seed IHSG
+    const m = bundleData.macro_telemetry;
+    if (m && (m.ihsg_price || m.jkse_price)) {
+      const p = Number(m.ihsg_price || m.jkse_price);
+      const chg = Number(m.ihsg_change_pct ?? 0.36);
+      if (!baseMap['IHSG']) {
+        baseMap['IHSG'] = { basePrice: p, prevClose: p / (1 + chg / 100) };
+        const q = { symbol: 'IHSG', fullSymbol: 'IDX:COMPOSITE', price: p, changePct: chg, market: 'IDX', updatedAt: Date.now() };
+        initialQuotes['IHSG'] = q;
+        initialQuotes['.JKSE'] = q;
+        initialQuotes['IDX:COMPOSITE'] = q;
+      }
+    }
+
+    // Seed trade plans (CUAN, PTRO, SIMP, ASGR, etc.)
+    (bundleData.daily_trade_plans || []).forEach(plan => {
+      const sym = plan.clean_ticker || plan.symbol?.replace('.JK', '');
+      if (sym && (plan.current_price || plan.entry_price)) {
+        const p = Number(plan.current_price || plan.entry_price);
+        const chg = Number(plan.change_pct || 0);
+        if (!baseMap[sym]) {
+          baseMap[sym] = { basePrice: p, prevClose: p / (1 + chg / 100) };
+          const q = { symbol: sym, fullSymbol: `IDX:${sym}`, price: p, changePct: chg, market: 'IDX', updatedAt: Date.now() };
+          initialQuotes[sym] = q;
+          initialQuotes[`${sym}.JK`] = q;
+          initialQuotes[`IDX:${sym}`] = q;
+        }
+      }
+    });
+
+    // Seed conglomerates
+    Object.values(bundleData.conglomerates || {}).forEach(arr => {
+      if (Array.isArray(arr)) {
+        arr.forEach(s => {
+          if (s.ticker && (s.price || s.current_price)) {
+            const p = Number(s.price || s.current_price);
+            const chg = Number(s.change_pct || 0);
+            if (!baseMap[s.ticker]) {
+              baseMap[s.ticker] = { basePrice: p, prevClose: p / (1 + chg / 100) };
+              const q = { symbol: s.ticker, fullSymbol: `IDX:${s.ticker}`, price: p, changePct: chg, market: 'IDX', updatedAt: Date.now() };
+              initialQuotes[s.ticker] = q;
+              initialQuotes[`${s.ticker}.JK`] = q;
+              initialQuotes[`IDX:${s.ticker}`] = q;
+            }
+          }
+        });
+      }
+    });
+
+    if (Object.keys(initialQuotes).length > 0) {
+      setLivePrices(prev => ({ ...initialQuotes, ...prev }));
+    }
+  }, [bundleData]);
+
   // 1c. Micro-Tick Simulation Engine untuk IDX (Memberikan denyut realtime dinamis layaknya Crypto)
   useEffect(() => {
     // Fraksi harga resmi bursa BEI
@@ -202,86 +262,107 @@ export function useLivePrices(bundleData) {
     };
 
     const tickInterval = setInterval(() => {
-      const pool = ['IHSG', ...DEFAULT_IDX_TICKERS.map(t => t.replace('IDX:', ''))];
-      const targetSym = pool[Math.floor(Math.random() * pool.length)];
+      // Dynamic universe: Trade plans + Bluechips + IHSG
+      const tradePlanTickers = (bundleData?.daily_trade_plans || []).map(p => p.clean_ticker || p.symbol?.replace('.JK', '')).filter(Boolean);
+      const activeUniverse = Array.from(new Set([
+        'IHSG',
+        ...tradePlanTickers,
+        ...DEFAULT_IDX_TICKERS.map(t => t.replace('IDX:', ''))
+      ]));
+
+      // Tick 2 to 4 tickers simultaneously every 1.1s pulse
+      const batchCount = Math.floor(Math.random() * 3) + 2; // 2, 3, or 4 tickers
+      const targets = [];
+      
+      // 55% chance to include IHSG in each pulse
+      if (Math.random() > 0.45) {
+        targets.push('IHSG');
+      }
+
+      for (let i = targets.length; i < batchCount; i++) {
+        const pick = activeUniverse[Math.floor(Math.random() * activeUniverse.length)];
+        if (pick && !targets.includes(pick)) targets.push(pick);
+      }
 
       setLivePrices(prev => {
-        const existingQuote = prev[targetSym];
-        if (!existingQuote || !existingQuote.price) return prev;
+        let hasUpdates = false;
+        const next = { ...prev };
 
-        const baseInfo = idxBaseMapRef.current[targetSym];
-        const basePrice = baseInfo?.basePrice || existingQuote.price;
-        const currentPrice = existingQuote.price;
-        const prevClose = baseInfo?.prevClose || (basePrice / (1 + ((existingQuote.changePct || 0) / 100)));
+        targets.forEach(targetSym => {
+          const baseInfo = idxBaseMapRef.current[targetSym];
+          const existingQuote = prev[targetSym];
+          if (!existingQuote || !existingQuote.price) return;
 
-        let newPrice = currentPrice;
-        let direction = 'up';
+          const basePrice = baseInfo?.basePrice || existingQuote.price;
+          const currentPrice = existingQuote.price;
+          const prevClose = baseInfo?.prevClose || (basePrice / (1 + ((existingQuote.changePct || 0) / 100)));
 
-        if (targetSym === 'IHSG') {
-          // Fluktuasi mikro indeks IHSG (+/- 0.08 - 0.25 poin)
-          const delta = (Math.random() * 0.35 - 0.17);
-          const drift = currentPrice - basePrice;
-          const adjustedDelta = drift > 1.2 ? -Math.abs(delta) : drift < -1.2 ? Math.abs(delta) : delta;
-          newPrice = Number((currentPrice + adjustedDelta).toFixed(2));
-          direction = newPrice >= currentPrice ? 'up' : 'down';
-        } else {
-          // Saham individual BEI berdasarkan fraksi harga resmi
-          const tickSize = getIdxTickSize(basePrice);
-          const maxDriftTicks = 2; // Maksimal deviasi 2 fraksi harga dari harga bursa resmi
-          const currentTickDiff = Math.round((currentPrice - basePrice) / tickSize);
+          let newPrice = currentPrice;
+          let direction = 'up';
 
-          let tickStep = 0;
-          if (currentTickDiff >= maxDriftTicks) {
-            tickStep = -1;
-          } else if (currentTickDiff <= -maxDriftTicks) {
-            tickStep = 1;
+          if (targetSym === 'IHSG') {
+            // Fluktuasi mikro indeks IHSG (+/- 0.08 - 0.28 poin)
+            const delta = (Math.random() * 0.35 - 0.17);
+            const drift = currentPrice - basePrice;
+            const adjustedDelta = drift > 1.2 ? -Math.abs(delta) : drift < -1.2 ? Math.abs(delta) : delta;
+            newPrice = Number((currentPrice + adjustedDelta).toFixed(2));
+            direction = newPrice >= currentPrice ? 'up' : 'down';
           } else {
-            tickStep = Math.random() > 0.48 ? 1 : -1;
+            // Saham individual BEI berdasarkan fraksi harga resmi
+            const tickSize = getIdxTickSize(basePrice);
+            const maxDriftTicks = 2; // Maksimal deviasi 2 fraksi harga dari harga bursa resmi
+            const currentTickDiff = Math.round((currentPrice - basePrice) / tickSize);
+
+            let tickStep = 0;
+            if (currentTickDiff >= maxDriftTicks) {
+              tickStep = -1;
+            } else if (currentTickDiff <= -maxDriftTicks) {
+              tickStep = 1;
+            } else {
+              tickStep = Math.random() > 0.48 ? 1 : -1;
+            }
+
+            newPrice = currentPrice + (tickStep * tickSize);
+            direction = tickStep >= 0 ? 'up' : 'down';
           }
 
-          newPrice = currentPrice + (tickStep * tickSize);
-          direction = tickStep >= 0 ? 'up' : 'down';
-        }
+          if (newPrice === currentPrice) return;
 
-        if (newPrice === currentPrice) return prev;
+          triggerFlash(targetSym, direction);
+          if (targetSym === 'IHSG') {
+            triggerFlash('IDX:COMPOSITE', direction);
+            triggerFlash('.JKSE', direction);
+          } else {
+            triggerFlash(`IDX:${targetSym}`, direction);
+          }
 
-        triggerFlash(targetSym, direction);
-        if (targetSym === 'IHSG') {
-          triggerFlash('IDX:COMPOSITE', direction);
-          triggerFlash('.JKSE', direction);
-        } else {
-          triggerFlash(`IDX:${targetSym}`, direction);
-        }
+          const newChangePct = prevClose > 0 ? Number((((newPrice - prevClose) / prevClose) * 100).toFixed(2)) : existingQuote.changePct;
 
-        const newChangePct = prevClose > 0 ? Number((((newPrice - prevClose) / prevClose) * 100).toFixed(2)) : existingQuote.changePct;
+          const updatedQuote = {
+            ...existingQuote,
+            price: newPrice,
+            changePct: newChangePct,
+            updatedAt: Date.now()
+          };
 
-        const updatedQuote = {
-          ...existingQuote,
-          price: newPrice,
-          changePct: newChangePct,
-          updatedAt: Date.now()
-        };
+          next[targetSym] = updatedQuote;
+          if (targetSym === 'IHSG') {
+            next['.JKSE'] = updatedQuote;
+            next['IDX:COMPOSITE'] = updatedQuote;
+            next['COMPOSITE'] = updatedQuote;
+          } else {
+            next[`${targetSym}.JK`] = updatedQuote;
+            next[`IDX:${targetSym}`] = updatedQuote;
+          }
+          hasUpdates = true;
+        });
 
-        const next = {
-          ...prev,
-          [targetSym]: updatedQuote
-        };
-
-        if (targetSym === 'IHSG') {
-          next['.JKSE'] = updatedQuote;
-          next['IDX:COMPOSITE'] = updatedQuote;
-          next['COMPOSITE'] = updatedQuote;
-        } else {
-          next[`${targetSym}.JK`] = updatedQuote;
-          next[`IDX:${targetSym}`] = updatedQuote;
-        }
-
-        return next;
+        return hasUpdates ? next : prev;
       });
-    }, 2200);
+    }, 1100);
 
     return () => clearInterval(tickInterval);
-  }, [triggerFlash]);
+  }, [bundleData, triggerFlash]);
 
   // 1b. Fetch Seluruh Pasangan Spot USDT Binance (744+ Pasangan)
   const fetchBinance24hr = useCallback(async () => {
