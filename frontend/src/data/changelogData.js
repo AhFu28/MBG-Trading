@@ -2,13 +2,52 @@
 
 export const CHANGELOG_DATA = [
   {
+    id: 'pkg-18092026-v41',
+    version: 'Package 18092026',
+    semanticVersion: 'v4.1.0',
+    date: '18 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / ACTIVE HARI INI',
+    title: 'Update Package 18092026 (v4.1 APEX): Tri-Signal Matrix Cockpit, US Stock Signals, Authentic Logos (IDX, Crypto, Wall St) & Laser-Aligned 6px Geometry',
+    description: 'Penyempurnaan visual dan fungsional Cockpit Command Center: Memperluas radar sinyal Row 3 dari dual-box menjadi Tri-Signal Matrix (Saham IDX, Crypto Spot, dan US Stock Signals), integrasi logo/favicon resmi PT dan koin kripto di setiap baris ticker via Google Favicon CDN 64px & CoinCap/TradingView progressive waterfall, penstabilan layout dengan tableLayout fixed dan formatter desimal mikro, serta unifikasi presisi batas laser gap 6.0px terhadap Live News Wire.',
+    processFlow: [
+      { step: '1. Dual Cockpit Baseline', label: 'IDX & Crypto Only (17/09)' },
+      { step: '2. Tri-Signal Architecture', label: 'Wall St US Signals Added (18/09)' },
+      { step: '3. Authentic Logo CDN', label: 'Official PT & CoinCap Waterfall (18/09)' },
+      { step: '4. Laser-Aligned 6px', label: 'Perfect Grid Geometry (18/09)' }
+    ],
+    markdownContent: `
+### 🚀 Pembaruan Akbar v4.1 APEX (Highlights 18/09)
+- **Tri-Signal Matrix 3-Pasar (Saham IDX, Crypto Spot, US Stocks):** Menambahkan kotak sinyal ketiga untuk saham bursa Wall Street Amerika Serikat (AAPL, NVDA, MSFT, META, GOOGL, AMD, TSLA, dll.) berdampingan simetris dengan Saham IDX dan Crypto Spot pada Row 3 Home Cockpit.
+- **Logo Resmi Asli di Setiap Ticker (IDX, Kripto, Wall St):**
+  - **Saham IDX:** Menampilkan favicon/logo resmi dari website masing-masing PT emiten (PT Petrindo Jaya Kreasi / CUAN, PT Petrosea / PTRO, PT Salim Ivomas Pratama / SIMP, PT Astra Graphia / ASGR, PT Supra Boga Lestari / RANC, PT Singaraja Putra / SINI, PT Jhonlin Agro Raya / JARR, dll.) melalui integrasi Google Favicon CDN 64px resolusi tinggi pada \`stock-icons.js\` dan \`AssetIcon.jsx\`.
+  - **Crypto Spot:** Progressive CDN waterfall multi-tier (\`CoinCap 2x CDN\` $\\rightarrow$ \`TradingView SVG\` $\\rightarrow$ \`spothq CDN\` $\\rightarrow$ \`vector fallback\`) memastikan 100% token (termasuk PEPE, FET, NEAR, APT, BTC, ETH) memuat logo resmi asli tanpa error 404 atau pemblokiran CORS.
+  - **US Stocks:** Logo korporat autentik untuk raksasa teknologi dan institusional Wall Street (Nvidia, Apple, Microsoft, Meta, Google, AMD, Tesla, Goldman Sachs).
+- **Stabilisasi Grid & Anti-Overflow (\`tableLayout: 'fixed'\`):** Seluruh 3 tabel sinyal dikunci dengan \`tableLayout: fixed\` dan alokasi persentase kolom proporsional (28% Ticker, 22% Setup, 17% Entry, 16% SL, 17% TP1), mengeliminasi geseran layout (*layout shift*) saat angka harga berfluktuasi.
+- **Formatter Harga Kripto Mikro (\`formatCryptoPrice\`):** Format angka dinamis yang menangani aset berdesimal banyak (seperti koin meme PEPE \`0.000004\`) sehingga tidak meregangkan kolom dan menjaga header TP1 tetap terlihat utuh.
+- **Unifikasi Gap Laser-Aligned 6.0px:** Mengunci celah pembatas horizontal dan vertikal antar-kartu dan antar-baris tepat pada \`6.0px\`. Menyelaraskan batas kanan seluruh 4 baris Cockpit sejajar lurus tanpa celah berlebih terhadap Live News Wire Sidebar.
+- **Sinkronisasi Baris Status Row 4:** Indikator instrumen diperbarui menjadi \`82 IDX · 10 CRYPTO · 31 US EQUITIES\` yang merefleksikan cakupan multiaset lengkap terminal.
+    `.trim(),
+    table: [
+      { module: 'Tri-Signal Matrix', status: 'PROD', category: 'Cockpit / Signals', summary: '3 kotak sejajar: Saham IDX, Crypto Spot, dan US Stock Signals' },
+      { module: 'US Stock Signals', status: 'PROD', category: 'US Equities', summary: 'Setup 31 saham Wall St (AAPL, NVDA, MSFT, META, dll.)' },
+      { module: 'Official PT Favicon CDN', status: 'PROD', category: 'UI / Asset', summary: 'Logo resmi emiten BEI via Google Favicon CDN 64px' },
+      { module: 'Crypto Progressive CDN', status: 'PROD', category: 'UI / Asset', summary: 'Multi-tier CoinCap 2x + TradingView + Spothq CDN waterfall' },
+      { module: 'Fixed Table Geometry', status: 'PROD', category: 'UI / Layout', summary: 'tableLayout fixed 5 kolom stabil tanpa layout shift atau text clip' },
+      { module: 'Crypto Micro Formatter', status: 'PROD', category: 'UI / Numbers', summary: 'formatCryptoPrice menjaga kejelasan desimal PEPE & altcoins' },
+      { module: 'Laser-Aligned 6px Gaps', status: 'PROD', category: 'CSS / Grid', summary: 'Seluruh gap vertikal/horizontal rata sempurna 6.0px ke News Wire' },
+      { module: 'Telemetry Strip Sync', status: 'PROD', category: 'Telemetry', summary: '82 IDX · 10 CRYPTO · 31 US EQUITIES status bar' }
+    ]
+  },
+  {
     id: 'pkg-17092026-v4',
     version: 'Package 17092026',
     semanticVersion: 'v4.0.0',
     date: '17 September 2026',
-    status: 'LATEST',
-    statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / ACTIVE HARI INI',
+    status: 'STABLE',
+    statusColor: '#38bdf8',
+    badgeLabel: 'STABLE',
     title: 'Update Package 17092026 (v4.0 APEX): Dual-Speed Reactive Quant Engine, Live Trailing Stop to BE, Zero-Cron Architecture & 100% Cloudflare Pages',
     description: 'Lompatan arsitektur terbesar v4.0 APEX: Mengubah sistem dari snapshot statis berbasis cron menjadi Dual-Speed Reactive Quant Platform. Menghadirkan Reactive Strategy Engine klien (dynamicStrategy.js), Dynamic Trailing Stop Loss ke Breakeven (BE 🛡️), eliminasi 100% scheduled cron jobs di GitHub Actions, pembersihan total artefak Vercel untuk standardisasi Cloudflare Pages murni, Multi-Chart Grid (2x2 / 1x2), Institutional Security Hub Drawer, Bloomberg v4.0 12-Stream News Intelligence, Market Heatmap Treemap, Authentic Brand Logos (IDX, US, Forex), Watcher Whale Radar (>100 BTC) dengan Audio Chime, dan Anti-Stale Cache-Busting.',
     processFlow: [
