@@ -8,13 +8,22 @@ import { getCryptoBrand, getCryptoIcon, cleanCryptoSymbol } from '../data/crypto
  * - Guarantees accurate brand colors (Bitcoin Orange, Ethereum Purple, Solana Teal, etc.)
  */
 export default function CryptoIcon({ symbol, size = 18, style = {} }) {
-  const [imgError, setImgError] = useState(false);
+  const [srcIndex, setSrcIndex] = useState(0);
   const clean = cleanCryptoSymbol(symbol);
   if (!clean) return null;
 
   const brand = getCryptoBrand(clean);
   const iconPath = getCryptoIcon(clean);
-  const cdnUrl = `https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/${clean.toLowerCase()}.png`;
+  const lower = clean.toLowerCase();
+  const upper = clean.toUpperCase();
+
+  // Multi-tier high-res CDN waterfall: CoinCap -> TradingView -> Spothq
+  const sources = [
+    `https://assets.coincap.io/assets/icons/${lower}@2x.png`,
+    `https://s3-symbol-logo.tradingview.com/crypto/XTVC${upper}.svg`,
+    `https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/${lower}.png`
+  ];
+  const currentSrc = srcIndex < sources.length ? sources[srcIndex] : null;
 
   const containerStyle = {
     width: `${size}px`,
@@ -25,7 +34,7 @@ export default function CryptoIcon({ symbol, size = 18, style = {} }) {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: brand.gradient || brand.bg || '#3b82f6',
+    background: brand.gradient || brand.bg || '#1e293b',
     boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
     overflow: 'hidden',
     flexShrink: 0,
@@ -34,17 +43,18 @@ export default function CryptoIcon({ symbol, size = 18, style = {} }) {
     ...style
   };
 
-  // If CDN image succeeds, display the authentic multi-color PNG
-  if (!imgError) {
+  // If CDN image succeeds, display the authentic multi-color icon
+  if (currentSrc) {
     return (
       <span style={containerStyle} title={`${brand.name || clean} (${clean})`}>
         <img
-          src={cdnUrl}
+          key={currentSrc}
+          src={currentSrc}
           alt={clean}
           width={size}
           height={size}
           style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          onError={() => setImgError(true)}
+          onError={() => setSrcIndex(i => i + 1)}
           loading="lazy"
         />
       </span>

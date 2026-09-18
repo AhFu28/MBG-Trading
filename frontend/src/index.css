@@ -956,6 +956,21 @@ body {
   box-sizing: border-box;
 }
 
+.home-signals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.home-signals-grid > * {
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
 .home-flow-columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -973,6 +988,9 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
   .home-tri-bento-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .home-signals-grid {
     grid-template-columns: 1fr !important;
   }
 }

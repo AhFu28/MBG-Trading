@@ -57,12 +57,25 @@ export const IDX_STOCKS_CONFIG = {
   PTRO: { domain: 'petrosea.com', color: '#F57C00', fg: '#FFFFFF', name: 'Petrosea' },
   INDY: { domain: 'indikaenergy.com', color: '#C2185B', fg: '#FFFFFF', name: 'Indika Energy' },
   BELI: { domain: 'blibli.com', color: '#0095DA', fg: '#FFFFFF', name: 'Global Digital Niaga (Blibli)' },
-  VKTR: { domain: 'vktr.id', color: '#00ACC1', fg: '#FFFFFF', name: 'VKTR Teknologi Mobilitas' },
   AALI: { domain: 'astra-agro.co.id', color: '#2E7D32', fg: '#FFFFFF', name: 'Astra Agro Lestari' },
-  LSIP: { domain: 'pplonsum.com', color: '#388E3C', fg: '#FFFFFF', name: 'PP London Sumatra' }
+  LSIP: { domain: 'pplonsum.com', color: '#388E3C', fg: '#FFFFFF', name: 'PP London Sumatra' },
+  SIMP: { domain: 'simp.co.id', color: '#005596', fg: '#FFFFFF', name: 'Salim Ivomas Pratama' },
+  ASGR: { domain: 'astragraphia.co.id', color: '#003A70', fg: '#FFFFFF', name: 'Astra Graphia' },
+  RANC: { domain: 'ranchmarket.co.id', color: '#E31B23', fg: '#FFFFFF', name: 'Supra Boga Lestari' },
+  SINI: { domain: 'singarajaputra.com', color: '#1B5E20', fg: '#FFFFFF', name: 'Singaraja Putra' },
+  JARR: { domain: 'jhonlinagroraya.com', color: '#00695C', fg: '#FFFFFF', name: 'Jhonlin Agro Raya' },
+  PGUN: { domain: 'pradiksigunatama.com', color: '#2E7D32', fg: '#FFFFFF', name: 'Pradiksi Gunatama' },
+  DSSA: { domain: 'dssa.co.id', color: '#B71C1C', fg: '#FFFFFF', name: 'Dian Swastatika Sentosa' },
+  DMAS: { domain: 'puradelta.com', color: '#0277BD', fg: '#FFFFFF', name: 'Puradelta Lestari' },
+  AUTO: { domain: 'astra-otoparts.com', color: '#003A70', fg: '#FFFFFF', name: 'Astra Otoparts' },
+  INTP: { domain: 'indocement.co.id', color: '#C62828', fg: '#FFFFFF', name: 'Indocement Tunggal Prakarsa' },
+  BBTN: { domain: 'btn.co.id', color: '#002D62', fg: '#F5A800', name: 'Bank BTN' },
+  ELSA: { domain: 'elnusa.co.id', color: '#00529C', fg: '#FFFFFF', name: 'Elnusa' },
+  VKTR: { domain: 'vktr.id', color: '#00ACC1', fg: '#FFFFFF', name: 'VKTR Teknologi Mobilitas' }
 };
 
 export const US_STOCKS_CONFIG = {
+  GS: { domain: 'goldmansachs.com', color: '#002B49', fg: '#FFFFFF', name: 'Goldman Sachs' },
   AAPL: { domain: 'apple.com', color: '#000000', fg: '#FFFFFF', name: 'Apple Inc.' },
   NVDA: { domain: 'nvidia.com', color: '#76B900', fg: '#FFFFFF', name: 'NVIDIA Corporation' },
   MSFT: { domain: 'microsoft.com', color: '#00A4EF', fg: '#FFFFFF', name: 'Microsoft Corporation' },

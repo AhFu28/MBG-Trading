@@ -37,6 +37,7 @@ export default function HomeDashboardTab({
 
   const topIdxPlans = (data?.daily_trade_plans || []).filter(p => p.market === 'IDX');
   const topCryptoPicks = data?.crypto_spot_10 || [];
+  const topUsPlans = data?.us_stocks?.stocks || [];
   const topIdx = topIdxPlans[0];
   const topCrypto = topCryptoPicks[0];
   const macro = data?.macro_telemetry || {};
@@ -108,6 +109,18 @@ export default function HomeDashboardTab({
     if (abs >= 1e9) return `${sign}Rp ${(abs / 1e9).toFixed(2)} B`;
     if (abs >= 1e6) return `${sign}Rp ${(abs / 1e6).toFixed(0)} M`;
     return `${sign}Rp ${abs.toLocaleString('id-ID')}`;
+  };
+
+  // Format Crypto Price Helper (Clean decimals without table stretching)
+  const formatCryptoPrice = (val) => {
+    if (val === undefined || val === null || isNaN(val)) return '-';
+    const n = Number(val);
+    if (n >= 1000) return Math.round(n).toLocaleString('en-US');
+    if (n >= 10) return n.toFixed(1);
+    if (n >= 1) return n.toFixed(2);
+    if (n >= 0.01) return n.toFixed(3);
+    if (n < 0.0001) return n.toFixed(6);
+    return n.toFixed(4);
   };
 
   // Foreign flow calculations (Complete IDX 100 Universe with strict non-zero validation)
@@ -821,11 +834,11 @@ export default function HomeDashboardTab({
 
           </div>
 
-          {/* ROW 3: TWO SIDE-BY-SIDE TABLES (Saham IDX Signals vs Crypto Spot Signals) */}
-          <div className="home-dual-flow-grid">
+          {/* ROW 3: THREE SIDE-BY-SIDE TABLES (Saham IDX, Crypto Spot, and US Stock Signals) */}
+          <div className="home-signals-grid">
 
             {/* Table 1: Saham IDX Signals */}
-            <div className="telemetry-panel" style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div className="telemetry-panel" style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -834,22 +847,21 @@ export default function HomeDashboardTab({
                   </div>
                   <button
                     onClick={() => onNavigateTab('STOCK')}
-                    style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '9px', cursor: 'pointer' }}
+                    style={{ background: 'transparent', border: 'none', color: 'var(--accent-blue)', fontSize: '8.5px', cursor: 'pointer', padding: 0 }}
                   >
                     Lihat semua →
                   </button>
                 </div>
 
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ overflowX: 'hidden' }}>
+                  <table style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
                     <thead>
-                      <tr style={{ color: 'var(--text-muted)', borderBottom: 'var(--border-hairline)', textAlign: 'left' }}>
-                        <th style={{ padding: '4px' }}>Ticker</th>
-                        <th style={{ padding: '4px' }}>Setup</th>
-                        <th style={{ padding: '4px' }}>Entry</th>
-                        <th style={{ padding: '5.5px 5px' }}>SL</th>
-                        <th style={{ padding: '5.5px 5px' }}>TP1</th>
-                        <th style={{ padding: '5.5px 5px' }}>R:R</th>
+                      <tr style={{ color: 'var(--text-muted)', borderBottom: 'var(--border-hairline)', textAlign: 'left', fontSize: '8px' }}>
+                        <th style={{ padding: '4px 2px', width: '28%' }}>Ticker</th>
+                        <th style={{ padding: '4px 2px', width: '22%' }}>Setup</th>
+                        <th style={{ padding: '4px 2px', width: '17%', textAlign: 'right' }}>Entry</th>
+                        <th style={{ padding: '4px 2px', width: '16%', textAlign: 'right' }}>SL</th>
+                        <th style={{ padding: '4px 2px', width: '17%', textAlign: 'right' }}>TP1</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -857,20 +869,22 @@ export default function HomeDashboardTab({
                         const ticker = plan.clean_ticker || plan.symbol?.replace('.JK', '');
                         return (
                           <tr key={ticker} style={{ borderBottom: 'rgba(255,255,255,0.03)' }}>
-                            <td style={{ padding: '5.5px 5px', fontWeight: '800' }}>
-                              <span style={{ color: 'var(--accent-blue)', cursor: 'pointer' }} onClick={() => onSelectTicker(ticker, 'IDX')}>
-                                {ticker}
-                              </span>
+                            <td style={{ padding: '4.5px 2px', fontWeight: '800' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', minWidth: 0 }}>
+                                <AssetIcon symbol={ticker} market="IDX" size={13} />
+                                <span style={{ color: 'var(--accent-blue)', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(ticker, 'IDX')}>
+                                  {ticker}
+                                </span>
+                              </div>
                             </td>
-                            <td style={{ padding: '5.5px 5px' }}>
-                              <span className="badge badge-bull" style={{ fontSize: '7px', padding: '1px 4px' }}>
+                            <td style={{ padding: '4.5px 2px' }}>
+                              <span className="badge badge-bull" style={{ fontSize: '6.5px', padding: '1px 3px' }}>
                                 {plan.technical_signal || 'BREAKOUT'}
                               </span>
                             </td>
-                            <td style={{ padding: '5.5px 5px' }}>{Number(plan.entry_price).toLocaleString()}</td>
-                            <td style={{ padding: '5.5px 5px', color: 'var(--accent-rust)' }}>{Number(plan.stop_loss).toLocaleString()}</td>
-                            <td style={{ padding: '5.5px 5px', color: 'var(--accent-green)' }}>{Number(plan.target_1).toLocaleString()}</td>
-                            <td style={{ padding: '5.5px 5px', fontWeight: '700', color: 'var(--accent-orange)' }}>1:{plan.risk_reward_ratio || '2.2'}</td>
+                            <td style={{ padding: '4.5px 2px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{Number(plan.entry_price).toLocaleString()}</td>
+                            <td style={{ padding: '4.5px 2px', textAlign: 'right', color: 'var(--accent-rust)', fontVariantNumeric: 'tabular-nums' }}>{Number(plan.stop_loss).toLocaleString()}</td>
+                            <td style={{ padding: '4.5px 2px', textAlign: 'right', color: 'var(--accent-green)', fontVariantNumeric: 'tabular-nums' }}>{Number(plan.target_1 || plan.take_profit_1).toLocaleString()}</td>
                           </tr>
                         );
                       })}
@@ -879,14 +893,14 @@ export default function HomeDashboardTab({
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)' }}>
-                <span>Engine TimesFM + SMC</span>
-                <span>6 / {topIdxPlans.length}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', color: 'var(--text-muted)', marginTop: '4px', paddingTop: '3px', borderTop: 'var(--border-muted)', fontFamily: 'var(--font-mono)' }}>
+                <span>TimesFM + SMC</span>
+                <span>6 / {topIdxPlans.length} Emiten</span>
               </div>
             </div>
 
             {/* Table 2: Crypto Spot Signals */}
-            <div className="telemetry-panel" style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div className="telemetry-panel" style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -895,44 +909,42 @@ export default function HomeDashboardTab({
                   </div>
                   <button
                     onClick={() => onNavigateTab('CRYPTO')}
-                    style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '9px', cursor: 'pointer' }}
+                    style={{ background: 'transparent', border: 'none', color: 'var(--accent-blue)', fontSize: '8.5px', cursor: 'pointer', padding: 0 }}
                   >
                     Lihat semua →
                   </button>
                 </div>
 
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '9.5px', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ overflowX: 'hidden' }}>
+                  <table style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
                     <thead>
-                      <tr style={{ color: 'var(--text-muted)', borderBottom: 'var(--border-hairline)', textAlign: 'left' }}>
-                        <th style={{ padding: '5.5px 5px' }}>Pair</th>
-                        <th style={{ padding: '5.5px 5px' }}>Setup</th>
-                        <th style={{ padding: '5.5px 5px' }}>Entry</th>
-                        <th style={{ padding: '5.5px 5px' }}>SL</th>
-                        <th style={{ padding: '5.5px 5px' }}>TP1</th>
-                        <th style={{ padding: '5.5px 5px' }}>R:R</th>
+                      <tr style={{ color: 'var(--text-muted)', borderBottom: 'var(--border-hairline)', textAlign: 'left', fontSize: '8px' }}>
+                        <th style={{ padding: '4px 2px', width: '28%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Pair</th>
+                        <th style={{ padding: '4px 2px', width: '22%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Setup</th>
+                        <th style={{ padding: '4px 2px', width: '17%', textAlign: 'right', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Entry</th>
+                        <th style={{ padding: '4px 2px', width: '16%', textAlign: 'right', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>SL</th>
+                        <th style={{ padding: '4px 2px', width: '17%', textAlign: 'right', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>TP1</th>
                       </tr>
                     </thead>
                     <tbody>
                       {topCryptoPicks.slice(0, 6).map(c => (
                         <tr key={c.pair} style={{ borderBottom: 'rgba(255,255,255,0.03)' }}>
-                          <td style={{ padding: '5.5px 5px', fontWeight: '800' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                              <CryptoIcon symbol={c.pair} size={14} />
-                              <span style={{ color: '#60a5fa', cursor: 'pointer' }} onClick={() => onSelectTicker(c.pair, 'CRYPTO')}>
+                          <td style={{ padding: '4.5px 2px', fontWeight: '800' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', minWidth: 0 }}>
+                              <CryptoIcon symbol={c.pair} size={13} />
+                              <span style={{ color: '#60a5fa', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(c.pair, 'CRYPTO')}>
                                 {c.pair}
                               </span>
                             </div>
                           </td>
-                          <td style={{ padding: '5.5px 5px' }}>
-                            <span className="badge badge-alert" style={{ fontSize: '7px', padding: '1px 4px' }}>
+                          <td style={{ padding: '4.5px 2px' }}>
+                            <span className="badge badge-alert" style={{ fontSize: '6.5px', padding: '1px 3px' }}>
                               RANGE_ACC
                             </span>
                           </td>
-                          <td style={{ padding: '5.5px 5px' }}>{c.current_price > 10 ? Math.round(c.current_price).toLocaleString() : c.current_price}</td>
-                          <td style={{ padding: '5.5px 5px', color: 'var(--accent-rust)' }}>{c.stop_loss > 10 ? Math.round(c.stop_loss).toLocaleString() : c.stop_loss}</td>
-                          <td style={{ padding: '5.5px 5px', color: 'var(--accent-green)' }}>{c.take_profit_1 > 10 ? Math.round(c.take_profit_1).toLocaleString() : c.take_profit_1}</td>
-                          <td style={{ padding: '5.5px 5px', fontWeight: '700', color: 'var(--accent-orange)' }}>1:{c.risk_reward_ratio || '2'}</td>
+                          <td style={{ padding: '4.5px 2px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{formatCryptoPrice(c.current_price)}</td>
+                          <td style={{ padding: '4.5px 2px', textAlign: 'right', color: 'var(--accent-rust)', fontVariantNumeric: 'tabular-nums', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{formatCryptoPrice(c.stop_loss)}</td>
+                          <td style={{ padding: '4.5px 2px', textAlign: 'right', color: 'var(--accent-green)', fontVariantNumeric: 'tabular-nums', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{formatCryptoPrice(c.take_profit_1)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -940,9 +952,68 @@ export default function HomeDashboardTab({
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '6px', paddingTop: '4px', borderTop: 'var(--border-muted)' }}>
-                <span>Spot USDT · no leverage</span>
-                <span>6 / {topCryptoPicks.length}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', color: 'var(--text-muted)', marginTop: '4px', paddingTop: '3px', borderTop: 'var(--border-muted)', fontFamily: 'var(--font-mono)' }}>
+                <span>Spot USDT · No Lev</span>
+                <span>6 / {topCryptoPicks.length} Pairs</span>
+              </div>
+            </div>
+
+            {/* Table 3: US Stock Signals */}
+            <div className="telemetry-panel" style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <span style={{ fontSize: '11px', fontWeight: '800', color: '#38bdf8' }}>US Stock Signals</span>
+                    <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{topUsPlans.length}</span>
+                  </div>
+                  <button
+                    onClick={() => onNavigateTab('US_STOCKS')}
+                    style={{ background: 'transparent', border: 'none', color: 'var(--accent-blue)', fontSize: '8.5px', cursor: 'pointer', padding: 0 }}
+                  >
+                    Lihat semua →
+                  </button>
+                </div>
+
+                <div style={{ overflowX: 'hidden' }}>
+                  <table style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                    <thead>
+                      <tr style={{ color: 'var(--text-muted)', borderBottom: 'var(--border-hairline)', textAlign: 'left', fontSize: '8px' }}>
+                        <th style={{ padding: '4px 2px', width: '27%' }}>Ticker</th>
+                        <th style={{ padding: '4px 2px', width: '23%' }}>Setup</th>
+                        <th style={{ padding: '4px 2px', width: '17%', textAlign: 'right' }}>Entry</th>
+                        <th style={{ padding: '4px 2px', width: '16%', textAlign: 'right' }}>SL</th>
+                        <th style={{ padding: '4px 2px', width: '17%', textAlign: 'right' }}>TP1</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {topUsPlans.slice(0, 6).map(s => (
+                        <tr key={s.ticker} style={{ borderBottom: 'rgba(255,255,255,0.03)' }}>
+                          <td style={{ padding: '4.5px 2px', fontWeight: '800' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', minWidth: 0 }}>
+                              <AssetIcon symbol={s.ticker} market="US" size={13} />
+                              <span style={{ color: '#38bdf8', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(s.ticker, 'US')}>
+                                {s.ticker}
+                              </span>
+                            </div>
+                          </td>
+                          <td style={{ padding: '4.5px 2px' }}>
+                            <span className="badge badge-bull" style={{ fontSize: '6.5px', padding: '1px 3px' }}>
+                              {s.setup_type && s.setup_type !== 'NEUTRAL' ? s.setup_type : 'BULL_FLAG'}
+                            </span>
+                          </td>
+                          <td style={{ padding: '4.5px 2px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>${Number(s.entry_price || 0).toFixed(1)}</td>
+                          <td style={{ padding: '4.5px 2px', textAlign: 'right', color: 'var(--accent-rust)', fontVariantNumeric: 'tabular-nums' }}>${Number(s.stop_loss || 0).toFixed(1)}</td>
+                          <td style={{ padding: '4.5px 2px', textAlign: 'right', color: 'var(--accent-green)', fontVariantNumeric: 'tabular-nums' }}>${Number(s.take_profit_1 || 0).toFixed(1)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', color: 'var(--text-muted)', marginTop: '4px', paddingTop: '3px', borderTop: 'var(--border-muted)', fontFamily: 'var(--font-mono)' }}>
+                <span>Wall St · Top Institutional</span>
+                <span>6 / {topUsPlans.length} Equities</span>
               </div>
             </div>
 
@@ -963,7 +1034,7 @@ export default function HomeDashboardTab({
           }}>
             <div style={{ display: 'flex', gap: '14px', alignItems: 'center', fontFamily: 'var(--font-mono)' }}>
               <span style={{ color: 'var(--text-muted)' }}>
-                INSTRUMENTS: <strong style={{ color: 'var(--text-primary)' }}>82 SAHAM · 10 CRYPTO</strong>
+                INSTRUMENTS: <strong style={{ color: 'var(--text-primary)' }}>82 IDX · 10 CRYPTO · {topUsPlans.length || 31} US EQUITIES</strong>
               </span>
               <span style={{ color: 'var(--text-muted)' }}>
                 ENGINE: <strong style={{ color: 'var(--accent-green)' }}>TimesFM AI + SMC + IIFS</strong>
