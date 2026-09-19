@@ -2,7 +2,7 @@
 
 > **Institutional-Grade Autonomous Multi-Asset Quantitative Trading Cockpit & Real-time Intelligence Platform**  
 > Melacak 5 Kelas Aset Terintegrasi: **Saham BEI (IDX)**, **Kripto Spot & Futures (Binance)**, **Wall Street US Equities**, **Forex Interbank**, dan **Komoditas Strategis (Emas & Minyak Mentah)**.  
-> Dilengkapi **Zero Simulation Policy**, **Deteksi Akumulasi Bandar & Foreign Flow**, serta **Kalkulator Risiko Presisi**.
+> Dilengkapi **Zero Simulation Policy**, **Deteksi Akumulasi Bandar & Foreign Flow**, **Mesin Smart Money Concepts (SMC)**, **Multi-Armed Bandit Reinforcement Learning**, serta **Manajemen Risiko Matematis**.
 
 ---
 
@@ -20,29 +20,102 @@
 
 ## 🏛️ Filosofi & Prinsip Desain MBG
 
-Platform MBG dirancang bukan sekadar sebagai penampil grafik harga, melainkan sebuah instrumen analitik dengan integritas institusional berlandaskan 4 pilar filosofis:
+Platform MBG dirancang bukan sekadar sebagai penampil grafik harga pasif, melainkan sebuah instrumen intelijen kuantitatif berdaya analitik tinggi yang beroperasi berdasarkan 4 pilar filosofis:
 
 ### 1. Zero Simulation Policy (Integritas Data Mutlak)
-Dalam analisis kuantitatif dan trading profesional, **data riil adalah hukum tertinggi**. MBG menolak segala bentuk angka rekayasa:
-- **Nol Mutasi Acak**: Tidak ada `Math.random()`, generator tick sintetis, atau micro-pulse palsu di seluruh sistem.
-- **Weekend Freeze**: Ketika bursa konvensional tutup (akhir pekan dan malam hari), harga saham terkunci pada **Official Closing Price**.
-- **Standby Tape**: Running trade tape berhenti secara disiplin di luar jam bursa dan tidak memalsukan aktivitas pasar yang sedang libur.
+Dalam analisis kuantitatif dan trading profesional, **data riil adalah hukum tertinggi**. Seluruh kalkulasi probabilitas, deteksi anomali volume, dan level eksekusi kehilangan validitasnya jika didasarkan pada data buatan atau harga spekulatif:
+- **Nol Mutasi Acak**: Tidak ada `Math.random()`, generator tick sintetis, atau interpolasi buatan di seluruh codebase.
+- **Weekend Freeze**: Ketika bursa konvensional tutup (akhir pekan dan malam hari), harga saham terkunci pada **Official Closing Price** tanpa ada pergeseran desimal palsu.
+- **Standby Tape Disiplin**: Running trade tape berhenti secara otomatis di luar jam bursa dan tidak memalsukan aktivitas pita transaksi saat bursa sedang libur.
 
 ### 2. Pemisahan Tegas: Fakta vs Opini (Standar Astra)
-Setiap kartu analitik dan rencana perdagangan membedakan dengan jelas:
-- **FAKTA**: Kuotasi harga bursa, volume riil, net foreign flow, dan jejak kode broker akumulator.
-- **OPINI & TESIS**: Hipotesis teknikal kuantitatif, probabilitas arah, rasio risk/reward, dan 3 level invalidasi skenario.
+Setiap kartu analitik, laporan intelijen, dan rencana perdagangan membedakan secara tegas:
+- **FAKTA PASAR (Hard Evidence)**: Kuotasi harga penutupan bursa resmi, volume riil, net foreign flow, dan jejak kode broker pembeli/penjual dari bursa.
+- **OPINI & TESIS KUANTITATIF (Probabilistic Edge)**: Hipotesis teknikal kuantitatif, probabilitas arah harga, rasio risk/reward ($R:R \ge 1:2$), dan 3 level batas pembatalan skenario (*Invalidation Criteria*).
 
 ### 3. Transmisi Makro Intermarket (Global Liquidity Engine)
-Saham domestik tidak bergerak di ruang hampa. Pergerakan emiten BEI merupakan produk dari transmisi likuiditas global:
-- Lonjakan yield obligasi AS (**US 10Y Benchmark**) $\to$ Tekanan valuasi sektor teknologi & perbankan.
-- Penguatan **US Dollar Index (DXY)** $\to$ Aliran modal keluar (*capital outflow*) pasar berkembang.
-- Geopolitik Emas (**XAU/USD**) & Minyak Mentah (**Brent / WTI**) $\to$ Rotasi sektor tambang & energi (ANTM, BRMS, MEDC).
+Pasar modal Indonesia tidak bergerak secara terisolasi. Pergerakan emiten BEI merupakan produk akhir dari transmisi likuiditas dan rotasi modal global:
+$$\Delta \text{Equity Valuation} = f\big(\text{Yield US10Y}, \text{DXY Index}, \text{Commodity Price}, \text{Foreign Capital Flow}\big)$$
+- Lonjakan yield obligasi AS (**US 10Y Benchmark**) $\to$ Peningkatan *cost of capital*, memicu devaluasi sektor teknologi & properti.
+- Penguatan **US Dollar Index (DXY)** $\to$ Penarikan likuiditas dari *emerging markets* (penjualan bersih asing di IHSG).
+- Fluktuasi Emas (**XAU/USD**) & Minyak Mentah (**Brent / WTI**) $\to$ Transmisi instan ke saham tambang & energi (ANTM, BRMS, MEDC, PGAS).
 
 ### 4. Whale Footprint & Bandar Flow Tracking
-Melacak pergerakan smart money (*Institutional Accumulation*) melalui analisis broker summary:
+Pasar digerakkan oleh entitas dengan modal raksasa (*Smart Money / Whales / Bandar*). MBG melacak jejak kaki mereka:
 - Membedakan peran **Broker Asing (AK, BK, CS, KZ, RX)**, **Institusi Domestik (CC, NI, SQ)**, dan **Ritel Domestik (YP, PD, XC)**.
-- Mengidentifikasi anomali volume sebelum terjadinya lonjakan harga (*Smart Money Footprint*).
+- Mengukur konsentrasi lot (*Buyer/Seller Concentration Ratio*) guna mendeteksi fase akumulasi tersembunyi (*Stealth Accumulation*) sebelum terjadi lonjakan harga.
+
+---
+
+## 🧠 Mesin Strategi Kuantitatif & Model Algoritmik MBG
+
+MBG mengintegrasikan 7 mesin strategi kuantitatif independen yang saling melengkapi dalam menganalisis probabilitas pasar:
+
+```
+                  ┌─────────────────────────────────────────────────────────┐
+                  │            MBG QUANTITATIVE STRATEGY STACK              │
+                  └────────────────────────────┬────────────────────────────┘
+                                               │
+       ┌───────────────────────┬───────────────┴───────────────┬───────────────────────┐
+       ▼                       ▼                               ▼                       ▼
+┌──────────────┐       ┌──────────────┐                 ┌──────────────┐       ┌──────────────┐
+│  SMC & ICT   │       │ BANDARMOLOGY │                 │ DYNAMIC EDGE │       │ EXP3 BANDIT  │
+│ Order Blocks │       │ Broker Flow  │                 │ State Engine │       │ Reinforce RL │
+│ FVG & Sweeps │       │ IIFS & VWAP  │                 │ Trailing Stop│       │ Multi-Regime │
+└──────────────┘       └──────────────┘                 └──────────────┘       └──────────────┘
+       │                       │                               │                       │
+       └───────────────────────┼───────────────────────────────┴───────────────────────┘
+                               │
+                ┌──────────────┴──────────────┐
+                ▼                             ▼
+       ┌───────────────────┐         ┌───────────────────┐
+       │ TIMESFM FORECAST  │         │ INTERMARKET MACRO │
+       │ Google Foundation │         │ Pearson Transmit  │
+       │ Zero-Shot Traject │         │ Cross-Asset Matrix│
+       └───────────────────┘         └───────────────────┘
+```
+
+---
+
+### 1. Dynamic Reactive Edge State Machine (`dynamicStrategy.js`)
+Mesin eksekusi client-side ultra-low latency (< 1ms) yang mengevaluasi setiap denyut harga live terhadap trade plan:
+- **State Transition Cycle**:
+  $$\text{PENDING} \longrightarrow \text{ENTRY\_TRIGGER} \longrightarrow \text{IN\_POSITION} \longrightarrow \begin{cases} \text{TP1\_HIT} \to \text{TP2\_HIT} \\ \text{STOPPED\_OUT} \end{cases}$$
+- **Automated Trailing Stop Ratchet**: Begitu Target 1 tercapai (+3% s/d +6%), Stop Loss otomatis dikunci ke harga modal (*Breakeven*), mengubah status menjadi posisi bebas risiko (*Risk-Free Trade*).
+- **Anti-FOMO Extension Gate**: Jika harga melonjak $> 3.2\%$ dari Entry sebelum pengguna sempat membeli, sistem mengaktifkan status `⚠️ EXTENDED (NO FOMO)` dan melarang pembelian karena rasio risk/reward telah rusak.
+
+### 2. Smart Money Concepts (SMC) & ICT Imbalance Engine (`smc_detector.py`)
+Mendeteksi zona likuiditas institusional murni berdasarkan struktur pergerakan harga tanpa indikator lagging:
+- **Institutional Order Blocks (OB)**: Mengidentifikasi candle terakhir sebelum dorongan impulsif besar yang memecahkan struktur harga (*Break of Structure / BOS*).
+- **Fair Value Gap (FVG) / 3-Candle Imbalance**: Menghitung area ketidakseimbangan likuiditas di mana pembeli institusional mendominasi secara sepihak, menciptakan magnet harga untuk retest.
+- **Liquidity Sweeps / Turtle Soup**: Mendeteksi false breakout di atas *Equal Highs (EQH)* atau di bawah *Equal Lows (EQL)* yang dirancang untuk memancing stop loss ritel sebelum pembalikan arah.
+
+### 3. Bandarmology & Institutional Inflow Flow Score / IIFS (`bandarmology_iifs.py`)
+Menganalisis mikrostruktur perdagangan bursa melalui data broker summary harian:
+- **Broker Concentration Ratio**:
+  $$CR_3 = \sum_{i=1}^3 \frac{\text{Net Lot Buyer}_i}{\text{Total Market Volume}}, \quad CR_5 = \sum_{i=1}^5 \frac{\text{Net Lot Buyer}_i}{\text{Total Market Volume}}$$
+- **Bandar Volume-Weighted Cost Basis (Bandar VWAP)**:
+  $$\text{Bandar Average Price} = \frac{\sum (\text{Lot}_i \times \text{Price}_i \times 100)}{\sum (\text{Lot}_i \times 100)}$$
+- **Klasifikasi Tingkat Akumulasi**: `BIG_ACCUMULATION`, `ACCUMULATION`, `NEUTRAL`, `DISTRIBUTION`, dan `BIG_DISTRIBUTION`.
+
+### 4. EXP3 Multi-Armed Bandit Reinforcement Learning (`exp3_bandit.py`)
+Algoritma *Exponential-weight algorithm for Exploration and Exploitation* yang beroperasi pada lingkungan pasar non-stasioner:
+- Mengevaluasi performa relatif multi-strategi (Breakout, Mean-Reversion, Trend Following, SMC).
+- Mengupdate bobot probabilitas pemilihan strategi berdasarkan imbal hasil historis berjalan (*Walk-Forward Payoff*), secara adaptif mengurangi alokasi modal pada strategi yang sedang mengalami drawdown.
+
+### 5. TimesFM Zero-Shot Time Series Forecaster (`timesfm_forecaster.py`)
+Pemanfaatan model pondasi *TimesFM (Google Research)* untuk peramalan harga multi-horizon:
+- Menghasilkan proyeksi lintasan harga 1 hari, 5 hari, dan 20 hari ke depan.
+- Dilengkapi pita interval kepercayaan (*Calibrated Prediction Intervals*) pada tingkat keyakinan 80% dan 95% untuk estimasi batas volatilitas wajar.
+
+### 6. Intermarket Macro Transmission Matrix (`correlation_matrix.py`)
+Menghitung koefisien korelasi Pearson bergulir (*Rolling 60-Day Pearson Matrix*) antar variabel global:
+$$r_{xy} = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum (x_i - \bar{x})^2 \sum (y_i - \bar{y})^2}}$$
+- Memetakan transmisi dari aset makro (DXY, US10Y, Brent Oil, XAU/USD) ke indeks sektoral BEI (IDXENERGY, IDXBASIC, IDXFINANCE, IDXTECH).
+
+### 7. Dividend Aristocrats & Dividend Trap Detector (`dividend_scraper.py`)
+Menyaring saham pembayar dividen konsisten dengan filter pengaman:
+- **Dividend Trap Warning**: Mengukur rasio antara *Dividend Yield* terhadap volatilitas historis penurunan harga pada *Ex-Date*. Jika potensi penurunan harga melebihi dividen tunai bersih, sistem memberikan label peringatan dini `DIVIDEND TRAP RISK`.
 
 ---
 
@@ -206,49 +279,6 @@ stateDiagram-v2
 
 ---
 
-## 🛠️ Panduan Menjalankan Project di Lokal
-
-### Prasyarat
-- **Node.js**: v18.0.0 atau lebih baru.
-- **Python**: v3.10 atau v3.11.
-
-### 1. Menjalankan Frontend Dashboard
-```bash
-# Masuk ke direktori frontend
-cd frontend
-
-# Install dependensi
-npm install
-
-# Jalankan development server
-npm run dev
-```
-Buka browser di `http://localhost:3000`. Dashboard akan terbuka secara instan.
-
-### 2. Menjalankan Backend Python Quant Engine (Opsional)
-```bash
-# Dari root project:
-py -m pip install -r engine/requirements.txt
-
-# Menjalankan pipeline kalkulasi penuh:
-py engine/run_pipeline.py --mode all
-```
-Hasil kalkulasi teknikal & rekomendasi harian akan diperbarui ke `frontend/public/data/latest_cockpit_bundle.json`.
-
-### 3. Menjalankan Audit Kepatuhan (QA & QC)
-```bash
-# Menjalankan verifikasi static & live feed integrity:
-node scratch/qa_qc_compliance_audit.mjs
-
-# Menjalankan unit test backend:
-py -3 engine/tests/test_smoke.py
-
-# Memastikan build frontend bersih:
-cd frontend && npm run build
-```
-
----
-
 ## 📁 Struktur Direktori Repository
 
 ```text
@@ -259,8 +289,12 @@ mbg-trading/
 │   └── screenshots/                           # Screenshot showcase cockpit
 ├── engine/                                    # Python Quantitative Engine
 │   ├── run_pipeline.py                        # Master pipeline script
-│   ├── scrapers/                              # Scraper IDX, Crypto, & Makro
-│   ├── quant/                                 # Logika perhitungan lot & teknikal
+│   ├── analyzer/                              # Mesin Kuantitatif & Algoritmik
+│   │   ├── smc_detector.py                    # Smart Money Concepts & ICT Detector
+│   │   ├── bandarmology_iifs.py               # Broker Concentration & Accumulation
+│   │   ├── exp3_bandit.py                     # Multi-Armed Bandit Reinforcement Learning
+│   │   ├── timesfm_forecaster.py              # Google TimesFM Time-Series Forecaster
+│   │   └── correlation_matrix.py              # Intermarket Macro Transmission Matrix
 │   └── tests/                                 # Test smoke & unit testing
 ├── frontend/                                  # React 18 + Vite Cockpit
 │   ├── src/
@@ -268,6 +302,7 @@ mbg-trading/
 │   │   ├── hooks/
 │   │   │   └── useLivePrices.js               # Multi-Asset Real-time Hook (Zero Simulation)
 │   │   ├── utils/
+│   │   │   ├── dynamicStrategy.js             # Client-Side Reactive Trailing State Machine
 │   │   │   └── marketHours.js                 # Standar pengklasifikasi jam bursa dunia
 │   │   ├── App.jsx                            # Root router & cockpit layout
 │   │   └── index.css                          # Bloomberg-style theme & styling
