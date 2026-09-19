@@ -851,6 +851,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
   const [capitalInputText, setCapitalInputText] = useState(() => String(capitalPerBotIdr));
 
   // Manual Max Active Positions (1 to 100, or 999 = Unlimited)
+  // Manual Max Active Positions (1 to 100, or 999 = Unlimited)
   const [sliderMaxPositions, setSliderMaxPositions] = useState(() => {
     try {
       const saved = localStorage.getItem('mbg_ai_arena_slider_max_pos');
@@ -859,6 +860,24 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       return 10;
     }
   });
+
+  const [maxPosInputText, setMaxPosInputText] = useState(() => {
+    try {
+      const saved = localStorage.getItem('mbg_ai_arena_slider_max_pos');
+      const val = saved ? Number(JSON.parse(saved)) : 10;
+      return val >= 999 ? '' : String(val);
+    } catch {
+      return '10';
+    }
+  });
+
+  useEffect(() => {
+    if (sliderMaxPositions >= 999) {
+      setMaxPosInputText('');
+    } else if (maxPosInputText !== '' && Number(maxPosInputText) !== sliderMaxPositions) {
+      setMaxPosInputText(String(sliderMaxPositions));
+    }
+  }, [sliderMaxPositions]);
 
   const isUnlimitedPositions = sliderMaxPositions >= 999;
   const maxPositionsPerBot = isUnlimitedPositions ? 999 : sliderMaxPositions;
@@ -874,54 +893,25 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     }
   });
 
-  // Simulation Session Start Time & Live Uptime Duration (Derived from earliest recorded trade for Session #0)
-  const [sessionStartTime, setSessionStartTime] = useState(() => {
+  // Simulation Session Active Duration (Accumulated active running time in seconds)
+  const [sessionActiveSeconds, setSessionActiveSeconds] = useState(() => {
     try {
-      const savedEpochs = localStorage.getItem('mbg_ai_arena_epoch_reports');
-      const hasEpochs = savedEpochs ? JSON.parse(savedEpochs).length > 0 : false;
-      const savedStart = localStorage.getItem('mbg_ai_arena_session_start');
-
-      // If already has reset sessions, use saved start time
-      if (hasEpochs && savedStart) {
-        return Number(savedStart);
+      const savedSecs = localStorage.getItem('mbg_ai_arena_session_active_seconds');
+      if (savedSecs !== null) {
+        return Math.max(0, Number(savedSecs) || 0);
       }
-
-      // For Session #0 (initial session), determine earliest time from journal & positions
+      // If journal and positions are empty (clean or fresh session), timer is 0
       const savedJournal = localStorage.getItem('mbg_ai_arena_journal');
       const parsedJournal = savedJournal ? JSON.parse(savedJournal) : [];
-      let earliest = Date.now();
-      let foundHistorical = false;
-
-      if (Array.isArray(parsedJournal) && parsedJournal.length > 0) {
-        parsedJournal.forEach(j => {
-          const t = new Date(j.closedAt || j.openedAt || 0).getTime();
-          if (!isNaN(t) && t > 0 && t < earliest) {
-            earliest = t;
-            foundHistorical = true;
-          }
-        });
-      }
-
       const savedPos = localStorage.getItem('mbg_ai_arena_positions');
       const parsedPos = savedPos ? JSON.parse(savedPos) : [];
-      if (Array.isArray(parsedPos) && parsedPos.length > 0) {
-        parsedPos.forEach(p => {
-          const t = new Date(p.openedAt || 0).getTime();
-          if (!isNaN(t) && t > 0 && t < earliest) {
-            earliest = t;
-            foundHistorical = true;
-          }
-        });
+      if (parsedJournal.length === 0 && parsedPos.length === 0) {
+        return 0;
       }
-
-      if (foundHistorical) {
-        return earliest;
-      }
-      if (savedStart) return Number(savedStart);
     } catch {}
-    // Fallback: default baseline historical timestamp (~9 hours ago)
-    return new Date('2026-09-19T09:15:00Z').getTime();
+    return 0;
   });
+
   const [sessionUptimeStr, setSessionUptimeStr] = useState('0j 0m 0s');
 
   useEffect(() => {
@@ -938,21 +928,33 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       .catch(e => console.warn('Realtime USD/IDR fallback:', e));
   }, []);
 
+  // Timer: Hanya bertambah saat arena aktif berjalan (isRunning === true). Saat PAUSED atau sesi baru belum mulai, timer diam/0.
   useEffect(() => {
-    const updateUptime = () => {
-      const diffMs = Math.max(0, Date.now() - sessionStartTime);
-      const secs = Math.floor((diffMs / 1000) % 60);
-      const mins = Math.floor((diffMs / (1000 * 60)) % 60);
-      const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
-      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      let str = `${hours}j ${mins}m ${secs}s`;
-      if (days > 0) str = `${days}h ${str}`;
-      setSessionUptimeStr(str);
+    let interval = null;
+    if (isRunning) {
+      interval = setInterval(() => {
+        setSessionActiveSeconds(prev => {
+          const next = prev + 1;
+          try { localStorage.setItem('mbg_ai_arena_session_active_seconds', String(next)); } catch (e) {}
+          return next;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
     };
-    updateUptime();
-    const interval = setInterval(updateUptime, 1000);
-    return () => clearInterval(interval);
-  }, [sessionStartTime]);
+  }, [isRunning]);
+
+  useEffect(() => {
+    const totalSecs = sessionActiveSeconds;
+    const secs = totalSecs % 60;
+    const mins = Math.floor(totalSecs / 60) % 60;
+    const hours = Math.floor(totalSecs / 3600) % 24;
+    const days = Math.floor(totalSecs / 86400);
+    let str = `${hours}j ${mins}m ${secs}s`;
+    if (days > 0) str = `${days}h ${str}`;
+    setSessionUptimeStr(str);
+  }, [sessionActiveSeconds]);
 
   // Risk per trade %
   const [riskPerTradePct, setRiskPerTradePct] = useState(() => {
@@ -2122,12 +2124,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         };
       }));
 
-      // 4. Kosongkan posisi aktif & jurnal sesi, dan setel ulang timer sesi
+      // 4. Kosongkan posisi aktif & jurnal sesi, dan setel ulang timer sesi baru ke 0 detik
       setPositions([]);
       setJournal([]);
-      const newSessionStart = Date.now();
-      setSessionStartTime(newSessionStart);
-      try { localStorage.setItem('mbg_ai_arena_session_start', String(newSessionStart)); } catch (e) {}
+      setSessionActiveSeconds(0);
+      try {
+        localStorage.setItem('mbg_ai_arena_session_active_seconds', '0');
+        localStorage.removeItem('mbg_ai_arena_session_start');
+      } catch (e) {}
 
       // 5. Tutup modal konfirmasi dan buka modal laporan sesi untuk evaluasi user
       setResetConfirmModal({ isOpen: false, agentId: null, agentName: '' });
@@ -2409,22 +2413,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               <span className="badge" style={{ fontSize: '8.5px', background: 'rgba(168, 85, 247, 0.18)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.4)', padding: '1px 5px' }}>
                 🎮 ARENA SESSION #{epochReports.length}
               </span>
-              <span style={{ fontSize: '8.5px', color: 'var(--accent-blue)', fontFamily: 'var(--font-mono)', fontWeight: '700' }} title="Durasi Sesi Arena berjalan (dihitung sejak aktivitas transaksi terawal)">
+              <span style={{ fontSize: '8.5px', color: 'var(--accent-blue)', fontFamily: 'var(--font-mono)', fontWeight: '700' }} title="Durasi Sesi Arena berjalan (dihitung saat simulasi aktif)">
                 ⏱️ {sessionUptimeStr}
               </span>
-              {epochReports.length > 0 && (
-                <button
-                  onClick={() => {
-                    setSelectedRecapSessionKey(0);
-                    setSessionRecapModalOpen(true);
-                  }}
-                  className="badge"
-                  style={{ cursor: 'pointer', background: 'rgba(255, 255, 255, 0.06)', color: 'var(--text-secondary)', border: '1px solid var(--border-hairline)', fontSize: '8px', padding: '1px 5px' }}
-                  title="Buka Arsip Laporan Sesi Terdahulu"
-                >
-                  📑 Arsip Sesi ({epochReports.length})
-                </button>
-              )}
             </div>
           </div>
 
@@ -2487,15 +2478,39 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 <span style={{ fontSize: '9.5px', color: 'var(--text-secondary)', fontWeight: '700' }}>Max Pos:</span>
                 <input
                   id="input-max-positions"
-                  type="number"
-                  min="1"
-                  max="100"
+                  type="text"
+                  inputMode="numeric"
                   disabled={isUnlimitedPositions}
-                  value={isUnlimitedPositions ? '' : sliderMaxPositions}
+                  value={isUnlimitedPositions ? '' : maxPosInputText}
                   placeholder={isUnlimitedPositions ? '∞' : '10'}
                   onChange={e => {
-                    const val = Math.max(1, Math.min(100, Number(e.target.value) || 1));
-                    setSliderMaxPositions(val);
+                    const raw = e.target.value;
+                    if (raw === '') {
+                      setMaxPosInputText('');
+                      return;
+                    }
+                    if (/^\d+$/.test(raw)) {
+                      setMaxPosInputText(raw);
+                      const num = parseInt(raw, 10);
+                      if (!isNaN(num) && num >= 1 && num <= 100) {
+                        setSliderMaxPositions(num);
+                      }
+                    }
+                  }}
+                  onBlur={() => {
+                    const num = parseInt(maxPosInputText, 10);
+                    if (isNaN(num) || num < 1) {
+                      setMaxPosInputText(String(sliderMaxPositions >= 999 ? 10 : sliderMaxPositions));
+                    } else {
+                      const clamped = Math.min(100, Math.max(1, num));
+                      setMaxPosInputText(String(clamped));
+                      setSliderMaxPositions(clamped);
+                    }
+                  }}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      e.target.blur();
+                    }
                   }}
                   style={{
                     width: '42px',
@@ -2517,6 +2532,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   onClick={() => {
                     const nextVal = isUnlimitedPositions ? 10 : 999;
                     setSliderMaxPositions(nextVal);
+                    setMaxPosInputText(nextVal >= 999 ? '' : String(nextVal));
                     showToast(nextVal >= 999 ? 'Batas posisi diatur ke Tak Terbatas (∞ Unlimited).' : 'Batas posisi diatur ke 10 posisi / bot.');
                   }}
                   style={{
@@ -4219,57 +4235,38 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               </button>
             </div>
 
-            {/* 2. Multi-Session Switcher Bar */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', background: 'rgba(255,255,255,0.02)', borderBottom: 'var(--border-hairline)', overflowX: 'auto' }}>
-              <span style={{ fontSize: '9px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', marginRight: '4px' }}>
+            {/* 2. Multi-Session Switcher Dropdown */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 14px', background: 'rgba(255,255,255,0.02)', borderBottom: 'var(--border-hairline)', flexWrap: 'wrap' }}>
+              <label htmlFor="select-session-recap" style={{ fontSize: '9px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 PILIH SESI:
-              </span>
-              {/* LIVE Session Tab */}
-              <button
-                onClick={() => setSelectedRecapSessionKey('LIVE')}
+              </label>
+              <select
+                id="select-session-recap"
+                value={selectedRecapSessionKey}
+                onChange={e => setSelectedRecapSessionKey(e.target.value === 'LIVE' ? 'LIVE' : Number(e.target.value))}
                 style={{
-                  padding: '4px 10px',
-                  fontSize: '10px',
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: selectedRecapSessionKey === 'LIVE' ? '900' : '600',
+                  background: 'var(--bg-panel-subtle, #161b22)',
+                  color: selectedRecapSessionKey === 'LIVE' ? '#38bdf8' : '#c084fc',
+                  border: '1px solid var(--border-subtle, #30363d)',
                   borderRadius: '4px',
+                  padding: '4px 10px',
+                  fontSize: '11px',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: '700',
                   cursor: 'pointer',
-                  border: selectedRecapSessionKey === 'LIVE' ? '1px solid #e879f9' : 'var(--border-hairline)',
-                  background: selectedRecapSessionKey === 'LIVE' ? 'rgba(217, 70, 239, 0.18)' : 'transparent',
-                  color: selectedRecapSessionKey === 'LIVE' ? '#f0abfc' : 'var(--text-secondary)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px'
+                  outline: 'none',
+                  minWidth: '240px'
                 }}
               >
-                <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }} />
-                <span>Sesi #{epochReports.length} (Aktif / Live Interim)</span>
-              </button>
-
-              {/* Archived Sessions */}
-              {epochReports.map((ep, idx) => (
-                <button
-                  key={ep.id || idx}
-                  onClick={() => setSelectedRecapSessionKey(idx)}
-                  style={{
-                    padding: '4px 10px',
-                    fontSize: '10px',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: selectedRecapSessionKey === idx ? '900' : '600',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    border: selectedRecapSessionKey === idx ? '1px solid #a855f7' : 'var(--border-hairline)',
-                    background: selectedRecapSessionKey === idx ? 'rgba(168, 85, 247, 0.18)' : 'transparent',
-                    color: selectedRecapSessionKey === idx ? '#c084fc' : 'var(--text-muted)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                >
-                  <span>📑 Sesi #{ep.epochNumber}</span>
-                  <span style={{ fontSize: '8px', opacity: 0.7 }}>({ep.createdAt ? ep.createdAt.split(',')[0] : 'Arsip'})</span>
-                </button>
-              ))}
+                <option value="LIVE" style={{ background: '#0d1117', color: '#38bdf8' }}>
+                  ● Sesi #{epochReports.length} (Aktif / Live Interim)
+                </option>
+                {epochReports.map((ep, idx) => (
+                  <option key={ep.id || idx} value={idx} style={{ background: '#0d1117', color: '#c084fc' }}>
+                    📑 Sesi #{ep.epochNumber} ({ep.createdAt ? ep.createdAt.split(',')[0] : 'Arsip'})
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* 3. Modal Body */}
