@@ -19,6 +19,7 @@ const USStockTab = lazy(() => import('./components/USStockTab.jsx'));
 const MarketHeatmapTab = lazy(() => import('./components/MarketHeatmapTab.jsx'));
 const NewsDetailModal = lazy(() => import('./components/NewsDetailModal.jsx'));
 const SecurityHubDrawer = lazy(() => import('./components/SecurityHubDrawer.jsx'));
+const AiAgentArenaTab = lazy(() => import('./components/AiAgentArenaTab.jsx'));
 
 const jakartaTimeFormatter = new Intl.DateTimeFormat('id-ID', {
   timeZone: 'Asia/Jakarta',
@@ -405,6 +406,15 @@ export default function App() {
                   onOpenChart={handleOpenSecurityHub}
                   onOpenLotCalc={handleOpenLotCalc}
                   onNavigateTab={setActiveTab}
+                />
+              </main>
+            ) : activeTab === 'AI_AGENTS' ? (
+              /* AI MULTI-AGENT ARENA & 24/7 REAL-MARKET SIMULATOR */
+              <main>
+                <AiAgentArenaTab
+                  data={data}
+                  livePrices={livePrices}
+                  onOpenChart={handleOpenSecurityHub}
                 />
               </main>
             ) : activeTab === 'HOME' ? (

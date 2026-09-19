@@ -5,6 +5,7 @@ import AssetIcon from './AssetIcon.jsx';
 // Core clean trading navigation — clutter removed
 const PRIMARY_NAV_ITEMS = [
   { id: 'HOME',                icon: '🏠', label: 'Home',            section: 'COMMAND CENTER' },
+  { id: 'AI_AGENTS',           icon: '🤖', label: 'AI Agent Arena',   section: 'COMMAND CENTER' },
   { id: 'STOCK',               icon: '📈', label: 'Saham IDX',       section: 'MARKETS' },
   { id: 'CRYPTO',              icon: '⚡', label: 'Crypto Spot',      section: 'MARKETS' },
   { id: 'FUTURES',             icon: '🔥', label: 'Crypto Futures',   section: 'MARKETS' },
@@ -57,6 +58,7 @@ export default function Sidebar({
   const [showMoreTools, setShowMoreTools] = useState(false);
 
   const getBadge = (id) => {
+    if (id === 'AI_AGENTS') return 'PRO';
     if (id === 'CHARTING') return 'PRO';
     if (id === 'WHALES') return 'LIVE';
     if (id === 'FUTURES') return 'LIVE';
