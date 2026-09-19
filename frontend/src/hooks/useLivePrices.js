@@ -291,7 +291,7 @@ export function useLivePrices(bundleData) {
     }
   }, [bundleData]);
 
-  // 1c. Micro-Tick Simulation Engine untuk IDX & US Equities (Memberikan denyut realtime dinamis layaknya Crypto)
+  // 1c. Micro-Tick Simulation Engine untuk IDX & US Equities (Hanya aktif saat jam bursa resmi buka)
   useEffect(() => {
     // Fraksi harga resmi bursa BEI
     const getIdxTickSize = (p) => {
@@ -302,23 +302,56 @@ export function useLivePrices(bundleData) {
       return 25;
     };
 
+    // Deteksi jam buka bursa BEI (Senin-Jumat 09:00 - 16:00 WIB, Weekend Libur)
+    const isIdxMarketOpen = () => {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wib = new Date(utc + (3600000 * 7));
+      const day = wib.getDay(); // 0: Sun, 6: Sat
+      if (day === 0 || day === 6) return false;
+      const t = wib.getHours() * 100 + wib.getMinutes();
+      return (t >= 900 && t <= 1600);
+    };
+
+    // Deteksi jam buka bursa Wall Street US (Senin-Jumat 09:30 - 16:00 EDT, Weekend Libur)
+    const isUsMarketOpen = () => {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const edt = new Date(utc - (3600000 * 4));
+      const day = edt.getDay(); // 0: Sun, 6: Sat
+      if (day === 0 || day === 6) return false;
+      const t = edt.getHours() * 100 + edt.getMinutes();
+      return (t >= 930 && t <= 1600);
+    };
+
     const tickInterval = setInterval(() => {
+      const idxOpen = isIdxMarketOpen();
+      const usOpen = isUsMarketOpen();
+
+      // Saat bursa tutup (weekend Sabtu/Minggu atau di luar jam perdagangan), STOP simulasi.
+      // Harga saham IDX & US harus tetap diam terkunci pada harga penutupan resmi bursa.
+      if (!idxOpen && !usOpen) return;
+
       // Dynamic universe: Trade plans + Bluechips + IHSG + Top US Stocks
-      const tradePlanTickers = (bundleData?.daily_trade_plans || []).map(p => p.clean_ticker || p.symbol?.replace('.JK', '')).filter(Boolean);
-      const usTickers = (bundleData?.us_stocks?.stocks || []).slice(0, 6).map(s => s.ticker).filter(Boolean);
+      const tradePlanTickers = idxOpen 
+        ? (bundleData?.daily_trade_plans || []).map(p => p.clean_ticker || p.symbol?.replace('.JK', '')).filter(Boolean)
+        : [];
+      const usTickers = usOpen 
+        ? (bundleData?.us_stocks?.stocks || []).slice(0, 6).map(s => s.ticker).filter(Boolean)
+        : [];
       const activeUniverse = Array.from(new Set([
-        'IHSG',
-        ...tradePlanTickers,
-        ...DEFAULT_IDX_TICKERS.map(t => t.replace('IDX:', '')),
+        ...(idxOpen ? ['IHSG', ...tradePlanTickers, ...DEFAULT_IDX_TICKERS.map(t => t.replace('IDX:', ''))] : []),
         ...usTickers
       ]));
 
+      if (activeUniverse.length === 0) return;
+
       // Tick 2 to 4 tickers simultaneously every 1.1s pulse
-      const batchCount = Math.floor(Math.random() * 3) + 2; // 2, 3, or 4 tickers
+      const batchCount = Math.min(activeUniverse.length, Math.floor(Math.random() * 3) + 2);
       const targets = [];
       
-      // 55% chance to include IHSG in each pulse
-      if (Math.random() > 0.45) {
+      // 55% chance to include IHSG in each pulse jika IDX sedang buka
+      if (idxOpen && Math.random() > 0.45) {
         targets.push('IHSG');
       }
 
@@ -333,6 +366,9 @@ export function useLivePrices(bundleData) {
 
         targets.forEach(targetSym => {
           const isUs = Boolean(usBaseMapRef.current[targetSym]);
+          if (isUs && !usOpen) return;
+          if (!isUs && !idxOpen) return;
+
           const baseInfo = isUs ? usBaseMapRef.current[targetSym] : idxBaseMapRef.current[targetSym];
           const existingQuote = prev[targetSym];
           if (!existingQuote || !existingQuote.price) return;
