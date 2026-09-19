@@ -263,6 +263,7 @@ export default function App() {
       case 'FOREX': return '💱 Forex Command Center';
       case 'US_STOCKS': return '🇺🇸 US Stock Intelligence';
       case 'CHANGELOG': return '📜 Changelog Update & Catatan Rilis';
+      case 'AI_AGENTS': return '🤖 AI Multi-Agent Arena';
       default: return 'Institutional Desk';
     }
   };
