@@ -288,7 +288,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
         const tvSymbols = DEFAULT_FUTURES_PAIRS.map(p => `BINANCE:${p}.P`);
         const res = await fetch('https://scanner.tradingview.com/crypto/scan', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({
             symbols: { tickers: tvSymbols },
             columns: ['name', 'close', 'change', 'volume']

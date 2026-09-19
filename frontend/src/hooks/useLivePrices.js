@@ -9,11 +9,13 @@ const DEFAULT_IDX_TICKERS = [
   'IDX:ISAT', 'IDX:BRPT', 'IDX:TPIA', 'IDX:MDKA', 'IDX:MBMA', 'IDX:GOTO'
 ];
 
-// Default list US stocks
+// Default list US stocks (full 31 institutional universe matching bundle)
 const DEFAULT_US_TICKERS = [
-  'NASDAQ:AAPL', 'NASDAQ:NVDA', 'NASDAQ:MSFT', 'NASDAQ:TSLA', 'NASDAQ:AMZN',
-  'NASDAQ:GOOGL', 'NASDAQ:META', 'NASDAQ:AMD', 'NASDAQ:AVGO', 'NASDAQ:PLTR',
-  'NYSE:JPM', 'NYSE:XOM', 'NYSE:BA', 'NASDAQ:COIN', 'NASDAQ:SMCI'
+  'NASDAQ:AAPL', 'NASDAQ:NVDA', 'NASDAQ:MSFT', 'NASDAQ:META', 'NASDAQ:GOOGL', 'NASDAQ:AMD',
+  'NASDAQ:AVGO', 'NYSE:CRM', 'NASDAQ:PLTR', 'NASDAQ:SMCI', 'NASDAQ:AMZN', 'NASDAQ:TSLA',
+  'NASDAQ:NFLX', 'NASDAQ:COIN', 'NASDAQ:SOFI', 'NYSE:JPM', 'NYSE:GS', 'NYSE:V',
+  'NYSE:MA', 'NYSE:UNH', 'NYSE:JNJ', 'NYSE:PFE', 'NYSE:LLY', 'NYSE:XOM',
+  'NYSE:CVX', 'NYSE:BA', 'NYSE:GE', 'NYSE:CAT', 'NASDAQ:MU', 'NASDAQ:INTC', 'NASDAQ:ARM'
 ];
 
 // Default list Forex
@@ -34,6 +36,7 @@ export function useLivePrices(bundleData) {
   const wsRef = useRef(null);
   const flashTimeoutRef = useRef(null);
   const idxBaseMapRef = useRef({});
+  const usBaseMapRef = useRef({});
 
   // Helper untuk trigger flash animasi hijau/merah
   const triggerFlash = useCallback((symbol, direction) => {
@@ -48,152 +51,176 @@ export function useLivePrices(bundleData) {
     }, 800);
   }, []);
 
-  // 1. Fetch Seluruh Alam Semesta Saham BEI (849+ Emiten Aktif) & Indeks IDX (IHSG, LQ45) via TradingView Scanner
+  // 1. Fetch Seluruh Alam Semesta Saham BEI & Indeks IDX via TradingView Scanner
   const fetchIdxQuotes = useCallback(async () => {
+    // 1a. Priority targeted fetch: Indeks & Active Trade Plans & Bluechips (Guaranteed fresh & zero CORS delay)
     try {
-      const [stocksRes, indexRes] = await Promise.all([
-        fetch('https://scanner.tradingview.com/indonesia/scan', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            filter: [{ left: 'active_symbol', operation: 'equal', right: true }],
-            options: { lang: 'en' },
-            symbols: { query: { types: [] }, tickers: [] },
-            columns: ['name', 'close', 'change', 'volume', 'Value.Traded', 'description', 'high', 'low', 'RSI', 'SMA20'],
-            sort: { sortBy: 'Value.Traded', sortOrder: 'desc' },
-            range: [0, 850]
-          })
-        }),
-        fetch('https://scanner.tradingview.com/indonesia/scan', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            symbols: { tickers: ['IDX:COMPOSITE', 'IDX:LQ45'] },
-            columns: ['name', 'close', 'change', 'volume', 'Value.Traded', 'description', 'high', 'low']
-          })
+      const planTickers = (bundleData?.daily_trade_plans || []).map(p => p.clean_ticker || p.symbol?.replace('.JK', '')).filter(Boolean);
+      const priorityTickers = Array.from(new Set([
+        'IDX:COMPOSITE', 'IDX:LQ45',
+        ...DEFAULT_IDX_TICKERS,
+        ...planTickers.map(t => `IDX:${t}`)
+      ]));
+
+      const priorityRes = await fetch('https://scanner.tradingview.com/indonesia/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          symbols: { tickers: priorityTickers },
+          columns: ['name', 'close', 'change', 'volume', 'Value.Traded', 'description', 'high', 'low']
         })
-      ]);
+      });
 
-      const stocksData = stocksRes.ok ? await stocksRes.json() : null;
-      const indexData = indexRes.ok ? await indexRes.json() : null;
+      if (priorityRes.ok) {
+        const priorityData = await priorityRes.json();
+        if (Array.isArray(priorityData?.data)) {
+          setLivePrices(prev => {
+            const next = { ...prev };
+            priorityData.data.forEach(item => {
+              const rawSym = item.s || '';
+              const clean = rawSym.replace('IDX:', '');
+              const [name, close, changePct, volume, valueTraded, description, high, low] = item.d || [];
+              if (close !== undefined && close !== null) {
+                const isIhsg = rawSym === 'IDX:COMPOSITE';
+                const lookupKey = isIhsg ? 'IHSG' : clean;
+                const oldPrice = next[lookupKey]?.price;
+                if (oldPrice && Math.abs(oldPrice - close) > (isIhsg ? 0.05 : 0.001)) {
+                  triggerFlash(lookupKey, close > oldPrice ? 'up' : 'down');
+                }
 
-      const stocksList = [];
-      setLivePrices(prev => {
-        const next = { ...prev };
+                const quote = {
+                  symbol: isIhsg ? 'IHSG' : clean,
+                  fullSymbol: rawSym,
+                  price: Number(close),
+                  changePct: Number((changePct || 0).toFixed(2)),
+                  volume: Number(volume || 0),
+                  valueTraded: Number(valueTraded || 0),
+                  description: description || name,
+                  high: Number(high || close),
+                  low: Number(low || close),
+                  market: 'IDX',
+                  updatedAt: Date.now()
+                };
 
-        // 1a. Process Indeks BEI (IHSG & LQ45)
-        if (Array.isArray(indexData?.data)) {
-          indexData.data.forEach(item => {
-            const rawSym = item.s || '';
-            const [name, close, changePct, volume, valueTraded, description, high, low] = item.d || [];
-            if (close !== undefined && close !== null) {
-              const oldPrice = next['IHSG']?.price;
-              if (rawSym === 'IDX:COMPOSITE' && oldPrice && Math.abs(oldPrice - close) > 0.01) {
-                triggerFlash('IHSG', close > oldPrice ? 'up' : 'down');
+                if (isIhsg) {
+                  next['IHSG'] = quote;
+                  next['.JKSE'] = quote;
+                  next['IDX:COMPOSITE'] = quote;
+                  next['COMPOSITE'] = quote;
+                  idxBaseMapRef.current['IHSG'] = {
+                    basePrice: Number(close),
+                    prevClose: changePct ? Number(close) / (1 + (changePct / 100)) : Number(close)
+                  };
+                } else {
+                  next[clean] = quote;
+                  next[`${clean}.JK`] = quote;
+                  next[rawSym] = quote;
+                  idxBaseMapRef.current[clean] = {
+                    basePrice: Number(close),
+                    prevClose: changePct ? Number(close) / (1 + (changePct / 100)) : Number(close)
+                  };
+                }
               }
+            });
+            return next;
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Live IDX priority fetch error (will retry):', err);
+    }
 
-              const quote = {
-                symbol: rawSym === 'IDX:COMPOSITE' ? 'IHSG' : rawSym.replace('IDX:', ''),
-                fullSymbol: rawSym,
-                price: Number(close),
-                changePct: Number((changePct || 0).toFixed(2)),
-                volume: Number(volume || 0),
-                valueTraded: Number(valueTraded || 0),
-                description: description || name,
-                high: Number(high || close),
-                low: Number(low || close),
-                market: 'IDX',
-                updatedAt: Date.now()
-              };
+    // 1b. Broad universe scanner (850 emiten) for Watchlist, Heatmap, and Search
+    try {
+      const broadRes = await fetch('https://scanner.tradingview.com/indonesia/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          filter: [{ left: 'active_symbol', operation: 'equal', right: true }],
+          options: { lang: 'en' },
+          symbols: { query: { types: [] }, tickers: [] },
+          columns: ['name', 'close', 'change', 'volume', 'Value.Traded', 'description', 'high', 'low', 'RSI', 'SMA20'],
+          sort: { sortBy: 'Value.Traded', sortOrder: 'desc' },
+          range: [0, 850]
+        })
+      });
 
-              if (rawSym === 'IDX:COMPOSITE') {
-                next['IHSG'] = quote;
-                next['.JKSE'] = quote;
-                next['IDX:COMPOSITE'] = quote;
-                next['COMPOSITE'] = quote;
-                idxBaseMapRef.current['IHSG'] = {
+      if (broadRes.ok) {
+        const data = await broadRes.json();
+        if (Array.isArray(data?.data)) {
+          const stocksList = [];
+          setLivePrices(prev => {
+            const next = { ...prev };
+            data.data.forEach(item => {
+              const rawSym = item.s || ''; // e.g. "IDX:BBCA"
+              const clean = rawSym.replace('IDX:', '');
+              const [name, close, changePct, volume, valueTraded, description, high, low, rsi, sma20] = item.d || [];
+              if (close !== undefined && close !== null) {
+                const oldPrice = next[clean]?.price;
+                if (oldPrice && Math.abs(oldPrice - close) > 0.001) {
+                  triggerFlash(clean, close > oldPrice ? 'up' : 'down');
+                }
+
+                const quote = {
+                  symbol: clean,
+                  fullSymbol: rawSym,
+                  price: Number(close),
+                  changePct: Number((changePct || 0).toFixed(2)),
+                  volume: Number(volume || 0),
+                  valueTraded: Number(valueTraded || 0),
+                  description: description || name,
+                  high: Number(high || close),
+                  low: Number(low || close),
+                  rsi: rsi ? Number(rsi.toFixed(1)) : null,
+                  sma20: sma20 ? Number(sma20.toFixed(0)) : null,
+                  market: 'IDX',
+                  updatedAt: Date.now()
+                };
+
+                next[clean] = quote;
+                next[`${clean}.JK`] = quote;
+                next[rawSym] = quote;
+
+                idxBaseMapRef.current[clean] = {
                   basePrice: Number(close),
                   prevClose: changePct ? Number(close) / (1 + (changePct / 100)) : Number(close)
                 };
-              } else {
-                next[rawSym] = quote;
-                next[rawSym.replace('IDX:', '')] = quote;
+
+                stocksList.push({
+                  ticker: clean,
+                  fullSymbol: rawSym,
+                  name: clean,
+                  price: Number(close),
+                  changePct: Number((changePct || 0).toFixed(2)),
+                  volume: Number(volume || 0),
+                  valueTraded: Number(valueTraded || 0),
+                  description: description || name,
+                  high: Number(high || close),
+                  low: Number(low || close),
+                  rsi: rsi ? Number(rsi.toFixed(1)) : null,
+                  sma20: sma20 ? Number(sma20.toFixed(0)) : null
+                });
               }
-            }
+            });
+            return next;
           });
+
+          if (stocksList.length > 0) {
+            setAllIdxStocks(stocksList);
+          }
         }
-
-        // 1b. Process Seluruh Saham Individual BEI
-        if (Array.isArray(stocksData?.data)) {
-          stocksData.data.forEach(item => {
-            const rawSym = item.s || ''; // e.g. "IDX:BBCA"
-            const clean = rawSym.replace('IDX:', '');
-            const [name, close, changePct, volume, valueTraded, description, high, low, rsi, sma20] = item.d || [];
-            if (close !== undefined && close !== null) {
-              const oldPrice = next[clean]?.price;
-              if (oldPrice && Math.abs(oldPrice - close) > 0.001) {
-                triggerFlash(clean, close > oldPrice ? 'up' : 'down');
-              }
-
-              const quote = {
-                symbol: clean,
-                fullSymbol: rawSym,
-                price: Number(close),
-                changePct: Number((changePct || 0).toFixed(2)),
-                volume: Number(volume || 0),
-                valueTraded: Number(valueTraded || 0),
-                description: description || name,
-                high: Number(high || close),
-                low: Number(low || close),
-                rsi: rsi ? Number(rsi.toFixed(1)) : null,
-                sma20: sma20 ? Number(sma20.toFixed(0)) : null,
-                market: 'IDX',
-                updatedAt: Date.now()
-              };
-
-              next[clean] = quote;
-              next[`${clean}.JK`] = quote;
-              next[rawSym] = quote;
-
-              idxBaseMapRef.current[clean] = {
-                basePrice: Number(close),
-                prevClose: changePct ? Number(close) / (1 + (changePct / 100)) : Number(close)
-              };
-
-              stocksList.push({
-                ticker: clean,
-                fullSymbol: rawSym,
-                name: clean,
-                price: Number(close),
-                changePct: Number((changePct || 0).toFixed(2)),
-                volume: Number(volume || 0),
-                valueTraded: Number(valueTraded || 0),
-                description: description || name,
-                high: Number(high || close),
-                low: Number(low || close),
-                rsi: rsi ? Number(rsi.toFixed(1)) : null,
-                sma20: sma20 ? Number(sma20.toFixed(0)) : null
-              });
-            }
-          });
-        }
-
-        return next;
-      });
-
-      if (stocksList.length > 0) {
-        setAllIdxStocks(stocksList);
       }
       setLastUpdateTime(new Date());
     } catch (err) {
-      console.warn('Live IDX fetch error (will retry):', err);
+      console.warn('Live IDX broad fetch error (will retry):', err);
     }
-  }, [triggerFlash]);
+  }, [bundleData, triggerFlash]);
 
   // 1b-seed. Seed initial base prices immediately from bundleData if available (Instant Live Ready)
   useEffect(() => {
     if (!bundleData) return;
     const baseMap = idxBaseMapRef.current;
+    const usMap = usBaseMapRef.current;
     const initialQuotes = {};
 
     // Seed IHSG
@@ -226,6 +253,20 @@ export function useLivePrices(bundleData) {
       }
     });
 
+    // Seed US stocks
+    (bundleData.us_stocks?.stocks || []).forEach(s => {
+      const sym = s.ticker;
+      if (sym && (s.price || s.entry_price)) {
+        const p = Number(s.price || s.entry_price);
+        const chg = Number(s.change_pct || 0);
+        if (!usMap[sym]) {
+          usMap[sym] = { basePrice: p, prevClose: p / (1 + chg / 100) };
+          const q = { symbol: sym, fullSymbol: `NASDAQ:${sym}`, price: p, changePct: chg, market: 'US', updatedAt: Date.now() };
+          initialQuotes[sym] = q;
+        }
+      }
+    });
+
     // Seed conglomerates
     Object.values(bundleData.conglomerates || {}).forEach(arr => {
       if (Array.isArray(arr)) {
@@ -250,7 +291,7 @@ export function useLivePrices(bundleData) {
     }
   }, [bundleData]);
 
-  // 1c. Micro-Tick Simulation Engine untuk IDX (Memberikan denyut realtime dinamis layaknya Crypto)
+  // 1c. Micro-Tick Simulation Engine untuk IDX & US Equities (Memberikan denyut realtime dinamis layaknya Crypto)
   useEffect(() => {
     // Fraksi harga resmi bursa BEI
     const getIdxTickSize = (p) => {
@@ -262,12 +303,14 @@ export function useLivePrices(bundleData) {
     };
 
     const tickInterval = setInterval(() => {
-      // Dynamic universe: Trade plans + Bluechips + IHSG
+      // Dynamic universe: Trade plans + Bluechips + IHSG + Top US Stocks
       const tradePlanTickers = (bundleData?.daily_trade_plans || []).map(p => p.clean_ticker || p.symbol?.replace('.JK', '')).filter(Boolean);
+      const usTickers = (bundleData?.us_stocks?.stocks || []).slice(0, 6).map(s => s.ticker).filter(Boolean);
       const activeUniverse = Array.from(new Set([
         'IHSG',
         ...tradePlanTickers,
-        ...DEFAULT_IDX_TICKERS.map(t => t.replace('IDX:', ''))
+        ...DEFAULT_IDX_TICKERS.map(t => t.replace('IDX:', '')),
+        ...usTickers
       ]));
 
       // Tick 2 to 4 tickers simultaneously every 1.1s pulse
@@ -289,7 +332,8 @@ export function useLivePrices(bundleData) {
         const next = { ...prev };
 
         targets.forEach(targetSym => {
-          const baseInfo = idxBaseMapRef.current[targetSym];
+          const isUs = Boolean(usBaseMapRef.current[targetSym]);
+          const baseInfo = isUs ? usBaseMapRef.current[targetSym] : idxBaseMapRef.current[targetSym];
           const existingQuote = prev[targetSym];
           if (!existingQuote || !existingQuote.price) return;
 
@@ -307,6 +351,14 @@ export function useLivePrices(bundleData) {
             const adjustedDelta = drift > 1.2 ? -Math.abs(delta) : drift < -1.2 ? Math.abs(delta) : delta;
             newPrice = Number((currentPrice + adjustedDelta).toFixed(2));
             direction = newPrice >= currentPrice ? 'up' : 'down';
+          } else if (isUs) {
+            // US Equities mikro fluktuasi ($0.05 / $0.10)
+            const tickSize = basePrice > 100 ? 0.10 : 0.05;
+            const maxDriftTicks = 2;
+            const currentTickDiff = Math.round((currentPrice - basePrice) / tickSize);
+            let tickStep = currentTickDiff >= maxDriftTicks ? -1 : currentTickDiff <= -maxDriftTicks ? 1 : Math.random() > 0.48 ? 1 : -1;
+            newPrice = Number((currentPrice + (tickStep * tickSize)).toFixed(2));
+            direction = tickStep >= 0 ? 'up' : 'down';
           } else {
             // Saham individual BEI berdasarkan fraksi harga resmi
             const tickSize = getIdxTickSize(basePrice);
@@ -332,7 +384,7 @@ export function useLivePrices(bundleData) {
           if (targetSym === 'IHSG') {
             triggerFlash('IDX:COMPOSITE', direction);
             triggerFlash('.JKSE', direction);
-          } else {
+          } else if (!isUs) {
             triggerFlash(`IDX:${targetSym}`, direction);
           }
 
@@ -350,7 +402,7 @@ export function useLivePrices(bundleData) {
             next['.JKSE'] = updatedQuote;
             next['IDX:COMPOSITE'] = updatedQuote;
             next['COMPOSITE'] = updatedQuote;
-          } else {
+          } else if (!isUs) {
             next[`${targetSym}.JK`] = updatedQuote;
             next[`IDX:${targetSym}`] = updatedQuote;
           }
@@ -435,7 +487,7 @@ export function useLivePrices(bundleData) {
     try {
       const res = await fetch('https://scanner.tradingview.com/america/scan', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
           symbols: { tickers: DEFAULT_US_TICKERS },
           columns: ['name', 'close', 'change', 'volume', 'high', 'low']
@@ -453,6 +505,11 @@ export function useLivePrices(bundleData) {
           const clean = rawSym.split(':')[1] || rawSym;
           const [name, close, changePct, volume, high, low] = item.d || [];
           if (close !== undefined && close !== null) {
+            const oldPrice = next[clean]?.price;
+            if (oldPrice && Math.abs(oldPrice - close) > 0.01) {
+              triggerFlash(clean, close > oldPrice ? 'up' : 'down');
+            }
+
             const quote = {
               symbol: clean,
               fullSymbol: rawSym,
@@ -466,6 +523,11 @@ export function useLivePrices(bundleData) {
             };
             next[clean] = quote;
             next[rawSym] = quote;
+
+            usBaseMapRef.current[clean] = {
+              basePrice: Number(close),
+              prevClose: changePct ? Number(close) / (1 + (changePct / 100)) : Number(close)
+            };
           }
         });
         return next;
@@ -473,14 +535,14 @@ export function useLivePrices(bundleData) {
     } catch (err) {
       console.warn('Live US fetch error (will retry):', err);
     }
-  }, []);
+  }, [triggerFlash]);
 
   // 3. Fetch Real-time Quotes dari TradingView Forex Scanner
   const fetchForexQuotes = useCallback(async () => {
     try {
       const res = await fetch('https://scanner.tradingview.com/forex/scan', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
           symbols: { tickers: DEFAULT_FOREX_TICKERS },
           columns: ['name', 'close', 'change', 'high', 'low']

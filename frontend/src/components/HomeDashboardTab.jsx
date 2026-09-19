@@ -1031,26 +1031,41 @@ export default function HomeDashboardTab({
                       </tr>
                     </thead>
                     <tbody>
-                      {topUsPlans.slice(0, 6).map(s => (
-                        <tr key={s.ticker} style={{ borderBottom: 'rgba(255,255,255,0.03)' }}>
-                          <td style={{ padding: '4.5px 2px', fontWeight: '800' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', minWidth: 0 }}>
-                              <AssetIcon symbol={s.ticker} market="US" size={13} />
-                              <span style={{ color: '#38bdf8', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(s.ticker, 'US')}>
-                                {s.ticker}
+                      {topUsPlans.slice(0, 6).map(s => {
+                        const live = livePrices[s.ticker] || livePrices[`NASDAQ:${s.ticker}`] || livePrices[`NYSE:${s.ticker}`];
+                        const currentPrice = live?.price !== undefined ? live.price : (s.price || s.entry_price || 0);
+                        const changePct = live?.changePct !== undefined ? live.changePct : (s.change_pct || 0.0);
+                        const isFlashing = flashMap[s.ticker];
+                        return (
+                          <tr key={s.ticker} style={{ borderBottom: 'rgba(255,255,255,0.03)' }}>
+                            <td style={{ padding: '4.5px 2px', fontWeight: '800' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', minWidth: 0 }}>
+                                <AssetIcon symbol={s.ticker} market="US" size={13} />
+                                <span style={{ color: '#38bdf8', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(s.ticker, 'US')}>
+                                  {s.ticker}
+                                </span>
+                              </div>
+                              <div style={{
+                                fontSize: '7.5px',
+                                fontFamily: 'var(--font-mono)',
+                                color: isFlashing === 'up' ? 'var(--accent-green)' : isFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)',
+                                fontVariantNumeric: 'tabular-nums',
+                                transition: 'color 0.3s ease'
+                              }}>
+                                ${Number(currentPrice).toFixed(1)} ({changePct >= 0 ? '+' : ''}{changePct.toFixed(1)}%)
+                              </div>
+                            </td>
+                            <td style={{ padding: '4.5px 2px' }}>
+                              <span className="badge badge-bull" style={{ fontSize: '6.5px', padding: '1px 3px' }}>
+                                {s.setup_type && s.setup_type !== 'NEUTRAL' ? s.setup_type : 'BULL_FLAG'}
                               </span>
-                            </div>
-                          </td>
-                          <td style={{ padding: '4.5px 2px' }}>
-                            <span className="badge badge-bull" style={{ fontSize: '6.5px', padding: '1px 3px' }}>
-                              {s.setup_type && s.setup_type !== 'NEUTRAL' ? s.setup_type : 'BULL_FLAG'}
-                            </span>
-                          </td>
-                          <td style={{ padding: '4.5px 2px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>${Number(s.entry_price || 0).toFixed(1)}</td>
-                          <td style={{ padding: '4.5px 2px', textAlign: 'right', color: 'var(--accent-rust)', fontVariantNumeric: 'tabular-nums' }}>${Number(s.stop_loss || 0).toFixed(1)}</td>
-                          <td style={{ padding: '4.5px 2px', textAlign: 'right', color: 'var(--accent-green)', fontVariantNumeric: 'tabular-nums' }}>${Number(s.take_profit_1 || 0).toFixed(1)}</td>
-                        </tr>
-                      ))}
+                            </td>
+                            <td style={{ padding: '4.5px 2px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>${Number(s.entry_price || 0).toFixed(1)}</td>
+                            <td style={{ padding: '4.5px 2px', textAlign: 'right', color: 'var(--accent-rust)', fontVariantNumeric: 'tabular-nums' }}>${Number(s.stop_loss || 0).toFixed(1)}</td>
+                            <td style={{ padding: '4.5px 2px', textAlign: 'right', color: 'var(--accent-green)', fontVariantNumeric: 'tabular-nums' }}>${Number(s.take_profit_1 || 0).toFixed(1)}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
