@@ -6,23 +6,31 @@
   --radius-md: 10px;
   --radius-full: 9999px;
 
-  --bg-canvas: #faf9f5;
+  --bg-canvas: #f8fafc;
   --bg-panel: #ffffff;
-  --bg-panel-subtle: #f4f3ec;
-  --bg-panel-dark: #1e2024;
-  --border-color: #d0d7de;
-  --border-hairline: 1px solid #d0d7de;
-  --border-muted: 1px solid #e1e4e8;
+  --bg-panel-subtle: #f1f5f9;
+  --bg-panel-dark: #1e293b;
+  --bg-strip-wire: #ffffff;
+  --bg-ticker-pill: #f1f5f9;
+  --text-ticker-label: #475569;
+  --border-color: #cbd5e1;
+  --border-hairline: 1px solid #e2e8f0;
+  --border-muted: 1px solid #f1f5f9;
   
-  --text-primary: #121316;
-  --text-muted: #5c5f66;
-  --text-inverse: #faf9f5;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
 
-  --accent-orange: #ff6b00;
-  --accent-blue: #0066cc;
-  --accent-rust: #b83232;
-  --accent-green: #1b8a4b;
-  --accent-gold: #c28800;
+  --accent-orange: #d97706;
+  --accent-orange-text: #c2410c;
+  --accent-blue: #2563eb;
+  --accent-rust: #dc2626;
+  --accent-rust-text: #b91c1c;
+  --accent-green: #16a34a;
+  --accent-green-text: #15803d;
+  --accent-gold: #b45309;
+  --accent-gold-text: #854d0e;
 }
 
 * {
@@ -424,6 +432,27 @@ body {
   border-color: var(--accent-blue);
 }
 
+.mobile-header-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--bg-panel-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.mobile-header-hamburger:hover {
+  background: var(--bg-panel-dark);
+  border-color: var(--accent-blue);
+}
+
 /* Tablet (769px - 1024px) */
 @media (min-width: 769px) and (max-width: 1024px) {
   .sidebar {
@@ -448,17 +477,73 @@ body {
   }
   .main-content {
     margin-left: 0 !important;
-    padding: 10px 8px 60px 8px !important;
-    padding-top: 56px !important;
+    padding: 6px 8px 60px 8px !important;
   }
   .sidebar-hamburger {
-    display: flex;
+    display: none !important;
+  }
+  .mobile-header-hamburger {
+    display: inline-flex !important;
   }
   /* Auto-stack bento grid cards */
   .telemetry-grid-4,
   .telemetry-grid-3 {
     grid-template-columns: 1fr !important;
   }
+}
+
+/* Sticky Table Columns for Mobile/Tablet */
+.table-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+.sticky-col-num {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: var(--bg-panel);
+}
+
+.sticky-col-ticker {
+  position: sticky;
+  left: 30px;
+  z-index: 5;
+  background: var(--bg-panel);
+  box-shadow: 4px 0 8px -2px rgba(0, 0, 0, 0.25);
+}
+
+th.sticky-col-num, th.sticky-col-ticker {
+  z-index: 6;
+  background: var(--bg-panel-subtle) !important;
+}
+
+[data-theme="dark"] .sticky-col-num,
+[data-theme="dark"] .sticky-col-ticker {
+  background: #121722;
+}
+
+[data-theme="dark"] th.sticky-col-num,
+[data-theme="dark"] th.sticky-col-ticker {
+  background: #18202e !important;
+}
+
+.mobile-header-hamburger {
+  display: none;
+  background: var(--bg-panel-subtle);
+  border: var(--border-hairline);
+  color: var(--text-primary);
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
 }
 
 /* Slide-in Right Animation for Security Hub */
@@ -495,6 +580,9 @@ body {
   --bg-panel: #121722;           /* Bento Card Surface */
   --bg-panel-subtle: #18202e;    /* Insets and Table Headers */
   --bg-panel-dark: #07090d;
+  --bg-strip-wire: #0d121c;
+  --bg-ticker-pill: #18202e;
+  --text-ticker-label: #94a3b8;
   --border-color: #1e2638;
   --border-hairline: 1px solid rgba(255, 255, 255, 0.08);
   --border-muted: 1px solid rgba(255, 255, 255, 0.05);
@@ -505,11 +593,15 @@ body {
   --text-inverse: #0b0e14;
 
   --accent-orange: #f59e0b;
+  --accent-orange-text: #fb923c;
   --accent-blue: #3b82f6;        /* SoSoValue Electric Azure */
   --accent-rust: #ff4d4d;        /* SoSoValue Coral Red */
+  --accent-rust-text: #ff4d4d;
   --accent-green: #00d084;       /* SoSoValue Vibrant Emerald */
+  --accent-green-text: #00d084;
   --accent-mint: #00e599;
   --accent-gold: #fbbf24;
+  --accent-gold-text: #fbbf24;
 }
 
 [data-theme="dark"] .telemetry-table th {

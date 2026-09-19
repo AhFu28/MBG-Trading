@@ -65,30 +65,31 @@ export default function BloombergNewsWire({ macro, bundle, livePrices = {}, onSe
       
       {/* 1. Streaming Macro Ticker Tape */}
       <div style={{
-        background: 'var(--bg-panel-dark)',
-        color: '#faf9f5',
-        padding: '3.5px 10px',
+        background: 'var(--bg-strip-wire, var(--bg-panel-dark))',
+        color: 'var(--text-primary)',
+        padding: '4px 10px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '8px',
         fontSize: '11px',
-        letterSpacing: '0.04em'
+        letterSpacing: '0.04em',
+        borderBottom: 'var(--border-hairline)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ width: '8px', height: '8px', background: 'var(--accent-green)', display: 'inline-block', borderRadius: '50%', boxShadow: '0 0 6px var(--accent-green)' }}></span>
-          <strong style={{ color: 'var(--accent-green)', letterSpacing: '0.04em' }}>MBG MACRO INTELLIGENCE WIRE</strong>
-          <span style={{ color: '#8e8e93', fontSize: '10px' }}>// CONTINUOUS 24/7 LIVE FEED</span>
+          <strong style={{ color: 'var(--accent-green-text, var(--accent-green))', letterSpacing: '0.04em' }}>MBG MACRO INTELLIGENCE WIRE</strong>
+          <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>// CONTINUOUS 24/7 LIVE FEED</span>
         </div>
 
         {/* Continuous Running Marquee Ticker Tape */}
         <div className="marquee-ticker-container" title="Continuous Macro Feed (Hover to Pause)">
           <div className="marquee-ticker-track">
             {[...tickerItems, ...tickerItems].map((t, i) => (
-              <span key={i} className="marquee-ticker-item">
+              <span key={i} className="marquee-ticker-item" style={{ color: 'var(--text-primary)' }}>
                 <b>{t.label}</b> {t.val}
-                <span style={{ color: t.isUp ? '#34c759' : '#ff3b30' }}>
+                <span style={{ color: t.isUp ? 'var(--accent-green-text, #10b981)' : 'var(--accent-rust-text, #ef4444)', marginLeft: '3px' }}>
                   ({t.chg})
                 </span>
               </span>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { isIdxMarketOpen, getIdxSessionDetail } from '../utils/marketHours.js';
 
 // Pool data emiten liquid IDX untuk generator running trade real-time
 const IDX_TICKERS = [
@@ -38,12 +39,23 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function generateInitialTrades(count = 25) {
+function generateInitialTrades(count = 25, isOpen = false) {
   const trades = [];
   const now = new Date();
 
+  // Jika pasar tutup (weekend / malam), gunakan referensi waktu sesi penutupan bursa resmi (15:45 - 15:59 WIB)
+  let baseClosingTime = now;
+  if (!isOpen) {
+    const d = new Date(now);
+    const day = d.getDay();
+    const diff = (day === 0 ? 2 : day === 6 ? 1 : 0);
+    d.setDate(d.getDate() - diff);
+    d.setHours(15, 59, 0, 0);
+    baseClosingTime = d;
+  }
+
   for (let i = 0; i < count; i++) {
-    const tTime = new Date(now.getTime() - (count - i) * getRandomInt(1200, 3500));
+    const tTime = new Date(baseClosingTime.getTime() - (count - i) * getRandomInt(8000, 25000));
     const emiten = getRandomItem(IDX_TICKERS);
     const isBuy = Math.random() > 0.45; // 55% buy bias
     
@@ -84,7 +96,8 @@ function generateInitialTrades(count = 25) {
 }
 
 export default function RunningTradeWidget({ onSelectTicker, embedded = false, livePrices = {} }) {
-  const [trades, setTrades] = useState(() => generateInitialTrades(30));
+  const [marketStatus, setMarketStatus] = useState(() => getIdxSessionDetail());
+  const [trades, setTrades] = useState(() => generateInitialTrades(30, isIdxMarketOpen()));
   const [isPaused, setIsPaused] = useState(false);
   const [minLotFilter, setMinLotFilter] = useState(0); // 0, 100, 500, 1000
   const [actionFilter, setActionFilter] = useState('ALL'); // 'ALL' | 'BUY' | 'SELL'
@@ -97,9 +110,21 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false, l
     livePricesRef.current = livePrices;
   }, [livePrices]);
 
-  // Live real-time tick engine
+  // Pantau status jam bursa setiap 10 detik
   useEffect(() => {
-    if (isPaused) return;
+    const statusChecker = setInterval(() => {
+      setMarketStatus(getIdxSessionDetail());
+    }, 10000);
+    return () => clearInterval(statusChecker);
+  }, []);
+
+  // Live real-time tick engine (HANYA AKTIF SAAT JAM BURSA BEI BUKA)
+  useEffect(() => {
+    // Saat bursa tutup (weekend/malam) atau saat di-pause oleh user, STOP seluruh penjadwalan trade!
+    if (isPaused || !marketStatus.isOpen) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      return;
+    }
 
     function scheduleNextTick() {
       const delay = getRandomInt(800, 2200); // interval realistis antara 0.8s s/d 2.2s
@@ -152,7 +177,7 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false, l
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [isPaused]);
+  }, [isPaused, marketStatus.isOpen]);
 
   const filteredTrades = useMemo(() => {
     return trades.filter(t => {
@@ -198,12 +223,20 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false, l
                 fontSize: '9px',
                 padding: '2px 6px',
                 borderRadius: '4px',
-                background: isPaused ? 'rgba(234, 179, 8, 0.15)' : 'rgba(0, 208, 132, 0.15)',
-                color: isPaused ? 'var(--accent-gold)' : 'var(--accent-green)',
+                background: !marketStatus.isOpen
+                  ? 'rgba(239, 68, 68, 0.15)'
+                  : isPaused
+                    ? 'rgba(234, 179, 8, 0.15)'
+                    : 'rgba(0, 208, 132, 0.15)',
+                color: !marketStatus.isOpen
+                  ? '#ef4444'
+                  : isPaused
+                    ? 'var(--accent-gold)'
+                    : 'var(--accent-green)',
                 fontWeight: '800',
                 fontFamily: 'var(--font-mono)'
               }}>
-                {isPaused ? 'STREAM PAUSED' : 'LIVE STREAM'}
+                {!marketStatus.isOpen ? `BURSA TUTUP · ${marketStatus.status}` : isPaused ? 'STREAM PAUSED' : 'LIVE STREAM'}
               </span>
             </div>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
@@ -217,21 +250,36 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false, l
           {/* Pause / Play button */}
           <button
             onClick={() => setIsPaused(p => !p)}
+            disabled={!marketStatus.isOpen}
             className="telemetry-btn"
             style={{
               padding: '4px 10px',
               fontSize: '11px',
               fontWeight: '700',
-              background: isPaused ? 'rgba(0, 208, 132, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-              color: isPaused ? 'var(--accent-green)' : 'var(--text-primary)',
-              borderColor: isPaused ? 'var(--accent-green)' : 'var(--border-hairline)',
+              background: !marketStatus.isOpen
+                ? 'rgba(255, 255, 255, 0.03)'
+                : isPaused
+                  ? 'rgba(0, 208, 132, 0.15)'
+                  : 'rgba(255, 255, 255, 0.05)',
+              color: !marketStatus.isOpen
+                ? 'var(--text-muted)'
+                : isPaused
+                  ? 'var(--accent-green)'
+                  : 'var(--text-primary)',
+              borderColor: !marketStatus.isOpen
+                ? 'var(--border-hairline)'
+                : isPaused
+                  ? 'var(--accent-green)'
+                  : 'var(--border-hairline)',
               display: 'flex',
               alignItems: 'center',
-              gap: '5px'
+              gap: '5px',
+              cursor: !marketStatus.isOpen ? 'not-allowed' : 'pointer',
+              opacity: !marketStatus.isOpen ? 0.6 : 1
             }}
-            title={isPaused ? 'Lanjutkan stream running trade' : 'Jeda stream sementara'}
+            title={!marketStatus.isOpen ? 'Bursa tutup — pita transaksi standby' : isPaused ? 'Lanjutkan stream running trade' : 'Jeda stream sementara'}
           >
-            <span>{isPaused ? '▶️ RESUME' : '⏸️ PAUSE'}</span>
+            <span>{!marketStatus.isOpen ? '🔒 STANDBY' : isPaused ? '▶️ RESUME' : '⏸️ PAUSE'}</span>
           </button>
 
           {/* Search Box */}
@@ -245,6 +293,26 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false, l
           />
         </div>
       </div>
+
+      {/* Market Closed Info Banner */}
+      {!marketStatus.isOpen && (
+        <div style={{
+          background: 'rgba(234, 179, 8, 0.08)',
+          border: '1px solid rgba(234, 179, 8, 0.25)',
+          borderRadius: '6px',
+          padding: '8px 12px',
+          fontSize: '11px',
+          color: 'var(--accent-gold)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <span style={{ fontSize: '14px' }}>🔒</span>
+          <div>
+            <strong>PASAR BEI SEDANG TUTUP ({marketStatus.label})</strong> — Pita transaksi terkunci pada harga resmi penutupan sesi terakhir. Running trade otomatis aktif kembali saat jam perdagangan dibuka.
+          </div>
+        </div>
+      )}
 
       {/* 2. Filter Pills Toolbar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', borderTop: 'var(--border-hairline)', paddingTop: '8px' }}>

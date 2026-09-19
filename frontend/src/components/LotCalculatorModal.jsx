@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
-export default function LotCalculatorModal({ isOpen, onClose, prefillEntry = '', prefillSL = '', initialMarket = 'IDX' }) {
+export default function LotCalculatorModal({
+  isOpen,
+  onClose,
+  prefillEntry = '',
+  prefillSL = '',
+  initialMarket = 'IDX',
+  initialSymbol = ''
+}) {
   const [assetMode, setAssetMode] = useState(initialMarket === 'CRYPTO' ? 'CRYPTO' : 'IDX');
   const [modalAmount, setModalAmount] = useState(initialMarket === 'CRYPTO' ? 1000 : 10000000);
   const [entryPrice, setEntryPrice] = useState(prefillEntry || '');
   const [stopLossPrice, setStopLossPrice] = useState(prefillSL || '');
   const [riskPercent, setRiskPercent] = useState(2);
+  const [isCopied, setIsCopied] = useState(false);
 
   // Update prefill values if they change
   useEffect(() => {
@@ -38,6 +46,16 @@ export default function LotCalculatorModal({ isOpen, onClose, prefillEntry = '',
   if (!isOpen) return null;
 
   const isCrypto = assetMode === 'CRYPTO';
+
+  // Format Helper for Rupiah Words
+  const formatRupiahWords = (val) => {
+    const n = Number(val) || 0;
+    if (n >= 1e12) return `${(n / 1e12).toFixed(1)} Triliun Rupiah`;
+    if (n >= 1e9) return `${(n / 1e9).toFixed(1)} Miliar Rupiah`;
+    if (n >= 1e6) return `${(n / 1e6).toFixed(0)} Juta Rupiah`;
+    if (n >= 1e3) return `${(n / 1e3).toFixed(0)} Ribu Rupiah`;
+    return `${n} Rupiah`;
+  };
 
   // Calculations
   const riskAmount = (Number(modalAmount) * Number(riskPercent)) / 100;
@@ -83,6 +101,22 @@ export default function LotCalculatorModal({ isOpen, onClose, prefillEntry = '',
     return val.toLocaleString('en-US', { maximumFractionDigits: 6 });
   };
 
+  const handleCopyExecution = () => {
+    const text = `🎯 MBG APEX EXECUTION PLAN:\n` +
+      (initialSymbol ? `Emiten: $${initialSymbol}\n` : '') +
+      `Market: ${isCrypto ? 'CRYPTO SPOT' : 'SAHAM IDX'}\n` +
+      `Sizing: ${!isCrypto ? `${maxLots} LOT (${(maxLots * 100).toLocaleString()} Lembar)` : `${formatTokens(maxTokens)} UNIT`}\n` +
+      `Entry: ${isCrypto ? '$' + entry : 'Rp ' + entry.toLocaleString('id-ID')}\n` +
+      `Stop Loss: ${isCrypto ? '$' + sl : 'Rp ' + sl.toLocaleString('id-ID')}\n` +
+      `Target (1:2.2): ${isCrypto ? '$' + targetPrice.toFixed(4) : 'Rp ' + Math.round(targetPrice).toLocaleString('id-ID')}\n` +
+      `Total Posisi: ${isCrypto ? '$' + totalPositionValue.toFixed(2) : 'Rp ' + Math.round(totalPositionValue).toLocaleString('id-ID')} (${positionPercent.toFixed(1)}% Porto)\n` +
+      `Max Resiko: ${isCrypto ? '$' + riskAmount.toFixed(2) : 'Rp ' + Math.round(riskAmount).toLocaleString('id-ID')} (${riskPercent}%)`;
+
+    navigator.clipboard.writeText(text);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
   return (
     <div style={{
       position: 'fixed',
@@ -90,46 +124,75 @@ export default function LotCalculatorModal({ isOpen, onClose, prefillEntry = '',
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(18, 19, 22, 0.85)',
+      background: 'rgba(11, 14, 20, 0.85)',
+      backdropFilter: 'blur(4px)',
       zIndex: 9999,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '20px'
+      padding: '16px'
     }}>
       <div className="telemetry-panel" style={{
         width: '100%',
-        maxWidth: '800px',
-        maxHeight: '90vh',
+        maxWidth: '720px',
+        maxHeight: '92vh',
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
         background: 'var(--bg-panel)',
-        border: '2px solid var(--border-color)',
-        boxShadow: '8px 8px 0px rgba(0,0,0,0.3)'
+        border: 'var(--border-hairline)',
+        borderRadius: '8px',
+        boxShadow: '0 16px 40px rgba(0,0,0,0.45)'
       }}>
         
         {/* Modal Topbar */}
-        <div className="telemetry-header" style={{ background: '#1c1d22', color: '#fff', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ color: 'var(--accent-green)', fontWeight: '700', fontSize: '14px' }}>
-              💰 KALKULATOR RISIKO & POSITION SIZING MBG APEX
-            </span>
+        <div className="telemetry-header" style={{
+          background: 'var(--bg-panel-subtle)',
+          borderBottom: 'var(--border-hairline)',
+          padding: '12px 18px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '18px' }}>💰</span>
+            <div>
+              <div style={{ color: 'var(--text-primary)', fontWeight: '800', fontSize: '13px', letterSpacing: '0.03em' }}>
+                KALKULATOR RISIKO & POSITION SIZING
+              </div>
+              {initialSymbol && (
+                <div style={{ fontSize: '11px', color: 'var(--accent-blue)', fontWeight: '700', marginTop: '1px' }}>
+                  Target Emiten: ${initialSymbol}
+                </div>
+              )}
+            </div>
           </div>
 
           <button 
             onClick={onClose}
-            className="telemetry-btn" 
-            style={{ background: 'var(--accent-rust)', color: '#fff', padding: '4px 12px', fontSize: '12px' }}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              fontSize: '18px',
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            title="Tutup Modal (ESC)"
+            aria-label="Tutup"
           >
-            ✕ CLOSE
+            ✕
           </button>
         </div>
 
-        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
           
           {/* Asset Mode Toggle: IDX vs CRYPTO */}
-          <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-panel-subtle)', padding: '4px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+          <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-panel-subtle)', padding: '4px', borderRadius: '6px', border: 'var(--border-hairline)' }}>
             <button
               onClick={() => {
                 setAssetMode('IDX');
@@ -142,8 +205,8 @@ export default function LotCalculatorModal({ isOpen, onClose, prefillEntry = '',
                 color: !isCrypto ? '#ffffff' : 'var(--text-muted)',
                 border: 'none',
                 borderRadius: '4px',
-                fontWeight: 700,
-                fontSize: '12px',
+                fontWeight: 800,
+                fontSize: '11.5px',
                 cursor: 'pointer',
                 transition: 'all 0.15s'
               }}
@@ -162,8 +225,8 @@ export default function LotCalculatorModal({ isOpen, onClose, prefillEntry = '',
                 color: isCrypto ? '#ffffff' : 'var(--text-muted)',
                 border: 'none',
                 borderRadius: '4px',
-                fontWeight: 700,
-                fontSize: '12px',
+                fontWeight: 800,
+                fontSize: '11.5px',
                 cursor: 'pointer',
                 transition: 'all 0.15s'
               }}
@@ -173,10 +236,12 @@ export default function LotCalculatorModal({ isOpen, onClose, prefillEntry = '',
           </div>
 
           {/* Inputs Section */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
-            <div className="metric-box">
-              <label className="metric-label" style={{ display: 'block', marginBottom: '6px' }}>
-                {isCrypto ? 'Modal Portfolio ($ USDT)' : 'Modal Portfolio (Rp)'}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+            
+            {/* Modal Portfolio */}
+            <div className="metric-box" style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '6px', border: 'var(--border-hairline)' }}>
+              <label className="metric-label" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                <span>{isCrypto ? 'Modal Portfolio ($ USDT)' : 'Modal Portfolio (Rp)'}</span>
               </label>
               <input 
                 type="number" 
@@ -184,19 +249,50 @@ export default function LotCalculatorModal({ isOpen, onClose, prefillEntry = '',
                 onChange={(e) => setModalAmount(e.target.value)}
                 style={{
                   width: '100%',
-                  padding: '8px',
+                  padding: '6px 8px',
                   fontFamily: 'var(--font-mono)',
                   fontSize: '14px',
+                  fontWeight: '700',
                   background: 'var(--bg-canvas)',
                   color: 'var(--text-primary)',
-                  border: '1px solid var(--border-color)',
+                  border: 'var(--border-hairline)',
+                  borderRadius: '4px',
                   outline: 'none'
                 }}
               />
+              <div style={{ fontSize: '10px', color: 'var(--accent-blue)', marginTop: '4px', fontWeight: '700' }}>
+                {!isCrypto ? formatRupiahWords(modalAmount) : `$${Number(modalAmount || 0).toLocaleString()} USD`}
+              </div>
+
+              {/* Quick Preset Chips */}
+              <div style={{ display: 'flex', gap: '4px', marginTop: '6px', flexWrap: 'wrap' }}>
+                {(isCrypto ? [500, 1000, 2500, 5000, 10000] : [10000000, 25000000, 50000000, 100000000, 500000000]).map(amt => (
+                  <button
+                    key={amt}
+                    type="button"
+                    className="telemetry-btn"
+                    onClick={() => setModalAmount(amt)}
+                    style={{
+                      padding: '2px 6px',
+                      fontSize: '9px',
+                      fontWeight: '700',
+                      background: Number(modalAmount) === amt ? 'var(--accent-blue)' : 'var(--bg-panel)',
+                      color: Number(modalAmount) === amt ? '#fff' : 'var(--text-muted)',
+                      borderColor: Number(modalAmount) === amt ? 'var(--accent-blue)' : 'var(--border-color)',
+                      borderRadius: '3px'
+                    }}
+                  >
+                    {isCrypto ? `$${amt.toLocaleString()}` : `${amt / 1e6} Jt`}
+                  </button>
+                ))}
+              </div>
             </div>
             
-            <div className="metric-box">
-              <label className="metric-label" style={{ display: 'block', marginBottom: '6px' }}>Risk % per Trade (1-5%)</label>
+            {/* Risk % */}
+            <div className="metric-box" style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '6px', border: 'var(--border-hairline)' }}>
+              <label className="metric-label" style={{ display: 'block', marginBottom: '4px' }}>
+                Resiko per Trade (%)
+              </label>
               <input 
                 type="number" 
                 value={riskPercent}
@@ -204,131 +300,174 @@ export default function LotCalculatorModal({ isOpen, onClose, prefillEntry = '',
                 min="0.5" max="20" step="0.5"
                 style={{
                   width: '100%',
-                  padding: '8px',
+                  padding: '6px 8px',
                   fontFamily: 'var(--font-mono)',
                   fontSize: '14px',
+                  fontWeight: '700',
                   background: 'var(--bg-canvas)',
                   color: 'var(--text-primary)',
-                  border: '1px solid var(--border-color)',
+                  border: 'var(--border-hairline)',
+                  borderRadius: '4px',
                   outline: 'none'
                 }}
               />
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px' }}>
+                Alokasi resiko: {!isCrypto ? `Rp ${Math.round(riskAmount).toLocaleString('id-ID')}` : `$${riskAmount.toFixed(2)}`}
+              </div>
+
+              {/* Quick Risk Chips */}
+              <div style={{ display: 'flex', gap: '4px', marginTop: '6px', flexWrap: 'wrap' }}>
+                {[0.5, 1, 2, 3, 5].map(r => (
+                  <button
+                    key={r}
+                    type="button"
+                    className="telemetry-btn"
+                    onClick={() => setRiskPercent(r)}
+                    style={{
+                      padding: '2px 6px',
+                      fontSize: '9px',
+                      fontWeight: '700',
+                      background: Number(riskPercent) === r ? 'var(--accent-blue)' : 'var(--bg-panel)',
+                      color: Number(riskPercent) === r ? '#fff' : 'var(--text-muted)',
+                      borderColor: Number(riskPercent) === r ? 'var(--accent-blue)' : 'var(--border-color)',
+                      borderRadius: '3px'
+                    }}
+                  >
+                    {r}%
+                  </button>
+                ))}
+              </div>
             </div>
             
-            <div className="metric-box" style={{ borderLeft: '3px solid var(--accent-blue)' }}>
-              <label className="metric-label" style={{ display: 'block', marginBottom: '6px' }}>
+            {/* Entry Price */}
+            <div className="metric-box" style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '6px', borderLeft: '3px solid var(--accent-blue)', borderTop: 'var(--border-hairline)', borderRight: 'var(--border-hairline)', borderBottom: 'var(--border-hairline)' }}>
+              <label className="metric-label" style={{ display: 'block', marginBottom: '4px' }}>
                 {isCrypto ? 'Harga Entry ($)' : 'Harga Entry (Rp)'}
               </label>
               <input 
                 type="number" 
                 value={entryPrice}
                 onChange={(e) => setEntryPrice(e.target.value)}
+                placeholder="Contoh: 945"
                 step="any"
                 style={{
                   width: '100%',
-                  padding: '8px',
+                  padding: '6px 8px',
                   fontFamily: 'var(--font-mono)',
                   fontSize: '14px',
+                  fontWeight: '700',
                   background: 'var(--bg-canvas)',
                   color: 'var(--text-primary)',
-                  border: '1px solid var(--border-color)',
+                  border: 'var(--border-hairline)',
+                  borderRadius: '4px',
                   outline: 'none'
                 }}
               />
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px' }}>
+                Level beli rencana
+              </div>
             </div>
 
-            <div className="metric-box" style={{ borderLeft: '3px solid var(--accent-rust)' }}>
-              <label className="metric-label" style={{ display: 'block', marginBottom: '6px' }}>
+            {/* Stop Loss Price */}
+            <div className="metric-box" style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '6px', borderLeft: '3px solid var(--accent-rust)', borderTop: 'var(--border-hairline)', borderRight: 'var(--border-hairline)', borderBottom: 'var(--border-hairline)' }}>
+              <label className="metric-label" style={{ display: 'block', marginBottom: '4px' }}>
                 {isCrypto ? 'Harga Stop Loss ($)' : 'Harga Stop Loss (Rp)'}
               </label>
               <input 
                 type="number" 
                 value={stopLossPrice}
                 onChange={(e) => setStopLossPrice(e.target.value)}
+                placeholder="Contoh: 907"
                 step="any"
                 style={{
                   width: '100%',
-                  padding: '8px',
+                  padding: '6px 8px',
                   fontFamily: 'var(--font-mono)',
                   fontSize: '14px',
+                  fontWeight: '700',
                   background: 'var(--bg-canvas)',
                   color: 'var(--text-primary)',
-                  border: '1px solid var(--border-color)',
+                  border: 'var(--border-hairline)',
+                  borderRadius: '4px',
                   outline: 'none'
                 }}
               />
+              <div style={{ fontSize: '10px', color: 'var(--accent-rust-text, var(--accent-rust))', marginTop: '4px', fontWeight: '700' }}>
+                {entry > 0 && sl > 0 ? `Resiko: ${(((entry - sl) / entry) * 100).toFixed(1)}%` : 'Batas cut loss'}
+              </div>
             </div>
           </div>
 
           {/* Results Section */}
-          <div style={{ background: 'var(--bg-panel-subtle)', border: '1px solid var(--border-color)', padding: '20px' }}>
+          <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', borderRadius: '6px', padding: '16px' }}>
             
-            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700', letterSpacing: '0.05em' }}>
+            <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '800', letterSpacing: '0.06em' }}>
                 UKURAN POSISI MAKSIMAL:
               </div>
-              <div style={{ fontSize: '42px', fontWeight: '900', color: 'var(--accent-green)', lineHeight: '1.1' }}>
+              <div style={{ fontSize: '36px', fontWeight: '900', color: 'var(--accent-green-text, var(--accent-green))', lineHeight: '1.1', fontFamily: 'var(--font-mono)' }}>
                 {!isCrypto ? `${maxLots} LOT` : `${formatTokens(maxTokens)} UNIT`}
               </div>
               {!isCrypto ? (
                 maxLots > 0 && (
-                  <div style={{ fontSize: '14px', color: 'var(--text-primary)', marginTop: '4px' }}>
-                    ({(maxLots * 100).toLocaleString()} Lembar Saham)
+                  <div style={{ fontSize: '12px', color: 'var(--text-primary)', marginTop: '4px', fontWeight: '600' }}>
+                    ({(maxLots * 100).toLocaleString('id-ID')} Lembar Saham)
                   </div>
                 )
               ) : (
                 maxTokens > 0 && (
-                  <div style={{ fontSize: '14px', color: 'var(--text-primary)', marginTop: '4px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-primary)', marginTop: '4px', fontWeight: '600' }}>
                     Total Alokasi: ${totalPositionValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDT
                   </div>
                 )
               )}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
               
-              <div style={{ background: 'var(--bg-panel)', padding: '12px', borderLeft: '4px solid var(--accent-rust)' }}>
-                <div className="metric-label">{isCrypto ? 'Max Risk Amount (USDT)' : 'Max Risk Amount (Rupiah)'}</div>
-                <div style={{ fontSize: '20px', fontWeight: '700', color: 'var(--accent-rust)' }}>
+              <div style={{ background: 'var(--bg-panel)', padding: '10px', borderRadius: '4px', borderLeft: '3px solid var(--accent-rust)' }}>
+                <div className="metric-label">{isCrypto ? 'Max Risk (USDT)' : 'Max Risk (Rupiah)'}</div>
+                <div style={{ fontSize: '17px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust-text, var(--accent-rust))' }}>
                   {isCrypto ? `$${riskAmount.toFixed(2)}` : `Rp ${Math.round(riskAmount).toLocaleString('id-ID')}`}
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                  (Jika kena Stop Loss)
+                <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                  Jika kena Stop Loss
                 </div>
               </div>
 
-              <div style={{ background: 'var(--bg-panel)', padding: '12px', borderLeft: '4px solid var(--accent-blue)' }}>
-                <div className="metric-label">Total Position Value</div>
-                <div style={{ fontSize: '20px', fontWeight: '700', color: 'var(--text-primary)' }}>
+              <div style={{ background: 'var(--bg-panel)', padding: '10px', borderRadius: '4px', borderLeft: '3px solid var(--accent-blue)' }}>
+                <div className="metric-label">Total Nilai Transaksi</div>
+                <div style={{ fontSize: '17px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                   {isCrypto ? `$${totalPositionValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `Rp ${Math.round(totalPositionValue).toLocaleString('id-ID')}`}
                 </div>
-                <div style={{ fontSize: '11px', color: isWarning ? 'var(--accent-rust)' : 'var(--text-muted)' }}>
-                  {positionPercent.toFixed(1)}% dari Portfolio
+                <div style={{ fontSize: '10px', color: isWarning ? 'var(--accent-rust-text, var(--accent-rust))' : 'var(--text-muted)' }}>
+                  {positionPercent.toFixed(1)}% dari Total Porto
                 </div>
               </div>
 
-              <div style={{ background: 'var(--bg-panel)', padding: '12px', borderLeft: '4px solid var(--accent-green)' }}>
-                <div className="metric-label">Target Price (Asumsi 1:2.2)</div>
-                <div style={{ fontSize: '20px', fontWeight: '700', color: 'var(--accent-green)' }}>
+              <div style={{ background: 'var(--bg-panel)', padding: '10px', borderRadius: '4px', borderLeft: '3px solid var(--accent-green)' }}>
+                <div className="metric-label">Target Take Profit (1:2.2)</div>
+                <div style={{ fontSize: '17px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green-text, var(--accent-green))' }}>
                   {isCrypto ? `$${targetPrice > 0 ? (targetPrice < 1 ? targetPrice.toFixed(6) : targetPrice.toFixed(4)) : '-'}` : `Rp ${targetPrice > 0 ? Math.round(targetPrice).toLocaleString('id-ID') : '-'}`}
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                  R:R Ratio {rrRatioDisplay}
+                <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                  R:R Rasio {rrRatioDisplay}
                 </div>
               </div>
 
             </div>
 
-            {/* Warning Message */}
+            {/* Warning & Error Messages */}
             {isWarning && (
               <div style={{ 
-                marginTop: '15px', 
-                padding: '10px', 
-                background: 'rgba(184, 50, 50, 0.1)', 
+                marginTop: '12px', 
+                padding: '8px 12px', 
+                background: 'rgba(220, 38, 38, 0.1)', 
                 border: '1px solid var(--accent-rust)',
-                color: 'var(--accent-rust)',
+                borderRadius: '4px',
+                color: 'var(--accent-rust-text, var(--accent-rust))',
                 fontWeight: '700',
-                fontSize: '12px',
+                fontSize: '11px',
                 textAlign: 'center'
               }}>
                 ⚠️ PERINGATAN: Posisi melebihi 25% dari total portfolio. Jaga diversifikasi aset!
@@ -337,16 +476,45 @@ export default function LotCalculatorModal({ isOpen, onClose, prefillEntry = '',
             
             {entry > 0 && sl >= entry && (
               <div style={{ 
-                marginTop: '15px', 
-                padding: '10px', 
-                background: 'rgba(184, 50, 50, 0.1)', 
+                marginTop: '12px', 
+                padding: '8px 12px', 
+                background: 'rgba(220, 38, 38, 0.1)', 
                 border: '1px solid var(--accent-rust)',
-                color: 'var(--accent-rust)',
+                borderRadius: '4px',
+                color: 'var(--accent-rust-text, var(--accent-rust))',
                 fontWeight: '700',
-                fontSize: '12px',
+                fontSize: '11px',
                 textAlign: 'center'
               }}>
-                ⚠️ ERROR: Harga Stop Loss harus lebih rendah dari Harga Entry!
+                ⚠️ PERINGATAN: Harga Stop Loss ({sl}) harus lebih rendah dari Entry ({entry}) untuk posisi Long.
+              </div>
+            )}
+
+            {/* Copy Execution Plan Button */}
+            {entry > 0 && sl > 0 && maxLots > 0 && (
+              <div style={{ marginTop: '14px' }}>
+                <button
+                  type="button"
+                  onClick={handleCopyExecution}
+                  style={{
+                    width: '100%',
+                    padding: '9px',
+                    fontSize: '12px',
+                    fontWeight: '800',
+                    background: isCopied ? 'var(--accent-green)' : 'var(--text-primary)',
+                    color: 'var(--bg-canvas)',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  {isCopied ? '✓ Rencana Eksekusi Berhasil Disalin!' : '📋 Salin Parameter Eksekusi (Lot, Entry, SL, TP)'}
+                </button>
               </div>
             )}
 

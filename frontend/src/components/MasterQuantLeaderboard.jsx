@@ -12,6 +12,17 @@ const GlobalMarketsTab = lazy(() => import('./GlobalMarketsTab.jsx'));
 const OrderBookSimulator = lazy(() => import('./OrderBookSimulator.jsx'));
 const QuantAcademyTab = lazy(() => import('./QuantAcademyTab.jsx'));
 const TestingHubTab = lazy(() => import('./TestingHubTab.jsx'));
+const formatFinancialPrice = (val, market = 'IDX') => {
+  if (val === undefined || val === null || isNaN(val)) return '-';
+  const n = Number(val);
+  if (market === 'IDX') {
+    return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+  }
+  if (n >= 1000) return '$' + Math.round(n).toLocaleString('en-US');
+  if (n >= 1) return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (n < 0.0001) return '$' + n.toFixed(6);
+  return '$' + n.toFixed(4);
+};
 
 export default function MasterQuantLeaderboard({
   activeTab = 'STOCK',          // controlled from App.jsx (via Sidebar)
@@ -153,6 +164,7 @@ export default function MasterQuantLeaderboard({
         target1: tp,
         riskReward: realRR,
         isTradePlan: true,
+        qScore: Number(plan.technicals?.confluence_score || plan.q_score || (plan.conviction === 'HIGH' ? 85 : 55)),
         rawPlan: plan,
         dynamic: dynamic
       });
@@ -199,6 +211,7 @@ export default function MasterQuantLeaderboard({
           target1: tp,
           riskReward: realRR,
           isTradePlan: false,
+          qScore: Number(c.confluence_score || (c.conviction === 'HIGH' ? 80 : 50)),
           rawCrypto: c,
           dynamic: dynamic
         });
@@ -460,7 +473,7 @@ export default function MasterQuantLeaderboard({
       let valA = a[sortField];
       let valB = b[sortField];
 
-      if (sortField === 'price' || sortField === 'changePct' || sortField === 'riskReward' || sortField === 'rank' || sortField === 'volume' || sortField === 'valueTraded') {
+      if (sortField === 'price' || sortField === 'changePct' || sortField === 'riskReward' || sortField === 'rank' || sortField === 'volume' || sortField === 'valueTraded' || sortField === 'qScore') {
         valA = Number(valA) || 0;
         valB = Number(valB) || 0;
       } else {
@@ -937,161 +950,169 @@ export default function MasterQuantLeaderboard({
               </table>
             </div>
           ) : (
-            <div style={{ overflowX: 'auto', maxHeight: '580px', background: 'var(--bg-panel)' }}>
+            <div className="table-scroll-container" style={{ maxHeight: '580px', background: 'var(--bg-panel)' }}>
               <table className='telemetry-table' style={{ width: '100%' }}>
                 <thead>
                   <tr>
-                    <th style={{ width: '36px', textAlign: 'center', cursor: 'pointer' }} onClick={() => handleSort('rank')}>
+                    <th className="sticky-col-num" style={{ width: '32px', textAlign: 'center', cursor: 'pointer' }} onClick={() => handleSort('rank')}>
                       #{getSortIcon('rank')}
                     </th>
-                    <th style={{ width: '12%', cursor: 'pointer' }} onClick={() => handleSort('ticker')}>
+                    <th className="sticky-col-ticker" style={{ width: '110px', cursor: 'pointer' }} onClick={() => handleSort('ticker')}>
                       Ticker{getSortIcon('ticker')}
                     </th>
                     <th style={{ width: '10%', cursor: 'pointer' }} onClick={() => handleSort('cluster')}>
                       {activeMainTab === 'STOCK' ? 'Grup' : 'Klaster'}{getSortIcon('cluster')}
                     </th>
-                    <th style={{ width: '22%', cursor: 'pointer' }} onClick={() => handleSort('signal')}>
-                      Sinyal / Setup{getSortIcon('signal')}
+                    <th style={{ width: '18%', cursor: 'pointer' }} onClick={() => handleSort('qScore')} title="Urutkan berdasarkan Q-Score kuantitatif">
+                      Sinyal & Q-Score{getSortIcon('qScore')}
                     </th>
-                  <th style={{ width: '11%', cursor: 'pointer' }} onClick={() => handleSort('price')} title="Harga pasar terkini (realtime tick / scanner)">
-                    Harga Terakhir (Live){getSortIcon('price')}
-                  </th>
-                  <th style={{ width: '7%', cursor: 'pointer' }} onClick={() => handleSort('changePct')}>
-                    Chg %{getSortIcon('changePct')}
-                  </th>
-                  <th style={{ width: '10%' }} title="Zona beli terencana berdasarkan setup teknikal quant">Entry Plan</th>
-                  <th style={{ width: '8%' }}>Hard SL</th>
-                  <th style={{ width: '7%' }}>TP1</th>
-                  <th style={{ width: '7%', cursor: 'pointer' }} onClick={() => handleSort('riskReward')}>
-                    R:R{getSortIcon('riskReward')}
-                  </th>
-                  <th style={{ width: '6%', textAlign: 'center' }}>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentDataset.length === 0 ? (
-                  <tr>
-                    <td colSpan='11' style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
-                      Tidak ada instrumen yang sesuai dengan filter atau pencarian Anda.
-                    </td>
+                    <th style={{ width: '12%', textAlign: 'right', cursor: 'pointer' }} onClick={() => handleSort('price')} title="Harga pasar terkini (realtime tick / scanner)">
+                      Harga Terakhir{getSortIcon('price')}
+                    </th>
+                    <th style={{ width: '7%', textAlign: 'right', cursor: 'pointer' }} onClick={() => handleSort('changePct')}>
+                      Chg %{getSortIcon('changePct')}
+                    </th>
+                    <th style={{ width: '10%', textAlign: 'right' }} title="Zona beli terencana berdasarkan setup teknikal quant">Entry Plan</th>
+                    <th style={{ width: '9%', textAlign: 'right' }}>Hard SL</th>
+                    <th style={{ width: '9%', textAlign: 'right' }}>TP1</th>
+                    <th style={{ width: '7%', textAlign: 'right', cursor: 'pointer' }} onClick={() => handleSort('riskReward')}>
+                      R:R{getSortIcon('riskReward')}
+                    </th>
+                    <th style={{ width: '70px', textAlign: 'center' }}>Aksi</th>
                   </tr>
-                ) : (
-                  currentDataset.map((item, idx) => {
-                    const isExpanded = expandedId === item.id;
-                    const p = item.rawPlan;
-                    const c = item.rawCrypto;
-                    const s = item.rawStock;
+                </thead>
+                <tbody>
+                  {currentDataset.length === 0 ? (
+                    <tr>
+                      <td colSpan='11' style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
+                        Tidak ada instrumen yang sesuai dengan filter atau pencarian Anda.
+                      </td>
+                    </tr>
+                  ) : (
+                    currentDataset.map((item, idx) => {
+                      const isExpanded = expandedId === item.id;
+                      const p = item.rawPlan;
+                      const c = item.rawCrypto;
+                      const s = item.rawStock;
+                      const curPrice = Number(item.price);
+                      const slPrice = Number(item.dynamic?.effectiveSl || item.stopLoss);
+                      const distToSl = (curPrice > 0 && slPrice > 0) ? (((curPrice - slPrice) / curPrice) * 100) : null;
 
-                    return (
-                      <React.Fragment key={item.id}>
-                        <tr
-                          onClick={() => toggleExpand(item.id)}
-                          style={{
-                            cursor: 'pointer',
-                            background: isExpanded ? 'var(--bg-panel-subtle)' : 'transparent',
-                            transition: 'background 0.15s ease'
-                          }}
-                        >
-                          <td style={{ textAlign: 'center', fontWeight: '700', color: 'var(--text-muted)', fontSize: '11px' }}>
-                            {idx + 1}
-                          </td>
-                          <td style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '13px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <AssetIcon symbol={item.ticker} market={item.market === 'CRYPTO' ? 'CRYPTO' : 'IDX'} size={18} />
-                              <span>${item.ticker}</span>
-                            </div>
-                          </td>
-                          <td>
-                            <span className='badge' style={{
-                              fontSize: '9px',
-                              background: 'var(--bg-panel-subtle)',
-                              color: 'var(--text-primary)',
-                              border: '1px solid var(--border-muted)'
-                            }}>
-                              {item.cluster || item.categoryLabel || '-'}
-                            </span>
-                          </td>
-                          <td>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
-                              {item.dynamic?.statusLabel ? (
-                                <>
-                                  <span className={'badge ' + (item.dynamic.badgeClass || 'badge')} style={{ fontSize: '9px', whiteSpace: 'nowrap' }}>
-                                    {item.dynamic.statusLabel}
-                                  </span>
-                                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '600', whiteSpace: 'nowrap' }}>
+                      return (
+                        <React.Fragment key={item.id}>
+                          <tr
+                            onClick={() => toggleExpand(item.id)}
+                            style={{
+                              cursor: 'pointer',
+                              background: isExpanded ? 'var(--bg-panel-subtle)' : 'transparent',
+                              transition: 'background 0.15s ease'
+                            }}
+                          >
+                            <td className="sticky-col-num" style={{ textAlign: 'center', fontWeight: '700', color: 'var(--text-muted)', fontSize: '11px' }}>
+                              {idx + 1}
+                            </td>
+                            <td className="sticky-col-ticker" style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '13px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <AssetIcon symbol={item.ticker} market={item.market === 'CRYPTO' ? 'CRYPTO' : 'IDX'} size={18} />
+                                <span>${item.ticker}</span>
+                              </div>
+                            </td>
+                            <td>
+                              <span className='badge' style={{
+                                fontSize: '9px',
+                                background: 'var(--bg-panel-subtle)',
+                                color: 'var(--text-primary)',
+                                border: '1px solid var(--border-muted)'
+                              }}>
+                                {item.cluster || item.categoryLabel || '-'}
+                              </span>
+                            </td>
+                            <td>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
+                                {item.dynamic?.statusLabel ? (
+                                  <>
+                                    <span className={'badge ' + (item.dynamic.badgeClass || 'badge')} style={{ fontSize: '9px', whiteSpace: 'nowrap' }}>
+                                      {item.dynamic.statusLabel}
+                                    </span>
+                                    <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '600', whiteSpace: 'nowrap' }}>
+                                      {item.signal}
+                                    </span>
+                                  </>
+                                ) : (
+                                  <span className={'badge ' + (
+                                    item.signal === 'BREAKOUT' || item.signal === 'HIGH YIELD SAFE' || item.signal === 'FOREIGN BUY' ? 'badge-bull' :
+                                    item.signal === 'ACCUMULATION' || item.signal === 'SPOT_LONG' ? 'badge-blue' :
+                                    item.signal === 'TRAP RISK' || item.signal === 'FOREIGN SELL' ? 'badge-bear' : 'badge'
+                                  )} style={{ fontSize: '9px', whiteSpace: 'nowrap' }}>
                                     {item.signal}
                                   </span>
-                                </>
-                              ) : (
-                                <span className={'badge ' + (
-                                  item.signal === 'BREAKOUT' || item.signal === 'HIGH YIELD SAFE' || item.signal === 'FOREIGN BUY' ? 'badge-bull' :
-                                  item.signal === 'ACCUMULATION' || item.signal === 'SPOT_LONG' ? 'badge-blue' :
-                                  item.signal === 'TRAP RISK' || item.signal === 'FOREIGN SELL' ? 'badge-bear' : 'badge'
-                                )} style={{ fontSize: '9px', whiteSpace: 'nowrap' }}>
-                                  {item.signal}
-                                </span>
-                              )}
-                              {item.rawPlan?.technicals?.confluence_score !== undefined && (
-                                <span style={{
-                                  fontSize: '9px',
-                                  fontFamily: 'var(--font-mono)',
-                                  fontWeight: '800',
-                                  padding: '1px 5px',
-                                  borderRadius: '3px',
-                                  whiteSpace: 'nowrap',
-                                  background: item.rawPlan.technicals.confluence_score >= 70 ? 'rgba(52, 199, 89, 0.15)' : item.rawPlan.technicals.confluence_score >= 40 ? 'rgba(255, 149, 0, 0.15)' : 'rgba(255, 59, 48, 0.15)',
-                                  color: item.rawPlan.technicals.confluence_score >= 70 ? 'var(--accent-green)' : item.rawPlan.technicals.confluence_score >= 40 ? 'var(--accent-orange)' : '#ff3b30',
-                                  border: `1px solid ${item.rawPlan.technicals.confluence_score >= 70 ? 'rgba(52, 199, 89, 0.3)' : item.rawPlan.technicals.confluence_score >= 40 ? 'rgba(255, 149, 0, 0.3)' : 'rgba(255, 59, 48, 0.3)'}`
-                                }}>
-                                  ⚡ {item.rawPlan.technicals.confluence_score}% Q-Score
-                                </span>
-                              )}
-                            </div>
-                          </td>
-                          <td style={{
-                            fontWeight: '800',
-                            fontFamily: 'var(--font-mono)',
-                            color: flashMap?.[item.ticker] === 'up' ? 'var(--accent-green)' : flashMap?.[item.ticker] === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)',
-                            background: flashMap?.[item.ticker] === 'up' ? 'rgba(0, 208, 132, 0.15)' : flashMap?.[item.ticker] === 'down' ? 'rgba(239, 68, 68, 0.15)' : 'transparent',
-                            transition: 'all 0.3s ease'
-                          }}>
-                            {item.market === 'IDX'
-                              ? ('Rp ' + Math.round(Number(item.price)).toLocaleString('id-ID'))
-                              : ('$' + Number(item.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 }))}
-                            {flashMap?.[item.ticker] === 'up' && <span style={{ color: 'var(--accent-green)', marginLeft: '3px' }}>▲</span>}
-                            {flashMap?.[item.ticker] === 'down' && <span style={{ color: 'var(--accent-rust)', marginLeft: '3px' }}>▼</span>}
-                          </td>
-                          <td style={{
-                            fontWeight: '700',
-                            fontFamily: 'var(--font-mono)',
-                            color: Number(item.changePct) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)'
-                          }}>
-                            {Number(item.changePct) >= 0 ? '+' + Number(item.changePct).toFixed(2) + '%' : Number(item.changePct).toFixed(2) + '%'}
-                          </td>
-                          <td>
-                            <code>{item.entryRange ? item.entryRange : (item.market === 'IDX' ? ('Rp ' + Number(item.entry).toLocaleString()) : ('$' + item.entry))}</code>
-                          </td>
-                          <td style={{ color: item.dynamic?.isTrailingActive ? 'var(--accent-green)' : '#ff3b30' }}>
-                            <code>{item.market === 'IDX' ? ('Rp ' + Number(item.dynamic?.effectiveSl || item.stopLoss).toLocaleString()) : ('$' + (item.dynamic?.effectiveSl || item.stopLoss))}</code>
-                            {item.dynamic?.isTrailingActive && (
-                              <div style={{ fontSize: '9px', color: '#10b981', fontWeight: '800' }}>
-                                🛡️ BE LOCKED
+                                )}
+                                {item.qScore !== undefined && (
+                                  <span style={{
+                                    fontSize: '9px',
+                                    fontFamily: 'var(--font-mono)',
+                                    fontWeight: '800',
+                                    padding: '1px 5px',
+                                    borderRadius: '3px',
+                                    whiteSpace: 'nowrap',
+                                    background: item.qScore >= 70 ? 'rgba(52, 199, 89, 0.15)' : item.qScore >= 40 ? 'rgba(255, 149, 0, 0.15)' : 'rgba(255, 59, 48, 0.15)',
+                                    color: item.qScore >= 70 ? 'var(--accent-green-text, var(--accent-green))' : item.qScore >= 40 ? 'var(--accent-orange-text, var(--accent-orange))' : 'var(--accent-rust-text, #ff3b30)',
+                                    border: `1px solid ${item.qScore >= 70 ? 'rgba(52, 199, 89, 0.3)' : item.qScore >= 40 ? 'rgba(255, 149, 0, 0.3)' : 'rgba(255, 59, 48, 0.3)'}`
+                                  }}>
+                                    ⚡ {item.qScore}% Q
+                                  </span>
+                                )}
                               </div>
-                            )}
-                          </td>
-                          <td style={{ color: '#34c759', fontWeight: '700' }}>
-                            <code>{item.market === 'IDX' ? ('Rp ' + Number(item.target1).toLocaleString()) : ('$' + item.target1)}</code>
-                          </td>
-                          <td>
-                            <span style={{ fontWeight: '700', color: 'var(--accent-blue)' }}>
-                              1:{item.dynamic?.dynamicRR !== undefined ? item.dynamic.dynamicRR : item.riskReward}
-                            </span>
-                            {item.dynamic?.floatingPnLPct !== undefined && (
-                              <div style={{ fontSize: '9px', color: item.dynamic.floatingPnLPct >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '700' }}>
-                                {item.dynamic.floatingPnLPct >= 0 ? `+${item.dynamic.floatingPnLPct}%` : `${item.dynamic.floatingPnLPct}%`} PnL
-                              </div>
-                            )}
-                          </td>
+                            </td>
+                            <td style={{
+                              textAlign: 'right',
+                              fontWeight: '800',
+                              fontFamily: 'var(--font-mono)',
+                              fontVariantNumeric: 'tabular-nums',
+                              color: flashMap?.[item.ticker] === 'up' ? 'var(--accent-green-text, var(--accent-green))' : flashMap?.[item.ticker] === 'down' ? 'var(--accent-rust-text, var(--accent-rust))' : 'var(--text-primary)',
+                              background: flashMap?.[item.ticker] === 'up' ? 'rgba(0, 208, 132, 0.15)' : flashMap?.[item.ticker] === 'down' ? 'rgba(239, 68, 68, 0.15)' : 'transparent',
+                              transition: 'all 0.3s ease'
+                            }}>
+                              <div>{formatFinancialPrice(item.price, item.market)}</div>
+                              {distToSl !== null && (
+                                <div style={{ fontSize: '8.5px', fontWeight: '700', color: distToSl <= 3 ? 'var(--accent-rust-text, #ff3b30)' : 'var(--text-muted)' }}>
+                                  {distToSl >= 0 ? `-${distToSl.toFixed(1)}% ke SL` : 'SL HIT'}
+                                </div>
+                              )}
+                            </td>
+                            <td style={{
+                              textAlign: 'right',
+                              fontWeight: '700',
+                              fontFamily: 'var(--font-mono)',
+                              fontVariantNumeric: 'tabular-nums',
+                              color: Number(item.changePct) >= 0 ? 'var(--accent-green-text, var(--accent-green))' : 'var(--accent-rust-text, var(--accent-rust))'
+                            }}>
+                              {Number(item.changePct) >= 0 ? '+' + Number(item.changePct).toFixed(2) + '%' : Number(item.changePct).toFixed(2) + '%'}
+                            </td>
+                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}>
+                              <code>{item.entryRange ? item.entryRange : formatFinancialPrice(item.entry, item.market)}</code>
+                            </td>
+                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', color: item.dynamic?.isTrailingActive ? 'var(--accent-green)' : 'var(--accent-rust-text, #ff3b30)' }}>
+                              <code>{formatFinancialPrice(item.dynamic?.effectiveSl || item.stopLoss, item.market)}</code>
+                              {item.dynamic?.isTrailingActive && (
+                                <div style={{ fontSize: '8.5px', color: '#10b981', fontWeight: '800' }}>
+                                  🛡️ BE LOCKED
+                                </div>
+                              )}
+                            </td>
+                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', color: 'var(--accent-green-text, #15803d)', fontWeight: '700' }}>
+                              <code>{formatFinancialPrice(item.target1, item.market)}</code>
+                            </td>
+                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}>
+                              <span style={{ fontWeight: '700', color: 'var(--accent-blue)' }}>
+                                1:{item.dynamic?.dynamicRR !== undefined ? item.dynamic.dynamicRR : item.riskReward}
+                              </span>
+                              {item.dynamic?.floatingPnLPct !== undefined && (
+                                <div style={{ fontSize: '8.5px', color: item.dynamic.floatingPnLPct >= 0 ? 'var(--accent-green-text, var(--accent-green))' : 'var(--accent-rust-text, var(--accent-rust))', fontWeight: '700' }}>
+                                  {item.dynamic.floatingPnLPct >= 0 ? `+${item.dynamic.floatingPnLPct}%` : `${item.dynamic.floatingPnLPct}%`} PnL
+                                </div>
+                              )}
+                            </td>
                           <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
                             <button
                               className='telemetry-btn'

@@ -108,8 +108,8 @@ export default function HomeDashboardTab({
     const abs = Math.abs(num);
     const sign = num > 0 ? '+' : '-';
     if (abs >= 1e12) return `${sign}Rp ${(abs / 1e12).toFixed(2)} T`;
-    if (abs >= 1e9) return `${sign}Rp ${(abs / 1e9).toFixed(2)} B`;
-    if (abs >= 1e6) return `${sign}Rp ${(abs / 1e6).toFixed(0)} M`;
+    if (abs >= 1e9) return `${sign}Rp ${(abs / 1e9).toFixed(2)} M`;
+    if (abs >= 1e6) return `${sign}Rp ${(abs / 1e6).toFixed(0)} Jt`;
     return `${sign}Rp ${abs.toLocaleString('id-ID')}`;
   };
 
@@ -308,10 +308,16 @@ export default function HomeDashboardTab({
 
             {/* Card 2: Global Commodities (Brent Oil & Gold — Sinkron Geopolitik & Perang) */}
             {(() => {
-              const brentPrice = macro?.brent_oil_price ? Number(macro.brent_oil_price) : 87.40;
-              const brentChg = macro?.brent_oil_change_pct !== undefined ? Number(macro.brent_oil_change_pct) : 2.10;
-              const goldPrice = macro?.gold_price ? Number(macro.gold_price) : 2680.50;
-              const goldChg = macro?.gold_change_pct !== undefined ? Number(macro.gold_change_pct) : 0.80;
+              const liveBrent = livePrices['BRENT'] || livePrices['UKOIL'] || livePrices['FX:UKOIL'];
+              const liveGold = livePrices['GOLD'] || livePrices['XAUUSD'] || livePrices['XAU/USD'] || livePrices['TVC:GOLD'];
+
+              const brentPrice = liveBrent?.price !== undefined ? Number(liveBrent.price) : (macro?.brent_oil_price ? Number(macro.brent_oil_price) : 87.40);
+              const brentChg = liveBrent?.changePct !== undefined ? Number(liveBrent.changePct) : (macro?.brent_oil_change_pct !== undefined ? Number(macro.brent_oil_change_pct) : 2.10);
+              const goldPrice = liveGold?.price !== undefined ? Number(liveGold.price) : (macro?.gold_price ? Number(macro.gold_price) : 2680.50);
+              const goldChg = liveGold?.changePct !== undefined ? Number(liveGold.changePct) : (macro?.gold_change_pct !== undefined ? Number(macro.gold_change_pct) : 0.80);
+
+              const isBrentFlash = flashMap?.['BRENT'] || flashMap?.['UKOIL'] || flashMap?.['FX:UKOIL'];
+              const isGoldFlash = flashMap?.['GOLD'] || flashMap?.['XAUUSD'] || flashMap?.['TVC:GOLD'];
 
               return (
                 <div className="telemetry-panel" style={{
@@ -338,16 +344,30 @@ export default function HomeDashboardTab({
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', gap: '4px' }}>
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px', whiteSpace: 'nowrap', minWidth: 0 }}>
-                        <span style={{ fontSize: '11.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#f59e0b', fontVariantNumeric: 'tabular-nums' }}>
-                          OIL ${brentPrice.toFixed(1)}
+                        <span style={{
+                          fontSize: '11.5px',
+                          fontWeight: '900',
+                          fontFamily: 'var(--font-mono)',
+                          color: isBrentFlash === 'up' ? 'var(--accent-green)' : isBrentFlash === 'down' ? 'var(--accent-rust)' : 'var(--accent-orange-text, #f59e0b)',
+                          fontVariantNumeric: 'tabular-nums',
+                          transition: 'color 0.3s ease'
+                        }}>
+                          OIL ${brentPrice.toFixed(2)}
                         </span>
                         <span style={{ fontSize: '8.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: brentChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', fontVariantNumeric: 'tabular-nums' }}>
                           {brentChg >= 0 ? '+' : ''}{brentChg.toFixed(1)}%
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px', whiteSpace: 'nowrap', minWidth: 0 }}>
-                        <span style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#facc15', fontVariantNumeric: 'tabular-nums' }}>
-                          GOLD ${Math.round(goldPrice).toLocaleString()}
+                        <span style={{
+                          fontSize: '11px',
+                          fontWeight: '900',
+                          fontFamily: 'var(--font-mono)',
+                          color: isGoldFlash === 'up' ? 'var(--accent-green)' : isGoldFlash === 'down' ? 'var(--accent-rust)' : 'var(--accent-gold-text, #b45309)',
+                          fontVariantNumeric: 'tabular-nums',
+                          transition: 'color 0.3s ease'
+                        }}>
+                          GOLD ${goldPrice >= 1000 ? Math.round(goldPrice).toLocaleString() : goldPrice.toFixed(2)}
                         </span>
                         <span style={{ fontSize: '8.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: goldChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', fontVariantNumeric: 'tabular-nums' }}>
                           {goldChg >= 0 ? '+' : ''}{goldChg.toFixed(1)}%
@@ -626,7 +646,7 @@ export default function HomeDashboardTab({
                     </div>
                   </div>
 
-                  <div style={{ padding: '4px 8px', borderTop: 'var(--border-muted)', fontSize: '8.5px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'rgba(0,0,0,0.15)' }}>
+                  <div style={{ padding: '4px 8px', borderTop: 'var(--border-muted)', fontSize: '8.5px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'var(--bg-panel-subtle)' }}>
                     <span>Macro Regime: <strong style={{ color: 'var(--accent-green)' }}>Risk-On Equities</strong></span>
                     <span style={{ color: 'var(--accent-blue)' }}>+1.4σ Bullish</span>
                   </div>
@@ -748,7 +768,7 @@ export default function HomeDashboardTab({
                 </div>
               </div>
 
-              <div style={{ padding: '4px 8px', borderTop: 'var(--border-muted)', fontSize: '8.5px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'rgba(0,0,0,0.15)' }}>
+              <div style={{ padding: '4px 8px', borderTop: 'var(--border-muted)', fontSize: '8.5px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'var(--bg-panel-subtle)' }}>
                 <span>Arus Harian: <strong style={{ color: totalNetForeign >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{formatFlowIdr(totalNetForeign)}</strong></span>
                 <span>Universe: <strong style={{ color: 'var(--accent-blue)' }}>{flowScope === 'ALL_100' ? 'IDX 100 Active' : 'LQ45 Tier-1'}</strong></span>
               </div>
@@ -841,7 +861,7 @@ export default function HomeDashboardTab({
                 </div>
               </div>
 
-              <div style={{ padding: '3.5px 8px', borderTop: 'var(--border-muted)', fontSize: '8px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'rgba(0,0,0,0.15)' }}>
+              <div style={{ padding: '4px 8px', borderTop: 'var(--border-muted)', fontSize: '8.5px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'var(--bg-panel-subtle)' }}>
                 <span>Total Akumulasi: <strong style={{ color: 'var(--accent-green)' }}>{formatFlowIdr(totalBandarAccumValue)}</strong></span>
                 <span>Top: <strong style={{ color: '#60a5fa' }}>5 Emiten</strong></span>
               </div>

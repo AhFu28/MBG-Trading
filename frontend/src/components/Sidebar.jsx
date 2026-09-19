@@ -222,7 +222,7 @@ export default function Sidebar({
 
                     {/* Kolom 2: Crypto, US, & Global Forex */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', paddingLeft: '1px' }}>
-                      <div style={{ fontSize: '6.5px', fontWeight: '800', color: 'var(--accent-gold)', letterSpacing: '0.05em', marginBottom: '1px' }}>
+                      <div style={{ fontSize: '6.5px', fontWeight: '800', color: 'var(--accent-gold-text, var(--accent-gold))', letterSpacing: '0.05em', marginBottom: '1px' }}>
                         GLOBAL & CRYPTO
                       </div>
                       {DEFAULT_RADAR_TICKERS.filter(t => t.market !== 'IDX').map(t => {
@@ -258,7 +258,7 @@ export default function Sidebar({
                               <span style={{
                                 fontSize: '8px',
                                 fontWeight: '800',
-                                color: t.market === 'CRYPTO' ? '#fde047' : t.market === 'US' ? '#93c5fd' : '#a5f3fc'
+                                color: 'var(--text-primary)'
                               }}>
                                 {t.symbol}
                               </span>

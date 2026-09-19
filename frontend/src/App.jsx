@@ -136,11 +136,12 @@ export default function App() {
     isOpen: false,
     entry: '',
     sl: '',
-    market: 'IDX'
+    market: 'IDX',
+    symbol: ''
   });
 
-  const handleOpenLotCalc = useCallback((entry = '', sl = '', market = 'IDX') => {
-    setLotCalcModal({ isOpen: true, entry, sl, market });
+  const handleOpenLotCalc = useCallback((entry = '', sl = '', market = 'IDX', symbol = '') => {
+    setLotCalcModal({ isOpen: true, entry, sl, market, symbol });
   }, []);
 
   const handleCloseLotCalc = useCallback(() => {
@@ -269,15 +270,6 @@ export default function App() {
     <PasswordGate>
       <div className="app-layout">
 
-        {/* Mobile hamburger toggle */}
-        <button
-          className="sidebar-hamburger"
-          onClick={() => setMobileOpen(prev => !prev)}
-          aria-label="Toggle Sidebar"
-        >
-          ☰
-        </button>
-
         {/* Mobile backdrop */}
         {isMobileOpen && (
           <div
@@ -319,7 +311,15 @@ export default function App() {
             minHeight: '32px'
           }}>
             {/* Left: Active Module Title (Clean & Modern) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                className="mobile-header-hamburger"
+                onClick={() => setMobileOpen(prev => !prev)}
+                aria-label="Buka Navigasi"
+                title="Buka Navigasi"
+              >
+                ☰
+              </button>
               <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 6px var(--accent-green)' }} />
               <div style={{ fontSize: '11.5px', fontWeight: '800', letterSpacing: '0.04em', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
                 {getTabLabel(activeTab)}
@@ -511,6 +511,7 @@ export default function App() {
               prefillEntry={lotCalcModal.entry}
               prefillSL={lotCalcModal.sl}
               initialMarket={lotCalcModal.market}
+              initialSymbol={lotCalcModal.symbol}
             />
 
             {/* 5. News Detail Modal */}
@@ -537,9 +538,8 @@ export default function App() {
                   handleCloseSecurityHub();
                   handleOpenChart(sym, mkt);
                 }}
-                onOpenLotCalc={(entry, sl, mkt) => {
-                  handleCloseSecurityHub();
-                  handleOpenLotCalc(entry, sl, mkt);
+                onOpenLotCalc={(entry, sl, mkt, sym) => {
+                  handleOpenLotCalc(entry, sl, mkt || securityHub.market, sym || securityHub.symbol);
                 }}
                 onNavigateTab={(tab) => {
                   handleCloseSecurityHub();
