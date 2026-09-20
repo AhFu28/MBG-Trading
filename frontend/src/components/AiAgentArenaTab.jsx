@@ -465,6 +465,83 @@ const ELEMENT_MC_ANALYSIS = {
     defaultToxicPair: 'High-Beta Altcoins',
     defaultCause: 'Anomali likuiditas mendadak yang memecah konsensus sinyal.',
     defaultSolution: 'Mode defensif otomatis jika terjadi split decision (2 vs 2).'
+  },
+  MUD: {
+    name: 'MUD',
+    element: 'High Win-Rate S/R Reversal [WATER+EARTH]',
+    bestInstruments: 'BBCA, BMRI, USDJPY, EURGBP',
+    instrumentEdge: 'Reversal di support/resistance historis dipadukan dengan mitigasi Fair Value Gap & Order Block bersih.',
+    avoidInstruments: 'Altcoin liar yang menembus support tanpa pullback.',
+    winRateEdge: 'Win Rate Target: 72% - 84% | Average R:R: 1:2.0+',
+    defaultToxicPair: 'BBCA & USDJPY',
+    defaultCause: 'Penetrasi sepihak tanpa retest order block.',
+    defaultSolution: 'Wajibkan konfirmasi RSI < 30 sebelum entry long.'
+  },
+  LIGHTNING: {
+    name: 'LIGHTNING',
+    element: 'Volatility Trend Ignition [FIRE+AIR]',
+    bestInstruments: 'NVDA, TSLA, BTCUSDT, NAS100',
+    instrumentEdge: 'Katalis berita makro/laba memicu awal ekspansi tren breakout Donchian multi-hari berkecepatan tinggi.',
+    avoidInstruments: 'Pair forex defensif lambat.',
+    winRateEdge: 'Win Rate Target: 52% - 62% | Average R:R: 1:4.2+',
+    defaultToxicPair: 'TSLA & BTCUSDT',
+    defaultCause: 'News whipsaw tajam melompat di atas stop loss sebelum momentum terbentuk.',
+    defaultSolution: 'Terapkan buffer stop ATR 1.2x pada saat berita rilis.'
+  },
+  SANDSTORM: {
+    name: 'SANDSTORM',
+    element: 'Trend-Pullback Strategy [AIR+EARTH]',
+    bestInstruments: 'BBRI, US500, ETHUSDT, EURUSD',
+    instrumentEdge: 'Tren makro kuat (AIR) dipadukan dengan disiplin beli saat pullback menyentuh support/EMA 50 (EARTH).',
+    avoidInstruments: 'Aset choppy tanpa kejelasan tren utama.',
+    winRateEdge: 'Win Rate Target: 65% - 75% | Average R:R: 1:2.5+',
+    defaultToxicPair: 'BBRI & US500',
+    defaultCause: 'Tren makro berbalik arah secara mendadak (trend reversal).',
+    defaultSolution: 'Gunakan trailing ratchet ketat saat harga memantul dari support.'
+  },
+  TEMPEST: {
+    name: 'TEMPEST',
+    element: 'Aggressive Alpha Desk [WATER+FIRE+AIR]',
+    bestInstruments: 'XAUUSD, BTCUSDT, NAS100, SOLUSDT',
+    instrumentEdge: 'SMC liquidity map (W) + Katalis berita (F) + Trend riding Donchian (A) untuk menangkap pergerakan parabolis.',
+    avoidInstruments: 'Saham low beta atau obligasi.',
+    winRateEdge: 'Win Rate Target: 58% - 68% | Average R:R: 1:4.0+',
+    defaultToxicPair: 'SOLUSDT & XAUUSD',
+    defaultCause: 'Pergerakan koreksi volatil memicu trailing stop terlalu dini.',
+    defaultSolution: 'Gunakan multi-stage take profit scaling.'
+  },
+  OCEANIC: {
+    name: 'OCEANIC',
+    element: 'All-Weather Institutional [WATER+AIR+EARTH]',
+    bestInstruments: 'US30, BBCA, EURUSD, XAUUSD',
+    instrumentEdge: 'Ray Dalio All-Weather: Likuiditas institusi (W) + Trend momentum (A) + Bantalan mean reversion (E).',
+    avoidInstruments: 'Meme token illiquid.',
+    winRateEdge: 'Win Rate Target: 70% - 80% | Average R:R: 1:2.4+',
+    defaultToxicPair: 'US30 & EURUSD',
+    defaultCause: 'Volatilitas flat berkepanjangan mengikis biaya posisi.',
+    defaultSolution: 'Filter waktu sesi aktif London/NY.'
+  },
+  GEOTHERMAL: {
+    name: 'GEOTHERMAL',
+    element: 'Anti-Whipsaw News Desk [WATER+FIRE+EARTH]',
+    bestInstruments: 'GBPUSD, USOIL, BMRI, XAUUSD',
+    instrumentEdge: 'Mitigasi Order Block saat rilis berita dengan proteksi support fundamental kuat; anti-manipulasi bandar.',
+    avoidInstruments: 'Saham gorengan tanpa fundamental.',
+    winRateEdge: 'Win Rate Target: 65% - 75% | Average R:R: 1:2.6+',
+    defaultToxicPair: 'USOIL & GBPUSD',
+    defaultCause: 'Spike gap melompati level mitigasi.',
+    defaultSolution: 'Tunggu penutupan candle 5 menit sebelum eksekusi.'
+  },
+  CYCLONE: {
+    name: 'CYCLONE',
+    element: 'Dynamic Regime Shifter [FIRE+AIR+EARTH]',
+    bestInstruments: 'BTCUSDT, ETHUSDT, NVDA, DAX40',
+    instrumentEdge: 'Transisi adaptif: Scalping berita saat rilis (F) -> Trend following (A) -> Mean reversion saat jenuh (E).',
+    avoidInstruments: 'Aset tidak likuid dengan jam bursa sempit.',
+    winRateEdge: 'Win Rate Target: 64% - 74% | Average R:R: 1:3.0+',
+    defaultToxicPair: 'DAX40 & NVDA',
+    defaultCause: 'Siklus rezim pasar berganti terlalu cepat.',
+    defaultSolution: 'Deteksi rezim pasar menggunakan filter ADX & Bollinger width.'
   }
 };
 
@@ -779,6 +856,132 @@ const INITIAL_AGENTS = [
     parents: ['FIRE', 'EARTH'],
     status: 'STANDBY',
     confidence: 88,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'MUD',
+    name: 'MUD',
+    role: 'S/R Reversal [W+E]',
+    description: 'Sinergi WATER + EARTH: Reversal di support/resistance historis dipadukan dengan mitigasi Fair Value Gap & Order Block.',
+    strategy: 'DUO_MUD',
+    avatar: '🧱',
+    color: '#84cc16',
+    tier: 'DUO',
+    parents: ['WATER', 'EARTH'],
+    status: 'STANDBY',
+    confidence: 88,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'LIGHTNING',
+    name: 'LIGHTNING',
+    role: 'Volatility Trend [F+A]',
+    description: 'Sinergi FIRE + AIR: Katalis berita makro memicu awal ekspansi tren breakout Donchian multi-hari berkecepatan tinggi.',
+    strategy: 'DUO_LIGHTNING',
+    avatar: '⚡',
+    color: '#f97316',
+    tier: 'DUO',
+    parents: ['FIRE', 'AIR'],
+    status: 'STANDBY',
+    confidence: 88,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'SANDSTORM',
+    name: 'SANDSTORM',
+    role: 'Trend-Pullback [A+E]',
+    description: 'Sinergi AIR + EARTH: Tren makro kuat dipadukan dengan disiplin beli saat pullback menyentuh support kunci.',
+    strategy: 'DUO_SANDSTORM',
+    avatar: '🏜️',
+    color: '#d97706',
+    tier: 'DUO',
+    parents: ['AIR', 'EARTH'],
+    status: 'STANDBY',
+    confidence: 88,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'TEMPEST',
+    name: 'TEMPEST',
+    role: 'Alpha Desk [W+F+A]',
+    description: 'Sindikat WATER + FIRE + AIR: Likuiditas institusional (W) + Katalis berita (F) + Pengawalan tren ekspansi panjang (A).',
+    strategy: 'TRIO_TEMPEST',
+    avatar: '🌪️',
+    color: '#8b5cf6',
+    tier: 'TRIO',
+    parents: ['WATER', 'FIRE', 'AIR'],
+    status: 'STANDBY',
+    confidence: 90,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'OCEANIC',
+    name: 'OCEANIC',
+    role: 'All-Weather [W+A+E]',
+    description: 'Sindikat WATER + AIR + EARTH: Likuiditas institusi (W) + Trend momentum (A) + Bantalan mean reversion (E).',
+    strategy: 'TRIO_OCEANIC',
+    avatar: '🌊',
+    color: '#0284c7',
+    tier: 'TRIO',
+    parents: ['WATER', 'AIR', 'EARTH'],
+    status: 'STANDBY',
+    confidence: 90,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'GEOTHERMAL',
+    name: 'GEOTHERMAL',
+    role: 'Anti-Whipsaw [W+F+E]',
+    description: 'Sindikat WATER + FIRE + EARTH: Mitigasi Order Block saat rilis berita dengan proteksi support fundamental kuat.',
+    strategy: 'TRIO_GEOTHERMAL',
+    avatar: '🔮',
+    color: '#e11d48',
+    tier: 'TRIO',
+    parents: ['WATER', 'FIRE', 'EARTH'],
+    status: 'STANDBY',
+    confidence: 90,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'CYCLONE',
+    name: 'CYCLONE',
+    role: 'Regime Shifter [F+A+E]',
+    description: 'Sindikat FIRE + AIR + EARTH: Transisi adaptif dari scalping berita (F) -> Breakout tren (A) -> Mean reversion saat jenuh (E).',
+    strategy: 'TRIO_CYCLONE',
+    avatar: '🌀',
+    color: '#14b8a6',
+    tier: 'TRIO',
+    parents: ['FIRE', 'AIR', 'EARTH'],
+    status: 'STANDBY',
+    confidence: 90,
     exp3Weight: 0.25,
     generation: 0,
     resetCount: 0,
@@ -1125,8 +1328,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       const savedVersion = localStorage.getItem('mbg_ai_arena_agents_v');
       const saved = localStorage.getItem('mbg_ai_arena_agents');
 
-      if (savedVersion !== 'v6_combo') {
-        localStorage.setItem('mbg_ai_arena_agents_v', 'v6_combo');
+      if (savedVersion !== 'v7_all_combos') {
+        localStorage.setItem('mbg_ai_arena_agents_v', 'v7_all_combos');
         let currentList = [];
         if (saved) {
           try { currentList = JSON.parse(saved); } catch {}
@@ -1237,12 +1440,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     }
   });
 
-  // Filter Tab for Locked 4-Column Kanban Grid: 'ALL' (8 bots) | 'BASE' (4 base bots) | 'COMBO' (4 combo fusion bots)
+  // Filter Tab for Locked 4-Column Kanban Grid: 'ALL' | 'BASE' | 'DUO' | 'TRIO'
   const [agentFilterTab, setAgentFilterTab] = useState('ALL');
 
   const filteredAgents = useMemo(() => {
-    if (agentFilterTab === 'BASE') return agents.filter(a => a.tier === 'BASE' || ['WATER', 'FIRE', 'AIR', 'EARTH'].includes(a.id));
-    if (agentFilterTab === 'COMBO') return agents.filter(a => a.tier === 'DUO' || a.tier === 'AVATAR' || ['STEAM', 'STORM', 'LAVA', 'AVATAR'].includes(a.id));
+    if (agentFilterTab === 'BASE') return agents.filter(a => a.tier === 'BASE');
+    if (agentFilterTab === 'DUO') return agents.filter(a => a.tier === 'DUO');
+    if (agentFilterTab === 'TRIO') return agents.filter(a => a.tier === 'TRIO' || a.tier === 'AVATAR');
     return agents;
   }, [agents, agentFilterTab]);
 
@@ -2015,9 +2219,31 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   } else if (chosenAgent.id === 'STORM') {
                     isLong = (targetFeed.change || 0) >= 0;
                     rationale = `STORM [W+A]: BOS structural swing high + Donchian breakout ekspansi tren pada ${targetKey}.`;
+                  } else if (chosenAgent.id === 'MUD') {
+                    isLong = (targetFeed.change || 0) < -0.3;
+                    rationale = `MUD [W+E]: Support/Resistance bounce + mitigasi Fair Value Gap pada ${targetKey}.`;
+                  } else if (chosenAgent.id === 'LIGHTNING') {
+                    isLong = (targetFeed.change || 0) > 0.4;
+                    rationale = `LIGHTNING [F+A]: Lonjakan volume berita memicu breakout ekspansi tren Donchian pada ${targetKey}.`;
                   } else if (chosenAgent.id === 'LAVA') {
-                    isLong = (targetFeed.change || 0) < -0.8 ? true : false;
+                    isLong = (targetFeed.change || 0) < -0.8;
                     rationale = `LAVA [F+E]: Post-news exhaustion spike fade keluar batas Bollinger 3 SD pada ${targetKey}.`;
+                  } else if (chosenAgent.id === 'SANDSTORM') {
+                    isLong = (targetFeed.change || 0) > -0.2 && entry > targetFeed.low * 1.002;
+                    rationale = `SANDSTORM [A+E]: Disiplin beli saat pullback menyentuh level support kunci pada tren ${targetKey}.`;
+                  } else if (chosenAgent.id === 'TEMPEST') {
+                    isLong = (targetFeed.change || 0) >= 0.2;
+                    rationale = `TEMPEST [W+F+A]: Alpha desk: Likuiditas institusi + katalis berita + pengawalan tren parabolis ${targetKey}.`;
+                  } else if (chosenAgent.id === 'OCEANIC') {
+                    isLong = entry >= ((targetFeed.high + targetFeed.low) / 2);
+                    rationale = `OCEANIC [W+A+E]: All-weather institutional: Likuiditas SMC + trend momentum + bantalan S/R pada ${targetKey}.`;
+                  } else if (chosenAgent.id === 'GEOTHERMAL') {
+                    isLong = (targetFeed.change || 0) < 0.1;
+                    rationale = `GEOTHERMAL [W+F+E]: Mitigasi Order Block saat rilis berita dengan proteksi support fundamental ${targetKey}.`;
+                  } else if (chosenAgent.id === 'CYCLONE') {
+                    const isTrending = Math.abs(targetFeed.change || 0) > 1.2;
+                    isLong = isTrending ? (targetFeed.change > 0) : (targetFeed.change < 0);
+                    rationale = `CYCLONE [F+A+E]: Dynamic regime transition (${isTrending ? 'Trend Ignition' : 'Mean Reversion'}) pada ${targetKey}.`;
                   } else if (chosenAgent.id === 'AVATAR') {
                     const score = ((targetFeed.change || 0) > 0 ? 1 : -1) + (entry > ((targetFeed.high + targetFeed.low) / 2) ? 1 : -1) + (Math.random() > 0.45 ? 1 : -1);
                     isLong = score >= 0;
@@ -2035,8 +2261,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     }
                   }
                   const atr = entry * atrPct;
-                  const slMultiplier = chosenAgent.id === 'STEAM' ? 0.85 : (chosenAgent.id === 'LAVA' ? 0.90 : 1.0);
-                  const tpMultiplier = chosenAgent.id === 'STORM' ? 1.8 : (chosenAgent.id === 'STEAM' ? 2.0 : 1.5);
+                  const slMultiplier = ['STEAM', 'MUD'].includes(chosenAgent.id) ? 0.85 : (['LAVA', 'GEOTHERMAL'].includes(chosenAgent.id) ? 0.90 : 1.0);
+                  const tpMultiplier = ['STORM', 'LIGHTNING', 'TEMPEST'].includes(chosenAgent.id) ? 2.2 : (['STEAM', 'CYCLONE'].includes(chosenAgent.id) ? 1.8 : 1.5);
                   const sl = isLong ? (entry - (atr * slMultiplier)) : (entry + (atr * slMultiplier));
                   const tp1 = isLong ? (entry + (atr * tpMultiplier)) : (entry - (atr * tpMultiplier));
                   const tp2 = isLong ? (entry + (atr * (tpMultiplier + 1.0))) : (entry - (atr * (tpMultiplier + 1.0)));
@@ -2861,7 +3087,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
             {[
               { id: 'ALL', label: `Semua Bot (${agents.length})` },
               { id: 'BASE', label: '4 Elemen Dasar' },
-              { id: 'COMBO', label: '4 Kombo Fusi' }
+              { id: 'DUO', label: '6 Kombo Duo' },
+              { id: 'TRIO', label: '5 Sindikat (Trio & Master)' }
             ].map(tab => (
               <button
                 key={tab.id}
