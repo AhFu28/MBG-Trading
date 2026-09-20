@@ -376,20 +376,168 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       ],
       levels: { entry: 6350, tp: 6650, sl: 6225, min: 6180, max: 6720 }
     },
-    CHAOS: {
-      title: 'SOL/USDT M5 — CHAOS: Kinetic Carpet-Bomb & Supernova Asymmetry',
-      entryLabel: 'Carpet Bomb #1-$9 @ $212.50 (Liquidity Vacuum)',
-      tpLabel: 'Supernova Harvest @ $248.00 (+16.5R Convexity)',
-      slLabel: 'Terminal MC Boundary @ $202.00 (Self-Learning Rebirth)',
+    STEAM: {
+      title: 'GBP/USD M30 — STEAM [W+F]: Liquidity Sweep + Flash News Surge Sniper',
+      entryLabel: 'Sniper Entry @ 1.2940 (FVG + News Volume)',
+      tpLabel: 'Target TP @ 1.3060 (+3.0R Fast Expansion)',
+      slLabel: 'Hard SL @ 1.2905 (-0.85R Sweep Tail)',
       candles: [
-        { o: 204, h: 209, l: 203, c: 208, isBull: true },
-        { o: 208, h: 213, l: 207, c: 212, isBull: true },
-        { o: 212, h: 215, l: 211, c: 212, isBull: false, isSweep: true },
-        { o: 212, h: 224, l: 212, c: 223, isBull: true, isEntry: true },
-        { o: 223, h: 236, l: 222, c: 235, isBull: true },
-        { o: 235, h: 250, l: 234, c: 248, isBull: true, isExit: true }
+        { o: 1.2915, h: 1.2925, l: 1.2908, c: 1.2920, isBull: true },
+        { o: 1.2920, h: 1.2930, l: 1.2910, c: 1.2915, isBull: false },
+        { o: 1.2915, h: 1.2918, l: 1.2902, c: 1.2910, isBull: false, isSweep: true },
+        { o: 1.2910, h: 1.2945, l: 1.2905, c: 1.2940, isBull: true, isEntry: true },
+        { o: 1.2940, h: 1.3010, l: 1.2935, c: 1.3000, isBull: true },
+        { o: 1.3000, h: 1.3070, l: 1.2995, c: 1.3060, isBull: true, isExit: true }
       ],
-      levels: { entry: 212.50, tp: 248.00, sl: 202.00, min: 198, max: 255 }
+      levels: { entry: 1.2940, tp: 1.3060, sl: 1.2905, min: 1.2890, max: 1.3080 }
+    },
+    STORM: {
+      title: 'SOL/USDT H1 — STORM [W+A]: BOS Swing High & Donchian Breakout Expansion',
+      entryLabel: 'BOS Entry @ $186.50 (Upper Channel + Structural BOS)',
+      tpLabel: 'Pyramid TP @ $214.00 (+4.5R Wave Rider)',
+      slLabel: 'Trailing SL @ $180.00 (-1.0R Higher Low)',
+      candles: [
+        { o: 178, h: 183, l: 176, c: 182, isBull: true },
+        { o: 182, h: 184, l: 180, c: 181, isBull: false },
+        { o: 181, h: 187, l: 180, c: 186.5, isBull: true, isSweep: true, isEntry: true },
+        { o: 186.5, h: 196, l: 185, c: 194, isBull: true },
+        { o: 194, h: 205, l: 192, c: 202, isBull: true },
+        { o: 202, h: 216, l: 200, c: 214, isBull: true, isExit: true }
+      ],
+      levels: { entry: 186.50, tp: 214.00, sl: 180.00, min: 174, max: 220 }
+    },
+    MUD: {
+      title: 'AAPL H4 — MUD [W+E]: Dual Support Buffer & Fair Value Gap (FVG) Mitigation',
+      entryLabel: 'Discount Buy @ $224.50 (Support S/R + FVG Fill)',
+      tpLabel: 'Target TP @ $235.00 (+2.5R Mean Recovery)',
+      slLabel: 'Hard SL @ $220.50 (-0.9R Support Floor)',
+      candles: [
+        { o: 230, h: 231, l: 227, c: 228, isBull: false },
+        { o: 228, h: 229, l: 224, c: 225, isBull: false },
+        { o: 225, h: 226, l: 223, c: 224.5, isBull: false, isSweep: true, isEntry: true },
+        { o: 224.5, h: 228, l: 224, c: 227.5, isBull: true },
+        { o: 227.5, h: 231, l: 227, c: 230.5, isBull: true },
+        { o: 230.5, h: 236, l: 230, c: 235.0, isBull: true, isExit: true }
+      ],
+      levels: { entry: 224.50, tp: 235.00, sl: 220.50, min: 218, max: 238 }
+    },
+    LIGHTNING: {
+      title: 'TSLA M15 — LIGHTNING [F+A]: Flash Momentum Post-News Breakout Runner',
+      entryLabel: 'Flash Breakout @ $338.00 (Volume Surge + ATR Spike)',
+      tpLabel: 'Parabolic TP @ $362.00 (+3.5R Fast Surge)',
+      slLabel: 'Trailing SL @ $331.00 (-1.0R Momentum Base)',
+      candles: [
+        { o: 330, h: 333, l: 328, c: 331, isBull: true },
+        { o: 331, h: 339, l: 330, c: 338, isBull: true, isSweep: true, isEntry: true },
+        { o: 338, h: 348, l: 337, c: 346, isBull: true },
+        { o: 346, h: 356, l: 344, c: 354, isBull: true },
+        { o: 354, h: 364, l: 352, c: 362, isBull: true, isExit: true }
+      ],
+      levels: { entry: 338.00, tp: 362.00, sl: 331.00, min: 325, max: 368 }
+    },
+    LAVA: {
+      title: 'USOIL M30 — LAVA [F+E]: Post-News Exhaustion Fade outside 3.0 SD',
+      entryLabel: 'Exhaustion Sell/Fade @ $74.80 (Bollinger 3 SD Rejection)',
+      tpLabel: 'Target TP @ $71.20 (+2.8R Mid-Band Mean)',
+      slLabel: 'Hard SL @ $76.10 (-1.0R Exhaustion Wick)',
+      candles: [
+        { o: 71.5, h: 72.8, l: 71.2, c: 72.5, isBull: true },
+        { o: 72.5, h: 74.2, l: 72.4, c: 73.9, isBull: true },
+        { o: 73.9, h: 75.6, l: 73.8, c: 74.8, isBull: false, isSweep: true, isEntry: true },
+        { o: 74.8, h: 74.9, l: 73.2, c: 73.5, isBull: false },
+        { o: 73.5, h: 73.6, l: 72.0, c: 72.2, isBull: false },
+        { o: 72.2, h: 72.4, l: 71.0, c: 71.2, isBull: false, isExit: true }
+      ],
+      levels: { entry: 74.80, tp: 71.20, sl: 76.10, min: 70.0, max: 77.0 }
+    },
+    SANDSTORM: {
+      title: 'NVDA H2 — SANDSTORM [A+E]: Trend Pullback Buy on Solid MA 50 Support',
+      entryLabel: 'Pullback Buy @ $137.50 (MA 50 + Fibo 61.8% Retest)',
+      tpLabel: 'Target TP @ $148.00 (+3.0R Trend Continuation)',
+      slLabel: 'Hard SL @ $134.00 (-1.0R Swing Low Support)',
+      candles: [
+        { o: 144, h: 146, l: 142, c: 143, isBull: false },
+        { o: 143, h: 143, l: 138, c: 139, isBull: false },
+        { o: 139, h: 140, l: 136.5, c: 137.5, isBull: true, isSweep: true, isEntry: true },
+        { o: 137.5, h: 142, l: 137, c: 141.5, isBull: true },
+        { o: 141.5, h: 145, l: 141, c: 144.5, isBull: true },
+        { o: 144.5, h: 149, l: 144, c: 148.0, isBull: true, isExit: true }
+      ],
+      levels: { entry: 137.50, tp: 148.00, sl: 134.00, min: 132, max: 151 }
+    },
+    TEMPEST: {
+      title: 'BTC/USDT H4 — TEMPEST [W+F+A]: Triple-Engine Alpha (Liquidity + News + Parabolic Trend)',
+      entryLabel: 'Alpha Entry @ $92,200 (SMC Sweep + FOMC Volume + Donchian)',
+      tpLabel: 'Alpha Harvest @ $102,000 (+5.5R Super-Trend)',
+      slLabel: 'Trailing SL @ $90,400 (-1.0R Dynamic Base)',
+      candles: [
+        { o: 90000, h: 91500, l: 89800, c: 91000, isBull: true },
+        { o: 91000, h: 91600, l: 90200, c: 90800, isBull: false, isSweep: true },
+        { o: 90800, h: 92800, l: 90500, c: 92200, isBull: true, isEntry: true },
+        { o: 92200, h: 95500, l: 92000, c: 95000, isBull: true },
+        { o: 95000, h: 98500, l: 94800, c: 98000, isBull: true },
+        { o: 98000, h: 102500, l: 97800, c: 102000, isBull: true, isExit: true }
+      ],
+      levels: { entry: 92200, tp: 102000, sl: 90400, min: 89000, max: 104000 }
+    },
+    OCEANIC: {
+      title: 'BBRI Daily — OCEANIC [W+A+E]: All-Weather Wealth Anchor (Spot Cash Preservation)',
+      entryLabel: 'Spot Long Buy @ Rp 3.320 (Institutional Discount Order Block)',
+      tpLabel: 'Target TP @ Rp 3.650 (+3.5R Valuation Mean)',
+      slLabel: 'Hard SL @ Rp 3.230 (-0.9R Historic Support)',
+      candles: [
+        { o: 3450, h: 3460, l: 3380, c: 3390, isBull: false },
+        { o: 3390, h: 3400, l: 3320, c: 3340, isBull: false },
+        { o: 3340, h: 3350, l: 3300, c: 3320, isBull: false, isSweep: true, isEntry: true },
+        { o: 3320, h: 3420, l: 3310, c: 3400, isBull: true },
+        { o: 3400, h: 3540, l: 3390, c: 3510, isBull: true },
+        { o: 3510, h: 3680, l: 3500, c: 3650, isBull: true, isExit: true }
+      ],
+      levels: { entry: 3320, tp: 3650, sl: 3230, min: 3180, max: 3720 }
+    },
+    GEOTHERMAL: {
+      title: 'TLKM H4 — GEOTHERMAL [W+F+E]: News Panic Discount at Historic Fundamental Order Block',
+      entryLabel: 'Panic Buy @ Rp 2.700 (Valuation Floor + Order Block)',
+      tpLabel: 'Target TP @ Rp 2.980 (+3.2R Fair Value Rebound)',
+      slLabel: 'Hard SL @ Rp 2.610 (-1.0R Dividend Base)',
+      candles: [
+        { o: 2840, h: 2860, l: 2790, c: 2800, isBull: false },
+        { o: 2800, h: 2810, l: 2690, c: 2720, isBull: false },
+        { o: 2720, h: 2730, l: 2660, c: 2700, isBull: false, isSweep: true, isEntry: true },
+        { o: 2700, h: 2790, l: 2690, c: 2780, isBull: true },
+        { o: 2780, h: 2880, l: 2770, c: 2860, isBull: true },
+        { o: 2860, h: 3000, l: 2850, c: 2980, isBull: true, isExit: true }
+      ],
+      levels: { entry: 2700, tp: 2980, sl: 2610, min: 2560, max: 3040 }
+    },
+    CYCLONE: {
+      title: 'XAU/USD M15 — CYCLONE [F+A+E]: Dynamic Market Regime Transition Engine (Hurst Switch)',
+      entryLabel: 'Regime Entry @ 2,914.00 (Hurst > 0.6 Trend Ignition Confirmed)',
+      tpLabel: 'Harvest TP @ 2,952.00 (+3.8R Adaptive Expansion)',
+      slLabel: 'Dynamic SL @ 2,904.00 (-1.0R Regime Boundary)',
+      candles: [
+        { o: 2908, h: 2912, l: 2906, c: 2910, isBull: true },
+        { o: 2910, h: 2916, l: 2909, c: 2914, isBull: true, isSweep: true, isEntry: true },
+        { o: 2914, h: 2928, l: 2912, c: 2926, isBull: true },
+        { o: 2926, h: 2940, l: 2924, c: 2938, isBull: true },
+        { o: 2938, h: 2954, l: 2935, c: 2952, isBull: true, isExit: true }
+      ],
+      levels: { entry: 2914.00, tp: 2952.00, sl: 2904.00, min: 2898, max: 2960 }
+    },
+    AVATAR: {
+      title: 'CROSS-ASSET H4 — AVATAR [4-E]: Supreme 4-Element Multi-Ensemble Consensus',
+      entryLabel: 'Consensus Entry @ Dynamic Level (Ensemble Score >= 3/4)',
+      tpLabel: 'Supreme Harvest @ Multi-Target (+4.0R Consensus Hold)',
+      slLabel: 'Master Parity SL (-1.0R Risk-Weighted)',
+      candles: [
+        { o: 100, h: 103, l: 99, c: 102, isBull: true },
+        { o: 102, h: 104, l: 100, c: 101, isBull: false, isSweep: true },
+        { o: 101, h: 105, l: 100.5, c: 104, isBull: true, isEntry: true },
+        { o: 104, h: 109, l: 103.5, c: 108, isBull: true },
+        { o: 108, h: 113, l: 107.5, c: 112, isBull: true },
+        { o: 112, h: 117, l: 111, c: 116, isBull: true, isExit: true }
+      ],
+      levels: { entry: 104.00, tp: 116.00, sl: 101.00, min: 98, max: 118 }
     }
   };
   // Backwards compatibility mappings
@@ -4744,10 +4892,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 <span style={{ fontSize: '18px' }}>🧠</span>
                 <div>
                   <h3 style={{ margin: 0, fontSize: '13.5px', fontWeight: '900', color: 'var(--text-primary)' }}>
-                    Profil, Filosofi & Simulasi Strategi 4 AI Trading Agents
+                    Profil, Filosofi & Simulasi Strategi 15 AI Multi-Agent Roster
                   </h3>
                   <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
-                    Logika di balik keputusan algoritma, titik entry order block / breakout, serta simulasi visual target TP dan SL.
+                    Logika di balik keputusan algoritma, titik entry order block / breakout, serta simulasi visual target TP dan SL tiap elemen.
                   </div>
                 </div>
               </div>
@@ -4788,11 +4936,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 const targetAg = agents.find(a => a.id === selectedPhilosophyAgent) || agents[0];
                 const metaConfigs = {
                   WATER: {
-                    thesis: 'Mengikuti jejak institusi bank sentral & hedge fund (Smart Money). Pasar selalu memburu likuiditas ritel (stop loss sweep) sebelum bergerak ke arah tren sejati.',
+                    thesis: 'Mengikuti jejak institusi bank sentral & hedge fund (Smart Money Concepts). Pasar selalu memburu likuiditas ritel (stop loss sweep) sebelum bergerak ke arah tren sejati.',
                     trigger: 'Menunggu Liquidity Sweep pada swing high/low, mendeteksi Fair Value Gap (FVG), lalu membuka Buy/Sell limit pada mitigasi Order Block H4/H1.',
                     slRule: 'Hard SL dipasang ketat tepat di luar swing low Order Block (-1.0R risk unit). Invalidation terjadi jika candle close menembus level batas ini.',
-                    tpRule: 'Target TP1 diambil pada swing liquidity berikutnya (+2.5R) dan TP2 pada level ekstrim (+4.0R). Saat profit mencapai 1.2R, stop loss otomatis digeser ke Break-Even.',
-                    markets: 'XAUUSD (Gold), EURUSD, GBPUSD, US30 (Futures & Forex Interbank 1:100 leverage).'
+                    tpRule: 'Target TP1 diambil pada swing liquidity berikutnya (+2.5R) dan TP2 pada level ekstrim (+4.0R). Saat profit mencapai 1.2R, stop loss otomatis BEP.',
+                    markets: 'XAUUSD (Gold), EURUSD, GBPUSD, BTCUSDT (Forex & Crypto Perp 1:20).'
                   },
                   FIRE: {
                     thesis: 'Katalis makro ekonomi adalah penggerak deviasi harga terbesar dalam waktu tersingkat. Deviasi rilis data aktual vs konsensus menciptakan inefisiensi harga kilat.',
@@ -4805,15 +4953,92 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     thesis: 'Prinsip klasik Trend-Following: "Let your winners run, cut your losses short". Tidak pernah menebak puncak atau dasar pasar, melainkan menunggangi gelombang tren yang sudah terkonfirmasi.',
                     trigger: 'Breakout 20-periode Donchian Channel yang divalidasi oleh ekspansi volatilitas ATR dan posisi MA 50 di atas MA 200.',
                     slRule: 'Trailing Stop berbasis 2.0x ATR (Average True Range). Stop loss terus bergerak naik mengunci profit seiring harga mencetak rekor baru.',
-                    tpRule: 'Multi-stage TP pada ekspansi ekstensi Fibonacci (+3.0R s/d +5.0R). Posisi baru ditutup total ketika terjadi Donchian opposite exit.',
-                    markets: 'BTCUSDT, SOLUSDT, NVDA, TSLA, XAUUSD (Aset berkarakter tren panjang dan volatilitas tinggi).'
+                    tpRule: 'Multi-stage TP pada ekspansi ekstensi Fibonacci (+3.0R s/d +5.0R). Piramida posisi ditambah saat profit (+0.8%).',
+                    markets: 'BTCUSDT, SOLUSDT, NVDA, TSLA, SPY (Aset berkarakter tren panjang dan volatilitas tinggi).'
                   },
                   EARTH: {
                     thesis: 'Pasar bergerak sideways dalam rentang harga (range-bound) sekitar 70% dari waktu. Setiap deviasi harga yang menyentuh simpangan baku ekstrim secara statistik akan tertarik kembali ke nilai rata-ratanya (mean).',
                     trigger: 'Harga menembus pita bawah Bollinger Bands 2.5 Standard Deviation dengan RSI oversold (< 30) pada saham fundamental defensif atau sesi sepi Asia.',
-                    slRule: 'Hard Stop Loss ketat di bawah support swing low terdekat (-1.0R). Khusus saham BEI spot (BBCA/BBRI), bot 100% LONG-only tanpa fasilitas short selling ritel.',
+                    slRule: 'Hard Stop Loss ketat di bawah support swing low terdekat (-1.0R). Khusus saham BEI spot (BBCA/BBRI), bot 100% LONG-only (0% risiko likuidasi).',
                     tpRule: 'Target TP1 dipasang pada garis tengah Bollinger Bands (SMA 20) dan TP2 pada batas pita atas (+2.0R s/d +3.0R).',
                     markets: 'BBCA, BBRI, BMRI (Saham Blue-Chip BEI Spot 1:1) dan USDJPY pada sesi Asia.'
+                  },
+                  STEAM: {
+                    thesis: 'Sinergi WATER + FIRE: Likuiditas institusi bertemu katalis volatilitas berita. Menggunakan volume lonjakan rilis berita makro untuk memvalidasi penyelesaian sapuan likuiditas (sweep confirmation).',
+                    trigger: 'Order Block H1 disentuh bersamaan dengan lonjakan volume impulsif rilis berita ekonomi, memicu entry sniper dengan validasi ganda.',
+                    slRule: 'Hard SL ketat di ujung ekor candle manipulasi berita (-0.85R risk unit). Cut loss instan jika harga gagal bertahan.',
+                    tpRule: 'Fast Expansion TP (+3.0R) dengan auto-breakeven ratchet saat posisi mencapai +1.0R profit.',
+                    markets: 'XAUUSD, GBPUSD, BTCUSDT, NAS100 (Pasar berlikuiditas tinggi dengan katalis berita aktif).'
+                  },
+                  STORM: {
+                    thesis: 'Sinergi WATER + AIR: Mengawinkan presisi konfirmasi struktural Smart Money (BOS - Break of Structure) dengan daya dorong tren Donchian yang berkesinambungan.',
+                    trigger: 'Break of Structure (BOS) terkonfirmasi pada H1 diikuti breakout Donchian Upper Band dengan volume expansion kuat.',
+                    slRule: 'SL diletakkan di bawah Higher Low struktural terakhir pembentuk BOS (-1.0R) dengan trailing stop bertahap.',
+                    tpRule: 'Riding Trend bertahap (+3.5R s/d +6.0R) dengan penambahan layer piramida saat posisi berjalan profit > 0.8%.',
+                    markets: 'SOLUSDT, ETHUSDT, NVDA, QQQ (Aset momentum kuat dengan tren ekspansi tinggi).'
+                  },
+                  MUD: {
+                    thesis: 'Sinergi WATER + EARTH: Bantalan pertahanan solid mean reversion dipadu presisi Fair Value Gap (FVG). Menolak breakout palsu dan hanya membeli pada area diskon institusi terdalam.',
+                    trigger: 'Inbalance Fair Value Gap (FVG) yang berhimpitan presisi di atas level support horizontal statis atau Bollinger Lower Band.',
+                    slRule: 'SL sangat konservatif di bawah zona bantalan support ganda (-0.9R). 100% Spot cash safe holding.',
+                    tpRule: 'Target konservatif Mean Reversion pada Mid-Band SMA 20 / Equal Highs (+2.2R s/d +3.0R).',
+                    markets: 'BBCA, BMRI, AAPL, MSFT, BTCUSDT (Saham bluechip dan crypto berkapitalisasi mega).'
+                  },
+                  LIGHTNING: {
+                    thesis: 'Sinergi FIRE + AIR: Kecepatan akselerasi murni. Ketika kejutan rilis berita memicu breakout teknikal Donchian, tercipta lonjakan momentum kilat dengan velocity tertinggi.',
+                    trigger: 'Candle impulsif pasca-berita menembus Donchian Channel 20 dengan kenaikan ATR > 150% dalam 1 candle tunggal.',
+                    slRule: 'Trailing Stop ketat 1.2x ATR; bot otomatis memotong posisi jika momentum mereda dalam 3 bar lilin.',
+                    tpRule: 'Parabolic Expansion TP (+3.5R s/d +5.0R) dengan penambahan layer instan pada breakout kedua.',
+                    markets: 'DOGEUSDT, PEPEUSDT, TSLA, SMCI, USOIL (Aset high-beta dengan pergerakan eksplosif).'
+                  },
+                  LAVA: {
+                    thesis: 'Sinergi FIRE + EARTH: Mengambil keuntungan dari reaksi berlebihan (overreaction) pasar terhadap berita. Candle euforia atau kepanikan yang keluar dari 3.0 SD pasti mengalami kelelahan (exhaustion fade).',
+                    trigger: 'Spike berita tajam mendorong harga keluar pita Bollinger 3.0 SD dengan RSI ekstrim (> 85 atau < 15), diikuti munculnya penolakan (wick rejection pinbar).',
+                    slRule: 'SL ketat di ujung ekor candle spike ekstrem (-0.9R). Invalidation cepat jika volume pembelian berlanjut.',
+                    tpRule: 'Target pembalikan cepat (mean reversion fade) menuju SMA 20 (+2.5R s/d +3.5R).',
+                    markets: 'EURUSD, XAUUSD, SUIUSDT, INTC (Pasangan dengan kecenderungan overextension tinggi).'
+                  },
+                  SANDSTORM: {
+                    thesis: 'Sinergi AIR + EARTH: Tidak pernah mengejar harga di puncak tren, melainkan sabar menunggu harga beristirahat (pullback) menyentuh level support struktural sebelum melanjutkan reli.',
+                    trigger: 'Tren bullish (MA 50 > MA 200) mengalami retracement hingga menyentuh zona support MA 50 atau Fibonacci 50-61.8%.',
+                    slRule: 'Hard SL dipasang di bawah swing low retracement (-1.0R). Aman untuk akumulasi spot kas tanpa utang margin.',
+                    tpRule: 'Target TP pada retest rekor tertinggi sebelumnya (Previous High) (+2.8R s/d +4.0R).',
+                    markets: 'BBRI, ASII, AMMN, QQQ, LINKUSDT (Saham dividen & indeks tren stabil).'
+                  },
+                  TEMPEST: {
+                    thesis: 'Sinergi WATER + FIRE + AIR: Triple-Engine Alpha Hedge-Fund. Sapuan likuiditas SMC + katalis berita makro + pengawalan tren jangka panjang untuk memeras keuntungan maksimal dari siklus bull run.',
+                    trigger: 'Likuiditas sweep pre-news, diikuti lonjakan volume rilis berita, dan konfirmasi penembusan tren Donchian secara simultan.',
+                    slRule: 'Hybrid Trailing SL yang menggabungkan batas Order Block dengan ratchet dinamis 1.5x ATR.',
+                    tpRule: 'Maximal Alpha Harvest (+4.0R s/d +8.0R) dengan alokasi piramida bertingkat hingga 3 posisi profit.',
+                    markets: 'BTCUSDT, SOLUSDT, NVDA, XAUUSD, NAS100 (Instrumen alpha utama multi-aset).'
+                  },
+                  OCEANIC: {
+                    thesis: 'Sinergi WATER + AIR + EARTH: Filosofi Ray Dalio All-Weather Portfolio. Aliran likuiditas SMC dipadukan dengan pengawalan tren stabil dan peredam kejut mean reversion untuk pertumbuhan modal berkelanjutan.',
+                    trigger: 'Akumulasi di zona diskon Order Block yang berada di jalur tren naik mayor dengan konfirmasi pantulan support kuat.',
+                    slRule: 'Proteksi struktural berlapis (-1.0R); drawdown terjaga sangat minimal pada kondisi pasar apapun.',
+                    tpRule: 'Target bertahap konservatif hingga apresiasi modal jangka panjang (+2.5R s/d +4.5R).',
+                    markets: 'BBCA, BBRI, SPY, IWM, ETHUSDT, AAPL (Fokus pada Spot & Keamanan Modal Jangka Panjang).'
+                  },
+                  GEOTHERMAL: {
+                    thesis: 'Sinergi WATER + FIRE + EARTH: Memanfaatkan kepanikan berita (news panic sell-off) untuk memborong aset fundamental diskon di Order Block institusi dengan bantalan valuasi murah.',
+                    trigger: 'Kepanikan berita memicu sell-off ritel hingga harga terdorong ke Order Block mayor yang berhimpitan dengan support fundamental historis.',
+                    slRule: 'Hard SL di bawah level valuasi batas institusi (-0.9R) dengan perlindungan spot cash.',
+                    tpRule: 'Target pemulihan valuasi wajar (fair value rebound) (+3.0R s/d +5.0R).',
+                    markets: 'TLKM, ASII, JPM, GOOGL, BNBUSDT (Aset bernilai fundamental tinggi saat diskon pasar).'
+                  },
+                  CYCLONE: {
+                    thesis: 'Sinergi FIRE + AIR + EARTH: Mesin adaptif kuantitatif. Secara otomatis mendeteksi perubahan rezim pasar (Market Regime Switching) antara ekspansi tren volatil vs konsolidasi mean reversion.',
+                    trigger: 'Kalkulasi Hurst Exponent: Jika Hurst > 0.6 -> Buka Donchian breakout; Jika Hurst < 0.4 -> Buka fading Bollinger Bands.',
+                    slRule: 'Adaptive SL menyesuaikan rezim yang sedang aktif (ATR trailing untuk tren, hard band untuk sideways).',
+                    tpRule: 'Fleksibel 1:2.0 hingga 1:5.0 R:R tergantung kekuatan momentum rezim yang terdeteksi.',
+                    markets: 'XAUUSD, BTCUSDT, TSLA, EURUSD, DAX40 (Pasar dengan variasi rezim dinamis).'
+                  },
+                  AVATAR: {
+                    thesis: 'Master of All 4 Elements: Mengintegrasikan sinyal dari WATER, FIRE, AIR, dan EARTH ke dalam model voting kuantitatif multi-dimensi (Ensemble Meta-Learner Consensus).',
+                    trigger: 'Konsensus minimal 3 dari 4 elemen sepakat pada arah yang sama (Likuiditas SMC + Volatilitas Berita + Tren Donchian + Valuasi Support).',
+                    slRule: 'Master Risk Parity SL (-1.0R) dengan trailing stop bertahap yang paling disiplin di seluruh arena.',
+                    tpRule: 'Supreme Multi-Target (+3.0R s/d +6.0R) dengan eksekusi exit segera jika terjadi perpecahan divergensi antar elemen.',
+                    markets: 'Seluruh universe instrumen (Cross-Asset Master: Saham BEI, Saham US, Crypto, Forex, Komoditas).'
                   }
                 };
                 metaConfigs.TITAN = metaConfigs.WATER;
