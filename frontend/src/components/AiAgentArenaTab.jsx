@@ -29,6 +29,17 @@ const formatUsd = (val) => {
   return `${sign}$${Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
 
+const formatCompactIdr = (val) => {
+  if (val === undefined || val === null || isNaN(val)) return 'Rp 0';
+  const n = Math.round(Number(val));
+  const sign = n < 0 ? '-' : '';
+  const abs = Math.abs(n);
+  if (abs >= 1000000000) return `${sign}Rp ${(abs / 1000000000).toFixed(1)}M`;
+  if (abs >= 1000000) return `${sign}Rp ${(abs / 1000000).toFixed(1)}Jt`;
+  if (abs >= 1000) return `${sign}Rp ${(abs / 1000).toFixed(0)}K`;
+  return `${sign}Rp ${abs}`;
+};
+
 // Universal Price Formatter with Thousand Separator & Asset-Specific Precision (Never overly truncates decimals)
 export const formatInstrumentPrice = (val, market, symbol = '') => {
   if (val === undefined || val === null || isNaN(val)) return '-';
@@ -741,7 +752,7 @@ const ALL_INSTRUMENTS = [
   { symbol: 'PYPL', label: 'PayPal (PYPL)', market: 'US' }
 ];
 
-// 4 Specialized AI Agents Core Definitions (Evolved to Gen 2 with Session 0 Intelligence)
+// 15 Specialized AI Multi-Agent Roster (4 Base + 6 Duo + 4 Trio + 1 Master AVATAR)
 const INITIAL_AGENTS = [
   {
     id: 'WATER',
@@ -751,6 +762,9 @@ const INITIAL_AGENTS = [
     strategy: 'SMC_ORDER_BLOCK',
     avatar: '🌊',
     color: '#3b82f6',
+    tier: 'BASE',
+    dnaBadge: 'BASE',
+    dnaIcons: ['🌊'],
     status: 'STANDBY',
     confidence: 85,
     exp3Weight: 0.25,
@@ -767,6 +781,9 @@ const INITIAL_AGENTS = [
     strategy: 'NEWS_EVENT_MOMENTUM',
     avatar: '🔥',
     color: '#ef4444',
+    tier: 'BASE',
+    dnaBadge: 'BASE',
+    dnaIcons: ['🔥'],
     status: 'STANDBY',
     confidence: 85,
     exp3Weight: 0.25,
@@ -783,6 +800,9 @@ const INITIAL_AGENTS = [
     strategy: 'VOLATILITY_EXPANSION',
     avatar: '🌪️',
     color: '#10b981',
+    tier: 'BASE',
+    dnaBadge: 'BASE',
+    dnaIcons: ['🌪️'],
     status: 'STANDBY',
     confidence: 85,
     exp3Weight: 0.25,
@@ -799,14 +819,16 @@ const INITIAL_AGENTS = [
     strategy: 'ASIAN_MEAN_REVERSION',
     avatar: '⛰️',
     color: '#eab308',
+    tier: 'BASE',
+    dnaBadge: 'BASE',
+    dnaIcons: ['⛰️'],
     status: 'STANDBY',
     confidence: 85,
     exp3Weight: 0.25,
     generation: 0,
     resetCount: 0,
     resetsHistory: [],
-    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 },
-    tier: 'BASE'
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
   },
   {
     id: 'STEAM',
@@ -817,6 +839,8 @@ const INITIAL_AGENTS = [
     avatar: '💨',
     color: '#a855f7',
     tier: 'DUO',
+    dnaBadge: 'W+F',
+    dnaIcons: ['🌊', '🔥'],
     parents: ['WATER', 'FIRE'],
     status: 'STANDBY',
     confidence: 88,
@@ -835,7 +859,49 @@ const INITIAL_AGENTS = [
     avatar: '⛈️',
     color: '#06b6d4',
     tier: 'DUO',
+    dnaBadge: 'W+A',
+    dnaIcons: ['🌊', '🌪️'],
     parents: ['WATER', 'AIR'],
+    status: 'STANDBY',
+    confidence: 88,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'MUD',
+    name: 'MUD',
+    role: 'Liquidity Reversal Absorber [W+E]',
+    description: 'Sinergi WATER + EARTH: Reversal di support/resistance historis dipadukan dengan mitigasi Fair Value Gap & Order Block.',
+    strategy: 'DUO_MUD',
+    avatar: '🧱',
+    color: '#84cc16',
+    tier: 'DUO',
+    dnaBadge: 'W+E',
+    dnaIcons: ['🌊', '⛰️'],
+    parents: ['WATER', 'EARTH'],
+    status: 'STANDBY',
+    confidence: 88,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'LIGHTNING',
+    name: 'LIGHTNING',
+    role: 'Momentum Scalper Flash [F+A]',
+    description: 'Sinergi FIRE + AIR: Katalis berita makro memicu awal ekspansi tren breakout Donchian multi-hari berkecepatan tinggi.',
+    strategy: 'DUO_LIGHTNING',
+    avatar: '⚡',
+    color: '#f97316',
+    tier: 'DUO',
+    dnaBadge: 'F+A',
+    dnaIcons: ['🔥', '🌪️'],
+    parents: ['FIRE', 'AIR'],
     status: 'STANDBY',
     confidence: 88,
     exp3Weight: 0.25,
@@ -853,43 +919,9 @@ const INITIAL_AGENTS = [
     avatar: '🌋',
     color: '#f43f5e',
     tier: 'DUO',
+    dnaBadge: 'F+E',
+    dnaIcons: ['🔥', '⛰️'],
     parents: ['FIRE', 'EARTH'],
-    status: 'STANDBY',
-    confidence: 88,
-    exp3Weight: 0.25,
-    generation: 0,
-    resetCount: 0,
-    resetsHistory: [],
-    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
-  },
-  {
-    id: 'MUD',
-    name: 'MUD',
-    role: 'S/R Reversal [W+E]',
-    description: 'Sinergi WATER + EARTH: Reversal di support/resistance historis dipadukan dengan mitigasi Fair Value Gap & Order Block.',
-    strategy: 'DUO_MUD',
-    avatar: '🧱',
-    color: '#84cc16',
-    tier: 'DUO',
-    parents: ['WATER', 'EARTH'],
-    status: 'STANDBY',
-    confidence: 88,
-    exp3Weight: 0.25,
-    generation: 0,
-    resetCount: 0,
-    resetsHistory: [],
-    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
-  },
-  {
-    id: 'LIGHTNING',
-    name: 'LIGHTNING',
-    role: 'Volatility Trend [F+A]',
-    description: 'Sinergi FIRE + AIR: Katalis berita makro memicu awal ekspansi tren breakout Donchian multi-hari berkecepatan tinggi.',
-    strategy: 'DUO_LIGHTNING',
-    avatar: '⚡',
-    color: '#f97316',
-    tier: 'DUO',
-    parents: ['FIRE', 'AIR'],
     status: 'STANDBY',
     confidence: 88,
     exp3Weight: 0.25,
@@ -901,12 +933,14 @@ const INITIAL_AGENTS = [
   {
     id: 'SANDSTORM',
     name: 'SANDSTORM',
-    role: 'Trend-Pullback [A+E]',
+    role: 'Range Scalper Mean Revert [A+E]',
     description: 'Sinergi AIR + EARTH: Tren makro kuat dipadukan dengan disiplin beli saat pullback menyentuh support kunci.',
     strategy: 'DUO_SANDSTORM',
     avatar: '🏜️',
     color: '#d97706',
     tier: 'DUO',
+    dnaBadge: 'A+E',
+    dnaIcons: ['🌪️', '⛰️'],
     parents: ['AIR', 'EARTH'],
     status: 'STANDBY',
     confidence: 88,
@@ -919,12 +953,14 @@ const INITIAL_AGENTS = [
   {
     id: 'TEMPEST',
     name: 'TEMPEST',
-    role: 'Alpha Desk [W+F+A]',
+    role: 'Hyper-Aggressive Trend Syndicate [W+F+A]',
     description: 'Sindikat WATER + FIRE + AIR: Likuiditas institusional (W) + Katalis berita (F) + Pengawalan tren ekspansi panjang (A).',
     strategy: 'TRIO_TEMPEST',
-    avatar: '🌪️',
+    avatar: '🌀',
     color: '#8b5cf6',
     tier: 'TRIO',
+    dnaBadge: 'W+F+A',
+    dnaIcons: ['🌊', '🔥', '🌪️'],
     parents: ['WATER', 'FIRE', 'AIR'],
     status: 'STANDBY',
     confidence: 90,
@@ -937,12 +973,14 @@ const INITIAL_AGENTS = [
   {
     id: 'OCEANIC',
     name: 'OCEANIC',
-    role: 'All-Weather [W+A+E]',
+    role: 'Smart Money Reversion Anchor [W+A+E]',
     description: 'Sindikat WATER + AIR + EARTH: Likuiditas institusi (W) + Trend momentum (A) + Bantalan mean reversion (E).',
     strategy: 'TRIO_OCEANIC',
     avatar: '🌊',
     color: '#0284c7',
     tier: 'TRIO',
+    dnaBadge: 'W+A+E',
+    dnaIcons: ['🌊', '🌪️', '⛰️'],
     parents: ['WATER', 'AIR', 'EARTH'],
     status: 'STANDBY',
     confidence: 90,
@@ -955,12 +993,14 @@ const INITIAL_AGENTS = [
   {
     id: 'GEOTHERMAL',
     name: 'GEOTHERMAL',
-    role: 'Anti-Whipsaw [W+F+E]',
+    role: 'Macro Fundamental Core [W+F+E]',
     description: 'Sindikat WATER + FIRE + EARTH: Mitigasi Order Block saat rilis berita dengan proteksi support fundamental kuat.',
     strategy: 'TRIO_GEOTHERMAL',
     avatar: '🔮',
     color: '#e11d48',
     tier: 'TRIO',
+    dnaBadge: 'W+F+E',
+    dnaIcons: ['🌊', '🔥', '⛰️'],
     parents: ['WATER', 'FIRE', 'EARTH'],
     status: 'STANDBY',
     confidence: 90,
@@ -973,12 +1013,14 @@ const INITIAL_AGENTS = [
   {
     id: 'CYCLONE',
     name: 'CYCLONE',
-    role: 'Regime Shifter [F+A+E]',
+    role: 'Dynamic Volatility Trend [F+A+E]',
     description: 'Sindikat FIRE + AIR + EARTH: Transisi adaptif dari scalping berita (F) -> Breakout tren (A) -> Mean reversion saat jenuh (E).',
     strategy: 'TRIO_CYCLONE',
-    avatar: '🌀',
+    avatar: '🌪️',
     color: '#14b8a6',
     tier: 'TRIO',
+    dnaBadge: 'F+A+E',
+    dnaIcons: ['🔥', '🌪️', '⛰️'],
     parents: ['FIRE', 'AIR', 'EARTH'],
     status: 'STANDBY',
     confidence: 90,
@@ -991,12 +1033,14 @@ const INITIAL_AGENTS = [
   {
     id: 'AVATAR',
     name: 'AVATAR',
-    role: 'Consensus Master [4-ELEMENTS]',
+    role: 'Consensus Master Ensemble [W+F+A+E]',
     description: 'Multi-Agent Consensus Citadel Style: Entry hanya dieksekusi jika minimal 3 dari 4 elemen sepakat pada arah yang sama.',
     strategy: 'ENSEMBLE_AVATAR',
     avatar: '🌟',
     color: '#f59e0b',
     tier: 'AVATAR',
+    dnaBadge: 'ALL 4',
+    dnaIcons: ['🌊', '🔥', '🌪️', '⛰️'],
     parents: ['WATER', 'FIRE', 'AIR', 'EARTH'],
     status: 'STANDBY',
     confidence: 92,
@@ -1322,14 +1366,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
   const [marketFeeds, setMarketFeeds] = useState(DEFAULT_MARKET_FEEDS);
 
-  // Agents State with Auto-Migration for 4 Base Elements + 4 Combo Elements & Clean Gen 0 Tracking
+  // Agents State with Auto-Migration for 15 Agents (Canonical Sort & DNA Badges)
   const [agents, setAgents] = useState(() => {
     try {
       const savedVersion = localStorage.getItem('mbg_ai_arena_agents_v');
       const saved = localStorage.getItem('mbg_ai_arena_agents');
 
-      if (savedVersion !== 'v7_all_combos') {
-        localStorage.setItem('mbg_ai_arena_agents_v', 'v7_all_combos');
+      if (savedVersion !== 'v8_sorted_compact') {
+        localStorage.setItem('mbg_ai_arena_agents_v', 'v8_sorted_compact');
         let currentList = [];
         if (saved) {
           try { currentList = JSON.parse(saved); } catch {}
@@ -1339,27 +1383,43 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
           return INITIAL_AGENTS;
         }
 
-        const existingIds = new Set(currentList.map(a => a.id));
-        INITIAL_AGENTS.forEach(initAg => {
-          if (!existingIds.has(initAg.id)) {
-            currentList.push(initAg);
+        const existingMap = new Map(currentList.map(a => [a.id, a]));
+        const mergedAndSorted = INITIAL_AGENTS.map(initAg => {
+          const existing = existingMap.get(initAg.id);
+          if (existing) {
+            return {
+              ...existing,
+              tier: initAg.tier,
+              dnaBadge: initAg.dnaBadge,
+              dnaIcons: initAg.dnaIcons,
+              role: initAg.role,
+              avatar: initAg.avatar,
+              color: initAg.color,
+              parents: initAg.parents
+            };
           }
+          return initAg;
         });
-        localStorage.setItem('mbg_ai_arena_agents', JSON.stringify(currentList));
-        return currentList;
+        localStorage.setItem('mbg_ai_arena_agents', JSON.stringify(mergedAndSorted));
+        return mergedAndSorted;
       }
 
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          const existingIds = new Set(parsed.map(a => a.id));
-          let merged = [...parsed];
-          INITIAL_AGENTS.forEach(initAg => {
-            if (!existingIds.has(initAg.id)) {
-              merged.push(initAg);
+          const existingMap = new Map(parsed.map(a => [a.id, a]));
+          return INITIAL_AGENTS.map(initAg => {
+            const existing = existingMap.get(initAg.id);
+            if (existing) {
+              return {
+                ...existing,
+                tier: initAg.tier,
+                dnaBadge: initAg.dnaBadge,
+                dnaIcons: initAg.dnaIcons
+              };
             }
+            return initAg;
           });
-          return merged;
         }
       }
       return INITIAL_AGENTS;
@@ -1440,15 +1500,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     }
   });
 
-  // Filter Tab for Locked 4-Column Kanban Grid: 'ALL' | 'BASE' | 'DUO' | 'TRIO'
+  // Filter & Sort for Locked 4-Column Kanban Grid
   const [agentFilterTab, setAgentFilterTab] = useState('ALL');
-
-  const filteredAgents = useMemo(() => {
-    if (agentFilterTab === 'BASE') return agents.filter(a => a.tier === 'BASE');
-    if (agentFilterTab === 'DUO') return agents.filter(a => a.tier === 'DUO');
-    if (agentFilterTab === 'TRIO') return agents.filter(a => a.tier === 'TRIO' || a.tier === 'AVATAR');
-    return agents;
-  }, [agents, agentFilterTab]);
+  const [agentSortBy, setAgentSortBy] = useState('DEFAULT');
 
 
 
@@ -1600,6 +1654,27 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     });
     return map;
   }, [agents, journal, positions, capitalPerBotIdr]);
+
+  // Filtered & Dynamically Sorted Agents for 4-Column Grid
+  const filteredAgents = useMemo(() => {
+    let list = [...agents];
+    if (agentFilterTab === 'BASE') list = list.filter(a => a.tier === 'BASE');
+    else if (agentFilterTab === 'DUO') list = list.filter(a => a.tier === 'DUO');
+    else if (agentFilterTab === 'TRIO') list = list.filter(a => a.tier === 'TRIO' || a.tier === 'AVATAR');
+
+    if (agentSortBy === 'ROI_DESC') {
+      list.sort((a, b) => (agentStatsMap[b.id]?.roiPct || 0) - (agentStatsMap[a.id]?.roiPct || 0));
+    } else if (agentSortBy === 'WINRATE_DESC') {
+      list.sort((a, b) => Number(agentStatsMap[b.id]?.winRate || 0) - Number(agentStatsMap[a.id]?.winRate || 0));
+    } else if (agentSortBy === 'POSITIONS_DESC') {
+      list.sort((a, b) => {
+        const bPos = positions.filter(p => p.agentId === b.id).length;
+        const aPos = positions.filter(p => p.agentId === a.id).length;
+        return bPos - aPos;
+      });
+    }
+    return list;
+  }, [agents, agentFilterTab, agentSortBy, agentStatsMap, positions]);
 
   // Honest Real-Time Equity Trajectory Curves for each bot based on actual closed trades & live equity (No fake waves)
   const botEquityCurves = useMemo(() => {
@@ -2678,10 +2753,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span style={{ fontSize: '15px' }}>⚔️</span>
               <span style={{ fontSize: '12.5px', fontWeight: '900', letterSpacing: '0.02em', textTransform: 'uppercase', color: 'var(--text-primary)' }}>
-                4 Elements Battleground
+                AI Multi-Agent Arena
               </span>
               <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
-                (🌊 WATER • 🔥 FIRE • 🌪️ AIR • ⛰️ EARTH)
+                (15 BOTS SYNDICATE &bull; 4 BASE, 6 DUO, 4 TRIO, 1 MASTER)
               </span>
             </div>
 
@@ -3110,8 +3185,30 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               </button>
             ))}
           </div>
-          <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-            Locked 4-Column Grid &bull; {filteredAgents.length} Bot Aktif
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Urutan:</span>
+            <select
+              value={agentSortBy}
+              onChange={e => setAgentSortBy(e.target.value)}
+              style={{
+                padding: '2px 5px',
+                fontSize: '8.5px',
+                fontFamily: 'var(--font-mono)',
+                borderRadius: '3px',
+                background: 'var(--bg-panel-subtle)',
+                border: 'var(--border-hairline)',
+                color: 'var(--text-primary)',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="DEFAULT">DNA Elemen</option>
+              <option value="ROI_DESC">Top ROI %</option>
+              <option value="WINRATE_DESC">Win Rate</option>
+              <option value="POSITIONS_DESC">Posisi Aktif</option>
+            </select>
+            <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+              &bull; {filteredAgents.length} Bot Aktif
+            </div>
           </div>
         </div>
 
@@ -3129,33 +3226,58 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 key={ag.id}
                 className="telemetry-panel"
                 style={{
-                  padding: '12px',
-                  borderTop: `3px solid ${ag.color}`,
+                  padding: '8px 10px',
+                  borderTop: `2.5px solid ${ag.color}`,
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '10px',
+                  gap: '6px',
                   background: 'var(--bg-panel)'
                 }}
               >
                 
-                {/* --- A. Agent Header & Live Dynamic Status --- */}
+                {/* --- A. Compact Header: Avatar, Name, DNA Badge, Tier Pill & Status --- */}
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
-                    {/* Sisi Kiri: Avatar & Nama Bot Elemen (Tanpa Tombol GEN yang bikin nabrak) */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '24px', lineHeight: 1 }}>{ag.avatar}</span>
-                      <div>
-                        <div style={{ fontSize: '13.5px', fontWeight: '900', color: 'var(--text-primary)', lineHeight: 1.2 }}>
-                          {ag.name}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+                      <span style={{ fontSize: '18px', lineHeight: 1 }}>{ag.avatar}</span>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--text-primary)', lineHeight: 1.1 }}>
+                            {ag.name}
+                          </span>
+                          {ag.dnaBadge && (
+                            <span style={{
+                              fontSize: '7px',
+                              fontFamily: 'var(--font-mono)',
+                              fontWeight: '800',
+                              padding: '1px 3px',
+                              borderRadius: '2px',
+                              background: `${ag.color}1f`,
+                              color: ag.color,
+                              border: `1px solid ${ag.color}44`
+                            }}>
+                              {ag.dnaBadge}
+                            </span>
+                          )}
+                          <span style={{
+                            fontSize: '6.5px',
+                            fontFamily: 'var(--font-mono)',
+                            padding: '1px 3px',
+                            borderRadius: '2px',
+                            background: 'rgba(255, 255, 255, 0.06)',
+                            color: 'var(--text-muted)',
+                            fontWeight: '700'
+                          }}>
+                            {ag.tier || 'BASE'}
+                          </span>
                         </div>
-                        <div style={{ fontSize: '9px', color: ag.color, fontWeight: '700', marginTop: '1px' }}>
+                        <div style={{ fontSize: '8px', color: ag.color, fontWeight: '700', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '140px' }}>
                           {ag.role}
                         </div>
                       </div>
                     </div>
 
-                    {/* Sisi Kanan: Kolom Vertikal Rapi (Status Live di atas, Gen {n} di bawahnya, tanpa teks MC) */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '3px', flexShrink: 0 }}>
                       <span 
                         className="badge" 
                         onClick={() => {
@@ -3163,191 +3285,183 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                           setRulesModalOpen(true);
                         }}
                         style={{ 
-                          fontSize: '8.5px',
+                          fontSize: '7.5px',
+                          padding: '1px 4px',
                           cursor: 'pointer',
                           background: liveStatus.bg,
                           color: liveStatus.color,
                           border: `1px solid ${liveStatus.color}55`,
                           fontWeight: '800'
                         }}
-                        title={`${liveStatus.label}: ${liveStatus.desc} (Klik untuk panduan status lengkap)`}
+                        title={`${liveStatus.label}: ${liveStatus.desc}`}
                       >
                         {liveStatus.label}
                       </span>
                       <button
                         onClick={() => setEvolutionModal({ isOpen: true, agent: ag })}
                         style={{
-                          fontSize: '8px',
+                          fontSize: '7px',
                           fontFamily: 'var(--font-mono)',
                           fontWeight: '700',
-                          padding: '1px 5px',
-                          borderRadius: '3px',
+                          padding: '1px 3px',
+                          borderRadius: '2px',
                           background: 'rgba(255, 255, 255, 0.05)',
                           color: 'var(--text-muted)',
                           border: '1px solid var(--border-hairline)',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '2px'
+                          cursor: 'pointer'
                         }}
-                        title={`Lihat riwayat evolusi & mutasi DNA Gen ${ag.generation ?? 0}`}
+                        title={`Lihat riwayat evolusi Gen ${ag.generation ?? 0}`}
                       >
-                        <span>🧬 Gen {ag.generation ?? 0}</span>
+                        G{ag.generation ?? 0}
                       </button>
                     </div>
                   </div>
 
-                  {/* GAMBAR 3: Grafik Perkembangan Aset (Honest Sparkline Equity Curve) */}
-                  <div style={{ background: 'var(--bg-panel-subtle)', borderRadius: '4px', padding: '6px 8px', marginBottom: '8px', border: 'var(--border-hairline)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
-                      <span style={{ fontSize: '8.5px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                        Saldo ({chartTimeframe}):
-                      </span>
-                      <strong style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: isEquityProfit ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                        {formatIdr(stats.currentBotEquityIdr)} ({stats.roiPct > 0 ? '+' : ''}{stats.roiPct}%)
-                      </strong>
+                  {/* Saldo + Inline Sparkline (1 Baris Horisontal Kompak, Menghemat ~35px) */}
+                  <div style={{
+                    background: 'var(--bg-panel-subtle)',
+                    borderRadius: '3px',
+                    padding: '3px 6px',
+                    marginBottom: '4px',
+                    border: 'var(--border-hairline)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '4px'
+                  }}>
+                    <div>
+                      <div style={{ fontSize: '7px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                        Saldo ({chartTimeframe})
+                      </div>
+                      <div style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: isEquityProfit ? 'var(--accent-green)' : 'var(--accent-rust)', lineHeight: 1.1 }}>
+                        {formatIdr(stats.currentBotEquityIdr)} <span style={{ fontSize: '8px' }}>({stats.roiPct > 0 ? '+' : ''}{stats.roiPct}%)</span>
+                      </div>
                     </div>
-                    <SparklineChart 
-                      data={botEquityCurves[ag.id] || [capitalPerBotIdr]} 
-                      isPositive={isEquityProfit} 
-                      color={isEquityProfit ? '#10b981' : '#ef4444'} 
-                      height={32} 
-                    />
+                    <div style={{ width: '75px', flexShrink: 0 }}>
+                      <SparklineChart 
+                        data={botEquityCurves[ag.id] || [capitalPerBotIdr]} 
+                        isPositive={isEquityProfit} 
+                        color={isEquityProfit ? '#10b981' : '#ef4444'} 
+                        height={18} 
+                      />
+                    </div>
                   </div>
 
-                  {/* Agent Stats Grid: 2x2 Grid (Kiri 2, Kanan 2) */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', textAlign: 'center', fontSize: '8.5px', fontFamily: 'var(--font-mono)' }}>
-                    {/* Baris 1 - Kiri: Total Trade Selesai */}
-                    <div style={{ background: 'var(--bg-panel-subtle)', padding: '5px 4px', borderRadius: '3px' }}>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '7.5px' }}>TRADE DONE</div>
-                      <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '11px' }}>{stats.total}</div>
-                      <div style={{ fontSize: '7px', color: 'var(--text-muted)' }}>({stats.wins}W / {stats.losses}L)</div>
+                  {/* Agent Stats: 4-Pillar Horizontal Strip (Menghemat ~45px) */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(4, 1fr)',
+                    gap: '2px',
+                    textAlign: 'center',
+                    fontSize: '8px',
+                    fontFamily: 'var(--font-mono)',
+                    background: 'var(--bg-panel-subtle)',
+                    padding: '3px 2px',
+                    borderRadius: '3px',
+                    border: 'var(--border-hairline)'
+                  }}>
+                    <div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '6.5px' }}>TRADE</div>
+                      <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '9px' }}>{stats.total}</div>
                     </div>
-
-                    {/* Baris 1 - Kanan: Win Rate */}
-                    <div style={{ background: 'var(--bg-panel-subtle)', padding: '5px 4px', borderRadius: '3px' }}>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '7.5px' }}>WIN RATE</div>
-                      <div style={{ fontWeight: '800', color: 'var(--accent-green)', fontSize: '11px' }}>{stats.winRate}%</div>
-                      <div style={{ fontSize: '7px', color: 'var(--text-muted)' }}>Efisiensi Sinyal</div>
+                    <div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '6.5px' }}>WIN RATE</div>
+                      <div style={{ fontWeight: '800', color: 'var(--accent-green)', fontSize: '9px' }}>{stats.winRate}%</div>
                     </div>
-
-                    {/* Baris 2 - Kiri: Profit Factor */}
-                    <div style={{ background: 'var(--bg-panel-subtle)', padding: '5px 4px', borderRadius: '3px' }}>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '7.5px' }}>PROFIT FACTOR</div>
-                      <div style={{ fontWeight: '800', color: 'var(--accent-blue)', fontSize: '11px' }}>{stats.profitFactor}</div>
-                      <div style={{ fontSize: '7px', color: 'var(--text-muted)' }}>Rasio Gross P/L</div>
+                    <div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '6.5px' }}>PF</div>
+                      <div style={{ fontWeight: '800', color: 'var(--accent-blue)', fontSize: '9px' }}>{stats.profitFactor}</div>
                     </div>
-
-                    {/* Baris 2 - Kanan: Net Realized Gain */}
-                    <div style={{ background: 'var(--bg-panel-subtle)', padding: '5px 4px', borderRadius: '3px' }}>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '7.5px' }}>NET GAIN</div>
-                      <div style={{ fontWeight: '800', color: isRealizedProfit ? 'var(--accent-green)' : 'var(--accent-rust)', fontSize: '11px' }}>
-                        {stats.netGainIdr > 0 ? '+' : ''}{formatIdr(stats.netGainIdr)}
+                    <div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '6.5px' }}>NET GAIN</div>
+                      <div style={{ fontWeight: '800', color: isRealizedProfit ? 'var(--accent-green)' : 'var(--accent-rust)', fontSize: '9px' }}>
+                        {stats.netGainIdr > 0 ? '+' : ''}{formatCompactIdr(stats.netGainIdr)}
                       </div>
-                      <div style={{ fontSize: '7px', color: 'var(--text-muted)' }}>Realized PnL</div>
                     </div>
                   </div>
                 </div>
 
-                {/* --- B. Posisi Terbuka Real-Time (Internal Scroll max 260px, Detail Entry, Now, TP, SL) --- */}
-                <div style={{ borderTop: 'var(--border-hairline)', paddingTop: '6px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-                    <span style={{ fontSize: '9.5px', fontWeight: '800', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
-                      ⚡ Posisi Terbuka ({agentPositions.length})
+                {/* --- B. Posisi Terbuka Real-Time (Max Height 140px, 2-Line Condensed per Posisi) --- */}
+                <div style={{ borderTop: 'var(--border-hairline)', paddingTop: '4px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                    <span style={{ fontSize: '8.5px', fontWeight: '800', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+                      ⚡ Posisi ({agentPositions.length})
                     </span>
-                    <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
-                      Max: {isUnlimitedPositions ? 'Unlimited' : `${maxPositionsPerBot}/bot`}
+                    <span style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>
+                      {isUnlimitedPositions ? '∞' : `Max ${maxPositionsPerBot}`}
                     </span>
                   </div>
 
                   {agentPositions.length === 0 ? (
-                    <div style={{ padding: '10px 6px', textAlign: 'center', background: 'var(--bg-panel-subtle)', borderRadius: '3px', color: 'var(--text-muted)', fontSize: '9px' }}>
-                      Tidak ada posisi terbuka. Sedang memindai sinyal...
+                    <div style={{ padding: '4px 6px', textAlign: 'center', background: 'var(--bg-panel-subtle)', borderRadius: '3px', color: 'var(--text-muted)', fontSize: '7.5px', border: '1px dashed rgba(255,255,255,0.06)' }}>
+                      ○ Siaga memindai sinyal...
                     </div>
                   ) : (
                     <div style={{
-                      maxHeight: '260px',
+                      maxHeight: '140px',
                       overflowY: 'auto',
-                      paddingRight: '3px',
+                      paddingRight: '2px',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '5px'
+                      gap: '3px'
                     }}>
                       {agentPositions.map(pos => {
                         const idrValue = pos.floatingPnlIdr !== undefined ? pos.floatingPnlIdr : (pos.floatingPnlUsd * USD_TO_IDR);
-                        const usdValue = pos.floatingPnlUsd !== undefined ? pos.floatingPnlUsd : (pos.floatingPnlIdr / USD_TO_IDR);
                         const isPosProfit = idrValue >= 0;
-                        const pnlDisplayIdr = formatIdr(idrValue);
-                        const pnlDisplayUsd = formatUsd(usdValue);
+                        const pnlDisplayIdr = formatCompactIdr(idrValue);
 
                         return (
                           <div 
                             key={pos.id} 
                             style={{
-                              padding: '6px 8px',
+                              padding: '4px 6px',
                               background: 'var(--bg-panel-subtle)',
                               borderRadius: '3px',
-                              borderLeft: `3px solid ${isPosProfit ? 'var(--accent-green)' : 'var(--accent-rust)'}`,
-                              fontSize: '9px',
+                              borderLeft: `2.5px solid ${isPosProfit ? 'var(--accent-green)' : 'var(--accent-rust)'}`,
+                              fontSize: '8px',
                               fontFamily: 'var(--font-mono)'
                             }}
                           >
-                            {/* Row 1: Symbol, Direction, Lots, Leverage, Trail, Close button */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                            {/* Baris 1: Symbol, Dir, Lots, Float PnL, Close button */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '3px', flexWrap: 'wrap' }}>
-                                <strong style={{ fontSize: '10px' }}>{pos.symbol}</strong>
-                                <span style={{ fontSize: '7.5px', padding: '1px 3px', borderRadius: '2px', background: pos.direction === 'LONG' ? 'rgba(22, 163, 74, 0.15)' : 'rgba(220, 38, 38, 0.15)', color: pos.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '800' }}>
-                                  {pos.direction} ({pos.market === 'CRYPTO' ? `${pos.sizeLots} ${pos.symbol.replace('USDT', '')}` : `${pos.sizeLots}L`})
+                                <strong style={{ fontSize: '9px' }}>{pos.symbol}</strong>
+                                <span style={{ fontSize: '6.5px', padding: '0 3px', borderRadius: '2px', background: pos.direction === 'LONG' ? 'rgba(22, 163, 74, 0.15)' : 'rgba(220, 38, 38, 0.15)', color: pos.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '800' }}>
+                                  {pos.direction}
                                 </span>
-                                <span style={{ fontSize: '7.5px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.12)', color: 'var(--text-secondary)', fontWeight: '700' }}>
-                                  {pos.leverage || getLeverage(pos.market, pos.symbol)}
+                                <span style={{ fontSize: '6.5px', color: 'var(--text-muted)' }}>
+                                  {pos.market === 'CRYPTO' ? `${pos.sizeLots}c` : `${pos.sizeLots}L`}
                                 </span>
-                                {pos.trailingStopActive && (
-                                  <span style={{ fontSize: '7px', background: 'rgba(59, 130, 246, 0.2)', color: 'var(--accent-blue)', padding: '1px 2px', borderRadius: '2px' }}>
-                                    TRAIL
-                                  </span>
-                                )}
                               </div>
-                              <button
-                                onClick={() => handleManualClose(pos.id)}
-                                style={{
-                                  padding: '1px 4px',
-                                  fontSize: '7.5px',
-                                  background: 'rgba(220, 38, 38, 0.1)',
-                                  border: '1px solid var(--accent-rust)',
-                                  color: 'var(--accent-rust)',
-                                  borderRadius: '2px',
-                                  cursor: 'pointer',
-                                  fontWeight: '700'
-                                }}
-                              >
-                                Tutup
-                              </button>
-                            </div>
-
-                            {/* Row 2: Entry & Current Price with Precision Formatting */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '8.5px', color: 'var(--text-muted)', marginBottom: '2px' }}>
-                              <span>Entry: <strong style={{ color: 'var(--text-primary)' }}>{formatInstrumentPrice(pos.entryPrice, pos.market, pos.symbol)}</strong></span>
-                              <span>Now: <strong style={{ color: 'var(--text-primary)' }}>{formatInstrumentPrice(pos.currentPrice, pos.market, pos.symbol)}</strong></span>
-                            </div>
-
-                            {/* Row 3: Target TP & Hard SL with Precision Formatting */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '8.5px', color: 'var(--text-muted)', marginBottom: '3px' }}>
-                              <span style={{ color: 'var(--accent-green)' }}>Target (TP): <strong>{formatInstrumentPrice(pos.tp1Price, pos.market, pos.symbol)}</strong></span>
-                              <span style={{ color: 'var(--accent-rust)' }}>Hard SL: <strong>{formatInstrumentPrice(pos.slPrice, pos.market, pos.symbol)}</strong></span>
-                            </div>
-
-                            {/* Row 4: Floating PnL in IDR & USD + ROI % */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '3px' }}>
-                              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Floating:</span>
-                              <div style={{ textAlign: 'right' }}>
-                                <span style={{ fontWeight: '800', color: isPosProfit ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                <span style={{ fontWeight: '800', fontSize: '8px', color: isPosProfit ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                                   {isPosProfit && idrValue > 0 ? '+' : ''}{pnlDisplayIdr}
                                 </span>
-                                <span style={{ fontSize: '7.5px', color: 'var(--text-muted)', marginLeft: '3px' }}>
-                                  ({isPosProfit && usdValue > 0 ? '+' : ''}{pnlDisplayUsd} | {pos.roiPct > 0 ? '+' : ''}{pos.roiPct}%)
-                                </span>
+                                <button
+                                  onClick={() => handleManualClose(pos.id)}
+                                  style={{
+                                    padding: '0 3px',
+                                    fontSize: '7px',
+                                    background: 'rgba(220, 38, 38, 0.1)',
+                                    border: '1px solid var(--accent-rust)',
+                                    color: 'var(--accent-rust)',
+                                    borderRadius: '2px',
+                                    cursor: 'pointer',
+                                    fontWeight: '700'
+                                  }}
+                                  title="Tutup posisi manual"
+                                >
+                                  ✕
+                                </button>
                               </div>
+                            </div>
+
+                            {/* Baris 2: In / Now / TP / SL in one neat mono line */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7px', color: 'var(--text-muted)' }}>
+                              <span>In: <strong style={{ color: 'var(--text-primary)' }}>{formatInstrumentPrice(pos.entryPrice, pos.market, pos.symbol)}</strong></span>
+                              <span>Now: <strong style={{ color: 'var(--text-primary)' }}>{formatInstrumentPrice(pos.currentPrice, pos.market, pos.symbol)}</strong></span>
+                              <span style={{ color: 'var(--accent-green)' }}>TP: {formatInstrumentPrice(pos.tp1Price, pos.market, pos.symbol)}</span>
+                              <span style={{ color: 'var(--accent-rust)' }}>SL: {formatInstrumentPrice(pos.slPrice, pos.market, pos.symbol)}</span>
                             </div>
                           </div>
                         );
@@ -3356,14 +3470,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   )}
                 </div>
 
-                {/* --- D. Action Footer: Buka Full Jurnal & Tombol Reset Khusus Bot Ini --- */}
-                <div style={{ display: 'flex', gap: '4px', marginTop: 'auto' }}>
+                {/* --- C. Action Footer: Miniatur Tombol Jurnal & Reset --- */}
+                <div style={{ display: 'flex', gap: '3px', marginTop: 'auto', paddingTop: '2px' }}>
                   <button
                     onClick={() => setJournalModal({ isOpen: true, agentId: ag.id, agentName: ag.name })}
                     style={{
                       flex: 1,
-                      padding: '6px',
-                      fontSize: '9.5px',
+                      padding: '3px',
+                      fontSize: '8px',
                       fontWeight: '800',
                       fontFamily: 'var(--font-mono)',
                       background: 'var(--bg-panel-subtle)',
@@ -3374,19 +3488,18 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '4px'
+                      gap: '3px'
                     }}
                   >
                     <span>📖</span>
-                    <span>Jurnal Bot</span>
+                    <span>Jurnal</span>
                   </button>
 
-                  {/* Tombol Reset Khusus Bot Ini */}
                   <button
                     onClick={() => setResetConfirmModal({ isOpen: true, agentId: ag.id, agentName: ag.name })}
                     style={{
-                      padding: '6px 8px',
-                      fontSize: '9.5px',
+                      padding: '3px 6px',
+                      fontSize: '8px',
                       fontFamily: 'var(--font-mono)',
                       fontWeight: '700',
                       background: 'rgba(220, 38, 38, 0.08)',
