@@ -1371,8 +1371,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       const savedVersion = localStorage.getItem('mbg_ai_arena_agents_v');
       const saved = localStorage.getItem('mbg_ai_arena_agents');
 
-      if (savedVersion !== 'v8_sorted_compact') {
-        localStorage.setItem('mbg_ai_arena_agents_v', 'v8_sorted_compact');
+      if (savedVersion !== 'v9_dynamic_max_pos') {
+        localStorage.setItem('mbg_ai_arena_agents_v', 'v9_dynamic_max_pos');
         let currentList = [];
         if (saved) {
           try { currentList = JSON.parse(saved); } catch {}
@@ -2256,7 +2256,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               .map(i => i.symbol)
               .filter(s => !agentOpenSymbols.includes(s));
 
-            if (candidateSymbols.length === 0 && isUnlimitedPositions) {
+            // If all unique symbols in currently open markets are already held, allow scaling/pyramiding
+            // across open market instruments up to maxPositionsPerAgent quota
+            if (candidateSymbols.length === 0) {
               candidateSymbols = ALL_INSTRUMENTS
                 .filter(i => isMarketOpenNow(i.market))
                 .map(i => i.symbol);
