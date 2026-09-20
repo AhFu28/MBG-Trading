@@ -69,6 +69,60 @@ const getLeverage = (market, symbol = '') => {
   return '1:50';
 };
 
+// Universal Realistic Lot & Position Sizing Calculator (Capital & Risk Aware)
+export const calculateInstrumentLotSize = (market, symbol = '', entryPrice = 0, capitalIdr = 1000000, riskPct = 2) => {
+  if (!entryPrice || entryPrice <= 0) return 0.01;
+  const isIdx = market === 'IDX';
+  const isForex = market === 'FOREX';
+  const isCrypto = market === 'CRYPTO' || symbol.endsWith('USDT');
+  const isFutures = market === 'FUTURES';
+  const isUs = market === 'US';
+
+  const capitalMultiplier = Math.max(0.5, capitalIdr / 1000000);
+  // Target margin allocation per trade: ~3% of bot capital
+  const targetMarginIdr = Math.max(20000, (capitalIdr * (riskPct / 100) * 1.5));
+  const targetMarginUsd = targetMarginIdr / (currentLiveUsdToIdr || 16350);
+
+  if (isIdx) {
+    // 1 lot = 100 shares. Allocation ~10% capital per trade, min 1 lot
+    const lotCost = entryPrice * 100;
+    return Math.max(1, Math.round((capitalIdr * 0.10) / lotCost));
+  }
+
+  if (isCrypto) {
+    // Leverage 1:20 (Perp) -> Notional = Margin * 20 (approx $37 USD for Rp 1.000.000 capital)
+    const notionalUsd = targetMarginUsd * 20;
+    const rawQty = notionalUsd / entryPrice;
+
+    if (rawQty >= 1000) return Math.round(rawQty);
+    if (rawQty >= 50) return Number(rawQty.toFixed(1));
+    if (rawQty >= 1) return Number(rawQty.toFixed(2));
+    if (rawQty >= 0.01) return Number(rawQty.toFixed(3));
+    return Number(rawQty.toFixed(4));
+  }
+
+  if (isForex) {
+    // Standard Forex micro-lot: 0.01 lot = 1,000 units (~$10 margin on 1:100)
+    return Number(Math.max(0.01, (0.01 * capitalMultiplier)).toFixed(2));
+  }
+
+  if (symbol.includes('XAU') || symbol.includes('XAG') || isFutures) {
+    if (['US30', 'US500', 'NAS100', 'DAX40', 'NIKKEI', 'HSI'].includes(symbol)) {
+      return Number(Math.max(0.01, (0.05 * capitalMultiplier)).toFixed(2));
+    }
+    return Number(Math.max(0.01, (0.01 * capitalMultiplier)).toFixed(2));
+  }
+
+  if (isUs) {
+    // US Stocks (CFD 1:5) -> Notional = Margin * 5
+    const notionalUsd = targetMarginUsd * 5;
+    const rawShares = notionalUsd / entryPrice;
+    return Math.max(1, Math.round(rawShares));
+  }
+
+  return 0.01;
+};
+
 // Bot Lifecycle Status Guide Explanations
 const BOT_STATUS_GUIDE = {
   HUNTING: {
@@ -367,6 +421,50 @@ const ELEMENT_MC_ANALYSIS = {
     defaultToxicPair: 'BBCA (IDX) & US30 (Index)',
     defaultCause: 'Penurunan tren sepihak (relentless trend) terus menembus lower Bollinger Band dan level support statis tanpa terjadinya pantulan pembalikan rata-rata (mean reversion), melampaui toleransi drawdown posisi.',
     defaultSolution: 'Perketat syarat RSI oversold (< 25) sebelum entry, turunkan batas toleransi drawdown per tiket, dan pangkas alokasi eksposur maksimal portofolio hingga volatilitas pasar mereda.'
+  },
+  STEAM: {
+    name: 'STEAM',
+    element: 'Liquidity News Sniper [WATER+FIRE]',
+    bestInstruments: 'XAUUSD, GBPUSD, NAS100, BTCUSDT',
+    instrumentEdge: 'Menunggu Liquidity Sweep terkonfirmasi sebelum data makro rilis, lalu dihajar dengan volume momentum berita agresif.',
+    avoidInstruments: 'Saham illiquid tanpa katalis berita.',
+    winRateEdge: 'Win Rate Target: 60% - 70% | Average R:R: 1:3.5+',
+    defaultToxicPair: 'XAUUSD & GBPUSD',
+    defaultCause: 'Whipsaw berita ganda membatalkan setup order block mitigasi.',
+    defaultSolution: 'Aktifkan filter minimum volume surge > 1.8x dan perkecil risk multiplier 15%.'
+  },
+  STORM: {
+    name: 'STORM',
+    element: 'SMC Trend Breakout [WATER+AIR]',
+    bestInstruments: 'BTCUSDT, SOLUSDT, NVDA, US30',
+    instrumentEdge: 'Konfirmasi Break of Structure (BOS) SMC higher-timeframe dipadukan dengan Donchian Channel breakout lower-timeframe.',
+    avoidInstruments: 'Pair sideways sempit sesi Asia.',
+    winRateEdge: 'Win Rate Target: 55% - 65% | Average R:R: 1:3.8+',
+    defaultToxicPair: 'BTCUSDT & SOLUSDT',
+    defaultCause: 'Breakout palsu pada batas Donchian channel tanpa follow-through institusional.',
+    defaultSolution: 'Wajibkan konfirmasi higher-timeframe swing high sebelum trigger breakout.'
+  },
+  LAVA: {
+    name: 'LAVA',
+    element: 'Post-News Reversal Fade [FIRE+EARTH]',
+    bestInstruments: 'EURUSD, USDJPY, BBCA, XAUUSD',
+    instrumentEdge: 'Menangkap candle spike ekstrim pasca-berita yang menembus Bollinger Bands 3 SD untuk mean reversion kembali ke harga rata-rata.',
+    avoidInstruments: 'Strong trending market tanpa retest.',
+    winRateEdge: 'Win Rate Target: 68% - 78% | Average R:R: 1:2.2+',
+    defaultToxicPair: 'EURUSD & BBCA',
+    defaultCause: 'Tren kuat sepihak terus melaju pasca-berita tanpa terjadi koreksi mean reversion.',
+    defaultSolution: 'Perketat konfirmasi candle rejection wick sebelum entry counter-trend.'
+  },
+  AVATAR: {
+    name: 'AVATAR',
+    element: 'Consensus Multi-Agent Ensemble [4-ELEMENT MASTER]',
+    bestInstruments: 'Semua Pasar Likuid (Crypto, Forex, Saham BEI & US)',
+    instrumentEdge: 'Algoritma voting konsensus 4 elemen: Entry dilakukan hanya jika mayoritas (minimal 3 dari 4) elemen memberikan sinyal searah.',
+    avoidInstruments: 'Aset berkapitalisasi mikro dengan manipulasi harga tinggi.',
+    winRateEdge: 'Win Rate Target: 75% - 85% | Average R:R: 1:2.8+',
+    defaultToxicPair: 'High-Beta Altcoins',
+    defaultCause: 'Anomali likuiditas mendadak yang memecah konsensus sinyal.',
+    defaultSolution: 'Mode defensif otomatis jika terjadi split decision (2 vs 2).'
   }
 };
 
@@ -626,6 +724,79 @@ const INITIAL_AGENTS = [
     color: '#eab308',
     status: 'STANDBY',
     confidence: 85,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 },
+    tier: 'BASE'
+  },
+  {
+    id: 'STEAM',
+    name: 'STEAM',
+    role: 'Liquidity News Sniper [W+F]',
+    description: 'Sinergi WATER + FIRE: Memetakan sapuan likuiditas, lalu entry agresif saat volume rilis berita meledak.',
+    strategy: 'DUO_STEAM',
+    avatar: '💨',
+    color: '#a855f7',
+    tier: 'DUO',
+    parents: ['WATER', 'FIRE'],
+    status: 'STANDBY',
+    confidence: 88,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'STORM',
+    name: 'STORM',
+    role: 'SMC Trend Breakout [W+A]',
+    description: 'Sinergi WATER + AIR: Konfirmasi BOS struktur pasar higher-timeframe digabung Donchian breakout agresif.',
+    strategy: 'DUO_STORM',
+    avatar: '⛈️',
+    color: '#06b6d4',
+    tier: 'DUO',
+    parents: ['WATER', 'AIR'],
+    status: 'STANDBY',
+    confidence: 88,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'LAVA',
+    name: 'LAVA',
+    role: 'Post-News Reversal Fade [F+E]',
+    description: 'Sinergi FIRE + EARTH: Mengambil posisi counter-trend saat candle spike berita keluar ekstrim dari Bollinger 3 SD.',
+    strategy: 'DUO_LAVA',
+    avatar: '🌋',
+    color: '#f43f5e',
+    tier: 'DUO',
+    parents: ['FIRE', 'EARTH'],
+    status: 'STANDBY',
+    confidence: 88,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'AVATAR',
+    name: 'AVATAR',
+    role: 'Consensus Master [4-ELEMENTS]',
+    description: 'Multi-Agent Consensus Citadel Style: Entry hanya dieksekusi jika minimal 3 dari 4 elemen sepakat pada arah yang sama.',
+    strategy: 'ENSEMBLE_AVATAR',
+    avatar: '🌟',
+    color: '#f59e0b',
+    tier: 'AVATAR',
+    parents: ['WATER', 'FIRE', 'AIR', 'EARTH'],
+    status: 'STANDBY',
+    confidence: 92,
     exp3Weight: 0.25,
     generation: 0,
     resetCount: 0,
@@ -948,51 +1119,44 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
   const [marketFeeds, setMarketFeeds] = useState(DEFAULT_MARKET_FEEDS);
 
-  // Agents State with Auto-Migration for 4 Elements Avatar & Clean Gen 0 Tracking
+  // Agents State with Auto-Migration for 4 Base Elements + 4 Combo Elements & Clean Gen 0 Tracking
   const [agents, setAgents] = useState(() => {
     try {
       const savedVersion = localStorage.getItem('mbg_ai_arena_agents_v');
-      // Jika versi belum v5_gen0 (masih tersimpan data Gen 2 dari sesi lalu padahal sesi 1 belum mulai),
-      // sinkronkan kembali ke INITIAL_AGENTS bersih berstatus Gen 0
-      if (savedVersion !== 'v5_gen0') {
-        localStorage.setItem('mbg_ai_arena_agents_v', 'v5_gen0');
-        localStorage.setItem('mbg_ai_arena_agents', JSON.stringify(INITIAL_AGENTS));
-        return INITIAL_AGENTS;
-      }
       const saved = localStorage.getItem('mbg_ai_arena_agents');
+
+      if (savedVersion !== 'v6_combo') {
+        localStorage.setItem('mbg_ai_arena_agents_v', 'v6_combo');
+        let currentList = [];
+        if (saved) {
+          try { currentList = JSON.parse(saved); } catch {}
+        }
+        if (!Array.isArray(currentList) || currentList.length === 0) {
+          localStorage.setItem('mbg_ai_arena_agents', JSON.stringify(INITIAL_AGENTS));
+          return INITIAL_AGENTS;
+        }
+
+        const existingIds = new Set(currentList.map(a => a.id));
+        INITIAL_AGENTS.forEach(initAg => {
+          if (!existingIds.has(initAg.id)) {
+            currentList.push(initAg);
+          }
+        });
+        localStorage.setItem('mbg_ai_arena_agents', JSON.stringify(currentList));
+        return currentList;
+      }
+
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length === 4) {
-          return parsed.map(ag => {
-            let id = ag.id;
-            let name = ag.name;
-            let avatar = ag.avatar;
-            let color = ag.color;
-            let role = ag.role;
-
-            if (id === 'TITAN' || id === 'WATER') {
-              id = 'WATER'; name = 'WATER'; avatar = '🌊'; color = '#3b82f6'; role = 'SMC & Liquidity Flow';
-            } else if (id === 'ORACLE' || id === 'FIRE') {
-              id = 'FIRE'; name = 'FIRE'; avatar = '🔥'; color = '#ef4444'; role = 'News & Event Volatility';
-            } else if (id === 'VORTEX' || id === 'AIR') {
-              id = 'AIR'; name = 'AIR'; avatar = '🌪️'; color = '#10b981'; role = 'Trend Breakout & Momentum';
-            } else if (id === 'SENTINEL' || id === 'EARTH') {
-              id = 'EARTH'; name = 'EARTH'; avatar = '⛰️'; color = '#eab308'; role = 'Mean Reversion & Solid S/R';
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const existingIds = new Set(parsed.map(a => a.id));
+          let merged = [...parsed];
+          INITIAL_AGENTS.forEach(initAg => {
+            if (!existingIds.has(initAg.id)) {
+              merged.push(initAg);
             }
-
-            return {
-              ...ag,
-              id,
-              name,
-              avatar,
-              color,
-              role,
-              generation: typeof ag.generation === 'number' ? ag.generation : 0,
-              resetCount: ag.resetCount || 0,
-              resetsHistory: ag.resetsHistory || [],
-              dnaTraits: ag.dnaTraits || { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
-            };
           });
+          return merged;
         }
       }
       return INITIAL_AGENTS;
@@ -1007,28 +1171,39 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
   const agentsRef = useRef(agents);
   agentsRef.current = agents;
 
-  // Helper to normalize position TP/SL if corrupted or bloated by old static ATR
+  // Helper to normalize position TP/SL and Lot Sizing if corrupted or bloated by old static ATR / micro-units
   const normalizePositionTpSl = (p) => {
-    if (!p || !p.entryPrice || !p.tp1Price) return p;
-    const distTp = Math.abs(p.tp1Price - p.entryPrice) / p.entryPrice;
-    const isCrypto = p.market === 'CRYPTO';
+    if (!p || !p.entryPrice) return p;
+    let modified = { ...p };
+
+    const isCrypto = p.market === 'CRYPTO' || (p.symbol && p.symbol.endsWith('USDT'));
     const isForex = p.market === 'FOREX';
     const isIdx = p.market === 'IDX';
-    const maxAllowedDist = isForex ? 0.012 : (isCrypto ? 0.035 : 0.025);
-    
-    if (distTp > maxAllowedDist) {
-      const atrPct = isCrypto ? 0.012 : (isForex ? 0.0035 : (isIdx ? 0.010 : 0.006));
-      const atr = p.entryPrice * atrPct;
-      const isLong = p.direction === 'LONG';
-      const decimals = isIdx ? 0 : (isForex ? (p.symbol.includes('JPY') ? 3 : 5) : (isCrypto && p.entryPrice < 0.001 ? 7 : (isCrypto && p.entryPrice < 1 ? 4 : 2)));
-      return {
-        ...p,
-        slPrice: Number((isLong ? (p.entryPrice - (atr * 1.0)) : (p.entryPrice + (atr * 1.0))).toFixed(decimals)),
-        tp1Price: Number((isLong ? (p.entryPrice + (atr * 1.5)) : (p.entryPrice - (atr * 1.5))).toFixed(decimals)),
-        tp2Price: Number((isLong ? (p.entryPrice + (atr * 2.5)) : (p.entryPrice - (atr * 2.5))).toFixed(decimals))
-      };
+
+    // 1. Normalize Micro-Sizing for Crypto (auto-upgrade old positions holding tiny 0.01 coin)
+    if (isCrypto && p.entryPrice > 0) {
+      const notionalUsd = (Number(p.sizeLots) || 0) * Number(p.entryPrice);
+      if (notionalUsd < 5) {
+        modified.sizeLots = calculateInstrumentLotSize('CRYPTO', p.symbol, p.entryPrice, capitalPerBotIdr, riskPerTradePct);
+      }
     }
-    return p;
+
+    // 2. Normalize TP/SL distance if bloated
+    if (p.tp1Price) {
+      const distTp = Math.abs(p.tp1Price - p.entryPrice) / p.entryPrice;
+      const maxAllowedDist = isForex ? 0.012 : (isCrypto ? 0.035 : 0.025);
+      
+      if (distTp > maxAllowedDist) {
+        const atrPct = isCrypto ? 0.012 : (isForex ? 0.0035 : (isIdx ? 0.010 : 0.006));
+        const atr = p.entryPrice * atrPct;
+        const isLong = p.direction === 'LONG';
+        const decimals = isIdx ? 0 : (isForex ? (p.symbol.includes('JPY') ? 3 : 5) : (isCrypto && p.entryPrice < 0.001 ? 7 : (isCrypto && p.entryPrice < 1 ? 4 : 2)));
+        modified.slPrice = Number((isLong ? (p.entryPrice - (atr * 1.0)) : (p.entryPrice + (atr * 1.0))).toFixed(decimals));
+        modified.tp1Price = Number((isLong ? (p.entryPrice + (atr * 1.5)) : (p.entryPrice - (atr * 1.5))).toFixed(decimals));
+        modified.tp2Price = Number((isLong ? (p.entryPrice + (atr * 2.5)) : (p.entryPrice - (atr * 2.5))).toFixed(decimals));
+      }
+    }
+    return modified;
   };
 
   // Open Positions (Real-time active trade orders)
@@ -1061,6 +1236,15 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       return '7D';
     }
   });
+
+  // Filter Tab for Locked 4-Column Kanban Grid: 'ALL' (8 bots) | 'BASE' (4 base bots) | 'COMBO' (4 combo fusion bots)
+  const [agentFilterTab, setAgentFilterTab] = useState('ALL');
+
+  const filteredAgents = useMemo(() => {
+    if (agentFilterTab === 'BASE') return agents.filter(a => a.tier === 'BASE' || ['WATER', 'FIRE', 'AIR', 'EARTH'].includes(a.id));
+    if (agentFilterTab === 'COMBO') return agents.filter(a => a.tier === 'DUO' || a.tier === 'AVATAR' || ['STEAM', 'STORM', 'LAVA', 'AVATAR'].includes(a.id));
+    return agents;
+  }, [agents, agentFilterTab]);
 
 
 
@@ -1807,7 +1991,40 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   const isIdx = targetFeed.market === 'IDX';
                   const isForex = targetFeed.market === 'FOREX';
                   const isCrypto = targetFeed.market === 'CRYPTO';
-                  const isLong = isIdx ? true : (Math.random() > 0.45);
+                  let isLong = true;
+                  let rationale = `${chosenAgent.role}: Multi-market opportunity setup on ${targetKey}.`;
+
+                  if (isIdx) {
+                    isLong = true; // BEI is strictly LONG ONLY
+                    rationale = `${chosenAgent.name}: Akumulasi spot pada ${targetKey} (Long-Only BEI Regulation).`;
+                  } else if (chosenAgent.id === 'WATER') {
+                    isLong = (targetFeed.change || 0) < 0 ? true : false;
+                    rationale = `WATER: Liquidity sweep ${isLong ? 'Sell-Side' : 'Buy-Side'} mitigasi order block pada ${targetKey}.`;
+                  } else if (chosenAgent.id === 'FIRE') {
+                    isLong = (targetFeed.change || 0) >= 0 ? true : false;
+                    rationale = `FIRE: High volatility momentum surge ${isLong ? 'bullish' : 'bearish'} pada ${targetKey}.`;
+                  } else if (chosenAgent.id === 'AIR') {
+                    isLong = entry >= ((targetFeed.high + targetFeed.low) / 2);
+                    rationale = `AIR: Breakout Donchian channel ${isLong ? 'Upper Band' : 'Lower Band'} pada ${targetKey}.`;
+                  } else if (chosenAgent.id === 'EARTH') {
+                    isLong = (targetFeed.change || 0) < -0.5 ? true : false;
+                    rationale = `EARTH: Mean reversion statistical bounce pada batas support ${targetKey}.`;
+                  } else if (chosenAgent.id === 'STEAM') {
+                    isLong = (targetFeed.change || 0) <= 0.2;
+                    rationale = `STEAM [W+F]: Liquidity sweep terkonfirmasi + lonjakan momentum berita pada ${targetKey}.`;
+                  } else if (chosenAgent.id === 'STORM') {
+                    isLong = (targetFeed.change || 0) >= 0;
+                    rationale = `STORM [W+A]: BOS structural swing high + Donchian breakout ekspansi tren pada ${targetKey}.`;
+                  } else if (chosenAgent.id === 'LAVA') {
+                    isLong = (targetFeed.change || 0) < -0.8 ? true : false;
+                    rationale = `LAVA [F+E]: Post-news exhaustion spike fade keluar batas Bollinger 3 SD pada ${targetKey}.`;
+                  } else if (chosenAgent.id === 'AVATAR') {
+                    const score = ((targetFeed.change || 0) > 0 ? 1 : -1) + (entry > ((targetFeed.high + targetFeed.low) / 2) ? 1 : -1) + (Math.random() > 0.45 ? 1 : -1);
+                    isLong = score >= 0;
+                    rationale = `AVATAR [4-E]: Konsensus mayoritas 4 elemen (${isLong ? 'Bullish Dominance' : 'Bearish Dominance'}) pada ${targetKey}.`;
+                  } else {
+                    isLong = Math.random() > 0.48;
+                  }
                   
                   // Proportional dynamic ATR based on actual entry price
                   let atrPct = isCrypto ? 0.012 : (isForex ? 0.0035 : (isIdx ? 0.010 : 0.006));
@@ -1818,29 +2035,19 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     }
                   }
                   const atr = entry * atrPct;
-                  const sl = isLong ? (entry - (atr * 1.0)) : (entry + (atr * 1.0));
-                  const tp1 = isLong ? (entry + (atr * 1.5)) : (entry - (atr * 1.5));
-                  const tp2 = isLong ? (entry + (atr * 2.5)) : (entry - (atr * 2.5));
+                  const slMultiplier = chosenAgent.id === 'STEAM' ? 0.85 : (chosenAgent.id === 'LAVA' ? 0.90 : 1.0);
+                  const tpMultiplier = chosenAgent.id === 'STORM' ? 1.8 : (chosenAgent.id === 'STEAM' ? 2.0 : 1.5);
+                  const sl = isLong ? (entry - (atr * slMultiplier)) : (entry + (atr * slMultiplier));
+                  const tp1 = isLong ? (entry + (atr * tpMultiplier)) : (entry - (atr * tpMultiplier));
+                  const tp2 = isLong ? (entry + (atr * (tpMultiplier + 1.0))) : (entry - (atr * (tpMultiplier + 1.0)));
 
-                  const scale = Math.max(0.01, capitalPerBotIdr / 10000000);
-                  let sizeLots = 0.01;
-                  if (isIdx) {
-                    sizeLots = Math.max(1, Math.round(1 * scale));
-                  } else if (targetKey.includes('BTC')) {
-                    sizeLots = Number(Math.max(0.0005, 0.002 * scale).toFixed(4));
-                  } else if (targetKey.includes('ETH')) {
-                    sizeLots = Number(Math.max(0.01, 0.05 * scale).toFixed(3));
-                  } else if (targetKey.includes('SOL')) {
-                    sizeLots = Number(Math.max(0.05, 0.1 * scale).toFixed(2));
-                  } else if (targetKey.includes('PEPE') || targetKey.includes('SHIB')) {
-                    sizeLots = Math.max(1000, Math.round(50000 * scale));
-                  } else if (['US30', 'US500', 'NAS100', 'DAX40', 'NIKKEI', 'HSI'].includes(targetKey)) {
-                    sizeLots = Number(Math.max(0.01, 0.1 * scale).toFixed(2));
-                  } else if (targetFeed.market === 'US') {
-                    sizeLots = Math.max(1, Math.round(2 * scale));
-                  } else {
-                    sizeLots = Number(Math.max(0.01, 0.02 * scale).toFixed(2));
-                  }
+                  const sizeLots = calculateInstrumentLotSize(
+                    targetFeed.market,
+                    targetKey,
+                    entry,
+                    capitalPerBotIdr,
+                    riskPerTradePct
+                  );
 
                   let decimals = 2;
                   if (isIdx) decimals = 0;
@@ -1867,11 +2074,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     floatingPnlUsd: 0,
                     roiPct: 0,
                     openedAt: new Date().toISOString(),
-                    rationale: `${chosenAgent.role}: Multi-market opportunity setup on ${targetKey}.`
+                    rationale: rationale
                   };
 
                   updated = [newPos, ...updated];
-                  showToast(`🚀 ${chosenAgent.name} buka order ${targetKey} (${isLong ? 'LONG' : 'SHORT'} ${sizeLots}L, Lev ${newPos.leverage})`);
+                  const lotLabel = targetFeed.market === 'CRYPTO' ? `${sizeLots} ${targetKey.replace('USDT', '')}` : `${sizeLots}L`;
+                  showToast(`🚀 ${chosenAgent.avatar || '🤖'} ${chosenAgent.name} buka order ${targetKey} (${isLong ? 'LONG' : 'SHORT'} ${lotLabel}, Lev ${newPos.leverage})`);
                 }
               }
             }
@@ -2475,6 +2683,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   </button>
                 ))}
               </div>
+
+              {/* Total AUM Portfolio Badge */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(59, 130, 246, 0.08)', border: '1px solid rgba(59, 130, 246, 0.25)', padding: '2px 7px', borderRadius: '3px', fontSize: '9px', fontFamily: 'var(--font-mono)' }} title="Total Modal Portofolio = Modal/Bot x Jumlah Bot Aktif">
+                <span style={{ color: 'var(--text-muted)' }}>Total AUM:</span>
+                <strong style={{ color: 'var(--accent-blue)' }}>{formatIdr(capitalPerBotIdr * agents.length)}</strong>
+                <span style={{ color: 'var(--text-muted)', fontSize: '8px' }}>({agents.length} Bot)</span>
+              </div>
             </div>
 
             {/* Manual Max Posisi, Risk, & Buttons */}
@@ -2615,12 +2830,67 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. 4-COLUMN KANBAN DECK (LANGSUNG TAMPIL DI BAWAH COCKPIT HEADER)         */}
+      {/* 2. LOCKED 4-COLUMN KANBAN DECK WITH DOWNWARD GENERATION                   */}
       {/* ========================================================================= */}
       <div>
-        {/* 4-Column Grid Matrix */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '10px', alignItems: 'start' }}>
-          {agents.map(ag => {
+        <style>{`
+          .arena-locked-4col-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            align-items: stretch;
+          }
+          @media (max-width: 1180px) {
+            .arena-locked-4col-grid {
+              grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+          }
+          @media (max-width: 600px) {
+            .arena-locked-4col-grid {
+              grid-template-columns: 1fr;
+            }
+          }
+        `}</style>
+
+        {/* Tier Filter Bar & Deck Summary */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
+          <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+            <span style={{ fontSize: '9.5px', fontWeight: '800', color: 'var(--text-secondary)', textTransform: 'uppercase', marginRight: '4px' }}>
+              Deck View:
+            </span>
+            {[
+              { id: 'ALL', label: `Semua Bot (${agents.length})` },
+              { id: 'BASE', label: '4 Elemen Dasar' },
+              { id: 'COMBO', label: '4 Kombo Fusi' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setAgentFilterTab(tab.id)}
+                style={{
+                  padding: '3px 8px',
+                  fontSize: '9px',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: agentFilterTab === tab.id ? '800' : '600',
+                  borderRadius: '3px',
+                  cursor: 'pointer',
+                  border: agentFilterTab === tab.id ? '1px solid var(--accent-blue)' : 'var(--border-hairline)',
+                  background: agentFilterTab === tab.id ? 'rgba(37, 99, 235, 0.18)' : 'var(--bg-panel-subtle)',
+                  color: agentFilterTab === tab.id ? 'var(--accent-blue)' : 'var(--text-muted)',
+                  transition: 'all 0.15s'
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+            Locked 4-Column Grid &bull; {filteredAgents.length} Bot Aktif
+          </div>
+        </div>
+
+        {/* 4-Column Grid Matrix (Locked 4 columns per row on desktop, auto-wrapping downward) */}
+        <div className="arena-locked-4col-grid">
+          {filteredAgents.map(ag => {
             const agentPositions = positions.filter(p => p.agentId === ag.id);
             const stats = agentStatsMap[ag.id] || { total: 0, wins: 0, losses: 0, winRate: '0.0', profitFactor: '0.0', netGainIdr: 0, currentBotEquityIdr: capitalPerBotIdr, roiPct: 0 };
             const isEquityProfit = stats.currentBotEquityIdr >= capitalPerBotIdr;
@@ -2777,9 +3047,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                       gap: '5px'
                     }}>
                       {agentPositions.map(pos => {
-                        const isPosProfit = (pos.floatingPnlIdr || pos.floatingPnlUsd) >= 0;
-                        const pnlDisplayIdr = pos.market === 'IDX' ? formatIdr(pos.floatingPnlIdr) : formatIdr(pos.floatingPnlUsd * USD_TO_IDR);
-                        const pnlDisplayUsd = pos.market === 'IDX' ? formatUsd(pos.floatingPnlIdr / USD_TO_IDR) : formatUsd(pos.floatingPnlUsd);
+                        const idrValue = pos.floatingPnlIdr !== undefined ? pos.floatingPnlIdr : (pos.floatingPnlUsd * USD_TO_IDR);
+                        const usdValue = pos.floatingPnlUsd !== undefined ? pos.floatingPnlUsd : (pos.floatingPnlIdr / USD_TO_IDR);
+                        const isPosProfit = idrValue >= 0;
+                        const pnlDisplayIdr = formatIdr(idrValue);
+                        const pnlDisplayUsd = formatUsd(usdValue);
 
                         return (
                           <div 
@@ -2798,7 +3070,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                               <div style={{ display: 'flex', alignItems: 'center', gap: '3px', flexWrap: 'wrap' }}>
                                 <strong style={{ fontSize: '10px' }}>{pos.symbol}</strong>
                                 <span style={{ fontSize: '7.5px', padding: '1px 3px', borderRadius: '2px', background: pos.direction === 'LONG' ? 'rgba(22, 163, 74, 0.15)' : 'rgba(220, 38, 38, 0.15)', color: pos.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '800' }}>
-                                  {pos.direction} ({pos.sizeLots}L)
+                                  {pos.direction} ({pos.market === 'CRYPTO' ? `${pos.sizeLots} ${pos.symbol.replace('USDT', '')}` : `${pos.sizeLots}L`})
                                 </span>
                                 <span style={{ fontSize: '7.5px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.12)', color: 'var(--text-secondary)', fontWeight: '700' }}>
                                   {pos.leverage || getLeverage(pos.market, pos.symbol)}
@@ -2843,10 +3115,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                               <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Floating:</span>
                               <div style={{ textAlign: 'right' }}>
                                 <span style={{ fontWeight: '800', color: isPosProfit ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                                  {pnlDisplayIdr}
+                                  {isPosProfit && idrValue > 0 ? '+' : ''}{pnlDisplayIdr}
                                 </span>
                                 <span style={{ fontSize: '7.5px', color: 'var(--text-muted)', marginLeft: '3px' }}>
-                                  ({pnlDisplayUsd} | {pos.roiPct > 0 ? '+' : ''}{pos.roiPct}%)
+                                  ({isPosProfit && usdValue > 0 ? '+' : ''}{pnlDisplayUsd} | {pos.roiPct > 0 ? '+' : ''}{pos.roiPct}%)
                                 </span>
                               </div>
                             </div>
