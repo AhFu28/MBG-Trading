@@ -1255,7 +1255,6 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
   const isUnlimitedPositions = sliderMaxPositions >= 999;
   const maxPositionsPerBot = isUnlimitedPositions ? 999 : sliderMaxPositions;
-  const effectiveMaxPositions = isUnlimitedPositions ? 999 : (sliderMaxPositions * 4);
 
   // Live Currency Exchange Rate State (Realtime USD/IDR with dynamic fetch fallback)
   const [usdToIdrRate, setUsdToIdrRate] = useState(() => {
@@ -1433,6 +1432,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
   const agentsRef = useRef(agents);
   agentsRef.current = agents;
+
+  const effectiveMaxPositions = isUnlimitedPositions ? 999 : (sliderMaxPositions * (agents?.length || 15));
 
   // Helper to normalize position TP/SL and Lot Sizing if corrupted or bloated by old static ATR / micro-units
   const normalizePositionTpSl = (p) => {
@@ -1726,7 +1727,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       const netPnlUsd = netPnlIdr / usdToIdrRate;
       const profitFactor = grossLossIdr > 0 ? (grossProfitIdr / grossLossIdr).toFixed(2) : (grossProfitIdr > 0 ? '99.0' : '0.0');
 
-      const totalCapitalIdr = capitalPerBotIdr * 4;
+      const totalCapitalIdr = capitalPerBotIdr * (agents?.length || 15);
       const rocPct = totalCapitalIdr > 0 ? ((netPnlIdr / totalCapitalIdr) * 100).toFixed(2) : '0.00';
 
       // Sharpe Ratio calculation
@@ -1867,7 +1868,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       const report = epochReports[selectedRecapSessionKey] || epochReports[0];
       if (!report) return null;
 
-      const totalCapitalIdr = capitalPerBotIdr * 4;
+      const totalCapitalIdr = report.totalCapitalIdr || (capitalPerBotIdr * (report.agentBreakdowns?.length || agents?.length || 15));
       const rocPct = totalCapitalIdr > 0 ? ((report.netPnlIdr / totalCapitalIdr) * 100).toFixed(2) : '0.00';
 
       const agentBreakdownsWithDiff = (report.agentBreakdowns || []).map((ab) => {
@@ -2460,7 +2461,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         sharpeRatio = ((mean / stdev) * Math.sqrt(Math.min(tradeReturns.length, 252))).toFixed(2);
       }
     }
-    const totalCap = capitalPerBotIdr * 4;
+    const totalCap = capitalPerBotIdr * (agents?.length || 15);
     const rocPct = totalCap > 0 ? ((netPnlIdr / totalCap) * 100).toFixed(2) : '0.00';
 
     // Universe Attribution (All pairs traded in this session)
@@ -2621,7 +2622,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
           reason: 'GLOBAL_EPOCH_RESET',
           positionsLiquidated: positions.filter(p => p.agentId === a.id).length,
           mutation: {
-            riskMultiplier: Number((newWeights[idx] !== undefined ? newWeights[idx] * 4 : 1.0).toFixed(2)),
+            riskMultiplier: Number((newWeights[idx] !== undefined ? newWeights[idx] * prev.length : 1.0).toFixed(2)),
             confidenceBoost: deficitIdr > 0 ? (a.dnaTraits?.confidenceBoost || 0) + 5 : (a.dnaTraits?.confidenceBoost || 0),
             trailingTightness: deficitIdr > 0 ? Number(((a.dnaTraits?.trailingTightness || 1.0) * 1.15).toFixed(2)) : (a.dnaTraits?.trailingTightness || 1.0)
           }
@@ -3630,7 +3631,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   {/* Top Overview KPI Strip */}
                   {(() => {
                     const totalEquity = Object.values(agentStatsMap).reduce((acc, st) => acc + (st.currentBotEquityIdr || capitalPerBotIdr), 0);
-                    const totalCapital = capitalPerBotIdr * 4;
+                    const totalCapital = capitalPerBotIdr * (agents?.length || 15);
                     const netGainTotal = totalEquity - totalCapital;
                     const totalWins = journal.filter(j => j.isWin).length;
                     const totalTrades = journal.length;
