@@ -69,9 +69,9 @@ export const formatInstrumentPrice = (val, market, symbol = '') => {
   return `$${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
 
-// Helper to determine standard leverage for each market/instrument
-const getLeverage = (market, symbol = '') => {
-  if (market === 'IDX') return '1:1 (Spot)';
+// Helper to determine standard leverage for each market/instrument & execution mode
+export const getLeverage = (market, symbol = '', executionMode = 'FUTURES') => {
+  if (market === 'IDX' || executionMode === 'SPOT') return '1:1 (Spot)';
   if (market === 'US') return '1:5 (CFD)';
   if (market === 'CRYPTO') return '1:20 (Perp)';
   if (['US30', 'US500', 'NAS100', 'DAX40', 'NIKKEI', 'HSI'].includes(symbol)) return '1:50 (Index)';
@@ -80,18 +80,107 @@ const getLeverage = (market, symbol = '') => {
   return '1:50';
 };
 
-// Universal Realistic Lot & Position Sizing Calculator (Capital & Risk Aware)
-export const calculateInstrumentLotSize = (market, symbol = '', entryPrice = 0, capitalIdr = 1000000, riskPct = 2) => {
+// Agent Default Execution Preference in HYBRID Mode
+// Swing / Value / SMC Reversion agents prefer SPOT for Spot Accumulation (0 Liquidation Risk)
+// Momentum / Scalping / Volatility agents prefer FUTURES for 2-way leverage
+export const AGENT_EXECUTION_BIAS = {
+  WATER: 'SPOT',      // SMC & Liquidity Flow: Akumulasi spot di Order Block
+  FIRE: 'FUTURES',    // News Event Momentum: Cepat 2 arah
+  AIR: 'FUTURES',     // Trend Breakout Donchian
+  EARTH: 'SPOT',      // Mean Reversion & Support: Spot accumulation tanpa utang
+  STEAM: 'FUTURES',   // W+F: News Sniper
+  STORM: 'FUTURES',   // W+A: Trend Breakout
+  MUD: 'SPOT',        // W+E: FVG Mitigation on solid support (Spot accumulation)
+  LIGHTNING: 'FUTURES', // F+A: High velocity momentum
+  LAVA: 'FUTURES',    // F+E: News exhaustion fade
+  SANDSTORM: 'SPOT',  // A+E: Pullback buy on key support
+  TEMPEST: 'FUTURES', // W+F+A: Alpha momentum
+  OCEANIC: 'SPOT',    // W+A+E: Institutional All-Weather Spot & Wealth
+  GEOTHERMAL: 'SPOT', // W+F+E: Fundamental support block
+  CYCLONE: 'FUTURES', // F+A+E: Dynamic regime transition
+  AVATAR: 'HYBRID'    // 4-Element Master: Dynamic 50/50 Spot & Futures
+};
+
+// Resolve effective execution mode for a specific trade
+export const resolveExecutionMode = (globalArenaMode, agentId, market) => {
+  // Saham BEI (IDX) is strictly 100% SPOT
+  if (market === 'IDX') return 'SPOT';
+  // Forex & Commodities CFD indices are always FUTURES/CFD
+  if (market === 'FOREX' || market === 'FUTURES') return 'FUTURES';
+
+  if (globalArenaMode === 'SPOT_ONLY') return 'SPOT';
+  if (globalArenaMode === 'FUTURES_ONLY') return 'FUTURES';
+
+  // In HYBRID mode:
+  const bias = AGENT_EXECUTION_BIAS[agentId] || 'HYBRID';
+  if (bias === 'SPOT') return 'SPOT';
+  if (bias === 'FUTURES') return 'FUTURES';
+  return Math.random() < 0.5 ? 'SPOT' : 'FUTURES';
+};
+
+// Dynamic Tiered Market Scanner Pipeline
+// Tier 1: Liquidity & Market Hours Gatekeeper
+// Tier 2: Momentum & Volatility Active Opportunity Screener
+export const scanActiveMarketRadar = (marketFeeds, instruments, scannerFilter = 'DYNAMIC_RADAR') => {
+  if (!marketFeeds || !instruments) return [];
+
+  // Tier 1: Open Market & Safety Liquidity Filter
+  const tier1OpenAndLiquid = instruments.filter(inst => {
+    if (!isMarketOpenNow(inst.market)) return false;
+    const feed = marketFeeds[inst.symbol];
+    if (!feed || !feed.price || feed.price <= 0) return false;
+    // Safety check: Filter out sub-penny US stocks
+    if (inst.market === 'US' && feed.price < 2) return false;
+    return true;
+  });
+
+  if (scannerFilter === 'FULL_WATCHLIST') {
+    return tier1OpenAndLiquid.map(i => i.symbol);
+  }
+
+  // Tier 2: Active Opportunity & Volatility Screener
+  const scored = tier1OpenAndLiquid.map(inst => {
+    const feed = marketFeeds[inst.symbol];
+    const absChange = Math.abs(feed.change || 0);
+    const atrRatio = feed.atr && feed.price ? (feed.atr / feed.price) * 100 : 0.5;
+
+    let activityScore = absChange * 2.0 + atrRatio * 1.5;
+    if (absChange < 0.05) activityScore *= 0.2; // Stagnant pair penalty
+
+    if (feed.regime && (feed.regime.includes('BREAKOUT') || feed.regime.includes('EXPANSION') || feed.regime.includes('MOMENTUM') || feed.regime.includes('RALLY'))) {
+      activityScore += 3.0;
+    }
+
+    return {
+      symbol: inst.symbol,
+      market: inst.market,
+      activityScore,
+      feed
+    };
+  });
+
+  scored.sort((a, b) => b.activityScore - a.activityScore);
+
+  // Take top ~55 most active liquid candidates
+  const cutoff = Math.max(25, Math.min(scored.length, 55));
+  return scored.slice(0, cutoff).map(s => s.symbol);
+};
+
+// Universal Realistic Lot & Position Sizing Calculator (Capital & Risk Aware, Spot vs Futures)
+export const calculateInstrumentLotSize = (market, symbol = '', entryPrice = 0, capitalIdr = 1000000, riskPct = 2, executionMode = 'FUTURES') => {
   if (!entryPrice || entryPrice <= 0) return 0.01;
   const isIdx = market === 'IDX';
   const isForex = market === 'FOREX';
   const isCrypto = market === 'CRYPTO' || symbol.endsWith('USDT');
   const isFutures = market === 'FUTURES';
   const isUs = market === 'US';
+  const isSpot = executionMode === 'SPOT' || isIdx;
 
   const capitalMultiplier = Math.max(0.5, capitalIdr / 1000000);
-  // Target margin allocation per trade: ~3% of bot capital
-  const targetMarginIdr = Math.max(20000, (capitalIdr * (riskPct / 100) * 1.5));
+  // Target allocation per trade: ~3% margin for futures, ~8% cash allocation for spot
+  const targetMarginIdr = isSpot
+    ? Math.max(50000, (capitalIdr * 0.08))
+    : Math.max(20000, (capitalIdr * (riskPct / 100) * 1.5));
   const targetMarginUsd = targetMarginIdr / (currentLiveUsdToIdr || 16350);
 
   if (isIdx) {
@@ -101,15 +190,24 @@ export const calculateInstrumentLotSize = (market, symbol = '', entryPrice = 0, 
   }
 
   if (isCrypto) {
-    // Leverage 1:20 (Perp) -> Notional = Margin * 20 (approx $37 USD for Rp 1.000.000 capital)
-    const notionalUsd = targetMarginUsd * 20;
-    const rawQty = notionalUsd / entryPrice;
-
-    if (rawQty >= 1000) return Math.round(rawQty);
-    if (rawQty >= 50) return Number(rawQty.toFixed(1));
-    if (rawQty >= 1) return Number(rawQty.toFixed(2));
-    if (rawQty >= 0.01) return Number(rawQty.toFixed(3));
-    return Number(rawQty.toFixed(4));
+    if (isSpot) {
+      // Spot: 1:1 leverage, pure cash allocation
+      const rawQty = targetMarginUsd / entryPrice;
+      if (rawQty >= 1000) return Math.round(rawQty);
+      if (rawQty >= 50) return Number(rawQty.toFixed(1));
+      if (rawQty >= 1) return Number(rawQty.toFixed(2));
+      if (rawQty >= 0.01) return Number(rawQty.toFixed(3));
+      return Number(rawQty.toFixed(4));
+    } else {
+      // Leverage 1:20 (Perp) -> Notional = Margin * 20
+      const notionalUsd = targetMarginUsd * 20;
+      const rawQty = notionalUsd / entryPrice;
+      if (rawQty >= 1000) return Math.round(rawQty);
+      if (rawQty >= 50) return Number(rawQty.toFixed(1));
+      if (rawQty >= 1) return Number(rawQty.toFixed(2));
+      if (rawQty >= 0.01) return Number(rawQty.toFixed(3));
+      return Number(rawQty.toFixed(4));
+    }
   }
 
   if (isForex) {
@@ -125,10 +223,16 @@ export const calculateInstrumentLotSize = (market, symbol = '', entryPrice = 0, 
   }
 
   if (isUs) {
-    // US Stocks (CFD 1:5) -> Notional = Margin * 5
-    const notionalUsd = targetMarginUsd * 5;
-    const rawShares = notionalUsd / entryPrice;
-    return Math.max(1, Math.round(rawShares));
+    if (isSpot) {
+      // US Stock Spot (Cash 1:1)
+      const rawShares = targetMarginUsd / entryPrice;
+      return Math.max(1, Math.round(rawShares));
+    } else {
+      // US Stocks (CFD 1:5) -> Notional = Margin * 5
+      const notionalUsd = targetMarginUsd * 5;
+      const rawShares = notionalUsd / entryPrice;
+      return Math.max(1, Math.round(rawShares));
+    }
   }
 
   return 0.01;
@@ -1369,6 +1473,28 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
   const isUnlimitedPositions = sliderMaxPositions >= 999;
   const maxPositionsPerBot = isUnlimitedPositions ? 999 : sliderMaxPositions;
 
+  // Execution Mode Configuration: 'HYBRID' (Default) | 'SPOT_ONLY' | 'FUTURES_ONLY'
+  const [arenaExecutionMode, setArenaExecutionMode] = useState(() => {
+    try {
+      return localStorage.getItem('mbg_ai_arena_execution_mode') || 'HYBRID';
+    } catch {
+      return 'HYBRID';
+    }
+  });
+  const arenaExecutionModeRef = useRef(arenaExecutionMode);
+  arenaExecutionModeRef.current = arenaExecutionMode;
+
+  // Dynamic Tiered Scanner Filter: 'DYNAMIC_RADAR' (Default) | 'FULL_WATCHLIST'
+  const [scannerMode, setScannerMode] = useState(() => {
+    try {
+      return localStorage.getItem('mbg_ai_arena_scanner_mode') || 'DYNAMIC_RADAR';
+    } catch {
+      return 'DYNAMIC_RADAR';
+    }
+  });
+  const scannerModeRef = useRef(scannerMode);
+  scannerModeRef.current = scannerMode;
+
   // Live Currency Exchange Rate State (Realtime USD/IDR with dynamic fetch fallback)
   const [usdToIdrRate, setUsdToIdrRate] = useState(() => {
     try {
@@ -1477,6 +1603,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
   });
 
   const [marketFeeds, setMarketFeeds] = useState(DEFAULT_MARKET_FEEDS);
+
+  // Active Opportunities Radar dynamically filtered from Live Feeds
+  const activeRadarSymbols = useMemo(() => {
+    return scanActiveMarketRadar(marketFeeds, ALL_INSTRUMENTS, scannerMode);
+  }, [marketFeeds, scannerMode]);
 
   // Agents State with Auto-Migration for 15 Agents (Canonical Sort & DNA Badges)
   const [agents, setAgents] = useState(() => {
@@ -1721,10 +1852,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       localStorage.setItem('mbg_ai_arena_journal', JSON.stringify(journal));
       localStorage.setItem('mbg_ai_arena_timeframe', chartTimeframe);
       localStorage.setItem('mbg_ai_arena_epoch_reports', JSON.stringify(epochReports));
+      localStorage.setItem('mbg_ai_arena_execution_mode', arenaExecutionMode);
+      localStorage.setItem('mbg_ai_arena_scanner_mode', scannerMode);
     } catch (e) {
       console.warn('Storage sync failed:', e);
     }
-  }, [isRunning, capitalPerBotIdr, sliderMaxPositions, riskPerTradePct, agents, positions, journal, chartTimeframe, epochReports]);
+  }, [isRunning, capitalPerBotIdr, sliderMaxPositions, riskPerTradePct, agents, positions, journal, chartTimeframe, epochReports, arenaExecutionMode, scannerMode]);
 
   const showToast = useCallback((msg) => {
     setToastMessage(msg);
@@ -2191,6 +2324,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               symbol: pos.symbol,
               market: pos.market,
               direction: pos.direction,
+              executionMode: pos.executionMode || (pos.market === 'IDX' ? 'SPOT' : 'FUTURES'),
+              leverage: pos.leverage,
               entryPrice: pos.entryPrice,
               exitPrice: exitPrice,
               slPrice: pos.slPrice,
@@ -2260,6 +2395,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               symbol: pos.symbol,
               market: pos.market,
               direction: pos.direction,
+              executionMode: pos.executionMode || (pos.market === 'IDX' ? 'SPOT' : 'FUTURES'),
+              leverage: pos.leverage,
               entryPrice: pos.entryPrice,
               exitPrice: pos.currentPrice,
               slPrice: pos.slPrice,
@@ -2364,9 +2501,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
             const chosenAgent = availableAgents[Math.floor(Math.random() * availableAgents.length)];
             const agentRules = AGENT_MULTI_POS_RULES[chosenAgent.id] || { maxPerPair: 1, mode: 'SINGLE_BULLET', minCooldownSec: 25 };
             const agentPositions = updated.filter(p => p.agentId === chosenAgent.id);
-            const openMarketSymbols = ALL_INSTRUMENTS
-              .filter(i => isMarketOpenNow(i.market))
-              .map(i => i.symbol);
+            const activeRadarPool = scanActiveMarketRadar(currentFeeds, ALL_INSTRUMENTS, scannerModeRef.current || 'DYNAMIC_RADAR');
+            const openMarketSymbols = activeRadarPool.length > 0
+              ? activeRadarPool
+              : ALL_INSTRUMENTS.filter(i => isMarketOpenNow(i.market)).map(i => i.symbol);
 
             // 1. Prioritas Utama: Instrumen di pasar buka yang belum dipegang oleh agen ini (Diversifikasi Luas)
             const unheldSymbols = openMarketSymbols.filter(s => !agentPositions.some(p => p.symbol === s));
@@ -2427,12 +2565,16 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   const isIdx = targetFeed.market === 'IDX';
                   const isForex = targetFeed.market === 'FOREX';
                   const isCrypto = targetFeed.market === 'CRYPTO';
+                  const targetExecutionMode = resolveExecutionMode(arenaExecutionModeRef.current || 'HYBRID', chosenAgent.id, targetFeed.market);
+                  const isSpot = targetExecutionMode === 'SPOT' || isIdx;
                   let isLong = true;
                   let rationale = `${chosenAgent.role}: Multi-market opportunity setup on ${targetKey}.`;
 
-                  if (isIdx) {
-                    isLong = true; // BEI is strictly LONG ONLY
-                    rationale = `${chosenAgent.name}: Akumulasi spot pada ${targetKey} (Long-Only BEI Regulation).`;
+                  if (isSpot) {
+                    isLong = true; // Spot mode is strictly LONG ONLY (Cash Accumulation, 0 Liquidation Risk)
+                    rationale = isIdx
+                      ? `${chosenAgent.name}: Akumulasi spot pada ${targetKey} (Long-Only BEI Regulation).`
+                      : `[SPOT] ${chosenAgent.name}: Akumulasi kas spot pada ${targetKey} (0 Likuidasi, 1:1 Cash Asset).`;
                   } else if (chosenAgent.id === 'WATER') {
                     isLong = (targetFeed.change || 0) < 0 ? true : false;
                     rationale = `WATER: Liquidity sweep ${isLong ? 'Sell-Side' : 'Buy-Side'} mitigasi order block pada ${targetKey}.`;
@@ -2514,7 +2656,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     targetKey,
                     entry,
                     capitalPerBotIdr,
-                    riskPerTradePct
+                    riskPerTradePct,
+                    targetExecutionMode
                   );
 
                   let decimals = 2;
@@ -2529,6 +2672,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     agentId: chosenAgent.id,
                     symbol: targetKey,
                     market: targetFeed.market,
+                    executionMode: targetExecutionMode,
                     direction: isLong ? 'LONG' : 'SHORT',
                     entryPrice: entry,
                     currentPrice: entry,
@@ -2536,7 +2680,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     tp1Price: Number(tp1.toFixed(decimals)),
                     tp2Price: Number(tp2.toFixed(decimals)),
                     sizeLots: sizeLots,
-                    leverage: getLeverage(targetFeed.market, targetKey),
+                    leverage: getLeverage(targetFeed.market, targetKey, targetExecutionMode),
                     trailingStopActive: false,
                     floatingPnlIdr: 0,
                     floatingPnlUsd: 0,
@@ -2549,7 +2693,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   const lotLabel = targetFeed.market === 'CRYPTO' ? `${sizeLots} ${targetKey.replace('USDT', '')}` : `${sizeLots}L`;
                   const layerNum = isScalingLayer ? agentPositions.filter(p => p.symbol === targetKey).length + 1 : 1;
                   const layerSuffix = layerNum > 1 ? ` (Layer #${layerNum} ${agentRules.mode === 'PYRAMID_PROFIT' ? 'Pyramid' : 'Scale-In'})` : '';
-                  showToast(`🚀 ${chosenAgent.avatar || '🤖'} ${chosenAgent.name} buka order ${targetKey}${layerSuffix} (${isLong ? 'LONG' : 'SHORT'} ${lotLabel}, Lev ${newPos.leverage})`);
+                  const modeBadge = targetExecutionMode === 'SPOT' ? '🟢 SPOT' : '🟣 FUT';
+                  showToast(`🚀 ${chosenAgent.avatar || '🤖'} ${chosenAgent.name} buka order ${targetKey}${layerSuffix} (${modeBadge} ${isLong ? 'LONG' : 'SHORT'} ${lotLabel}, Lev ${newPos.leverage})`);
                 }
               }
             }
@@ -2578,6 +2723,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         symbol: target.symbol,
         market: target.market,
         direction: target.direction,
+        executionMode: target.executionMode || (target.market === 'IDX' ? 'SPOT' : 'FUTURES'),
+        leverage: target.leverage,
         entryPrice: target.entryPrice,
         exitPrice: target.currentPrice,
         slPrice: target.slPrice,
@@ -3256,6 +3403,63 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 </select>
               </div>
 
+              {/* Mode Eksekusi: HYBRID / SPOT / FUTURES */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9.5px' }}>
+                <span style={{ color: 'var(--text-muted)', fontWeight: '700' }}>Mode:</span>
+                <select
+                  id="select-execution-mode"
+                  value={arenaExecutionMode}
+                  onChange={e => {
+                    const newMode = e.target.value;
+                    setArenaExecutionMode(newMode);
+                    showToast(`Mode eksekusi: ${newMode === 'SPOT_ONLY' ? '🟢 SPOT ONLY (100% Cash Long, 0 Likuidasi)' : (newMode === 'FUTURES_ONLY' ? '🟣 FUTURES ONLY (2 Arah Long & Short + Leverage)' : '⚡ HYBRID (Spot & Futures Otomatis)')}`);
+                  }}
+                  style={{
+                    padding: '2px 5px',
+                    fontSize: '9px',
+                    borderRadius: '3px',
+                    background: arenaExecutionMode === 'SPOT_ONLY' ? 'rgba(34, 197, 94, 0.15)' : (arenaExecutionMode === 'FUTURES_ONLY' ? 'rgba(168, 85, 247, 0.15)' : 'var(--bg-panel-subtle)'),
+                    border: arenaExecutionMode === 'SPOT_ONLY' ? '1px solid var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '1px solid #a855f7' : 'var(--border-hairline)'),
+                    color: arenaExecutionMode === 'SPOT_ONLY' ? 'var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '#c084fc' : 'var(--text-primary)'),
+                    fontWeight: '800',
+                    outline: 'none',
+                    cursor: 'pointer'
+                  }}
+                  title="Pilih mode eksekusi: Hybrid (Bot memilih Spot/Futures), Spot Only (100% Cash, 0 likuidasi), atau Futures Only (2 arah)"
+                >
+                  <option value="HYBRID">⚡ HYBRID</option>
+                  <option value="SPOT_ONLY">🟢 SPOT ONLY</option>
+                  <option value="FUTURES_ONLY">🟣 FUTURES</option>
+                </select>
+              </div>
+
+              {/* Dynamic Scanner Filter: RADAR / FULL */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9.5px' }}>
+                <span style={{ color: 'var(--text-muted)', fontWeight: '700' }}>Scanner:</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const nextMode = scannerMode === 'DYNAMIC_RADAR' ? 'FULL_WATCHLIST' : 'DYNAMIC_RADAR';
+                    setScannerMode(nextMode);
+                    showToast(nextMode === 'DYNAMIC_RADAR' ? `Scanner diatur ke DYNAMIC RADAR (${activeRadarSymbols.length} aset terpilih lolos momentum & likuiditas).` : `Scanner diatur ke FULL WATCHLIST (${ALL_INSTRUMENTS.length} instrumen).`);
+                  }}
+                  style={{
+                    padding: '2px 6px',
+                    fontSize: '9px',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: '800',
+                    borderRadius: '3px',
+                    cursor: 'pointer',
+                    border: scannerMode === 'DYNAMIC_RADAR' ? '1px solid rgba(59, 130, 246, 0.4)' : 'var(--border-hairline)',
+                    background: scannerMode === 'DYNAMIC_RADAR' ? 'rgba(59, 130, 246, 0.15)' : 'var(--bg-panel-subtle)',
+                    color: scannerMode === 'DYNAMIC_RADAR' ? 'var(--accent-blue)' : 'var(--text-muted)'
+                  }}
+                  title="Klik untuk beralih antara Dynamic Screener Radar (Aset likuid & volatil) vs Full Watchlist (Semua pair)"
+                >
+                  {scannerMode === 'DYNAMIC_RADAR' ? `🛰️ Radar (${activeRadarSymbols.length})` : `🌐 Full (${ALL_INSTRUMENTS.length})`}
+                </button>
+              </div>
+
               {/* Master Switch: JALANKAN ARENA / JEDA ARENA */}
               <button
                 id="btn-master-run-pause"
@@ -3617,10 +3821,21 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                               fontFamily: 'var(--font-mono)'
                             }}
                           >
-                            {/* Baris 1: Symbol, Dir, Lots, Float PnL, Close button */}
+                            {/* Baris 1: Symbol, Mode, Dir, Lots, Float PnL, Close button */}
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '3px', flexWrap: 'wrap' }}>
                                 <strong style={{ fontSize: '9px' }}>{pos.symbol}</strong>
+                                <span style={{
+                                  fontSize: '6.5px',
+                                  padding: '0 3px',
+                                  borderRadius: '2px',
+                                  background: (pos.executionMode === 'SPOT' || pos.market === 'IDX') ? 'rgba(34, 197, 94, 0.2)' : 'rgba(168, 85, 247, 0.2)',
+                                  color: (pos.executionMode === 'SPOT' || pos.market === 'IDX') ? 'var(--accent-green)' : '#c084fc',
+                                  fontWeight: '900',
+                                  border: `1px solid ${(pos.executionMode === 'SPOT' || pos.market === 'IDX') ? 'rgba(34, 197, 94, 0.4)' : 'rgba(168, 85, 247, 0.4)'}`
+                                }}>
+                                  {(pos.executionMode === 'SPOT' || pos.market === 'IDX') ? 'SPOT' : 'FUT'}
+                                </span>
                                 <span style={{ fontSize: '6.5px', padding: '0 3px', borderRadius: '2px', background: pos.direction === 'LONG' ? 'rgba(22, 163, 74, 0.15)' : 'rgba(220, 38, 38, 0.15)', color: pos.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '800' }}>
                                   {pos.direction}
                                 </span>
@@ -4782,6 +4997,20 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                       Mencegah over-eksposur dan spamming acak: Bot <strong>SMC & News</strong> (Water, Fire, Steam, Mud, Oceanic) menerapkan <strong>Single Bullet (1 posisi per pair)</strong>. Bot <strong>Trend</strong> (Air, Storm, Lightning, Tempest) menerapkan <strong>Pyramiding (hingga 2-3 layer) hanya jika posisi sebelumnya sudah profit (+0.8% s/d +1.0%)</strong>. Bot <strong>Mean Reversion</strong> (Earth, Sandstorm, Lava, Geothermal) menerapkan <strong>Scale-In deviasi kedua jika harga berjarak minimal 1.0x ATR</strong>. Setiap penambahan layer dilindungi cooldown 15-35 detik.
                     </p>
                   </div>
+
+                  <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 14px', borderRadius: '4px', borderLeft: '3px solid var(--accent-green)' }}>
+                    <strong style={{ color: 'var(--accent-green)' }}>6. Multi-Mode Eksekusi: Spot vs Futures (Crypto, US Stocks & ETFs)</strong>
+                    <p style={{ margin: '2px 0 0 0', color: 'var(--text-secondary)' }}>
+                      Pasar Crypto, Saham US, dan ETF mendukung dua model kontrak: <strong>Mode SPOT (100% Cash Long-Only, 1:1, 0 Risiko Likuidasi)</strong> untuk akumulasi aset murni tanpa utang margin (ideal untuk bot Value/SMC seperti Earth, Water, Oceanic), serta <strong>Mode FUTURES (2 Arah Long & Short + Leverage Dinamis 5x-20x)</strong> untuk memburu cuan cepat saat tren naik maupun crash. Pengguna bebas memilih mode global: <em>HYBRID</em>, <em>SPOT ONLY</em>, atau <em>FUTURES ONLY</em>.
+                    </p>
+                  </div>
+
+                  <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 14px', borderRadius: '4px', borderLeft: '3px solid var(--accent-blue)' }}>
+                    <strong style={{ color: 'var(--accent-blue)' }}>7. Dynamic Tiered Market Scanner Pipeline</strong>
+                    <p style={{ margin: '2px 0 0 0', color: 'var(--text-secondary)' }}>
+                      Alih-alih menyebar order secara membabi buta ke ribuan token micin yang illiquid, sistem menjalankan <strong>Pipeline 3 Tahap</strong>: (1) <em>Tier 1 Liquidity & Open Gate</em> membuang koin zombie dan penny stock &lt; $2; (2) <em>Tier 2 Momentum Screener</em> merangking ~50 pair teratas dengan volatilitas & ATR aktif; (3) <em>Tier 3 AI Strategy Matching</em> mengeksekusi instrumen yang grafiknya cocok 100% dengan formula matematika bot.
+                    </p>
+                  </div>
                 </>
               ) : (
                 <>
@@ -4966,7 +5195,20 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                                   {new Date(item.closedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB
                                 </td>
                                 <td style={{ padding: '6px 8px', fontWeight: '800', color: 'var(--text-primary)' }}>
-                                  {item.symbol}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <span>{item.symbol}</span>
+                                    <span style={{
+                                      fontSize: '7px',
+                                      padding: '1px 3px',
+                                      borderRadius: '2px',
+                                      background: (item.executionMode === 'SPOT' || item.market === 'IDX') ? 'rgba(34, 197, 94, 0.2)' : 'rgba(168, 85, 247, 0.2)',
+                                      color: (item.executionMode === 'SPOT' || item.market === 'IDX') ? 'var(--accent-green)' : '#c084fc',
+                                      fontWeight: '900',
+                                      border: `1px solid ${(item.executionMode === 'SPOT' || item.market === 'IDX') ? 'rgba(34, 197, 94, 0.4)' : 'rgba(168, 85, 247, 0.4)'}`
+                                    }}>
+                                      {(item.executionMode === 'SPOT' || item.market === 'IDX') ? 'SPOT' : 'FUT'}
+                                    </span>
+                                  </div>
                                 </td>
                                 <td style={{ padding: '6px 8px', color: 'var(--accent-blue)', fontWeight: '700' }}>
                                   {item.agentId}
