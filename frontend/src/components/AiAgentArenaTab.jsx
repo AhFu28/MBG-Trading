@@ -2361,7 +2361,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   else decimals = 2;
 
                   const newPos = {
-                    id: `POS-${chosenAgent.id}-${targetKey}-${Date.now().toString().slice(-4)}`,
+                    id: `POS-${chosenAgent.id}-${targetKey}-${Date.now().toString().slice(-4)}-${Math.floor(Math.random() * 1000)}`,
                     agentId: chosenAgent.id,
                     symbol: targetKey,
                     market: targetFeed.market,
