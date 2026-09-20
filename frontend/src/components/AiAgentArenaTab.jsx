@@ -884,21 +884,45 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       .catch(e => console.warn('Realtime USD/IDR fallback:', e));
   }, []);
 
-  // Timer: Hanya bertambah saat arena aktif berjalan (isRunning === true). Saat PAUSED atau sesi baru belum mulai, timer diam/0.
+  // Timer: Hanya bertambah saat arena aktif berjalan (isRunning === true).
+  // Menggunakan delta Date.now() agar TIDAK PERNAH FREEZE meskipun tab diminimize atau backgrounded oleh browser.
   useEffect(() => {
     let interval = null;
     if (isRunning) {
-      interval = setInterval(() => {
-        setSessionActiveSeconds(prev => {
-          const next = prev + 1;
-          try { localStorage.setItem('mbg_ai_arena_session_active_seconds', String(next)); } catch (e) {}
-          return next;
-        });
-      }, 1000);
+      let lastTime = Date.now();
+      
+      const updateUptime = () => {
+        const now = Date.now();
+        const deltaSec = Math.max(0, Math.round((now - lastTime) / 1000));
+        if (deltaSec >= 1) {
+          lastTime = now;
+          setSessionActiveSeconds(prev => {
+            const next = prev + deltaSec;
+            try { localStorage.setItem('mbg_ai_arena_session_active_seconds', String(next)); } catch (e) {}
+            return next;
+          });
+        }
+      };
+
+      interval = setInterval(updateUptime, 1000);
+
+      // Event listener saat user kembali fokus ke tab/window setelah diminimize
+      const handleVisibilityChange = () => {
+        if (!document.hidden) {
+          updateUptime();
+        } else {
+          lastTime = Date.now();
+        }
+      };
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      window.addEventListener('focus', updateUptime);
+
+      return () => {
+        if (interval) clearInterval(interval);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        window.removeEventListener('focus', updateUptime);
+      };
     }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
   }, [isRunning]);
 
   useEffect(() => {
