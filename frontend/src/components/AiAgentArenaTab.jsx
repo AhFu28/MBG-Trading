@@ -98,7 +98,8 @@ export const AGENT_EXECUTION_BIAS = {
   OCEANIC: 'SPOT',    // W+A+E: Institutional All-Weather Spot & Wealth
   GEOTHERMAL: 'SPOT', // W+F+E: Fundamental support block
   CYCLONE: 'FUTURES', // F+A+E: Dynamic regime transition
-  AVATAR: 'HYBRID'    // 4-Element Master: Dynamic 50/50 Spot & Futures
+  AVATAR: 'HYBRID',   // 4-Element Master: Dynamic 50/50 Spot & Futures
+  CHAOS: 'FUTURES'    // The Rogue Anomaly: 100% Futures 2-way maximum leverage
 };
 
 // Resolve effective execution mode for a specific trade
@@ -374,6 +375,21 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
         { o: 6525, h: 6675, l: 6500, c: 6650, isBull: true, isExit: true }
       ],
       levels: { entry: 6350, tp: 6650, sl: 6225, min: 6180, max: 6720 }
+    },
+    CHAOS: {
+      title: 'SOL/USDT M5 — CHAOS: Kinetic Carpet-Bomb & Supernova Asymmetry',
+      entryLabel: 'Carpet Bomb #1-$9 @ $212.50 (Liquidity Vacuum)',
+      tpLabel: 'Supernova Harvest @ $248.00 (+16.5R Convexity)',
+      slLabel: 'Terminal MC Boundary @ $202.00 (Self-Learning Rebirth)',
+      candles: [
+        { o: 204, h: 209, l: 203, c: 208, isBull: true },
+        { o: 208, h: 213, l: 207, c: 212, isBull: true },
+        { o: 212, h: 215, l: 211, c: 212, isBull: false, isSweep: true },
+        { o: 212, h: 224, l: 212, c: 223, isBull: true, isEntry: true },
+        { o: 223, h: 236, l: 222, c: 235, isBull: true },
+        { o: 235, h: 250, l: 234, c: 248, isBull: true, isExit: true }
+      ],
+      levels: { entry: 212.50, tp: 248.00, sl: 202.00, min: 198, max: 255 }
     }
   };
   // Backwards compatibility mappings
@@ -657,6 +673,17 @@ const ELEMENT_MC_ANALYSIS = {
     defaultToxicPair: 'DAX40 & NVDA',
     defaultCause: 'Siklus rezim pasar berganti terlalu cepat.',
     defaultSolution: 'Deteksi rezim pasar menggunakan filter ADX & Bollinger width.'
+  },
+  CHAOS: {
+    name: 'CHAOS',
+    element: 'Entropy & Liquidity Vacuum [ANOMALY]',
+    bestInstruments: 'XAUUSD (Gold), BTCUSDT, SOLUSDT, NAS100, NVDA',
+    instrumentEdge: 'Sangat mematikan pada aset dengan ledakan momentum tinggi dan klaster likuidasi tebal. Mengoperasikan machine-gun stacking tanpa batasan tiket.',
+    avoidInstruments: 'Aset sideways sepi volume yang memicu pendarahan spread.',
+    winRateEdge: 'Win Rate Target: 28% - 35% | Average R:R: 1:12.0+ (Convex Asymmetry)',
+    defaultToxicPair: 'EURCHF & Saham Defensif Low-Beta',
+    defaultCause: 'Terjebak whipsaw mikro saat membuka 15+ lapis posisi beruntun tanpa adanya follow-through pergerakan tren.',
+    defaultSolution: 'Melakukan kalibrasi threshold lonjakan volume saat Rebirth, memfilter pair sideways, dan mempertahankan sifat unlimited stacking untuk generasi berikutnya.'
   }
 };
 
@@ -950,7 +977,7 @@ const ALL_INSTRUMENTS = [
   { symbol: 'SOXL', label: 'Direxion Semi Bull 3x (SOXL)', market: 'US' }
 ];
 
-// 15 Specialized AI Multi-Agent Roster (4 Base + 6 Duo + 4 Trio + 1 Master AVATAR)
+// 16 Specialized AI Multi-Agent Roster (4 Base + 6 Duo + 4 Trio + 1 Master AVATAR + 1 Anomaly CHAOS)
 const INITIAL_AGENTS = [
   {
     id: 'WATER',
@@ -1247,6 +1274,26 @@ const INITIAL_AGENTS = [
     resetCount: 0,
     resetsHistory: [],
     dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
+  },
+  {
+    id: 'CHAOS',
+    name: 'CHAOS',
+    role: 'Unbound Hyper-Scalper [THE ROGUE]',
+    description: 'Anomali ke-16: Mengabaikan batas risiko konvensional. Membuka posisi tanpa batas (carpet-bombing) dan menunggangi akselerasi likuiditas hingga Supernova Profit atau MC dengan auto-rebirth.',
+    strategy: 'CHAOS_MACHINE_GUN_SCALP',
+    avatar: '☣️',
+    color: '#a855f7',
+    tier: 'ANOMALY',
+    dnaBadge: 'UNBOUND',
+    dnaIcons: ['☣️', '🩸', '⚡'],
+    parents: [],
+    status: 'STANDBY',
+    confidence: 99,
+    exp3Weight: 0.10,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 8.0, confidenceBoost: 20, trailingTightness: 0.25 }
   }
 ];
 
@@ -1266,7 +1313,8 @@ export const AGENT_MULTI_POS_RULES = {
   OCEANIC: { maxPerPair: 1, mode: 'SINGLE_BULLET', label: 'Institutional SMC Anchor', desc: 'SMC Anchor: Ketat 1 posisi per pair.', minCooldownSec: 25 },
   GEOTHERMAL: { maxPerPair: 2, mode: 'SCALE_IN_ATR', label: 'Fundamental S/R Scale-In', desc: 'Macro S/R: Scale-in kedua saat mitigasi berita berjarak minimal 1.0x ATR.', minAtrSpacing: 1.0, minCooldownSec: 25 },
   CYCLONE: { maxPerPair: 2, mode: 'PYRAMID_PROFIT', label: 'Dynamic Regime Pyramiding', desc: 'Dynamic Trend: Piramida jika breakout tren terkonfirmasi profit (+0.8%).', minProfitPct: 0.8, minCooldownSec: 15 },
-  AVATAR: { maxPerPair: 2, mode: 'CONSENSUS_SCALE', label: 'Citadel Consensus Allocator', desc: 'Multi-Manager: Tambah layer kedua berdasarkan konsensus mayoritas.', minCooldownSec: 20 }
+  AVATAR: { maxPerPair: 2, mode: 'CONSENSUS_SCALE', label: 'Citadel Consensus Allocator', desc: 'Multi-Manager: Tambah layer kedua berdasarkan konsensus mayoritas.', minCooldownSec: 20 },
+  CHAOS: { maxPerPair: 999, mode: 'UNLIMITED_CARPET_BOMB', label: 'Machine-Gun Carpet Bomb', desc: 'Unbound Scalper: Buka posisi beruntun tanpa batas selama free margin tersedia.', minCooldownSec: 0, stackTriggerTickPct: 0.12, basketTakeProfitPct: 35.0, hardStopLoss: null }
 };
 
 // Baseline Genesis Session #0 Knowledge Archive
@@ -1908,6 +1956,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     if (agentFilterTab === 'BASE') list = list.filter(a => a.tier === 'BASE');
     else if (agentFilterTab === 'DUO') list = list.filter(a => a.tier === 'DUO');
     else if (agentFilterTab === 'TRIO') list = list.filter(a => a.tier === 'TRIO' || a.tier === 'AVATAR');
+    else if (agentFilterTab === 'ANOMALY') list = list.filter(a => a.tier === 'ANOMALY');
 
     if (agentSortBy === 'ROI_DESC') {
       list.sort((a, b) => (agentStatsMap[b.id]?.roiPct || 0) - (agentStatsMap[a.id]?.roiPct || 0));
@@ -2511,9 +2560,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
             // 2. Prioritas Kedua: Multi-posisi terukur pada instrumen yang sudah dipegang SESUAI DNA STRATEGI
             let qualifyingHeldSymbols = [];
-            if (unheldSymbols.length === 0 && agentRules.maxPerPair > 1) {
+            if ((unheldSymbols.length === 0 || chosenAgent.id === 'CHAOS') && agentRules.maxPerPair > 1) {
               qualifyingHeldSymbols = openMarketSymbols.filter(s => {
                 const positionsOnSym = agentPositions.filter(p => p.symbol === s);
+                if (positionsOnSym.length === 0 && chosenAgent.id !== 'CHAOS') return false;
                 // Batas maksimal layer per pair untuk bot ini
                 if (positionsOnSym.length >= agentRules.maxPerPair) return false;
 
@@ -2521,10 +2571,15 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 const lastPos = positionsOnSym[0]; // sorted newest first in updated array
                 if (lastPos && lastPos.openedAt) {
                   const elapsedSec = (Date.now() - new Date(lastPos.openedAt).getTime()) / 1000;
-                  if (elapsedSec < (agentRules.minCooldownSec || 20)) return false;
+                  if (elapsedSec < (agentRules.minCooldownSec || 0)) return false;
                 }
 
                 // Validasi Mode Strategi
+                if (agentRules.mode === 'UNLIMITED_CARPET_BOMB') {
+                  // CHAOS: Buka posisi beruntun tanpa batas selama free margin tersedia
+                  return true;
+                }
+
                 if (agentRules.mode === 'SINGLE_BULLET') {
                   return false; // Water & Fire strictly 1 posisi per pair
                 }
@@ -2553,8 +2608,18 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               });
             }
 
-            const candidateSymbols = unheldSymbols.length > 0 ? unheldSymbols : qualifyingHeldSymbols;
-            const isScalingLayer = unheldSymbols.length === 0 && candidateSymbols.length > 0;
+            let candidateSymbols = [];
+            let isScalingLayer = false;
+            if (chosenAgent.id === 'CHAOS' && qualifyingHeldSymbols.length > 0 && Math.random() > 0.35) {
+              candidateSymbols = qualifyingHeldSymbols;
+              isScalingLayer = true;
+            } else if (unheldSymbols.length > 0) {
+              candidateSymbols = unheldSymbols;
+              isScalingLayer = false;
+            } else {
+              candidateSymbols = qualifyingHeldSymbols;
+              isScalingLayer = qualifyingHeldSymbols.length > 0;
+            }
 
             if (candidateSymbols.length > 0) {
               const targetKey = candidateSymbols[Math.floor(Math.random() * candidateSymbols.length)];
@@ -2622,6 +2687,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     const score = ((targetFeed.change || 0) > 0 ? 1 : -1) + (entry > ((targetFeed.high + targetFeed.low) / 2) ? 1 : -1) + (Math.random() > 0.45 ? 1 : -1);
                     isLong = score >= 0;
                     rationale = `AVATAR [4-E]: Konsensus mayoritas 4 elemen (${isLong ? 'Bullish Dominance' : 'Bearish Dominance'}) pada ${targetKey}.`;
+                  } else if (chosenAgent.id === 'CHAOS') {
+                    const isImpulsive = Math.abs(targetFeed.change || 0) > 0.8;
+                    isLong = isImpulsive ? (targetFeed.change > 0) : (Math.random() > 0.45);
+                    rationale = `CHAOS [ANOMALY]: Kinetic carpet-bomb (${isLong ? 'Long' : 'Short'}) pada ${targetKey}. Likuiditas ruang hampa terdeteksi.`;
                   } else {
                     isLong = Math.random() > 0.48;
                   }
@@ -2645,8 +2714,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     }
                   }
                   const atr = entry * atrPct;
-                  const slMultiplier = ['STEAM', 'MUD'].includes(chosenAgent.id) ? 0.85 : (['LAVA', 'GEOTHERMAL'].includes(chosenAgent.id) ? 0.90 : 1.0);
-                  const tpMultiplier = ['STORM', 'LIGHTNING', 'TEMPEST'].includes(chosenAgent.id) ? 2.2 : (['STEAM', 'CYCLONE'].includes(chosenAgent.id) ? 1.8 : 1.5);
+                  const slMultiplier = chosenAgent.id === 'CHAOS' ? 2.5 : (['STEAM', 'MUD'].includes(chosenAgent.id) ? 0.85 : (['LAVA', 'GEOTHERMAL'].includes(chosenAgent.id) ? 0.90 : 1.0));
+                  const tpMultiplier = chosenAgent.id === 'CHAOS' ? 5.0 : (['STORM', 'LIGHTNING', 'TEMPEST'].includes(chosenAgent.id) ? 2.2 : (['STEAM', 'CYCLONE'].includes(chosenAgent.id) ? 1.8 : 1.5));
                   const sl = isLong ? (entry - (atr * slMultiplier)) : (entry + (atr * slMultiplier));
                   const tp1 = isLong ? (entry + (atr * tpMultiplier)) : (entry - (atr * tpMultiplier));
                   const tp2 = isLong ? (entry + (atr * (tpMultiplier + 1.0))) : (entry - (atr * (tpMultiplier + 1.0)));
@@ -3536,7 +3605,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               { id: 'ALL', label: `Semua Bot (${agents.length})` },
               { id: 'BASE', label: '4 Elemen Dasar' },
               { id: 'DUO', label: '6 Kombo Duo' },
-              { id: 'TRIO', label: '5 Sindikat (Trio & Master)' }
+              { id: 'TRIO', label: '5 Sindikat (Trio & Master)' },
+              { id: 'ANOMALY', label: '1 Anomali (CHAOS)' }
             ].map(tab => (
               <button
                 key={tab.id}
@@ -3647,9 +3717,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                             const rule = AGENT_MULTI_POS_RULES[ag.id] || { maxPerPair: 1, mode: 'SINGLE_BULLET', label: '1-Shot' };
                             const isSingle = rule.mode === 'SINGLE_BULLET';
                             const isPyr = rule.mode === 'PYRAMID_PROFIT';
-                            const badgeColor = isSingle ? 'var(--text-muted)' : (isPyr ? 'var(--accent-green)' : 'var(--accent-orange)');
-                            const badgeBg = isSingle ? 'rgba(255, 255, 255, 0.05)' : (isPyr ? 'rgba(16, 185, 129, 0.12)' : 'rgba(245, 158, 11, 0.12)');
-                            const labelText = isSingle ? '1-Shot' : (isPyr ? `Pyr×${rule.maxPerPair}` : `Scale×${rule.maxPerPair}`);
+                            const isBomb = rule.mode === 'UNLIMITED_CARPET_BOMB';
+                            const badgeColor = isBomb ? '#d946ef' : (isSingle ? 'var(--text-muted)' : (isPyr ? 'var(--accent-green)' : 'var(--accent-orange)'));
+                            const badgeBg = isBomb ? 'rgba(217, 70, 239, 0.16)' : (isSingle ? 'rgba(255, 255, 255, 0.05)' : (isPyr ? 'rgba(16, 185, 129, 0.12)' : 'rgba(245, 158, 11, 0.12)'));
+                            const labelText = isBomb ? 'Bomb∞' : (isSingle ? '1-Shot' : (isPyr ? `Pyr×${rule.maxPerPair}` : `Scale×${rule.maxPerPair}`));
                             return (
                               <span
                                 style={{

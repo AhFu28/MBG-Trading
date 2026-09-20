@@ -2,13 +2,46 @@
 
 export const CHANGELOG_DATA = [
   {
+    id: 'pkg-21092026-v46',
+    version: 'Package 21092026',
+    semanticVersion: 'v4.6.0',
+    date: '21 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / ACTIVE HARI INI',
+    title: 'Update Package 21092026 (v4.6 CHAOS): Agent 16 CHAOS [The Rogue Singularity], Unlimited Carpet-Bomb Scalping, Self-Sovereign Ledger & Genetic Rebirth',
+    description: 'Peluncuran resmi Agent ke-16 "CHAOS" di AI Multi-Agent Arena: Bot mandiri kategori ANOMALY yang melanggar batas risiko konvensional untuk memburu profit asimetris eksponensial (1:12+ R:R) melalui machine-gun carpet bombing multi-posisi tanpa batas tiket pada satu pair, saldo mandiri terisolasi Rp 1.000.000 (Total AUM Rp 16.000.000), serta sistem Genetic Self-Learning & Auto-Rebirth otomatis saat Margin Call.',
+    processFlow: [
+      { step: '1. Roster Expansion', label: '16 Bots (4 Base + 6 Duo + 4 Trio + 1 Master + 1 Anomaly)' },
+      { step: '2. Unlimited Stacking', label: 'Machine-Gun Carpet Bombing (Zero Cooldown)' },
+      { step: '3. Self-Sovereign Ledger', label: 'Alokasi Mandiri Rp 1M + Dynamic Total AUM Rp 16M' },
+      { step: '4. Genetic Rebirth', label: 'Auto-Audit Forensik, DNA Mutation & Respawn Gen N+1' }
+    ],
+    markdownContent: `
+### 🚀 Pembaruan Akbar v4.6 (Agent 16: CHAOS)
+- **Peluncuran Agent ke-16: CHAOS (The Rogue Singularity):**
+  - **Tier ANOMALY / UNBOUND (☣️ #a855f7):** Agen independen berkecepatan tinggi yang mengeksploitasi anomali likuiditas fraktal (*liquidity vacuum*) dan klaster likuidasi berantai.
+  - **Unlimited Carpet-Bomb Scalping (\`mode: 'UNLIMITED_CARPET_BOMB'\`):** Mengabaikan batasan kuantitas tiket konvensional (\`maxPerPair: 999\`). Selama free margin tersedia, CHAOS menembakkan order beruntun dengan zero cooldown (\`minCooldownSec: 0\`).
+  - **Self-Sovereign Capital Ledger:** Modal Rp 1.000.000 dikelola 100% secara mandiri. Keuntungan di-compound di dompet CHAOS sendiri, dan jika terjadi Margin Call, tidak menyentuh saldo 15 bot lainnya.
+  - **Autonomous Genetic Rebirth & Self-Learning:** Saat akun menyentuh limit likuidasi, CHAOS langsung mengeksekusi audit forensik mendeteksi *toxic pair*, memutasi sensitivitas volume ledakan, mereset saldo ke Rp 1.000.000, dan langsung bangkit ke generasi berikutnya (\`generation + 1\`).
+  - **Visualisasi Khusus di Deck Grid & Filter Tab:** Dilengkapi badge status \`Bomb∞\`, filter tab **1 Anomali (CHAOS)**, dan simulasi strategi kinetik interaktif di modal profil.
+    `.trim(),
+    table: [
+      { module: 'Agent 16 CHAOS', status: 'PROD', category: 'AI Arena / Agents', summary: 'The Rogue Singularity Anomaly Agent (☣️ #a855f7)' },
+      { module: 'Unlimited Carpet Bomb', status: 'PROD', category: 'Quant / Scalping', summary: 'Multi-position layering tanpa batasan kuantitas tiket' },
+      { module: 'Self-Sovereign Ledger', status: 'PROD', category: 'Risk Management', summary: 'Modal terisolasi Rp 1M/bot, Total AUM dinamis Rp 16M' },
+      { module: 'Genetic Auto-Rebirth', status: 'PROD', category: 'Evolution / Learning', summary: 'Auto-audit toxic pair, mutasi DNA, dan respawn Gen N+1' },
+      { module: 'Deck Tab Anomaly', status: 'PROD', category: 'UI / Navigation', summary: 'Filter tab dedicated untuk mengisolasi Agen CHAOS' }
+    ]
+  },
+  {
     id: 'pkg-20092026-v45',
     version: 'Package 20092026',
     semanticVersion: 'v4.5.0',
     date: '20 September 2026',
-    status: 'LATEST',
-    statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / ACTIVE HARI INI',
+    status: 'COMPLETED',
+    statusColor: 'var(--accent-blue)',
+    badgeLabel: 'STABLE RELEASE',
     title: 'Update Package 20092026 (v4.5 APEX): AI Multi-Agent Arena (15 Elemental Syndicate Bots), Locked 4-Column Deck, Independent Capital Ledger & Dynamic Sizing',
     description: 'Peluncuran akbar AI Multi-Agent Arena v4.5: Mengembangkan sistem dari 4 bot elemen dasar menjadi 15 bot independen (4 Base, 6 Duo, 4 Trio, dan 1 Master AVATAR Consensus). Menghadirkan Locked 4-Column Kanban Deck Grid dengan auto-wrap ke bawah, manajemen modal independen per bot (default Rp 1.000.000/bot) dengan indikator Total AUM dinamis (Rp 15.000.000), aturan kepatuhan arah instrumen (Saham BEI Long-Only, Kripto & Forex Dual Direction), dynamic position lot sizing anti-round-down, dan 100% Zero-Token Gemini AI runtime pada peramban klien.',
     processFlow: [

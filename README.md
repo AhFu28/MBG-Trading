@@ -148,7 +148,7 @@ $$\text{Roster Multi-Agen} = \binom{4}{1}_{\text{Base: 4}} + \binom{4}{2}_{\text
                          └───────────────┘      └───────────────┘               └───────────────┘
 ```
 
-#### Roster & Spesifikasi Matriks 15 Bot
+#### Roster & Spesifikasi Matriks 16 Bot
 | No | Tier | ID Bot | Nama Bot | DNA Elemen | Setup Sinyal $\to$ Trigger Eksekusi | SL / TP Multiplier |
 |:---|:---|:---|:---|:---|:---|:---|
 | 1 | **BASE** | `water-smc` | 💧 WATER | W | Liquidity sweep pada Equal Highs/Lows $\to$ Rejection Order Block | 1.0x / 1.0x |
@@ -166,15 +166,16 @@ $$\text{Roster Multi-Agen} = \binom{4}{1}_{\text{Base: 4}} + \binom{4}{2}_{\text
 | 13 | **TRIO** | `geothermal-core` | 🌋 GEOTHERMAL | W + F + E | Macro news shock fade $\to$ Akumulasi institusional di dasar harga | 1.2x / 1.35x |
 | 14 | **TRIO** | `cyclone-engine` | 🌪️ CYCLONE | F + A + E | Ekspansi volatilitas Bollinger $\to$ Trailing trend micro breakout | 0.9x / 1.15x |
 | 15 | **MASTER** | `avatar-master` | 🌟 AVATAR | W + F + A + E | **Voting Konsensus**: Eksekusi hanya jika $\ge 3$ dari 4 elemen dasar searah | 1.0x / 1.2x |
+| 16 | **ANOMALY** | `chaos-anomaly` | ☣️ CHAOS | UNBOUND | **Kinetic Vacuum Carpet-Bombing**: Multi-layer stacking tanpa batas tiket + Auto-Rebirth saat MC | 2.5x / 5.0x (Convex) |
 
 #### Pilar Arsitektur & Aturan Keamanan Sistem Arena
 1. **Locked 4-Column Grid UI (`.arena-locked-4col-grid`):**
-   - Di desktop ($\ge 1180\text{px}$), kartu kanban terkunci tepat **4 kolom per baris** dan membentang rapi ke bawah (4 baris).
+   - Di desktop ($\ge 1180\text{px}$), kartu kanban terkunci tepat **4 kolom per baris** dan membentang rapi ke bawah (4 baris $\times$ 4 kolom = 16 bot).
    - Layout terkunci mengeliminasi *layout shifting* dan inkonsistensi ukuran kartu.
-   - Filter tab navigasi cepat: `Semua Bot (15)`, `4 Elemen Dasar`, `6 Kombo Duo`, dan `5 Sindikat (Trio & Master)`.
+   - Filter tab navigasi cepat: `Semua Bot (16)`, `4 Elemen Dasar`, `6 Kombo Duo`, `5 Sindikat (Trio & Master)`, dan `1 Anomali (CHAOS)`.
 2. **Isolasi Saldo & Total AUM Dinamis:**
    - Setiap bot memiliki ledger modal independen (default Rp 1.000.000 per bot).
-   - Total AUM terhitung otomatis secara matematis: $\text{Total AUM} = N_{\text{bots}} \times \text{Modal Per Bot} = 15 \times \text{Rp } 1.000.000 = \text{Rp } 15.000.000$.
+   - Total AUM terhitung otomatis secara matematis: $\text{Total AUM} = N_{\text{bots}} \times \text{Modal Per Bot} = 16 \times \text{Rp } 1.000.000 = \text{Rp } 16.000.000$.
    - Kerugian, margin call, atau floating drawdown satu bot tidak menguras saldo modal bot lainnya.
 3. **Kepatuhan Arah Regulasi (Directional Safety Compliance Gate):**
    - **Saham BEI (IDX):** Terkunci secara tegas **LONG-ONLY** (Dilarang Short Selling sesuai regulasi pasar modal OJK & BEI).
@@ -182,7 +183,7 @@ $$\text{Roster Multi-Agen} = \binom{4}{1}_{\text{Base: 4}} + \binom{4}{2}_{\text
 4. **Dynamic Lot Sizing Anti-Round-Down:**
    - Lot dihitung proporsional terhadap harga koin/saham untuk menghindari pembulatan ke Rp 0 pada altcoin mikro (DOGE, PEPE, ADA, XRP). Formula menargetkan margin $\approx$ Rp 30.000 / notional $\approx$ $37 USD pada leverage 1:20.
 5. **100% Zero-Token Client-Side Runtime:**
-   - Seluruh logika 15 bot berjalan sebagai *state machine* kuantitatif deterministik pada browser pengguna. Menggunakan data harga live bersama (*Shared WebSocket Feed*), **tanpa mengonsumsi kuota token Gemini AI** saat beroperasi.
+   - Seluruh logika 16 bot berjalan sebagai *state machine* kuantitatif deterministik pada browser pengguna. Menggunakan data harga live bersama (*Shared WebSocket Feed*), **tanpa mengonsumsi kuota token Gemini AI** saat beroperasi.
 
 ---
 
@@ -190,7 +191,7 @@ $$\text{Roster Multi-Agen} = \binom{4}{1}_{\text{Base: 4}} + \binom{4}{2}_{\text
 
 | Fitur | Deskripsi Fungsional |
 | :--- | :--- |
-| **🤖 AI Multi-Agent Arena (15 Bots)** | Ekosistem trading otonom 15 bot (4 Base, 6 Duo, 4 Trio, 1 Master AVATAR) dengan kanban deck 4-kolom terkunci, isolasi modal, dan konsensus ensemble. |
+| **🤖 AI Multi-Agent Arena (16 Bots)** | Ekosistem trading otonom 16 bot (4 Base, 6 Duo, 4 Trio, 1 Master AVATAR, 1 Anomaly CHAOS) dengan kanban deck 4-kolom terkunci, isolasi modal, dan konsensus ensemble. |
 | **🔴 Macro Intelligence Wire** | Ticker strip bergaya terminal Bloomberg di bagian atas cockpit, menayangkan berita geopolitik, pidato The Fed, dan pergerakan makro secara seketika. |
 | **🧭 Bento Telemetry Barometer** | 4 Kartu HUD interaktif: Rezim IHSG, Komoditas Global (Emas & Minyak), Top Crypto Movers, dan Alpha Picker harian. |
 | **📊 Real-time Multi-Asset Matrix** | Kuotasi aktual 5 kelas aset: 850+ Saham BEI, 744+ Pasangan USDT Binance, 31 US Mega-Caps, Major Forex Pairs, dan Komoditas Strategis. |
