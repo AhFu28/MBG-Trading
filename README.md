@@ -119,10 +119,78 @@ Menyaring saham pembayar dividen konsisten dengan filter pengaman:
 
 ---
 
+### 8. AI Multi-Agent Elemental Arena (15 Autonomous Syndicate Bots)
+Arsitektur multi-agen kuantitatif mandiri (*self-governing agent syndicate*) yang mengevaluasi pasar multiaset secara otonom tanpa campur tangan manusia. Terdiri dari 15 bot independen yang diturunkan dari kombinatorika fusi 4 agen elemen dasar ($2^4 - 1 = 15$ bot):
+
+$$\text{Roster Multi-Agen} = \binom{4}{1}_{\text{Base: 4}} + \binom{4}{2}_{\text{Duo: 6}} + \binom{4}{3}_{\text{Trio: 4}} + \binom{4}{4}_{\text{Master: 1}} = 15 \text{ Bot}$$
+
+```
+                           ┌─────────────────────────────────────────────────────────┐
+                           │         AI MULTI-AGENT ARENA SYNDICATE (15 BOTS)        │
+                           └────────────────────────────┬────────────────────────────┘
+                                                        │
+                 ┌───────────────────────┬──────────────┴───────────────┬───────────────────────┐
+                 ▼                       ▼                              ▼                       ▼
+          ┌──────────────┐        ┌──────────────┐               ┌──────────────┐        ┌──────────────┐
+          │   💧 WATER   │        │   🔥 FIRE    │               │    🌪️ AIR    │        │   🌍 EARTH   │
+          │ Liquidity/OB │        │ Momentum/EMA │               │ Scalp/Micro  │        │ Mean-Revert  │
+          └──────┬───────┘        └──────┬───────┘               └──────┬───────┘        └──────┬───────┘
+                 │                       │                              │                       │
+                 └───────────────┬───────┴──────────────┬───────────────┴───────────────┬───────┘
+                                 │                      │                               │
+                                 ▼                      ▼                               ▼
+                         ┌───────────────┐      ┌───────────────┐               ┌───────────────┐
+                         │ 6 DUO COMBOS  │      │ 4 TRIO COMBOS │               │ 1 MASTER BOT  │
+                         │ C(4,2) Fusi   │      │ C(4,3) Sindikat│              │ C(4,4) AVATAR │
+                         │ STEAM, STORM, │      │ TEMPEST,      │               │ 4-Element     │
+                         │ MUD, LIGHTNING│      │ OCEANIC,      │               │ Consensus     │
+                         │ LAVA, SAND    │      │ GEOTHERMAL,   │               │ Voting >= 3   │
+                         └───────────────┘      └───────────────┘               └───────────────┘
+```
+
+#### Roster & Spesifikasi Matriks 15 Bot
+| No | Tier | ID Bot | Nama Bot | DNA Elemen | Setup Sinyal $\to$ Trigger Eksekusi | SL / TP Multiplier |
+|:---|:---|:---|:---|:---|:---|:---|
+| 1 | **BASE** | `water-smc` | 💧 WATER | W | Liquidity sweep pada Equal Highs/Lows $\to$ Rejection Order Block | 1.0x / 1.0x |
+| 2 | **BASE** | `fire-momentum` | 🔥 FIRE | F | EMA 9/21 ribbon alignment $\to$ Donchian 20 channel breakout | 1.2x / 1.3x |
+| 3 | **BASE** | `air-scalper` | 🌪️ AIR | A | Micro FVG imbalances $\to$ RSI(7) momentum cross ekstrim | 0.8x / 0.8x |
+| 4 | **BASE** | `earth-reversal` | 🌍 EARTH | E | Harga menembus Bollinger 3 SD $\to$ RSI(14) divergence | 1.1x / 1.0x |
+| 5 | **DUO** | `steam-sniper` | 💨 STEAM | W + F | Liquidity sweep SMC $\to$ Konfirmasi lonjakan volume katalis berita | 1.0x / 1.2x |
+| 6 | **DUO** | `storm-breakout` | ⛈️ STORM | W + A | Higher TF Break of Structure (BOS) $\to$ Fast micro-breakout | 0.9x / 1.1x |
+| 7 | **DUO** | `mud-absorber` | 🧱 MUD | W + E | Penembusan Order Block $\to$ Diserap di batas oversold/overbought | 1.1x / 1.0x |
+| 8 | **DUO** | `lightning-scalp` | ⚡ LIGHTNING | F + A | Trend momentum searah $\to$ Micro scalping frekuensi tinggi | 0.85x / 0.9x |
+| 9 | **DUO** | `lava-fader` | 🌋 LAVA | F + E | Spike berita lonjakan volume ekstrim $\to$ Fade pembalikan Bollinger 3 SD | 1.15x / 1.15x |
+| 10 | **DUO** | `sandstorm-fade` | 🏜️ SANDSTORM | A + E | Rentang sideways datar $\to$ Scalp osilasi pembalikan batas pita | 0.8x / 0.85x |
+| 11 | **TRIO** | `tempest-syndicate` | 🌀 TEMPEST | W + F + A | SMC sweep likuiditas $\to$ Trend ignition + micro scaling agresif | 0.95x / 1.25x |
+| 12 | **TRIO** | `oceanic-guard` | 🌊 OCEANIC | W + A + E | Order Block sweep $\to$ Absorpsi likuiditas institusional terkontrol | 1.05x / 1.05x |
+| 13 | **TRIO** | `geothermal-core` | 🌋 GEOTHERMAL | W + F + E | Macro news shock fade $\to$ Akumulasi institusional di dasar harga | 1.2x / 1.35x |
+| 14 | **TRIO** | `cyclone-engine` | 🌪️ CYCLONE | F + A + E | Ekspansi volatilitas Bollinger $\to$ Trailing trend micro breakout | 0.9x / 1.15x |
+| 15 | **MASTER** | `avatar-master` | 🌟 AVATAR | W + F + A + E | **Voting Konsensus**: Eksekusi hanya jika $\ge 3$ dari 4 elemen dasar searah | 1.0x / 1.2x |
+
+#### Pilar Arsitektur & Aturan Keamanan Sistem Arena
+1. **Locked 4-Column Grid UI (`.arena-locked-4col-grid`):**
+   - Di desktop ($\ge 1180\text{px}$), kartu kanban terkunci tepat **4 kolom per baris** dan membentang rapi ke bawah (4 baris).
+   - Layout terkunci mengeliminasi *layout shifting* dan inkonsistensi ukuran kartu.
+   - Filter tab navigasi cepat: `Semua Bot (15)`, `4 Elemen Dasar`, `6 Kombo Duo`, dan `5 Sindikat (Trio & Master)`.
+2. **Isolasi Saldo & Total AUM Dinamis:**
+   - Setiap bot memiliki ledger modal independen (default Rp 1.000.000 per bot).
+   - Total AUM terhitung otomatis secara matematis: $\text{Total AUM} = N_{\text{bots}} \times \text{Modal Per Bot} = 15 \times \text{Rp } 1.000.000 = \text{Rp } 15.000.000$.
+   - Kerugian, margin call, atau floating drawdown satu bot tidak menguras saldo modal bot lainnya.
+3. **Kepatuhan Arah Regulasi (Directional Safety Compliance Gate):**
+   - **Saham BEI (IDX):** Terkunci secara tegas **LONG-ONLY** (Dilarang Short Selling sesuai regulasi pasar modal OJK & BEI).
+   - **Crypto Perp & Forex:** Mendukung **LONG & SHORT** dua arah secara dinamis.
+4. **Dynamic Lot Sizing Anti-Round-Down:**
+   - Lot dihitung proporsional terhadap harga koin/saham untuk menghindari pembulatan ke Rp 0 pada altcoin mikro (DOGE, PEPE, ADA, XRP). Formula menargetkan margin $\approx$ Rp 30.000 / notional $\approx$ $37 USD pada leverage 1:20.
+5. **100% Zero-Token Client-Side Runtime:**
+   - Seluruh logika 15 bot berjalan sebagai *state machine* kuantitatif deterministik pada browser pengguna. Menggunakan data harga live bersama (*Shared WebSocket Feed*), **tanpa mengonsumsi kuota token Gemini AI** saat beroperasi.
+
+---
+
 ## ⚡ Fitur Utama Platform
 
 | Fitur | Deskripsi Fungsional |
 | :--- | :--- |
+| **🤖 AI Multi-Agent Arena (15 Bots)** | Ekosistem trading otonom 15 bot (4 Base, 6 Duo, 4 Trio, 1 Master AVATAR) dengan kanban deck 4-kolom terkunci, isolasi modal, dan konsensus ensemble. |
 | **🔴 Macro Intelligence Wire** | Ticker strip bergaya terminal Bloomberg di bagian atas cockpit, menayangkan berita geopolitik, pidato The Fed, dan pergerakan makro secara seketika. |
 | **🧭 Bento Telemetry Barometer** | 4 Kartu HUD interaktif: Rezim IHSG, Komoditas Global (Emas & Minyak), Top Crypto Movers, dan Alpha Picker harian. |
 | **📊 Real-time Multi-Asset Matrix** | Kuotasi aktual 5 kelas aset: 850+ Saham BEI, 744+ Pasangan USDT Binance, 31 US Mega-Caps, Major Forex Pairs, dan Komoditas Strategis. |

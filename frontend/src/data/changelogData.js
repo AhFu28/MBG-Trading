@@ -2,13 +2,79 @@
 
 export const CHANGELOG_DATA = [
   {
+    id: 'pkg-20092026-v45',
+    version: 'Package 20092026',
+    semanticVersion: 'v4.5.0',
+    date: '20 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / ACTIVE HARI INI',
+    title: 'Update Package 20092026 (v4.5 APEX): AI Multi-Agent Arena (15 Elemental Syndicate Bots), Locked 4-Column Deck, Independent Capital Ledger & Dynamic Sizing',
+    description: 'Peluncuran akbar AI Multi-Agent Arena v4.5: Mengembangkan sistem dari 4 bot elemen dasar menjadi 15 bot independen (4 Base, 6 Duo, 4 Trio, dan 1 Master AVATAR Consensus). Menghadirkan Locked 4-Column Kanban Deck Grid dengan auto-wrap ke bawah, manajemen modal independen per bot (default Rp 1.000.000/bot) dengan indikator Total AUM dinamis (Rp 15.000.000), aturan kepatuhan arah instrumen (Saham BEI Long-Only, Kripto & Forex Dual Direction), dynamic position lot sizing anti-round-down, dan 100% Zero-Token Gemini AI runtime pada peramban klien.',
+    processFlow: [
+      { step: '1. Base 4 Elements', label: 'WATER, FIRE, AIR, EARTH (19/09)' },
+      { step: '2. 6 Duo Combos', label: 'STEAM, STORM, MUD, LIGHTNING, LAVA, SANDSTORM (20/09)' },
+      { step: '3. 4 Trio Combos', label: 'TEMPEST, OCEANIC, GEOTHERMAL, CYCLONE (20/09)' },
+      { step: '4. Master & 4-Col Grid', label: 'AVATAR Consensus & Locked 4-Col Kanban (20/09)' }
+    ],
+    markdownContent: `
+### 🚀 Pembaruan Akbar v4.5 APEX (Highlights 20/09)
+- **15 AI Multi-Agent Roster Lengkap (4 Base + 11 Fusi Elemen):**
+  - **4 Elemen Dasar:**
+    - 💧 **WATER (water-smc):** Liquidity Hunter (Smart Money Concepts) — Mendeteksi Order Block retest pasca liquidity sweep.
+    - 🔥 **FIRE (fire-momentum):** Momentum Trend Rider — Mengendarai tren kuat via EMA 9/21 ribbon & Donchian Channel breakout.
+    - 🌪️ **AIR (air-scalper):** High-Frequency Micro Scalper — Scalping kilat memanfaatkan micro FVG dan RSI(7) momentum.
+    - 🌍 **EARTH (earth-reversal):** Mean-Reversion Guardian — Menangkap pembalikan harga ekstrim dari Bollinger Bands 3 SD & RSI divergensi.
+  - **6 Kombo Duo (C(4,2)):**
+    - 💨 **STEAM [W+F]:** Liquidity News Sniper — Sweep likuiditas SMC dikonfirmasi lonjakan volume berita katalis.
+    - ⛈️ **STORM [W+A]:** SMC Trend Breakout — Konfirmasi Break of Structure (BOS) HTF + micro-breakout cepat.
+    - 🧱 **MUD [W+E]:** Liquidity Reversal Absorber — Sapuan likuiditas OB yang terabsorpsi di batas oversold/overbought ekstrim.
+    - ⚡ **LIGHTNING [F+A]:** Momentum Scalper Flash — Trend momentum impulsif dipadu eksekusi micro scalping agresif.
+    - 🌋 **LAVA [F+E]:** Post-News Reversal Fade — Memudar (*fade*) candle spike berita ketika harga menembus batas Bollinger 3 SD.
+    - 🏜️ **SANDSTORM [A+E]:** Range Scalper Mean Revert — Scalping mikro osilasi cepat di dalam rentang sideways.
+  - **4 Kombo Trio (C(4,3)):**
+    - 🌀 **TEMPEST [W+F+A]:** Hyper-Aggressive Trend Syndicate — Sapuan likuiditas SMC memicu akselerasi tren + micro scaling.
+    - 🌊 **OCEANIC [W+A+E]:** Smart Money Mean Reversion Anchor — Pengawal likuiditas institusional dengan penyerapan pembalikan arah terkontrol.
+    - 🌋 **GEOTHERMAL [W+F+E]:** Fundamental Macro Reversal Core — Penyerapan sentimen makro ekstrem diikuti akumulasi institusi skala besar.
+    - 🌪️ **CYCLONE [F+A+E]:** Dynamic Volatility Trend Engine — Ekspansi volatilitas Bollinger Bands dipadu trailing stop dinamis.
+  - **1 Master Ensemble (C(4,4)):**
+    - 🌟 **AVATAR [W+F+A+E]:** Consensus Multi-Agent Ensemble — Mengintegrasikan sistem pemungutan suara (voting) dari ke-4 elemen dasar. Order hanya dieksekusi jika $\\ge 3$ agen sepakat pada arah yang sama.
+- **Locked 4-Column Grid (\`.arena-locked-4col-grid\`):**
+  - Pada layar desktop ($\\ge 1180\\text{px}$), kartu kanban bot terkunci rapi tepat 4 kolom per baris dan menghasilkan baris ke bawah (4 baris $\\times$ 4 kolom).
+  - Mengeliminasi layout shift dan ketidaksejajaran ukuran kartu. Layar tablet otomatis switch ke 2 kolom dan mobile ke 1 kolom.
+- **Deck View Navigation Filter Tabs:**
+  - Tab filter cepat untuk kemudahan monitoring: **Semua Bot (15)**, **4 Elemen Dasar**, **6 Kombo Duo**, dan **5 Sindikat (Trio & Master)**.
+- **Manajemen Modal Independen & Dynamic Total AUM:**
+  - Setiap bot diberikan modal awal terisolasi (default Rp 1.000.000/bot).
+  - Total AUM terhitung otomatis secara transparan: **Total AUM: Rp 15.000.000 (15 Bot)**.
+  - Kerugian, margin call, dan keuntungan bot satu sama sekali tidak mempengaruhi bot lainnya.
+- **Aturan Directional Safety Berstandar Regulasi:**
+  - **Saham BEI (IDX):** Terkunci secara ketat **LONG-ONLY** (Dilarang Short Selling sesuai regulasi pasar modal Indonesia).
+  - **Crypto Perp & Forex:** Mendukung **LONG & SHORT** dua arah secara penuh.
+- **Dynamic Lot Sizing Anti-Round-Down:**
+  - Formula \`calculateInstrumentLotSize\` mengalokasikan target margin $\\approx$ Rp 30.000 / notional $\\approx$ $37 USD pada leverage 1:20.
+  - Mengatasi bug floating PnL bernilai Rp 0 pada koin berharga rendah seperti ADA, XRP, PEPE, dan DOGE.
+- **Zero-Token AI Runtime:**
+  - Seluruh mesin pemindaian, state machine, dan logika kombo beroperasi 100% secara deterministik kuantitatif di sisi klien tanpa mengonsumsi token API Gemini pengguna.
+    `.trim(),
+    table: [
+      { module: '15 Multi-Agent Roster', status: 'PROD', category: 'AI Arena / Agents', summary: '4 Base Elements + 6 Duo Combos + 4 Trio + 1 Master AVATAR' },
+      { module: 'Locked 4-Col Grid', status: 'PROD', category: 'UI / Kanban', summary: 'Grid 4 kolom terkunci di desktop, wrap ke bawah secara proporsional' },
+      { module: 'Independent Capital Ledger', status: 'PROD', category: 'Risk Management', summary: 'Modal terisolasi default Rp 1.000.000 per bot + dynamic Total AUM Rp 15M' },
+      { module: 'Directional Compliance Gate', status: 'PROD', category: 'Compliance', summary: 'BEI Strictly Long-Only; Kripto Futures & Forex mendukung Long & Short' },
+      { module: 'Dynamic Lot Sizing', status: 'PROD', category: 'Quant / Execution', summary: 'Kalkulasi lot proporsional mengeliminasi floating PnL Rp 0 pada altcoins' },
+      { module: 'Deck View Navigation', status: 'PROD', category: 'UI / Filter', summary: 'Filter tab: Semua Bot (15), 4 Base, 6 Duo, 5 Sindikat (Trio & Master)' },
+      { module: 'Zero-Token Runtime Engine', status: 'PROD', category: 'Architecture', summary: '100% deterministik kuantitatif klien tanpa mengonsumsi kuota token LLM' }
+    ]
+  },
+  {
     id: 'pkg-18092026-v41',
     version: 'Package 18092026',
     semanticVersion: 'v4.1.0',
     date: '18 September 2026',
-    status: 'LATEST',
-    statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / ACTIVE HARI INI',
+    status: 'STABLE',
+    statusColor: '#38bdf8',
+    badgeLabel: 'STABLE',
     title: 'Update Package 18092026 (v4.1 APEX): Tri-Signal Matrix Cockpit, US Stock Signals, Authentic Logos (IDX, Crypto, Wall St) & Laser-Aligned 6px Geometry',
     description: 'Penyempurnaan visual dan fungsional Cockpit Command Center: Memperluas radar sinyal Row 3 dari dual-box menjadi Tri-Signal Matrix (Saham IDX, Crypto Spot, dan US Stock Signals), integrasi logo/favicon resmi PT dan koin kripto di setiap baris ticker via Google Favicon CDN 64px & CoinCap/TradingView progressive waterfall, penstabilan layout dengan tableLayout fixed dan formatter desimal mikro, serta unifikasi presisi batas laser gap 6.0px terhadap Live News Wire.',
     processFlow: [
