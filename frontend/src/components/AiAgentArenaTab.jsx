@@ -1040,25 +1040,38 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
 
 
-  // Synchronize Live Market Prices from Props if Available (Universal Multi-Market Coverage)
+  // Synchronize 100% REAL Market Prices from live WebSocket & Scanner Feeds
   useEffect(() => {
     if (!livePrices || Object.keys(livePrices).length === 0) return;
     setMarketFeeds(prev => {
       let updated = false;
       const next = { ...prev };
       Object.keys(next).forEach(sym => {
-        const live = livePrices[sym] || livePrices[`IDX:${sym}`] || livePrices[`NASDAQ:${sym}`] || livePrices[`NYSE:${sym}`] || livePrices[`BINANCE:${sym}`];
+        const live = livePrices[sym]
+          || livePrices[`IDX:${sym}`]
+          || livePrices[`NASDAQ:${sym}`]
+          || livePrices[`NYSE:${sym}`]
+          || livePrices[`BINANCE:${sym}`]
+          || livePrices[`FX:${sym}`]
+          || livePrices[`FX_IDC:${sym}`]
+          || livePrices[`TVC:${sym}`];
         if (live?.price && typeof live.price === 'number' && live.price > 0) {
-          next[sym] = {
-            ...next[sym],
-            price: Number(live.price),
-            high: Math.max(next[sym].high, Number(live.price)),
-            low: Math.min(next[sym].low, Number(live.price)),
-            change: live.changePct !== undefined ? Number(live.changePct) : next[sym].change
-          };
-          updated = true;
+          const numPrice = Number(live.price);
+          if (next[sym].price !== numPrice) {
+            next[sym] = {
+              ...next[sym],
+              price: numPrice,
+              high: Math.max(next[sym].high || numPrice, numPrice),
+              low: Math.min(next[sym].low || numPrice, numPrice),
+              change: live.changePct !== undefined ? Number(live.changePct) : next[sym].change
+            };
+            updated = true;
+          }
         }
       });
+      if (updated) {
+        marketFeedsRef.current = next;
+      }
       return updated ? next : prev;
     });
   }, [livePrices]);
@@ -1461,60 +1474,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     return { label: 'HUNTING', color: 'var(--accent-blue)', bg: 'rgba(59, 130, 246, 0.15)', desc: 'Memburu sinyal & pemindaian pasar.' };
   }, [isRunning, agentStatsMap, positions]);
 
-  // Real-Time Tick & Simulation Engine
+  // Real-Time 100% Real Market Evaluation Engine (Zero synthetic simulation)
   useEffect(() => {
     if (!isRunning) return;
 
     const interval = setInterval(() => {
-      // 1. Tick Prices Across all 80+ Markets (STRICT REAL-WORLD HOURS: ONLY OPEN MARKETS TICK)
-      const nextFeeds = { ...marketFeedsRef.current };
-      let anyPriceTicked = false;
-      Object.keys(nextFeeds).forEach(sym => {
-        const item = nextFeeds[sym];
-
-        // STRICT MARKET GUARD: If market is closed, PRICE IS FROZEN!
-        if (!isMarketOpenNow(item.market)) {
-          return; // FROZEN! No price movement while market is closed!
-        }
-
-        anyPriceTicked = true;
-        const isForex = item.market === 'FOREX';
-        const isCrypto = item.market === 'CRYPTO';
-        const isIdx = item.market === 'IDX';
-        const baseVolPct = isCrypto ? 0.0040 : (isForex ? 0.0015 : (isIdx ? 0.0035 : 0.0025));
-        
-        // Dynamic market pulse & micro-candle momentum (18% probability)
-        const isBurst = Math.random() < 0.18;
-        const burstMultiplier = isBurst ? (1.8 + Math.random() * 1.4) : 1.0;
-        const volatility = item.price * baseVolPct * burstMultiplier;
-        
-        // Slight regime-based drift
-        let bias = 0;
-        if (item.regime?.includes('BULL') || item.regime?.includes('BREAKOUT') || item.regime?.includes('RALLY')) bias = 0.06;
-        else if (item.regime?.includes('BEAR') || item.regime?.includes('PULLBACK')) bias = -0.06;
-
-        const delta = ((Math.random() - 0.5) * 2 + bias) * (volatility * 0.55);
-        let decimals = 2;
-        if (isIdx) decimals = 0;
-        else if (isForex) decimals = sym.includes('JPY') ? 3 : 5;
-        else if (isCrypto && item.price < 0.001) decimals = 7;
-        else if (isCrypto && item.price < 1) decimals = 4;
-        else decimals = 2;
-        const newPrice = Number((item.price + delta).toFixed(decimals));
-        nextFeeds[sym] = {
-          ...item,
-          price: newPrice,
-          high: Math.max(item.high, newPrice),
-          low: Math.min(item.low, newPrice)
-        };
-      });
-
-      if (anyPriceTicked) {
-        marketFeedsRef.current = nextFeeds;
-        setMarketFeeds(nextFeeds);
-      }
-
-      // 2. Update Running Positions & Evaluate TP/SL for both LONG and SHORT
+      // 1. Update Running Positions & Evaluate TP/SL against 100% REAL LIVE MARKET PRICES
       setPositions(prevPositions => {
         let hasClosedAny = false;
         const closedTradesToAdd = [];
