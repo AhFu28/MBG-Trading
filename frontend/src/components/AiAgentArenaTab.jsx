@@ -983,6 +983,30 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
   const agentsRef = useRef(agents);
   agentsRef.current = agents;
 
+  // Helper to normalize position TP/SL if corrupted or bloated by old static ATR
+  const normalizePositionTpSl = (p) => {
+    if (!p || !p.entryPrice || !p.tp1Price) return p;
+    const distTp = Math.abs(p.tp1Price - p.entryPrice) / p.entryPrice;
+    const isCrypto = p.market === 'CRYPTO';
+    const isForex = p.market === 'FOREX';
+    const isIdx = p.market === 'IDX';
+    const maxAllowedDist = isForex ? 0.012 : (isCrypto ? 0.035 : 0.025);
+    
+    if (distTp > maxAllowedDist) {
+      const atrPct = isCrypto ? 0.012 : (isForex ? 0.0035 : (isIdx ? 0.010 : 0.006));
+      const atr = p.entryPrice * atrPct;
+      const isLong = p.direction === 'LONG';
+      const decimals = isIdx ? 0 : (isForex ? (p.symbol.includes('JPY') ? 3 : 5) : (isCrypto && p.entryPrice < 0.001 ? 7 : (isCrypto && p.entryPrice < 1 ? 4 : 2)));
+      return {
+        ...p,
+        slPrice: Number((isLong ? (p.entryPrice - (atr * 1.0)) : (p.entryPrice + (atr * 1.0))).toFixed(decimals)),
+        tp1Price: Number((isLong ? (p.entryPrice + (atr * 1.5)) : (p.entryPrice - (atr * 1.5))).toFixed(decimals)),
+        tp2Price: Number((isLong ? (p.entryPrice + (atr * 2.5)) : (p.entryPrice - (atr * 2.5))).toFixed(decimals))
+      };
+    }
+    return p;
+  };
+
   // Open Positions (Real-time active trade orders)
   const [positions, setPositions] = useState(() => {
     try {
@@ -990,10 +1014,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
-          return parsed.map(p => ({
-            ...p,
-            agentId: p.agentId === 'TITAN' ? 'WATER' : (p.agentId === 'ORACLE' ? 'FIRE' : (p.agentId === 'VORTEX' ? 'AIR' : (p.agentId === 'SENTINEL' ? 'EARTH' : p.agentId)))
-          }));
+          return parsed.map(p => {
+            const mapped = {
+              ...p,
+              agentId: p.agentId === 'TITAN' ? 'WATER' : (p.agentId === 'ORACLE' ? 'FIRE' : (p.agentId === 'VORTEX' ? 'AIR' : (p.agentId === 'SENTINEL' ? 'EARTH' : p.agentId)))
+            };
+            return normalizePositionTpSl(mapped);
+          });
         }
       }
     } catch (e) {
@@ -1454,9 +1481,19 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         const isForex = item.market === 'FOREX';
         const isCrypto = item.market === 'CRYPTO';
         const isIdx = item.market === 'IDX';
-        const volPct = isCrypto ? 0.0035 : (isForex ? 0.0012 : (isIdx ? 0.0030 : 0.0022));
-        const volatility = item.price * volPct;
-        const delta = (Math.random() - 0.495) * volatility;
+        const baseVolPct = isCrypto ? 0.0040 : (isForex ? 0.0015 : (isIdx ? 0.0035 : 0.0025));
+        
+        // Dynamic market pulse & micro-candle momentum (18% probability)
+        const isBurst = Math.random() < 0.18;
+        const burstMultiplier = isBurst ? (1.8 + Math.random() * 1.4) : 1.0;
+        const volatility = item.price * baseVolPct * burstMultiplier;
+        
+        // Slight regime-based drift
+        let bias = 0;
+        if (item.regime?.includes('BULL') || item.regime?.includes('BREAKOUT') || item.regime?.includes('RALLY')) bias = 0.06;
+        else if (item.regime?.includes('BEAR') || item.regime?.includes('PULLBACK')) bias = -0.06;
+
+        const delta = ((Math.random() - 0.5) * 2 + bias) * (volatility * 0.55);
         let decimals = 2;
         if (isIdx) decimals = 0;
         else if (isForex) decimals = sym.includes('JPY') ? 3 : 5;
@@ -1483,7 +1520,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         const closedTradesToAdd = [];
         const currentFeeds = marketFeedsRef.current;
 
-        let updated = prevPositions.map(pos => {
+        let updated = prevPositions.map(rawPos => {
+          const pos = normalizePositionTpSl(rawPos);
           const feed = currentFeeds[pos.symbol];
           if (!feed) return pos;
 
@@ -1747,7 +1785,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
         // Multi-trade autonomous spawner across all 80+ pairs
         const maxPositionsPerAgent = isUnlimitedPositions ? 999 : sliderMaxPositions;
-        if (updated.length < effectiveMaxPositions && Math.random() < 0.65) {
+        const spawnChance = isUnlimitedPositions
+          ? (updated.length > 50 ? 0.15 : (updated.length > 25 ? 0.35 : 0.60))
+          : 0.65;
+        if (updated.length < effectiveMaxPositions && Math.random() < spawnChance) {
           const availableAgents = agentsRef.current.filter(a => {
             const count = updated.filter(p => p.agentId === a.id).length;
             return count < maxPositionsPerAgent;
@@ -1776,11 +1817,21 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   const entry = targetFeed.price;
                   const isIdx = targetFeed.market === 'IDX';
                   const isForex = targetFeed.market === 'FOREX';
+                  const isCrypto = targetFeed.market === 'CRYPTO';
                   const isLong = isIdx ? true : (Math.random() > 0.45);
-                  const atr = targetFeed.atr || (entry * 0.008);
+                  
+                  // Proportional dynamic ATR based on actual entry price
+                  let atrPct = isCrypto ? 0.012 : (isForex ? 0.0035 : (isIdx ? 0.010 : 0.006));
+                  if (targetFeed.atr && targetFeed.price > 0) {
+                    const ratio = targetFeed.atr / targetFeed.price;
+                    if (!isNaN(ratio) && ratio >= 0.003 && ratio <= 0.025) {
+                      atrPct = ratio;
+                    }
+                  }
+                  const atr = entry * atrPct;
                   const sl = isLong ? (entry - (atr * 1.0)) : (entry + (atr * 1.0));
-                  const tp1 = isLong ? (entry + (atr * 1.6)) : (entry - (atr * 1.6));
-                  const tp2 = isLong ? (entry + (atr * 2.8)) : (entry - (atr * 2.8));
+                  const tp1 = isLong ? (entry + (atr * 1.5)) : (entry - (atr * 1.5));
+                  const tp2 = isLong ? (entry + (atr * 2.5)) : (entry - (atr * 2.5));
 
                   const scale = Math.max(0.01, capitalPerBotIdr / 10000000);
                   let sizeLots = 0.01;
