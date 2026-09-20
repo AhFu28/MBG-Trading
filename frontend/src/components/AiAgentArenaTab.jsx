@@ -1052,6 +1052,25 @@ const INITIAL_AGENTS = [
   }
 ];
 
+// Quantitative Strategy Multi-Position Rules (Per-Agent Execution DNA)
+export const AGENT_MULTI_POS_RULES = {
+  WATER: { maxPerPair: 1, mode: 'SINGLE_BULLET', label: 'Single Bullet SMC', desc: 'Presisi Order Block & Likuiditas: Ketat 1 posisi per pair.', minCooldownSec: 25 },
+  FIRE: { maxPerPair: 1, mode: 'SINGLE_BULLET', label: 'One-Shot News Catalyst', desc: 'Katalis Berita Makro: 1 posisi per pair guna membatasi risiko spread.', minCooldownSec: 35 },
+  AIR: { maxPerPair: 3, mode: 'PYRAMID_PROFIT', label: 'Pyramiding on Profit', desc: 'Trend Rider: Tambah posisi hingga 3 jika order sebelumnya sudah profit (+0.8%).', minProfitPct: 0.8, minCooldownSec: 15 },
+  EARTH: { maxPerPair: 2, mode: 'SCALE_IN_ATR', label: 'ATR Deviation Scale-In', desc: 'Mean Reversion: Tambah layer kedua jika deviasi harga melebar minimal 1.0x ATR.', minAtrSpacing: 1.0, minCooldownSec: 25 },
+  STEAM: { maxPerPair: 1, mode: 'SINGLE_BULLET', label: 'Single Bullet News Sweep', desc: 'SMC News Sweep: Ketat 1 posisi per pair.', minCooldownSec: 25 },
+  STORM: { maxPerPair: 2, mode: 'PYRAMID_PROFIT', label: 'BOS Trend Pyramiding', desc: 'Trend Breakout: Tambah layer kedua jika order sebelumnya sudah profit (+1.0%).', minProfitPct: 1.0, minCooldownSec: 15 },
+  MUD: { maxPerPair: 1, mode: 'SINGLE_BULLET', label: 'Single Bullet FVG Reversal', desc: 'FVG Reversal: Ketat 1 posisi per pair.', minCooldownSec: 25 },
+  LIGHTNING: { maxPerPair: 2, mode: 'PYRAMID_PROFIT', label: 'Flash Momentum Pyramiding', desc: 'Momentum Scalper: Tambah layer kedua jika posisi lama profit (+0.8%).', minProfitPct: 0.8, minCooldownSec: 15 },
+  LAVA: { maxPerPair: 2, mode: 'SCALE_IN_ATR', label: 'Bollinger 3-SD Scale-In', desc: 'Exhaustion Fade: Scale-in kedua saat deviasi ekstrem minimal 1.0x ATR.', minAtrSpacing: 1.0, minCooldownSec: 25 },
+  SANDSTORM: { maxPerPair: 2, mode: 'SCALE_IN_ATR', label: 'Pullback S/R Scale-In', desc: 'Range Scalper: Scale-in kedua pada level support kunci (1.0x ATR).', minAtrSpacing: 1.0, minCooldownSec: 25 },
+  TEMPEST: { maxPerPair: 3, mode: 'PYRAMID_PROFIT', label: 'Alpha Trend Pyramiding', desc: 'Hyper-Trend: Piramida hingga 3 posisi saat tren panjang terkonfirmasi profit (+1.0%).', minProfitPct: 1.0, minCooldownSec: 15 },
+  OCEANIC: { maxPerPair: 1, mode: 'SINGLE_BULLET', label: 'Institutional SMC Anchor', desc: 'SMC Anchor: Ketat 1 posisi per pair.', minCooldownSec: 25 },
+  GEOTHERMAL: { maxPerPair: 2, mode: 'SCALE_IN_ATR', label: 'Fundamental S/R Scale-In', desc: 'Macro S/R: Scale-in kedua saat mitigasi berita berjarak minimal 1.0x ATR.', minAtrSpacing: 1.0, minCooldownSec: 25 },
+  CYCLONE: { maxPerPair: 2, mode: 'PYRAMID_PROFIT', label: 'Dynamic Regime Pyramiding', desc: 'Dynamic Trend: Piramida jika breakout tren terkonfirmasi profit (+0.8%).', minProfitPct: 0.8, minCooldownSec: 15 },
+  AVATAR: { maxPerPair: 2, mode: 'CONSENSUS_SCALE', label: 'Citadel Consensus Allocator', desc: 'Multi-Manager: Tambah layer kedua berdasarkan konsensus mayoritas.', minCooldownSec: 20 }
+};
+
 // Baseline Genesis Session #0 Knowledge Archive
 const DEFAULT_EPOCH_REPORTS = [
   {
@@ -2249,20 +2268,61 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
           if (availableAgents.length > 0) {
             const chosenAgent = availableAgents[Math.floor(Math.random() * availableAgents.length)];
-            const agentOpenSymbols = updated.filter(p => p.agentId === chosenAgent.id).map(p => p.symbol);
-            // STRICT REAL-WORLD HOURS FILTER: Only choose candidate symbols whose market is OPEN right now!
-            let candidateSymbols = ALL_INSTRUMENTS
+            const agentRules = AGENT_MULTI_POS_RULES[chosenAgent.id] || { maxPerPair: 1, mode: 'SINGLE_BULLET', minCooldownSec: 25 };
+            const agentPositions = updated.filter(p => p.agentId === chosenAgent.id);
+            const openMarketSymbols = ALL_INSTRUMENTS
               .filter(i => isMarketOpenNow(i.market))
-              .map(i => i.symbol)
-              .filter(s => !agentOpenSymbols.includes(s));
+              .map(i => i.symbol);
 
-            // If all unique symbols in currently open markets are already held, allow scaling/pyramiding
-            // across open market instruments up to maxPositionsPerAgent quota
-            if (candidateSymbols.length === 0) {
-              candidateSymbols = ALL_INSTRUMENTS
-                .filter(i => isMarketOpenNow(i.market))
-                .map(i => i.symbol);
+            // 1. Prioritas Utama: Instrumen di pasar buka yang belum dipegang oleh agen ini (Diversifikasi Luas)
+            const unheldSymbols = openMarketSymbols.filter(s => !agentPositions.some(p => p.symbol === s));
+
+            // 2. Prioritas Kedua: Multi-posisi terukur pada instrumen yang sudah dipegang SESUAI DNA STRATEGI
+            let qualifyingHeldSymbols = [];
+            if (unheldSymbols.length === 0 && agentRules.maxPerPair > 1) {
+              qualifyingHeldSymbols = openMarketSymbols.filter(s => {
+                const positionsOnSym = agentPositions.filter(p => p.symbol === s);
+                // Batas maksimal layer per pair untuk bot ini
+                if (positionsOnSym.length >= agentRules.maxPerPair) return false;
+
+                // Cooldown: Cek waktu jeda sejak posisi terakhir pada simbol ini
+                const lastPos = positionsOnSym[0]; // sorted newest first in updated array
+                if (lastPos && lastPos.openedAt) {
+                  const elapsedSec = (Date.now() - new Date(lastPos.openedAt).getTime()) / 1000;
+                  if (elapsedSec < (agentRules.minCooldownSec || 20)) return false;
+                }
+
+                // Validasi Mode Strategi
+                if (agentRules.mode === 'SINGLE_BULLET') {
+                  return false; // Water & Fire strictly 1 posisi per pair
+                }
+
+                if (agentRules.mode === 'PYRAMID_PROFIT') {
+                  // Trend Following: Seluruh posisi sebelumnya di pair ini wajib sudah PROFIT (atau Trailing Stop aktif)
+                  const minProfit = agentRules.minProfitPct || 0.8;
+                  return positionsOnSym.every(p => (p.roiPct || 0) >= minProfit || p.trailingStopActive);
+                }
+
+                if (agentRules.mode === 'SCALE_IN_ATR') {
+                  // Mean Reversion: Jarak harga saat ini terhadap entry terakhir minimal 1.0x ATR
+                  const feed = currentFeeds[s];
+                  if (!feed || !feed.atr || !lastPos) return false;
+                  const minSpacing = (agentRules.minAtrSpacing || 1.0) * feed.atr;
+                  const priceDiff = Math.abs((feed.price || 0) - (lastPos.entryPrice || 0));
+                  return priceDiff >= minSpacing;
+                }
+
+                if (agentRules.mode === 'CONSENSUS_SCALE') {
+                  // Master Consensus: Layer kedua hanya jika drawdown posisi pertama tidak lebih dari -1.0%
+                  return (lastPos.roiPct || 0) >= -1.0;
+                }
+
+                return false;
+              });
             }
+
+            const candidateSymbols = unheldSymbols.length > 0 ? unheldSymbols : qualifyingHeldSymbols;
+            const isScalingLayer = unheldSymbols.length === 0 && candidateSymbols.length > 0;
 
             if (candidateSymbols.length > 0) {
               const targetKey = candidateSymbols[Math.floor(Math.random() * candidateSymbols.length)];
@@ -2329,6 +2389,16 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   } else {
                     isLong = Math.random() > 0.48;
                   }
+
+                  // Direction Alignment & Rationale for Multi-Position Scaling
+                  if (isScalingLayer) {
+                    const existingPos = agentPositions.find(p => p.symbol === targetKey);
+                    if (existingPos) {
+                      isLong = existingPos.direction === 'LONG';
+                    }
+                    const layerNum = agentPositions.filter(p => p.symbol === targetKey).length + 1;
+                    rationale = `[Layer #${layerNum} - ${agentRules.label}] ${rationale}`;
+                  }
                   
                   // Proportional dynamic ATR based on actual entry price
                   let atrPct = isCrypto ? 0.012 : (isForex ? 0.0035 : (isIdx ? 0.010 : 0.006));
@@ -2383,7 +2453,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
                   updated = [newPos, ...updated];
                   const lotLabel = targetFeed.market === 'CRYPTO' ? `${sizeLots} ${targetKey.replace('USDT', '')}` : `${sizeLots}L`;
-                  showToast(`🚀 ${chosenAgent.avatar || '🤖'} ${chosenAgent.name} buka order ${targetKey} (${isLong ? 'LONG' : 'SHORT'} ${lotLabel}, Lev ${newPos.leverage})`);
+                  const layerNum = isScalingLayer ? agentPositions.filter(p => p.symbol === targetKey).length + 1 : 1;
+                  const layerSuffix = layerNum > 1 ? ` (Layer #${layerNum} ${agentRules.mode === 'PYRAMID_PROFIT' ? 'Pyramid' : 'Scale-In'})` : '';
+                  showToast(`🚀 ${chosenAgent.avatar || '🤖'} ${chosenAgent.name} buka order ${targetKey}${layerSuffix} (${isLong ? 'LONG' : 'SHORT'} ${lotLabel}, Lev ${newPos.leverage})`);
                 }
               }
             }
@@ -3273,6 +3345,32 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                           }}>
                             {ag.tier || 'BASE'}
                           </span>
+                          {(() => {
+                            const rule = AGENT_MULTI_POS_RULES[ag.id] || { maxPerPair: 1, mode: 'SINGLE_BULLET', label: '1-Shot' };
+                            const isSingle = rule.mode === 'SINGLE_BULLET';
+                            const isPyr = rule.mode === 'PYRAMID_PROFIT';
+                            const badgeColor = isSingle ? 'var(--text-muted)' : (isPyr ? 'var(--accent-green)' : 'var(--accent-orange)');
+                            const badgeBg = isSingle ? 'rgba(255, 255, 255, 0.05)' : (isPyr ? 'rgba(16, 185, 129, 0.12)' : 'rgba(245, 158, 11, 0.12)');
+                            const labelText = isSingle ? '1-Shot' : (isPyr ? `Pyr×${rule.maxPerPair}` : `Scale×${rule.maxPerPair}`);
+                            return (
+                              <span
+                                style={{
+                                  fontSize: '6.5px',
+                                  fontFamily: 'var(--font-mono)',
+                                  padding: '1px 3px',
+                                  borderRadius: '2px',
+                                  background: badgeBg,
+                                  color: badgeColor,
+                                  fontWeight: '800',
+                                  border: `1px solid ${badgeColor}33`,
+                                  cursor: 'help'
+                                }}
+                                title={`Aturan Multi-Posisi: ${rule.label} (Maks ${rule.maxPerPair} posisi/pair). ${rule.desc}`}
+                              >
+                                {labelText}
+                              </span>
+                            );
+                          })()}
                         </div>
                         <div style={{ fontSize: '8px', color: ag.color, fontWeight: '700', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '140px' }}>
                           {ag.role}
@@ -4581,6 +4679,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     <strong style={{ color: 'var(--accent-rust)' }}>4. Trailing Stop & Hard Stop Loss</strong>
                     <p style={{ margin: '2px 0 0 0', color: 'var(--text-secondary)' }}>
                       Saat floating profit mencapai <strong>≥ 1.2R</strong>, Stop Loss otomatis digeser ke level Entry (Break-Even) guna mengunci risiko zero-loss dari pembalikan harga tiba-tiba.
+                    </p>
+                  </div>
+
+                  <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 14px', borderRadius: '4px', borderLeft: '3px solid var(--accent-purple)' }}>
+                    <strong style={{ color: 'var(--accent-purple)' }}>5. Aturan Multi-Posisi Berbasis DNA Strategi (Institutional Risk Parity)</strong>
+                    <p style={{ margin: '2px 0 0 0', color: 'var(--text-secondary)' }}>
+                      Mencegah over-eksposur dan spamming acak: Bot <strong>SMC & News</strong> (Water, Fire, Steam, Mud, Oceanic) menerapkan <strong>Single Bullet (1 posisi per pair)</strong>. Bot <strong>Trend</strong> (Air, Storm, Lightning, Tempest) menerapkan <strong>Pyramiding (hingga 2-3 layer) hanya jika posisi sebelumnya sudah profit (+0.8% s/d +1.0%)</strong>. Bot <strong>Mean Reversion</strong> (Earth, Sandstorm, Lava, Geothermal) menerapkan <strong>Scale-In deviasi kedua jika harga berjarak minimal 1.0x ATR</strong>. Setiap penambahan layer dilindungi cooldown 15-35 detik.
                     </p>
                   </div>
                 </>
