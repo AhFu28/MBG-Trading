@@ -577,23 +577,12 @@ const INITIAL_AGENTS = [
     avatar: '🌊',
     color: '#3b82f6',
     status: 'STANDBY',
-    confidence: 86,
-    exp3Weight: 0.24,
-    generation: 2,
-    resetCount: 1,
-    resetsHistory: [
-      {
-        fromGen: 1,
-        toGen: 2,
-        timestamp: '2026-09-19T23:45:00.000Z',
-        deficitIdr: 120211187,
-        toxicPair: 'AUDJPY',
-        reason: 'SESSION_0_EVOLUTION',
-        positionsLiquidated: 10,
-        mutation: { riskMultiplier: 0.95, confidenceBoost: 5, trailingTightness: 1.15 }
-      }
-    ],
-    dnaTraits: { riskMultiplier: 0.95, confidenceBoost: 5, trailingTightness: 1.15 }
+    confidence: 85,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
   },
   {
     id: 'FIRE',
@@ -604,50 +593,28 @@ const INITIAL_AGENTS = [
     avatar: '🔥',
     color: '#ef4444',
     status: 'STANDBY',
-    confidence: 82,
-    exp3Weight: 0.20,
-    generation: 2,
-    resetCount: 1,
-    resetsHistory: [
-      {
-        fromGen: 1,
-        toGen: 2,
-        timestamp: '2026-09-19T23:45:00.000Z',
-        deficitIdr: 148165244,
-        toxicPair: 'EURJPY',
-        reason: 'SESSION_0_EVOLUTION',
-        positionsLiquidated: 8,
-        mutation: { riskMultiplier: 0.90, confidenceBoost: 10, trailingTightness: 1.20 }
-      }
-    ],
-    dnaTraits: { riskMultiplier: 0.90, confidenceBoost: 10, trailingTightness: 1.20 }
+    confidence: 85,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
   },
   {
     id: 'AIR',
     name: 'AIR',
     role: 'Trend Breakout & Momentum',
-    description: 'Trend-following dinamis menunggangi hembusan tren panjang Donchian & ekspansi volatilitas ATR (MVP Sesi 0).',
+    description: 'Trend-following dinamis menunggangi hembusan tren panjang Donchian & ekspansi volatilitas ATR.',
     strategy: 'VOLATILITY_EXPANSION',
     avatar: '🌪️',
     color: '#10b981',
     status: 'STANDBY',
-    confidence: 91,
-    exp3Weight: 0.38,
-    generation: 2,
-    resetCount: 1,
-    resetsHistory: [
-      {
-        fromGen: 1,
-        toGen: 2,
-        timestamp: '2026-09-19T23:45:00.000Z',
-        deficitIdr: 0,
-        toxicPair: 'GBPJPY',
-        reason: 'SESSION_0_EVOLUTION',
-        positionsLiquidated: 12,
-        mutation: { riskMultiplier: 1.15, confidenceBoost: 5, trailingTightness: 1.0 }
-      }
-    ],
-    dnaTraits: { riskMultiplier: 1.15, confidenceBoost: 5, trailingTightness: 1.0 }
+    confidence: 85,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
   },
   {
     id: 'EARTH',
@@ -658,23 +625,12 @@ const INITIAL_AGENTS = [
     avatar: '⛰️',
     color: '#eab308',
     status: 'STANDBY',
-    confidence: 76,
-    exp3Weight: 0.18,
-    generation: 2,
-    resetCount: 1,
-    resetsHistory: [
-      {
-        fromGen: 1,
-        toGen: 2,
-        timestamp: '2026-09-19T23:45:00.000Z',
-        deficitIdr: 95568928,
-        toxicPair: 'BBCA',
-        reason: 'SESSION_0_EVOLUTION',
-        positionsLiquidated: 6,
-        mutation: { riskMultiplier: 1.0, confidenceBoost: 5, trailingTightness: 1.10 }
-      }
-    ],
-    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 5, trailingTightness: 1.10 }
+    confidence: 85,
+    exp3Weight: 0.25,
+    generation: 0,
+    resetCount: 0,
+    resetsHistory: [],
+    dnaTraits: { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
   }
 ];
 
@@ -968,9 +924,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
   const [marketFeeds, setMarketFeeds] = useState(DEFAULT_MARKET_FEEDS);
 
-  // Agents State with Auto-Migration for 4 Elements Avatar & Generation Tracking
+  // Agents State with Auto-Migration for 4 Elements Avatar & Clean Gen 0 Tracking
   const [agents, setAgents] = useState(() => {
     try {
+      const savedVersion = localStorage.getItem('mbg_ai_arena_agents_v');
+      // Jika versi belum v5_gen0 (masih tersimpan data Gen 2 dari sesi lalu padahal sesi 1 belum mulai),
+      // sinkronkan kembali ke INITIAL_AGENTS bersih berstatus Gen 0
+      if (savedVersion !== 'v5_gen0') {
+        localStorage.setItem('mbg_ai_arena_agents_v', 'v5_gen0');
+        localStorage.setItem('mbg_ai_arena_agents', JSON.stringify(INITIAL_AGENTS));
+        return INITIAL_AGENTS;
+      }
       const saved = localStorage.getItem('mbg_ai_arena_agents');
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -999,7 +963,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               avatar,
               color,
               role,
-              generation: ag.generation || 1,
+              generation: typeof ag.generation === 'number' ? ag.generation : 0,
               resetCount: ag.resetCount || 0,
               resetsHistory: ag.resetsHistory || [],
               dnaTraits: ag.dnaTraits || { riskMultiplier: 1.0, confidenceBoost: 0, trailingTightness: 1.0 }
@@ -1291,7 +1255,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
           oldWeight: ag.exp3Weight || 0.25,
           currentEquity: agentStatsMap[ag.id]?.currentBotEquityIdr || capitalPerBotIdr,
           status: ag.status || 'HUNTING',
-          generation: ag.generation || 1
+          generation: typeof ag.generation === 'number' ? ag.generation : 0
         };
       });
 
@@ -1711,7 +1675,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
             }
 
             const deficitIdr = Math.abs(liveEquityIdr);
-            const oldGen = ag.generation || 1;
+            const oldGen = typeof ag.generation === 'number' ? ag.generation : 0;
             const nextGen = oldGen + 1;
             const oldResetCount = ag.resetCount || 0;
             const newResetCount = oldResetCount + 1;
@@ -2093,13 +2057,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
       // 3. Terapkan bobot Self-Improvement baru ke agen & evolusi generasi
       setAgents(prev => prev.map((a, idx) => {
-        const nextGen = (a.generation || 1) + 1;
+        const oldGen = typeof a.generation === 'number' ? a.generation : 0;
+        const nextGen = oldGen + 1;
         const newResetCount = (a.resetCount || 0) + 1;
         const st = agentStatsMap[a.id];
         const deficitIdr = st && st.netGainIdr < 0 ? Math.abs(st.netGainIdr) : 0;
         const worstSym = report.agentBreakdowns.find(b => b.agentId === a.id)?.worstPair || 'N/A';
         const globalResetRecord = {
-          fromGen: a.generation || 1,
+          fromGen: oldGen,
           toGen: nextGen,
           timestamp: new Date().toISOString(),
           deficitIdr: deficitIdr,
@@ -2142,7 +2107,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       // Individual Bot Reset & Manual Evolution
       const agId = resetConfirmModal.agentId;
       const targetAgent = agents.find(a => a.id === agId);
-      const oldGen = targetAgent?.generation || 1;
+      const oldGen = typeof targetAgent?.generation === 'number' ? targetAgent.generation : 0;
       const nextGen = oldGen + 1;
       const oldResetCount = targetAgent?.resetCount || 0;
       const newResetCount = oldResetCount + 1;
@@ -2688,9 +2653,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                           alignItems: 'center',
                           gap: '2px'
                         }}
-                        title={`Lihat riwayat evolusi & mutasi DNA Gen ${ag.generation || 1}`}
+                        title={`Lihat riwayat evolusi & mutasi DNA Gen ${ag.generation ?? 0}`}
                       >
-                        <span>🧬 Gen {ag.generation || 1}</span>
+                        <span>🧬 Gen {ag.generation ?? 0}</span>
                       </button>
                     </div>
                   </div>
@@ -3119,7 +3084,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                                 </td>
                                 <td style={{ padding: '7px 8px', color: 'var(--text-secondary)' }}>{ag.strategy}</td>
                                 <td style={{ padding: '7px 8px' }}>
-                                  <span style={{ color: '#c084fc', fontWeight: '700' }}>Gen {ag.generation || 1}</span>
+                                  <span style={{ color: '#c084fc', fontWeight: '700' }}>Gen {ag.generation ?? 0}</span>
                                   {(ag.resetCount || 0) > 0 ? (
                                     <span style={{ color: 'var(--accent-rust)', fontSize: '8.5px', marginLeft: '4px' }}>
                                       ({ag.resetCount}x MC)
@@ -3249,7 +3214,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                               color: (targetAg.resetCount || 0) > 0 ? '#fca5a5' : '#c084fc',
                               border: (targetAg.resetCount || 0) > 0 ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(168, 85, 247, 0.4)'
                             }}>
-                              🧬 GEN {targetAg.generation || 1} {(targetAg.resetCount || 0) > 0 ? `(⚠️ ${targetAg.resetCount}x MC)` : '(0 MC)'}
+                              🧬 GEN {targetAg.generation ?? 0} {(targetAg.resetCount || 0) > 0 ? `(⚠️ ${targetAg.resetCount}x MC)` : '(0 MC)'}
                             </span>
                             <span className="badge" style={{ fontSize: '8.5px', color: getAgentLiveStatus(targetAg).color, border: `1px solid ${getAgentLiveStatus(targetAg).color}55`, background: getAgentLiveStatus(targetAg).bg }}>
                               {getAgentLiveStatus(targetAg).label}
@@ -3287,7 +3252,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     {/* 2. Current Generation Performance Metric Grid */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '8px' }}>
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '8px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                        <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>SALDO AKTIF (GEN {targetAg.generation || 1})</div>
+                        <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>SALDO AKTIF (GEN {targetAg.generation ?? 0})</div>
                         <div style={{ fontSize: '13px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                           {formatIdr(st.currentBotEquityIdr || capitalPerBotIdr)}
                         </div>
@@ -3297,7 +3262,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                       </div>
 
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '8px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                        <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>WIN RATE (GEN {targetAg.generation || 1})</div>
+                        <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>WIN RATE (GEN {targetAg.generation ?? 0})</div>
                         <div style={{ fontSize: '13px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
                           {st.winRate}%
                         </div>
@@ -3406,7 +3371,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                               <span style={{ fontSize: '16px' }}>🛡️</span>
                               <strong style={{ color: 'var(--accent-green)', fontSize: '11px' }}>
-                                Status Generasi Prima: Gen 1 (Original Master — Belum Pernah Margin Call)
+                                Status Generasi Prima: Gen 0 (Genesis Origin — Belum Pernah Margin Call)
                               </strong>
                             </div>
                             <div style={{ fontSize: '9.5px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
@@ -4684,7 +4649,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                       {evolutionModal.agent.name} — Silsilah Generasi & Mutasi DNA
                     </h3>
                     <span className="badge" style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.4)', fontSize: '9px', fontWeight: '800' }}>
-                      🧬 GEN {evolutionModal.agent.generation || 1}
+                      🧬 GEN {evolutionModal.agent.generation ?? 0}
                     </span>
                   </div>
                   <div style={{ fontSize: '10px', color: evolutionModal.agent.color, fontWeight: '700' }}>
@@ -4705,7 +4670,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               
               {/* Concept Note */}
               <div style={{ background: 'rgba(168, 85, 247, 0.08)', borderLeft: '3px solid #a855f7', padding: '8px 12px', borderRadius: '4px', fontSize: '10px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                <strong>🎮 Siklus Hidup & Generasi Bot:</strong> Ketika saldo bot jatuh hingga minus (&le; 0), bot mengalami Margin Call (mati). Seluruh posisi aktif dilikuidasi seketika, dan bot berevolusi (respawn) ke <strong>Generasi berikutnya (Gen {((evolutionModal.agent.generation || 1) + 1)})</strong> dengan catatan defisit serta <strong>mutasi DNA</strong> (parameter risk & trailing stop yang diperketat).
+                <strong>🎮 Siklus Hidup & Generasi Bot:</strong> Ketika saldo bot jatuh hingga minus (&le; 0), bot mengalami Margin Call (mati). Seluruh posisi aktif dilikuidasi seketika, dan bot berevolusi (respawn) ke <strong>Generasi berikutnya (Gen {((evolutionModal.agent.generation ?? 0) + 1)})</strong> dengan catatan defisit serta <strong>mutasi DNA</strong> (parameter risk & trailing stop yang diperketat).
               </div>
 
               {/* Status Metric Grid */}
@@ -4713,7 +4678,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '8px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                   <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>GENERASI SAAT INI</div>
                   <div style={{ fontSize: '15px', fontWeight: '900', color: '#c084fc', fontFamily: 'var(--font-mono)' }}>
-                    Gen {evolutionModal.agent.generation || 1}
+                    Gen {evolutionModal.agent.generation ?? 0}
                   </div>
                   <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Iterasi Evolusi Hidup</div>
                 </div>
@@ -4781,7 +4746,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
                 {(!evolutionModal.agent.resetsHistory || evolutionModal.agent.resetsHistory.length === 0) ? (
                   <div style={{ padding: '18px', textAlign: 'center', background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', color: 'var(--text-muted)', fontSize: '10.5px' }}>
-                    🌱 <strong>Generasi 1 (Original):</strong> Bot belum pernah mengalami Margin Call / kebangkrutan saldo.
+                    🌱 <strong>Generasi 0 (Genesis Baseline):</strong> Bot beroperasi di konfigurasi awal murni dan belum pernah mengalami Margin Call / mutasi penalti.
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -4848,7 +4813,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 className="telemetry-btn"
                 style={{ padding: '5px 12px', fontSize: '10px', color: 'var(--accent-rust)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
               >
-                🔄 Reset & Evolve Bot Ini ke Gen {((evolutionModal.agent.generation || 1) + 1)}
+                🔄 Reset & Evolve Bot Ini ke Gen {((evolutionModal.agent.generation ?? 0) + 1)}
               </button>
             </div>
           </div>
