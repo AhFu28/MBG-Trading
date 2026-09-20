@@ -68,6 +68,55 @@ export const CHANGELOG_DATA = [
     ]
   },
   {
+    id: 'pkg-19092026-v42',
+    version: 'Package 19092026',
+    semanticVersion: 'v4.2.0',
+    date: '19 September 2026',
+    status: 'STABLE',
+    statusColor: '#38bdf8',
+    badgeLabel: 'STABLE',
+    title: 'Update Package 19092026 (v4.2 APEX): AI Agent Arena Genesis (4 Elements), Zero Simulation Policy, Post-Mortem Session 0 Archive & Resilient Session Timer',
+    description: 'Fondasi peluncuran perdana AI Multi-Agent Arena: Memperkenalkan 4 agen kuantitatif elemen dasar (WATER, FIRE, AIR, EARTH) yang bertarung otonom, penegakan Zero Simulation Policy (eliminasi 100% synthetic tick delta demi data riil WebSocket Binance & Scanner TV), arsip post-mortem Sesi 0 Genesis (+Rp 255M PnL) serta evolusi DNA Gen 2, resilient uptime timer berbasis delta Date.now & visibilitychange, serta normalisasi TP/SL berbasis Dynamic Proportional ATR.',
+    processFlow: [
+      { step: '1. Tri-Signal Matrix', label: 'Wall St US Equities Added (18/09)' },
+      { step: '2. Zero-Simulation Gate', label: 'Purge Synthetic Ticks (19/09)' },
+      { step: '3. 4 Base Elements', label: 'WATER, FIRE, AIR, EARTH Genesis (19/09)' },
+      { step: '4. Post-Mortem & Gen 2', label: 'Session 0 Debrief & Evolution (19/09)' }
+    ],
+    markdownContent: `
+### 🚀 Pembaruan Akbar v4.2 APEX (Highlights 19/09)
+- **Peluncuran Perdana AI Multi-Agent Arena (4 Elemen Dasar):**
+  - Mengembangkan platform perdagangan otonom berbasis peramban dengan 4 kepribadian kuantitatif elemen inti:
+    - 💧 **WATER:** Smart Money Concepts (SMC), Order Blocks & Liquidity Sweeps.
+    - 🔥 **FIRE:** Event-driven momentum menangkap lonjakan volatilitas berita makro ekonomi.
+    - 🌪️ **AIR:** High-Frequency Scalper & Donchian Channel trend breakout.
+    - ⛰️ **EARTH:** Mean-reversion guardian memanfaatkan batas deviasi ekstrem Bollinger Bands 3 SD.
+- **Penegakan Zero Simulation Policy Mutlak:**
+  - Menghapus seluruh generator tick sintetis (*random fake ticks*) dan \`Math.random()\` dari pipeline harga.
+  - Sinyal dan floating PnL 100% dihitung dari denyut data pasar nyata: Binance MiniTicker WebSocket (kripto) dan TradingView Scanner (saham IDX, US, Forex, Emas, Minyak).
+  - Mengimplementasikan **Weekend Freeze** di mana kuotasi saham bursa konvensional terkunci rapi pada *Official Closing Price* tanpa deviasi palsu saat pasar tutup.
+- **Arsip Sesi #0 Genesis & Institutional Quant Post-Mortem:**
+  - Menyimpan rekapitulasi audit performa Sesi 0 (9.832 trade historis, total keuntungan bersih +Rp 255.462.417, win rate 21.0%).
+  - Menyediakan modal telaah mendalam (*Institutional Post-Mortem Debrief*) yang menganalisis rasio Risk/Reward, frekuensi transaksi, dan pemicu Margin Call (MC).
+  - Menginisiasi mutasi DNA agen menuju **Generasi 2 (Gen 2)** dengan parameter SL/TP trailing yang lebih adaptif.
+- **Resilient Session Uptime Timer:**
+  - Memperbaiki ketahanan timer durasi sesi arena menggunakan pelacak selisih waktu nyata (\`Date.now()\` delta tracking) dan pendengar event \`visibilitychange\` serta \`window.focus\`.
+  - Jam sesi tetap berjalan akurat dan tidak melambat (*throttled*) ketika peramban pengguna berpindah tab atau berjalan di latar belakang.
+- **Dynamic Proportional ATR & Position Normalizer:**
+  - Menggantikan batas ATR statis dengan Dynamic Proportional ATR yang menyesuaikan volatilitas spesifik masing-masing instrumen (0.35% Forex, 1.0% Saham, 1.2% Kripto).
+  - Melakukan normalisasi otomatis terhadap posisi lawas agar target TP dan batas keras Hard SL selalu berada pada rentang batas risiko institusional.
+    `.trim(),
+    table: [
+      { module: '4 Elements Genesis Arena', status: 'PROD', category: 'AI Arena / Engine', summary: 'WATER, FIRE, AIR, EARTH autonomous algorithmic trading agents' },
+      { module: 'Zero Simulation Enforcement', status: 'PROD', category: 'Data Integrity', summary: '100% data riil WebSocket Binance & TV Scanner; nol tick sintetis' },
+      { module: 'Session 0 Post-Mortem Archive', status: 'PROD', category: 'Analytics / Audit', summary: 'Arsip audit 9.832 trade Genesis Sesi 0 (+Rp 255M PnL) & evaluasi MC' },
+      { module: 'Gen 2 DNA Evolution', status: 'PROD', category: 'Reinforcement RL', summary: 'Adaptasi parameter DNA SL/TP trailing pasca evaluasi performa' },
+      { module: 'Resilient Delta Uptime Timer', status: 'PROD', category: 'Telemetry', summary: 'Date.now delta tracking tahan sleep/background browser tabs' },
+      { module: 'Dynamic Proportional ATR', status: 'PROD', category: 'Risk Management', summary: 'Penyesuaian TP/SL proporsional terhadap volatilitas riil per instrumen' },
+      { module: 'Weekend Market Freeze Gate', status: 'PROD', category: 'Compliance', summary: 'Harga bursa konvensional terkunci pada official close saat libur' }
+    ]
+  },
+  {
     id: 'pkg-18092026-v41',
     version: 'Package 18092026',
     semanticVersion: 'v4.1.0',
