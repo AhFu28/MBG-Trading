@@ -10,9 +10,16 @@ export const isMarketOpenNow = (market) => {
   return false;
 };
 
-// Live Currency Exchange Rate Baseline with Dynamic Fetch Support
-let currentLiveUsdToIdr = 16350;
-const USD_TO_IDR = 16350;
+// Live Currency Exchange Rate Baseline with Dynamic Fetch Support (with persistent localStorage fallback)
+let currentLiveUsdToIdr = (() => {
+  try {
+    const saved = localStorage.getItem('mbg_usd_idr_rate');
+    return saved ? Number(saved) : 16350;
+  } catch {
+    return 16350;
+  }
+})();
+const USD_TO_IDR = currentLiveUsdToIdr || 16350;
 
 // Formatters for Rupiah and USD
 const formatIdr = (val) => {
@@ -1700,6 +1707,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       return 16350;
     }
   });
+  const usdToIdrRef = useRef(usdToIdrRate);
+  usdToIdrRef.current = usdToIdrRate;
 
   // Simulation Session Active Duration (Accumulated active running time in seconds)
   const [sessionActiveSeconds, setSessionActiveSeconds] = useState(() => {
@@ -1729,11 +1738,25 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         if (d?.rates?.IDR && typeof d.rates.IDR === 'number') {
           const rate = Math.round(d.rates.IDR);
           setUsdToIdrRate(rate);
+          usdToIdrRef.current = rate;
           currentLiveUsdToIdr = rate;
           try { localStorage.setItem('mbg_usd_idr_rate', String(rate)); } catch (e) {}
         }
       })
-      .catch(e => console.warn('Realtime USD/IDR fallback:', e));
+      .catch(e => {
+        console.warn('Realtime USD/IDR fetch error, using fallback:', e);
+        try {
+          const saved = localStorage.getItem('mbg_usd_idr_rate');
+          if (saved) {
+            const parsed = Number(saved);
+            if (parsed > 0) {
+              setUsdToIdrRate(parsed);
+              usdToIdrRef.current = parsed;
+              currentLiveUsdToIdr = parsed;
+            }
+          }
+        } catch {}
+      });
   }, []);
 
   // Timer: Hanya bertambah saat arena aktif berjalan (isRunning === true).
@@ -1762,8 +1785,6 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       const handleVisibilityChange = () => {
         if (!document.hidden) {
           updateUptime();
-        } else {
-          lastTime = Date.now();
         }
       };
       document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -1931,6 +1952,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     }
     return [];
   });
+  const positionsRef = useRef(positions);
+  positionsRef.current = positions;
 
   // Timeframe selector for Equity Curves: '3D' | '7D' | '1M' | '3M' | '1Y'
   const [chartTimeframe, setChartTimeframe] = useState(() => {
@@ -1944,6 +1967,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
   // Filter & Sort for Locked 4-Column Kanban Grid
   const [agentFilterTab, setAgentFilterTab] = useState('ALL');
   const [agentSortBy, setAgentSortBy] = useState('DEFAULT');
+
+  // 60s Reactive Clock to update market hours badges & agent status
+  const [clockTick, setClockTick] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setClockTick(c => c + 1), 60000);
+    return () => clearInterval(t);
+  }, []);
 
 
 
@@ -2015,7 +2045,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
   const [resetConfirmModal, setResetConfirmModal] = useState({ isOpen: false, agentId: null, agentName: '' });
   const [selectedPhilosophyAgent, setSelectedPhilosophyAgent] = useState('WATER');
   const [selectedReviewAgent, setSelectedReviewAgent] = useState('WATER');
-  const [toastMessage, setToastMessage] = useState(null);
+  const [toasts, setToasts] = useState([]);
 
   // Bot Life Cycle: Evolution & Mutasi DNA Modal
   const [evolutionModal, setEvolutionModal] = useState({ isOpen: false, agent: null });
@@ -2036,6 +2066,23 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
   const [sessionRecapModalOpen, setSessionRecapModalOpen] = useState(false);
   const [selectedRecapSessionKey, setSelectedRecapSessionKey] = useState('LIVE');
 
+  // Global Escape key listener to dismiss open modals
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (resetConfirmModal.isOpen) setResetConfirmModal({ isOpen: false, agentId: null, agentName: '' });
+        else if (evolutionModal.isOpen) setEvolutionModal({ isOpen: false, agent: null });
+        else if (journalModal.isOpen) setJournalModal({ isOpen: false, agentId: 'ALL', agentName: 'Semua Agen' });
+        else if (sessionRecapModalOpen) setSessionRecapModalOpen(false);
+        else if (rulesModalOpen) setRulesModalOpen(false);
+        else if (philosophyModalOpen) setPhilosophyModalOpen(false);
+        else if (agentReviewModalOpen) setAgentReviewModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [resetConfirmModal.isOpen, evolutionModal.isOpen, journalModal.isOpen, sessionRecapModalOpen, rulesModalOpen, philosophyModalOpen, agentReviewModalOpen]);
+
   // Persistence Handler
   useEffect(() => {
     try {
@@ -2055,9 +2102,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     }
   }, [isRunning, capitalPerBotIdr, sliderMaxPositions, riskPerTradePct, agents, positions, journal, chartTimeframe, epochReports, arenaExecutionMode, scannerMode]);
 
+  // Toast Queue Manager: Stack up to 3 toasts with automatic 3.5s dismiss
   const showToast = useCallback((msg) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3500);
+    const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    setToasts(prev => [...prev.slice(-2), { id, msg }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 3500);
   }, []);
 
   // Compute Dynamic Stats Per Agent Directly from Journal (Active Generation & All-Time)
@@ -2403,7 +2454,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       return { label: `TRADING (${activeCount})`, color: 'var(--accent-green)', bg: 'rgba(22, 163, 74, 0.15)', desc: `Mengawal ${activeCount} posisi aktif di pasar.` };
     }
     return { label: 'HUNTING', color: 'var(--accent-blue)', bg: 'rgba(59, 130, 246, 0.15)', desc: 'Memburu sinyal & pemindaian pasar.' };
-  }, [isRunning, agentStatsMap, positions]);
+  }, [isRunning, agentStatsMap, positions, clockTick]);
 
   // Real-Time 100% Real Market Evaluation Engine (Zero synthetic simulation)
   useEffect(() => {
@@ -2411,10 +2462,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
     const interval = setInterval(() => {
       // 1. Update Running Positions & Evaluate TP/SL against 100% REAL LIVE MARKET PRICES
-      setPositions(prevPositions => {
-        let hasClosedAny = false;
-        const closedTradesToAdd = [];
-        const currentFeeds = marketFeedsRef.current;
+      const prevPositions = positionsRef.current;
+      let hasClosedAny = false;
+      const closedTradesToAdd = [];
+      const currentFeeds = marketFeedsRef.current;
+      let currentAgents = agentsRef.current;
+      let agentsChanged = false;
+      const toastsToShow = [];
 
         let updated = prevPositions.map(rawPos => {
           const pos = normalizePositionTpSl(rawPos);
@@ -2435,22 +2489,22 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
           if (isIdx) {
             pnlIdr = delta * pos.sizeLots * 100;
-            pnlUsd = pnlIdr / USD_TO_IDR;
+            pnlUsd = pnlIdr / usdToIdrRef.current;
           } else if (pos.market === 'US') {
             pnlUsd = delta * pos.sizeLots;
-            pnlIdr = pnlUsd * USD_TO_IDR;
+            pnlIdr = pnlUsd * usdToIdrRef.current;
           } else if (['US30', 'US500', 'NAS100', 'DAX40', 'NIKKEI', 'HSI'].includes(pos.symbol)) {
             pnlUsd = delta * pos.sizeLots * 1;
-            pnlIdr = pnlUsd * USD_TO_IDR;
+            pnlIdr = pnlUsd * usdToIdrRef.current;
           } else if (pos.symbol.includes('XAU') || pos.symbol.includes('XAG') || pos.market === 'FUTURES') {
             pnlUsd = delta * pos.sizeLots * 100;
-            pnlIdr = pnlUsd * USD_TO_IDR;
+            pnlIdr = pnlUsd * usdToIdrRef.current;
           } else if (isForex) {
             pnlUsd = delta * pos.sizeLots * 100000;
-            pnlIdr = pnlUsd * USD_TO_IDR;
+            pnlIdr = pnlUsd * usdToIdrRef.current;
           } else {
             pnlUsd = delta * pos.sizeLots;
-            pnlIdr = pnlUsd * USD_TO_IDR;
+            pnlIdr = pnlUsd * usdToIdrRef.current;
           }
 
           const roiPct = pos.direction === 'LONG'
@@ -2516,7 +2570,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
           if (shouldClose) {
             hasClosedAny = true;
             closedTradesToAdd.push({
-              id: `TRD-${Date.now()}-${pos.symbol}`,
+              id: `TRD-${pos.id}-${Date.now()}`,
               agentId: pos.agentId,
               symbol: pos.symbol,
               market: pos.market,
@@ -2560,10 +2614,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
             ? agAllTrades.filter(j => new Date(j.closedAt).getTime() > lastResetTime)
             : agAllTrades;
 
-          const grossProfit = agTrades.filter(j => (j.pnlIdr || (j.pnlUsd * USD_TO_IDR)) > 0)
-            .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * USD_TO_IDR)), 0);
-          const grossLoss = Math.abs(agTrades.filter(j => (j.pnlIdr || (j.pnlUsd * USD_TO_IDR)) < 0)
-            .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * USD_TO_IDR)), 0));
+          const grossProfit = agTrades.filter(j => (j.pnlIdr || (j.pnlUsd * usdToIdrRef.current)) > 0)
+            .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * usdToIdrRef.current)), 0);
+          const grossLoss = Math.abs(agTrades.filter(j => (j.pnlIdr || (j.pnlUsd * usdToIdrRef.current)) < 0)
+            .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * usdToIdrRef.current)), 0));
           const netGainIdr = grossProfit - grossLoss;
           const activeFloatingIdr = updated.filter(p => p.agentId === ag.id)
             .reduce((acc, p) => acc + (p.floatingPnlIdr || 0), 0);
@@ -2587,7 +2641,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
             updated = updated.filter(p => p.agentId !== ag.id);
 
             const liquidationTrades = botOpenPositions.map(pos => ({
-              id: `LIQ-${Date.now()}-${pos.symbol}`,
+              id: `LIQ-${pos.id}-${Date.now()}`,
               agentId: ag.id,
               symbol: pos.symbol,
               market: pos.market,
@@ -2644,8 +2698,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               mutation: mutation
             };
 
-            // Update agents state
-            setAgents(prevAgents => prevAgents.map(a => {
+            // Mutate agent in currentAgents
+            agentsChanged = true;
+            currentAgents = currentAgents.map(a => {
               if (a.id !== ag.id) return a;
               return {
                 ...a,
@@ -2655,31 +2710,31 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 dnaTraits: mutation,
                 equityHistory: [capitalPerBotIdr]
               };
-            }));
+            });
 
-            showToast(`💀 ${ag.avatar} ${ag.name} gugur di Gen ${oldGen}! Berevolusi ke Gen ${nextGen} (Defisit: -Rp ${deficitIdr.toLocaleString('id-ID')}). DNA diperketat.`);
+            toastsToShow.push(`💀 ${ag.avatar} ${ag.name} gugur di Gen ${oldGen}! Berevolusi ke Gen ${nextGen} (Defisit: -Rp ${deficitIdr.toLocaleString('id-ID')}). DNA diperketat.`);
           });
         }
 
         if (hasClosedAny && closedTradesToAdd.length > 0) {
-          setJournal(prevJ => [...closedTradesToAdd, ...prevJ]);
-
           // Update agent equity sparklines
-          setAgents(prevAgents => prevAgents.map(ag => {
-            const botTrade = closedTradesToAdd.find(c => c.agentId === ag.id);
-            if (!botTrade) return ag;
+          agentsChanged = true;
+          currentAgents = currentAgents.map(ag => {
+            const botTrades = closedTradesToAdd.filter(c => c.agentId === ag.id);
+            if (botTrades.length === 0) return ag;
+            const totalBotPnl = botTrades.reduce((acc, t) => acc + (t.pnlIdr || 0), 0);
             const prevHistory = ag.equityHistory || [capitalPerBotIdr];
             const lastVal = prevHistory[prevHistory.length - 1];
-            const nextVal = lastVal + botTrade.pnlIdr;
+            const nextVal = lastVal + totalBotPnl;
             return {
               ...ag,
               equityHistory: [...prevHistory.slice(-15), nextVal]
             };
-          }));
+          });
 
           const firstClosed = closedTradesToAdd[0];
           if (firstClosed) {
-            showToast(`🔔 Trade ${firstClosed.symbol} auto-closed (${firstClosed.exitReason}) PnL: ${firstClosed.isWin ? '+' : ''}${formatInstrumentPrice(firstClosed.pnlIdr, 'IDX')}`);
+            toastsToShow.push(`🔔 Trade ${firstClosed.symbol} auto-closed (${firstClosed.exitReason}) PnL: ${firstClosed.isWin ? '+' : ''}${formatInstrumentPrice(firstClosed.pnlIdr, 'IDX')}`);
           }
         }
 
@@ -2689,7 +2744,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
           ? (updated.length > 50 ? 0.15 : (updated.length > 25 ? 0.35 : 0.60))
           : 0.65;
         if (updated.length < effectiveMaxPositions && Math.random() < spawnChance) {
-          const availableAgents = agentsRef.current.filter(a => {
+          const availableAgents = currentAgents.filter(a => {
             const count = updated.filter(p => p.agentId === a.id).length;
             return count < maxPositionsPerAgent;
           });
@@ -2741,8 +2796,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 if (agentRules.mode === 'SCALE_IN_ATR') {
                   // Mean Reversion: Jarak harga saat ini terhadap entry terakhir minimal 1.0x ATR
                   const feed = currentFeeds[s];
-                  if (!feed || !feed.atr || !lastPos) return false;
-                  const minSpacing = (agentRules.minAtrSpacing || 1.0) * feed.atr;
+                  if (!feed || !lastPos) return false;
+                  const currentAtr = feed.atr || ((feed.price || 1) * 0.01);
+                  const minSpacing = (agentRules.minAtrSpacing || 1.0) * currentAtr;
                   const priceDiff = Math.abs((feed.price || 0) - (lastPos.entryPrice || 0));
                   return priceDiff >= minSpacing;
                 }
@@ -2911,54 +2967,64 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   const layerNum = isScalingLayer ? agentPositions.filter(p => p.symbol === targetKey).length + 1 : 1;
                   const layerSuffix = layerNum > 1 ? ` (Layer #${layerNum} ${agentRules.mode === 'PYRAMID_PROFIT' ? 'Pyramid' : 'Scale-In'})` : '';
                   const modeBadge = targetExecutionMode === 'SPOT' ? '🟢 SPOT' : '🟣 FUT';
-                  showToast(`🚀 ${chosenAgent.avatar || '🤖'} ${chosenAgent.name} buka order ${targetKey}${layerSuffix} (${modeBadge} ${isLong ? 'LONG' : 'SHORT'} ${lotLabel}, Lev ${newPos.leverage})`);
+                  toastsToShow.push(`🚀 ${chosenAgent.avatar || '🤖'} ${chosenAgent.name} buka order ${targetKey}${layerSuffix} (${modeBadge} ${isLong ? 'LONG' : 'SHORT'} ${lotLabel}, Lev ${newPos.leverage})`);
                 }
               }
             }
           }
 
-        return updated;
-      });
+      // 4. Batch Dispatch State Updates sequentially and purely outside updater
+      positionsRef.current = updated;
+      setPositions(updated);
 
+      if (hasClosedAny && closedTradesToAdd.length > 0) {
+        setJournal(prevJ => [...closedTradesToAdd, ...prevJ]);
+      }
+
+      if (agentsChanged) {
+        setAgents(currentAgents);
+      }
+
+      toastsToShow.forEach(msg => showToast(msg));
     }, 1400);
 
     return () => clearInterval(interval);
-  }, [isRunning, effectiveMaxPositions, capitalPerBotIdr, showToast, isUnlimitedPositions, sliderMaxPositions]);
+  }, [isRunning, effectiveMaxPositions, capitalPerBotIdr, showToast, isUnlimitedPositions, sliderMaxPositions, riskPerTradePct]);
 
-  // Manual Close Single Trade
+  // Manual Close Single Trade (Purely refactored without nested side-effects)
   const handleManualClose = useCallback((posId) => {
-    setPositions(prev => {
-      const target = prev.find(p => p.id === posId);
-      if (!target) return prev;
+    const target = positionsRef.current.find(p => p.id === posId);
+    if (!target) return;
 
-      const pnlUsd = target.market === 'IDX' ? (target.floatingPnlIdr / USD_TO_IDR) : target.floatingPnlUsd;
-      const pnlIdr = target.market === 'IDX' ? target.floatingPnlIdr : (target.floatingPnlUsd * USD_TO_IDR);
+    const pnlUsd = target.market === 'IDX' ? (target.floatingPnlIdr / (usdToIdrRef.current || 16350)) : target.floatingPnlUsd;
+    const pnlIdr = target.market === 'IDX' ? target.floatingPnlIdr : (target.floatingPnlUsd * (usdToIdrRef.current || 16350));
 
-      const closedEntry = {
-        id: `TRD-MANUAL-${Date.now()}`,
-        agentId: target.agentId,
-        symbol: target.symbol,
-        market: target.market,
-        direction: target.direction,
-        executionMode: target.executionMode || (target.market === 'IDX' ? 'SPOT' : 'FUTURES'),
-        leverage: target.leverage,
-        entryPrice: target.entryPrice,
-        exitPrice: target.currentPrice,
-        slPrice: target.slPrice,
-        tp1Price: target.tp1Price,
-        pnlUsd: Number(pnlUsd.toFixed(2)),
-        pnlIdr: Number(pnlIdr.toFixed(0)),
-        roiPct: target.roiPct,
-        rrAchieved: Number((target.roiPct / 1.5).toFixed(2)),
-        exitReason: 'MANUAL_CLOSE',
-        closedAt: new Date().toISOString(),
-        isWin: pnlIdr > 0
-      };
+    const closedEntry = {
+      id: `TRD-MANUAL-${posId}-${Date.now()}`,
+      agentId: target.agentId,
+      symbol: target.symbol,
+      market: target.market,
+      direction: target.direction,
+      executionMode: target.executionMode || (target.market === 'IDX' ? 'SPOT' : 'FUTURES'),
+      leverage: target.leverage,
+      entryPrice: target.entryPrice,
+      exitPrice: target.currentPrice,
+      slPrice: target.slPrice,
+      tp1Price: target.tp1Price,
+      pnlUsd: Number(pnlUsd.toFixed(2)),
+      pnlIdr: Number(pnlIdr.toFixed(0)),
+      roiPct: target.roiPct,
+      rrAchieved: Number(((target.roiPct || 0) / 1.5).toFixed(2)),
+      exitReason: 'MANUAL_CLOSE',
+      closedAt: new Date().toISOString(),
+      isWin: pnlIdr > 0
+    };
 
-      setJournal(j => [closedEntry, ...j]);
-      showToast(`Posisi ${target.symbol} ditutup manual. PnL: ${formatIdr(pnlIdr)}`);
-      return prev.filter(p => p.id !== posId);
-    });
+    const nextPositions = positionsRef.current.filter(p => p.id !== posId);
+    positionsRef.current = nextPositions;
+    setPositions(nextPositions);
+    setJournal(j => [closedEntry, ...j]);
+    showToast(`Posisi ${target.symbol} ditutup manual. PnL: ${formatIdr(pnlIdr)}`);
   }, [showToast]);
 
   // Generate Comprehensive Epoch Performance Report & Compute Self-Improvement Parameter Adaptations
@@ -2974,16 +3040,16 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     const losses = totalTrades - wins;
     const winRate = totalTrades > 0 ? ((wins / totalTrades) * 100).toFixed(1) : '0.0';
 
-    const grossProfitIdr = journal.filter(j => (j.pnlIdr || (j.pnlUsd * USD_TO_IDR)) > 0)
-      .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * USD_TO_IDR)), 0);
-    const grossLossIdr = Math.abs(journal.filter(j => (j.pnlIdr || (j.pnlUsd * USD_TO_IDR)) < 0)
-      .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * USD_TO_IDR)), 0));
+    const grossProfitIdr = journal.filter(j => (j.pnlIdr || (j.pnlUsd * usdToIdrRef.current)) > 0)
+      .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * usdToIdrRef.current)), 0);
+    const grossLossIdr = Math.abs(journal.filter(j => (j.pnlIdr || (j.pnlUsd * usdToIdrRef.current)) < 0)
+      .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * usdToIdrRef.current)), 0));
     const netPnlIdr = grossProfitIdr - grossLossIdr;
-    const netPnlUsd = netPnlIdr / USD_TO_IDR;
+    const netPnlUsd = netPnlIdr / usdToIdrRef.current;
     const profitFactor = grossLossIdr > 0 ? (grossProfitIdr / grossLossIdr).toFixed(2) : (grossProfitIdr > 0 ? '99.0' : '0.0');
 
     // Sharpe Ratio
-    const tradeReturns = journal.map(j => (j.pnlIdr || (j.pnlUsd * USD_TO_IDR)));
+    const tradeReturns = journal.map(j => (j.pnlIdr || (j.pnlUsd * usdToIdrRef.current)));
     let sharpeRatio = '0.00';
     if (tradeReturns.length > 1) {
       const mean = tradeReturns.reduce((a, b) => a + b, 0) / tradeReturns.length;
@@ -3004,7 +3070,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       if (!pairStats[sym]) {
         pairStats[sym] = { symbol: sym, market: mkt, totalTrades: 0, wins: 0, losses: 0, netPnlIdr: 0, grossProfit: 0, grossLoss: 0 };
       }
-      const val = t.pnlIdr || (t.pnlUsd * USD_TO_IDR);
+      const val = t.pnlIdr || (t.pnlUsd * usdToIdrRef.current);
       pairStats[sym].totalTrades += 1;
       if (t.isWin) pairStats[sym].wins += 1; else pairStats[sym].losses += 1;
       pairStats[sym].netPnlIdr += val;
@@ -3014,7 +3080,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     const allPairs = Object.values(pairStats).map(p => ({
       ...p,
       winRate: p.totalTrades > 0 ? ((p.wins / p.totalTrades) * 100).toFixed(0) : '0',
-      netPnlUsd: p.netPnlIdr / USD_TO_IDR,
+      netPnlUsd: p.netPnlIdr / usdToIdrRef.current,
       profitFactor: p.grossLoss > 0 ? (p.grossProfit / p.grossLoss).toFixed(2) : (p.grossProfit > 0 ? '99.0' : '0.0')
     }));
 
@@ -3028,17 +3094,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       const agWins = agTrades.filter(j => j.isWin).length;
       const agLosses = agTotal - agWins;
       const agWr = agTotal > 0 ? ((agWins / agTotal) * 100).toFixed(1) : '0.0';
-      const agProfit = agTrades.filter(j => (j.pnlIdr || (j.pnlUsd * USD_TO_IDR)) > 0)
-        .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * USD_TO_IDR)), 0);
-      const agLoss = Math.abs(agTrades.filter(j => (j.pnlIdr || (j.pnlUsd * USD_TO_IDR)) < 0)
-        .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * USD_TO_IDR)), 0));
+      const agProfit = agTrades.filter(j => (j.pnlIdr || (j.pnlUsd * usdToIdrRef.current)) > 0)
+        .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * usdToIdrRef.current)), 0);
+      const agLoss = Math.abs(agTrades.filter(j => (j.pnlIdr || (j.pnlUsd * usdToIdrRef.current)) < 0)
+        .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * usdToIdrRef.current)), 0));
       const agNet = agProfit - agLoss;
       const agPf = agLoss > 0 ? (agProfit / agLoss).toFixed(2) : (agProfit > 0 ? '99.0' : '0.0');
 
       // Best and worst pair
       const pairMap = {};
       agTrades.forEach(t => {
-        const val = t.pnlIdr || (t.pnlUsd * USD_TO_IDR);
+        const val = t.pnlIdr || (t.pnlUsd * usdToIdrRef.current);
         pairMap[t.symbol] = (pairMap[t.symbol] || 0) + val;
       });
       const pairsSorted = Object.entries(pairMap).sort((a, b) => b[1] - a[1]);
@@ -3057,7 +3123,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         winRate: agWr,
         profitFactor: agPf,
         netPnlIdr: agNet,
-        netPnlUsd: agNet / USD_TO_IDR,
+        netPnlUsd: agNet / usdToIdrRef.current,
         bestPair,
         worstPair,
         oldWeight: ag.exp3Weight || 0.25
@@ -3244,29 +3310,44 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
   return (
     <div style={{ padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
       
-      {/* Toast Notification Alert (Bottom Right, Compact) */}
-      {toastMessage && (
+      {/* Toast Notification Alert (Bottom Right, Stacked Max 3) */}
+      {toasts.length > 0 && (
         <div style={{
           position: 'fixed',
           bottom: '24px',
           right: '24px',
           zIndex: 9999,
-          background: 'rgba(15, 23, 42, 0.95)',
-          color: '#ffffff',
-          padding: '7px 14px',
-          borderRadius: 'var(--radius-sm)',
-          border: '1px solid rgba(59, 130, 246, 0.4)',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
-          fontSize: '11px',
-          fontFamily: 'var(--font-mono)',
-          fontWeight: '700',
           display: 'flex',
-          alignItems: 'center',
-          gap: '7px',
-          backdropFilter: 'blur(4px)'
+          flexDirection: 'column',
+          gap: '8px',
+          pointerEvents: 'none',
+          maxWidth: 'min(90vw, 420px)'
         }}>
-          <span>🤖</span>
-          <span>{toastMessage}</span>
+          {toasts.map(toast => (
+            <div
+              key={toast.id}
+              className="arena-toast-item"
+              style={{
+                background: 'rgba(15, 23, 42, 0.95)',
+                color: '#ffffff',
+                padding: '8px 14px',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid rgba(59, 130, 246, 0.4)',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                fontSize: '11px',
+                fontFamily: 'var(--font-mono)',
+                fontWeight: '700',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                backdropFilter: 'blur(4px)',
+                pointerEvents: 'auto'
+              }}
+            >
+              <span>🤖</span>
+              <span>{toast.msg}</span>
+            </div>
+          ))}
         </div>
       )}
 
@@ -3275,7 +3356,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       {/* ========================================================================= */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))',
         gap: '10px',
         alignItems: 'stretch'
       }}>
@@ -3289,16 +3370,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 AI Multi-Agent Arena
               </span>
               <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
-                (15 BOTS SYNDICATE &bull; 4 BASE, 6 DUO, 4 TRIO, 1 MASTER)
+                (16 BOTS SYNDICATE &bull; 4 BASE, 6 DUO, 4 TRIO, 1 MASTER, 1 ANOMALY)
               </span>
             </div>
 
             {/* Real-World Market Hours Status Badges (Green = Buka, Red = Tutup) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
               <span
                 className="badge"
                 style={{
-                  fontSize: '8px',
+                  fontSize: '9px',
+                  padding: '2px 6px',
                   background: isIdxMarketOpen() ? 'rgba(22, 163, 74, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                   color: isIdxMarketOpen() ? 'var(--accent-green)' : 'var(--accent-rust)',
                   border: `1px solid ${isIdxMarketOpen() ? 'rgba(22, 163, 74, 0.5)' : 'rgba(239, 68, 68, 0.5)'}`
@@ -3311,7 +3393,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               <span
                 className="badge"
                 style={{
-                  fontSize: '8px',
+                  fontSize: '9px',
+                  padding: '2px 6px',
                   background: isForexCommodityOpen() ? 'rgba(22, 163, 74, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                   color: isForexCommodityOpen() ? 'var(--accent-green)' : 'var(--accent-rust)',
                   border: `1px solid ${isForexCommodityOpen() ? 'rgba(22, 163, 74, 0.5)' : 'rgba(239, 68, 68, 0.5)'}`
@@ -3324,7 +3407,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               <span
                 className="badge"
                 style={{
-                  fontSize: '8px',
+                  fontSize: '9px',
+                  padding: '2px 6px',
                   background: isUsMarketOpen() ? 'rgba(22, 163, 74, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                   color: isUsMarketOpen() ? 'var(--accent-green)' : 'var(--accent-rust)',
                   border: `1px solid ${isUsMarketOpen() ? 'rgba(22, 163, 74, 0.5)' : 'rgba(239, 68, 68, 0.5)'}`
@@ -3337,7 +3421,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               <span
                 className="badge"
                 style={{
-                  fontSize: '8px',
+                  fontSize: '9px',
+                  padding: '2px 6px',
                   background: 'rgba(59, 130, 246, 0.15)',
                   color: 'var(--accent-blue)',
                   border: '1px solid rgba(59, 130, 246, 0.5)'
@@ -3353,7 +3438,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
             {/* Timeframe Chips Selector */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '2px', background: 'var(--bg-panel-subtle)', padding: '2px 4px', borderRadius: '3px', border: 'var(--border-hairline)' }}>
-              <span style={{ fontSize: '9px', color: 'var(--text-muted)', marginRight: '4px', fontWeight: '700' }}>Grafik:</span>
+              <span style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginRight: '4px', fontWeight: '700' }}>Grafik:</span>
               {['3D', '7D', '1M', '3M', '1Y'].map(tf => (
                 <button
                   key={tf}
@@ -3361,8 +3446,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     setChartTimeframe(tf);
                     showToast(`Rentang grafik aset diubah ke ${tf}`);
                   }}
+                  className="arena-interactive-chip"
                   style={{
-                    padding: '2px 6px',
+                    padding: '4px 8px',
+                    minHeight: '26px',
                     fontSize: '9px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: chartTimeframe === tf ? '800' : '600',
@@ -3380,12 +3467,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
             </div>
 
             {/* Quick Action Buttons */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
               <button
                 id="btn-profil-filosofi"
                 onClick={() => setPhilosophyModalOpen(true)}
                 className="telemetry-btn"
-                style={{ fontSize: '9.5px', padding: '3px 6px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-blue)' }}
+                style={{ fontSize: '9.5px', padding: '4px 8px', minHeight: '26px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-blue)' }}
                 title="Pelajari Profil, Filosofi & Strategi 4 Elemen"
               >
                 <span>🧠</span>
@@ -3398,7 +3485,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   setRulesModalOpen(true);
                 }}
                 className="telemetry-btn"
-                style={{ fontSize: '9.5px', padding: '3px 6px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-gold)' }}
+                style={{ fontSize: '9.5px', padding: '4px 8px', minHeight: '26px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-gold)' }}
                 title="Panduan Terpadu: Aturan Trading & Status Siklus Hidup Bot"
               >
                 <span>📋</span>
@@ -3408,7 +3495,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 id="btn-agent-review"
                 onClick={() => setAgentReviewModalOpen(true)}
                 className="telemetry-btn"
-                style={{ fontSize: '9.5px', padding: '3px 6px', display: 'flex', alignItems: 'center', gap: '3px', color: '#60a5fa' }}
+                style={{ fontSize: '9.5px', padding: '4px 8px', minHeight: '26px', display: 'flex', alignItems: 'center', gap: '3px', color: '#60a5fa' }}
                 title="Buka Analisis Kinerja & Review Sinyal"
               >
                 <span>📊</span>
@@ -3423,7 +3510,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 className="telemetry-btn"
                 style={{
                   fontSize: '9.5px',
-                  padding: '3px 8px',
+                  padding: '4px 9px',
+                  minHeight: '26px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '4px',
@@ -3469,18 +3557,20 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
           {/* Row 2: Modal Input + Quick Chips & Controls */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
             {/* Modal Per Bot Input & Preset */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
-              <label style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-secondary)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              <label htmlFor="input-capital-per-bot" style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-secondary)', cursor: 'pointer' }}>
                 Modal/Bot:
               </label>
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <span style={{ position: 'absolute', left: '6px', fontSize: '10px', fontWeight: '800', color: 'var(--text-muted)' }}>Rp</span>
                 <input
+                  id="input-capital-per-bot"
+                  className="arena-input"
                   type="text"
                   value={Number(capitalInputText || 0).toLocaleString('id-ID')}
                   onChange={handleCapitalInputChange}
                   style={{
-                    padding: '3px 6px 3px 24px',
+                    padding: '4px 6px 4px 24px',
                     fontSize: '10px',
                     fontWeight: '800',
                     fontFamily: 'var(--font-mono)',
@@ -3488,22 +3578,23 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     border: 'var(--border-hairline)',
                     background: 'var(--bg-panel-subtle)',
                     color: 'var(--text-primary)',
-                    width: '95px',
-                    outline: 'none'
+                    width: '95px'
                   }}
                   title="Ketik nominal modal tiap bot (minimal Rp 1.000.000)"
                 />
               </div>
 
               {/* Chips */}
-              <div style={{ display: 'flex', gap: '2px' }}>
+              <div style={{ display: 'flex', gap: '3px' }}>
                 {[1000000, 5000000, 10000000, 25000000, 50000000].map(amt => (
                   <button
                     key={amt}
                     onClick={() => handleApplyPresetCapital(amt)}
+                    className="arena-interactive-chip"
                     style={{
-                      padding: '2px 5px',
-                      fontSize: '8.5px',
+                      padding: '3px 7px',
+                      minHeight: '26px',
+                      fontSize: '9px',
                       fontFamily: 'var(--font-mono)',
                       fontWeight: capitalPerBotIdr === amt ? '800' : '600',
                       borderRadius: '2px',
@@ -3519,19 +3610,20 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               </div>
 
               {/* Total AUM Portfolio Badge */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(59, 130, 246, 0.08)', border: '1px solid rgba(59, 130, 246, 0.25)', padding: '2px 7px', borderRadius: '3px', fontSize: '9px', fontFamily: 'var(--font-mono)' }} title="Total Modal Portofolio = Modal/Bot x Jumlah Bot Aktif">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(59, 130, 246, 0.08)', border: '1px solid rgba(59, 130, 246, 0.25)', padding: '3px 7px', borderRadius: '3px', fontSize: '9px', fontFamily: 'var(--font-mono)' }} title="Total Modal Portofolio = Modal/Bot x Jumlah Bot Aktif">
                 <span style={{ color: 'var(--text-muted)' }}>Total AUM:</span>
                 <strong style={{ color: 'var(--accent-blue)' }}>{formatIdr(capitalPerBotIdr * agents.length)}</strong>
-                <span style={{ color: 'var(--text-muted)', fontSize: '8px' }}>({agents.length} Bot)</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '8.5px' }}>({agents.length} Bot)</span>
               </div>
             </div>
 
             {/* Manual Max Posisi, Risk, & Buttons */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ fontSize: '9.5px', color: 'var(--text-secondary)', fontWeight: '700' }}>Max Pos:</span>
+                <label htmlFor="input-max-positions" style={{ fontSize: '9.5px', color: 'var(--text-secondary)', fontWeight: '700', cursor: 'pointer' }}>Max Pos:</label>
                 <input
                   id="input-max-positions"
+                  className="arena-input"
                   type="text"
                   inputMode="numeric"
                   disabled={isUnlimitedPositions}
@@ -3567,8 +3659,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     }
                   }}
                   style={{
-                    width: '42px',
-                    padding: '2px 4px',
+                    width: '44px',
+                    padding: '3px 4px',
                     fontSize: '9.5px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: '800',
@@ -3576,8 +3668,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     borderRadius: '3px',
                     border: 'var(--border-hairline)',
                     background: isUnlimitedPositions ? 'rgba(255,255,255,0.03)' : 'var(--bg-panel-subtle)',
-                    color: isUnlimitedPositions ? 'var(--text-muted)' : 'var(--accent-blue)',
-                    outline: 'none'
+                    color: isUnlimitedPositions ? 'var(--text-muted)' : 'var(--accent-blue)'
                   }}
                   title="Ketik manual batas maksimum posisi aktif per bot (1 - 100)"
                 />
@@ -3589,8 +3680,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     setMaxPosInputText(nextVal >= 999 ? '' : String(nextVal));
                     showToast(nextVal >= 999 ? 'Batas posisi diatur ke Tak Terbatas (∞ Unlimited).' : 'Batas posisi diatur ke 10 posisi / bot.');
                   }}
+                  className="arena-interactive-chip"
                   style={{
-                    padding: '2px 6px',
+                    padding: '3px 7px',
+                    minHeight: '26px',
                     fontSize: '9px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: '900',
@@ -3608,11 +3701,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
               {/* Risk % */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9.5px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Risk:</span>
+                <label htmlFor="select-risk-pct" style={{ color: 'var(--text-muted)', cursor: 'pointer' }}>Risk:</label>
                 <select
+                  id="select-risk-pct"
+                  className="arena-input"
                   value={riskPerTradePct}
                   onChange={e => setRiskPerTradePct(Number(e.target.value))}
-                  style={{ padding: '2px 4px', fontSize: '9px', borderRadius: '3px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontWeight: '700' }}
+                  style={{ padding: '3px 5px', fontSize: '9px', minHeight: '26px', borderRadius: '3px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontWeight: '700' }}
                 >
                   <option value={1}>1%</option>
                   <option value={2}>2%</option>
@@ -3622,9 +3717,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
               {/* Mode Eksekusi: HYBRID / SPOT / FUTURES */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9.5px' }}>
-                <span style={{ color: 'var(--text-muted)', fontWeight: '700' }}>Mode:</span>
+                <label htmlFor="select-execution-mode" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Mode:</label>
                 <select
                   id="select-execution-mode"
+                  className="arena-input"
                   value={arenaExecutionMode}
                   onChange={e => {
                     const newMode = e.target.value;
@@ -3632,14 +3728,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     showToast(`Mode eksekusi: ${newMode === 'SPOT_ONLY' ? '🟢 SPOT ONLY (100% Cash Long, 0 Likuidasi)' : (newMode === 'FUTURES_ONLY' ? '🟣 FUTURES ONLY (2 Arah Long & Short + Leverage)' : '⚡ HYBRID (Spot & Futures Otomatis)')}`);
                   }}
                   style={{
-                    padding: '2px 5px',
+                    padding: '3px 6px',
                     fontSize: '9px',
+                    minHeight: '26px',
                     borderRadius: '3px',
                     background: arenaExecutionMode === 'SPOT_ONLY' ? 'rgba(34, 197, 94, 0.15)' : (arenaExecutionMode === 'FUTURES_ONLY' ? 'rgba(168, 85, 247, 0.15)' : 'var(--bg-panel-subtle)'),
                     border: arenaExecutionMode === 'SPOT_ONLY' ? '1px solid var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '1px solid #a855f7' : 'var(--border-hairline)'),
                     color: arenaExecutionMode === 'SPOT_ONLY' ? 'var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '#c084fc' : 'var(--text-primary)'),
                     fontWeight: '800',
-                    outline: 'none',
                     cursor: 'pointer'
                   }}
                   title="Pilih mode eksekusi: Hybrid (Bot memilih Spot/Futures), Spot Only (100% Cash, 0 likuidasi), atau Futures Only (2 arah)"
@@ -3660,8 +3756,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     setScannerMode(nextMode);
                     showToast(nextMode === 'DYNAMIC_RADAR' ? `Scanner diatur ke DYNAMIC RADAR (${activeRadarSymbols.length} aset terpilih lolos momentum & likuiditas).` : `Scanner diatur ke FULL WATCHLIST (${ALL_INSTRUMENTS.length} instrumen).`);
                   }}
+                  className="arena-interactive-chip"
                   style={{
-                    padding: '2px 6px',
+                    padding: '3px 7px',
+                    minHeight: '26px',
                     fontSize: '9px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: '800',
@@ -3741,6 +3839,26 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               grid-template-columns: 1fr;
             }
           }
+          .arena-input:focus-visible,
+          .arena-interactive-chip:focus-visible,
+          .telemetry-btn:focus-visible,
+          button:focus-visible {
+            outline: 2px solid var(--accent-blue) !important;
+            outline-offset: 1px;
+          }
+          @keyframes toastSlideIn {
+            from {
+              opacity: 0;
+              transform: translateY(8px) scale(0.96);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+          .arena-toast-item {
+            animation: toastSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          }
         `}</style>
 
         {/* Tier Filter Bar & Deck Summary */}
@@ -3766,6 +3884,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   fontWeight: agentFilterTab === tab.id ? '800' : '600',
                   borderRadius: '3px',
                   cursor: 'pointer',
+                  minHeight: '26px',
                   border: agentFilterTab === tab.id ? '1px solid var(--accent-blue)' : 'var(--border-hairline)',
                   background: agentFilterTab === tab.id ? 'rgba(37, 99, 235, 0.18)' : 'var(--bg-panel-subtle)',
                   color: agentFilterTab === tab.id ? 'var(--accent-blue)' : 'var(--text-muted)',
@@ -3838,10 +3957,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                           </span>
                           {ag.dnaBadge && (
                             <span style={{
-                              fontSize: '7px',
+                              fontSize: '9px',
                               fontFamily: 'var(--font-mono)',
                               fontWeight: '800',
-                              padding: '1px 3px',
+                              padding: '1.5px 4px',
                               borderRadius: '2px',
                               background: `${ag.color}1f`,
                               color: ag.color,
@@ -3851,9 +3970,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                             </span>
                           )}
                           <span style={{
-                            fontSize: '6.5px',
+                            fontSize: '8.5px',
                             fontFamily: 'var(--font-mono)',
-                            padding: '1px 3px',
+                            padding: '1.5px 4px',
                             borderRadius: '2px',
                             background: 'rgba(255, 255, 255, 0.06)',
                             color: 'var(--text-muted)',
@@ -3872,9 +3991,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                             return (
                               <span
                                 style={{
-                                  fontSize: '6.5px',
+                                  fontSize: '8.5px',
                                   fontFamily: 'var(--font-mono)',
-                                  padding: '1px 3px',
+                                  padding: '1.5px 4px',
                                   borderRadius: '2px',
                                   background: badgeBg,
                                   color: badgeColor,
@@ -3889,7 +4008,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                             );
                           })()}
                         </div>
-                        <div style={{ fontSize: '8px', color: ag.color, fontWeight: '700', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '140px' }}>
+                        <div style={{ fontSize: '9.5px', color: ag.color, fontWeight: '700', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '150px' }}>
                           {ag.role}
                         </div>
                       </div>
@@ -3903,8 +4022,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                           setRulesModalOpen(true);
                         }}
                         style={{ 
-                          fontSize: '7.5px',
-                          padding: '1px 4px',
+                          fontSize: '8.5px',
+                          padding: '2px 5px',
                           cursor: 'pointer',
                           background: liveStatus.bg,
                           color: liveStatus.color,
@@ -3918,10 +4037,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                       <button
                         onClick={() => setEvolutionModal({ isOpen: true, agent: ag })}
                         style={{
-                          fontSize: '7px',
+                          fontSize: '8.5px',
                           fontFamily: 'var(--font-mono)',
                           fontWeight: '700',
-                          padding: '1px 3px',
+                          padding: '2px 5px',
+                          minHeight: '24px',
                           borderRadius: '2px',
                           background: 'rgba(255, 255, 255, 0.05)',
                           color: 'var(--text-muted)',
@@ -3948,11 +4068,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     gap: '4px'
                   }}>
                     <div>
-                      <div style={{ fontSize: '7px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                      <div style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '700' }}>
                         Saldo ({chartTimeframe})
                       </div>
-                      <div style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: isEquityProfit ? 'var(--accent-green)' : 'var(--accent-rust)', lineHeight: 1.1 }}>
-                        {formatIdr(stats.currentBotEquityIdr)} <span style={{ fontSize: '8px' }}>({stats.roiPct > 0 ? '+' : ''}{stats.roiPct}%)</span>
+                      <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: isEquityProfit ? 'var(--accent-green)' : 'var(--accent-rust)', lineHeight: 1.1 }}>
+                        {formatIdr(stats.currentBotEquityIdr)} <span style={{ fontSize: '8.5px' }}>({stats.roiPct > 0 ? '+' : ''}{stats.roiPct}%)</span>
                       </div>
                     </div>
                     <div style={{ width: '75px', flexShrink: 0 }}>
@@ -3971,28 +4091,28 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     gridTemplateColumns: 'repeat(4, 1fr)',
                     gap: '2px',
                     textAlign: 'center',
-                    fontSize: '8px',
+                    fontSize: '8.5px',
                     fontFamily: 'var(--font-mono)',
                     background: 'var(--bg-panel-subtle)',
-                    padding: '3px 2px',
+                    padding: '4px 2px',
                     borderRadius: '3px',
                     border: 'var(--border-hairline)'
                   }}>
                     <div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '6.5px' }}>TRADE</div>
-                      <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '9px' }}>{stats.total}</div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '8px', fontWeight: '700' }}>TRADE</div>
+                      <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '10px' }}>{stats.total}</div>
                     </div>
                     <div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '6.5px' }}>WIN RATE</div>
-                      <div style={{ fontWeight: '800', color: 'var(--accent-green)', fontSize: '9px' }}>{stats.winRate}%</div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '8px', fontWeight: '700' }}>WIN RATE</div>
+                      <div style={{ fontWeight: '800', color: 'var(--accent-green)', fontSize: '10px' }}>{stats.winRate}%</div>
                     </div>
                     <div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '6.5px' }}>PF</div>
-                      <div style={{ fontWeight: '800', color: 'var(--accent-blue)', fontSize: '9px' }}>{stats.profitFactor}</div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '8px', fontWeight: '700' }}>PF</div>
+                      <div style={{ fontWeight: '800', color: 'var(--accent-blue)', fontSize: '10px' }}>{stats.profitFactor}</div>
                     </div>
                     <div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '6.5px' }}>NET GAIN</div>
-                      <div style={{ fontWeight: '800', color: isRealizedProfit ? 'var(--accent-green)' : 'var(--accent-rust)', fontSize: '9px' }}>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '8px', fontWeight: '700' }}>NET GAIN</div>
+                      <div style={{ fontWeight: '800', color: isRealizedProfit ? 'var(--accent-green)' : 'var(--accent-rust)', fontSize: '10px' }}>
                         {stats.netGainIdr > 0 ? '+' : ''}{formatCompactIdr(stats.netGainIdr)}
                       </div>
                     </div>
@@ -4002,16 +4122,16 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 {/* --- B. Posisi Terbuka Real-Time (Max Height 140px, 2-Line Condensed per Posisi) --- */}
                 <div style={{ borderTop: 'var(--border-hairline)', paddingTop: '4px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
-                    <span style={{ fontSize: '8.5px', fontWeight: '800', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+                    <span style={{ fontSize: '9.5px', fontWeight: '800', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
                       ⚡ Posisi ({agentPositions.length})
                     </span>
-                    <span style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>
+                    <span style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
                       {isUnlimitedPositions ? '∞' : `Max ${maxPositionsPerBot}`}
                     </span>
                   </div>
 
                   {agentPositions.length === 0 ? (
-                    <div style={{ padding: '4px 6px', textAlign: 'center', background: 'var(--bg-panel-subtle)', borderRadius: '3px', color: 'var(--text-muted)', fontSize: '7.5px', border: '1px dashed rgba(255,255,255,0.06)' }}>
+                    <div style={{ padding: '6px 8px', textAlign: 'center', background: 'var(--bg-panel-subtle)', borderRadius: '3px', color: 'var(--text-muted)', fontSize: '8.5px', border: '1px dashed rgba(255,255,255,0.06)' }}>
                       ○ Siaga memindai sinyal...
                     </div>
                   ) : (
@@ -4021,10 +4141,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                       paddingRight: '2px',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '3px'
+                      gap: '4px'
                     }}>
                       {agentPositions.map(pos => {
-                        const idrValue = pos.floatingPnlIdr !== undefined ? pos.floatingPnlIdr : (pos.floatingPnlUsd * USD_TO_IDR);
+                        const idrValue = pos.floatingPnlIdr !== undefined ? pos.floatingPnlIdr : (pos.floatingPnlUsd * usdToIdrRef.current);
                         const isPosProfit = idrValue >= 0;
                         const pnlDisplayIdr = formatCompactIdr(idrValue);
 
@@ -4032,21 +4152,21 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                           <div 
                             key={pos.id} 
                             style={{
-                              padding: '4px 6px',
+                              padding: '5px 7px',
                               background: 'var(--bg-panel-subtle)',
                               borderRadius: '3px',
                               borderLeft: `2.5px solid ${isPosProfit ? 'var(--accent-green)' : 'var(--accent-rust)'}`,
-                              fontSize: '8px',
+                              fontSize: '8.5px',
                               fontFamily: 'var(--font-mono)'
                             }}
                           >
                             {/* Baris 1: Symbol, Mode, Dir, Lots, Float PnL, Close button */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '3px', flexWrap: 'wrap' }}>
-                                <strong style={{ fontSize: '9px' }}>{pos.symbol}</strong>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                                <strong style={{ fontSize: '10px' }}>{pos.symbol}</strong>
                                 <span style={{
-                                  fontSize: '6.5px',
-                                  padding: '0 3px',
+                                  fontSize: '8px',
+                                  padding: '1px 4px',
                                   borderRadius: '2px',
                                   background: (pos.executionMode === 'SPOT' || pos.market === 'IDX') ? 'rgba(34, 197, 94, 0.2)' : 'rgba(168, 85, 247, 0.2)',
                                   color: (pos.executionMode === 'SPOT' || pos.market === 'IDX') ? 'var(--accent-green)' : '#c084fc',
@@ -4055,30 +4175,37 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                                 }}>
                                   {(pos.executionMode === 'SPOT' || pos.market === 'IDX') ? 'SPOT' : 'FUT'}
                                 </span>
-                                <span style={{ fontSize: '6.5px', padding: '0 3px', borderRadius: '2px', background: pos.direction === 'LONG' ? 'rgba(22, 163, 74, 0.15)' : 'rgba(220, 38, 38, 0.15)', color: pos.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '800' }}>
+                                <span style={{ fontSize: '8px', padding: '1px 4px', borderRadius: '2px', background: pos.direction === 'LONG' ? 'rgba(22, 163, 74, 0.15)' : 'rgba(220, 38, 38, 0.15)', color: pos.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '800' }}>
                                   {pos.direction}
                                 </span>
-                                <span style={{ fontSize: '6.5px', color: 'var(--text-muted)' }}>
+                                <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
                                   {pos.market === 'CRYPTO' ? `${pos.sizeLots}c` : `${pos.sizeLots}L`}
                                 </span>
                               </div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-                                <span style={{ fontWeight: '800', fontSize: '8px', color: isPosProfit ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <span style={{ fontWeight: '800', fontSize: '9.5px', color: isPosProfit ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                                   {isPosProfit && idrValue > 0 ? '+' : ''}{pnlDisplayIdr}
                                 </span>
                                 <button
                                   onClick={() => handleManualClose(pos.id)}
+                                  className="arena-interactive-chip"
                                   style={{
-                                    padding: '0 3px',
-                                    fontSize: '7px',
-                                    background: 'rgba(220, 38, 38, 0.1)',
+                                    padding: '2px 6px',
+                                    minWidth: '24px',
+                                    minHeight: '24px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '10px',
+                                    background: 'rgba(220, 38, 38, 0.12)',
                                     border: '1px solid var(--accent-rust)',
                                     color: 'var(--accent-rust)',
-                                    borderRadius: '2px',
+                                    borderRadius: '3px',
                                     cursor: 'pointer',
-                                    fontWeight: '700'
+                                    fontWeight: '800'
                                   }}
                                   title="Tutup posisi manual"
+                                  aria-label={`Tutup posisi ${pos.symbol}`}
                                 >
                                   ✕
                                 </button>
@@ -4086,7 +4213,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                             </div>
 
                             {/* Baris 2: In / Now / TP / SL in one neat mono line */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7px', color: 'var(--text-muted)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '8px', color: 'var(--text-muted)' }}>
                               <span>In: <strong style={{ color: 'var(--text-primary)' }}>{formatInstrumentPrice(pos.entryPrice, pos.market, pos.symbol)}</strong></span>
                               <span>Now: <strong style={{ color: 'var(--text-primary)' }}>{formatInstrumentPrice(pos.currentPrice, pos.market, pos.symbol)}</strong></span>
                               <span style={{ color: 'var(--accent-green)' }}>TP: {formatInstrumentPrice(pos.tp1Price, pos.market, pos.symbol)}</span>
@@ -4100,13 +4227,15 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 </div>
 
                 {/* --- C. Action Footer: Miniatur Tombol Jurnal & Reset --- */}
-                <div style={{ display: 'flex', gap: '3px', marginTop: 'auto', paddingTop: '2px' }}>
+                <div style={{ display: 'flex', gap: '4px', marginTop: 'auto', paddingTop: '4px' }}>
                   <button
                     onClick={() => setJournalModal({ isOpen: true, agentId: ag.id, agentName: ag.name })}
+                    className="arena-interactive-chip"
                     style={{
                       flex: 1,
-                      padding: '3px',
-                      fontSize: '8px',
+                      padding: '5px 8px',
+                      minHeight: '26px',
+                      fontSize: '9.5px',
                       fontWeight: '800',
                       fontFamily: 'var(--font-mono)',
                       background: 'var(--bg-panel-subtle)',
@@ -4117,7 +4246,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '3px'
+                      gap: '4px'
                     }}
                   >
                     <span>📖</span>
@@ -4126,9 +4255,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
                   <button
                     onClick={() => setResetConfirmModal({ isOpen: true, agentId: ag.id, agentName: ag.name })}
+                    className="arena-interactive-chip"
                     style={{
-                      padding: '3px 6px',
-                      fontSize: '8px',
+                      padding: '5px 8px',
+                      minHeight: '26px',
+                      fontSize: '9.5px',
                       fontFamily: 'var(--font-mono)',
                       fontWeight: '700',
                       background: 'rgba(220, 38, 38, 0.08)',
@@ -4153,11 +4284,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       {/* 3. MODAL: AGENT REVIEW & DEEP ANALYSIS (5-TAB: RECAP + PER-AGENT MC AUDIT)*/}
       {/* ========================================================================= */}
       {agentReviewModalOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(5px)',
-          zIndex: 99999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px'
-        }}>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="agent-review-modal-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setAgentReviewModalOpen(false); }}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(5px)',
+            zIndex: 99999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px'
+          }}
+        >
           <div style={{
             background: 'var(--bg-panel)', width: '100%', maxWidth: '960px', maxHeight: '90vh',
             borderRadius: 'var(--radius-md)', border: 'var(--border-hairline)', display: 'flex', flexDirection: 'column', overflow: 'hidden',
@@ -4168,7 +4305,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '20px' }}>📊</span>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '13.5px', fontWeight: '900', color: 'var(--text-primary)' }}>
+                  <h3 id="agent-review-modal-title" style={{ margin: 0, fontSize: '13.5px', fontWeight: '900', color: 'var(--text-primary)' }}>
                     Analisa Kinerja & Audit Kuantitatif Multi-Agent
                   </h3>
                   <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
@@ -4176,7 +4313,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   </div>
                 </div>
               </div>
-              <button onClick={() => setAgentReviewModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--text-muted)' }}>✕</button>
+              <button
+                onClick={() => setAgentReviewModalOpen(false)}
+                aria-label="Tutup modal analisa kinerja"
+                style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--text-muted)', minWidth: '32px', minHeight: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                ✕
+              </button>
             </div>
 
             {/* 5-Tab Navigation Bar (Sticky & Unsquishable) */}
@@ -4263,8 +4406,41 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     const netGainTotal = totalEquity - totalCapital;
                     const totalWins = journal.filter(j => j.isWin).length;
                     const totalTrades = journal.length;
-                    const overallWinRate = totalTrades > 0 ? ((totalWins / totalTrades) * 100).toFixed(1) : '66.7';
+                    const overallWinRate = totalTrades > 0 ? ((totalWins / totalTrades) * 100).toFixed(1) : '0.0';
                     const totalMCAllBots = agents.reduce((acc, a) => acc + (a.resetCount || 0), 0);
+
+                    // Dynamically computed Sharpe Ratio from actual journal trades
+                    const tradeReturns = journal.map(j => (j.pnlIdr !== undefined ? j.pnlIdr : (j.pnlUsd * usdToIdrRef.current)));
+                    let computedArenaSharpe = '0.00';
+                    if (tradeReturns.length > 1) {
+                      const mean = tradeReturns.reduce((a, b) => a + b, 0) / tradeReturns.length;
+                      const variance = tradeReturns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (tradeReturns.length - 1);
+                      const stdev = Math.sqrt(variance);
+                      if (stdev > 0) {
+                        computedArenaSharpe = ((mean / stdev) * Math.sqrt(Math.min(tradeReturns.length, 252))).toFixed(2);
+                      }
+                    } else if (tradeReturns.length === 1) {
+                      computedArenaSharpe = tradeReturns[0] >= 0 ? '1.00' : '-1.00';
+                    }
+
+                    // Dynamically computed Max Drawdown (MDD) from running equity
+                    let computedArenaMdd = '0.0%';
+                    if (journal.length > 0) {
+                      let peak = totalCapital;
+                      let running = totalCapital;
+                      let maxDdPct = 0;
+                      const chronoTrades = [...journal].reverse();
+                      chronoTrades.forEach(t => {
+                        const val = t.pnlIdr !== undefined ? t.pnlIdr : (t.pnlUsd * usdToIdrRef.current);
+                        running += val;
+                        if (running > peak) peak = running;
+                        if (peak > 0) {
+                          const dd = ((running - peak) / peak) * 100;
+                          if (dd < maxDdPct) maxDdPct = dd;
+                        }
+                      });
+                      computedArenaMdd = `${maxDdPct.toFixed(1)}%`;
+                    }
 
                     return (
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '8px', flexShrink: 0 }}>
@@ -4291,17 +4467,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                         <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                           <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>SHARPE RATIO (ARENA)</div>
                           <div style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
-                            2.14
+                            {computedArenaSharpe}
                           </div>
                           <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
-                            Institutional Grade (&gt; 2.0)
+                            {Number(computedArenaSharpe) >= 2.0 ? 'Institutional Grade (> 2.0)' : 'Dihitung dari riwayat trade'}
                           </div>
                         </div>
 
                         <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                           <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>MAX DRAWDOWN (MDD)</div>
                           <div style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
-                            -3.2%
+                            {computedArenaMdd}
                           </div>
                           <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
                             Circuit Breaker Guard Aktif
@@ -4350,8 +4526,30 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                         <tbody>
                           {agents.map(ag => {
                             const st = agentStatsMap[ag.id] || {};
-                            const sharpeScores = { WATER: '2.45', FIRE: '1.85', AIR: '2.62', EARTH: '1.92' };
-                            const avgRrs = { WATER: '1:3.2', FIRE: '1:2.4', AIR: '1:3.8', EARTH: '1:1.8' };
+                            const agTrades = journal.filter(j => j.agentId === ag.id);
+                            
+                            // Dynamically computed per-agent Sharpe Ratio
+                            let agSharpe = '0.00';
+                            if (agTrades.length > 1) {
+                              const agReturns = agTrades.map(j => (j.pnlIdr !== undefined ? j.pnlIdr : (j.pnlUsd * usdToIdrRef.current)));
+                              const mean = agReturns.reduce((a, b) => a + b, 0) / agReturns.length;
+                              const variance = agReturns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (agReturns.length - 1);
+                              const stdev = Math.sqrt(variance);
+                              if (stdev > 0) {
+                                agSharpe = ((mean / stdev) * Math.sqrt(Math.min(agReturns.length, 252))).toFixed(2);
+                              }
+                            } else if (agTrades.length === 1) {
+                              agSharpe = agTrades[0].isWin ? '1.00' : '-1.00';
+                            }
+
+                            // Dynamically computed per-agent Average R:R
+                            let agAvgRr = '1:1.5';
+                            const validRrs = agTrades.map(j => j.rrAchieved).filter(r => typeof r === 'number' && !isNaN(r) && r > 0);
+                            if (validRrs.length > 0) {
+                              const meanRr = (validRrs.reduce((a, b) => a + b, 0) / validRrs.length).toFixed(1);
+                              agAvgRr = `1:${meanRr}`;
+                            }
+
                             const isPos = (st.netGainIdr || 0) >= 0;
 
                             return (
@@ -4380,8 +4578,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                                   {st.winRate}% <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>({st.wins}W/{st.losses}L)</span>
                                 </td>
                                 <td style={{ padding: '7px 8px', color: 'var(--accent-blue)', fontWeight: '800' }}>{st.profitFactor}</td>
-                                <td style={{ padding: '7px 8px', color: 'var(--text-primary)' }}>{sharpeScores[ag.id] || '2.10'}</td>
-                                <td style={{ padding: '7px 8px', color: 'var(--accent-green)' }}>{avgRrs[ag.id] || '1:2.5'}</td>
+                                <td style={{ padding: '7px 8px', color: 'var(--text-primary)' }}>{agSharpe}</td>
+                                <td style={{ padding: '7px 8px', color: 'var(--accent-green)' }}>{agAvgRr}</td>
                                 <td style={{ padding: '7px 8px' }}>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                     <div style={{ flex: 1, height: '5px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
@@ -4392,7 +4590,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                                 </td>
                                 <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: '800', color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                                   <div>{formatIdr(st.currentBotEquityIdr)}</div>
-                                  <div style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>({st.roiPct > 0 ? '+' : ''}{st.roiPct}%)</div>
+                                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>({st.roiPct > 0 ? '+' : ''}{st.roiPct}%)</div>
                                 </td>
                                 <td style={{ padding: '7px 8px', textAlign: 'center' }}>
                                   <button
@@ -4405,7 +4603,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                                       border: `1px solid ${ag.color}`,
                                       color: ag.color,
                                       cursor: 'pointer',
-                                      fontWeight: '700'
+                                      fontWeight: '700',
+                                      minHeight: '26px'
                                     }}
                                   >
                                     Report ➔
@@ -4877,11 +5076,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       {/* 4. MODAL: PROFIL & FILOSOFI TIAP BOT (GAMBAR 1: GRAFIK SIMULASI ENTRY)   */}
       {/* ========================================================================= */}
       {philosophyModalOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(4px)',
-          zIndex: 99999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px'
-        }}>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="philosophy-modal-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setPhilosophyModalOpen(false); }}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(4px)',
+            zIndex: 99999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px'
+          }}
+        >
           <div style={{
             background: 'var(--bg-panel)', width: '100%', maxWidth: '840px', maxHeight: '88vh',
             borderRadius: 'var(--radius-md)', border: 'var(--border-hairline)', display: 'flex', flexDirection: 'column', overflow: 'hidden'
@@ -4891,15 +5096,21 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>🧠</span>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '13.5px', fontWeight: '900', color: 'var(--text-primary)' }}>
-                    Profil, Filosofi & Simulasi Strategi 15 AI Multi-Agent Roster
+                  <h3 id="philosophy-modal-title" style={{ margin: 0, fontSize: '13.5px', fontWeight: '900', color: 'var(--text-primary)' }}>
+                    Profil, Filosofi & Simulasi Strategi 16 AI Multi-Agent Roster
                   </h3>
                   <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
                     Logika di balik keputusan algoritma, titik entry order block / breakout, serta simulasi visual target TP dan SL tiap elemen.
                   </div>
                 </div>
               </div>
-              <button onClick={() => setPhilosophyModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--text-muted)' }}>✕</button>
+              <button
+                onClick={() => setPhilosophyModalOpen(false)}
+                aria-label="Tutup modal filosofi bot"
+                style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--text-muted)', minWidth: '32px', minHeight: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                ✕
+              </button>
             </div>
 
             {/* Agent Navigation Tabs */}
@@ -5127,11 +5338,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       {/* 5. MODAL: POP-UP KONFIRMASI RESET (YA / TIDAK)                            */}
       {/* ========================================================================= */}
       {resetConfirmModal.isOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(5px)',
-          zIndex: 999999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px'
-        }}>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="reset-modal-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setResetConfirmModal({ isOpen: false, agentId: null, agentName: '' }); }}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(5px)',
+            zIndex: 999999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px'
+          }}
+        >
           <div style={{
             background: 'var(--bg-panel)', width: '100%', maxWidth: '440px',
             borderRadius: 'var(--radius-md)', border: '1px solid rgba(220, 38, 38, 0.4)',
@@ -5139,7 +5356,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
               <span style={{ fontSize: '22px' }}>⚠️</span>
-              <h3 style={{ margin: 0, fontSize: '14px', fontWeight: '900', color: 'var(--accent-rust)' }}>
+              <h3 id="reset-modal-title" style={{ margin: 0, fontSize: '14px', fontWeight: '900', color: 'var(--accent-rust)' }}>
                 Konfirmasi Reset Modal
               </h3>
             </div>
@@ -5199,11 +5416,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       {/* 6. MODAL TERPADU: ATURAN TRADING & PANDUAN STATUS SIKLUS HIDUP            */}
       {/* ========================================================================= */}
       {rulesModalOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(4px)',
-          zIndex: 99999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px'
-        }}>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="rules-modal-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setRulesModalOpen(false); }}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(4px)',
+            zIndex: 99999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px'
+          }}
+        >
           <div style={{
             background: 'var(--bg-panel)', width: '100%', maxWidth: '680px', maxHeight: '85vh',
             borderRadius: 'var(--radius-md)', border: 'var(--border-hairline)', display: 'flex', flexDirection: 'column', overflow: 'hidden'
@@ -5211,11 +5434,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
             <div style={{ padding: '12px 18px', background: 'var(--bg-panel-subtle)', borderBottom: 'var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>📋</span>
-                <h3 style={{ margin: 0, fontSize: '13.5px', fontWeight: '900', color: 'var(--text-primary)' }}>
+                <h3 id="rules-modal-title" style={{ margin: 0, fontSize: '13.5px', fontWeight: '900', color: 'var(--text-primary)' }}>
                   Panduan Terpadu: Aturan Trading & Status Bot
                 </h3>
               </div>
-              <button onClick={() => setRulesModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--text-muted)' }}>✕</button>
+              <button
+                onClick={() => setRulesModalOpen(false)}
+                aria-label="Tutup panduan aturan dan status"
+                style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--text-muted)', minWidth: '32px', minHeight: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                ✕
+              </button>
             </div>
 
             {/* Navigation Tabs: Aturan Trading vs Status Siklus Hidup */}
@@ -5346,11 +5575,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       {/* 7. MODAL: JURNAL TRANSAKSI LENGKAP BOT                                    */}
       {/* ========================================================================= */}
       {journalModal.isOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(4px)',
-          zIndex: 99999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px'
-        }}>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="journal-modal-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setJournalModal({ isOpen: false, agentId: 'ALL', agentName: 'Semua Agen' }); }}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(4px)',
+            zIndex: 99999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px'
+          }}
+        >
           <div style={{
             background: 'var(--bg-panel)', width: '100%', maxWidth: '850px', maxHeight: '85vh',
             borderRadius: 'var(--radius-md)', border: 'var(--border-hairline)', display: 'flex', flexDirection: 'column', overflow: 'hidden'
@@ -5360,7 +5595,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '16px' }}>📖</span>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '13px', fontWeight: '900', color: 'var(--text-primary)' }}>
+                  <h3 id="journal-modal-title" style={{ margin: 0, fontSize: '13px', fontWeight: '900', color: 'var(--text-primary)' }}>
                     Jurnal Transaksi: {journalModal.agentName}
                   </h3>
                   <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
@@ -5368,7 +5603,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   </div>
                 </div>
               </div>
-              <button onClick={() => setJournalModal({ isOpen: false, agentId: 'ALL', agentName: 'Semua Agen' })} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--text-muted)' }}>✕</button>
+              <button
+                onClick={() => setJournalModal({ isOpen: false, agentId: 'ALL', agentName: 'Semua Agen' })}
+                aria-label="Tutup modal jurnal transaksi"
+                style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--text-muted)', minWidth: '32px', minHeight: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                ✕
+              </button>
             </div>
 
             {(() => {
@@ -5381,13 +5622,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               const totalLosses = totalTradesCount - totalWins;
               const winRatePct = totalTradesCount > 0 ? ((totalWins / totalTradesCount) * 100).toFixed(1) : '0.0';
 
-              const totalGrossProfitIdr = targetTrades.filter(j => (j.pnlIdr || (j.pnlUsd * USD_TO_IDR)) > 0)
-                .reduce((acc, t) => acc + (t.pnlIdr || (t.pnlUsd * USD_TO_IDR)), 0);
-              const totalGrossLossIdr = Math.abs(targetTrades.filter(j => (j.pnlIdr || (j.pnlUsd * USD_TO_IDR)) < 0)
-                .reduce((acc, t) => acc + (t.pnlIdr || (t.pnlUsd * USD_TO_IDR)), 0));
+              const totalGrossProfitIdr = targetTrades.filter(j => (j.pnlIdr || (j.pnlUsd * usdToIdrRef.current)) > 0)
+                .reduce((acc, t) => acc + (t.pnlIdr || (t.pnlUsd * usdToIdrRef.current)), 0);
+              const totalGrossLossIdr = Math.abs(targetTrades.filter(j => (j.pnlIdr || (j.pnlUsd * usdToIdrRef.current)) < 0)
+                .reduce((acc, t) => acc + (t.pnlIdr || (t.pnlUsd * usdToIdrRef.current)), 0));
 
-              const totalNetPnlIdr = targetTrades.reduce((acc, t) => acc + (t.pnlIdr || (t.pnlUsd * USD_TO_IDR)), 0);
-              const totalNetPnlUsd = totalNetPnlIdr / USD_TO_IDR;
+              const totalNetPnlIdr = targetTrades.reduce((acc, t) => acc + (t.pnlIdr || (t.pnlUsd * usdToIdrRef.current)), 0);
+              const totalNetPnlUsd = totalNetPnlIdr / usdToIdrRef.current;
               const profitFactorVal = totalGrossLossIdr > 0 ? (totalGrossProfitIdr / totalGrossLossIdr).toFixed(2) : (totalGrossProfitIdr > 0 ? '99.0' : '0.0');
               const avgRr = totalTradesCount > 0 ? (targetTrades.reduce((acc, t) => acc + (Number(t.rrAchieved) || 0), 0) / totalTradesCount).toFixed(2) : '0.0';
 
@@ -5484,7 +5725,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                         <tbody>
                           {targetTrades.map(item => {
                             const isWin = item.isWin;
-                            const pnlIdr = item.market === 'IDX' && item.pnlIdr ? item.pnlIdr : (item.pnlUsd * USD_TO_IDR);
+                            const pnlIdr = item.market === 'IDX' && item.pnlIdr ? item.pnlIdr : (item.pnlUsd * usdToIdrRef.current);
                             return (
                               <tr key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                                 <td style={{ padding: '6px 8px', color: 'var(--text-muted)' }}>
@@ -5494,8 +5735,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                                     <span>{item.symbol}</span>
                                     <span style={{
-                                      fontSize: '7px',
-                                      padding: '1px 3px',
+                                      fontSize: '8px',
+                                      padding: '1px 4px',
                                       borderRadius: '2px',
                                       background: (item.executionMode === 'SPOT' || item.market === 'IDX') ? 'rgba(34, 197, 94, 0.2)' : 'rgba(168, 85, 247, 0.2)',
                                       color: (item.executionMode === 'SPOT' || item.market === 'IDX') ? 'var(--accent-green)' : '#c084fc',
@@ -5555,11 +5796,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       {/* 8. MODAL: SESSION RECAP & INSTITUTIONAL QUANT POST-MORTEM DEBRIEF HUB      */}
       {/* ========================================================================= */}
       {sessionRecapModalOpen && sessionRecapData && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0, 0, 0, 0.82)', backdropFilter: 'blur(6px)',
-          zIndex: 99999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px'
-        }}>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="session-recap-modal-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setSessionRecapModalOpen(false); }}
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(0, 0, 0, 0.82)', backdropFilter: 'blur(6px)',
+            zIndex: 99999, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px'
+          }}
+        >
           <div style={{
             background: 'var(--bg-panel)', width: '100%', maxWidth: '960px', maxHeight: '90vh',
             borderRadius: 'var(--radius-md)', border: '1px solid rgba(217, 70, 239, 0.35)',
@@ -5571,10 +5818,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 <span style={{ fontSize: '20px' }}>📜</span>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <h3 style={{ margin: 0, fontSize: '14px', fontWeight: '900', color: 'var(--text-primary)', letterSpacing: '0.3px' }}>
+                    <h3 id="session-recap-modal-title" style={{ margin: 0, fontSize: '14px', fontWeight: '900', color: 'var(--text-primary)', letterSpacing: '0.3px' }}>
                       Session Recap & Institutional Quant Post-Mortem Debrief
                     </h3>
-                    <span className="badge" style={{ fontSize: '8px', background: 'rgba(217, 70, 239, 0.18)', color: '#e879f9', border: '1px solid rgba(217, 70, 239, 0.4)' }}>
+                    <span className="badge" style={{ fontSize: '8.5px', background: 'rgba(217, 70, 239, 0.18)', color: '#e879f9', border: '1px solid rgba(217, 70, 239, 0.4)' }}>
                       Bridgewater & AQR Debrief Standard
                     </span>
                   </div>
@@ -5585,7 +5832,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               </div>
               <button
                 onClick={() => setSessionRecapModalOpen(false)}
-                style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--text-muted)' }}
+                aria-label="Tutup modal session recap"
+                style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--text-muted)', minWidth: '32px', minHeight: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 title="Tutup Modal"
               >
                 ✕
@@ -5611,7 +5859,6 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   fontFamily: 'var(--font-mono)',
                   fontWeight: '700',
                   cursor: 'pointer',
-                  outline: 'none',
                   minWidth: '240px'
                 }}
               >
@@ -5829,7 +6076,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                               <span style={{ fontSize: '10px', color: 'var(--accent-gold)', fontWeight: '900' }}>#{idx + 1}</span>
                               <strong style={{ fontSize: '11px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{p.symbol}</strong>
-                              <span className="badge" style={{ fontSize: '7.5px', padding: '1px 4px' }}>{p.market}</span>
+                              <span className="badge" style={{ fontSize: '8.5px', padding: '1px 4px' }}>{p.market}</span>
                               <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{p.totalTrades} trades</span>
                             </div>
                             <div style={{ textAlign: 'right' }}>
@@ -5863,7 +6110,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                               <span style={{ fontSize: '10px', color: 'var(--accent-rust)', fontWeight: '900' }}>#{idx + 1}</span>
                               <strong style={{ fontSize: '11px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{p.symbol}</strong>
-                              <span className="badge" style={{ fontSize: '7.5px', padding: '1px 4px' }}>{p.market}</span>
+                              <span className="badge" style={{ fontSize: '8.5px', padding: '1px 4px' }}>{p.market}</span>
                               <span style={{ fontSize: '8px', color: 'var(--accent-rust)', fontWeight: '700' }}>Cooldown Recom.</span>
                             </div>
                             <div style={{ textAlign: 'right' }}>
@@ -6001,17 +6248,23 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       {/* 4. MODAL: SILSILAH EVOLUSI GENERASI & MUTASI DNA (GEN EXTINCTION/RESPAWN) */}
       {/* ========================================================================= */}
       {evolutionModal.isOpen && evolutionModal.agent && (
-        <div style={{
-          position: 'fixed',
-          top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0,0,0,0.82)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 99999,
-          backdropFilter: 'blur(4px)',
-          padding: '16px'
-        }}>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="evolution-modal-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setEvolutionModal({ isOpen: false, agent: null }); }}
+          style={{
+            position: 'fixed',
+            top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(0,0,0,0.82)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 99999,
+            backdropFilter: 'blur(4px)',
+            padding: '16px'
+          }}
+        >
           <div style={{
             background: 'var(--bg-panel)',
             border: `1px solid ${evolutionModal.agent.color}`,
@@ -6037,7 +6290,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 <span style={{ fontSize: '26px' }}>{evolutionModal.agent.avatar}</span>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <h3 style={{ margin: 0, fontSize: '14px', fontWeight: '900', color: 'var(--text-primary)' }}>
+                    <h3 id="evolution-modal-title" style={{ margin: 0, fontSize: '14px', fontWeight: '900', color: 'var(--text-primary)' }}>
                       {evolutionModal.agent.name} — Silsilah Generasi & Mutasi DNA
                     </h3>
                     <span className="badge" style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.4)', fontSize: '9px', fontWeight: '800' }}>
@@ -6051,7 +6304,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               </div>
               <button
                 onClick={() => setEvolutionModal({ isOpen: false, agent: null })}
-                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '18px', cursor: 'pointer' }}
+                aria-label="Tutup modal silsilah evolusi"
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '18px', cursor: 'pointer', minWidth: '32px', minHeight: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 ✕
               </button>
@@ -6106,7 +6360,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     <div style={{ fontWeight: '800', color: (evolutionModal.agent.dnaTraits?.riskMultiplier || 1.0) < 1.0 ? 'var(--accent-orange)' : 'var(--accent-green)', fontSize: '11px' }}>
                       {((evolutionModal.agent.dnaTraits?.riskMultiplier || 1.0) * 100).toFixed(0)}%
                     </div>
-                    <div style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>
+                    <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
                       {(evolutionModal.agent.dnaTraits?.riskMultiplier || 1.0) < 1.0 ? 'Proteksi Risiko Diperketat' : 'Standar Default'}
                     </div>
                   </div>
@@ -6116,7 +6370,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     <div style={{ fontWeight: '800', color: (evolutionModal.agent.dnaTraits?.confidenceBoost || 0) > 0 ? '#c084fc' : 'var(--text-primary)', fontSize: '11px' }}>
                       +{(evolutionModal.agent.dnaTraits?.confidenceBoost || 0)}%
                     </div>
-                    <div style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>Threshold Konfirmasi Masuk</div>
+                    <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Threshold Konfirmasi Masuk</div>
                   </div>
 
                   <div style={{ background: 'var(--bg-panel)', padding: '6px 8px', borderRadius: '3px' }}>
@@ -6124,7 +6378,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     <div style={{ fontWeight: '800', color: (evolutionModal.agent.dnaTraits?.trailingTightness || 1.0) > 1.0 ? 'var(--accent-blue)' : 'var(--text-primary)', fontSize: '11px' }}>
                       {((evolutionModal.agent.dnaTraits?.trailingTightness || 1.0) * 100).toFixed(0)}%
                     </div>
-                    <div style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>Kecepatan Kunci Profit</div>
+                    <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Kecepatan Kunci Profit</div>
                   </div>
                 </div>
               </div>
