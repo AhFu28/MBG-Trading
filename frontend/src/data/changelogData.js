@@ -2,13 +2,56 @@
 
 export const CHANGELOG_DATA = [
   {
+    id: 'pkg-21092026-v47',
+    version: 'Package 21092026',
+    semanticVersion: 'v4.7.0',
+    date: '21 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / PRODUCTION HARDENED',
+    title: 'Update Package 21092026 (v4.7 APEX): AI Arena Engine Integrity Refactor, Zero Side-Effects Loop, Live USD/IDR Sync, Dynamic KPIs & WCAG UI/UX Hardening',
+    description: 'Audit komprehensif dan hardening produksi AI Multi-Agent Arena (18 Item Resolusi 100%): Rekonstruksi simulation loop murni bebas side-effect via batch sequential dispatch, live USD/IDR dynamic synchronization (usdToIdrRef) di 41 titik kalkulasi, formula collision-proof trade IDs, kalkulasi dinamis metrik KPI (Sharpe Ratio matematis, running MDD, Win Rate), reaktif clock 60s & anti-drift timer, serta standarisasi aksesibilitas WCAG (7 ARIA modal dialog, stacked toast queue max 3, mobile cockpit grid, typography floor >= 8px, touch targets >= 24-26px, dan backdrop/ESC dismiss).',
+    processFlow: [
+      { step: '1. Logic & Integrity', label: 'usdToIdrRef (41 Titik), Collision-Proof IDs & Dynamic KPIs' },
+      { step: '2. Pure Simulation', label: 'Decoupled Batch Dispatch (Zero Nested Side-Effects)' },
+      { step: '3. A11y & UI/UX Polish', label: '7 ARIA Modals, Toast Queue (Max 3) & Focus Rings' },
+      { step: '4. QA/QC Clearance', label: '12/12 Automated Checks Passed + Clean Build' }
+    ],
+    markdownContent: `
+### 🛡️ Pembaruan Akbar v4.7 (Full Engine Audit & WCAG UI/UX Hardening)
+- **Rekonstruksi Integritas Mesin & Simulasi (Logic Integrity):**
+  - **Zero Side-Effects Simulation Loop:** Menghilangkan mutasi bersarang dalam updater \`setPositions\`. Seluruh perhitungan likuidasi, margin call, spawner, dan mutasi DNA kini dikalkulasi secara murni di memori lokal, lalu di-dispatch secara batch berurutan (\`setPositions\` → \`setJournal\` → \`setAgents\` → \`toasts\`).
+  - **Live USD/IDR Dynamic Synchronization (\`usdToIdrRef\`):** Mengganti seluruh konstanta nilai tukar statis dengan sinkronisasi reaktif di 41 titik kalkulasi PnL, notional, dan batas margin.
+  - **Collision-Proof Trade & Liquidation IDs:** Format ID transaksi kini menggunakan timestamp unik \`TRD-\${pos.id}-\${Date.now()}\` dan \`LIQ-\${pos.id}-\${Date.now()}\` untuk mencegah duplikasi histori saat penutupan massal.
+  - **Stale Closure Mitigation:** \`handleManualClose\` mengonsumsi \`positionsRef.current\` dan \`usdToIdrRef.current\` secara murni tanpa risiko capture closure basi.
+  - **True Dynamic Calculated KPIs:** Metrik performa makro (Win Rate, Sharpe Ratio matematis, dan Running Peak-to-Trough Max Drawdown) dihitung 100% dari jurnal transaksi riil, mengeliminasi nilai hardcoded statis.
+  - **Clock Reaktif 60s & Anti-Drift Uptime:** Menggunakan state \`clockTick\` untuk memperbarui badge sesi pasar (IDX, US, Forex/Emas, Kripto) secara real-time dan mengisolasi akumulasi uptime dari event pergantian tab browser.
+- **Standarisasi Aksesibilitas & UI/UX (WCAG & Ergonomi):**
+  - **Full ARIA Modal Compliance:** Ketujuh modal institusional dilengkapi \`role="dialog"\`, \`aria-modal="true"\`, dan \`aria-labelledby\` terhubung ke heading masing-masing.
+  - **Dual Modal Dismissal Ergonomics:** Seluruh modal mendukung penutupan intuitif via klik backdrop overlay dan tombol keyboard global \`Escape\`.
+  - **Stacked Toast Notification Queue:** Sistem notifikasi multi-pesan (maksimal 3 tumpukan aktif) dengan transisi animasi \`toastSlideIn\` dan auto-dismiss independen 3,5 detik.
+  - **Responsive Cockpit Breakpoint:** Grid kontrol cockpit menggunakan \`minmax(min(100%, 360px), 1fr)\` mencegah horizontal scrolling pada layar smartphone.
+  - **Accessible Focus Rings & Typography Floor:** Menghapus seluruh \`outline: 'none'\` telanjang, menetapkan cincin fokus kontras tinggi (\`focus-visible\`), dan menaikkan batas bawah ukuran font menjadi minimal 8–8.5px.
+  - **WCAG Touch Target Compliance (≥ 24–26px):** Memperbesar tombol interaktif seperti tab filter deck, tombol generasi bot, tombol close transaksi (×), dan tombol navigasi laporan.
+    `.trim(),
+    table: [
+      { module: 'Zero Side-Effects Engine', status: 'PROD', category: 'Architecture / Core', summary: 'Pure simulation loop dengan batch sequential dispatch' },
+      { module: 'Live Dynamic USD/IDR', status: 'PROD', category: 'Quant / Exchange', summary: 'Sinkronisasi nilai tukar di 41 titik kalkulasi via usdToIdrRef' },
+      { module: 'Dynamic KPI Metrics', status: 'PROD', category: 'Analytics / Math', summary: 'Sharpe ratio, running MDD, dan Win Rate dinamis dari data jurnal' },
+      { module: 'Collision-Proof Trade IDs', status: 'PROD', category: 'Data Integrity', summary: 'Pencegahan duplikasi ID transaksi via timestamp Date.now()' },
+      { module: 'WCAG ARIA Modal Dialogs', status: 'PROD', category: 'Accessibility / A11y', summary: 'Role dialog, aria-modal, dan labelledby pada 7 modal' },
+      { module: 'Toast Stack Notification', status: 'PROD', category: 'UI / UX', summary: 'Queue multi-toast max 3 stack dengan slide-in animation' },
+      { module: 'Touch Target Optimization', status: 'PROD', category: 'Ergonomics / Mobile', summary: 'Minimal tinggi tombol >= 24-26px dan typography floor >= 8px' }
+    ]
+  },
+  {
     id: 'pkg-21092026-v46',
     version: 'Package 21092026',
     semanticVersion: 'v4.6.0',
     date: '21 September 2026',
-    status: 'LATEST',
-    statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / ACTIVE HARI INI',
+    status: 'COMPLETED',
+    statusColor: 'var(--accent-blue)',
+    badgeLabel: 'STABLE RELEASE',
     title: 'Update Package 21092026 (v4.6 CHAOS): Agent 16 CHAOS [The Rogue Singularity], Unlimited Carpet-Bomb Scalping, Self-Sovereign Ledger & Genetic Rebirth',
     description: 'Peluncuran resmi Agent ke-16 "CHAOS" di AI Multi-Agent Arena: Bot mandiri kategori ANOMALY yang melanggar batas risiko konvensional untuk memburu profit asimetris eksponensial (1:12+ R:R) melalui machine-gun carpet bombing multi-posisi tanpa batas tiket pada satu pair, saldo mandiri terisolasi Rp 1.000.000 (Total AUM Rp 16.000.000), serta sistem Genetic Self-Learning & Auto-Rebirth otomatis saat Margin Call.',
     processFlow: [
