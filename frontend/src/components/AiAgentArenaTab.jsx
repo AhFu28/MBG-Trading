@@ -3148,23 +3148,58 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         }
 
 
-        // Periodic Auto-Evaluation (every 50 closed trades per bot)
+        // Positive Reinforcement & Intra-Season Self-Learning Adaptive Engine
         if (closedTradesToAdd.length > 0) {
           currentAgents = currentAgents.map(ag => {
+            const botClosed = closedTradesToAdd.filter(c => c.agentId === ag.id);
+            if (botClosed.length === 0) return ag;
+
             const agClosedTrades = [...currentJournalSnapshot, ...closedTradesToAdd].filter(j => j.agentId === ag.id);
             const tradeCount = agClosedTrades.length;
+            let traits = { ...(ag.dnaTraits || {}) };
+            let changed = false;
+
+            // 1. Positive Reinforcement on Individual Winning Trades
+            const winTrades = botClosed.filter(c => c.isWin);
+            if (winTrades.length > 0) {
+              const currentRisk = traits.riskMultiplier || 1.0;
+              if (currentRisk < 1.25) {
+                traits.riskMultiplier = Number(Math.min(1.25, currentRisk * 1.03).toFixed(2));
+                changed = true;
+              }
+              if ((traits.trailingTightness || 1.0) > 1.0) {
+                traits.trailingTightness = Number(Math.max(1.0, (traits.trailingTightness || 1.0) * 0.98).toFixed(2));
+                changed = true;
+              }
+              if ((traits.confidenceBoost || 0) > 0) {
+                traits.confidenceBoost = Math.max(0, (traits.confidenceBoost || 0) - 1);
+                changed = true;
+              }
+            }
+
+            // 2. Intra-Season Periodic Auto-Evaluation (every 50 closed trades per bot)
             if (tradeCount > 0 && tradeCount % 50 === 0) {
               const last50 = agClosedTrades.slice(-50);
               const wins = last50.filter(t => t.isWin).length;
               const winRate = wins / 50;
               const netPnl = last50.reduce((acc, t) => acc + (t.pnlIdr || 0), 0);
               if (winRate > 0.55 && netPnl > 0) {
-                agentsChanged = true;
-                return { ...ag, dnaTraits: { ...ag.dnaTraits, riskMultiplier: Number(Math.min(1.0, (ag.dnaTraits?.riskMultiplier || 1.0) * 1.05).toFixed(2)), confidenceBoost: Number(Math.max(0, (ag.dnaTraits?.confidenceBoost || 0) - 2).toFixed(0)) } };
+                changed = true;
+                traits.riskMultiplier = Number(Math.min(1.25, (traits.riskMultiplier || 1.0) * 1.08).toFixed(2));
+                traits.confidenceBoost = Math.max(0, (traits.confidenceBoost || 0) - 3);
+                toastsToShow.push(`🌟 ${ag.name}: Auto-Eval 50 Trades POSITIF! Win Rate ${(winRate*100).toFixed(0)}%, Risk Multiplier dinaikkan ke ${((traits.riskMultiplier)*100).toFixed(0)}%`);
               } else if (winRate < 0.35 && netPnl < 0) {
-                agentsChanged = true;
-                return { ...ag, dnaTraits: { ...ag.dnaTraits, riskMultiplier: Number(Math.max(0.4, (ag.dnaTraits?.riskMultiplier || 1.0) * 0.92).toFixed(2)), confidenceBoost: Number(Math.min(25, (ag.dnaTraits?.confidenceBoost || 0) + 3).toFixed(0)), trailingTightness: Number(Math.min(2.5, (ag.dnaTraits?.trailingTightness || 1.0) * 1.08).toFixed(2)) } };
+                changed = true;
+                traits.riskMultiplier = Number(Math.max(0.35, (traits.riskMultiplier || 1.0) * 0.88).toFixed(2));
+                traits.confidenceBoost = Math.min(25, (traits.confidenceBoost || 0) + 4);
+                traits.trailingTightness = Number(Math.min(2.5, (traits.trailingTightness || 1.0) * 1.12).toFixed(2));
+                toastsToShow.push(`⚠️ ${ag.name}: Auto-Eval 50 Trades DEFISIT. De-risking aktif (-12% risk, filter sinyal diperketat)`);
               }
+            }
+
+            if (changed) {
+              agentsChanged = true;
+              return { ...ag, dnaTraits: traits };
             }
             return ag;
           });
@@ -3191,14 +3226,20 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               : ALL_INSTRUMENTS.filter(i => isMarketOpenNow(i.market)).map(i => i.symbol);
 
             // 1. Prioritas Utama: Instrumen di pasar buka yang belum dipegang oleh agen ini (Diversifikasi Luas)
-            // Toxic pair blacklist: skip instruments flagged by DNA
-            const toxicPairsToAvoid = chosenAgent.dnaTraits?.toxicPairAvoided ? [chosenAgent.dnaTraits.toxicPairAvoided] : [];
+            // Toxic pair blacklist: skip instruments flagged by DNA and historical Margin Calls
+            const toxicPairsToAvoid = [
+              ...(chosenAgent.dnaTraits?.toxicPairAvoided ? [chosenAgent.dnaTraits.toxicPairAvoided] : []),
+              ...(Array.isArray(chosenAgent.dnaTraits?.toxicPairs) ? chosenAgent.dnaTraits.toxicPairs : []),
+              ...((chosenAgent.resetsHistory || []).map(r => r.toxicPair).filter(Boolean))
+            ].filter(sym => sym && sym !== 'High-Beta' && sym !== 'Diversified Rebalance' && sym !== 'N/A');
+
             const unheldSymbols = openMarketSymbols.filter(s => !agentPositions.some(p => p.symbol === s) && !toxicPairsToAvoid.includes(s));
 
-            // 2. Prioritas Kedua: Multi-posisi terukur pada instrumen yang sudah dipegang SESUAI DNA STRATEGI
+            // 2. Prioritas Kedua: Multi-posisi terukur pada instrumen yang sudah dipegang SESUAI DNA STRATEGI (strict no toxic)
             let qualifyingHeldSymbols = [];
             if ((unheldSymbols.length === 0 || chosenAgent.id === 'CHAOS') && agentRules.maxPerPair > 1) {
               qualifyingHeldSymbols = openMarketSymbols.filter(s => {
+                if (toxicPairsToAvoid.includes(s)) return false;
                 const positionsOnSym = agentPositions.filter(p => p.symbol === s);
                 if (positionsOnSym.length === 0 && chosenAgent.id !== 'CHAOS') return false;
                 // Batas maksimal layer per pair untuk bot ini
