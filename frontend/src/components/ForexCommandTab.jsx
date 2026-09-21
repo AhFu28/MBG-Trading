@@ -25,7 +25,7 @@ function getZoneInfo(date, timeZone) {
   }
 }
 
-export default function ForexCommandTab({ data, onOpenChart }) {
+export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, flashMap = {} }) {
   const [activeTab, setActiveTab] = useState('screener');
   const [search, setSearch] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -168,8 +168,12 @@ export default function ForexCommandTab({ data, onOpenChart }) {
                 {pairs.filter(p => p.pair.toLowerCase().includes(search.toLowerCase())).map((p) => {
                   const isJpy = (p.pair || '').includes('JPY');
                   const decimals = isJpy ? 3 : 5;
-                  const chg = Number(p.change_24h_pct || 0);
+                  const cleanPair = (p.pair || '').replace('/', '');
+                  const liveQuote = livePrices[p.pair] || livePrices[cleanPair] || livePrices[`FX_IDC:${cleanPair}`] || livePrices[`FX:${cleanPair}`];
+                  const currentPrice = liveQuote?.price !== undefined ? Number(liveQuote.price) : Number(p.price || 0);
+                  const chg = liveQuote?.changePct !== undefined ? Number(liveQuote.changePct) : Number(p.change_24h_pct || 0);
                   const isPos = chg > 0;
+                  const isFlashing = flashMap[p.pair] || flashMap[cleanPair] || flashMap[`FX_IDC:${cleanPair}`];
                   const rsi = Number(p.rsi_14 || 0);
 
                   return (
@@ -182,8 +186,14 @@ export default function ForexCommandTab({ data, onOpenChart }) {
                           </button>
                         </div>
                       </td>
-                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
-                        {Number(p.price || 0).toFixed(decimals)}
+                      <td style={{
+                        textAlign: 'right',
+                        fontFamily: 'var(--font-mono)',
+                        fontWeight: '700',
+                        color: isFlashing === 'up' ? 'var(--accent-green)' : isFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)',
+                        transition: 'color 0.3s ease'
+                      }}>
+                        {currentPrice.toFixed(decimals)}
                       </td>
                       <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                         {isPos ? '+' : ''}{chg.toFixed(2)}%

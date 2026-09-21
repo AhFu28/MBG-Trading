@@ -1877,10 +1877,32 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                   {idx_foreign_whales.filter(w => !search || (w.ticker || '').toLowerCase().includes(search.toLowerCase()) || (w.broker_code || '').toLowerCase().includes(search.toLowerCase())).map((whale, idx) => (
                     <tr key={idx} style={{ borderBottom: 'var(--border-hairline)' }}>
                       <td style={{ padding: '10px' }}>
-                        <button onClick={() => onOpenChart(whale.ticker)} style={{ background:'transparent', border:'none', color:'var(--accent-blue)', cursor:'pointer', fontWeight:'bold', fontSize:'13px' }}>
-                          {whale.ticker} ↗
-                        </button>
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{whale.company_name}</div>
+                        {(() => {
+                          const live = livePrices[whale.ticker] || livePrices[`IDX:${whale.ticker}`] || livePrices[`${whale.ticker}.JK`];
+                          return (
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                                <button onClick={() => onOpenChart(whale.ticker)} style={{ background:'transparent', border:'none', color:'var(--accent-blue)', cursor:'pointer', fontWeight:'bold', fontSize:'13px', padding: 0 }}>
+                                  {whale.ticker} ↗
+                                </button>
+                                {live && live.price && (
+                                  <span style={{
+                                    fontSize: '9.5px',
+                                    fontFamily: 'var(--font-mono)',
+                                    fontWeight: '700',
+                                    color: (live.changePct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)',
+                                    background: (live.changePct || 0) >= 0 ? 'rgba(34, 197, 94, 0.08)' : 'rgba(239, 68, 68, 0.08)',
+                                    padding: '1px 5px',
+                                    borderRadius: '3px'
+                                  }}>
+                                    Rp {Math.round(live.price).toLocaleString('id-ID')} ({(live.changePct || 0) >= 0 ? '+' : ''}{live.changePct}%)
+                                  </span>
+                                )}
+                              </div>
+                              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{whale.company_name}</div>
+                            </div>
+                          );
+                        })()}
                       </td>
                       <td style={{ padding: '10px', fontFamily: 'var(--font-mono)' }}>
                         <div style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '12px' }}>
@@ -2148,9 +2170,25 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                             {h.netLot > 0 ? '+' : ''}{h.netLot.toLocaleString()} Lot
                           </td>
 
-                          {/* Avg Hold */}
-                          <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '800', color: '#38bdf8' }}>
-                            Rp {h.avgHold.toLocaleString()}
+                          {/* Avg Hold & Live PnL */}
+                          <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
+                            {(() => {
+                              const live = livePrices[h.ticker] || livePrices[`IDX:${h.ticker}`] || livePrices[`${h.ticker}.JK`];
+                              const livePrice = live?.price !== undefined ? Number(live.price) : Number(h.avgHold || h.buyAvg || 0);
+                              const pnlPct = h.avgHold > 0 ? ((livePrice - h.avgHold) / h.avgHold) * 100 : 0;
+                              return (
+                                <div>
+                                  <div style={{ fontWeight: '800', color: '#38bdf8' }}>
+                                    Rp {h.avgHold.toLocaleString()}
+                                  </div>
+                                  {live && live.price && (
+                                    <div style={{ fontSize: '9.5px', fontWeight: '700', color: pnlPct >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginTop: '2px' }}>
+                                      Live: Rp {Math.round(livePrice).toLocaleString('id-ID')} ({pnlPct >= 0 ? '+' : ''}{pnlPct.toFixed(1)}%)
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })()}
                           </td>
 
                           {/* Status */}

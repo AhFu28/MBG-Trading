@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AssetIcon from './AssetIcon.jsx';
 
-export default function USStockTab({ data, onOpenChart }) {
+export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMap = {} }) {
   const [activeTab, setActiveTab] = useState('screener');
   const [search, setSearch] = useState('');
   const [sectorFilter, setSectorFilter] = useState('ALL');
@@ -181,7 +181,10 @@ export default function USStockTab({ data, onOpenChart }) {
               </thead>
               <tbody>
                 {filteredStocks.map((s) => {
-                  const chg = Number(s.change_pct || 0);
+                  const liveQuote = livePrices[s.ticker] || livePrices[`NASDAQ:${s.ticker}`] || livePrices[`NYSE:${s.ticker}`];
+                  const currentPrice = liveQuote?.price !== undefined ? Number(liveQuote.price) : Number(s.price || 0);
+                  const chg = liveQuote?.changePct !== undefined ? Number(liveQuote.changePct) : Number(s.change_pct || 0);
+                  const isFlashing = flashMap[s.ticker] || flashMap[`NASDAQ:${s.ticker}`] || flashMap[`NYSE:${s.ticker}`];
                   const isPositive = chg >= 0;
                   const rsiVal = Number(s.rsi_14 || 50);
                   const rsiColor = rsiVal < 30 ? 'var(--accent-green)' : rsiVal > 70 ? 'var(--accent-rust)' : 'var(--text-primary)';
@@ -203,8 +206,14 @@ export default function USStockTab({ data, onOpenChart }) {
                           {s.sector}
                         </span>
                       </td>
-                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
-                        ${Number(s.price || 0).toFixed(2)}
+                      <td style={{
+                        textAlign: 'right',
+                        fontFamily: 'var(--font-mono)',
+                        fontWeight: '700',
+                        color: isFlashing === 'up' ? 'var(--accent-green)' : isFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)',
+                        transition: 'color 0.3s ease'
+                      }}>
+                        ${currentPrice.toFixed(2)}
                       </td>
                       <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: isPositive ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                         {isPositive ? '+' : ''}{chg.toFixed(2)}%
@@ -353,7 +362,10 @@ export default function USStockTab({ data, onOpenChart }) {
 
       {activeTab === 'plans' && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
-          {stocks.slice(0, 5).map((s, idx) => (
+          {stocks.slice(0, 5).map((s, idx) => {
+            const liveQuote = livePrices[s.ticker] || livePrices[`NASDAQ:${s.ticker}`] || livePrices[`NYSE:${s.ticker}`];
+            const currentPrice = liveQuote?.price !== undefined ? Number(liveQuote.price) : Number(s.entry_price || s.price || 0);
+            return (
             <div key={idx} className="quant-card-interactive" style={{ padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
@@ -395,9 +407,9 @@ export default function USStockTab({ data, onOpenChart }) {
                   border: '1px solid rgba(255,255,255,0.04)' 
                 }}>
                   <div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>ENTRY ZONE</div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>LIVE / ENTRY ZONE</div>
                     <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
-                      ${Number(s.entry_price || 0).toFixed(2)}
+                      ${currentPrice.toFixed(2)} <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: '400' }}>(Entry: ${Number(s.entry_price || 0).toFixed(2)})</span>
                     </div>
                   </div>
                   <div>
@@ -444,7 +456,8 @@ export default function USStockTab({ data, onOpenChart }) {
                 <span>↗</span>
               </button>
             </div>
-          ))}
+          );
+          })}
         </div>
       )}
     </div>

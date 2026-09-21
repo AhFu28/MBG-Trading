@@ -34,11 +34,15 @@ const DEFAULT_US_TICKERS = [
   'NYSE:CVX', 'NYSE:BA', 'NYSE:GE', 'NYSE:CAT', 'NASDAQ:MU', 'NASDAQ:INTC', 'NASDAQ:ARM'
 ];
 
-// Default list Forex
+// Default list Forex (Full 28 Major & Minor Institutional Universe)
 const DEFAULT_FOREX_TICKERS = [
   'FX_IDC:EURUSD', 'FX_IDC:GBPUSD', 'FX_IDC:USDJPY', 'FX_IDC:AUDUSD',
-  'FX_IDC:USDCAD', 'FX_IDC:USDCHF', 'FX_IDC:NZDUSD', 'FX_IDC:EURJPY',
-  'FX_IDC:GBPJPY'
+  'FX_IDC:USDCHF', 'FX_IDC:NZDUSD', 'FX_IDC:USDCAD', 'FX_IDC:EURGBP',
+  'FX_IDC:EURJPY', 'FX_IDC:GBPJPY', 'FX_IDC:AUDJPY', 'FX_IDC:EURAUD',
+  'FX_IDC:EURCHF', 'FX_IDC:GBPAUD', 'FX_IDC:GBPCHF', 'FX_IDC:AUDNZD',
+  'FX_IDC:NZDJPY', 'FX_IDC:CADJPY', 'FX_IDC:AUDCAD', 'FX_IDC:GBPCAD',
+  'FX_IDC:EURNZD', 'FX_IDC:AUDCHF', 'FX_IDC:NZDCAD', 'FX_IDC:CHFJPY',
+  'FX_IDC:GBPNZD', 'FX_IDC:EURCAD', 'FX_IDC:NZDCHF', 'FX_IDC:CADCHF'
 ];
 
 // Default list Commodities & Strategic Macro CFD
@@ -389,6 +393,7 @@ export function useLivePrices(bundleData) {
             };
             next[clean] = quote;
             next[rawSym] = quote;
+            next[`FX:${clean}`] = quote;
           }
         });
         return next;

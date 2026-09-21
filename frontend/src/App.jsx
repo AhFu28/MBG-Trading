@@ -465,12 +465,12 @@ export default function App() {
             ) : activeTab === 'FOREX' ? (
               /* v3.0 FOREX COMMAND CENTER */
               <main>
-                <ForexCommandTab data={data} onOpenChart={handleOpenSecurityHub} livePrices={livePrices} />
+                <ForexCommandTab data={data} onOpenChart={handleOpenSecurityHub} livePrices={livePrices} flashMap={flashMap} />
               </main>
             ) : activeTab === 'US_STOCKS' ? (
               /* v3.0 US STOCK INTELLIGENCE */
               <main>
-                <USStockTab data={data} onOpenChart={handleOpenSecurityHub} livePrices={livePrices} />
+                <USStockTab data={data} onOpenChart={handleOpenSecurityHub} livePrices={livePrices} flashMap={flashMap} />
               </main>
             ) : activeTab === 'HEATMAP' ? (
               /* v4.0 MARKET HEATMAP TREEMAP */
