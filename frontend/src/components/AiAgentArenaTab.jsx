@@ -2351,10 +2351,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       const topAlphaPairs = [...allPairs].filter(p => p.netPnlIdr > 0).sort((a, b) => b.netPnlIdr - a.netPnlIdr).slice(0, 3);
       const toxicDragPairs = [...allPairs].filter(p => p.netPnlIdr < 0).sort((a, b) => a.netPnlIdr - b.netPnlIdr).slice(0, 3);
 
+      const officialReports = epochReports.filter(ep => ep.epochNumber !== 0 && !String(ep.epochNumber).includes('test') && !String(ep.epochNumber).startsWith('0.'));
+      const liveLabel = officialReports.length + 1;
+
       return {
-        epochNumber: epochReports.length,
+        epochNumber: liveLabel,
         isLive: true,
-        sessionLabel: `Sesi #${epochReports.length} (Live Interim)`,
+        sessionLabel: `Season ${liveLabel} (Live Interim)`,
         createdAt: 'Sesi Sedang Berjalan (Realtime)',
         uptimeStr: sessionUptimeStr,
         totalTrades,
@@ -2374,8 +2377,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         toxicDragPairs,
         allPairs,
         keyTakeaway: netPnlIdr >= 0
-          ? `Sesi #${epochReports.length} berjalan PROFIT (+${formatIdr(netPnlIdr)}). Sinergi 4 elemen bot efektif memanfaatkan momentum tanpa pelanggaran batas risiko.`
-          : `Sesi #${epochReports.length} membukukan defisit (${formatIdr(netPnlIdr)}). Circuit breaker aktif mengontrol ukuran posisi dan memitigasi drawdown.`
+          ? `Season ${liveLabel} berjalan PROFIT (+${formatIdr(netPnlIdr)}). Sinergi 4 elemen bot efektif memanfaatkan momentum tanpa pelanggaran batas risiko.`
+          : `Season ${liveLabel} membukukan defisit (${formatIdr(netPnlIdr)}). Circuit breaker aktif mengontrol ukuran posisi dan memitigasi drawdown.`
       };
     } else {
       // Historical Archived Session
@@ -2420,10 +2423,16 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         totalTrades: a.totalTrades
       }));
 
+      const isTestSession = String(report.epochNumber).includes('0.11') || String(report.epochNumber).includes('test');
+      const isGenesisSession = report.epochNumber === 0;
+      const formattedSessionLabel = isTestSession
+        ? 'Season 0.11 (test) (Arsip)'
+        : (isGenesisSession ? 'Sesi #0 Genesis (Arsip)' : `Season ${report.epochNumber} (Arsip)`);
+
       return {
         epochNumber: report.epochNumber,
         isLive: false,
-        sessionLabel: `Sesi #${report.epochNumber} (Arsip)`,
+        sessionLabel: formattedSessionLabel,
         createdAt: report.createdAt,
         uptimeStr: 'Diarsipkan',
         totalTrades: report.totalTrades,
@@ -3050,9 +3059,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
   // Generate Comprehensive Epoch Performance Report & Compute Self-Improvement Parameter Adaptations
   const generateEpochReportAndAdapt = useCallback(() => {
-    // Special naming: if only Genesis Session #0 exists, this becomes Session #0.1 (Calibration)
+    // Calibration test run (only Genesis #0 archived) → label "0.11". Otherwise count official seasons.
     const isCalibrationSession = epochReports.length === 1 && epochReports[0]?.epochNumber === 0;
-    const epochNum = isCalibrationSession ? '0.1' : epochReports.length;
+    const officialArchived = epochReports.filter(ep =>
+      ep.epochNumber !== 0 &&
+      !String(ep.epochNumber).startsWith('0.') &&
+      !String(ep.epochNumber).includes('test')
+    );
+    const epochNum = isCalibrationSession ? '0.11' : (officialArchived.length + 1);
     const dateStr = new Date().toLocaleString('id-ID', {
       day: '2-digit', month: 'short', year: 'numeric',
       hour: '2-digit', minute: '2-digit'
@@ -3221,8 +3235,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       toxicDragPairs,
       allPairs,
       keyTakeaway: netPnlIdr >= 0
-        ? `Sesi #${epochNum} ditutup PROFIT dengan Net Gain ${formatIdr(netPnlIdr)} (${rocPct}% ROC). Algoritma EXP3 meningkatkan alokasi modal pada bot dengan Sharpe Ratio tertinggi.`
-        : `Sesi #${epochNum} ditutup DEFISIT (${formatIdr(netPnlIdr)}). Circuit breaker mengaktifkan de-risking dan memperketat threshold konfirmasi sinyal.`
+        ? `Season ${epochNum} ditutup PROFIT dengan Net Gain ${formatIdr(netPnlIdr)} (${rocPct}% ROC). Algoritma EXP3 meningkatkan alokasi modal pada bot dengan Sharpe Ratio tertinggi.`
+        : `Season ${epochNum} ditutup DEFISIT (${formatIdr(netPnlIdr)}). Circuit breaker mengaktifkan de-risking dan memperketat threshold konfirmasi sinyal.`
     };
 
     return { report, newWeights };
@@ -5903,13 +5917,22 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 }}
               >
                 <option value="LIVE" style={{ background: '#0d1117', color: '#38bdf8' }}>
-                  ● Sesi #{epochReports.length === 1 && epochReports[0]?.epochNumber === 0 ? '0.1' : epochReports.length} (Aktif / Live Interim)
+                  {(() => {
+                    const official = epochReports.filter(ep => ep.epochNumber !== 0 && !String(ep.epochNumber).startsWith('0.') && !String(ep.epochNumber).includes('test'));
+                    return `● Season ${official.length + 1} (Aktif / Live)`;
+                  })()}
                 </option>
-                {epochReports.map((ep, idx) => (
-                  <option key={ep.id || idx} value={idx} style={{ background: '#0d1117', color: '#c084fc' }}>
-                    📑 Sesi #{ep.epochNumber} ({ep.createdAt ? ep.createdAt.split(',')[0] : 'Arsip'})
-                  </option>
-                ))}
+                {epochReports.map((ep, idx) => {
+                  const epNum = ep.epochNumber;
+                  const label = epNum === 0
+                    ? 'Sesi #0 Genesis'
+                    : (String(epNum).startsWith('0.') || String(epNum).includes('test') ? `Season ${epNum} (test)` : `Season ${epNum}`);
+                  return (
+                    <option key={ep.id || idx} value={idx} style={{ background: '#0d1117', color: '#c084fc' }}>
+                      📑 {label} ({ep.createdAt ? ep.createdAt.split(',')[0] : 'Arsip'})
+                    </option>
+                  );
+                })}
               </select>
             </div>
 
