@@ -2065,6 +2065,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
   });
   const [sessionRecapModalOpen, setSessionRecapModalOpen] = useState(false);
   const [selectedRecapSessionKey, setSelectedRecapSessionKey] = useState('LIVE');
+  const [recapSubTab, setRecapSubTab] = useState('OVERVIEW'); // 'OVERVIEW' | 'PAIR_RECAP'
+  const [pairDirFilter, setPairDirFilter] = useState('ALL'); // 'ALL' | 'LONG' | 'SHORT'
 
   // Global Escape key listener to dismiss open modals
   useEffect(() => {
@@ -2307,24 +2309,41 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       });
       const mvp = sortedByPerformance[0] || null;
 
-      // Universe Attribution (All pairs traded in live session)
+      // Universe Attribution (All pairs traded in live session, with Long/Short breakdown)
       const pairStats = {};
       journal.forEach(t => {
         const sym = t.symbol;
         const mkt = t.market || 'FOREX';
-        if (!pairStats[sym]) {
-          pairStats[sym] = { symbol: sym, market: mkt, totalTrades: 0, wins: 0, losses: 0, netPnlIdr: 0, grossProfit: 0, grossLoss: 0 };
-        }
+        const dir = t.direction || 'LONG';
         const val = t.pnlIdr || (t.pnlUsd * usdToIdrRate);
+        if (!pairStats[sym]) {
+          pairStats[sym] = {
+            symbol: sym, market: mkt,
+            totalTrades: 0, wins: 0, losses: 0, netPnlIdr: 0, grossProfit: 0, grossLoss: 0,
+            longTrades: 0, longWins: 0, longNetPnlIdr: 0,
+            shortTrades: 0, shortWins: 0, shortNetPnlIdr: 0
+          };
+        }
         pairStats[sym].totalTrades += 1;
-        if (t.isWin) pairStats[sym].wins += 1; else pairStats[sym].losses += 1;
         pairStats[sym].netPnlIdr += val;
+        if (t.isWin) pairStats[sym].wins += 1; else pairStats[sym].losses += 1;
         if (val > 0) pairStats[sym].grossProfit += val; else pairStats[sym].grossLoss += Math.abs(val);
+        if (dir === 'LONG') {
+          pairStats[sym].longTrades += 1;
+          pairStats[sym].longNetPnlIdr += val;
+          if (t.isWin) pairStats[sym].longWins += 1;
+        } else {
+          pairStats[sym].shortTrades += 1;
+          pairStats[sym].shortNetPnlIdr += val;
+          if (t.isWin) pairStats[sym].shortWins += 1;
+        }
       });
 
       const allPairs = Object.values(pairStats).map(p => ({
         ...p,
         winRate: p.totalTrades > 0 ? ((p.wins / p.totalTrades) * 100).toFixed(0) : '0',
+        longWinRate: p.longTrades > 0 ? ((p.longWins / p.longTrades) * 100).toFixed(0) : '0',
+        shortWinRate: p.shortTrades > 0 ? ((p.shortWins / p.shortTrades) * 100).toFixed(0) : '0',
         netPnlUsd: p.netPnlIdr / usdToIdrRate,
         profitFactor: p.grossLoss > 0 ? (p.grossProfit / p.grossLoss).toFixed(2) : (p.grossProfit > 0 ? '99.0' : '0.0')
       }));
@@ -2353,6 +2372,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         mvp,
         topAlphaPairs,
         toxicDragPairs,
+        allPairs,
         keyTakeaway: netPnlIdr >= 0
           ? `Sesi #${epochReports.length} berjalan PROFIT (+${formatIdr(netPnlIdr)}). Sinergi 4 elemen bot efektif memanfaatkan momentum tanpa pelanggaran batas risiko.`
           : `Sesi #${epochReports.length} membukukan defisit (${formatIdr(netPnlIdr)}). Circuit breaker aktif mengontrol ukuran posisi dan memitigasi drawdown.`
@@ -2420,6 +2440,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         mvp,
         topAlphaPairs: report.topAlphaPairs || bestPairsFound.slice(0, 3),
         toxicDragPairs: report.toxicDragPairs || worstPairsFound.slice(0, 3),
+        allPairs: report.allPairs || [],
         keyTakeaway: report.keyTakeaway
       };
     }
@@ -3029,7 +3050,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
   // Generate Comprehensive Epoch Performance Report & Compute Self-Improvement Parameter Adaptations
   const generateEpochReportAndAdapt = useCallback(() => {
-    const epochNum = epochReports.length;
+    // Special naming: if only Genesis Session #0 exists, this becomes Session #0.1 (Calibration)
+    const isCalibrationSession = epochReports.length === 1 && epochReports[0]?.epochNumber === 0;
+    const epochNum = isCalibrationSession ? '0.1' : epochReports.length;
     const dateStr = new Date().toLocaleString('id-ID', {
       day: '2-digit', month: 'short', year: 'numeric',
       hour: '2-digit', minute: '2-digit'
@@ -3062,24 +3085,41 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     const totalCap = capitalPerBotIdr * (agents?.length || 15);
     const rocPct = totalCap > 0 ? ((netPnlIdr / totalCap) * 100).toFixed(2) : '0.00';
 
-    // Universe Attribution (All pairs traded in this session)
+    // Universe Attribution with Long/Short breakdown
     const pairStats = {};
     journal.forEach(t => {
       const sym = t.symbol;
       const mkt = t.market || 'FOREX';
-      if (!pairStats[sym]) {
-        pairStats[sym] = { symbol: sym, market: mkt, totalTrades: 0, wins: 0, losses: 0, netPnlIdr: 0, grossProfit: 0, grossLoss: 0 };
-      }
+      const dir = t.direction || 'LONG';
       const val = t.pnlIdr || (t.pnlUsd * usdToIdrRef.current);
+      if (!pairStats[sym]) {
+        pairStats[sym] = {
+          symbol: sym, market: mkt,
+          totalTrades: 0, wins: 0, losses: 0, netPnlIdr: 0, grossProfit: 0, grossLoss: 0,
+          longTrades: 0, longWins: 0, longNetPnlIdr: 0,
+          shortTrades: 0, shortWins: 0, shortNetPnlIdr: 0
+        };
+      }
       pairStats[sym].totalTrades += 1;
-      if (t.isWin) pairStats[sym].wins += 1; else pairStats[sym].losses += 1;
       pairStats[sym].netPnlIdr += val;
+      if (t.isWin) pairStats[sym].wins += 1; else pairStats[sym].losses += 1;
       if (val > 0) pairStats[sym].grossProfit += val; else pairStats[sym].grossLoss += Math.abs(val);
+      if (dir === 'LONG') {
+        pairStats[sym].longTrades += 1;
+        pairStats[sym].longNetPnlIdr += val;
+        if (t.isWin) pairStats[sym].longWins += 1;
+      } else {
+        pairStats[sym].shortTrades += 1;
+        pairStats[sym].shortNetPnlIdr += val;
+        if (t.isWin) pairStats[sym].shortWins += 1;
+      }
     });
 
     const allPairs = Object.values(pairStats).map(p => ({
       ...p,
       winRate: p.totalTrades > 0 ? ((p.wins / p.totalTrades) * 100).toFixed(0) : '0',
+      longWinRate: p.longTrades > 0 ? ((p.longWins / p.longTrades) * 100).toFixed(0) : '0',
+      shortWinRate: p.shortTrades > 0 ? ((p.shortWins / p.shortTrades) * 100).toFixed(0) : '0',
       netPnlUsd: p.netPnlIdr / usdToIdrRef.current,
       profitFactor: p.grossLoss > 0 ? (p.grossProfit / p.grossLoss).toFixed(2) : (p.grossProfit > 0 ? '99.0' : '0.0')
     }));
@@ -3179,13 +3219,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       adaptations,
       topAlphaPairs,
       toxicDragPairs,
+      allPairs,
       keyTakeaway: netPnlIdr >= 0
         ? `Sesi #${epochNum} ditutup PROFIT dengan Net Gain ${formatIdr(netPnlIdr)} (${rocPct}% ROC). Algoritma EXP3 meningkatkan alokasi modal pada bot dengan Sharpe Ratio tertinggi.`
         : `Sesi #${epochNum} ditutup DEFISIT (${formatIdr(netPnlIdr)}). Circuit breaker mengaktifkan de-risking dan memperketat threshold konfirmasi sinyal.`
     };
 
     return { report, newWeights };
-  }, [epochReports.length, journal, agents, capitalPerBotIdr]);
+  }, [epochReports, journal, agents, capitalPerBotIdr]);
 
   // Execute Reset Confirmed
   const handleExecuteReset = () => {
@@ -5863,7 +5904,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 }}
               >
                 <option value="LIVE" style={{ background: '#0d1117', color: '#38bdf8' }}>
-                  ● Sesi #{epochReports.length} (Aktif / Live Interim)
+                  ● Sesi #{epochReports.length === 1 && epochReports[0]?.epochNumber === 0 ? '0.1' : epochReports.length} (Aktif / Live Interim)
                 </option>
                 {epochReports.map((ep, idx) => (
                   <option key={ep.id || idx} value={idx} style={{ background: '#0d1117', color: '#c084fc' }}>
@@ -5873,9 +5914,31 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               </select>
             </div>
 
+            {/* 2b. Sub-Tab Switcher: OVERVIEW | PAIR RECAP */}
+            <div style={{ display: 'flex', gap: '4px', padding: '6px 14px', background: 'rgba(255,255,255,0.015)', borderBottom: 'var(--border-hairline)' }}>
+              {[
+                { key: 'OVERVIEW', label: '📊 Overview' },
+                { key: 'PAIR_RECAP', label: '🗂️ Pair Recap' }
+              ].map(tab => (
+                <button
+                  key={tab.key}
+                  onClick={() => { setRecapSubTab(tab.key); setPairDirFilter('ALL'); }}
+                  style={{
+                    padding: '4px 12px', fontSize: '10px', fontWeight: '700',
+                    borderRadius: '4px', cursor: 'pointer', minHeight: '26px',
+                    border: recapSubTab === tab.key ? '1px solid rgba(217,70,239,0.6)' : '1px solid transparent',
+                    background: recapSubTab === tab.key ? 'rgba(217,70,239,0.15)' : 'transparent',
+                    color: recapSubTab === tab.key ? '#e879f9' : 'var(--text-muted)',
+                    transition: 'all 0.15s'
+                  }}
+                >{tab.label}</button>
+              ))}
+            </div>
+
             {/* 3. Modal Body */}
             <div style={{ padding: '14px 18px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '14px' }}>
               
+              {recapSubTab === 'OVERVIEW' && (<>
               {/* SECTION 1: EXECUTIVE KPI SCORECARD */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px' }}>
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
@@ -6174,6 +6237,124 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 </div>
               </div>
 
+              </>)}
+
+              {/* ===== PAIR RECAP SUB-TAB ===== */}
+              {recapSubTab === 'PAIR_RECAP' && (() => {
+                const pairsData = sessionRecapData.allPairs || [];
+                const hasPairs = pairsData.length > 0;
+                const filteredPairs = pairDirFilter === 'ALL'
+                  ? [...pairsData].sort((a, b) => b.netPnlIdr - a.netPnlIdr)
+                  : [...pairsData].sort((a, b) => {
+                    const aVal = pairDirFilter === 'LONG' ? a.longNetPnlIdr : a.shortNetPnlIdr;
+                    const bVal = pairDirFilter === 'LONG' ? b.longNetPnlIdr : b.shortNetPnlIdr;
+                    return bVal - aVal;
+                  });
+
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {/* Direction Filter Chips */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '9px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Arah:</span>
+                      {['ALL', 'LONG', 'SHORT'].map(dir => (
+                        <button
+                          key={dir}
+                          onClick={() => setPairDirFilter(dir)}
+                          style={{
+                            padding: '3px 10px', fontSize: '9.5px', fontWeight: '700', cursor: 'pointer',
+                            minHeight: '24px', borderRadius: '4px',
+                            border: pairDirFilter === dir
+                              ? (dir === 'LONG' ? '1px solid var(--accent-green)' : dir === 'SHORT' ? '1px solid var(--accent-rust)' : '1px solid var(--accent-blue)')
+                              : '1px solid transparent',
+                            background: pairDirFilter === dir
+                              ? (dir === 'LONG' ? 'rgba(22,163,74,0.15)' : dir === 'SHORT' ? 'rgba(239,68,68,0.15)' : 'rgba(56,189,248,0.12)')
+                              : 'var(--bg-panel-subtle)',
+                            color: pairDirFilter === dir
+                              ? (dir === 'LONG' ? 'var(--accent-green)' : dir === 'SHORT' ? 'var(--accent-rust)' : 'var(--accent-blue)')
+                              : 'var(--text-muted)'
+                          }}
+                        >{dir === 'ALL' ? '⚡ Semua' : dir === 'LONG' ? '📈 Long' : '📉 Short'}</button>
+                      ))}
+                    </div>
+
+                    {!hasPairs && (
+                      <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)', fontSize: '11px' }}>
+                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>📭</div>
+                        <div>Belum ada data pair untuk sesi ini.</div>
+                        {!sessionRecapData.isLive && <div style={{ fontSize: '9px', marginTop: '4px' }}>Sesi arsip lama tidak menyimpan data pair detail.</div>}
+                      </div>
+                    )}
+
+                    {hasPairs && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        {/* Header Row */}
+                        <div style={{
+                          display: 'grid',
+                          gridTemplateColumns: '1fr 80px 60px 80px 80px 80px',
+                          gap: '6px', padding: '6px 10px',
+                          fontSize: '8px', fontWeight: '800', color: 'var(--text-muted)',
+                          textTransform: 'uppercase', letterSpacing: '0.04em',
+                          borderBottom: 'var(--border-hairline)', background: 'var(--bg-panel-subtle)',
+                          borderRadius: '4px 4px 0 0'
+                        }}>
+                          <span>Instrumen</span>
+                          <span style={{ textAlign: 'right' }}>Net PnL</span>
+                          <span style={{ textAlign: 'center' }}>Trades</span>
+                          <span style={{ textAlign: 'center' }}>WR%</span>
+                          <span style={{ textAlign: 'center' }}>Long PnL</span>
+                          <span style={{ textAlign: 'center' }}>Short PnL</span>
+                        </div>
+
+                        {filteredPairs.map((p, i) => {
+                          const pnlToShow = pairDirFilter === 'LONG' ? p.longNetPnlIdr : pairDirFilter === 'SHORT' ? p.shortNetPnlIdr : p.netPnlIdr;
+                          const isPositive = pnlToShow >= 0;
+                          const tradesShown = pairDirFilter === 'LONG' ? p.longTrades : pairDirFilter === 'SHORT' ? p.shortTrades : p.totalTrades;
+                          const wrShown = pairDirFilter === 'LONG' ? p.longWinRate : pairDirFilter === 'SHORT' ? p.shortWinRate : p.winRate;
+                          const mktColors = { 'FOREX': '#38bdf8', 'CRYPTO': '#fb923c', 'FUTURES': '#a78bfa', 'IDX': '#34d399' };
+                          const mktColor = mktColors[p.market] || '#94a3b8';
+                          return (
+                            <div key={p.symbol} style={{
+                              display: 'grid', gridTemplateColumns: '1fr 80px 60px 80px 80px 80px',
+                              gap: '6px', padding: '7px 10px', alignItems: 'center',
+                              background: i % 2 === 0 ? 'var(--bg-panel-subtle)' : 'transparent',
+                              borderRadius: '3px'
+                            }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span style={{ fontSize: '8.5px', fontWeight: '800', color: mktColor,
+                                  background: `${mktColor}18`, border: `1px solid ${mktColor}40`,
+                                  borderRadius: '3px', padding: '1px 5px', letterSpacing: '0.03em' }}>
+                                  {p.market}
+                                </span>
+                                <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{p.symbol}</span>
+                              </div>
+                              <div style={{ textAlign: 'right', fontSize: '11px', fontWeight: '800', fontFamily: 'var(--font-mono)',
+                                color: isPositive ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                                {isPositive ? '+' : ''}{(pnlToShow / 1000).toFixed(0)}K
+                              </div>
+                              <div style={{ textAlign: 'center', fontSize: '10px', color: 'var(--text-secondary)' }}>
+                                {tradesShown || 0}
+                              </div>
+                              <div style={{ textAlign: 'center', fontSize: '10px', fontWeight: '700',
+                                color: Number(wrShown) >= 50 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                                {wrShown || 0}%
+                              </div>
+                              <div style={{ textAlign: 'center', fontSize: '9.5px', fontFamily: 'var(--font-mono)',
+                                color: p.longNetPnlIdr >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                                {p.longTrades > 0 ? `${p.longNetPnlIdr >= 0 ? '+' : ''}${(p.longNetPnlIdr / 1000).toFixed(0)}K` : '—'}
+                              </div>
+                              <div style={{ textAlign: 'center', fontSize: '9.5px', fontFamily: 'var(--font-mono)',
+                                color: p.shortNetPnlIdr >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                                {p.shortTrades > 0 ? `${p.shortNetPnlIdr >= 0 ? '+' : ''}${(p.shortNetPnlIdr / 1000).toFixed(0)}K` : '—'}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
             </div>
 
             {/* 4. Action Footer */}
@@ -6215,26 +6396,25 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   <button
                     onClick={() => {
                       setSessionRecapModalOpen(false);
-                      setIsRunning(true);
-                      showToast('▶️ Sesi trading berjalan dengan parameter adaptasi yang telah diperbarui!');
+                      setRecapSubTab('OVERVIEW');
+                      showToast('📜 Lihat sesi aktif (Live) untuk melanjutkan trading.');
                     }}
                     style={{
                       padding: '6px 16px',
                       fontSize: '11px',
                       fontWeight: '800',
-                      background: 'var(--accent-green)',
-                      color: '#ffffff',
-                      border: 'none',
+                      background: 'var(--bg-panel-subtle)',
+                      color: 'var(--text-secondary)',
+                      border: 'var(--border-hairline)',
                       borderRadius: 'var(--radius-xs)',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '6px',
-                      boxShadow: '0 0 12px rgba(22, 163, 74, 0.3)'
+                      gap: '6px'
                     }}
                   >
-                    <span>▶️</span>
-                    <span>Lanjutkan Trading Sesi Aktif</span>
+                    <span>📜</span>
+                    <span>Tutup Arsip</span>
                   </button>
                 )}
               </div>

@@ -2,13 +2,54 @@
 
 export const CHANGELOG_DATA = [
   {
+    id: 'pkg-21092026-v48',
+    version: 'Package 21092026-B',
+    semanticVersion: 'v4.8.0',
+    date: '21 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / SESSION 0.1 READY',
+    title: 'Update v4.8.0 (SEASON 0.1): Auto-Label Sesi Kalibrasi #0.1, Pair Recap Sub-Tab dengan Long/Short Breakdown & Bug Fix Auto-Start',
+    description: 'Penambahan fitur Pair Recap (sub-tab di dalam Session Recap modal) dengan breakdown performa per instrumen berdasarkan arah trade (Long/Short). Sesi pertama setelah Genesis #0 kini otomatis dilabeli Sesi #0.1 (Calibration & Hardening). Data allPairs kini disimpan ke laporan epoch untuk histori jangka panjang. Bug kritis diperbaiki: tombol di sesi arsip tidak lagi auto-start trading.',
+    processFlow: [
+      { step: '1. Session Labeling', label: 'Auto-label Sesi #0.1 jika genesis-only, semua label template string aman' },
+      { step: '2. Data Layer', label: 'pairStats + Long/Short split, allPairs tersimpan ke epoch report' },
+      { step: '3. Pair Recap UI', label: 'Sub-tab 🗂️ Pair Recap: tabel instrumen + filter Semua/Long/Short' },
+      { step: '4. Bug Fix', label: 'Tombol arsip tidak lagi auto-start trading (setIsRunning bug removed)' }
+    ],
+    markdownContent: `
+### 🗂️ v4.8.0 — Season 0.1 + Pair Recap Sub-Tab
+
+#### ✨ Fitur Baru: Pair Recap
+- **Sub-tab baru "🗂️ Pair Recap"** di dalam Session Recap modal (Opsi B — ringkas tanpa tombol terpisah)
+- **Tabel performa per instrumen:** Kolom Net PnL, Trades, WR%, Long PnL, Short PnL
+- **Filter arah trade:** Chips ⚡ Semua / 📈 Long / 📉 Short — sort otomatis berdasarkan arah dipilih
+- **Badge market berwarna:** FOREX (biru), CRYPTO (oranye), FUTURES (ungu), IDX (hijau)
+- **Fallback graceful:** Sesi arsip lama tanpa data pair menampilkan pesan informatif
+
+#### 🔖 Fitur Baru: Season 0.1 Auto-Label
+- Sesi pertama setelah Genesis #0 kini otomatis diberi label **Sesi #0.1 (Calibration & Hardening)**
+- Dropdown "Pilih Sesi" di Session Recap juga menampilkan label yang sama
+- Sesi berikutnya akan mulai dari Sesi #2 (atau disesuaikan)
+
+#### 📦 Data Integrity
+- \`allPairs\` (breakdown lengkap semua pair) kini tersimpan ke setiap epoch report di localStorage
+- \`pairStats\` di live sessionRecapData dan generateEpochReportAndAdapt diperluas dengan: \`longTrades\`, \`longWins\`, \`longNetPnlIdr\`, \`shortTrades\`, \`shortWins\`, \`shortNetPnlIdr\`, \`longWinRate\`, \`shortWinRate\`
+
+#### 🐛 Bug Fix
+- **[CRITICAL]** Tombol footer sesi arsip tidak lagi memanggil \`setIsRunning(true)\` — trading tidak akan auto-start saat user menutup laporan sesi lama
+- Reset self-learning tetap berjalan benar: \`isRunning = false\` setelah global reset, user harus tekan Start manual
+`
+  },
+  {
+
     id: 'pkg-21092026-v47',
     version: 'Package 21092026',
     semanticVersion: 'v4.7.0',
     date: '21 September 2026',
-    status: 'LATEST',
-    statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / PRODUCTION HARDENED',
+    status: 'COMPLETED',
+    statusColor: '#94a3b8',
+    badgeLabel: 'COMPLETED',
     title: 'Update Package 21092026 (v4.7 APEX): AI Arena Engine Integrity Refactor, Zero Side-Effects Loop, Live USD/IDR Sync, Dynamic KPIs & WCAG UI/UX Hardening',
     description: 'Audit komprehensif dan hardening produksi AI Multi-Agent Arena (18 Item Resolusi 100%): Rekonstruksi simulation loop murni bebas side-effect via batch sequential dispatch, live USD/IDR dynamic synchronization (usdToIdrRef) di 41 titik kalkulasi, formula collision-proof trade IDs, kalkulasi dinamis metrik KPI (Sharpe Ratio matematis, running MDD, Win Rate), reaktif clock 60s & anti-drift timer, serta standarisasi aksesibilitas WCAG (7 ARIA modal dialog, stacked toast queue max 3, mobile cockpit grid, typography floor >= 8px, touch targets >= 24-26px, dan backdrop/ESC dismiss).',
     processFlow: [
