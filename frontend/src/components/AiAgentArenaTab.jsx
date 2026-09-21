@@ -3244,17 +3244,16 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       // 2. STOP trading sesuai instruksi (status jadi PAUSED)
       setIsRunning(false);
 
-      // 3. Terapkan bobot Self-Improvement baru ke agen & evolusi generasi
+      // 3. Terapkan bobot Self-Improvement baru ke agen & reset generasi ke 0 (season baru)
       setAgents(prev => prev.map((a, idx) => {
         const oldGen = typeof a.generation === 'number' ? a.generation : 0;
-        const nextGen = oldGen + 1;
-        const newResetCount = (a.resetCount || 0) + 1;
         const st = agentStatsMap[a.id];
         const deficitIdr = st && st.netGainIdr < 0 ? Math.abs(st.netGainIdr) : 0;
         const worstSym = report.agentBreakdowns.find(b => b.agentId === a.id)?.worstPair || 'N/A';
+        // Catat ringkasan season lama untuk arsip — tapi season baru dimulai fresh
         const globalResetRecord = {
           fromGen: oldGen,
-          toGen: nextGen,
+          toGen: 0, // season baru selalu mulai dari Gen 0
           timestamp: new Date().toISOString(),
           deficitIdr: deficitIdr,
           toxicPair: worstSym !== '-' ? worstSym : 'Diversified Rebalance',
@@ -3269,10 +3268,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
         return {
           ...a,
-          generation: nextGen,
-          resetCount: newResetCount,
-          resetsHistory: [globalResetRecord, ...(a.resetsHistory || [])],
-          dnaTraits: globalResetRecord.mutation,
+          generation: 0,          // ✅ fresh slate di season baru
+          resetCount: 0,           // ✅ MC counter reset per season
+          resetsHistory: [],       // ✅ silsilah MC bersih di season baru
+          dnaTraits: globalResetRecord.mutation, // adaptasi EXP3 tetap terbawa
           exp3Weight: newWeights[idx] !== undefined ? newWeights[idx] : a.exp3Weight,
           equityHistory: [capitalPerBotIdr]
         };
