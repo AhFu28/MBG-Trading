@@ -123,7 +123,8 @@ export const resolveExecutionMode = (globalArenaMode, agentId, market) => {
   const bias = AGENT_EXECUTION_BIAS[agentId] || 'HYBRID';
   if (bias === 'SPOT') return 'SPOT';
   if (bias === 'FUTURES') return 'FUTURES';
-  return Math.random() < 0.5 ? 'SPOT' : 'FUTURES';
+  // Deterministic: alternate based on timestamp (no random)
+  return (Math.floor(Date.now() / 10000) % 2 === 0) ? 'SPOT' : 'FUTURES';
 };
 
 // Dynamic Tiered Market Scanner Pipeline
@@ -172,6 +173,235 @@ export const scanActiveMarketRadar = (marketFeeds, instruments, scannerFilter = 
   // Take top ~55 most active liquid candidates
   const cutoff = Math.max(25, Math.min(scored.length, 55));
   return scored.slice(0, cutoff).map(s => s.symbol);
+};
+
+
+
+// Technical Analysis Signal Engine (Zero Math.random Decision)
+const computeRsiProxy = (change, atr, price) => {
+  if (!price || price <= 0 || !atr || atr <= 0) return 50;
+  const normalizedChange = (change / 100) * price;
+  const atrRatio = normalizedChange / atr;
+  return Math.max(0, Math.min(100, 50 + (atrRatio * 25)));
+};
+
+const computeRangePosition = (price, high, low) => {
+  if (!high || !low || high <= low) return 0.5;
+  return Math.max(0, Math.min(1, (price - low) / (high - low)));
+};
+
+const computeMomentumScore = (change, atr, price) => {
+  if (!price || price <= 0 || !atr || atr <= 0) return 0;
+  const absPriceMove = Math.abs(change / 100) * price;
+  const direction = change >= 0 ? 1 : -1;
+  return direction * (absPriceMove / atr);
+};
+
+const detectRegimeProxy = (change, atr, price, high, low) => {
+  if (!atr || !price || price <= 0) return 'RANGING';
+  const atrPct = (atr / price) * 100;
+  const absChange = Math.abs(change || 0);
+  if (absChange > atrPct * 1.5 && change > 0) return 'TRENDING_BULL';
+  if (absChange > atrPct * 1.5 && change < 0) return 'TRENDING_BEAR';
+  return 'RANGING';
+};
+
+const computeBollingerProxy = (price, high, low, atr) => {
+  if (!price || !high || !low || !atr) return 0;
+  const mid = (high + low) / 2;
+  const bandWidth = atr * 2;
+  if (bandWidth <= 0) return 0;
+  return Math.max(-1.5, Math.min(1.5, (price - mid) / bandWidth));
+};
+
+const computeDonchianBreakout = (price, high, low) => {
+  if (!high || !low || high <= low) return 0;
+  const range = high - low;
+  const upperProx = (high - price) / range;
+  const lowerProx = (price - low) / range;
+  return lowerProx - upperProx;
+};
+
+const computeAgentSignal = (agentId, targetKey, feed, dnaTraits = {}) => {
+  const { price, change = 0, high, low, atr } = feed;
+  if (!price || price <= 0) return { isLong: true, confidence: 50, rationale: 'Insufficient data' };
+
+  const rsi = computeRsiProxy(change, atr, price);
+  const rangePos = computeRangePosition(price, high, low);
+  const momentum = computeMomentumScore(change, atr, price);
+  const regime = detectRegimeProxy(change, atr, price, high, low);
+  const bollinger = computeBollingerProxy(price, high, low, atr);
+  const donchian = computeDonchianBreakout(price, high, low);
+  const confBoost = dnaTraits.confidenceBoost || 0;
+
+  let isLong = true;
+  let confidence = 50;
+  let rationale = '';
+
+  switch (agentId) {
+    case 'WATER': {
+      const isSweepLow = rangePos < 0.25 && rsi < 40;
+      const isSweepHigh = rangePos > 0.75 && rsi > 60;
+      isLong = isSweepLow || (!isSweepHigh && change < -0.3);
+      confidence = Math.min(95, 65 + Math.abs(bollinger) * 20 + confBoost);
+      const side = isLong ? 'Sell-Side' : 'Buy-Side';
+      rationale = 'WATER: Liquidity sweep ' + side + ' terdeteksi (RSI proxy: ' + rsi.toFixed(0) + ', Range: ' + (rangePos * 100).toFixed(0) + '%). Mitigasi order block pada ' + targetKey + '.';
+      break;
+    }
+    case 'FIRE': {
+      const isHighVol = Math.abs(momentum) > 1.0;
+      isLong = isHighVol ? (momentum > 0) : (change > 0.2);
+      confidence = Math.min(95, 55 + Math.abs(momentum) * 15 + confBoost);
+      const dir = isLong ? 'bullish' : 'bearish';
+      rationale = 'FIRE: High-volatility momentum surge ' + dir + ' (Momentum Score: ' + momentum.toFixed(2) + 'x ATR). Event-driven breakout pada ' + targetKey + '.';
+      break;
+    }
+    case 'AIR': {
+      isLong = donchian > 0.15;
+      confidence = Math.min(95, 60 + Math.abs(donchian) * 25 + confBoost);
+      const band = isLong ? 'Upper Band' : 'Lower Band';
+      rationale = 'AIR: Breakout Donchian channel ' + band + ' (Proximity: ' + (donchian * 100).toFixed(0) + '%). Trend-following pada ' + targetKey + '.';
+      break;
+    }
+    case 'EARTH': {
+      const isOversold = bollinger < -0.5 && rsi < 35;
+      const isOverbought = bollinger > 0.5 && rsi > 65;
+      isLong = isOversold || (!isOverbought && change < -0.5);
+      confidence = Math.min(95, 60 + Math.abs(bollinger) * 20 + confBoost);
+      rationale = 'EARTH: Mean reversion ' + (isLong ? 'bounce' : 'fade') + ' (Bollinger: ' + bollinger.toFixed(2) + 'sig, RSI proxy: ' + rsi.toFixed(0) + '). Statistical support ' + targetKey + '.';
+      break;
+    }
+    case 'STEAM': {
+      const sweepDetected = rangePos < 0.3 || rangePos > 0.7;
+      isLong = sweepDetected ? (rangePos < 0.5) : (momentum > 0);
+      confidence = Math.min(95, 62 + (sweepDetected ? 15 : 0) + (Math.abs(momentum) > 0.8 ? 10 : 0) + confBoost);
+      rationale = 'STEAM [W+F]: Liquidity sweep ' + (sweepDetected ? 'terkonfirmasi' : 'approaching') + ' + momentum ' + momentum.toFixed(2) + 'x ATR pada ' + targetKey + '.';
+      break;
+    }
+    case 'STORM': {
+      const bosSignal = regime === 'TRENDING_BULL' || regime === 'TRENDING_BEAR';
+      isLong = bosSignal ? (regime === 'TRENDING_BULL') : (donchian > 0);
+      confidence = Math.min(95, 63 + (bosSignal ? 15 : 0) + (Math.abs(donchian) > 0.2 ? 10 : 0) + confBoost);
+      rationale = 'STORM [W+A]: BOS structural ' + regime + ' + Donchian breakout (' + (donchian * 100).toFixed(0) + '%) pada ' + targetKey + '.';
+      break;
+    }
+    case 'MUD': {
+      isLong = bollinger < -0.3 && rangePos < 0.4;
+      confidence = Math.min(95, 64 + Math.abs(bollinger) * 18 + confBoost);
+      rationale = 'MUD [W+E]: Support/Resistance bounce + FVG mitigation (Bollinger: ' + bollinger.toFixed(2) + 'sig) pada ' + targetKey + '.';
+      break;
+    }
+    case 'LIGHTNING': {
+      isLong = momentum > 0.5 && donchian > 0;
+      confidence = Math.min(95, 58 + Math.abs(momentum) * 12 + Math.abs(donchian) * 12 + confBoost);
+      rationale = 'LIGHTNING [F+A]: Momentum surge (' + momentum.toFixed(2) + 'x ATR) + Donchian breakout pada ' + targetKey + '.';
+      break;
+    }
+    case 'LAVA': {
+      const isOverextended = Math.abs(bollinger) > 0.8 && Math.abs(momentum) > 1.2;
+      isLong = isOverextended ? (bollinger < 0) : (rsi < 35);
+      confidence = Math.min(95, 60 + (isOverextended ? 20 : 5) + confBoost);
+      rationale = 'LAVA [F+E]: Post-news exhaustion ' + (isOverextended ? 'spike' : 'drift') + ' fade (BB: ' + bollinger.toFixed(2) + 'sig, Mom: ' + momentum.toFixed(2) + 'x) pada ' + targetKey + '.';
+      break;
+    }
+    case 'SANDSTORM': {
+      const isPullbackBuy = donchian > -0.3 && bollinger < 0 && rangePos < 0.45;
+      isLong = isPullbackBuy || (regime === 'TRENDING_BULL' && rangePos < 0.4);
+      confidence = Math.min(95, 62 + (isPullbackBuy ? 18 : 5) + confBoost);
+      rationale = 'SANDSTORM [A+E]: Trend pullback buy pada support kunci (Range: ' + (rangePos * 100).toFixed(0) + '%, Donchian: ' + (donchian * 100).toFixed(0) + '%) ' + targetKey + '.';
+      break;
+    }
+    case 'TEMPEST': {
+      const smcSig = rangePos < 0.35 || rangePos > 0.65;
+      const momSig = Math.abs(momentum) > 0.6;
+      const trendSig = Math.abs(donchian) > 0.15;
+      const bullVotes = (smcSig && rangePos < 0.5 ? 1 : 0) + (momSig && momentum > 0 ? 1 : 0) + (trendSig && donchian > 0 ? 1 : 0);
+      isLong = bullVotes >= 2;
+      confidence = Math.min(95, 60 + bullVotes * 10 + confBoost);
+      rationale = 'TEMPEST [W+F+A]: Triple-engine consensus (' + bullVotes + '/3 bullish). Liquidity + Momentum + Trend pada ' + targetKey + '.';
+      break;
+    }
+    case 'OCEANIC': {
+      const liquidityOk = rangePos > 0.25 && rangePos < 0.75;
+      const trendOk = regime === 'TRENDING_BULL' || (regime === 'RANGING' && bollinger < 0);
+      isLong = liquidityOk && (trendOk || rsi < 45);
+      confidence = Math.min(95, 65 + (liquidityOk ? 10 : 0) + (trendOk ? 10 : 0) + confBoost);
+      rationale = 'OCEANIC [W+A+E]: All-weather institutional (' + regime + ', RSI: ' + rsi.toFixed(0) + ', BB: ' + bollinger.toFixed(2) + 'sig) pada ' + targetKey + '.';
+      break;
+    }
+    case 'GEOTHERMAL': {
+      const atSupport = bollinger < -0.2 && rangePos < 0.4;
+      const newsReactive = Math.abs(momentum) > 0.5;
+      isLong = atSupport || (newsReactive && momentum < 0 && rsi < 40);
+      confidence = Math.min(95, 62 + (atSupport ? 15 : 0) + (newsReactive ? 10 : 0) + confBoost);
+      rationale = 'GEOTHERMAL [W+F+E]: Fundamental Order Block + ' + (newsReactive ? 'news reaction' : 'valuation discount') + ' (BB: ' + bollinger.toFixed(2) + 'sig) pada ' + targetKey + '.';
+      break;
+    }
+    case 'CYCLONE': {
+      const isTrending = regime === 'TRENDING_BULL' || regime === 'TRENDING_BEAR';
+      if (isTrending) { isLong = regime === 'TRENDING_BULL'; }
+      else { isLong = bollinger < -0.3 && rsi < 40; }
+      confidence = Math.min(95, 63 + (isTrending ? 15 : 8) + confBoost);
+      const modeLabel = isTrending ? 'Trend Ignition' : 'Mean Reversion';
+      rationale = 'CYCLONE [F+A+E]: Dynamic regime transition > ' + modeLabel + ' (' + regime + ', Mom: ' + momentum.toFixed(2) + 'x) pada ' + targetKey + '.';
+      break;
+    }
+    case 'AVATAR': {
+      const waterVote = (rangePos < 0.3 && rsi < 40) ? 1 : (rangePos > 0.7 && rsi > 60 ? -1 : 0);
+      const fireVote = momentum > 0.5 ? 1 : (momentum < -0.5 ? -1 : 0);
+      const airVote = donchian > 0.15 ? 1 : (donchian < -0.15 ? -1 : 0);
+      const earthVote = bollinger < -0.3 ? 1 : (bollinger > 0.3 ? -1 : 0);
+      const totalScore = waterVote + fireVote + airVote + earthVote;
+      isLong = totalScore >= 0;
+      const votesLong = [waterVote, fireVote, airVote, earthVote].filter(v => v > 0).length;
+      confidence = Math.min(95, 55 + Math.abs(totalScore) * 8 + confBoost);
+      rationale = 'AVATAR [4-E]: Konsensus 4 elemen (' + votesLong + '/4 bullish, Score: ' + (totalScore > 0 ? '+' : '') + totalScore + '). ' + (isLong ? 'Bullish' : 'Bearish') + ' dominance pada ' + targetKey + '.';
+      break;
+    }
+    case 'CHAOS': {
+      const isImpulsive = Math.abs(momentum) > 1.2;
+      const isOverext = Math.abs(bollinger) > 0.9;
+      if (isImpulsive) { isLong = momentum > 0; }
+      else if (isOverext) { isLong = bollinger < 0; }
+      else { isLong = change > 0; }
+      confidence = Math.min(95, 52 + Math.abs(momentum) * 10 + confBoost);
+      rationale = 'CHAOS [ANOMALY]: ' + (isImpulsive ? 'Impulse follow' : (isOverext ? 'Contrarian fade' : 'Momentum drift')) + ' (' + (isLong ? 'Long' : 'Short') + ') pada ' + targetKey + '. BB: ' + bollinger.toFixed(2) + 'sig.';
+      break;
+    }
+    default: {
+      isLong = change > 0 || rsi < 45;
+      confidence = 50 + confBoost;
+      rationale = 'Multi-market opportunity on ' + targetKey + ' (Change: ' + (change || 0).toFixed(2) + '%).';
+    }
+  }
+
+  return { isLong, confidence, rationale };
+};
+
+const selectBestInstrument = (candidateSymbols, marketFeeds, agentId) => {
+  if (!candidateSymbols || candidateSymbols.length === 0) return null;
+  if (candidateSymbols.length === 1) return candidateSymbols[0];
+
+  const scored = candidateSymbols.map(sym => {
+    const feed = marketFeeds[sym];
+    if (!feed) return { sym, score: 0 };
+    const absChange = Math.abs(feed.change || 0);
+    const atrPct = (feed.atr && feed.price) ? (feed.atr / feed.price) * 100 : 1;
+    const rangePos = computeRangePosition(feed.price, feed.high, feed.low);
+    let score = Math.min(3, absChange) * 10 + Math.min(2, atrPct) * 8;
+    if (['WATER', 'MUD', 'EARTH', 'GEOTHERMAL', 'OCEANIC'].includes(agentId)) {
+      score += Math.abs(rangePos - 0.5) * 15;
+    } else if (['FIRE', 'LIGHTNING', 'TEMPEST', 'STORM'].includes(agentId)) {
+      score += absChange * 5;
+    } else if (['AIR', 'SANDSTORM', 'CYCLONE'].includes(agentId)) {
+      score += (rangePos > 0.7 || rangePos < 0.3) ? 12 : 3;
+    }
+    return { sym, score };
+  });
+  scored.sort((a, b) => b.score - a.score);
+  const topN = Math.min(3, scored.length);
+  const pickIdx = Date.now() % topN;
+  return scored[pickIdx].sym;
 };
 
 // Universal Realistic Lot & Position Sizing Calculator (Capital & Risk Aware, Spot vs Futures)
@@ -986,6 +1216,71 @@ const DEFAULT_MARKET_FEEDS = {
   'SMH': { name: 'VanEck Semiconductor ETF', market: 'US', price: 254.00, change: 2.80, high: 260.00, low: 249.00, atr: 6.5, regime: 'SEMI_SUPER_CYCLE' },
   'TQQQ': { name: 'ProShares UltraPro QQQ 3x', market: 'US', price: 82.50, change: 2.85, high: 85.20, low: 79.80, atr: 3.2, regime: 'LEVERAGED_TECH' },
   'SOXL': { name: 'Direxion Semiconductor Bull 3x', market: 'US', price: 38.40, change: 8.20, high: 41.50, low: 36.00, atr: 3.1, regime: 'TRIPLE_LEVERAGED_SEMI' }
+};
+
+
+// AGENT DEEP PROFILE - Rich Metadata per Agent
+const AGENT_DEEP_PROFILE = {
+  WATER: {
+    philosophy: 'WATER mengikuti jejak kaki institusional besar (Smart Money) yang meninggalkan sidik jari berupa Order Block dan Fair Value Gap. Filosofinya: pasar digerakkan oleh modal besar yang menyapu likuiditas ritel sebelum memulai pergerakan sesungguhnya. WATER menunggu sapuan likuiditas terjadi, lalu entry di zona Order Block yang telah terkonfirmasi \u2014 membeli saat ritel panic selling, menjual saat ritel FOMO buying.',
+    optimalConditions: 'Pasar dengan likuiditas tinggi yang menunjukkan pola sweep-and-reverse berulang. Saham blue-chip BEI, Gold (XAU/USD), dan major forex pairs. Paling efektif saat terjadi false breakout yang memancing stop loss ritel.',
+    weakConditions: 'Pasar sideways berkepanjangan tanpa sweeps yang jelas (ranging sempit). Kripto altcoin illiquid yang rentan wash trading. Sesi pasar sepi (lunch break IDX 12:00-13:30).',
+    preferredTimeframe: 'H4 (primary), H1 (confirmation), D1 (bias direction)',
+    riskProfile: 'Moderat-Konservatif. Risk per trade 1-2% modal. Rasio R:R minimum 1:3. Spot preferred untuk akumulasi.',
+    synergyExplanation: null,
+    winRateEdge: 'High R:R Institutional Edge',
+    bestInstruments: 'XAU/USD, EUR/USD, GBP/USD, BBCA, BBRI, BMRI',
+    avoidInstruments: 'Kripto micro-cap (< $10M vol), Saham gorengan IDX (fraksi < Rp 500)',
+    instrumentEdge: 'Instrumen dengan order book dalam, likuiditas tinggi, dan pola sweep-reversal berulang memberikan sinyal paling akurat untuk strategi SMC.'
+  },
+  FIRE: {
+    philosophy: 'FIRE beroperasi di titik ledakan volatilitas tertinggi \u2014 saat rilis data ekonomi makro (CPI, NFP, Fed FOMC Rate Decision, ECB Minutes). Berita makro menciptakan ketidakseimbangan supply/demand instan yang bisa dieksploitasi dalam menit pertama setelah rilis. FIRE menunggangi gelombang momentum awal sebelum pasar menemukan ekuilibrium baru.',
+    optimalConditions: 'Sesi London Open (14:00 WIB) dan New York Open (20:30 WIB). Saat jadwal rilis data high-impact (CPI, Payroll, GDP). Volatilitas tinggi dengan arah jelas.',
+    weakConditions: 'Pasar tenang tanpa katalis berita. Sesi Asia malam hari. Hari libur bank sentral.',
+    preferredTimeframe: 'M15 (primary), M5 (scalp entry), H1 (exit management)',
+    riskProfile: 'Agresif. Risk per trade 2-3% modal. Trailing stop cepat. Target cepat 2-3x ATR.',
+    synergyExplanation: null,
+    winRateEdge: 'Event-Driven Speed Alpha',
+    bestInstruments: 'EUR/USD, GBP/USD, XAU/USD, US30, NAS100, USOIL',
+    avoidInstruments: 'Saham IDX (terlalu lambat bereaksi terhadap makro global), kripto spot (24/7 tanpa event window jelas)',
+    instrumentEdge: 'Instrumen yang paling sensitif terhadap data makro AS/EU memberikan spike volatilitas tertinggi dalam window 15-60 menit pasca-rilis.'
+  },
+  AIR: {
+    philosophy: 'AIR menunggangi hembusan tren panjang dengan kesabaran \u2014 mendeteksi saat harga memecahkan batas atas/bawah Donchian Channel dan menegaskan bahwa tren baru telah dimulai. Filosofinya berasal dari Turtle Traders: biarkan winners run, potong losers cepat.',
+    optimalConditions: 'Pasar trending kuat (Hurst > 0.6). Breakout setelah konsolidasi panjang. Crypto bull/bear runs. Komoditas saat siklus supply-demand bergeser.',
+    weakConditions: 'Pasar choppy/ranging (whipsaw berulang). Volatilitas rendah tanpa arah. Sideways market panjang.',
+    preferredTimeframe: 'H4 (primary), D1 (trend filter), H1 (entry timing)',
+    riskProfile: 'Moderat. Risk 1.5-2%. Trailing stop lebar. Target TP tinggi (3-5x ATR).',
+    synergyExplanation: null,
+    winRateEdge: 'Trend Capture Endurance',
+    bestInstruments: 'BTC/USDT, ETH/USDT, XAU/USD, NVDA, TSLA, USOIL',
+    avoidInstruments: 'Forex majors saat consolidation, saham defensif IDX (ICBP, KLBF)',
+    instrumentEdge: 'Instrumen dengan kecenderungan trending kuat (crypto, komoditas, saham growth US) memberikan peluang trend-following terbaik.'
+  },
+  EARTH: {
+    philosophy: 'EARTH percaya bahwa harga selalu kembali ke nilai wajarnya \u2014 setiap deviasi ekstrem dari mean adalah peluang. Kokoh dan disiplin, EARTH menggunakan Bollinger Bands dan level support/resistance historis untuk mengidentifikasi titik oversold/overbought. Seperti gravitasi, harga ditarik kembali ke keseimbangan.',
+    optimalConditions: 'Pasar ranging dengan support/resistance terdefinisi baik. Saham defensif dividen tinggi. RSI ekstrem (<30 atau >70). Post-panic selling.',
+    weakConditions: 'Trending market kuat. Breakout genuine. Saat fundamental berubah drastis.',
+    preferredTimeframe: 'H4 (primary), D1 (mean identification), H1 (entry)',
+    riskProfile: 'Konservatif. Risk 1-1.5% per trade. Spot accumulation preferred.',
+    synergyExplanation: null,
+    winRateEdge: 'Statistical Mean Reversion',
+    bestInstruments: 'BBCA, BBRI, TLKM, ICBP, KLBF, UNVR, EUR/USD (range-bound)',
+    avoidInstruments: 'Kripto altcoin volatil, saham momentum tinggi (AMMN, BREN saat rally)',
+    instrumentEdge: 'Saham defensif BEI dan forex major saat ranging memberikan bounce mean-reversion paling konsisten.'
+  },
+  STEAM: { philosophy: 'Fusi WATER+FIRE: Memetakan zona likuiditas institusional terlebih dahulu, lalu menunggu katalis berita sebagai pemicu entry. Kombinasi memastikan masuk di zona bernilai tinggi dengan konfirmasi volume berita.', optimalConditions: 'Order Block terbentuk sebelum rilis data makro. XAU/USD dan EUR/USD menjelang FOMC/CPI.', weakConditions: 'Tanpa setup SMC DAN tanpa berita.', preferredTimeframe: 'H1 (SMC setup), M15 (news entry)', riskProfile: 'Moderat-Agresif. Risk 2%.', synergyExplanation: 'WATER menyiapkan zona entry (Order Block). FIRE memberikan timing saat volume berita meledak. Entry presisi di zona institusional tepat saat likuiditas membanjir.', winRateEdge: 'Precision Sniper Entry', bestInstruments: 'XAU/USD, EUR/USD, GBP/USD, US30', avoidInstruments: 'Saham IDX, kripto spot', instrumentEdge: 'Forex dan komoditas menjelang rilis data.' },
+  STORM: { philosophy: 'Fusi WATER+AIR: Konfirmasi ganda \u2014 perubahan struktur pasar (BOS/CHoCH) dari SMC dan breakout Donchian Channel.', optimalConditions: 'Awal tren baru setelah konsolidasi panjang.', weakConditions: 'False breakout tanpa perubahan struktur.', preferredTimeframe: 'H4 (structure), H1 (breakout)', riskProfile: 'Moderat. Risk 1.5-2%.', synergyExplanation: 'WATER mengidentifikasi BOS. AIR mengkonfirmasi breakout Donchian. Mengurangi false breakout signifikan.', winRateEdge: 'Structural Breakout Confirmation', bestInstruments: 'BTC/USDT, XAU/USD, NVDA, TSLA', avoidInstruments: 'Forex saat ranging', instrumentEdge: 'Instrumen trending dengan perubahan struktur jelas.' },
+  MUD: { philosophy: 'Fusi WATER+EARTH: Reversal di S/R historis yang dikonfirmasi oleh FVG dan Order Block. Akumulasi spot di zona diskon institusional.', optimalConditions: 'Pullback ke support historis kuat + zona Order Block. Blue-chip BEI saat koreksi.', weakConditions: 'Breakdown genuine di bawah support.', preferredTimeframe: 'D1 (support), H4 (FVG/OB)', riskProfile: 'Konservatif. Spot. Risk 1%. R:R 1:3+.', synergyExplanation: 'WATER menandai FVG/OB. EARTH mengkonfirmasi S/R historis. Double confirmation = high-quality discount entry.', winRateEdge: 'Institutional Discount Accumulation', bestInstruments: 'BBCA, BBRI, BMRI, TLKM, ASII', avoidInstruments: 'Kripto volatil, komoditas trending', instrumentEdge: 'Blue-chip IDX saat koreksi ke zona OB + support historis.' },
+  LIGHTNING: { philosophy: 'Fusi FIRE+AIR: Katalis berita memicu awal ekspansi tren Donchian berkecepatan tinggi. Agresif dan cepat.', optimalConditions: 'Breakout pasca rilis data makro yang membentuk tren baru.', weakConditions: 'Berita tanpa dampak signifikan.', preferredTimeframe: 'M15 (entry), H1 (management)', riskProfile: 'Agresif. Risk 2-3%. Trailing cepat.', synergyExplanation: 'FIRE mendeteksi katalis. AIR mengkonfirmasi tren baru. Menangkap awal tren event-driven.', winRateEdge: 'Event-Ignited Trend Capture', bestInstruments: 'EUR/USD, GBP/USD, XAU/USD, NAS100', avoidInstruments: 'Saham IDX, kripto low-vol', instrumentEdge: 'Forex dan indeks yang bereaksi cepat terhadap data makro.' },
+  LAVA: { philosophy: 'Fusi FIRE+EARTH: Counter-trend saat spike berita membawa harga keluar batas wajar (>3\u03C3 Bollinger). Mengambil posisi berlawanan setelah exhaustion.', optimalConditions: 'Spike berita ekstrem. Post-NFP/CPI overshoot.', weakConditions: 'Tren genuine berlanjut setelah berita.', preferredTimeframe: 'M15 (exhaustion), H1 (reversion)', riskProfile: 'Moderat-Agresif. Risk 1.5-2%.', synergyExplanation: 'FIRE mendeteksi spike. EARTH mengukur deviasi dari mean. Saat spike >3\u03C3, probabilitas reversion sangat tinggi.', winRateEdge: 'Post-News Exhaustion Fade', bestInstruments: 'EUR/USD, XAU/USD, USOIL, GBP/USD', avoidInstruments: 'Kripto, saham IDX', instrumentEdge: 'Forex dan komoditas yang overreact lalu revert ke mean.' },
+  SANDSTORM: { philosophy: 'Fusi AIR+EARTH: Disiplin beli saat pullback dalam tren kuat. Menunggu harga kembali ke support kunci sebelum entry searah tren.', optimalConditions: 'Tren naik + pullback ke MA 50 / Fibonacci 61.8%. US growth stocks saat koreksi.', weakConditions: 'Trend reversal. Pullback menjadi breakdown.', preferredTimeframe: 'H4 (trend), H1 (pullback entry)', riskProfile: 'Moderat. Risk 1.5%.', synergyExplanation: 'AIR mengidentifikasi tren aktif. EARTH menunggu pullback ke support. Entry hanya saat tren + support selaras.', winRateEdge: 'Trend Pullback Precision', bestInstruments: 'NVDA, AAPL, MSFT, META, BBCA, BTC/USDT', avoidInstruments: 'Instrumen ranging, saham turnaround', instrumentEdge: 'Saham growth US dan blue-chip saat uptrend dengan pullback ke area support teknikal.' },
+  TEMPEST: { philosophy: 'Sindikat W+F+A: Triple-engine alpha. Likuiditas institusional + katalis berita + pengawalan tren. Hanya entry saat minimal 2/3 elemen selaras.', optimalConditions: 'Pasar trending kuat + sweep likuiditas + rilis data makro mengkonfirmasi arah.', weakConditions: 'Tanpa setup SMC, tanpa berita, tanpa tren.', preferredTimeframe: 'H4, M15 (entry)', riskProfile: 'Agresif. Risk 2-3%. Target 4-5x ATR.', synergyExplanation: 'Tiga mesin: WATER zona institusional, FIRE timing katalis, AIR tren. Consensus 2/3 min = alpha tertinggi.', winRateEdge: 'Triple-Confirmation Alpha', bestInstruments: 'BTC/USDT, XAU/USD, NAS100, NVDA', avoidInstruments: 'Saham defensif IDX, forex minor', instrumentEdge: 'Instrumen volume besar + volatilitas + sensitivitas makro.' },
+  OCEANIC: { philosophy: 'Sindikat W+A+E: All-weather institutional anchor. Gabungan tiga elemen untuk wealth preservation jangka panjang dengan tetap menangkap upside. Spot accumulation, minimal leverage.', optimalConditions: 'Semua kondisi (all-weather). Paling efektif saat transisi bearish ke recovery.', weakConditions: 'Flash crash violent. Ketiga sinyal konflik.', preferredTimeframe: 'D1, H4 (entry)', riskProfile: 'Konservatif. Risk 1%. Spot only.', synergyExplanation: 'WATER zona akumulasi. AIR tren recovery. EARTH entry undervalued. Triple safety net untuk wealth building.', winRateEdge: 'All-Weather Wealth Anchor', bestInstruments: 'BBRI, BBCA, BMRI, AAPL, MSFT, BTC/USDT (DCA)', avoidInstruments: 'Saham gorengan, leveraged ETFs, altcoin micro-cap', instrumentEdge: 'Blue-chip multi-market untuk akumulasi jangka panjang.' },
+  GEOTHERMAL: { philosophy: 'Sindikat W+F+E: Membeli saat panic sell membawa harga ke zona Order Block fundamental. Menunggu berita negatif membawa harga ke discount historis, lalu entry spot.', optimalConditions: 'Panic selling blue-chip ke valuasi historis murah. Post-crash recovery.', weakConditions: 'Fundamental genuinely deteriorating.', preferredTimeframe: 'D1, H4 (OB), H1 (entry)', riskProfile: 'Konservatif. Risk 1%. Spot. Hold menengah-panjang.', synergyExplanation: 'WATER OB historis. FIRE katalis panic. EARTH bawah fair value. Buying the panic di zona institusional.', winRateEdge: 'Panic Discount Accumulator', bestInstruments: 'TLKM, UNVR, BBRI, JPM, DIS', avoidInstruments: 'Kripto altcoin, saham tanpa fundamental', instrumentEdge: 'Blue-chip fundamental kuat saat panic selling sementara.' },
+  CYCLONE: { philosophy: 'Sindikat F+A+E: Dynamic regime transition engine. Mendeteksi perubahan rezim pasar dan adaptif beralih strategi. Saat trending: ikuti tren. Saat ranging: mean reversion.', optimalConditions: 'Titik transisi rezim pasar.', weakConditions: 'Sinyal regime detection ambigu. Choppy berkepanjangan.', preferredTimeframe: 'H1 (regime), M15 (entry)', riskProfile: 'Moderat-Agresif. Risk 2%.', synergyExplanation: 'FIRE volatility expansion/contraction. AIR arah tren baru. EARTH fallback mean-reversion. Adaptive switching.', winRateEdge: 'Regime Transition Adapter', bestInstruments: 'XAU/USD, BTC/USDT, EUR/USD, NAS100', avoidInstruments: 'Instrumen regime sangat stabil', instrumentEdge: 'Instrumen yang sering mengalami regime shift.' },
+  AVATAR: { philosophy: 'Master 4-Element Supreme Consensus. Keempat elemen base memberikan vote independen. Hanya entry saat mayoritas setuju. Strategi paling selektif, win-rate tertinggi secara teori, frekuensi trading terendah karena konsensus ketat.', optimalConditions: 'Keempat elemen selaras \u2014 sangat jarang tapi powerful. Titik infleksi pasar besar.', weakConditions: 'Pasar ambigu. Frekuensi entry rendah.', preferredTimeframe: 'H4, D1 (bias)', riskProfile: 'Balanced. Risk 1.5%. Hybrid spot+futures.', synergyExplanation: 'Setiap elemen vote independen. Konsensus \u2265 3/4 = entry. Committee decision \u2014 lambat tapi akurat.', winRateEdge: 'Supreme Multi-Factor Consensus', bestInstruments: 'Cross-asset (dynamic based on consensus)', avoidInstruments: 'Tidak ada \u2014 instrument-agnostic', instrumentEdge: 'Kekuatan di proses seleksi multi-elemen, bukan instrumen spesifik.' },
+  CHAOS: { philosophy: 'The Rogue Anomaly. Tidak mengikuti aturan elemen manapun. Mencari inefisiensi pasar ekstrem \u2014 impulse moves, contrarian fades saat overextended, momentum-following saat impulse kuat. High-risk, high-reward. Bisa top performer atau worst performer.', optimalConditions: 'Pasar sangat volatile. Flash crash, squeeze events, liquidity vacuum.', weakConditions: 'Pasar normal teratur. Trending stabil. Low-vol.', preferredTimeframe: 'M5-M15 (scalp), H1 (swing)', riskProfile: 'Sangat Agresif. Risk 3%+. Full leverage. Highest variance.', synergyExplanation: null, winRateEdge: 'Chaos Edge (High Variance Alpha)', bestInstruments: 'SOXL, TQQQ, BTC/USDT, SMCI, TSLA', avoidInstruments: 'Instrumen low-vol, obligasi, saham defensif stabil', instrumentEdge: 'Instrumen volatilitas dan beta tertinggi untuk variance capture.' }
 };
 
 // Available Tradable Instrument Pool (Universal coverage across Forex, Crypto, IDX, Commodities, US Stocks, Indices)
@@ -2238,6 +2533,62 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         }
       }
 
+      // Max Drawdown calculation (Equity Curve Peak-to-Trough)
+      let runningEquity = totalCapitalIdr;
+      let peakEquity = totalCapitalIdr;
+      let maxDrawdownIdr = 0;
+      let maxDrawdownPct = 0;
+      const sortedChronological = [...journal].sort((a, b) => new Date(a.closedAt || 0) - new Date(b.closedAt || 0));
+      sortedChronological.forEach(t => {
+        const val = t.pnlIdr || (t.pnlUsd * usdToIdrRate);
+        runningEquity += val;
+        if (runningEquity > peakEquity) peakEquity = runningEquity;
+        const ddIdr = peakEquity - runningEquity;
+        if (ddIdr > maxDrawdownIdr) {
+          maxDrawdownIdr = ddIdr;
+          maxDrawdownPct = peakEquity > 0 ? (ddIdr / peakEquity) * 100 : 0;
+        }
+      });
+
+      // Avg Win, Avg Loss, Win/Loss Ratio, Expectancy per trade
+      const avgWinIdr = wins > 0 ? Math.round(grossProfitIdr / wins) : 0;
+      const avgLossIdr = losses > 0 ? Math.round(grossLossIdr / losses) : 0;
+      const winLossRatio = avgLossIdr > 0 ? Number((avgWinIdr / avgLossIdr).toFixed(2)) : (avgWinIdr > 0 ? 99.0 : 0);
+      const wrDecimal = totalTrades > 0 ? wins / totalTrades : 0;
+      const expectancyIdr = Math.round((wrDecimal * avgWinIdr) - ((1 - wrDecimal) * avgLossIdr));
+
+      // Multi-Asset Class Breakdown (IDX, Crypto, Forex, US, Commodities)
+      const marketMap = {};
+      journal.forEach(t => {
+        let mkt = t.market || 'FOREX';
+        if (['XAUUSD', 'XAGUSD', 'USOIL', 'GOLD', 'SILVER'].includes(t.symbol) || mkt === 'FUTURES') {
+          mkt = 'COMMODITIES';
+        }
+        if (!marketMap[mkt]) {
+          marketMap[mkt] = { market: mkt, totalTrades: 0, wins: 0, losses: 0, netPnlIdr: 0, grossProfit: 0, grossLoss: 0 };
+        }
+        const val = t.pnlIdr || (t.pnlUsd * usdToIdrRate);
+        marketMap[mkt].totalTrades += 1;
+        marketMap[mkt].netPnlIdr += val;
+        if (t.isWin) marketMap[mkt].wins += 1; else marketMap[mkt].losses += 1;
+        if (val > 0) marketMap[mkt].grossProfit += val; else marketMap[mkt].grossLoss += Math.abs(val);
+      });
+      const marketClassList = Object.values(marketMap).map(m => ({
+        ...m,
+        winRate: m.totalTrades > 0 ? ((m.wins / m.totalTrades) * 100).toFixed(1) : '0.0',
+        profitFactor: m.grossLoss > 0 ? (m.grossProfit / m.grossLoss).toFixed(2) : (m.grossProfit > 0 ? '99.0' : '0.0')
+      }));
+
+      // Top 3 Best Trades & Top 3 Worst Trades
+      const top3BestTrades = [...journal]
+        .filter(t => (t.pnlIdr || (t.pnlUsd * usdToIdrRate)) > 0)
+        .sort((a, b) => (b.pnlIdr || 0) - (a.pnlIdr || 0))
+        .slice(0, 3);
+      const top3WorstTrades = [...journal]
+        .filter(t => (t.pnlIdr || (t.pnlUsd * usdToIdrRate)) < 0)
+        .sort((a, b) => (a.pnlIdr || 0) - (b.pnlIdr || 0))
+        .slice(0, 3);
+
       // Per-Agent breakdown
       const agentBreakdowns = agents.map(ag => {
         const agTrades = journal.filter(j => j.agentId === ag.id);
@@ -2376,9 +2727,20 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         topAlphaPairs,
         toxicDragPairs,
         allPairs,
-        keyTakeaway: netPnlIdr >= 0
-          ? `Season ${liveLabel} berjalan PROFIT (+${formatIdr(netPnlIdr)}). Sinergi 4 elemen bot efektif memanfaatkan momentum tanpa pelanggaran batas risiko.`
-          : `Season ${liveLabel} membukukan defisit (${formatIdr(netPnlIdr)}). Circuit breaker aktif mengontrol ukuran posisi dan memitigasi drawdown.`
+        maxDrawdownPct: Number(maxDrawdownPct.toFixed(1)),
+        maxDrawdownIdr: Math.round(maxDrawdownIdr),
+        avgWinIdr,
+        avgLossIdr,
+        winLossRatio,
+        expectancyIdr,
+        marketClassList,
+        top3BestTrades,
+        top3WorstTrades,
+        keyTakeaway: (() => {
+          if (totalTrades === 0) return 'Sesi baru dimulai. Bot sedang memindai likuiditas di seluruh pasar yang aktif.';
+          const bestMkt = [...marketClassList].sort((a, b) => b.netPnlIdr - a.netPnlIdr)[0];
+          return `Season ${liveLabel} berjalan ${netPnlIdr >= 0 ? 'PROFIT +' : 'DEFISIT '}${formatIdr(netPnlIdr)} (ROC ${rocPct}%, Win Rate ${winRate}%). Alpha utama dipimpin sektor ${bestMkt ? bestMkt.market : 'N/A'} dan MVP ${mvp ? mvp.name : 'N/A'}. Expectancy sistem ${formatIdr(expectancyIdr)} per tiket dengan Win/Loss ratio ${winLossRatio}x. Max Drawdown ${maxDrawdownPct.toFixed(1)}% (${formatIdr(maxDrawdownIdr)}).`;
+        })()
       };
     } else {
       // Historical Archived Session
@@ -2442,7 +2804,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         netPnlIdr: report.netPnlIdr,
         netPnlUsd: report.netPnlUsd,
         profitFactor: report.profitFactor,
-        sharpeRatio: report.sharpeRatio || (Number(report.profitFactor) >= 1.5 ? '1.82' : '0.65'),
+        sharpeRatio: (() => { const rr = (report.allPairs || []).map(p => p.netPnlIdr || 0); if (rr.length < 2) return report.sharpeRatio || '0.00'; const mean = rr.reduce((a, b) => a + b, 0) / rr.length; const variance = rr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (rr.length - 1); const stdDev = Math.sqrt(variance); return stdDev > 0 ? (mean / stdDev).toFixed(2) : '0.00'; })(),
         rocPct: report.rocPct || rocPct,
         agentBreakdowns: agentBreakdownsWithDiff,
         adaptations: report.adaptations || [],
@@ -2450,6 +2812,15 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
         topAlphaPairs: report.topAlphaPairs || bestPairsFound.slice(0, 3),
         toxicDragPairs: report.toxicDragPairs || worstPairsFound.slice(0, 3),
         allPairs: report.allPairs || [],
+        maxDrawdownPct: report.maxDrawdownPct || 0,
+        maxDrawdownIdr: report.maxDrawdownIdr || 0,
+        avgWinIdr: report.avgWinIdr || (report.wins > 0 ? Math.round(report.grossProfitIdr / report.wins) : 0),
+        avgLossIdr: report.avgLossIdr || (report.losses > 0 ? Math.round(report.grossLossIdr / report.losses) : 0),
+        winLossRatio: report.winLossRatio || 0,
+        expectancyIdr: report.expectancyIdr || 0,
+        marketClassList: report.marketClassList || [],
+        top3BestTrades: report.top3BestTrades || [],
+        top3WorstTrades: report.top3WorstTrades || [],
         keyTakeaway: report.keyTakeaway
       };
     }
@@ -2491,6 +2862,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     if (!isRunning) return;
 
     const interval = setInterval(() => {
+      // 0. Weekly Auto-Epoch Timer (Archive season after 7 days active running time: 604,800s)
+      if (sessionActiveSeconds >= 604800 && (journalRef.current?.length || 0) >= 15) {
+        handleExecuteReset();
+        setSessionActiveSeconds(0);
+        try { localStorage.setItem('mbg_ai_arena_session_active_seconds', '0'); } catch (e) {}
+        setToasts(prev => [{ id: `toast-auto-epoch-${Date.now()}`, text: '📅 Weekly Auto-Epoch: Sesi 7 hari telah selesai & diarsipkan otomatis dengan rebalancing EXP3.', type: 'info' }, ...prev.slice(0, 4)]);
+      }
+
       // 1. Update Running Positions & Evaluate TP/SL against 100% REAL LIVE MARKET PRICES
       const prevPositions = positionsRef.current;
       let hasClosedAny = false;
@@ -2768,6 +3147,29 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
           }
         }
 
+
+        // Periodic Auto-Evaluation (every 50 closed trades per bot)
+        if (closedTradesToAdd.length > 0) {
+          currentAgents = currentAgents.map(ag => {
+            const agClosedTrades = [...currentJournalSnapshot, ...closedTradesToAdd].filter(j => j.agentId === ag.id);
+            const tradeCount = agClosedTrades.length;
+            if (tradeCount > 0 && tradeCount % 50 === 0) {
+              const last50 = agClosedTrades.slice(-50);
+              const wins = last50.filter(t => t.isWin).length;
+              const winRate = wins / 50;
+              const netPnl = last50.reduce((acc, t) => acc + (t.pnlIdr || 0), 0);
+              if (winRate > 0.55 && netPnl > 0) {
+                agentsChanged = true;
+                return { ...ag, dnaTraits: { ...ag.dnaTraits, riskMultiplier: Number(Math.min(1.0, (ag.dnaTraits?.riskMultiplier || 1.0) * 1.05).toFixed(2)), confidenceBoost: Number(Math.max(0, (ag.dnaTraits?.confidenceBoost || 0) - 2).toFixed(0)) } };
+              } else if (winRate < 0.35 && netPnl < 0) {
+                agentsChanged = true;
+                return { ...ag, dnaTraits: { ...ag.dnaTraits, riskMultiplier: Number(Math.max(0.4, (ag.dnaTraits?.riskMultiplier || 1.0) * 0.92).toFixed(2)), confidenceBoost: Number(Math.min(25, (ag.dnaTraits?.confidenceBoost || 0) + 3).toFixed(0)), trailingTightness: Number(Math.min(2.5, (ag.dnaTraits?.trailingTightness || 1.0) * 1.08).toFixed(2)) } };
+              }
+            }
+            return ag;
+          });
+        }
+
         // Multi-trade autonomous spawner across all 80+ pairs
         const maxPositionsPerAgent = isUnlimitedPositions ? 999 : sliderMaxPositions;
         const spawnChance = isUnlimitedPositions
@@ -2789,7 +3191,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               : ALL_INSTRUMENTS.filter(i => isMarketOpenNow(i.market)).map(i => i.symbol);
 
             // 1. Prioritas Utama: Instrumen di pasar buka yang belum dipegang oleh agen ini (Diversifikasi Luas)
-            const unheldSymbols = openMarketSymbols.filter(s => !agentPositions.some(p => p.symbol === s));
+            // Toxic pair blacklist: skip instruments flagged by DNA
+            const toxicPairsToAvoid = chosenAgent.dnaTraits?.toxicPairAvoided ? [chosenAgent.dnaTraits.toxicPairAvoided] : [];
+            const unheldSymbols = openMarketSymbols.filter(s => !agentPositions.some(p => p.symbol === s) && !toxicPairsToAvoid.includes(s));
 
             // 2. Prioritas Kedua: Multi-posisi terukur pada instrumen yang sudah dipegang SESUAI DNA STRATEGI
             let qualifyingHeldSymbols = [];
@@ -2856,7 +3260,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
             }
 
             if (candidateSymbols.length > 0) {
-              const targetKey = candidateSymbols[Math.floor(Math.random() * candidateSymbols.length)];
+              const targetKey = selectBestInstrument(candidateSymbols, currentFeeds, chosenAgent.id) || candidateSymbols[0];
               const targetFeed = currentFeeds[targetKey];
 
               if (targetFeed && isMarketOpenNow(targetFeed.market)) {
@@ -2874,59 +3278,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     rationale = isIdx
                       ? `${chosenAgent.name}: Akumulasi spot pada ${targetKey} (Long-Only BEI Regulation).`
                       : `[SPOT] ${chosenAgent.name}: Akumulasi kas spot pada ${targetKey} (0 Likuidasi, 1:1 Cash Asset).`;
-                  } else if (chosenAgent.id === 'WATER') {
-                    isLong = (targetFeed.change || 0) < 0 ? true : false;
-                    rationale = `WATER: Liquidity sweep ${isLong ? 'Sell-Side' : 'Buy-Side'} mitigasi order block pada ${targetKey}.`;
-                  } else if (chosenAgent.id === 'FIRE') {
-                    isLong = (targetFeed.change || 0) >= 0 ? true : false;
-                    rationale = `FIRE: High volatility momentum surge ${isLong ? 'bullish' : 'bearish'} pada ${targetKey}.`;
-                  } else if (chosenAgent.id === 'AIR') {
-                    isLong = entry >= ((targetFeed.high + targetFeed.low) / 2);
-                    rationale = `AIR: Breakout Donchian channel ${isLong ? 'Upper Band' : 'Lower Band'} pada ${targetKey}.`;
-                  } else if (chosenAgent.id === 'EARTH') {
-                    isLong = (targetFeed.change || 0) < -0.5 ? true : false;
-                    rationale = `EARTH: Mean reversion statistical bounce pada batas support ${targetKey}.`;
-                  } else if (chosenAgent.id === 'STEAM') {
-                    isLong = (targetFeed.change || 0) <= 0.2;
-                    rationale = `STEAM [W+F]: Liquidity sweep terkonfirmasi + lonjakan momentum berita pada ${targetKey}.`;
-                  } else if (chosenAgent.id === 'STORM') {
-                    isLong = (targetFeed.change || 0) >= 0;
-                    rationale = `STORM [W+A]: BOS structural swing high + Donchian breakout ekspansi tren pada ${targetKey}.`;
-                  } else if (chosenAgent.id === 'MUD') {
-                    isLong = (targetFeed.change || 0) < -0.3;
-                    rationale = `MUD [W+E]: Support/Resistance bounce + mitigasi Fair Value Gap pada ${targetKey}.`;
-                  } else if (chosenAgent.id === 'LIGHTNING') {
-                    isLong = (targetFeed.change || 0) > 0.4;
-                    rationale = `LIGHTNING [F+A]: Lonjakan volume berita memicu breakout ekspansi tren Donchian pada ${targetKey}.`;
-                  } else if (chosenAgent.id === 'LAVA') {
-                    isLong = (targetFeed.change || 0) < -0.8;
-                    rationale = `LAVA [F+E]: Post-news exhaustion spike fade keluar batas Bollinger 3 SD pada ${targetKey}.`;
-                  } else if (chosenAgent.id === 'SANDSTORM') {
-                    isLong = (targetFeed.change || 0) > -0.2 && entry > targetFeed.low * 1.002;
-                    rationale = `SANDSTORM [A+E]: Disiplin beli saat pullback menyentuh level support kunci pada tren ${targetKey}.`;
-                  } else if (chosenAgent.id === 'TEMPEST') {
-                    isLong = (targetFeed.change || 0) >= 0.2;
-                    rationale = `TEMPEST [W+F+A]: Alpha desk: Likuiditas institusi + katalis berita + pengawalan tren parabolis ${targetKey}.`;
-                  } else if (chosenAgent.id === 'OCEANIC') {
-                    isLong = entry >= ((targetFeed.high + targetFeed.low) / 2);
-                    rationale = `OCEANIC [W+A+E]: All-weather institutional: Likuiditas SMC + trend momentum + bantalan S/R pada ${targetKey}.`;
-                  } else if (chosenAgent.id === 'GEOTHERMAL') {
-                    isLong = (targetFeed.change || 0) < 0.1;
-                    rationale = `GEOTHERMAL [W+F+E]: Mitigasi Order Block saat rilis berita dengan proteksi support fundamental ${targetKey}.`;
-                  } else if (chosenAgent.id === 'CYCLONE') {
-                    const isTrending = Math.abs(targetFeed.change || 0) > 1.2;
-                    isLong = isTrending ? (targetFeed.change > 0) : (targetFeed.change < 0);
-                    rationale = `CYCLONE [F+A+E]: Dynamic regime transition (${isTrending ? 'Trend Ignition' : 'Mean Reversion'}) pada ${targetKey}.`;
-                  } else if (chosenAgent.id === 'AVATAR') {
-                    const score = ((targetFeed.change || 0) > 0 ? 1 : -1) + (entry > ((targetFeed.high + targetFeed.low) / 2) ? 1 : -1) + (Math.random() > 0.45 ? 1 : -1);
-                    isLong = score >= 0;
-                    rationale = `AVATAR [4-E]: Konsensus mayoritas 4 elemen (${isLong ? 'Bullish Dominance' : 'Bearish Dominance'}) pada ${targetKey}.`;
-                  } else if (chosenAgent.id === 'CHAOS') {
-                    const isImpulsive = Math.abs(targetFeed.change || 0) > 0.8;
-                    isLong = isImpulsive ? (targetFeed.change > 0) : (Math.random() > 0.45);
-                    rationale = `CHAOS [ANOMALY]: Kinetic carpet-bomb (${isLong ? 'Long' : 'Short'}) pada ${targetKey}. Likuiditas ruang hampa terdeteksi.`;
                   } else {
-                    isLong = Math.random() > 0.48;
+                    // TA SIGNAL ENGINE (Zero Random)
+                    const signal = computeAgentSignal(chosenAgent.id, targetKey, targetFeed, chosenAgent.dnaTraits || {});
+                    isLong = signal.isLong;
+                    rationale = signal.rationale;
                   }
 
                   // Direction Alignment & Rationale for Multi-Position Scaling
@@ -3099,6 +3455,62 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     const totalCap = capitalPerBotIdr * (agents?.length || 15);
     const rocPct = totalCap > 0 ? ((netPnlIdr / totalCap) * 100).toFixed(2) : '0.00';
 
+    // Max Drawdown
+    let runningCap = totalCap;
+    let peakCap = totalCap;
+    let maxDrawdownIdr = 0;
+    let maxDrawdownPct = 0;
+    const sortedChronological = [...journal].sort((a, b) => new Date(a.closedAt || 0) - new Date(b.closedAt || 0));
+    sortedChronological.forEach(t => {
+      const val = t.pnlIdr || (t.pnlUsd * usdToIdrRef.current);
+      runningCap += val;
+      if (runningCap > peakCap) peakCap = runningCap;
+      const dd = peakCap - runningCap;
+      if (dd > maxDrawdownIdr) {
+        maxDrawdownIdr = dd;
+        maxDrawdownPct = peakCap > 0 ? (dd / peakCap) * 100 : 0;
+      }
+    });
+
+    // Avg Win, Avg Loss, Win/Loss Ratio, Expectancy per trade
+    const avgWinIdr = wins > 0 ? Math.round(grossProfitIdr / wins) : 0;
+    const avgLossIdr = losses > 0 ? Math.round(grossLossIdr / losses) : 0;
+    const winLossRatio = avgLossIdr > 0 ? Number((avgWinIdr / avgLossIdr).toFixed(2)) : (avgWinIdr > 0 ? 99.0 : 0);
+    const wrDecimal = totalTrades > 0 ? wins / totalTrades : 0;
+    const expectancyIdr = Math.round((wrDecimal * avgWinIdr) - ((1 - wrDecimal) * avgLossIdr));
+
+    // Multi-Asset Class Breakdown
+    const marketMap = {};
+    journal.forEach(t => {
+      let mkt = t.market || 'FOREX';
+      if (['XAUUSD', 'XAGUSD', 'USOIL', 'GOLD', 'SILVER'].includes(t.symbol) || mkt === 'FUTURES') {
+        mkt = 'COMMODITIES';
+      }
+      if (!marketMap[mkt]) {
+        marketMap[mkt] = { market: mkt, totalTrades: 0, wins: 0, losses: 0, netPnlIdr: 0, grossProfit: 0, grossLoss: 0 };
+      }
+      const val = t.pnlIdr || (t.pnlUsd * usdToIdrRef.current);
+      marketMap[mkt].totalTrades += 1;
+      marketMap[mkt].netPnlIdr += val;
+      if (t.isWin) marketMap[mkt].wins += 1; else marketMap[mkt].losses += 1;
+      if (val > 0) marketMap[mkt].grossProfit += val; else marketMap[mkt].grossLoss += Math.abs(val);
+    });
+    const marketClassList = Object.values(marketMap).map(m => ({
+      ...m,
+      winRate: m.totalTrades > 0 ? ((m.wins / m.totalTrades) * 100).toFixed(1) : '0.0',
+      profitFactor: m.grossLoss > 0 ? (m.grossProfit / m.grossLoss).toFixed(2) : (m.grossProfit > 0 ? '99.0' : '0.0')
+    }));
+
+    // Top 3 Best & Worst Trades
+    const top3BestTrades = [...journal]
+      .filter(t => (t.pnlIdr || (t.pnlUsd * usdToIdrRef.current)) > 0)
+      .sort((a, b) => (b.pnlIdr || 0) - (a.pnlIdr || 0))
+      .slice(0, 3);
+    const top3WorstTrades = [...journal]
+      .filter(t => (t.pnlIdr || (t.pnlUsd * usdToIdrRef.current)) < 0)
+      .sort((a, b) => (a.pnlIdr || 0) - (b.pnlIdr || 0))
+      .slice(0, 3);
+
     // Universe Attribution with Long/Short breakdown
     const pairStats = {};
     journal.forEach(t => {
@@ -3234,9 +3646,20 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       topAlphaPairs,
       toxicDragPairs,
       allPairs,
-      keyTakeaway: netPnlIdr >= 0
-        ? `Season ${epochNum} ditutup PROFIT dengan Net Gain ${formatIdr(netPnlIdr)} (${rocPct}% ROC). Algoritma EXP3 meningkatkan alokasi modal pada bot dengan Sharpe Ratio tertinggi.`
-        : `Season ${epochNum} ditutup DEFISIT (${formatIdr(netPnlIdr)}). Circuit breaker mengaktifkan de-risking dan memperketat threshold konfirmasi sinyal.`
+      maxDrawdownPct: Number(maxDrawdownPct.toFixed(1)),
+      maxDrawdownIdr: Math.round(maxDrawdownIdr),
+      avgWinIdr,
+      avgLossIdr,
+      winLossRatio,
+      expectancyIdr,
+      marketClassList,
+      top3BestTrades,
+      top3WorstTrades,
+      keyTakeaway: (() => {
+        const bestMkt = [...marketClassList].sort((a, b) => b.netPnlIdr - a.netPnlIdr)[0];
+        const topBot = [...agentBreakdowns].sort((a, b) => b.netPnlIdr - a.netPnlIdr)[0];
+        return `Season ${epochNum} ditutup ${netPnlIdr >= 0 ? 'PROFIT dengan Net Gain +' : 'DEFISIT '}${formatIdr(netPnlIdr)} (ROC ${rocPct}%, Win Rate ${winRate}%). Alpha generator utama bersumber dari sektor ${bestMkt ? bestMkt.market : 'N/A'} dipimpin oleh ${topBot ? topBot.name : 'N/A'} (Win Rate ${topBot ? topBot.winRate : 0}%). Expectancy sistem ${formatIdr(expectancyIdr)} per tiket dengan rasio Win/Loss ${winLossRatio}x. Max Drawdown terukur di ${maxDrawdownPct.toFixed(1)}% (${formatIdr(maxDrawdownIdr)}). Algoritma EXP3 menaikkan bobot modal pada bot performa tertinggi.`;
+      })()
     };
 
     return { report, newWeights };
@@ -4713,7 +5136,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 const st = agentStatsMap[targetAg.id] || {};
                 const isPos = (st.netGainIdr || 0) >= 0;
                 const activeTrades = positions.filter(p => p.agentId === targetAg.id);
-                const elementMeta = ELEMENT_MC_ANALYSIS[targetAg.id] || ELEMENT_MC_ANALYSIS.WATER;
+                const deepProfile = (typeof AGENT_DEEP_PROFILE !== 'undefined' && AGENT_DEEP_PROFILE[targetAg.id]) || {};
+                const elementMeta = {
+                  ...(ELEMENT_MC_ANALYSIS[targetAg.id] || ELEMENT_MC_ANALYSIS.WATER),
+                  ...deepProfile
+                };
 
                 return (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -4836,13 +5263,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                       </div>
                     </div>
 
-                    {/* 3. Dedicated Learning Material: Optimal Universe & Instrument Suitability */}
-                    <div style={{ background: 'var(--bg-panel-subtle)', borderRadius: '6px', border: 'var(--border-hairline)', padding: '12px 14px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', borderBottom: 'var(--border-hairline)', paddingBottom: '6px' }}>
+                    {/* 3. Deep Quantitative Profile & Operational Conditions */}
+                    <div style={{ background: 'var(--bg-panel-subtle)', borderRadius: '6px', border: 'var(--border-hairline)', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 'var(--border-hairline)', paddingBottom: '6px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ fontSize: '14px' }}>🎯</span>
+                          <span style={{ fontSize: '14px' }}>🧬</span>
                           <strong style={{ fontSize: '11px', color: targetAg.color }}>
-                            Karakteristik & Jenis Instrumen Paling Cocok & Menguntungkan ({targetAg.name})
+                            Profil Filosofi, Regime Pasar & Universe Spesialisasi ({targetAg.name})
                           </strong>
                         </div>
                         <span className="badge" style={{ fontSize: '8px', background: `${targetAg.color}22`, color: targetAg.color, border: `1px solid ${targetAg.color}55` }}>
@@ -4850,28 +5277,76 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                         </span>
                       </div>
 
+                      {/* Deep Philosophy Banner */}
+                      {elementMeta.philosophy && (
+                        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 12px', borderRadius: '4px', borderLeft: `3px solid ${targetAg.color}`, fontSize: '9.5px', color: 'var(--text-primary)', lineHeight: '1.5' }}>
+                          <strong>💡 Filosofi & Core Alpha Edge:</strong> {elementMeta.philosophy}
+                        </div>
+                      )}
+
+                      {/* Execution Timeframe & Risk Profile Pills */}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '6px', fontSize: '9px' }}>
+                        <div style={{ background: 'rgba(255,255,255,0.03)', padding: '6px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
+                          <span style={{ color: 'var(--text-muted)' }}>⏱️ Timeframe Preferensi:</span>{' '}
+                          <strong style={{ color: 'var(--accent-blue)' }}>{elementMeta.preferredTimeframe || 'H4 / H1'}</strong>
+                        </div>
+                        <div style={{ background: 'rgba(255,255,255,0.03)', padding: '6px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
+                          <span style={{ color: 'var(--text-muted)' }}>🛡️ Profil Risiko:</span>{' '}
+                          <strong style={{ color: 'var(--accent-gold)' }}>{elementMeta.riskProfile || 'Moderat'}</strong>
+                        </div>
+                      </div>
+
+                      {/* Optimal vs Weak Market Conditions */}
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '8px', fontSize: '9.5px', lineHeight: '1.5' }}>
-                        <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '10px 12px', borderRadius: '4px', borderLeft: '3px solid var(--accent-green)' }}>
+                        <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid var(--accent-green)' }}>
                           <strong style={{ color: 'var(--accent-green)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <span>🌤️</span> <span>Kondisi Pasar Optimal (High Win-Rate):</span>
+                          </strong>
+                          <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '9px' }}>
+                            {elementMeta.optimalConditions || 'Volatilitas sehat dan likuiditas institusional tinggi.'}
+                          </p>
+                        </div>
+
+                        <div style={{ background: 'rgba(239, 68, 68, 0.08)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid var(--accent-rust)' }}>
+                          <strong style={{ color: 'var(--accent-rust)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <span>⛈️</span> <span>Kondisi Pasar Kurang Cocok (Vulnerable):</span>
+                          </strong>
+                          <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '9px' }}>
+                            {elementMeta.weakConditions || 'Pasar choppy / whipsaw berkepanjangan tanpa arah.'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Synergy Explanation (if Duo / Trio / Avatar) */}
+                      {elementMeta.synergyExplanation && (
+                        <div style={{ background: 'rgba(168, 85, 247, 0.08)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid #c084fc', fontSize: '9.5px', color: 'var(--text-primary)', lineHeight: '1.5' }}>
+                          <strong style={{ color: '#c084fc' }}>⚡ Sinergi Multi-Elemen:</strong> {elementMeta.synergyExplanation}
+                        </div>
+                      )}
+
+                      {/* Best vs Avoided Instruments */}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '8px', fontSize: '9.5px', lineHeight: '1.5' }}>
+                        <div style={{ background: 'rgba(56, 189, 248, 0.08)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid #38bdf8' }}>
+                          <strong style={{ color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <span>💎</span> <span>Instrumen Terbaik (Optimal Universe):</span>
                           </strong>
-                          <div style={{ color: 'var(--text-primary)', marginTop: '4px', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+                          <div style={{ color: 'var(--text-primary)', marginTop: '3px', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
                             {elementMeta.bestInstruments}
                           </div>
-                          <p style={{ margin: '4px 0 0 0', color: 'var(--text-secondary)', fontSize: '9px' }}>
+                          <p style={{ margin: '3px 0 0 0', color: 'var(--text-secondary)', fontSize: '9px' }}>
                             {elementMeta.instrumentEdge}
                           </p>
                         </div>
 
-                        <div style={{ background: 'rgba(239, 68, 68, 0.08)', padding: '10px 12px', borderRadius: '4px', borderLeft: '3px solid var(--accent-rust)' }}>
-                          <strong style={{ color: 'var(--accent-rust)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <span>⚠️</span> <span>Karakteristik yang Kurang Cocok / Dihindari:</span>
+                        <div style={{ background: 'rgba(245, 158, 11, 0.08)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid var(--accent-orange)' }}>
+                          <strong style={{ color: 'var(--accent-orange)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <span>⚠️</span> <span>Karakteristik Dihindari (Avoid List):</span>
                           </strong>
-                          <div style={{ color: 'var(--text-primary)', marginTop: '4px', fontWeight: '700' }}>
+                          <div style={{ color: 'var(--text-primary)', marginTop: '3px', fontWeight: '700' }}>
                             {elementMeta.avoidInstruments}
                           </div>
-                          <p style={{ margin: '4px 0 0 0', color: 'var(--text-muted)', fontSize: '9px' }}>
-                            Instrumen ini memiliki karakter likuiditas atau volatilitas yang berlawanan dengan algoritma elemen ini dan rawan menghasilkan false signal.
+                          <p style={{ margin: '3px 0 0 0', color: 'var(--text-muted)', fontSize: '9px' }}>
+                            Instrumen ini memiliki spread lebar atau karakter volatilitas berlawanan dengan edge algoritma ini.
                           </p>
                         </div>
                       </div>
@@ -5306,12 +5781,24 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     markets: 'Seluruh universe instrumen (Cross-Asset Master: Saham BEI, Saham US, Crypto, Forex, Komoditas).'
                   }
                 };
+                metaConfigs.CHAOS = {
+                    thesis: 'The Rogue Anomaly: Memburu inefisiensi pasar ekstrim, lonjakan momentum tajam, dan pembalikan contrarian saat pasar overextended. High risk, high variance, non-linear alpha.',
+                    trigger: 'Spike impulsif abnormal pada candlestick dengan deviasi volume > 2.5x rata-rata atau breakout tajam tanpa konfirmasi struktur reguler.',
+                    slRule: 'Dynamic volatility stop loss berbasis volatilitas candle entri (-1.2R). Cut loss cepat jika anomali mereda.',
+                    tpRule: 'Aggressive multi-layer TP (+3.0R s/d +7.0R) dengan trailing ratchet ketat.',
+                    markets: 'SOXL, TQQQ, BTCUSDT, ETHUSDT, SMCI, TSLA (Aset volatilitas dan beta tertinggi).'
+                  };
                 metaConfigs.TITAN = metaConfigs.WATER;
                 metaConfigs.ORACLE = metaConfigs.FIRE;
                 metaConfigs.VORTEX = metaConfigs.AIR;
                 metaConfigs.SENTINEL = metaConfigs.EARTH;
 
-                const meta = metaConfigs[targetAg?.id] || metaConfigs.WATER;
+                const deepProf = (typeof AGENT_DEEP_PROFILE !== 'undefined' && AGENT_DEEP_PROFILE[targetAg?.id]) || {};
+                const meta = {
+                  ...(metaConfigs[targetAg?.id] || metaConfigs.WATER),
+                  ...deepProf,
+                  thesis: deepProf.philosophy || (metaConfigs[targetAg?.id] || metaConfigs.WATER).thesis
+                };
 
                 return (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -6023,6 +6510,36 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     ⏱️ {sessionRecapData.uptimeStr}
                   </div>
                 </div>
+
+                <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
+                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: '800' }}>MAX DRAWDOWN</div>
+                  <div style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: Number(sessionRecapData.maxDrawdownPct || 0) > 10 ? 'var(--accent-rust)' : 'var(--accent-orange)', marginTop: '2px' }}>
+                    -{sessionRecapData.maxDrawdownPct || 0}%
+                  </div>
+                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    -{formatIdr(sessionRecapData.maxDrawdownIdr || 0)}
+                  </div>
+                </div>
+
+                <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
+                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: '800' }}>AVG WIN / AVG LOSS</div>
+                  <div style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', marginTop: '2px' }}>
+                    {sessionRecapData.winLossRatio || 0}x
+                  </div>
+                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    +{formatIdr(sessionRecapData.avgWinIdr || 0)} / -{formatIdr(sessionRecapData.avgLossIdr || 0)}
+                  </div>
+                </div>
+
+                <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
+                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: '800' }}>EXPECTANCY / TRADE</div>
+                  <div style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: (sessionRecapData.expectancyIdr || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginTop: '2px' }}>
+                    {(sessionRecapData.expectancyIdr || 0) >= 0 ? '+' : ''}{formatIdr(sessionRecapData.expectancyIdr || 0)}
+                  </div>
+                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                    Nilai Ekspektasi Matematis
+                  </div>
+                </div>
               </div>
 
               {/* SECTION 2: 🏆 MVP & TOP PERFORMER OF THE SESSION */}
@@ -6215,6 +6732,106 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                 </div>
               </div>
 
+              {/* SECTION 5B: MARKET ASSET CLASS ATTRIBUTION */}
+              <div>
+                <div style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span>🏛️</span>
+                  <span>Distribusi Kinerja per Kelas Aset (IDX, Crypto, Forex, US, Commodities)</span>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '8px' }}>
+                  {(sessionRecapData.marketClassList || []).map(m => (
+                    <div key={m.market} style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                        <span style={{ fontSize: '11px', fontWeight: '900', color: m.market === 'IDX' ? 'var(--accent-gold)' : m.market === 'CRYPTO' ? 'var(--accent-orange)' : m.market === 'FOREX' ? 'var(--accent-blue)' : m.market === 'COMMODITIES' ? 'var(--accent-gold)' : '#c084fc' }}>
+                          {m.market}
+                        </span>
+                        <span className="badge" style={{ fontSize: '8px' }}>{m.totalTrades} trade</span>
+                      </div>
+                      <div style={{ fontSize: '13px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: m.netPnlIdr >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                        {m.netPnlIdr >= 0 ? '+' : ''}{formatIdr(m.netPnlIdr)}
+                      </div>
+                      <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '2px', display: 'flex', justifyContent: 'space-between' }}>
+                        <span>Win Rate: {m.winRate}%</span>
+                        <span>PF: {m.profitFactor}x</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* SECTION 5C: TOP 3 BEST TRADES VS TOP 3 WORST TRADES */}
+              {((sessionRecapData.top3BestTrades?.length > 0) || (sessionRecapData.top3WorstTrades?.length > 0)) && (
+                <div>
+                  <div style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>⚖️</span>
+                    <span>Audit Eksekusi: Top 3 Best Winning Trades vs Top 3 Worst Drawdown Trades</span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '10px' }}>
+                    
+                    {/* Top 3 Best Trades */}
+                    <div style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '6px', padding: '10px 12px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', borderBottom: '1px solid rgba(16, 185, 129, 0.15)', paddingBottom: '6px' }}>
+                        <span style={{ fontSize: '12px' }}>🏆</span>
+                        <strong style={{ fontSize: '10.5px', color: 'var(--accent-green)' }}>Top 3 Best Trades (Sniper Hits)</strong>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {(sessionRecapData.top3BestTrades || []).map((t, idx) => (
+                          <div key={t.id || idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-panel)', padding: '6px 8px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                <span style={{ fontSize: '9px', fontWeight: '900', color: 'var(--accent-gold)' }}>#{idx + 1}</span>
+                                <strong style={{ fontSize: '11px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{t.symbol}</strong>
+                                <span className="badge" style={{ fontSize: '8px' }}>{t.agentId}</span>
+                                <span style={{ fontSize: '8px', color: t.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{t.direction}</span>
+                              </div>
+                              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                                Alasan: {t.exitReason} • ROI: +{t.roiPct}%
+                              </div>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                              <div style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
+                                +{formatIdr(t.pnlIdr || (t.pnlUsd * usdToIdrRate))}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Top 3 Worst Trades */}
+                    <div style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '6px', padding: '10px 12px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', borderBottom: '1px solid rgba(239, 68, 68, 0.15)', paddingBottom: '6px' }}>
+                        <span style={{ fontSize: '12px' }}>⚠️</span>
+                        <strong style={{ fontSize: '10.5px', color: 'var(--accent-rust)' }}>Top 3 Worst Trades (Risk Drag)</strong>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {(sessionRecapData.top3WorstTrades || []).map((t, idx) => (
+                          <div key={t.id || idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-panel)', padding: '6px 8px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                <span style={{ fontSize: '9px', fontWeight: '900', color: 'var(--accent-rust)' }}>#{idx + 1}</span>
+                                <strong style={{ fontSize: '11px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{t.symbol}</strong>
+                                <span className="badge" style={{ fontSize: '8px' }}>{t.agentId}</span>
+                                <span style={{ fontSize: '8px', color: t.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{t.direction}</span>
+                              </div>
+                              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                                Alasan: {t.exitReason} • ROI: {t.roiPct}%
+                              </div>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                              <div style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>
+                                {formatIdr(t.pnlIdr || (t.pnlUsd * usdToIdrRate))}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              )}
+
               {/* SECTION 6: SARAN & REKOMENDASI ADAPTIF KONKRET */}
               <div style={{ background: 'rgba(168, 85, 247, 0.05)', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '6px', padding: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', borderBottom: '1px solid rgba(168, 85, 247, 0.15)', paddingBottom: '6px' }}>
@@ -6341,13 +6958,18 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                               background: i % 2 === 0 ? 'var(--bg-panel-subtle)' : 'transparent',
                               borderRadius: '3px'
                             }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <span style={{ fontSize: '8.5px', fontWeight: '800', color: mktColor,
-                                  background: `${mktColor}18`, border: `1px solid ${mktColor}40`,
-                                  borderRadius: '3px', padding: '1px 5px', letterSpacing: '0.03em' }}>
-                                  {p.market}
-                                </span>
-                                <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{p.symbol}</span>
+                              <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                  <span style={{ fontSize: '8.5px', fontWeight: '800', color: mktColor,
+                                    background: `${mktColor}18`, border: `1px solid ${mktColor}40`,
+                                    borderRadius: '3px', padding: '1px 5px', letterSpacing: '0.03em' }}>
+                                    {p.market}
+                                  </span>
+                                  <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{p.symbol}</span>
+                                </div>
+                                <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '1px' }}>
+                                  L: {p.longWins || 0}W/{p.longTrades || 0} ({p.longWinRate || 0}%) • S: {p.shortWins || 0}W/{p.shortTrades || 0} ({p.shortWinRate || 0}%)
+                                </div>
                               </div>
                               <div style={{ textAlign: 'right', fontSize: '11px', fontWeight: '800', fontFamily: 'var(--font-mono)',
                                 color: isPositive ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
