@@ -567,7 +567,7 @@ export default function MasterQuantLeaderboard({
 
       {activeMainTab === 'PEARSON_CORRELATION' && (
         <div style={{ padding: '12px' }}>
-          <PearsonCorrelationWidget correlationData={bundle?.correlation_data} />
+          <PearsonCorrelationWidget correlationData={bundle?.correlation_matrix || bundle?.correlation_data} />
         </div>
       )}
 

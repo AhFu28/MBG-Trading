@@ -5,7 +5,8 @@ import uuid
 
 class PaperPortfolio:
     """
-    Track virtual trades to forward-test signal quality without risking real money
+    Track virtual trades to forward-test signal quality across multiple asset classes:
+    IDX Stocks (1 lot = 100 shares), Forex (1 lot = 100k units), Crypto (1 unit), Commodities (100 oz), and US Stocks.
     """
     def __init__(self, initial_capital=100_000_000, risk_pct=0.02, state_file=None):
         self.initial_capital = initial_capital
@@ -18,29 +19,57 @@ class PaperPortfolio:
             self.state_file = state_file or os.path.join(os.path.dirname(os.path.dirname(__file__)), 'cache', 'paper_portfolio.json')
             self.load_state()
 
-    def open_trade(self, ticker, entry_price, sl_price, tp1_price, tp2_price, strategy_type, lots=None) -> dict:
+    @staticmethod
+    def detect_market(ticker: str) -> str:
+        t = str(ticker).upper()
+        if t.endswith('.JK') or t in ['BBCA', 'BBRI', 'BMRI', 'BBNI', 'TLKM', 'ASII', 'ANTM', 'BRMS', 'MDKA', 'MEDC', 'ADRO']:
+            return 'IDX'
+        if any(fx in t for fx in ['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD', 'USDCAD', 'USDCHF', 'NZDUSD', 'EURJPY', 'GBPJPY']):
+            return 'FOREX'
+        if 'XAU' in t or 'GOLD' in t or 'XAG' in t or 'OIL' in t or 'WTI' in t or 'BRENT' in t:
+            return 'COMMODITY'
+        if 'USDT' in t or t in ['BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'DOGE', 'ADA', 'AVAX', 'LINK', 'SUI']:
+            return 'CRYPTO'
+        return 'US'
+
+    def open_trade(self, ticker, entry_price, sl_price, tp1_price, tp2_price, strategy_type, lots=None, market=None) -> dict:
         for t in self.trades:
             if t['ticker'] == ticker and t['status'] in ['PENDING', 'ACTIVE']:
                 return t
 
+        market = market or self.detect_market(ticker)
         current_cap = self.initial_capital + sum(t.get('pnl', 0) for t in self.trades if t['status'] not in ['PENDING', 'ACTIVE']) + self.realized_pnl_historical
         max_position_val = max(1_000_000, current_cap * 0.25)
+        risk_amount = self.initial_capital * self.risk_pct
+        sl_distance = abs(entry_price - sl_price)
 
         if lots is None:
-            risk_amount = self.initial_capital * self.risk_pct
-            risk_per_share = abs(entry_price - sl_price)
-            if risk_per_share > 0:
-                shares = risk_amount / risk_per_share
+            if market == 'IDX':
+                shares = (risk_amount / sl_distance) if sl_distance > 0 else 100
                 lots = max(1, int(shares / 100))
-            else:
-                lots = 1
+            elif market == 'FOREX':
+                # Mario Singh Fixed Fractional: 1 lot = 100,000 units ($10/pip on EURUSD)
+                pip_size = 0.01 if 'JPY' in ticker.upper() else 0.0001
+                sl_pips = max(1.0, sl_distance / pip_size)
+                # Assuming USD base for risk amount in IDR/USD conversion (scaled to lot)
+                lots = max(0.01, round(risk_amount / (sl_pips * 150_000), 2))
+            elif market == 'COMMODITY':
+                # Gold: 1 lot = 100 oz ($10 per $0.10 move)
+                lots = max(0.01, round(risk_amount / (max(1.0, sl_distance) * 1_500_000), 2))
+            elif market == 'CRYPTO':
+                lots = max(0.001, round(risk_amount / (sl_distance * 15_000 + 1e-6), 4))
+            else: # US Stock
+                lots = max(1, int(risk_amount / (sl_distance * 15_000 + 1e-6)))
 
-        if entry_price > 0 and (lots * 100 * entry_price) > max_position_val:
+        # Position value cap safeguard
+        pos_mult = 100 if market == 'IDX' else (100000 if market == 'FOREX' else 1)
+        if entry_price > 0 and (lots * pos_mult * entry_price) > max_position_val and market == 'IDX':
             lots = max(1, int(max_position_val / (100 * entry_price)))
-        
+
         trade = {
             'id': str(uuid.uuid4()),
             'ticker': ticker,
+            'market': market,
             'entry_price': entry_price,
             'sl_price': sl_price,
             'tp1_price': tp1_price,
@@ -58,16 +87,15 @@ class PaperPortfolio:
         return trade
 
     def check_and_update_trades(self, current_prices: dict) -> list:
-        # current_prices format: {ticker: {high, low, current}} or {ticker: price}
         status_changes = []
         for trade in self.trades:
             if trade['status'] in ['EXPIRED', 'CANCELLED', 'TP1_HIT', 'TP2_HIT', 'SL_HIT']:
                 continue
-                
+
             ticker = trade['ticker']
             if ticker not in current_prices:
                 continue
-                
+
             curr_price = current_prices[ticker]
             if isinstance(curr_price, dict):
                 price = curr_price.get('current', curr_price.get('close', 0))
@@ -77,9 +105,10 @@ class PaperPortfolio:
                 price = curr_price
                 high = price
                 low = price
-                
+
             old_status = trade['status']
-            
+            market = trade.get('market', self.detect_market(ticker))
+
             if trade['status'] == 'PENDING':
                 if price <= trade['entry_price']:
                     trade['status'] = 'ACTIVE'
@@ -89,25 +118,43 @@ class PaperPortfolio:
                         'new_status': 'ACTIVE',
                         'pnl': 0
                     })
-                    
+
             if trade['status'] == 'ACTIVE':
                 new_status = None
                 pnl = 0
-                fee_rate = 0.004 # 0.4% round-trip IDX fee & tax
-                cost_basis = trade['entry_price'] * trade['lots'] * 100
+                
+                # Multi-asset position multiplier & fee model
+                if market == 'IDX':
+                    mult = 100
+                    fee_rate = 0.004 # 0.4% IDX fee/tax
+                elif market == 'FOREX':
+                    mult = 100000
+                    fee_rate = 0.00015 # ~1.5 pips spread
+                elif market == 'COMMODITY':
+                    mult = 100 # 100 oz per gold lot
+                    fee_rate = 0.0002
+                elif market == 'CRYPTO':
+                    mult = 1.0
+                    fee_rate = 0.0005 # 0.05% taker fee
+                else: # US Stock
+                    mult = 1.0
+                    fee_rate = 0.001
+
+                cost_basis = trade['entry_price'] * trade['lots'] * mult
+
                 if low <= trade['sl_price']:
                     new_status = 'SL_HIT'
-                    gross_pnl = (trade['sl_price'] - trade['entry_price']) * trade['lots'] * 100
+                    gross_pnl = (trade['sl_price'] - trade['entry_price']) * trade['lots'] * mult
                     pnl = gross_pnl - (cost_basis * fee_rate)
                 elif high >= trade['tp2_price']:
                     new_status = 'TP2_HIT'
-                    gross_pnl = (trade['tp2_price'] - trade['entry_price']) * trade['lots'] * 100
+                    gross_pnl = (trade['tp2_price'] - trade['entry_price']) * trade['lots'] * mult
                     pnl = gross_pnl - (cost_basis * fee_rate)
                 elif high >= trade['tp1_price']:
                     new_status = 'TP1_HIT'
-                    gross_pnl = (trade['tp1_price'] - trade['entry_price']) * trade['lots'] * 100
+                    gross_pnl = (trade['tp1_price'] - trade['entry_price']) * trade['lots'] * mult
                     pnl = gross_pnl - (cost_basis * fee_rate)
-                    
+
                 if new_status:
                     trade['status'] = new_status
                     trade['closed_at'] = datetime.now().isoformat()
@@ -122,10 +169,10 @@ class PaperPortfolio:
                         'pnl': pnl,
                         'pnl_pct': trade['pnl_pct']
                     })
-                    
+
         if status_changes:
             self.save_state()
-            
+
         return status_changes
 
     def expire_old_trades(self, max_days=5):
@@ -133,110 +180,65 @@ class PaperPortfolio:
         now = datetime.now()
         for trade in self.trades:
             if trade['status'] == 'PENDING':
-                opened_at = datetime.fromisoformat(trade['opened_at'])
-                if (now - opened_at).days >= max_days:
+                opened = datetime.fromisoformat(trade['opened_at'])
+                if now - opened > timedelta(days=max_days):
                     trade['status'] = 'EXPIRED'
                     trade['closed_at'] = now.isoformat()
                     changed = True
         if changed:
             self.save_state()
 
-    def get_portfolio_summary(self) -> dict:
+    def get_summary(self) -> dict:
         total_trades = len(self.trades)
-        active_trades = len([t for t in self.trades if t['status'] in ['PENDING', 'ACTIVE']])
-        
         closed_trades = [t for t in self.trades if t['status'] in ['TP1_HIT', 'TP2_HIT', 'SL_HIT']]
-        win_trades = [t for t in closed_trades if t['pnl'] > 0]
-        loss_trades = [t for t in closed_trades if t['pnl'] < 0]
-        
-        win_count = len(win_trades)
-        loss_count = len(loss_trades)
-        win_rate_pct = win_count / len(closed_trades) if closed_trades else 0
-        
+        active_trades = [t for t in self.trades if t['status'] == 'ACTIVE']
+        pending_trades = [t for t in self.trades if t['status'] == 'PENDING']
+
+        wins = [t for t in closed_trades if t['pnl'] > 0]
+        losses = [t for t in closed_trades if t['pnl'] <= 0]
+        win_rate = len(wins) / len(closed_trades) if closed_trades else 0.0
         total_pnl = sum(t['pnl'] for t in closed_trades) + self.realized_pnl_historical
-        
-        best_trade = max(closed_trades, key=lambda x: x['pnl']) if closed_trades else None
-        worst_trade = min(closed_trades, key=lambda x: x['pnl']) if closed_trades else None
-        
-        strategy_breakdown = {}
-        for t in closed_trades:
-            st = t['strategy_type']
-            if st not in strategy_breakdown:
-                strategy_breakdown[st] = {'wins': 0, 'losses': 0, 'pnl': 0}
-            if t['pnl'] > 0:
-                strategy_breakdown[st]['wins'] += 1
-            else:
-                strategy_breakdown[st]['losses'] += 1
-            strategy_breakdown[st]['pnl'] += t['pnl']
-            
+
+        gross_profit = sum(t['pnl'] for t in wins)
+        gross_loss = abs(sum(t['pnl'] for t in losses))
+        profit_factor = gross_profit / gross_loss if gross_loss > 0 else (99.0 if gross_profit > 0 else 0.0)
+
         return {
-            'total_trades': total_trades,
-            'active_trades': active_trades,
-            'win_count': win_count,
-            'loss_count': loss_count,
-            'win_rate_pct': win_rate_pct,
-            'total_pnl': total_pnl,
-            'total_pnl_pct': total_pnl / self.initial_capital if self.initial_capital else 0,
-            'best_trade': best_trade,
-            'worst_trade': worst_trade,
-            'avg_rr_achieved': 0, # Placeholder
+            'initial_capital': self.initial_capital,
             'current_capital': self.initial_capital + total_pnl,
-            'strategy_breakdown': strategy_breakdown
+            'total_pnl': total_pnl,
+            'total_pnl_pct': total_pnl / self.initial_capital,
+            'total_trades': total_trades,
+            'closed_trades': len(closed_trades),
+            'active_trades': len(active_trades),
+            'pending_trades': len(pending_trades),
+            'win_rate': round(win_rate, 4),
+            'profit_factor': round(profit_factor, 2),
+            'trades': self.trades[-20:]
         }
 
-    def get_active_trades(self) -> list:
-        return [t for t in self.trades if t['status'] in ['PENDING', 'ACTIVE']]
-
-    def get_recent_closed(self, limit=20) -> list:
-        closed = [t for t in self.trades if t['status'] not in ['PENDING', 'ACTIVE']]
-        closed.sort(key=lambda x: x.get('closed_at') or '', reverse=True)
-        return closed[:limit]
-
     def save_state(self):
-        # Rolling 30-day purge with historical PnL preservation
-        now = datetime.now()
-        filtered_trades = []
-        for t in self.trades:
-            if t['status'] in ['PENDING', 'ACTIVE']:
-                filtered_trades.append(t)
-            elif t.get('closed_at'):
-                try:
-                    closed_at = datetime.fromisoformat(t['closed_at'])
-                    if (now - closed_at).days <= 30:
-                        filtered_trades.append(t)
-                    else:
-                        self.realized_pnl_historical += float(t.get('pnl', 0))
-                except Exception:
-                    filtered_trades.append(t)
-            else:
-                filtered_trades.append(t)
-        self.trades = filtered_trades
-        
         if not self.state_file:
             return
-
         os.makedirs(os.path.dirname(self.state_file), exist_ok=True)
         try:
             with open(self.state_file, 'w') as f:
                 json.dump({
                     'initial_capital': self.initial_capital,
-                    'risk_pct': self.risk_pct,
                     'realized_pnl_historical': self.realized_pnl_historical,
                     'trades': self.trades
                 }, f, indent=2)
         except Exception as e:
-            print(f"Error saving paper portfolio state: {e}")
+            pass
 
     def load_state(self):
-        if not os.path.exists(self.state_file):
+        if not self.state_file or not os.path.exists(self.state_file):
             return
         try:
             with open(self.state_file, 'r') as f:
                 data = json.load(f)
                 self.initial_capital = data.get('initial_capital', self.initial_capital)
-                self.risk_pct = data.get('risk_pct', self.risk_pct)
-                self.realized_pnl_historical = float(data.get('realized_pnl_historical', 0.0))
+                self.realized_pnl_historical = data.get('realized_pnl_historical', 0.0)
                 self.trades = data.get('trades', [])
         except Exception as e:
-            print(f"Error loading paper portfolio state: {e}")
-            self.trades = []
+            pass

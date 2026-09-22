@@ -7,10 +7,19 @@ logger = logging.getLogger("LLMBrain")
 class LLMBrain:
     def __init__(self):
         self.api_key = os.getenv("GEMINI_API_KEY")
-        self.model_name = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
+        # Dynamic Multi-Model Cascade: Always prioritize the newest models available
+        self.fast_model = os.getenv("GEMINI_MODEL_FAST", "gemini-3.8-flash")
+        self.reasoning_model = os.getenv("GEMINI_MODEL_REASONING", "gemini-3.8-pro")
+        
+        raw_cascade = os.getenv("GEMINI_FALLBACK_MODELS", "gemini-3.8-flash,gemini-3.8-pro,gemini-3.6-flash,gemini-3.6-pro,gemini-2.5-flash")
+        self.candidate_models = [m.strip() for m in raw_cascade.split(",") if m.strip()]
+        if self.fast_model not in self.candidate_models:
+            self.candidate_models.insert(0, self.fast_model)
+            
+        self.model_name = self.fast_model
         self.use_llm = bool(self.api_key)
         if self.use_llm:
-            logger.info(f"Gemini API Key detected. LLM synthesis enabled with model: {self.model_name}")
+            logger.info(f"Gemini API Key detected. Multi-Model Cascade active: {self.candidate_models}")
         else:
             logger.info("GEMINI_API_KEY not found. Operating with deterministic Astra-standard synthesis generator.")
 
@@ -193,20 +202,49 @@ class LLMBrain:
 
         return plans
 
-    def _call_gemini(self, prompt: str, max_tokens: int = 300) -> str:
+    def _call_gemini(self, prompt: str, max_tokens: int = 300, model: str = None, json_mode: bool = False) -> str:
         if not self.use_llm:
             return ""
-        from google import genai
-        client = genai.Client(api_key=self.api_key)
-        response = client.models.generate_content(
-            model=self.model_name,
-            contents=prompt,
-            config={
-                'temperature': 0.7,
-                'max_output_tokens': max_tokens
-            }
-        )
-        return response.text
+        try:
+            from google import genai
+            client = genai.Client(api_key=self.api_key)
+        except ImportError:
+            logger.warning("google-genai library not installed. Using fallback generator.")
+            return ""
+
+        # Build prioritized list of models to try
+        models_to_try = []
+        if model:
+            models_to_try.append(model)
+        for cand in self.candidate_models:
+            if cand not in models_to_try:
+                models_to_try.append(cand)
+
+        last_error = None
+        for m in models_to_try:
+            try:
+                config = {'temperature': 0.2 if json_mode else 0.7}
+                if json_mode:
+                    config['response_mime_type'] = 'application/json'
+                else:
+                    config['max_output_tokens'] = max_tokens
+
+                response = client.models.generate_content(
+                    model=m,
+                    contents=prompt,
+                    config=config
+                )
+                if response and response.text:
+                    # Update active model to currently working model
+                    self.model_name = m
+                    return response.text
+            except Exception as e:
+                last_error = e
+                logger.warning(f"Gemini model '{m}' call failed ({e}). Cascading to next candidate...")
+                continue
+
+        logger.error(f"All candidate Gemini models failed. Last error: {last_error}")
+        return 
 
     def run_bull_bear_debate(self, ticker: str, entry: float, sl: float, tp1: float, 
                               technical_data: dict, macro_context: str = "") -> dict:
@@ -378,15 +416,10 @@ Respond ONLY with a valid JSON object matching this schema:
     }}
 }}"""
 
-            response = client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config={
-                    'temperature': 0.2,
-                    'response_mime_type': 'application/json'
-                }
-            )
-            return json.loads(response.text)
+            raw_json = self._call_gemini(prompt, max_tokens=1000, model=self.fast_model, json_mode=True)
+            if raw_json:
+                return json.loads(raw_json)
+            raise ValueError("Empty response from multi-model cascade")
         except Exception as e:
             logger.warning(f"Geopolitical threat assessment failed: {e}")
             return {

@@ -53,7 +53,31 @@ export default function PearsonCorrelationWidget({ correlationData }) {
     const [timeframe, setTimeframe] = useState('1M');
     const [activeTooltip, setActiveTooltip] = useState(null);
     
-    const displayData = correlationData || CORRELATION_DATA;
+    // Seamless handling for both backend matrix format ({ assets, matrix, sample_size }) and legacy pair map
+    const isLiveMatrix = Boolean(correlationData && Array.isArray(correlationData.assets) && Array.isArray(correlationData.matrix));
+    const liveAssets = isLiveMatrix ? correlationData.assets.map(a => ({ ticker: a, name: a, group: 'Cross-Asset' })) : ASSETS;
+    
+    // Build pair lookup from 2D matrix if live
+    const livePairLookup = {};
+    if (isLiveMatrix) {
+        const assetsList = correlationData.assets;
+        const mat = correlationData.matrix;
+        for (let i = 0; i < assetsList.length; i++) {
+            for (let j = 0; j < assetsList.length; j++) {
+                livePairLookup[`${assetsList[i]}-${assetsList[j]}`] = mat[i][j];
+            }
+        }
+    }
+    
+    const displayAssets = isLiveMatrix ? liveAssets : ASSETS;
+    const getValue = (rowTick, colTick) => {
+        if (isLiveMatrix) {
+            const val = livePairLookup[`${rowTick}-${colTick}`];
+            return typeof val === 'number' ? val : (rowTick === colTick ? 1.0 : 0.0);
+        }
+        const periodData = correlationData?.[timeframe] || CORRELATION_DATA[timeframe] || {};
+        return periodData[`${rowTick}-${colTick}`] !== undefined ? periodData[`${rowTick}-${colTick}`] : (rowTick === colTick ? 1.0 : 0.0);
+    };
 
     return (
         <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', padding: '16px', fontFamily: 'var(--font-mono)' }}>
@@ -117,7 +141,7 @@ export default function PearsonCorrelationWidget({ correlationData }) {
                     <thead>
                         <tr>
                             <th style={{ padding: '6px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)' }}></th>
-                            {ASSETS.map(col => (
+                            {displayAssets.map(col => (
                                 <th key={'col-' + col.ticker} style={{ padding: '6px 4px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontWeight: '700' }}>
                                     {col.ticker}
                                 </th>
@@ -125,7 +149,7 @@ export default function PearsonCorrelationWidget({ correlationData }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {ASSETS.map(row => (
+                        {displayAssets.map(row => (
                             <tr key={'row-' + row.ticker}>
                                 <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: '700', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
                                     {row.ticker}
