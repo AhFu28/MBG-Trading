@@ -89,7 +89,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
           sortinoRatio: Number(s.sortino_ratio || 0).toFixed(2),
           maxDrawdown: Number(s.max_drawdown_pct || 0).toFixed(1),
           expectancy: Number(s.expectancy_pct || 0).toFixed(2),
-          exp3Rank: rankIdx !== -1 ? rankIdx + 1 : idx + 1,
+          quantRank: rankIdx !== -1 ? rankIdx + 1 : idx + 1, exp3Rank: rankIdx !== -1 ? rankIdx + 1 : idx + 1,
           equityCurve: normalizedCurve
         };
       });
@@ -229,7 +229,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
                 <th style={{ padding: '8px' }}>Sortino Ratio</th>
                 <th style={{ padding: '8px' }}>Max Drawdown</th>
                 <th style={{ padding: '8px' }}>Expectancy (E_R)</th>
-                <th style={{ padding: '8px' }}>Exp3 Rank</th>
+                <th style={{ padding: '8px' }}>Quant Rank</th>
               </tr>
             </thead>
             <tbody>
@@ -253,7 +253,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
                   <td style={{ padding: '8px' }}>{s.sortinoRatio}</td>
                   <td style={{ padding: '8px', ...getStyleForMDD(s.maxDrawdown) }}>{s.maxDrawdown}%</td>
                   <td style={{ padding: '8px' }}>{s.expectancy}</td>
-                  <td style={{ padding: '8px' }}>#{s.exp3Rank}</td>
+                  <td style={{ padding: '8px' }}>#{s.quantRank || s.exp3Rank}</td>
                 </tr>
               ))}
             </tbody>

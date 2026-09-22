@@ -154,9 +154,9 @@ export default function PearsonCorrelationWidget({ correlationData }) {
                                 <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: '700', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
                                     {row.ticker}
                                 </td>
-                                {ASSETS.map(col => {
+                                {displayAssets.map(col => {
                                     const key = `${row.ticker}-${col.ticker}`;
-                                    const val = displayData[timeframe][key] !== undefined ? displayData[timeframe][key] : 0.0;
+                                    const val = getValue(row.ticker, col.ticker);
                                     const style = getCellStyle(val);
                                     return (
                                         <td

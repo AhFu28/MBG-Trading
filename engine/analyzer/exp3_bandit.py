@@ -1,3 +1,14 @@
+"""
+=============================================================================
+STATUS: ARCHIVED / RETIRED
+-----------------------------------------------------------------------------
+Sistem realokasi bobot bandit EXP3 ini telah dipensiunkan sesuai arsitektur:
+1. Setiap AI Trading Agent memiliki Modal Mandiri Sovereign (Rp 1.000.000).
+2. Auto-Margin Call (MC <= 15%) terpasang langsung pada execution loop.
+3. Saat terjadi MC, modal bot ter-reset ke saldo awal dengan DNA evolution.
+Modul ini dipertahankan hanya sebagai legacy reference / unit test backward compatibility.
+=============================================================================
+"""
 import json
 import os
 import math

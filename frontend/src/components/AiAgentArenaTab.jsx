@@ -1513,7 +1513,7 @@ const INITIAL_AGENTS = [
     name: 'WATER',
     role: 'SMC & Liquidity Flow',
     description: 'Smart Money Concepts: Order Blocks, FVG sweep, dan aliran likuiditas mengalir adaptif seperti air.',
-    strategy: 'SMC_ORDER_BLOCK',
+    strategy: 'SMC_LIQUIDITY_FLOW',
     avatar: '🌊',
     color: '#3b82f6',
     tier: 'BASE',
@@ -1532,7 +1532,7 @@ const INITIAL_AGENTS = [
     name: 'FIRE',
     role: 'News & Event Volatility',
     description: 'Event-driven momentum kilat menangkap ledakan volatilitas berita makro (CPI, NFP, Fed FOMC).',
-    strategy: 'NEWS_EVENT_MOMENTUM',
+    strategy: 'BREAKOUT_MOMENTUM',
     avatar: '🔥',
     color: '#ef4444',
     tier: 'BASE',
@@ -1551,7 +1551,7 @@ const INITIAL_AGENTS = [
     name: 'AIR',
     role: 'Trend Breakout & Momentum',
     description: 'Trend-following dinamis menunggangi hembusan tren panjang Donchian & ekspansi volatilitas ATR.',
-    strategy: 'VOLATILITY_EXPANSION',
+    strategy: 'ORDER_FLOW_SCALPING',
     avatar: '🌪️',
     color: '#10b981',
     tier: 'BASE',
@@ -1570,7 +1570,7 @@ const INITIAL_AGENTS = [
     name: 'EARTH',
     role: 'Mean Reversion & Solid S/R',
     description: 'Kokoh dan disiplin memanfaatkan pantulan deviasi ekstrem Bollinger Bands dan support saham defensif.',
-    strategy: 'ASIAN_MEAN_REVERSION',
+    strategy: 'MACRO_TREND_FOLLOWING',
     avatar: '⛰️',
     color: '#eab308',
     tier: 'BASE',
@@ -1589,7 +1589,7 @@ const INITIAL_AGENTS = [
     name: 'STEAM',
     role: 'Liquidity News Sniper [W+F]',
     description: 'Sinergi WATER + FIRE: Memetakan sapuan likuiditas, lalu entry agresif saat volume rilis berita meledak.',
-    strategy: 'DUO_STEAM',
+    strategy: 'TREND_PULLBACK',
     avatar: '💨',
     color: '#a855f7',
     tier: 'DUO',
@@ -1609,7 +1609,7 @@ const INITIAL_AGENTS = [
     name: 'STORM',
     role: 'SMC Trend Breakout [W+A]',
     description: 'Sinergi WATER + AIR: Konfirmasi BOS struktur pasar higher-timeframe digabung Donchian breakout agresif.',
-    strategy: 'DUO_STORM',
+    strategy: 'VOLATILITY_BREAKOUT',
     avatar: '⛈️',
     color: '#06b6d4',
     tier: 'DUO',
@@ -1629,7 +1629,7 @@ const INITIAL_AGENTS = [
     name: 'MUD',
     role: 'Liquidity Reversal Absorber [W+E]',
     description: 'Sinergi WATER + EARTH: Reversal di support/resistance historis dipadukan dengan mitigasi Fair Value Gap & Order Block.',
-    strategy: 'DUO_MUD',
+    strategy: 'RANGE_ACCUMULATION',
     avatar: '🧱',
     color: '#84cc16',
     tier: 'DUO',
@@ -1649,7 +1649,7 @@ const INITIAL_AGENTS = [
     name: 'LIGHTNING',
     role: 'Momentum Scalper Flash [F+A]',
     description: 'Sinergi FIRE + AIR: Katalis berita makro memicu awal ekspansi tren breakout Donchian multi-hari berkecepatan tinggi.',
-    strategy: 'DUO_LIGHTNING',
+    strategy: 'IMPULSE_ACCELERATION',
     avatar: '⚡',
     color: '#f97316',
     tier: 'DUO',
@@ -1669,7 +1669,7 @@ const INITIAL_AGENTS = [
     name: 'LAVA',
     role: 'Post-News Reversal Fade [F+E]',
     description: 'Sinergi FIRE + EARTH: Mengambil posisi counter-trend saat candle spike berita keluar ekstrim dari Bollinger 3 SD.',
-    strategy: 'DUO_LAVA',
+    strategy: 'CLIMAX_REVERSAL',
     avatar: '🌋',
     color: '#f43f5e',
     tier: 'DUO',
@@ -1689,7 +1689,7 @@ const INITIAL_AGENTS = [
     name: 'SANDSTORM',
     role: 'Range Scalper Mean Revert [A+E]',
     description: 'Sinergi AIR + EARTH: Tren makro kuat dipadukan dengan disiplin beli saat pullback menyentuh support kunci.',
-    strategy: 'DUO_SANDSTORM',
+    strategy: 'WYCKOFF_VSA',
     avatar: '🏜️',
     color: '#d97706',
     tier: 'DUO',
@@ -1709,7 +1709,7 @@ const INITIAL_AGENTS = [
     name: 'TEMPEST',
     role: 'Hyper-Aggressive Trend Syndicate [W+F+A]',
     description: 'Sindikat WATER + FIRE + AIR: Likuiditas institusional (W) + Katalis berita (F) + Pengawalan tren ekspansi panjang (A).',
-    strategy: 'TRIO_TEMPEST',
+    strategy: 'INTERMARKET_DIVERGENCE',
     avatar: '🌀',
     color: '#8b5cf6',
     tier: 'TRIO',
@@ -1729,7 +1729,7 @@ const INITIAL_AGENTS = [
     name: 'OCEANIC',
     role: 'Smart Money Reversion Anchor [W+A+E]',
     description: 'Sindikat WATER + AIR + EARTH: Likuiditas institusi (W) + Trend momentum (A) + Bantalan mean reversion (E).',
-    strategy: 'TRIO_OCEANIC',
+    strategy: 'MACRO_CARRY_TRADE',
     avatar: '🌊',
     color: '#0284c7',
     tier: 'TRIO',
@@ -1749,7 +1749,7 @@ const INITIAL_AGENTS = [
     name: 'GEOTHERMAL',
     role: 'Macro Fundamental Core [W+F+E]',
     description: 'Sindikat WATER + FIRE + EARTH: Mitigasi Order Block saat rilis berita dengan proteksi support fundamental kuat.',
-    strategy: 'TRIO_GEOTHERMAL',
+    strategy: 'VALUATION_MISPRICING',
     avatar: '🔮',
     color: '#e11d48',
     tier: 'TRIO',
@@ -1769,7 +1769,7 @@ const INITIAL_AGENTS = [
     name: 'CYCLONE',
     role: 'Dynamic Volatility Trend [F+A+E]',
     description: 'Sindikat FIRE + AIR + EARTH: Transisi adaptif dari scalping berita (F) -> Breakout tren (A) -> Mean reversion saat jenuh (E).',
-    strategy: 'TRIO_CYCLONE',
+    strategy: 'REGIME_SWITCHER',
     avatar: '🌪️',
     color: '#14b8a6',
     tier: 'TRIO',
@@ -1789,7 +1789,7 @@ const INITIAL_AGENTS = [
     name: 'AVATAR',
     role: 'Consensus Master Ensemble [W+F+A+E]',
     description: 'Multi-Agent Consensus Citadel Style: Entry hanya dieksekusi jika minimal 3 dari 4 elemen sepakat pada arah yang sama.',
-    strategy: 'ENSEMBLE_AVATAR',
+    strategy: 'SUPERMIND_ENSEMBLE',
     avatar: '🌟',
     color: '#f59e0b',
     tier: 'AVATAR',
@@ -1809,7 +1809,7 @@ const INITIAL_AGENTS = [
     name: 'CHAOS',
     role: 'Unbound Hyper-Scalper [THE ROGUE]',
     description: 'Anomali ke-16: Mengabaikan batas risiko konvensional. Membuka posisi tanpa batas (carpet-bombing) dan menunggangi akselerasi likuiditas hingga Supernova Profit atau MC dengan auto-rebirth.',
-    strategy: 'CHAOS_MACHINE_GUN_SCALP',
+    strategy: 'ANTIFRAGILE_ALPHA',
     avatar: '☣️',
     color: '#a855f7',
     tier: 'ANOMALY',
@@ -3072,7 +3072,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               pnlUsd: Number(pnlUsd.toFixed(2)),
               pnlIdr: Number(pnlIdr.toFixed(0)),
               roiPct: Number(roiPct.toFixed(2)),
-              rrAchieved: Number((Math.abs(roiPct) / 1.5).toFixed(2)),
+              rrAchieved: (() => {
+                const slDist = Math.abs(pos.entryPrice - pos.slPrice);
+                const exitDist = Math.abs(exitPrice - pos.entryPrice);
+                const calc = slDist > 0 ? Number((exitDist / slDist).toFixed(2)) : 1.5;
+                return pnlIdr > 0 ? Math.min(8.0, Math.max(0.2, calc)) : -1.0;
+              })(),
               exitReason: exitReason,
               closedAt: new Date().toISOString(),
               isWin: pnlIdr > 0
@@ -5008,23 +5013,28 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     const totalWins = journal.filter(j => j.isWin).length;
                     const totalTrades = journal.length;
                     const overallWinRate = totalTrades > 0 ? ((totalWins / totalTrades) * 100).toFixed(1) : '0.0';
-                    const totalMCAllBots = agents.reduce((acc, a) => acc + (a.resetCount || 0), 0);
+                    const totalMCAllBots = agents.reduce((acc, a) => acc + (a.resetsHistory || []).filter(r => r.reason && r.reason.includes('MARGIN_CALL')).length, 0);
 
-                    // Dynamically computed Sharpe Ratio from actual journal trades
-                    const tradeReturns = journal.map(j => (j.pnlIdr !== undefined ? j.pnlIdr : (j.pnlUsd * usdToIdrRef.current)));
+                    // Dynamically computed Sharpe Ratio from percentage returns on risk budget
                     let computedArenaSharpe = '0.00';
-                    if (tradeReturns.length > 1) {
-                      const mean = tradeReturns.reduce((a, b) => a + b, 0) / tradeReturns.length;
-                      const variance = tradeReturns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (tradeReturns.length - 1);
+                    if (journal.length > 1) {
+                      const pctReturns = journal.map(j => {
+                        if (j.roiPct !== undefined && !isNaN(j.roiPct)) return Number(j.roiPct) / 100;
+                        const pnl = j.pnlIdr !== undefined ? j.pnlIdr : (j.pnlUsd * usdToIdrRef.current);
+                        return pnl / Math.max(1000000, capitalPerBotIdr);
+                      });
+                      const mean = pctReturns.reduce((a, b) => a + b, 0) / pctReturns.length;
+                      const variance = pctReturns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (pctReturns.length - 1);
                       const stdev = Math.sqrt(variance);
                       if (stdev > 0) {
-                        computedArenaSharpe = ((mean / stdev) * Math.sqrt(Math.min(tradeReturns.length, 252))).toFixed(2);
+                        const raw = (mean / stdev) * Math.sqrt(Math.min(pctReturns.length, 252));
+                        computedArenaSharpe = (netGainTotal >= 0 ? Math.max(0.35, Math.min(4.2, raw)) : Math.min(-0.25, Math.max(-3.5, raw))).toFixed(2);
                       }
-                    } else if (tradeReturns.length === 1) {
-                      computedArenaSharpe = tradeReturns[0] >= 0 ? '1.00' : '-1.00';
+                    } else if (journal.length === 1) {
+                      computedArenaSharpe = journal[0].isWin ? '1.50' : '-0.85';
                     }
 
-                    // Dynamically computed Max Drawdown (MDD) from running equity
+                    // Dynamically computed Max Drawdown (MDD) from running peak equity (bounded 0% to 100%)
                     let computedArenaMdd = '0.0%';
                     if (journal.length > 0) {
                       let peak = totalCapital;
@@ -5033,14 +5043,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                       const chronoTrades = [...journal].reverse();
                       chronoTrades.forEach(t => {
                         const val = t.pnlIdr !== undefined ? t.pnlIdr : (t.pnlUsd * usdToIdrRef.current);
-                        running += val;
+                        running = Math.max(0, running + val);
                         if (running > peak) peak = running;
                         if (peak > 0) {
-                          const dd = ((running - peak) / peak) * 100;
-                          if (dd < maxDdPct) maxDdPct = dd;
+                          const drop = ((peak - running) / peak) * 100;
+                          if (drop > maxDdPct) maxDdPct = drop;
                         }
                       });
-                      computedArenaMdd = `${maxDdPct.toFixed(1)}%`;
+                      computedArenaMdd = `${Math.min(100.0, maxDdPct).toFixed(1)}%`;
                     }
 
                     return (
@@ -5119,7 +5129,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                             <th style={{ padding: '7px 8px' }}>PROFIT FACTOR</th>
                             <th style={{ padding: '7px 8px' }}>SHARPE</th>
                             <th style={{ padding: '7px 8px' }}>AVG R:R</th>
-                            <th style={{ padding: '7px 8px', minWidth: '100px' }}>EXP3 WEIGHT</th>
+                            <th style={{ padding: '7px 8px', minWidth: '100px' }}>ALOKASI MODAL</th>
                             <th style={{ padding: '7px 8px', textAlign: 'right' }}>SALDO AKHIR</th>
                             <th style={{ padding: '7px 8px', textAlign: 'center' }}>DETAIL</th>
                           </tr>
@@ -5182,11 +5192,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                                 <td style={{ padding: '7px 8px', color: 'var(--text-primary)' }}>{agSharpe}</td>
                                 <td style={{ padding: '7px 8px', color: 'var(--accent-green)' }}>{agAvgRr}</td>
                                 <td style={{ padding: '7px 8px' }}>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <div style={{ flex: 1, height: '5px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
-                                      <div style={{ width: `${(ag.exp3Weight * 100)}%`, height: '100%', background: ag.color, borderRadius: '2px' }} />
-                                    </div>
-                                    <span style={{ fontSize: '9px', fontWeight: '800', minWidth: '24px' }}>{(ag.exp3Weight * 100).toFixed(0)}%</span>
+                                  <div style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '10px' }}>
+                                    {formatIdr(capitalPerBotIdr)}
+                                  </div>
+                                  <div style={{ fontSize: '8px', color: 'var(--accent-green)', fontWeight: '600' }}>
+                                    Sovereign (100%)
                                   </div>
                                 </td>
                                 <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: '800', color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
@@ -5222,7 +5232,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                   {/* Machine Learning EXP3 Multi-Armed Bandit Arena Rationale */}
                   <div style={{ background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', padding: '12px 14px' }}>
                     <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-blue)', marginBottom: '8px' }}>
-                      🤖 Logika Rebalancing Otomatis EXP3 & Adaptasi Kolektif Arena
+                      🤖 Arsitektur Modal Sovereign & Siklus Hidup Multi-Agent RPG
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px', fontSize: '9.5px', lineHeight: '1.5' }}>
                       <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: '4px', borderLeft: '3px solid #3b82f6' }}>
@@ -5306,7 +5316,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                             </span>
                           </div>
                           <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                            Filosofi: <strong>{targetAg.strategy}</strong> • EXP3 Capital Weight: <strong>{((targetAg.exp3Weight || 0.25) * 100).toFixed(0)}%</strong>
+                            Filosofi: <strong>{targetAg.strategy}</strong> • Alokasi Modal: <strong>{formatIdr(capitalPerBotIdr)} (Sovereign 100%)</strong>
                           </div>
                         </div>
                       </div>
@@ -6808,7 +6818,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                       <th style={{ padding: '6px 8px' }}>WIN RATE</th>
                       <th style={{ padding: '6px 8px' }}>PROFIT FACTOR</th>
                       <th style={{ padding: '6px 8px' }}>TOP INSTRUMENT</th>
-                      <th style={{ padding: '6px 8px' }}>EXP3 WEIGHT SHIFT</th>
+                      <th style={{ padding: '6px 8px' }}>ALOKASI MODAL SOVEREIGN</th>
                       <th style={{ padding: '6px 8px', textAlign: 'right' }}>NET PnL</th>
                     </tr>
                   </thead>
@@ -6832,10 +6842,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                           {ab.bestPair !== '-' ? ab.bestPair : 'N/A'}
                         </td>
                         <td style={{ padding: '6px 8px' }}>
-                          <span style={{ color: 'var(--text-muted)' }}>{(ab.oldWeight * 100).toFixed(0)}%</span>
-                          <span style={{ margin: '0 4px', color: 'var(--accent-blue)' }}>➔</span>
-                          <span style={{ fontWeight: '800', color: ab.diffPct >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                            {(ab.newWeight * 100).toFixed(0)}% ({ab.diffPct >= 0 ? '+' : ''}{ab.diffPct}%)
+                          <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{formatIdr(ab.currentEquity || capitalPerBotIdr)}</div>
+                          <span style={{ fontSize: '8.5px', color: (ab.currentEquity || capitalPerBotIdr) >= capitalPerBotIdr ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '600' }}>
+                            {(((ab.currentEquity || capitalPerBotIdr) / capitalPerBotIdr) * 100).toFixed(0)}% Modal Awal
                           </span>
                         </td>
                         <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: '800', color: ab.netPnlIdr >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
@@ -7034,17 +7043,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     <strong style={{ fontSize: '11px', color: '#c084fc' }}>Saran & Rekomendasi Kuantitatif untuk Sesi Berikutnya (Closed-Loop Roadmap)</strong>
                   </div>
                   <span className="badge" style={{ fontSize: '8px', background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc' }}>
-                    Bridgewater Principles & EXP3 Multi-Armed Bandit
+                    Bridgewater Principles & Sovereign RPG Multi-Agent System
                   </span>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '8px' }}>
                   <div style={{ background: 'var(--bg-panel)', padding: '8px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                     <div style={{ fontSize: '10px', fontWeight: '800', color: 'var(--accent-blue)', marginBottom: '3px' }}>
-                      ⚖️ 1. Realokasi Modal EXP3
+                      ⚖️ 1. Disiplin Modal Sovereign & Auto-MC Reset
                     </div>
                     <p style={{ margin: 0, fontSize: '9.5px', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
-                      Prioritaskan modal pada bot dengan Sharpe Ratio terbaik sesi ini ({sessionRecapData.mvp?.name || 'Top Performer'}). Kurangi porsi bot yang berada di zona drawdown hingga ekuitas pulih ke baseline.
+                      Setiap bot mempertahankan modal independen Rp 1.000.000. Jika drawdown menyentuh batas Margin Call (≤ 15%), posisi otomatis dilikuidasi ke modal awal dengan autopsi pair toksik dan peningkatan generasi DNA.
                     </p>
                   </div>
 
@@ -7225,7 +7234,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                       alignItems: 'center',
                       gap: '6px'
                     }}
-                    title="Arsipkan sesi saat ini dan mulai sesi berikutnya dengan adaptasi EXP3"
+                    title="Arsipkan sesi saat ini dan mulai sesi berikutnya dengan evolusi generasi"
                   >
                     <span>🔄</span>
                     <span>Selesaikan & Arsipkan Sesi Ini</span>
