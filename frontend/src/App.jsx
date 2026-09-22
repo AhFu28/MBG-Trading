@@ -444,6 +444,8 @@ export default function App() {
                   threatData={data?.geopolitical_threat}
                   debateData={data?.ai_agent_arena}
                   aiDiagnostics={data?.ai_agent_arena?.diagnostics}
+                  thematicData={data?.thematic_macro_regimes}
+                  allIdxStocks={allIdxStocks}
                 />
               </main>
             ) : activeTab === 'WATCHLIST' ? (
@@ -618,6 +620,8 @@ export default function App() {
                 threatData={data?.geopolitical_threat}
                 debateData={data?.ai_agent_arena}
                 aiDiagnostics={data?.ai_agent_arena?.diagnostics}
+                thematicData={data?.thematic_macro_regimes}
+                allIdxStocks={allIdxStocks}
               />
             )}
           </Suspense>
