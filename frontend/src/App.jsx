@@ -314,7 +314,7 @@ export default function App() {
           livePrices={livePrices}
           flashMap={flashMap}
           onSelectTicker={handleOpenSecurityHub}
-          onOpenAiSentinel={() => setIsAiDrawerOpen(true)}
+          onOpenAiSentinel={() => setActiveTab('AI_SENTINEL')}
         />
 
         {/* ===== MAIN CONTENT AREA ===== */}
@@ -352,27 +352,6 @@ export default function App() {
               
               {/* Bursa Luar Negeri (Global Market Sessions Ticker) */}
               <GlobalMarketTicker onNavigateGlobal={() => setActiveTab('GLOBAL_MARKETS')} />
-
-              {/* IDX Market Status Badge */}
-              <div
-                style={{
-                  fontSize: '9.5px',
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: '700',
-                  padding: '2px 6px',
-                  borderRadius: 'var(--radius-xs)',
-                  background: isIdxMarketOpen() ? 'rgba(0, 208, 132, 0.12)' : 'rgba(239, 68, 68, 0.1)',
-                  color: isIdxMarketOpen() ? 'var(--accent-green)' : 'var(--accent-red)',
-                  border: isIdxMarketOpen() ? '1px solid rgba(0, 208, 132, 0.3)' : '1px solid rgba(239, 68, 68, 0.25)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}
-                title={isIdxMarketOpen() ? "Sesi Perdagangan BEI Buka (Harga Saham Bergerak Real-Time)" : "Bursa BEI Tutup (Data Menampilkan Harga Penutupan Terakhir / Last Close)"}
-              >
-                <span>{isIdxMarketOpen() ? "🟢" : "🔴"}</span>
-                <span>{isIdxMarketOpen() ? "IDX LIVE" : "IDX TUTUP (LAST CLOSE)"}</span>
-              </div>
 
               {/* Master Terminal Time */}
               <HeaderClock />
@@ -457,42 +436,15 @@ export default function App() {
             </div>
           }>
             {activeTab === 'AI_SENTINEL' || activeTab === 'SENTINEL' ? (
-              <main style={{ padding: '16px 0' }}>
-                <div className="telemetry-panel" style={{
-                  padding: '24px',
-                  textAlign: 'center',
-                  background: 'var(--bg-panel)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '12px'
-                }}>
-                  <div style={{ fontSize: '32px' }}>🛡️</div>
-                  <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '800', color: 'var(--text-primary)' }}>
-                    AI INTELLIGENCE &amp; GEOPOLITICAL SENTINEL DESK
-                  </h3>
-                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', maxWidth: '520px', lineHeight: 1.5 }}>
-                    Sentinel desk memantau ancaman krisis perang/makro (DEFCON 1-5), log perdebatan Bull vs Bear AI, dan status multi-model dynamic discovery (Gemini 4 / 3.8 Flash).
-                  </div>
-                  <button
-                    onClick={() => setIsAiDrawerOpen(true)}
-                    className="telemetry-btn active"
-                    style={{
-                      padding: '8px 18px',
-                      fontSize: '12px',
-                      fontWeight: '800',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      marginTop: '8px'
-                    }}
-                  >
-                    <span>🛡️</span>
-                    <span>Buka Panel AI Intelligence &amp; Sentinel Drawer ↗</span>
-                  </button>
-                </div>
+              /* AI SENTINEL EMBEDDED DESK VIEW */
+              <main style={{ padding: '12px 0' }}>
+                <AiIntelligenceDrawer
+                  isDrawer={false}
+                  isOpen={true}
+                  threatData={data?.geopolitical_threat}
+                  debateData={data?.ai_agent_arena}
+                  aiDiagnostics={data?.ai_agent_arena?.diagnostics}
+                />
               </main>
             ) : activeTab === 'WATCHLIST' ? (
               /* PERSONAL WATCHLIST (Star Marked Items) */

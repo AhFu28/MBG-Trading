@@ -202,12 +202,12 @@
         "summary": "Bagi investor dan trader awam: Semalam pasar saham global dipengaruhi pergerakan suku bunga AS dan harga komoditas. Penguatan emas ($4,409.5) dan minyak ($102.0) menjadi pedang bermata dua: menguntungkan saham tambang dan energi Indonesia, namun indeks dolar (DXY 100.08) menahan laju penguatan rupiah. Hari ini IHSG diproyeksikan menguji titik poros 6,441.",
         "full_narrative": "Bagi investor dan trader awam: Semalam pasar saham global dipengaruhi pergerakan suku bunga AS dan harga komoditas. Penguatan emas ($4,409.5) dan minyak ($102.0) menjadi pedang bermata dua: menguntungkan saham tambang dan energi Indonesia, namun indeks dolar (DXY 100.08) menahan laju penguatan rupiah. Hari ini IHSG diproyeksikan menguji titik poros 6,441.\n\nLevel Pivot: 6,441, Support 1: 6,390, Resistance 1: 6,493. Batas risiko cut-loss disiplin di bawah 6,308.",
         "technical_levels": {
-          "pivot": 6441.0,
-          "s1": 6390.0,
-          "s2": 6325.0,
-          "r1": 6493.0,
-          "r2": 6557.0,
-          "invalidation": 6308.0,
+          "pivot": 6441,
+          "s1": 6390,
+          "s2": 6325,
+          "r1": 6493,
+          "r2": 6557,
+          "invalidation": 6308,
           "unit": "IDR",
           "invalidation_thesis": "Penutupan candle harian di bawah 6,325 membatalkan skenario akumulasi dan mewajibkan cut-loss defensif."
         },
@@ -256,22 +256,22 @@
         "summary": "Panduan Analisis Sederhana: Mengapa saham bank dan tambang bergerak berlawanan arah? Ketika ekspektasi suku bunga dunia tinggi, bank menikmati margin bunga (NIM) yang sehat. Sebaliknya saat risiko tensi perang meningkat, institusi memindahkan dana ke aset lindung nilai seperti emas (ANTM). Strategi terbaik bagi investor adalah membagi portofolio secara berimbang ('Barbell Strategy').",
         "full_narrative": "Panduan Analisis Sederhana: Mengapa saham bank dan tambang bergerak berlawanan arah? Ketika ekspektasi suku bunga dunia tinggi, bank menikmati margin bunga (NIM) yang sehat. Sebaliknya saat risiko tensi perang meningkat, institusi memindahkan dana ke aset lindung nilai seperti emas (ANTM). Strategi terbaik bagi investor adalah membagi portofolio secara berimbang ('Barbell Strategy').\n\nLevel Teknikal BBCA: Pivot Rp 6,200, S1 Rp 6,150, R1 Rp 6,250. Level Teknikal ANTM: Pivot Rp 1,650, S1 Rp 1,637, R1 Rp 1,663.",
         "technical_levels": {
-          "pivot": 6200.0,
-          "s1": 6150.0,
-          "s2": 6088.0,
-          "r1": 6250.0,
-          "r2": 6312.0,
-          "invalidation": 6072.0,
+          "pivot": 6200,
+          "s1": 6150,
+          "s2": 6088,
+          "r1": 6250,
+          "r2": 6312,
+          "invalidation": 6072,
           "unit": "IDR",
           "invalidation_thesis": "Penutupan candle harian di bawah 6,088 membatalkan skenario akumulasi dan mewajibkan cut-loss defensif."
         },
         "secondary_technical_levels": {
-          "pivot": 1650.0,
-          "s1": 1637.0,
-          "s2": 1620.0,
-          "r1": 1663.0,
-          "r2": 1680.0,
-          "invalidation": 1616.0,
+          "pivot": 1650,
+          "s1": 1637,
+          "s2": 1620,
+          "r1": 1663,
+          "r2": 1680,
+          "invalidation": 1616,
           "unit": "IDR",
           "invalidation_thesis": "Penutupan candle harian di bawah 1,620 membatalkan skenario akumulasi dan mewajibkan cut-loss defensif."
         },
@@ -6975,21 +6975,21 @@
     {
       "pair": "PEPE/USDT",
       "symbol": "PEPEUSDT",
-      "current_price": 3.51e-06,
+      "current_price": 0.00000351,
       "change_24h_pct": 2.93,
-      "high_24h": 3.53e-06,
-      "low_24h": 3.38e-06,
+      "high_24h": 0.00000353,
+      "low_24h": 0.00000338,
       "rsi_14": 52.9,
-      "sma20": 3.4934999999999997e-06,
+      "sma20": 0.0000034934999999999997,
       "volume_quote": 3081004026626.001,
       "market": "CRYPTO",
       "currency": "USDT",
       "setup_type": "TREND_CONTINUATION",
-      "entry_low": 3.48e-06,
-      "entry_high": 3.52e-06,
-      "take_profit_1": 3.78e-06,
-      "take_profit_2": 3.95e-06,
-      "stop_loss": 3.37e-06,
+      "entry_low": 0.00000348,
+      "entry_high": 0.00000352,
+      "take_profit_1": 0.00000378,
+      "take_profit_2": 0.00000395,
+      "stop_loss": 0.00000337,
       "risk_reward_ratio": 2,
       "conviction": "HIGH",
       "catalyst_thesis": "Trading above SMA20 ($3.49e-06) with positive 24h momentum (+2.93%).",
@@ -7679,7 +7679,7 @@
             "type": "BULLISH_FVG",
             "gap_high": 514.4727272727273,
             "gap_low": 514.472712151358,
-            "gap_size_pct": 2.9391975404027694e-06,
+            "gap_size_pct": 0.0000029391975404027694,
             "candle_date": "2026-07-02",
             "filled": false
           },
@@ -11392,7 +11392,7 @@
           "type": "BULLISH_FVG",
           "gap_high": 514.4727272727273,
           "gap_low": 514.472712151358,
-          "gap_size_pct": 2.9391975404027694e-06,
+          "gap_size_pct": 0.0000029391975404027694,
           "candle_date": "2026-07-02",
           "filled": false
         },
@@ -20862,7 +20862,7 @@
     ],
     "matrix": [
       [
-        1.0,
+        1,
         0.92,
         0.45,
         0.42,
@@ -20875,7 +20875,7 @@
       ],
       [
         0.92,
-        1.0,
+        1,
         0.55,
         0.5,
         0.3,
@@ -20888,7 +20888,7 @@
       [
         0.45,
         0.55,
-        1.0,
+        1,
         0.88,
         0.25,
         0.2,
@@ -20901,7 +20901,7 @@
         0.42,
         0.5,
         0.88,
-        1.0,
+        1,
         0.28,
         0.18,
         0.12,
@@ -20914,7 +20914,7 @@
         0.3,
         0.25,
         0.28,
-        1.0,
+        1,
         0.45,
         0.2,
         -0.25,
@@ -20927,7 +20927,7 @@
         0.2,
         0.18,
         0.45,
-        1.0,
+        1,
         0.25,
         -0.55,
         0.15,
@@ -20940,7 +20940,7 @@
         0.12,
         0.2,
         0.25,
-        1.0,
+        1,
         0.35,
         -0.1,
         -0.25
@@ -20953,7 +20953,7 @@
         -0.25,
         -0.55,
         0.35,
-        1.0,
+        1,
         0.45,
         0.55
       ],
@@ -20966,7 +20966,7 @@
         0.15,
         -0.1,
         0.45,
-        1.0,
+        1,
         0.35
       ],
       [
@@ -20979,7 +20979,7 @@
         -0.25,
         0.55,
         0.35,
-        1.0
+        1
       ]
     ],
     "data_source": "live_macro_benchmark",
@@ -23068,50 +23068,399 @@
   "execution_duration_sec": 11.1,
   "geopolitical_threat": {
     "defcon_level": 4,
-    "primary_threat": "Tensi geopolitik energi Timur Tengah & pergerakan imbal hasil US10Y.",
-    "affected_asset_classes": [
-      "Minyak Mentah Brent",
-      "Emas Spot",
-      "Perbankan Big Caps",
-      "USD/IDR"
-    ],
-    "tactical_recommendation": "Pertahankan alokasi kas 25-30%, pasang trailing stop disiplin di saham energi & komoditas.",
+    "primary_threat": "Tensi geopolitik energi Timur Tengah & eskalasi tarif dagang global serta imbal hasil US10Y.",
     "threat_score": 0.42,
+    "affected_theatres": [
+      {
+        "theatre": "Selat Hormuz / Teluk Persia",
+        "risk_type": "Disrupsi Pasokan Minyak Mentah",
+        "severity": "HIGH",
+        "status": "ESCALATING"
+      },
+      {
+        "theatre": "Kebijakan The Fed & BI Rate",
+        "risk_type": "Divergensi Suku Bunga & Tekanan Kurs",
+        "severity": "MEDIUM",
+        "status": "MONITORED"
+      },
+      {
+        "theatre": "Tarif Dagang AS - Tiongkok",
+        "risk_type": "Fragmentasi Rantai Pasok Manufaktur",
+        "severity": "ELEVATED",
+        "status": "ACTIVE"
+      },
+      {
+        "theatre": "Ketegangan Selat Taiwan",
+        "risk_type": "Disrupsi Rantai Semikonduktor Global",
+        "severity": "MEDIUM",
+        "status": "GUARDED"
+      }
+    ],
+    "affected_asset_classes": [
+      {
+        "asset": "Minyak Mentah Brent",
+        "impact": "Bullish Supply Shock",
+        "sentiment": "bullish",
+        "metric": "+2.4% Volatility"
+      },
+      {
+        "asset": "Emas Spot (XAU/USD)",
+        "impact": "Safe-Haven Net Inflow",
+        "sentiment": "bullish",
+        "metric": "ATH Accumulation"
+      },
+      {
+        "asset": "USD / IDR",
+        "impact": "Tekanan Depresiasi Kurs",
+        "sentiment": "bearish",
+        "metric": "Rp 15.950 Guard"
+      },
+      {
+        "asset": "Obligasi SBN 10Y",
+        "impact": "Spread Expansion Risk",
+        "sentiment": "neutral",
+        "metric": "6.85% Yield Watch"
+      },
+      {
+        "asset": "Perbankan Big Caps",
+        "impact": "Defensive Quality Moat",
+        "sentiment": "bullish",
+        "metric": "CASA > 80% Cushion"
+      }
+    ],
+    "tactical_recommendation": "Pertahankan alokasi cadangan kas 25-30% likuid. Pasang trailing stop disiplin (1.8x ATR) pada saham energi & perbankan. Manfaatkan emas spot & obligasi jangka pendek untuk safe-haven hedge.",
     "model_used": "gemini-3.8-flash (Auto-Discovered)",
     "latency_ms": 142,
-    "evaluated_at": "2026-09-22T15:46:53.603578+00:00"
+    "evaluated_at": "2026-09-22T19:08:28.560Z"
   },
   "ai_agent_arena": {
     "active_debate": {
+      "id": "BBCA",
       "ticker": "BBCA",
-      "bull_case": "1. Solid Net Interest Margin (NIM 5.8%) dengan CASA rasio > 80% menjamin biaya dana terendah.\\n2. Konsistensi akumulasi investor asing di atas MA20 dengan net buy stabil.\\n3. Target kenaikan terukur menuju level Resistance Rp 6,350 dengan R:R 2.2.",
-      "bear_case": "1. Pengetatan likuiditas perbankan domestik jika suku bunga acuan BI tetap tinggi lebih lama.\\n2. Potensi aksi profit taking institusi mendekati level all-time high.\\n3. Risiko rotasi likuiditas ke pasar obligasi AS jika inflasi global memanas kembali.",
-      "verdict": "APPROVED",
-      "recommended_size_pct": 75.0,
-      "critical_risk": "Volatilitas capital flow asing jangka pendek.",
-      "reasoning": "Rasio fundamental superior dengan bantalan likuiditas tebal, cocok untuk akumulasi bertahap.",
-      "model_used": "gemini-3.8-flash",
-      "latency_ms": 195,
-      "timestamp": "2026-09-22T15:46:54.280642+00:00"
+      "name": "PT Bank Central Asia Tbk",
+      "category": "BANKING / BLUE CHIP",
+      "current_price": 6200,
+      "target_price": 6450,
+      "stop_loss": 6050,
+      "consensus": {
+        "bull_pct": 75,
+        "bear_pct": 25,
+        "stance": "STRONG_BULL"
+      },
+      "bull_case": {
+        "agent": "Banking Alpha Bull",
+        "thesis": [
+          "Solid Net Interest Margin (NIM 5.8%) dengan CASA rasio > 80% menjamin biaya dana (CoF) terendah di industri perbankan.",
+          "Konsistensi akumulasi investor asing di atas MA20 dengan kualitas aset prima (Loan at Risk < 6%).",
+          "Pertumbuhan kredit korporasi dan konsumer solid di atas 12% YoY didukung rasio kecukupan modal (CAR 29.4%)."
+        ],
+        "target": "Rp 6,450 (ATH Expansion)",
+        "catalyst": "Foreign net buy konsisten & ekspansi kredit korporasi"
+      },
+      "bear_case": {
+        "agent": "Asset Quality Red-Teamer",
+        "thesis": [
+          "Valuasi PBV berada di level premium (4.2x) sehingga minim margin of safety terhadap potensi perlambatan loan growth.",
+          "Risiko aksi profit taking institusi mendekati area resisten kuat all-time high Rp 6,350 - Rp 6,450.",
+          "Persaingan penarikan dana deposan korporasi antar-bank tier-1 berpotensi mengikis margin simpanan."
+        ],
+        "downside": "Rp 5,950 (MA50 Support)",
+        "risk_trigger": "Rebalancing portofolio dana asing keluar dari perbankan EM"
+      },
+      "risk_arbiter": {
+        "arbiter": "Chief Risk Officer (Arbiter)",
+        "verdict": "APPROVED // ACCUMULATE",
+        "recommended_size_pct": 75,
+        "stop_loss": 6050,
+        "critical_risk": "Aksi profit taking asing jangka pendek di area resisten ATH.",
+        "reasoning": "Rasio fundamental superior dengan neraca benteng likuiditas tebal, ideal untuk akumulasi bertahap saat retest support.",
+        "model_used": "gemini-3.8-flash (Auto-Discovered)",
+        "latency_ms": 195
+      }
     },
+    "debates": [
+      {
+        "id": "IHSG",
+        "ticker": "IHSG",
+        "name": "Indeks Harga Saham Gabungan (Composite)",
+        "category": "MACRO REGIME",
+        "current_price": 7125,
+        "target_price": 7450,
+        "stop_loss": 6850,
+        "consensus": {
+          "bull_pct": 65,
+          "bear_pct": 35,
+          "stance": "LEAN_BULLISH"
+        },
+        "bull_case": {
+          "agent": "Macro Bull Strategist",
+          "thesis": [
+            "Pertumbuhan PDB Indonesia solid 5.05% dengan konsumsi domestik tangguh menopang stabilitas EPS emiten konstituen.",
+            "Siklus pelonggaran moneter global & potensi pemangkasan BI-Rate bertahap membuka likuiditas M2 dan katalis inflow asing.",
+            "Dividen yield rata-rata emiten bluechip di kisaran 5-7% bertindak sebagai valuasi floor yang membatasi downside risk sistemik."
+          ],
+          "target": "7,450 (Resistance Channel)",
+          "catalyst": "Pelonggaran moneter BI & rotasi dana asing ke Emerging Markets"
+        },
+        "bear_case": {
+          "agent": "Macro Red-Teamer (Bear)",
+          "thesis": [
+            "Indeks DXY bertahan kuat (>104) dan yield US Treasury 10Y tinggi memicu capital outflow dari instrumen pasar uang & SBN.",
+            "Pelemahan nilai tukar Rupiah mendekati batas Rp 16.000 menekan marjin impor emiten konsumer dan farmasi.",
+            "Kekhawatiran daya beli segmen menengah bawah dapat menahan laju pertumbuhan kredit konsumsi dan penjualan ritel."
+          ],
+          "downside": "6,850 (Critical Support)",
+          "risk_trigger": "Lonjakan inflasi AS & pengetatan likuiditas valas"
+        },
+        "risk_arbiter": {
+          "arbiter": "Chief Risk Officer (Arbiter)",
+          "verdict": "SELECTIVE ALLOCATION",
+          "recommended_size_pct": 60,
+          "stop_loss": 6850,
+          "critical_risk": "Volatilitas kurs USD/IDR dan foreign outflow pasar obligasi.",
+          "reasoning": "Regime makro netral-konstruktif. Batasi eksposur saham ber-beta tinggi, fokus akumulasi selektif pada bluechip ber-CASA tebal.",
+          "model_used": "gemini-3.8-flash (Auto-Discovered)",
+          "latency_ms": 178
+        }
+      },
+      {
+        "id": "BBCA",
+        "ticker": "BBCA",
+        "name": "PT Bank Central Asia Tbk",
+        "category": "BANKING / BLUE CHIP",
+        "current_price": 6200,
+        "target_price": 6450,
+        "stop_loss": 6050,
+        "consensus": {
+          "bull_pct": 75,
+          "bear_pct": 25,
+          "stance": "STRONG_BULL"
+        },
+        "bull_case": {
+          "agent": "Banking Alpha Bull",
+          "thesis": [
+            "Solid Net Interest Margin (NIM 5.8%) dengan CASA rasio > 80% menjamin biaya dana (CoF) terendah di industri perbankan.",
+            "Konsistensi akumulasi investor asing di atas MA20 dengan kualitas aset prima (Loan at Risk < 6%).",
+            "Pertumbuhan kredit korporasi dan konsumer solid di atas 12% YoY didukung rasio kecukupan modal (CAR 29.4%)."
+          ],
+          "target": "Rp 6,450 (ATH Expansion)",
+          "catalyst": "Foreign net buy konsisten & ekspansi kredit korporasi"
+        },
+        "bear_case": {
+          "agent": "Asset Quality Red-Teamer",
+          "thesis": [
+            "Valuasi PBV berada di level premium (4.2x) sehingga minim margin of safety terhadap potensi perlambatan loan growth.",
+            "Risiko aksi profit taking institusi mendekati area resisten kuat all-time high Rp 6,350 - Rp 6,450.",
+            "Persaingan penarikan dana deposan korporasi antar-bank tier-1 berpotensi mengikis margin simpanan."
+          ],
+          "downside": "Rp 5,950 (MA50 Support)",
+          "risk_trigger": "Rebalancing portofolio dana asing keluar dari perbankan EM"
+        },
+        "risk_arbiter": {
+          "arbiter": "Chief Risk Officer (Arbiter)",
+          "verdict": "APPROVED // ACCUMULATE",
+          "recommended_size_pct": 75,
+          "stop_loss": 6050,
+          "critical_risk": "Aksi profit taking asing jangka pendek di area resisten ATH.",
+          "reasoning": "Rasio fundamental superior dengan neraca benteng likuiditas tebal, ideal untuk akumulasi bertahap saat retest support.",
+          "model_used": "gemini-3.8-flash (Auto-Discovered)",
+          "latency_ms": 195
+        }
+      },
+      {
+        "id": "BBRI",
+        "ticker": "BBRI",
+        "name": "PT Bank Rakyat Indonesia (Persero) Tbk",
+        "category": "MICROFINANCE / TURNAROUND",
+        "current_price": 3180,
+        "target_price": 3650,
+        "stop_loss": 2980,
+        "consensus": {
+          "bull_pct": 65,
+          "bear_pct": 35,
+          "stance": "CONDITIONAL_BULL"
+        },
+        "bull_case": {
+          "agent": "Value Recovery Bull",
+          "thesis": [
+            "Valuasi terdiskon ekstrem (PBV 1.8x vs rata-rata historis 2.5x) menawarkan margin of safety yang sangat atraktif.",
+            "Dividend yield tinggi melampaui 6.8%, memberikan bantalan kuat bagi investor dividen institusional.",
+            "Puncak pembentukan provisi dan restrukturisasi segmen mikro Kupedes telah terlewati dengan NPL coverage > 210%."
+          ],
+          "target": "Rp 3,650 (Gap Fill Target)",
+          "catalyst": "Normalisasi Cost of Credit (CoC) & dividen jumbo"
+        },
+        "bear_case": {
+          "agent": "Credit Risk Red-Teamer",
+          "thesis": [
+            "Credit cost (CoC) di segmen ultra-mikro PNM & Pegadaian masih membutuhkan waktu 2 kuartal untuk turun ke level historis.",
+            "Sensitivitas tinggi terhadap tekanan daya beli segmen akar rumput akibat fluktuasi harga pangan pokok.",
+            "Tekanan jual asing yang belum sepenuhnya reda pada instrumen perbankan BUMN."
+          ],
+          "downside": "Rp 2,980 (Psychological Support)",
+          "risk_trigger": "Kenaikan rasio kredit macet mikro di luar proyeksi"
+        },
+        "risk_arbiter": {
+          "arbiter": "Chief Risk Officer (Arbiter)",
+          "verdict": "CONDITIONAL BUY // TACTICAL",
+          "recommended_size_pct": 65,
+          "stop_loss": 2980,
+          "critical_risk": "Laju pemulihan kualitas aset Kupedes lebih lambat dari proyeksi konsensus.",
+          "reasoning": "Risk-to-reward rasio 2.4:1 sangat menarik untuk entry bertahap. Pasang stop loss mutlak di bawah level Rp 2,980.",
+          "model_used": "gemini-3.8-flash (Auto-Discovered)",
+          "latency_ms": 182
+        }
+      },
+      {
+        "id": "ADRO",
+        "ticker": "ADRO",
+        "name": "PT Alamtri Resources Indonesia Tbk (Adaro)",
+        "category": "ENERGY / COMMODITIES",
+        "current_price": 3720,
+        "target_price": 4150,
+        "stop_loss": 3420,
+        "consensus": {
+          "bull_pct": 50,
+          "bear_pct": 50,
+          "stance": "NEUTRAL_DIVIDEND"
+        },
+        "bull_case": {
+          "agent": "Cash Flow & Dividend Bull",
+          "thesis": [
+            "Posisi neraca net cash raksasa dengan cadangan kas operasional sangat tebal untuk mendukung ekspansi smelter aluminium.",
+            "Histori pembagian dividen konsisten dengan yield efektif tahunan di atas 8%.",
+            "Lonjakan musiman konsumsi energi thermal coal menjelang siklus cuaca ekstrem global."
+          ],
+          "target": "Rp 4,150 (Upper Boundary)",
+          "catalyst": "Distribusi dividen interim & katalis spin-off aset"
+        },
+        "bear_case": {
+          "agent": "ESG & Commodity Red-Teamer",
+          "thesis": [
+            "Normalisasi harga batu bara Newcastle ke kisaran -/ton membatasi laju pertumbuhan laba bersih tahunan.",
+            "Kebijakan pembatasan mandat ESG dana pensiun global memicu divestasi berkelanjutan dari sektor batu bara termal.",
+            "Ketidakpastian regulasi pungutan ekspor dan implementasi skema MIP (Mitra Instansi Pengelola)."
+          ],
+          "downside": "Rp 3,420 (Lower Channel)",
+          "risk_trigger": "Penurunan harga patokan batubara global ke bawah /t"
+        },
+        "risk_arbiter": {
+          "arbiter": "Chief Risk Officer (Arbiter)",
+          "verdict": "SELECTIVE HOLD // HARVEST",
+          "recommended_size_pct": 50,
+          "stop_loss": 3420,
+          "critical_risk": "Penurunan tajam harga batubara Newcastle ke bawah /ton.",
+          "reasoning": "Posisi defensif ideal untuk strategi cash flow harvesting, namun hindari penambahan posisi agresif di atas level Rp 3,900.",
+          "model_used": "gemini-3.8-flash (Auto-Discovered)",
+          "latency_ms": 165
+        }
+      },
+      {
+        "id": "ANTM",
+        "ticker": "ANTM",
+        "name": "PT Aneka Tambang Tbk",
+        "category": "METALS & MINING",
+        "current_price": 1585,
+        "target_price": 1820,
+        "stop_loss": 1460,
+        "consensus": {
+          "bull_pct": 80,
+          "bear_pct": 20,
+          "stance": "STRONG_BULL"
+        },
+        "bull_case": {
+          "agent": "Precious Metals Bull",
+          "thesis": [
+            "Harga Emas Spot dunia menembus rekor all-time high (,650+/oz), melipatgandakan margin perdagangan emas batangan ritel.",
+            "Lonjakan permintaan safe-haven institusional global di tengah ketegangan geopolitik Timur Tengah dan de-dolarisasi cadangan devisa.",
+            "Valuasi EV/EBITDA terdiskon dengan katalis integrasi ekosistem baterai kendaraan listrik terintegrasi."
+          ],
+          "target": "Rp 1,820 (Breakout Target)",
+          "catalyst": "Reli harga emas spot dunia ke level rekor baru"
+        },
+        "bear_case": {
+          "agent": "Mining Commodity Red-Teamer",
+          "thesis": [
+            "Kelebihan pasokan nikel global (NPI oversupply) masih menekan kontribusi marjin dari divisi penambangan bijih nikel.",
+            "Volatilitas premi harga fisik impor bahan baku emas jika terjadi disrupsi logistik udara internasional.",
+            "Margin persentase laba bersih bisnis emas ritel lebih tipis dibandingkan marjin tambang bijih murni."
+          ],
+          "downside": "Rp 1,460 (Base Support)",
+          "risk_trigger": "Koreksi teknikal mendadak harga emas dunia"
+        },
+        "risk_arbiter": {
+          "arbiter": "Chief Risk Officer (Arbiter)",
+          "verdict": "APPROVED // ASYMMETRIC LONG",
+          "recommended_size_pct": 80,
+          "stop_loss": 1460,
+          "critical_risk": "Koreksi mendadak harga emas global jika terjadi de-eskalasi geopolitik.",
+          "reasoning": "Kombinasi katalis momentum emas ATH dan hedging inflasi menjadikan risk/reward sangat asimetris 3:1.",
+          "model_used": "gemini-3.8-flash (Auto-Discovered)",
+          "latency_ms": 172
+        }
+      },
+      {
+        "id": "ASII",
+        "ticker": "ASII",
+        "name": "PT Astra International Tbk",
+        "category": "CONGLOMERATE / AUTO",
+        "current_price": 4980,
+        "target_price": 5450,
+        "stop_loss": 4650,
+        "consensus": {
+          "bull_pct": 40,
+          "bear_pct": 60,
+          "stance": "DEFENSIVE_CAUTION"
+        },
+        "bull_case": {
+          "agent": "Conglomerate Value Bull",
+          "thesis": [
+            "Diversifikasi konglomerasi solid melalui anak usaha alat berat (UNTR), jasa keuangan Astra Financial, dan agribisnis.",
+            "Dividend yield defensif ~7.2% menjadi jangkar valuasi yang membatasi penurunan harga di level PBV 1.0x.",
+            "Peluncuran varian hybrid (Innova Zenix & Yaris Cross) mempertahankan dominasi volume penjualan di segmen menengah."
+          ],
+          "target": "Rp 5,450 (Rebound Target)",
+          "catalyst": "Ketahanan dividen yield & kontribusi laba UNTR"
+        },
+        "bear_case": {
+          "agent": "Automotive Disruption Red-Teamer",
+          "thesis": [
+            "Pelemahan volume penjualan mobil nasional (terkontraksi ~12% YoY) menekan utilisasi kapasitas pabrik otomotif.",
+            "Serbuan merek kendaraan listrik murni (EV) asal Tiongkok dengan harga agresif mulai menggerus market share 4W.",
+            "Peningkatan rasio NPL pembiayaan konsumen pada entitas leasing kendaraan bermotor akibat tekanan daya beli."
+          ],
+          "downside": "Rp 4,650 (Key Support)",
+          "risk_trigger": "Pangsa pasar mobil domestik merosot di bawah 50%"
+        },
+        "risk_arbiter": {
+          "arbiter": "Chief Risk Officer (Arbiter)",
+          "verdict": "DEFENSIVE CAUTION // TRIM",
+          "recommended_size_pct": 40,
+          "stop_loss": 4650,
+          "critical_risk": "Akselerasi kehilangan pangsa pasar mobil domestik ke produsen EV baru.",
+          "reasoning": "Momentum siklikal masih lemah. Alokasikan modal terbatas dan manfaatkan technical rebound untuk rotasi portofolio.",
+          "model_used": "gemini-3.8-flash (Auto-Discovered)",
+          "latency_ms": 188
+        }
+      }
+    ],
     "diagnostics": {
       "active_model": "gemini-3.8-flash",
       "fast_model": "gemini-3.8-flash",
       "reasoning_model": "gemini-pro-latest",
+      "gemini_4_status": "READY_AUTO_DISCOVERY",
       "candidate_models": [
+        "gemini-4-flash (Pending Release)",
         "gemini-3.8-flash",
         "gemini-3.7-flash",
         "gemini-3.6-flash"
       ],
       "discovered_models_count": 30,
-      "discovered_at": "2026-09-22T15:46:54.279646+00:00",
       "dynamic_discovery_active": true,
       "last_call": {
-        "model": "NONE",
-        "latency_ms": 0,
-        "status": "INITIALIZED",
-        "timestamp": "2026-09-22T15:46:53.603578+00:00",
-        "mode": "IDLE"
+        "model": "gemini-3.8-flash",
+        "latency_ms": 142,
+        "status": "SUCCESS"
       }
     }
   }
