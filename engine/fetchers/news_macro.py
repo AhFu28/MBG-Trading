@@ -626,7 +626,10 @@ class NewsMacroFetcher:
 
         raw_news = self.fetch_live_financial_news()
         try:
-            from engine.agents.news_research_agent import NewsResearchAgent
+            try:
+                from agents.news_research_agent import NewsResearchAgent
+            except ImportError:
+                from engine.agents.news_research_agent import NewsResearchAgent
             live_news = NewsResearchAgent.sanitize_and_curate(raw_news, macro)
         except Exception as e:
             logger.warning(f"NewsResearchAgent curation fallback: {e}")

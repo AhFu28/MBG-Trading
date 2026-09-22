@@ -54,23 +54,23 @@ export default function NewsTab({
   const items = Array.isArray(liveNews) ? liveNews : [];
 
   const categories = [
-    { id: 'ALL', label: '🔥 ALL RESEARCH' },
+    { id: 'ALL', label: '📰 ALL RESEARCH' },
     { id: 'DAILY_BRIEF', label: '☕ DAILY BRIEF' },
-    { id: 'RESEARCH', label: '🔬 RESEARCH NOTES' },
+    { id: 'RESEARCH', label: '📑 RESEARCH NOTES' },
     { id: 'CRYPTO', label: '⚡ CRYPTO & ETFS' },
-    { id: 'IDX', label: '🏛️ SAHAM IDX' },
+    { id: 'IDX', label: '📈 SAHAM IDX' },
     { id: 'BANKING', label: '🏦 PERBANKAN' },
-    { id: 'COMMODITY', label: '⛏️ LOGAM & ENERGI' },
+    { id: 'COMMODITY', label: '🪙 LOGAM & ENERGI' },
     { id: 'MACRO', label: '🌐 FED & MAKRO' },
     { id: 'POLITIK', label: '🏛️ POLITIK' },
-    { id: 'GEOPOLITIK', label: '⚔️ GEOPOLITIK' },
+    { id: 'GEOPOLITIK', label: '🛡️ GEOPOLITIK' },
     { id: 'CENTRAL_BANK', label: '🏦 CENTRAL BANK' },
     { id: 'US_MARKET', label: '🇺🇸 US MARKET' },
     { id: 'CHINA', label: '🇨🇳 CHINA' },
     { id: 'ENERGY_GEO', label: '🛢️ OPEC & ENERGY' },
     { id: 'TECH_AI', label: '🤖 TECH & AI' },
     { id: 'SNIPS', label: '📋 DAILY RECAP' },
-    { id: 'BOOKMARKS', label: `★ TERSIMPAN (${bookmarks.length})` }
+    { id: 'BOOKMARKS', label: `⭐ TERSIMPAN (${bookmarks.length})` }
   ];
 
   // Aggregate Market Sentiment for Hero Bar
@@ -188,31 +188,30 @@ export default function NewsTab({
   const snipsExportText = useMemo(() => {
     const snips = macro?.daily_snips || {};
     const verdict = snips.market_verdict || {};
-    const pulse = snips.macro_pulse || {};
     const goldChg = macro?.gold_change_pct ? `${macro.gold_change_pct > 0 ? '+' : ''}${macro.gold_change_pct}%` : '';
     const oilChg = macro?.brent_oil_change_pct ? `${macro.brent_oil_change_pct > 0 ? '+' : ''}${macro.brent_oil_change_pct}%` : '';
-    const affected = (macro?.idx_affected_stocks || []).map(s => `$${s.ticker} (${s.impact}: ${s.reason})`).join('\n• ');
+    const affected = (macro?.idx_affected_stocks || []).map(s => `• $${s.ticker} (${s.impact}: ${s.reason})`).join('\n');
 
-    return `📊 [MBG TRADING - DAILY MARKET SNIPS]
+    return `📊 [MBG TRADING — INSTITUTIONAL DAILY SNIPS]
 Edisi: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}
 
-1. MARKET PULSE:
-• Emas (XAU/USD): $${macro?.gold_price || '2750'} (${goldChg})
+1. GLOBAL MACRO PULSE:
+• Emas (XAU/USD): $${macro?.gold_price || '2,750.0'} (${goldChg})
 • Minyak Brent  : $${macro?.brent_oil_price || '74.2'} (${oilChg})
 • DXY Dollar    : ${macro?.dxy_index || '104.5'} pts
 • US 10Y Yield  : ${macro?.us10y_yield || '4.28'}%
 
-2. MARKET VERDICT:
-${verdict.badge || '🟢 ROTASI KOMODITAS & ENERGI'}
+2. MARKET VERDICT & SENTIMEN:
+${verdict.badge || '⚡ ROTASI KOMODITAS & ENERGI'}
 ${verdict.narrative || macro?.full_narrative || 'Pasar bergerak dinamis menopang emiten likuid.'}
 
-3. EMITEN TERDAMPAK:
-• ${affected || 'Belum ada deviasi ekstrem'}
+3. EMITEN TERDAMPAK (IDX SEKTORAL):
+${affected || '• Belum ada deviasi ekstrem'}
 
-4. SARAN TRADER:
-${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan hindari FOMO.'}
+4. ACTIONABLE GUIDANCE:
+${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trailing ratchet 1.0x.'}
 
-(Sumber: MBG Trading Terminal Intelligence Feed)`;
+(Sumber: MBG Trading Terminal — Institutional Research Desk)`;
   }, [macro]);
 
   return (
