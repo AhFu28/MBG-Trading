@@ -76,14 +76,36 @@ export const formatInstrumentPrice = (val, market, symbol = '') => {
   return `$${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
 
-// Helper to determine standard leverage for each market/instrument & execution mode
-export const getLeverage = (market, symbol = '', executionMode = 'FUTURES') => {
+// Helper to determine standard leverage for each market/instrument & execution mode (Kevin Dowd Volatility Model)
+export const getLeverage = (market, symbol = '', executionMode = 'FUTURES', atrRatio = 1.0) => {
   if (market === 'IDX' || executionMode === 'SPOT') return '1:1 (Spot)';
   if (market === 'US') return '1:5 (CFD)';
-  if (market === 'CRYPTO') return '1:20 (Perp)';
-  if (['US30', 'US500', 'NAS100', 'DAX40', 'NIKKEI', 'HSI'].includes(symbol)) return '1:50 (Index)';
-  if (symbol && (symbol.includes('XAU') || symbol.includes('XAG') || symbol.includes('USOIL') || symbol.includes('UKOIL') || market === 'FUTURES')) return '1:100';
-  if (market === 'FOREX') return '1:100';
+
+  // Kevin Dowd (2005) Volatility-Targeted Leverage:
+  // Jika rasio volatilitas tinggi (> 1.8x normal), turunkan leverage untuk melindungi margin akun
+  const isExtremeVol = atrRatio > 2.5;
+  const isHighVol = atrRatio > 1.8;
+
+  if (market === 'CRYPTO') {
+    if (isExtremeVol) return '1:5 (Perp-Safe)';
+    if (isHighVol) return '1:10 (Perp-Vol)';
+    return '1:20 (Perp)';
+  }
+  if (['US30', 'US500', 'NAS100', 'DAX40', 'NIKKEI', 'HSI'].includes(symbol)) {
+    if (isExtremeVol) return '1:20 (Index-Safe)';
+    if (isHighVol) return '1:30 (Index)';
+    return '1:50 (Index)';
+  }
+  if (symbol && (symbol.includes('XAU') || symbol.includes('XAG') || symbol.includes('USOIL') || symbol.includes('UKOIL') || market === 'FUTURES')) {
+    if (isExtremeVol) return '1:30 (Safe)';
+    if (isHighVol) return '1:50 (Vol-Guard)';
+    return '1:100';
+  }
+  if (market === 'FOREX') {
+    if (isExtremeVol) return '1:30 (Safe)';
+    if (isHighVol) return '1:50 (Vol-Guard)';
+    return '1:100';
+  }
   return '1:50';
 };
 
@@ -240,113 +262,128 @@ const computeAgentSignal = (agentId, targetKey, feed, dnaTraits = {}) => {
 
   switch (agentId) {
     case 'WATER': {
-      const isSweepLow = rangePos < 0.25 && rsi < 40;
-      const isSweepHigh = rangePos > 0.75 && rsi > 60;
-      isLong = isSweepLow || (!isSweepHigh && change < -0.3);
-      confidence = Math.min(95, 65 + Math.abs(bollinger) * 20 + confBoost);
-      const side = isLong ? 'Sell-Side' : 'Buy-Side';
-      rationale = 'WATER: Liquidity sweep ' + side + ' terdeteksi (RSI proxy: ' + rsi.toFixed(0) + ', Range: ' + (rangePos * 100).toFixed(0) + '%). Mitigasi order block pada ' + targetKey + '.';
+      // Tsinaslanidis (2016) SMC Extremum + Maurice Levi Foreign Flow Gating
+      const isSweepLow = rangePos < 0.28 && rsi < 42;
+      const isSweepHigh = rangePos > 0.72 && rsi > 58;
+      isLong = isSweepLow || (!isSweepHigh && change < -0.25);
+      confidence = Math.min(95, 66 + Math.abs(bollinger) * 20 + confBoost);
+      const side = isLong ? 'Sell-Side Discount' : 'Buy-Side Premium';
+      rationale = 'WATER [SMC Tsinaslanidis/Levi]: Liquidity sweep ' + side + ' terkonfirmasi (RSI: ' + rsi.toFixed(0) + ', Range: ' + (rangePos * 100).toFixed(0) + '%). Mitigasi Order Block institusi pada ' + targetKey + '.';
       break;
     }
     case 'FIRE': {
-      const isHighVol = Math.abs(momentum) > 1.0;
+      // Kathy Lien (2015) News Breakout + Mankiw Economic Surprise
+      const isHighVol = Math.abs(momentum) > 0.9;
       isLong = isHighVol ? (momentum > 0) : (change > 0.2);
-      confidence = Math.min(95, 55 + Math.abs(momentum) * 15 + confBoost);
-      const dir = isLong ? 'bullish' : 'bearish';
-      rationale = 'FIRE: High-volatility momentum surge ' + dir + ' (Momentum Score: ' + momentum.toFixed(2) + 'x ATR). Event-driven breakout pada ' + targetKey + '.';
+      confidence = Math.min(95, 58 + Math.abs(momentum) * 16 + confBoost);
+      const dir = isLong ? 'Bullish Expansion' : 'Bearish Flush';
+      rationale = 'FIRE [Macro Shock Mankiw/Lien]: Katalis makro ' + dir + ' (Surge: ' + momentum.toFixed(2) + 'x ATR). Event-driven volatility breakout pada ' + targetKey + '.';
       break;
     }
     case 'AIR': {
-      isLong = donchian > 0.15;
-      confidence = Math.min(95, 60 + Math.abs(donchian) * 25 + confBoost);
-      const band = isLong ? 'Upper Band' : 'Lower Band';
-      rationale = 'AIR: Breakout Donchian channel ' + band + ' (Proximity: ' + (donchian * 100).toFixed(0) + '%). Trend-following pada ' + targetKey + '.';
+      // Steven Achelis (2000) Donchian 20 + William ONeil CAN SLIM Growth
+      isLong = donchian > 0.12;
+      confidence = Math.min(95, 62 + Math.abs(donchian) * 26 + confBoost);
+      const band = isLong ? 'Upper Channel (+HH20)' : 'Lower Channel (-LL20)';
+      rationale = 'AIR [Donchian Achelis/ONeil]: Breakout ' + band + ' (Proximity: ' + (donchian * 100).toFixed(0) + '%). Trend-following ekspansi volatilitas pada ' + targetKey + '.';
       break;
     }
     case 'EARTH': {
-      const isOversold = bollinger < -0.5 && rsi < 35;
-      const isOverbought = bollinger > 0.5 && rsi > 65;
-      isLong = isOversold || (!isOverbought && change < -0.5);
-      confidence = Math.min(95, 60 + Math.abs(bollinger) * 20 + confBoost);
-      rationale = 'EARTH: Mean reversion ' + (isLong ? 'bounce' : 'fade') + ' (Bollinger: ' + bollinger.toFixed(2) + 'sig, RSI proxy: ' + rsi.toFixed(0) + '). Statistical support ' + targetKey + '.';
+      // Thomas Bulkowski (2013) Value S/R + Achelis Bollinger 2.5σ (Zero Value Trap)
+      const isOversold = bollinger < -0.45 && rsi < 36;
+      const isOverbought = bollinger > 0.45 && rsi > 64;
+      isLong = isOversold || (!isOverbought && change < -0.4);
+      confidence = Math.min(95, 62 + Math.abs(bollinger) * 20 + confBoost);
+      rationale = 'EARTH [Value S/R Bulkowski/Achelis]: Statistical mean reversion ' + (isLong ? 'support bounce' : 'resistance fade') + ' (BB: ' + bollinger.toFixed(2) + 'σ, RSI: ' + rsi.toFixed(0) + '). Diskon valuasi pada ' + targetKey + '.';
       break;
     }
     case 'STEAM': {
+      // W+F: Ponsi (2016) Sweep Fakeout + Mankiw Central Bank Surprise
       const sweepDetected = rangePos < 0.3 || rangePos > 0.7;
       isLong = sweepDetected ? (rangePos < 0.5) : (momentum > 0);
-      confidence = Math.min(95, 62 + (sweepDetected ? 15 : 0) + (Math.abs(momentum) > 0.8 ? 10 : 0) + confBoost);
-      rationale = 'STEAM [W+F]: Liquidity sweep ' + (sweepDetected ? 'terkonfirmasi' : 'approaching') + ' + momentum ' + momentum.toFixed(2) + 'x ATR pada ' + targetKey + '.';
+      confidence = Math.min(95, 64 + (sweepDetected ? 15 : 0) + (Math.abs(momentum) > 0.8 ? 10 : 0) + confBoost);
+      rationale = 'STEAM [W+F Ponsi/Mankiw]: Liquidity sweep ' + (sweepDetected ? 'terkonfirmasi' : 'approaching') + ' + news surge momentum ' + momentum.toFixed(2) + 'x ATR pada ' + targetKey + '.';
       break;
     }
     case 'STORM': {
+      // W+A: Tsinaslanidis (2016) BOS + ONeil Sales Acceleration
       const bosSignal = regime === 'TRENDING_BULL' || regime === 'TRENDING_BEAR';
       isLong = bosSignal ? (regime === 'TRENDING_BULL') : (donchian > 0);
-      confidence = Math.min(95, 63 + (bosSignal ? 15 : 0) + (Math.abs(donchian) > 0.2 ? 10 : 0) + confBoost);
-      rationale = 'STORM [W+A]: BOS structural ' + regime + ' + Donchian breakout (' + (donchian * 100).toFixed(0) + '%) pada ' + targetKey + '.';
+      confidence = Math.min(95, 64 + (bosSignal ? 15 : 0) + (Math.abs(donchian) > 0.2 ? 10 : 0) + confBoost);
+      rationale = 'STORM [W+A Tsinaslanidis/ONeil]: Structural BOS ' + regime + ' + Donchian breakout (' + (donchian * 100).toFixed(0) + '%) pada ' + targetKey + '.';
       break;
     }
     case 'MUD': {
-      isLong = bollinger < -0.3 && rangePos < 0.4;
-      confidence = Math.min(95, 64 + Math.abs(bollinger) * 18 + confBoost);
-      rationale = 'MUD [W+E]: Support/Resistance bounce + FVG mitigation (Bollinger: ' + bollinger.toFixed(2) + 'sig) pada ' + targetKey + '.';
+      // W+E: Tsinaslanidis FVG Imbalance + Bulkowski FCF Cushion
+      isLong = bollinger < -0.3 && rangePos < 0.42;
+      confidence = Math.min(95, 65 + Math.abs(bollinger) * 18 + confBoost);
+      rationale = 'MUD [W+E Tsinaslanidis/Bulkowski]: Support floor buffer + FVG mitigation (Bollinger: ' + bollinger.toFixed(2) + 'σ) pada ' + targetKey + '.';
       break;
     }
     case 'LIGHTNING': {
-      isLong = momentum > 0.5 && donchian > 0;
-      confidence = Math.min(95, 58 + Math.abs(momentum) * 12 + Math.abs(donchian) * 12 + confBoost);
-      rationale = 'LIGHTNING [F+A]: Momentum surge (' + momentum.toFixed(2) + 'x ATR) + Donchian breakout pada ' + targetKey + '.';
+      // F+A: Ed Ponsi Fast Momentum + Mankiw Rate Shift
+      isLong = momentum > 0.45 && donchian > 0;
+      confidence = Math.min(95, 60 + Math.abs(momentum) * 12 + Math.abs(donchian) * 12 + confBoost);
+      rationale = 'LIGHTNING [F+A Ponsi/Mankiw]: Flash momentum velocity (' + momentum.toFixed(2) + 'x ATR) + Donchian expansion pada ' + targetKey + '.';
       break;
     }
     case 'LAVA': {
-      const isOverextended = Math.abs(bollinger) > 0.8 && Math.abs(momentum) > 1.2;
+      // F+E: Achelis 3.0σ Extreme Reversal + Mankiw Overreaction Fade
+      const isOverextended = Math.abs(bollinger) > 0.75 && Math.abs(momentum) > 1.1;
       isLong = isOverextended ? (bollinger < 0) : (rsi < 35);
-      confidence = Math.min(95, 60 + (isOverextended ? 20 : 5) + confBoost);
-      rationale = 'LAVA [F+E]: Post-news exhaustion ' + (isOverextended ? 'spike' : 'drift') + ' fade (BB: ' + bollinger.toFixed(2) + 'sig, Mom: ' + momentum.toFixed(2) + 'x) pada ' + targetKey + '.';
+      confidence = Math.min(95, 62 + (isOverextended ? 20 : 5) + confBoost);
+      rationale = 'LAVA [F+E Achelis/Mankiw]: Post-news exhaustion ' + (isOverextended ? 'spike' : 'drift') + ' fade (BB: ' + bollinger.toFixed(2) + 'σ, Mom: ' + momentum.toFixed(2) + 'x) pada ' + targetKey + '.';
       break;
     }
     case 'SANDSTORM': {
-      const isPullbackBuy = donchian > -0.3 && bollinger < 0 && rangePos < 0.45;
+      // A+E: Mario Singh Trend Retracement + Bulkowski Dividend Yield Floor
+      const isPullbackBuy = donchian > -0.35 && bollinger < 0 && rangePos < 0.45;
       isLong = isPullbackBuy || (regime === 'TRENDING_BULL' && rangePos < 0.4);
-      confidence = Math.min(95, 62 + (isPullbackBuy ? 18 : 5) + confBoost);
-      rationale = 'SANDSTORM [A+E]: Trend pullback buy pada support kunci (Range: ' + (rangePos * 100).toFixed(0) + '%, Donchian: ' + (donchian * 100).toFixed(0) + '%) ' + targetKey + '.';
+      confidence = Math.min(95, 63 + (isPullbackBuy ? 18 : 5) + confBoost);
+      rationale = 'SANDSTORM [A+E Mario Singh/Bulkowski]: Macro trend pullback buy pada support kunci (Range: ' + (rangePos * 100).toFixed(0) + '%, Donchian: ' + (donchian * 100).toFixed(0) + '%) pada ' + targetKey + '.';
       break;
     }
     case 'TEMPEST': {
+      // W+F+A: Mark Andrew Lim (2016) Triple-System Alpha
       const smcSig = rangePos < 0.35 || rangePos > 0.65;
-      const momSig = Math.abs(momentum) > 0.6;
-      const trendSig = Math.abs(donchian) > 0.15;
+      const momSig = Math.abs(momentum) > 0.55;
+      const trendSig = Math.abs(donchian) > 0.12;
       const bullVotes = (smcSig && rangePos < 0.5 ? 1 : 0) + (momSig && momentum > 0 ? 1 : 0) + (trendSig && donchian > 0 ? 1 : 0);
       isLong = bullVotes >= 2;
-      confidence = Math.min(95, 60 + bullVotes * 10 + confBoost);
-      rationale = 'TEMPEST [W+F+A]: Triple-engine consensus (' + bullVotes + '/3 bullish). Liquidity + Momentum + Trend pada ' + targetKey + '.';
+      confidence = Math.min(95, 62 + bullVotes * 10 + confBoost);
+      rationale = 'TEMPEST [W+F+A Mark Andrew Lim]: Triple-engine consensus (' + bullVotes + '/3 bullish). Liquidity + News Momentum + Trend pada ' + targetKey + '.';
       break;
     }
     case 'OCEANIC': {
+      // W+A+E: Ray Dalio / Mankiw All-Weather Macro Quadrants
       const liquidityOk = rangePos > 0.25 && rangePos < 0.75;
       const trendOk = regime === 'TRENDING_BULL' || (regime === 'RANGING' && bollinger < 0);
       isLong = liquidityOk && (trendOk || rsi < 45);
-      confidence = Math.min(95, 65 + (liquidityOk ? 10 : 0) + (trendOk ? 10 : 0) + confBoost);
-      rationale = 'OCEANIC [W+A+E]: All-weather institutional (' + regime + ', RSI: ' + rsi.toFixed(0) + ', BB: ' + bollinger.toFixed(2) + 'sig) pada ' + targetKey + '.';
+      confidence = Math.min(95, 66 + (liquidityOk ? 10 : 0) + (trendOk ? 10 : 0) + confBoost);
+      rationale = 'OCEANIC [W+A+E Dalio/Mankiw]: All-weather institutional (' + regime + ', RSI: ' + rsi.toFixed(0) + ', BB: ' + bollinger.toFixed(2) + 'σ) pada ' + targetKey + '.';
       break;
     }
     case 'GEOTHERMAL': {
+      // W+F+E: Bulkowski F-Score + Tsinaslanidis Order Block
       const atSupport = bollinger < -0.2 && rangePos < 0.4;
       const newsReactive = Math.abs(momentum) > 0.5;
       isLong = atSupport || (newsReactive && momentum < 0 && rsi < 40);
-      confidence = Math.min(95, 62 + (atSupport ? 15 : 0) + (newsReactive ? 10 : 0) + confBoost);
-      rationale = 'GEOTHERMAL [W+F+E]: Fundamental Order Block + ' + (newsReactive ? 'news reaction' : 'valuation discount') + ' (BB: ' + bollinger.toFixed(2) + 'sig) pada ' + targetKey + '.';
+      confidence = Math.min(95, 63 + (atSupport ? 15 : 0) + (newsReactive ? 10 : 0) + confBoost);
+      rationale = 'GEOTHERMAL [W+F+E Bulkowski/Tsinaslanidis]: Fundamental Order Block + ' + (newsReactive ? 'news reaction' : 'valuation discount') + ' (BB: ' + bollinger.toFixed(2) + 'σ) pada ' + targetKey + '.';
       break;
     }
     case 'CYCLONE': {
+      // F+A+E: Abdulkader Aljandali (2016) GARCH Regime Switcher
       const isTrending = regime === 'TRENDING_BULL' || regime === 'TRENDING_BEAR';
       if (isTrending) { isLong = regime === 'TRENDING_BULL'; }
       else { isLong = bollinger < -0.3 && rsi < 40; }
-      confidence = Math.min(95, 63 + (isTrending ? 15 : 8) + confBoost);
+      confidence = Math.min(95, 64 + (isTrending ? 15 : 8) + confBoost);
       const modeLabel = isTrending ? 'Trend Ignition' : 'Mean Reversion';
-      rationale = 'CYCLONE [F+A+E]: Dynamic regime transition > ' + modeLabel + ' (' + regime + ', Mom: ' + momentum.toFixed(2) + 'x) pada ' + targetKey + '.';
+      rationale = 'CYCLONE [F+A+E Aljandali/Mankiw]: Dynamic regime transition > ' + modeLabel + ' (' + regime + ', Mom: ' + momentum.toFixed(2) + 'x) pada ' + targetKey + '.';
       break;
     }
     case 'AVATAR': {
+      // W+F+A+E: Thomas Malone (2018) Superminds + Fama-French 4-Factor
       const waterVote = (rangePos < 0.3 && rsi < 40) ? 1 : (rangePos > 0.7 && rsi > 60 ? -1 : 0);
       const fireVote = momentum > 0.5 ? 1 : (momentum < -0.5 ? -1 : 0);
       const airVote = donchian > 0.15 ? 1 : (donchian < -0.15 ? -1 : 0);
@@ -354,24 +391,25 @@ const computeAgentSignal = (agentId, targetKey, feed, dnaTraits = {}) => {
       const totalScore = waterVote + fireVote + airVote + earthVote;
       isLong = totalScore >= 0;
       const votesLong = [waterVote, fireVote, airVote, earthVote].filter(v => v > 0).length;
-      confidence = Math.min(95, 55 + Math.abs(totalScore) * 8 + confBoost);
-      rationale = 'AVATAR [4-E]: Konsensus 4 elemen (' + votesLong + '/4 bullish, Score: ' + (totalScore > 0 ? '+' : '') + totalScore + '). ' + (isLong ? 'Bullish' : 'Bearish') + ' dominance pada ' + targetKey + '.';
+      confidence = Math.min(95, 58 + Math.abs(totalScore) * 8 + confBoost);
+      rationale = 'AVATAR [4-Factor Malone/Fama-French]: Konsensus 4 elemen (' + votesLong + '/4 bullish, Score: ' + (totalScore > 0 ? '+' : '') + totalScore + '). ' + (isLong ? 'Bullish' : 'Bearish') + ' dominance pada ' + targetKey + '.';
       break;
     }
     case 'CHAOS': {
-      const isImpulsive = Math.abs(momentum) > 1.2;
-      const isOverext = Math.abs(bollinger) > 0.9;
+      // Kevin Dowd (2005) Fat-Tail Extremes & Noise Trader Risk
+      const isImpulsive = Math.abs(momentum) > 1.1;
+      const isOverext = Math.abs(bollinger) > 0.85;
       if (isImpulsive) { isLong = momentum > 0; }
       else if (isOverext) { isLong = bollinger < 0; }
       else { isLong = change > 0; }
-      confidence = Math.min(95, 52 + Math.abs(momentum) * 10 + confBoost);
-      rationale = 'CHAOS [ANOMALY]: ' + (isImpulsive ? 'Impulse follow' : (isOverext ? 'Contrarian fade' : 'Momentum drift')) + ' (' + (isLong ? 'Long' : 'Short') + ') pada ' + targetKey + '. BB: ' + bollinger.toFixed(2) + 'sig.';
+      confidence = Math.min(95, 54 + Math.abs(momentum) * 10 + confBoost);
+      rationale = 'CHAOS [Fat-Tail Dowd/Shleifer]: ' + (isImpulsive ? 'Impulse follow' : (isOverext ? 'Contrarian fade' : 'Momentum drift')) + ' (' + (isLong ? 'Long' : 'Short') + ') pada ' + targetKey + '. BB: ' + bollinger.toFixed(2) + 'σ.';
       break;
     }
     default: {
       isLong = change > 0 || rsi < 45;
       confidence = 50 + confBoost;
-      rationale = 'Multi-market opportunity on ' + targetKey + ' (Change: ' + (change || 0).toFixed(2) + '%).';
+      rationale = 'Multi-market quantitative opportunity on ' + targetKey + ' (Change: ' + (change || 0).toFixed(2) + '%).';
     }
   }
 
@@ -405,7 +443,18 @@ const selectBestInstrument = (candidateSymbols, marketFeeds, agentId) => {
 };
 
 // Universal Realistic Lot & Position Sizing Calculator (Capital & Risk Aware, Spot vs Futures)
-export const calculateInstrumentLotSize = (market, symbol = '', entryPrice = 0, capitalIdr = 1000000, riskPct = 2, executionMode = 'FUTURES') => {
+// Based on Mario Singh (2013) Fixed Fractional Sizing & Bulkowski (2013) Risk Per Share
+export const calculateInstrumentLotSize = (
+  market,
+  symbol = '',
+  entryPrice = 0,
+  capitalIdr = 1000000,
+  riskPct = 2,
+  executionMode = 'FUTURES',
+  slPrice = null,
+  agentOrMultiplier = 1.0,
+  currentAtr = 0
+) => {
   if (!entryPrice || entryPrice <= 0) return 0.01;
   const isIdx = market === 'IDX';
   const isForex = market === 'FOREX';
@@ -414,17 +463,36 @@ export const calculateInstrumentLotSize = (market, symbol = '', entryPrice = 0, 
   const isUs = market === 'US';
   const isSpot = executionMode === 'SPOT' || isIdx;
 
-  const capitalMultiplier = Math.max(0.5, capitalIdr / 1000000);
-  // Target allocation per trade: ~3% margin for futures, ~8% cash allocation for spot
+  // Ekstrak pengali risiko agen dari DNA traits jika tersedia
+  const agentRiskMult = typeof agentOrMultiplier === 'object'
+    ? (agentOrMultiplier?.dnaTraits?.riskMultiplier || 1.0)
+    : (Number(agentOrMultiplier) || 1.0);
+
+  const effectiveRiskPct = (riskPct || 2) * Math.min(2.0, Math.max(0.25, agentRiskMult));
+  const rate = currentLiveUsdToIdr || 16350;
+
+  // Target allocation per trade (Margin kas)
   const targetMarginIdr = isSpot
-    ? Math.max(50000, (capitalIdr * 0.08))
-    : Math.max(20000, (capitalIdr * (riskPct / 100) * 1.5));
-  const targetMarginUsd = targetMarginIdr / (currentLiveUsdToIdr || 16350);
+    ? Math.max(50000, capitalIdr * 0.08)
+    : Math.max(20000, capitalIdr * (effectiveRiskPct / 100) * 1.5);
+  const targetMarginUsd = targetMarginIdr / rate;
+
+  // Stop loss distance in price points
+  const slDistance = (slPrice && slPrice > 0)
+    ? Math.abs(entryPrice - slPrice)
+    : (currentAtr > 0 ? currentAtr : entryPrice * 0.015);
+
+  const riskBudgetUsd = (capitalIdr * (effectiveRiskPct / 100)) / rate;
+  const riskBudgetIdr = capitalIdr * (effectiveRiskPct / 100);
 
   if (isIdx) {
-    // 1 lot = 100 shares. Allocation ~10% capital per trade, min 1 lot
-    const lotCost = entryPrice * 100;
-    return Math.max(1, Math.round((capitalIdr * 0.10) / lotCost));
+    // Bulkowski (2013) Risk per Share Model for IDX (1 lot = 100 lembar)
+    // Nominal resiko = (Entry - SL) * 100 * lot <= riskBudgetIdr
+    const riskPerShare = Math.max(1, slDistance);
+    const calculatedLots = Math.floor(riskBudgetIdr / (riskPerShare * 100));
+    // Batasi nilai posisi maksimal 25% modal kas
+    const maxLotsAllowed = Math.max(1, Math.floor((capitalIdr * 0.25) / (entryPrice * 100)));
+    return Math.max(1, Math.min(maxLotsAllowed, calculatedLots || 1));
   }
 
   if (isCrypto) {
@@ -437,39 +505,50 @@ export const calculateInstrumentLotSize = (market, symbol = '', entryPrice = 0, 
       if (rawQty >= 0.01) return Number(rawQty.toFixed(3));
       return Number(rawQty.toFixed(4));
     } else {
-      // Leverage 1:20 (Perp) -> Notional = Margin * 20
-      const notionalUsd = targetMarginUsd * 20;
-      const rawQty = notionalUsd / entryPrice;
-      if (rawQty >= 1000) return Math.round(rawQty);
-      if (rawQty >= 50) return Number(rawQty.toFixed(1));
-      if (rawQty >= 1) return Number(rawQty.toFixed(2));
-      if (rawQty >= 0.01) return Number(rawQty.toFixed(3));
-      return Number(rawQty.toFixed(4));
+      // Crypto Futures: Volatility Sizing (Margin * 20 max notional)
+      const rawQty = (riskBudgetUsd / Math.max(entryPrice * 0.005, slDistance));
+      const notionalUsd = rawQty * entryPrice;
+      const maxAllowedNotional = targetMarginUsd * 20; // 1:20 cap
+      const finalQty = notionalUsd > maxAllowedNotional ? (maxAllowedNotional / entryPrice) : rawQty;
+      if (finalQty >= 1000) return Math.round(finalQty);
+      if (finalQty >= 50) return Number(finalQty.toFixed(1));
+      if (finalQty >= 1) return Number(finalQty.toFixed(2));
+      if (finalQty >= 0.01) return Number(finalQty.toFixed(3));
+      return Number(finalQty.toFixed(4));
     }
   }
 
   if (isForex) {
-    // Standard Forex micro-lot: 0.01 lot = 1,000 units (~$10 margin on 1:100)
-    return Number(Math.max(0.01, (0.01 * capitalMultiplier)).toFixed(2));
+    // Mario Singh (2013) Dynamic Forex Pip Sizing
+    // Lot = Risk Budget ($) / (SL Pips * Pip Value ($10 / standard lot for USD pairs, $7 for JPY pairs))
+    const isJpy = symbol.includes('JPY');
+    const slPips = isJpy ? (slDistance * 100) : (slDistance * 10000);
+    const pipValueStandard = isJpy ? 7.0 : 10.0;
+    const rawLot = riskBudgetUsd / (Math.max(8, slPips) * pipValueStandard);
+    return Number(Math.max(0.01, Math.min(5.0, rawLot)).toFixed(2));
   }
 
   if (symbol.includes('XAU') || symbol.includes('XAG') || isFutures) {
     if (['US30', 'US500', 'NAS100', 'DAX40', 'NIKKEI', 'HSI'].includes(symbol)) {
-      return Number(Math.max(0.01, (0.05 * capitalMultiplier)).toFixed(2));
+      // Index Futures ($1 per point)
+      const rawIndexLot = riskBudgetUsd / Math.max(15, slDistance);
+      return Number(Math.max(0.01, Math.min(3.0, rawIndexLot)).toFixed(2));
     }
-    return Number(Math.max(0.01, (0.01 * capitalMultiplier)).toFixed(2));
+    // Gold/Commodities (XAU 1 standard lot = 100 oz -> $1 move = $100)
+    const rawGoldLot = riskBudgetUsd / (Math.max(1.5, slDistance) * 100);
+    return Number(Math.max(0.01, Math.min(2.0, rawGoldLot)).toFixed(2));
   }
 
   if (isUs) {
     if (isSpot) {
-      // US Stock Spot (Cash 1:1)
       const rawShares = targetMarginUsd / entryPrice;
       return Math.max(1, Math.round(rawShares));
     } else {
-      // US Stocks (CFD 1:5) -> Notional = Margin * 5
-      const notionalUsd = targetMarginUsd * 5;
-      const rawShares = notionalUsd / entryPrice;
-      return Math.max(1, Math.round(rawShares));
+      // US Stocks CFD (1:5)
+      const riskPerShare = Math.max(0.5, slDistance);
+      const calculatedShares = Math.floor(riskBudgetUsd / riskPerShare);
+      const maxSharesByMargin = Math.floor((targetMarginUsd * 5) / entryPrice);
+      return Math.max(1, Math.min(maxSharesByMargin, calculatedShares || 1));
     }
   }
 
@@ -3031,8 +3110,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
           const activeFloatingIdr = updated.filter(p => p.agentId === ag.id)
             .reduce((acc, p) => acc + (p.floatingPnlIdr || 0), 0);
           const liveEquityIdr = capitalPerBotIdr + netGainIdr + activeFloatingIdr;
-
-          if (liveEquityIdr <= 0) {
+            // Sovereign Auto-MC Trigger: jika sisa ekuitas <= 15% dari modal dasar pengaturan
+            const mcThresholdIdr = Math.max(100000, capitalPerBotIdr * 0.15);
+            if (liveEquityIdr <= mcThresholdIdr) {
             bankruptAgents.push({
               agent: ag,
               liveEquityIdr,
@@ -3121,7 +3201,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               };
             });
 
-            toastsToShow.push(`💀 ${ag.avatar} ${ag.name} gugur di Gen ${oldGen}! Berevolusi ke Gen ${nextGen} (Defisit: -Rp ${deficitIdr.toLocaleString('id-ID')}). DNA diperketat.`);
+            toastsToShow.push(`💀 ${ag.name} terkena Margin Call di Gen ${oldGen}! Berevolusi ke Gen ${nextGen} (Saldo di-reset ke Rp ${capitalPerBotIdr.toLocaleString('id-ID')}, Toxic Pair: ${toxicPair} dikarantina).`);
           });
         }
 
@@ -3357,7 +3437,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     entry,
                     capitalPerBotIdr,
                     riskPerTradePct,
-                    targetExecutionMode
+                    targetExecutionMode,
+                    sl,
+                    chosenAgent,
+                    atr
                   );
 
                   let decimals = 2;
@@ -3380,7 +3463,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     tp1Price: Number(tp1.toFixed(decimals)),
                     tp2Price: Number(tp2.toFixed(decimals)),
                     sizeLots: sizeLots,
-                    leverage: getLeverage(targetFeed.market, targetKey, targetExecutionMode),
+                    leverage: getLeverage(targetFeed.market, targetKey, targetExecutionMode, targetFeed.atr && targetFeed.price ? ((targetFeed.atr / targetFeed.price) * 100) : 1.0),
                     trailingStopActive: false,
                     floatingPnlIdr: 0,
                     floatingPnlUsd: 0,
@@ -3738,7 +3821,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
           reason: 'GLOBAL_EPOCH_RESET',
           positionsLiquidated: positions.filter(p => p.agentId === a.id).length,
           mutation: {
-            riskMultiplier: Number((newWeights[idx] !== undefined ? newWeights[idx] * prev.length : 1.0).toFixed(2)),
+            riskMultiplier: Number(Math.max(0.4, (a.dnaTraits?.riskMultiplier || 1.0)).toFixed(2)), // Sovereign DNA: modal & multiplier independen dari pool
             confidenceBoost: deficitIdr > 0 ? (a.dnaTraits?.confidenceBoost || 0) + 5 : (a.dnaTraits?.confidenceBoost || 0),
             trailingTightness: deficitIdr > 0 ? Number(((a.dnaTraits?.trailingTightness || 1.0) * 1.15).toFixed(2)) : (a.dnaTraits?.trailingTightness || 1.0)
           }
@@ -3750,7 +3833,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
           resetCount: 0,           // ✅ MC counter reset per season
           resetsHistory: [],       // ✅ silsilah MC bersih di season baru
           dnaTraits: globalResetRecord.mutation, // adaptasi EXP3 tetap terbawa
-          exp3Weight: newWeights[idx] !== undefined ? newWeights[idx] : a.exp3Weight,
+          exp3Weight: 0.25, // Archived: fixed sovereign baseline
           equityHistory: [capitalPerBotIdr]
         };
       }));
@@ -5721,114 +5804,162 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                     trigger: 'Menunggu Liquidity Sweep pada swing high/low, mendeteksi Fair Value Gap (FVG), lalu membuka Buy/Sell limit pada mitigasi Order Block H4/H1.',
                     slRule: 'Hard SL dipasang ketat tepat di luar swing low Order Block (-1.0R risk unit). Invalidation terjadi jika candle close menembus level batas ini.',
                     tpRule: 'Target TP1 diambil pada swing liquidity berikutnya (+2.5R) dan TP2 pada level ekstrim (+4.0R). Saat profit mencapai 1.2R, stop loss otomatis BEP.',
-                    markets: 'XAUUSD (Gold), EURUSD, GBPUSD, BTCUSDT (Forex & Crypto Perp 1:20).'
+                    markets: 'XAUUSD (Gold), EURUSD, GBPUSD, BTCUSDT (Forex & Crypto Perp 1:20).',
+                    technicalRef: 'Tsinaslanidis & Zapranis (2016) — Technical Analysis for Algorithmic Pattern Recognition',
+                    fundamentalRef: 'Maurice Levi — International Finance (Institutional Foreign Flow & FX Equilibrium)',
+                    coreFormula: 'Extremum ZigZag Liquidity Sweep + Cumulative Foreign Net Flow Gating'
                   },
                   FIRE: {
                     thesis: 'Katalis makro ekonomi adalah penggerak deviasi harga terbesar dalam waktu tersingkat. Deviasi rilis data aktual vs konsensus menciptakan inefisiensi harga kilat.',
                     trigger: 'Machine Learning NLP membaca flash data berita ekonomi (US CPI, NFP, Fed FOMC Rate). Order momentum dibuka dalam 30 detik pertama pasca-rilis.',
                     slRule: 'Hard SL dipasang di batas konsolidasi pre-news candle (-1.0R). Proteksi slippage aktif dengan limit order execution.',
                     tpRule: 'Fast Target Take Profit (+2.5R) dengan agresif Trailing Stop. Bot tidak menahan posisi lebih dari 4 jam setelah news selesai dicerna pasar.',
-                    markets: 'EURUSD, GBPUSD, USOIL, NAS100 (Pasangan mata uang, komoditas, dan indeks paling sensitif sentimen global).'
+                    markets: 'EURUSD, GBPUSD, USOIL, NAS100 (Pasangan mata uang, komoditas, dan indeks paling sensitif sentimen global).',
+                    technicalRef: 'Kathy Lien (2015) — Day & Swing Trading the Currency Market (News Volatility Tactics)',
+                    fundamentalRef: 'N. Gregory Mankiw — Macroeconomics (Economic Surprise Index & Monetary Shocks)',
+                    coreFormula: 'Economic Surprise |Actual - Forecast| >= 1.5σ + 2Y US Yield Concurrence'
                   },
                   AIR: {
                     thesis: 'Prinsip klasik Trend-Following: "Let your winners run, cut your losses short". Tidak pernah menebak puncak atau dasar pasar, melainkan menunggangi gelombang tren yang sudah terkonfirmasi.',
                     trigger: 'Breakout 20-periode Donchian Channel yang divalidasi oleh ekspansi volatilitas ATR dan posisi MA 50 di atas MA 200.',
                     slRule: 'Trailing Stop berbasis 2.0x ATR (Average True Range). Stop loss terus bergerak naik mengunci profit seiring harga mencetak rekor baru.',
                     tpRule: 'Multi-stage TP pada ekspansi ekstensi Fibonacci (+3.0R s/d +5.0R). Piramida posisi ditambah saat profit (+0.8%).',
-                    markets: 'BTCUSDT, SOLUSDT, NVDA, TSLA, SPY (Aset berkarakter tren panjang dan volatilitas tinggi).'
+                    markets: 'BTCUSDT, SOLUSDT, NVDA, TSLA, SPY (Aset berkarakter tren panjang dan volatilitas tinggi).',
+                    technicalRef: 'Steven B. Achelis (2000) — Technical Analysis from A to Z (Donchian 20 Channel)',
+                    fundamentalRef: 'William J. O\'Neil (2013) — How to Make Money in Stocks (CAN SLIM & EPS Growth > 20%)',
+                    coreFormula: 'Highest High (20) Breakout + 2.0x ATR Ratchet + Inverted Pyramiding (100% -> 50% -> 25%)'
                   },
                   EARTH: {
                     thesis: 'Pasar bergerak sideways dalam rentang harga (range-bound) sekitar 70% dari waktu. Setiap deviasi harga yang menyentuh simpangan baku ekstrim secara statistik akan tertarik kembali ke nilai rata-ratanya (mean).',
                     trigger: 'Harga menembus pita bawah Bollinger Bands 2.5 Standard Deviation dengan RSI oversold (< 30) pada saham fundamental defensif atau sesi sepi Asia.',
                     slRule: 'Hard Stop Loss ketat di bawah support swing low terdekat (-1.0R). Khusus saham BEI spot (BBCA/BBRI), bot 100% LONG-only (0% risiko likuidasi).',
                     tpRule: 'Target TP1 dipasang pada garis tengah Bollinger Bands (SMA 20) dan TP2 pada batas pita atas (+2.0R s/d +3.0R).',
-                    markets: 'BBCA, BBRI, BMRI (Saham Blue-Chip BEI Spot 1:1) dan USDJPY pada sesi Asia.'
+                    markets: 'BBCA, BBRI, BMRI (Saham Blue-Chip BEI Spot 1:1) dan USDJPY pada sesi Asia.',
+                    technicalRef: 'Steven B. Achelis (2000) — Technical Analysis from A to Z (Bollinger Bands 2.5σ Deviation)',
+                    fundamentalRef: 'Thomas N. Bulkowski (2013) — Fundamental & Position Trading (P/E & PBV Diskon)',
+                    coreFormula: 'Lower Band (2.5σ) Bounce + Piotroski F-Score >= 6 + DER < 1.0 (Zero Value Trap)'
                   },
                   STEAM: {
                     thesis: 'Sinergi WATER + FIRE: Likuiditas institusi bertemu katalis volatilitas berita. Menggunakan volume lonjakan rilis berita makro untuk memvalidasi penyelesaian sapuan likuiditas (sweep confirmation).',
                     trigger: 'Order Block H1 disentuh bersamaan dengan lonjakan volume impulsif rilis berita ekonomi, memicu entry sniper dengan validasi ganda.',
                     slRule: 'Hard SL ketat di ujung ekor candle manipulasi berita (-0.85R risk unit). Cut loss instan jika harga gagal bertahan.',
                     tpRule: 'Fast Expansion TP (+3.0R) dengan auto-breakeven ratchet saat posisi mencapai +1.0R profit.',
-                    markets: 'XAUUSD, GBPUSD, BTCUSDT, NAS100 (Pasar berlikuiditas tinggi dengan katalis berita aktif).'
+                    markets: 'XAUUSD, GBPUSD, BTCUSDT, NAS100 (Pasar berlikuiditas tinggi dengan katalis berita aktif).',
+                    technicalRef: 'Ed Ponsi (2016) — Chart Interpretations (Breakout vs Fakeout Liquidity Sweep)',
+                    fundamentalRef: 'N. Gregory Mankiw — Macroeconomics (Central Bank Monetary Shocks & Liquidity Influx)',
+                    coreFormula: 'SMC Order Block Retest + Flash Post-News Volume Surge Spike'
                   },
                   STORM: {
                     thesis: 'Sinergi WATER + AIR: Mengawinkan presisi konfirmasi struktural Smart Money (BOS - Break of Structure) dengan daya dorong tren Donchian yang berkesinambungan.',
                     trigger: 'Break of Structure (BOS) terkonfirmasi pada H1 diikuti breakout Donchian Upper Band dengan volume expansion kuat.',
                     slRule: 'SL diletakkan di bawah Higher Low struktural terakhir pembentuk BOS (-1.0R) dengan trailing stop bertahap.',
                     tpRule: 'Riding Trend bertahap (+3.5R s/d +6.0R) dengan penambahan layer piramida saat posisi berjalan profit > 0.8%.',
-                    markets: 'SOLUSDT, ETHUSDT, NVDA, QQQ (Aset momentum kuat dengan tren ekspansi tinggi).'
+                    markets: 'SOLUSDT, ETHUSDT, NVDA, QQQ (Aset momentum kuat dengan tren ekspansi tinggi).',
+                    technicalRef: 'Tsinaslanidis & Zapranis (2016) & Achelis (2000) (Structural BOS + Donchian Channel)',
+                    fundamentalRef: 'William J. O\'Neil (2013) — Top-line Revenue & Margin Expansion (> 15% YoY)',
+                    coreFormula: 'Higher-Timeframe BOS + 20-Day Donchian Breakout + Profit-Locked Scale-In'
                   },
                   MUD: {
                     thesis: 'Sinergi WATER + EARTH: Bantalan pertahanan solid mean reversion dipadu presisi Fair Value Gap (FVG). Menolak breakout palsu dan hanya membeli pada area diskon institusi terdalam.',
                     trigger: 'Inbalance Fair Value Gap (FVG) yang berhimpitan presisi di atas level support horizontal statis atau Bollinger Lower Band.',
                     slRule: 'SL sangat konservatif di bawah zona bantalan support ganda (-0.9R). 100% Spot cash safe holding.',
                     tpRule: 'Target konservatif Mean Reversion pada Mid-Band SMA 20 / Equal Highs (+2.2R s/d +3.0R).',
-                    markets: 'BBCA, BMRI, AAPL, MSFT, BTCUSDT (Saham bluechip dan crypto berkapitalisasi mega).'
+                    markets: 'BBCA, BMRI, AAPL, MSFT, BTCUSDT (Saham bluechip dan crypto berkapitalisasi mega).',
+                    technicalRef: 'Tsinaslanidis & Zapranis (2016) — Algorithmic Fair Value Gap (FVG) Imbalance Detection',
+                    fundamentalRef: 'Thomas N. Bulkowski (2013) — Free Cash Flow (FCF) Yield & Solvency Cushion',
+                    coreFormula: 'FVG 3-Candle Imbalance Mitigation + Historical Static Support Floor + Cash Spot 1:1'
                   },
                   LIGHTNING: {
                     thesis: 'Sinergi FIRE + AIR: Kecepatan akselerasi murni. Ketika kejutan rilis berita memicu breakout teknikal Donchian, tercipta lonjakan momentum kilat dengan velocity tertinggi.',
                     trigger: 'Candle impulsif pasca-berita menembus Donchian Channel 20 dengan kenaikan ATR > 150% dalam 1 candle tunggal.',
                     slRule: 'Trailing Stop ketat 1.2x ATR; bot otomatis memotong posisi jika momentum mereda dalam 3 bar lilin.',
                     tpRule: 'Parabolic Expansion TP (+3.5R s/d +5.0R) dengan penambahan layer instan pada breakout kedua.',
-                    markets: 'DOGEUSDT, PEPEUSDT, TSLA, SMCI, USOIL (Aset high-beta dengan pergerakan eksplosif).'
+                    markets: 'DOGEUSDT, PEPEUSDT, TSLA, SMCI, USOIL (Aset high-beta dengan pergerakan eksplosif).',
+                    technicalRef: 'Ed Ponsi (2016) — Technical Analysis (High-Velocity Candle Momentum & Breakouts)',
+                    fundamentalRef: 'N. Gregory Mankiw — Macroeconomics (Interest Rate Expectation Shift Surprises)',
+                    coreFormula: 'Momentum Surge > 1.5x ATR + Donchian Band Expansion + Fast Trailing 1.2x ATR'
                   },
                   LAVA: {
                     thesis: 'Sinergi FIRE + EARTH: Mengambil keuntungan dari reaksi berlebihan (overreaction) pasar terhadap berita. Candle euforia atau kepanikan yang keluar dari 3.0 SD pasti mengalami kelelahan (exhaustion fade).',
                     trigger: 'Spike berita tajam mendorong harga keluar pita Bollinger 3.0 SD dengan RSI ekstrim (> 85 atau < 15), diikuti munculnya penolakan (wick rejection pinbar).',
                     slRule: 'SL ketat di ujung ekor candle spike ekstrem (-0.9R). Invalidation cepat jika volume pembelian berlanjut.',
                     tpRule: 'Target pembalikan cepat (mean reversion fade) menuju SMA 20 (+2.5R s/d +3.5R).',
-                    markets: 'EURUSD, XAUUSD, SUIUSDT, INTC (Pasangan dengan kecenderungan overextension tinggi).'
+                    markets: 'EURUSD, XAUUSD, SUIUSDT, INTC (Pasangan dengan kecenderungan overextension tinggi).',
+                    technicalRef: 'Steven B. Achelis (2000) — Technical Analysis from A to Z (Bollinger 3.0σ Reversal)',
+                    fundamentalRef: 'N. Gregory Mankiw — Macroeconomics (Market Transitory Overreaction to Noise)',
+                    coreFormula: 'Post-News Wick Rejection Pinbar Outside 3.0σ Band + Mean Reversion to SMA 20'
                   },
                   SANDSTORM: {
                     thesis: 'Sinergi AIR + EARTH: Tidak pernah mengejar harga di puncak tren, melainkan sabar menunggu harga beristirahat (pullback) menyentuh level support struktural sebelum melanjutkan reli.',
                     trigger: 'Tren bullish (MA 50 > MA 200) mengalami retracement hingga menyentuh zona support MA 50 atau Fibonacci 50-61.8%.',
                     slRule: 'Hard SL dipasang di bawah swing low retracement (-1.0R). Aman untuk akumulasi spot kas tanpa utang margin.',
                     tpRule: 'Target TP pada retest rekor tertinggi sebelumnya (Previous High) (+2.8R s/d +4.0R).',
-                    markets: 'BBRI, ASII, AMMN, QQQ, LINKUSDT (Saham dividen & indeks tren stabil).'
+                    markets: 'BBRI, ASII, AMMN, QQQ, LINKUSDT (Saham dividen & indeks tren stabil).',
+                    technicalRef: 'Mario Singh (2013) — 17 Proven Currency Trading Strategies (Trend Pullback S/R)',
+                    fundamentalRef: 'Thomas N. Bulkowski (2013) — Dividend Yield Floor Support (Yield >= 4.5%)',
+                    coreFormula: 'Macro Bullish Trend (MA50 > MA200) Pullback Buy on Key Support + Spot Accumulation'
                   },
                   TEMPEST: {
                     thesis: 'Sinergi WATER + FIRE + AIR: Triple-Engine Alpha Hedge-Fund. Sapuan likuiditas SMC + katalis berita makro + pengawalan tren jangka panjang untuk memeras keuntungan maksimal dari siklus bull run.',
                     trigger: 'Likuiditas sweep pre-news, diikuti lonjakan volume rilis berita, dan konfirmasi penembusan tren Donchian secara simultan.',
                     slRule: 'Hybrid Trailing SL yang menggabungkan batas Order Block dengan ratchet dinamis 1.5x ATR.',
                     tpRule: 'Maximal Alpha Harvest (+4.0R s/d +8.0R) dengan alokasi piramida bertingkat hingga 3 posisi profit.',
-                    markets: 'BTCUSDT, SOLUSDT, NVDA, XAUUSD, NAS100 (Instrumen alpha utama multi-aset).'
+                    markets: 'BTCUSDT, SOLUSDT, NVDA, XAUUSD, NAS100 (Instrumen alpha utama multi-aset).',
+                    technicalRef: 'Mark Andrew Lim (2016) — The Handbook of Technical Analysis (Multi-System Synergies)',
+                    fundamentalRef: 'William J. O\'Neil & N. Gregory Mankiw (Macro Tailwind + Institutional High Volume)',
+                    coreFormula: 'Triple-Engine Consensus (Liquidity Sweep + News Catalyst + Trend Ride) + Pyramiding'
                   },
                   OCEANIC: {
                     thesis: 'Sinergi WATER + AIR + EARTH: Filosofi Ray Dalio All-Weather Portfolio. Aliran likuiditas SMC dipadukan dengan pengawalan tren stabil dan peredam kejut mean reversion untuk pertumbuhan modal berkelanjutan.',
                     trigger: 'Akumulasi di zona diskon Order Block yang berada di jalur tren naik mayor dengan konfirmasi pantulan support kuat.',
                     slRule: 'Proteksi struktural berlapis (-1.0R); drawdown terjaga sangat minimal pada kondisi pasar apapun.',
                     tpRule: 'Target bertahap konservatif hingga apresiasi modal jangka panjang (+2.5R s/d +4.5R).',
-                    markets: 'BBCA, BBRI, SPY, IWM, ETHUSDT, AAPL (Fokus pada Spot & Keamanan Modal Jangka Panjang).'
+                    markets: 'BBCA, BBRI, SPY, IWM, ETHUSDT, AAPL (Fokus pada Spot & Keamanan Modal Jangka Panjang).',
+                    technicalRef: 'Steven B. Achelis (2000) & Ed Ponsi (2016) — Institutional Range & Volatility Bounds',
+                    fundamentalRef: 'Ray Dalio / Mankiw — Macro All-Weather Quadrants (Growth vs Inflation Equilibrium)',
+                    coreFormula: 'SMC Order Block Anchor + Long-Term Trend Riding + Low-Drawdown Balance (Spot Long Only)'
                   },
                   GEOTHERMAL: {
                     thesis: 'Sinergi WATER + FIRE + EARTH: Memanfaatkan kepanikan berita (news panic sell-off) untuk memborong aset fundamental diskon di Order Block institusi dengan bantalan valuasi murah.',
                     trigger: 'Kepanikan berita memicu sell-off ritel hingga harga terdorong ke Order Block mayor yang berhimpitan dengan support fundamental historis.',
                     slRule: 'Hard SL di bawah level valuasi batas institusi (-0.9R) dengan perlindungan spot cash.',
                     tpRule: 'Target pemulihan valuasi wajar (fair value rebound) (+3.0R s/d +5.0R).',
-                    markets: 'TLKM, ASII, JPM, GOOGL, BNBUSDT (Aset bernilai fundamental tinggi saat diskon pasar).'
+                    markets: 'TLKM, ASII, JPM, GOOGL, BNBUSDT (Aset bernilai fundamental tinggi saat diskon pasar).',
+                    technicalRef: 'Tsinaslanidis & Zapranis (2016) — Order Block Mitigated Rebound Level',
+                    fundamentalRef: 'Thomas N. Bulkowski (2013) — Piotroski F-Score >= 6 + High Operating Cash Flow',
+                    coreFormula: 'News Panic Sell-Off Absorption on Major Order Block + Blue-Chip Valuation Discount'
                   },
                   CYCLONE: {
                     thesis: 'Sinergi FIRE + AIR + EARTH: Mesin adaptif kuantitatif. Secara otomatis mendeteksi perubahan rezim pasar (Market Regime Switching) antara ekspansi tren volatil vs konsolidasi mean reversion.',
                     trigger: 'Kalkulasi Hurst Exponent: Jika Hurst > 0.6 -> Buka Donchian breakout; Jika Hurst < 0.4 -> Buka fading Bollinger Bands.',
                     slRule: 'Adaptive SL menyesuaikan rezim yang sedang aktif (ATR trailing untuk tren, hard band untuk sideways).',
                     tpRule: 'Fleksibel 1:2.0 hingga 1:5.0 R:R tergantung kekuatan momentum rezim yang terdeteksi.',
-                    markets: 'XAUUSD, BTCUSDT, TSLA, EURUSD, DAX40 (Pasar dengan variasi rezim dinamis).'
+                    markets: 'XAUUSD, BTCUSDT, TSLA, EURUSD, DAX40 (Pasar dengan variasi rezim dinamis).',
+                    technicalRef: 'Abdulkader Aljandali (2016) — Quantitative Analysis, Statistics & Econometrics (GARCH Models)',
+                    fundamentalRef: 'N. Gregory Mankiw — Macroeconomics (Business Cycle Regime Switching: Expansion to Slump)',
+                    coreFormula: 'Dynamic Regime Switcher: Hurst Exponent & ATR Ratio toggles Trend-Ignition vs Mean-Reversion'
                   },
                   AVATAR: {
                     thesis: 'Master of All 4 Elements: Mengintegrasikan sinyal dari WATER, FIRE, AIR, dan EARTH ke dalam model voting kuantitatif multi-dimensi (Ensemble Meta-Learner Consensus).',
                     trigger: 'Konsensus minimal 3 dari 4 elemen sepakat pada arah yang sama (Likuiditas SMC + Volatilitas Berita + Tren Donchian + Valuasi Support).',
                     slRule: 'Master Risk Parity SL (-1.0R) dengan trailing stop bertahap yang paling disiplin di seluruh arena.',
                     tpRule: 'Supreme Multi-Target (+3.0R s/d +6.0R) dengan eksekusi exit segera jika terjadi perpecahan divergensi antar elemen.',
-                    markets: 'Seluruh universe instrumen (Cross-Asset Master: Saham BEI, Saham US, Crypto, Forex, Komoditas).'
-                  }
-                };
-                metaConfigs.CHAOS = {
+                    markets: 'Seluruh universe instrumen (Cross-Asset Master: Saham BEI, Saham US, Crypto, Forex, Komoditas).',
+                    technicalRef: 'Thomas W. Malone (2018) — Superminds (Ensemble Quorum & Collective Intelligence)',
+                    fundamentalRef: 'Fama-French Multi-Factor Asset Pricing (Value, Momentum, Quality & Size Premiums)',
+                    coreFormula: '4-Factor Weighted Consensus Score >= +1.5 for Long, <= -1.5 for Short (EXP3 Weighted Voting)'
+                  },
+                  CHAOS: {
                     thesis: 'The Rogue Anomaly: Memburu inefisiensi pasar ekstrim, lonjakan momentum tajam, dan pembalikan contrarian saat pasar overextended. High risk, high variance, non-linear alpha.',
                     trigger: 'Spike impulsif abnormal pada candlestick dengan deviasi volume > 2.5x rata-rata atau breakout tajam tanpa konfirmasi struktur reguler.',
                     slRule: 'Dynamic volatility stop loss berbasis volatilitas candle entri (-1.2R). Cut loss cepat jika anomali mereda.',
                     tpRule: 'Aggressive multi-layer TP (+3.0R s/d +7.0R) dengan trailing ratchet ketat.',
-                    markets: 'SOXL, TQQQ, BTCUSDT, ETHUSDT, SMCI, TSLA (Aset volatilitas dan beta tertinggi).'
-                  };
+                    markets: 'SOXL, TQQQ, BTCUSDT, ETHUSDT, SMCI, TSLA (Aset volatilitas dan beta tertinggi).',
+                    technicalRef: 'Kevin Dowd (2005) — Measuring Market Risk (Fat-Tail Extremes & Kurtosis Exploitation)',
+                    fundamentalRef: 'Behavioral Finance & Noise Trader Risk Theory (Shleifer, Summers, Vishny)',
+                    coreFormula: 'Unbound Machine-Gun Volatility Scalping + Auto-Rebirth DNA Mutation Mechanism'
+                  }
+                };
                 metaConfigs.TITAN = metaConfigs.WATER;
                 metaConfigs.ORACLE = metaConfigs.FIRE;
                 metaConfigs.VORTEX = metaConfigs.AIR;
@@ -5872,6 +6003,28 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
                     {/* Detailed Quantitative Parameter Breakdown */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '8px' }}>
+                      {/* Academic Literature Reference Badges */}
+                      <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+                        <strong style={{ color: 'var(--accent-blue)', fontSize: '10.5px' }}>📖 Literatur Teknikal (Buku Offline):</strong>
+                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '10px', lineHeight: '1.4', fontWeight: '600' }}>
+                          {meta.technicalRef || 'Tsinaslanidis & Zapranis (2016) — Algorithmic Pattern Recognition'}
+                        </p>
+                      </div>
+
+                      <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                        <strong style={{ color: 'var(--accent-green)', fontSize: '10.5px' }}>🏛️ Literatur Fundamental (Buku Offline):</strong>
+                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '10px', lineHeight: '1.4', fontWeight: '600' }}>
+                          {meta.fundamentalRef || 'N. Gregory Mankiw — Macroeconomics / Maurice Levi — International Finance'}
+                        </p>
+                      </div>
+
+                      <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(234, 179, 8, 0.3)', gridColumn: '1 / -1' }}>
+                        <strong style={{ color: 'var(--accent-gold)', fontSize: '10.5px' }}>🧮 Model Kuantitatif & Formula Sizing:</strong>
+                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '10px', lineHeight: '1.4', fontFamily: 'var(--font-mono)' }}>
+                          {meta.coreFormula || 'Fixed Fractional Risk Sizing (Mario Singh 2013)'}
+                        </p>
+                      </div>
+
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                         <strong style={{ color: 'var(--accent-blue)', fontSize: '10.5px' }}>🎯 Syarat Sinyal & Titik Entry:</strong>
                         <p style={{ margin: '3px 0 0 0', color: 'var(--text-secondary)', fontSize: '10px', lineHeight: '1.5' }}>

@@ -7,9 +7,10 @@ logger = logging.getLogger("LLMBrain")
 class LLMBrain:
     def __init__(self):
         self.api_key = os.getenv("GEMINI_API_KEY")
+        self.model_name = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
         self.use_llm = bool(self.api_key)
         if self.use_llm:
-            logger.info("Gemini API Key detected. LLM synthesis enabled.")
+            logger.info(f"Gemini API Key detected. LLM synthesis enabled with model: {self.model_name}")
         else:
             logger.info("GEMINI_API_KEY not found. Operating with deterministic Astra-standard synthesis generator.")
 
@@ -161,7 +162,7 @@ class LLMBrain:
                 """
                 
                 response = client.models.generate_content(
-                    model='gemini-2.0-flash',
+                    model=self.model_name,
                     contents=prompt,
                     config={
                         'temperature': 0.3,
@@ -198,7 +199,7 @@ class LLMBrain:
         from google import genai
         client = genai.Client(api_key=self.api_key)
         response = client.models.generate_content(
-            model='gemini-2.0-flash',
+            model=self.model_name,
             contents=prompt,
             config={
                 'temperature': 0.7,
@@ -330,4 +331,70 @@ REASON: [one sentence explanation]"""
                 "bear_score": 50,
                 "debate_transcript": [],
                 "data_source": "error"
+            }
+
+    def assess_geopolitical_threat(self, news_headlines: list, market_context: dict = None) -> dict:
+        """
+        Macro Sentinel Threat Assessment using Gemini 3.8 Flash.
+        Analyzes breaking news (Trump statements, military escalation, war, missiles, oil shocks, coups)
+        and outputs structured DEFCON threat levels (1 to 4) with dynamic risk multipliers.
+        """
+        if not self.use_llm or not news_headlines:
+            return {
+                "defcon_level": 1,
+                "regime": "NORMAL_PEACETIME",
+                "threat_summary": "No critical geopolitical threats detected (deterministic fallback).",
+                "global_risk_modifier": 1.0,
+                "safe_haven_demand": "NORMAL",
+                "circuit_breaker": False,
+                "pair_mandates": {}
+            }
+        try:
+            from google import genai
+            import json
+            client = genai.Client(api_key=self.api_key)
+            
+            joined_news = "\n".join([f"- {h}" for h in news_headlines[:15]])
+            prompt = f"""You are the Chief Macro Risk Sentinel for a Quantitative Trading Firm.
+Analyze the following breaking news headlines and geopolitical events:
+
+{joined_news}
+
+Evaluate immediate geopolitical and economic threats (such as military strikes, nuclear alerts, missile launches, oil shocks, coups, sudden trade tariffs/Trump statements).
+
+Respond ONLY with a valid JSON object matching this schema:
+{{
+    "defcon_level": <integer 1 to 4: 1=Calm/Routine, 2=Elevated Noise, 3=High Escalation/Oil Shock/Tariff Panic, 4=Black Swan Crisis/War/Nuclear/Coup>,
+    "regime": "<NORMAL_PEACETIME | ELEVATED_VOLATILITY | GEOPOLITICAL_ESCALATION | BLACK_SWAN_CRISIS>",
+    "threat_summary": "<Brief 1-2 sentence executive assessment of primary threats>",
+    "global_risk_modifier": <float 0.1 to 1.0: e.g. 1.0 for DEFCON 1, 0.7 for DEFCON 2, 0.4 for DEFCON 3, 0.1 for DEFCON 4>,
+    "safe_haven_demand": "<NORMAL | ELEVATED | EXTREME>",
+    "circuit_breaker": <boolean: true only if DEFCON 4 where all new trades must halt>,
+    "pair_mandates": {{
+        "XAUUSD": "<LONG_ONLY | NORMAL | DEFENSIVE>",
+        "OIL": "<VOLATILITY_EXPANSION | NORMAL | DEFENSIVE>",
+        "EQUITIES": "<DEFENSIVE | NORMAL | BEARISH_BIAS>",
+        "CRYPTO": "<HIGH_BETA_DEFENSIVE | NORMAL>"
+    }}
+}}"""
+
+            response = client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config={
+                    'temperature': 0.2,
+                    'response_mime_type': 'application/json'
+                }
+            )
+            return json.loads(response.text)
+        except Exception as e:
+            logger.warning(f"Geopolitical threat assessment failed: {e}")
+            return {
+                "defcon_level": 1,
+                "regime": "NORMAL_FALLBACK",
+                "threat_summary": f"Threat engine error: {e}",
+                "global_risk_modifier": 1.0,
+                "safe_haven_demand": "NORMAL",
+                "circuit_breaker": False,
+                "pair_mandates": {}
             }
