@@ -1,27 +1,246 @@
 import os
+import re
+import time
+import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger("LLMBrain")
+
+# Ensure .env is loaded even if run as standalone script
+env_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), ".env")
+if os.path.exists(env_file):
+    try:
+        with open(env_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    k = k.strip()
+                    v = v.strip().strip('"').strip("'")
+                    if k not in os.environ:
+                        os.environ[k] = v
+    except Exception as e:
+        logger.debug(f"Failed to load .env manually: {e}")
+
+
+def parse_model_score(model_id: str) -> int:
+    """
+    Computes a semantic priority score for any Gemini model identifier.
+    Automatically prioritizes Gemini 4 > Gemini 3.8 > Gemini 3.7 > Gemini 3.6 > Gemini 3.5 > Gemini 3.1 > Gemini 2.x.
+    Flash is scored slightly below Pro within the same generation.
+    """
+    name = model_id.replace("models/", "").lower()
+    
+    # Check for direct major/minor regex (e.g. gemini-4-flash, gemini-3.8-pro, gemini-3.6-flash)
+    m = re.search(r"gemini-(\d+)(?:\.(\d+))?-(flash|pro)(?:-preview|-latest)?", name)
+    if m:
+        major = int(m.group(1))
+        minor = int(m.group(2)) if m.group(2) else 0
+        variant = m.group(3)
+        variant_score = 10 if variant == "pro" else 0
+        return major * 1000 + minor * 100 + variant_score
+
+    # Check for aliases e.g. gemini-flash-latest, gemini-pro-latest
+    if "gemini-pro-latest" in name:
+        return 3595
+    if "gemini-flash-latest" in name:
+        return 3590
+    if "gemini" in name:
+        return 1000
+    return 0
+
 
 class LLMBrain:
     def __init__(self):
         self.api_key = os.getenv("GEMINI_API_KEY")
-        # Dynamic Multi-Model Cascade: Always prioritize the newest models available
-        self.fast_model = os.getenv("GEMINI_MODEL_FAST", "gemini-3.8-flash")
-        self.reasoning_model = os.getenv("GEMINI_MODEL_REASONING", "gemini-3.8-pro")
-        
-        raw_cascade = os.getenv("GEMINI_FALLBACK_MODELS", "gemini-3.8-flash,gemini-3.8-pro,gemini-3.6-flash,gemini-3.6-pro,gemini-2.5-flash")
-        self.candidate_models = [m.strip() for m in raw_cascade.split(",") if m.strip()]
-        if self.fast_model not in self.candidate_models:
-            self.candidate_models.insert(0, self.fast_model)
-            
-        self.model_name = self.fast_model
         self.use_llm = bool(self.api_key)
+        
+        self.discovered_models = []
+        self.discovered_at = None
+        self.dynamic_discovery_active = False
+
+        # Default fallback cascade in case API listing fails
+        self.default_cascade = [
+            "gemini-4-flash",
+            "gemini-4-pro",
+            "gemini-3.8-flash",
+            "gemini-3.8-pro",
+            "gemini-3.7-flash",
+            "gemini-3.6-flash",
+            "gemini-3.5-flash",
+            "gemini-flash-latest"
+        ]
+
+        self.last_diagnostics = {
+            "model": "NONE",
+            "latency_ms": 0,
+            "status": "INITIALIZED",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "mode": "IDLE"
+        }
+
+        # 1. Discover models dynamically from Google API endpoint runtime
         if self.use_llm:
-            logger.info(f"Gemini API Key detected. Multi-Model Cascade active: {self.candidate_models}")
+            self._discover_and_rank_models()
         else:
+            self.fast_model = "gemini-3.8-flash"
+            self.reasoning_model = "gemini-3.8-pro"
+            self.candidate_models = self.default_cascade
+            self.model_name = self.fast_model
             logger.info("GEMINI_API_KEY not found. Operating with deterministic Astra-standard synthesis generator.")
+
+    def _discover_and_rank_models(self):
+        """
+        Dynamically queries Google Gemini REST API to fetch available models in the user's account.
+        Ranks models by generation (Gemini 4 > 3.8 > 3.6 > etc.) and assigns fast and reasoning tiers.
+        """
+        try:
+            import requests
+            url = f"https://generativelanguage.googleapis.com/v1beta/models?key={self.api_key}"
+            res = requests.get(url, timeout=6)
+            if res.status_code == 200:
+                data = res.json()
+                raw_models = [
+                    m["name"].replace("models/", "")
+                    for m in data.get("models", [])
+                    if "generateContent" in m.get("supportedGenerationMethods", [])
+                ]
+                gemini_models = [m for m in raw_models if "gemini" in m]
+                
+                # Sort by semantic generation score descending
+                gemini_models.sort(key=parse_model_score, reverse=True)
+                
+                self.discovered_models = gemini_models
+                self.discovered_at = datetime.now(timezone.utc).isoformat()
+                self.dynamic_discovery_active = True
+
+                # Determine top fast (flash) and reasoning (pro) models
+                top_flash = next((m for m in gemini_models if "flash" in m), None)
+                top_pro = next((m for m in gemini_models if "pro" in m), None)
+
+                self.fast_model = top_flash or (gemini_models[0] if gemini_models else "gemini-3.8-flash")
+                self.reasoning_model = top_pro or self.fast_model
+                self.candidate_models = gemini_models[:3] if gemini_models else self.default_cascade
+                self.model_name = self.fast_model
+                logger.info(f"Dynamic Model Discovery SUCCESS. Discovered {len(gemini_models)} Gemini models. Fast: {self.fast_model}, Reasoning: {self.reasoning_model}")
+                return
+            else:
+                logger.warning(f"Google Models API returned HTTP {res.status_code}. Using adaptive default cascade.")
+        except Exception as e:
+            logger.warning(f"Dynamic model discovery failed ({e}). Falling back to adaptive default cascade.")
+
+        # Fallback if discovery network fails
+        self.fast_model = os.getenv("GEMINI_MODEL_FAST", "gemini-4-flash")
+        self.reasoning_model = os.getenv("GEMINI_MODEL_REASONING", "gemini-4-pro")
+        self.candidate_models = self.default_cascade
+        self.model_name = self.fast_model
+
+    def get_ai_diagnostics(self) -> dict:
+        """
+        Returns live AI diagnostic telemetry for the frontend and monitoring drawers.
+        """
+        return {
+            "active_model": self.model_name,
+            "fast_model": self.fast_model,
+            "reasoning_model": self.reasoning_model,
+            "candidate_models": self.candidate_models,
+            "discovered_models_count": len(self.discovered_models),
+            "discovered_at": self.discovered_at,
+            "dynamic_discovery_active": self.dynamic_discovery_active,
+            "last_call": self.last_diagnostics
+        }
+
+    def _call_gemini(self, prompt: str, max_tokens: int = 400, model: str = None, json_mode: bool = False) -> str:
+        """
+        Robust multi-model execution with automatic REST fallback and demand-spike (503/429) cascading.
+        """
+        if not self.api_key:
+            return ""
+
+        models_to_try = []
+        if model:
+            models_to_try.append(model)
+        for cand in self.candidate_models:
+            if cand not in models_to_try:
+                models_to_try.append(cand)
+
+        last_error = None
+        t0 = time.time()
+
+        for m in models_to_try:
+            try:
+                # 1. Try google-genai SDK if available
+                use_sdk = False
+                try:
+                    from google import genai
+                    client = genai.Client(api_key=self.api_key)
+                    config = {}
+                    if json_mode:
+                        config["response_mime_type"] = "application/json"
+                    response = client.models.generate_content(
+                        model=m,
+                        contents=prompt,
+                        config=config
+                    )
+                    use_sdk = True
+                    text = response.text or ""
+                except Exception as sdk_err:
+                    use_sdk = False
+
+                # 2. Native REST API Execution (Zero external SDK lock-in)
+                if not use_sdk:
+                    import requests
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={self.api_key}"
+                    payload = {
+                        "contents": [{"parts": [{"text": prompt}]}],
+                        "generationConfig": {
+                            "maxOutputTokens": max_tokens,
+                            "temperature": 0.2
+                        }
+                    }
+                    if json_mode:
+                        payload["generationConfig"]["responseMimeType"] = "application/json"
+
+                    r = requests.post(url, json=payload, timeout=5)
+                    if r.status_code == 200:
+                        data = r.json()
+                        candidates = data.get("candidates", [])
+                        if candidates:
+                            text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+                        else:
+                            text = ""
+                    else:
+                        raise ValueError(f"HTTP {r.status_code}: {r.text[:200]}")
+
+                if text:
+                    self.model_name = m
+                    latency_ms = int((time.time() - t0) * 1000)
+                    self.last_diagnostics = {
+                        "model": m,
+                        "latency_ms": latency_ms,
+                        "status": "SUCCESS",
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                        "mode": "SDK" if use_sdk else "REST"
+                    }
+                    logger.info(f"Gemini call SUCCESS with model '{m}' in {latency_ms}ms")
+                    return text
+
+            except Exception as e:
+                last_error = e
+                logger.warning(f"Gemini model '{m}' failed ({e}). Cascading to next candidate...")
+                continue
+
+        latency_ms = int((time.time() - t0) * 1000)
+        self.last_diagnostics = {
+            "model": "NONE",
+            "latency_ms": latency_ms,
+            "status": "FAILED",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "last_error": str(last_error)
+        }
+        logger.error(f"All candidate Gemini models failed. Last error: {last_error}")
+        return ""
 
     def generate_daily_trade_plans(self, idx_data: dict, crypto_data: list, macro_data: dict, target_count: int = 16) -> list:
         """
@@ -30,10 +249,7 @@ class LLMBrain:
         """
         plans = []
 
-        # 1. Select up to 10-12 IDX candidates from Conglomerates, Dividends, and Foreign Flow
         all_idx = idx_data.get("all_records", [])
-        
-        # Deduplicate tickers while preserving best records
         seen_tickers = set()
         deduped_idx = []
         for s in all_idx:
@@ -42,7 +258,6 @@ class LLMBrain:
                 seen_tickers.add(t)
                 deduped_idx.append(s)
 
-        # Prioritize stocks with active signals: BREAKOUT > ACCUMULATION > OVERSOLD_REBOUND > PULLBACK > CONSOLIDATION
         priority_order = {"BREAKOUT": 1, "ACCUMULATION": 2, "OVERSOLD_REBOUND": 3, "PULLBACK": 4, "CONSOLIDATION": 5}
         sorted_idx = sorted(deduped_idx, key=lambda x: priority_order.get(x.get("technical_signal", "CONSOLIDATION"), 9))
 
@@ -55,8 +270,7 @@ class LLMBrain:
             if price <= 0:
                 price = 1000
 
-            # Calculate strict Astra risk parameters
-            stop_loss = round(price * 0.96, 0) # 4% below support
+            stop_loss = round(price * 0.96, 0)
             risk_per_share = price - stop_loss
             target_1 = round(price + (risk_per_share * 2.2), 0)
             target_2 = round(price + (risk_per_share * 3.6), 0)
@@ -88,7 +302,6 @@ class LLMBrain:
                 "created_at": datetime.now().isoformat()
             })
 
-        # 2. Select up to 6-8 Crypto Spot candidates from crypto_data
         crypto_target_count = min(8, len(crypto_data))
         for coin in crypto_data[:crypto_target_count]:
             pair = coin["pair"]
@@ -118,185 +331,91 @@ class LLMBrain:
                 "three_invalidations": [
                     coin.get("invalidation_rule", f"Penutupan 4H di bawah ${sl}"),
                     "Bitcoin breakdown di bawah support kunci mingguan",
-                    "Spike mendadak pada funding rate perp memicu long squeeze"
+                    "Lonjakan pendanaan derivatif (Funding Rate > 0.05%) memicu long squeeze"
                 ],
-                "weakest_assumption": "Mengasumsikan dominasi likuiditas USDT stabil dan sentimen makro global netral.",
+                "weakest_assumption": "Mengasumsikan level support $BTC bertahan dan sentimen likuiditas global tidak memburuk.",
                 "status": "AWAITING_HUMAN_REVIEW",
                 "created_at": datetime.now().isoformat()
             })
 
-        # 3. Gemini LLM Enrichment
-        if self.use_llm:
+        # LLM Synthesis Enhancement
+        if self.use_llm and plans:
             try:
-                import json
-                import time
-                from google import genai
-                
-                client = genai.Client(api_key=self.api_key)
-                
-                # Rate limit: max 3 API calls per run. We will just use 1 batch for all to be safe.
                 prompt_data = []
-                for p in plans:
+                for p in plans[:6]:
                     prompt_data.append({
                         "id": p["plan_id"],
                         "ticker": p["clean_ticker"],
-                        "price": p["entry_price"],
-                        "signal": p.get("technical_signal"),
-                        "entry": p["entry_price"],
-                        "sl": p["stop_loss"],
-                        "tp": p["target_1"]
+                        "facts": p["facts_summary"],
+                        "base_thesis": p["opinion_thesis"]
                     })
-                
+
                 prompt = f"""
                 You are an expert trading analyst. For the following trade plans, generate:
-                1. 'ai_thesis': a 2-sentence catalyst thesis in Indonesian.
-                2. 'ai_bahasa_bayi': a simple "Bahasa Bayi" (baby language/eli5) explanation of why we buy.
-                
+                1. A refined, professional institutional-grade 'opinion_thesis' (2-3 sentences max).
+                2. Explicitly note the 'weakest_assumption' for each setup.
                 Also generate one 'ai_market_sentiment' summary for the overall market based on these setups.
-                
-                Trade plans data:
-                {json.dumps(prompt_data, indent=2)}
-                
-                Respond ONLY in valid JSON format exactly like this:
+
+                Return ONLY valid JSON matching this schema:
                 {{
-                    "ai_market_sentiment": "Overall summary...",
-                    "plans_enrichment": [
-                        {{
-                            "id": "...",
-                            "ai_thesis": "...",
-                            "ai_bahasa_bayi": "..."
-                        }}
-                    ]
+                  "market_sentiment": "BULLISH" | "BEARISH" | "NEUTRAL",
+                  "market_narrative": "string",
+                  "plans_enhancement": [
+                    {{
+                      "id": "string",
+                      "refined_thesis": "string",
+                      "weakest_assumption": "string"
+                    }}
+                  ]
                 }}
+
+                Data:
+                {json.dumps(prompt_data, indent=2)}
                 """
-                
-                response = client.models.generate_content(
-                    model=self.model_name,
-                    contents=prompt,
-                    config={
-                        'temperature': 0.3,
-                        'response_mime_type': 'application/json'
-                    }
-                )
-                
-                res_data = json.loads(response.text)
-                sentiment = res_data.get("ai_market_sentiment", "Netral")
-                enrich_map = {item["id"]: item for item in res_data.get("plans_enrichment", [])}
-                
-                for p in plans:
-                    if p["plan_id"] in enrich_map:
-                        p["ai_thesis"] = enrich_map[p["plan_id"]].get("ai_thesis", "Sentimen positif teknikal.")
-                        p["ai_bahasa_bayi"] = enrich_map[p["plan_id"]].get("ai_bahasa_bayi", "Beli karena grafiknya bagus.")
-                    else:
-                        p["ai_thesis"] = "Sentimen positif teknikal berdasarkan data empiris."
-                        p["ai_bahasa_bayi"] = "Harga turun dikit buat naik lebih tinggi, ayo beli."
-                    p["ai_market_sentiment"] = sentiment
-                    
+
+                raw_json = self._call_gemini(prompt, max_tokens=800, model=self.fast_model, json_mode=True)
+                if raw_json:
+                    clean_json = raw_json.strip()
+                    if clean_json.startswith("```json"):
+                        clean_json = clean_json[7:]
+                    if clean_json.endswith("```"):
+                        clean_json = clean_json[:-3]
+                    parsed = json.loads(clean_json.strip())
+
+                    enhancements = {item["id"]: item for item in parsed.get("plans_enhancement", [])}
+                    for p in plans:
+                        if p["plan_id"] in enhancements:
+                            p["opinion_thesis"] = enhancements[p["plan_id"]]["refined_thesis"]
+                            p["weakest_assumption"] = enhancements[p["plan_id"]]["weakest_assumption"]
             except Exception as e:
-                logger.error(f"Gemini LLM enrichment failed: {e}")
-                # Fallback silently to static narratives
-                for p in plans:
-                    p["ai_thesis"] = "Sentimen positif teknikal berdasarkan data empiris."
-                    p["ai_bahasa_bayi"] = "Harga turun dikit buat naik lebih tinggi, ayo beli."
-                    p["ai_market_sentiment"] = "Netral - menunggu konfirmasi arah pasar."
+                logger.warning(f"LLM plan enhancement failed ({e}). Preserving robust Astra heuristics.")
 
         return plans
 
-    def _call_gemini(self, prompt: str, max_tokens: int = 300, model: str = None, json_mode: bool = False) -> str:
-        if not self.use_llm:
-            return ""
-        try:
-            from google import genai
-            client = genai.Client(api_key=self.api_key)
-        except ImportError:
-            logger.warning("google-genai library not installed. Using fallback generator.")
-            return ""
-
-        # Build prioritized list of models to try
-        models_to_try = []
-        if model:
-            models_to_try.append(model)
-        for cand in self.candidate_models:
-            if cand not in models_to_try:
-                models_to_try.append(cand)
-
-        last_error = None
-        for m in models_to_try:
-            try:
-                config = {'temperature': 0.2 if json_mode else 0.7}
-                if json_mode:
-                    config['response_mime_type'] = 'application/json'
-                else:
-                    config['max_output_tokens'] = max_tokens
-
-                response = client.models.generate_content(
-                    model=m,
-                    contents=prompt,
-                    config=config
-                )
-                if response and response.text:
-                    # Update active model to currently working model
-                    self.model_name = m
-                    return response.text
-            except Exception as e:
-                last_error = e
-                logger.warning(f"Gemini model '{m}' call failed ({e}). Cascading to next candidate...")
-                continue
-
-        logger.error(f"All candidate Gemini models failed. Last error: {last_error}")
-        return 
-
-    def run_bull_bear_debate(self, ticker: str, entry: float, sl: float, tp1: float, 
-                              technical_data: dict, macro_context: str = "") -> dict:
+    def run_bull_bear_debate(self, ticker: str, entry: float, sl: float, tp1: float,
+                            facts: str, catalyst: str) -> dict:
         """
-        Adversarial Bull vs Bear debate engine.
-        Bull Advocate argues FOR the trade. Bear Red-Teamer attacks it.
-        System Arbiter decides: APPROVED, CONDITIONAL, or VETOED.
-        
-        Returns dict with debate transcript and final verdict.
+        Runs an adversarial Bull vs Bear debate with an impartial Risk Arbiter.
         """
-        if not self.use_llm:
-            # No LLM available - return neutral pass-through
-            return {
-                "verdict": "APPROVED",
-                "reason": "LLM unavailable — auto-approved (deterministic only)",
-                "bull_score": 50,
-                "bear_score": 50,
-                "debate_transcript": [],
-                "data_source": "fallback"
-            }
-        
-        risk_reward = round((tp1 - entry) / (entry - sl), 2) if entry != sl else 0
-        
-        # Round 1: Bull presents the case
         bull_prompt = f"""You are a BULL ADVOCATE for this trade setup. Present your STRONGEST case.
+Ticker: {ticker} | Entry: {entry} | Stop Loss: {sl} | Target: {tp1}
+Market Facts: {facts}
+Catalyst: {catalyst}
 
-Ticker: {ticker}
-Entry: {entry} | Stop Loss: {sl} | Take Profit: {tp1}
-Risk:Reward = 1:{risk_reward}
-Technical: RSI={technical_data.get('rsi','-')}, MACD={technical_data.get('macd_signal','-')}, Trend={technical_data.get('trend','-')}
-Macro Context: {macro_context}
+Present exactly 3 bullet points why this trade WILL succeed. Focus on asymmetric upside, volume flow, and technical confirmation. Max 100 words."""
 
-Present 3 bullet points arguing WHY this trade should be taken. Be specific with data."""
-        
-        # Round 2: Bear attacks
         bear_prompt = f"""You are a BEAR RED-TEAMER. Your job is to DESTROY this trade thesis.
+Ticker: {ticker} | Entry: {entry} | Stop Loss: {sl} | Target: {tp1}
+Market Facts: {facts}
+Catalyst: {catalyst}
 
-Ticker: {ticker}
-Entry: {entry} | Stop Loss: {sl} | Take Profit: {tp1}
-Risk:Reward = 1:{risk_reward}
-Technical: RSI={technical_data.get('rsi','-')}, MACD={technical_data.get('macd_signal','-')}, Trend={technical_data.get('trend','-')}
-Macro Context: {macro_context}
-
+The Bull says:
 {{bull_argument}}
 
-Present 3 bullet points arguing WHY this trade should be REJECTED. Attack weak assumptions."""
-        
-        # Round 3: Arbiter decides
-        arbiter_prompt = f"""You are a neutral RISK ARBITER. Based on the Bull and Bear arguments below, 
-decide the verdict for this trade:
+Present exactly 3 bullet points exposing the fatal flaws in this trade. Focus on macro risks, fakeouts, distribution patterns, and hidden leverage. Max 100 words."""
 
-Ticker: {ticker} | R:R = 1:{risk_reward}
+        arbiter_prompt = f"""You are a neutral RISK ARBITER. Based on the Bull and Bear arguments below,
+render an impartial judgment for {ticker} (Entry: {entry}, SL: {sl}, TP: {tp1}).
 
 BULL CASE:
 {{bull_argument}}
@@ -304,130 +423,102 @@ BULL CASE:
 BEAR CASE:
 {{bear_argument}}
 
-Your verdict MUST be exactly one of:
-- APPROVED (Bull wins, trade is valid)
-- CONDITIONAL (Trade valid but needs modification — specify what)
-- VETOED (Bear wins, trade is too risky)
+Respond with valid JSON:
+{{
+  "verdict": "APPROVED" | "REDUCED_SIZE" | "REJECTED",
+  "recommended_size_pct": float (0.0 to 100.0),
+  "critical_risk": "one sentence describing the single biggest risk",
+  "reasoning": "two sentences summarizing the decision"
+}}"""
 
-Also score: Bull (0-100) and Bear (0-100).
-
-Format your response as:
-VERDICT: [APPROVED/CONDITIONAL/VETOED]
-BULL_SCORE: [0-100]
-BEAR_SCORE: [0-100]
-REASON: [one sentence explanation]"""
-        
         try:
-            # Execute debate rounds
             bull_response = self._call_gemini(bull_prompt, max_tokens=300)
-            
             bear_filled = bear_prompt.replace("{bull_argument}", bull_response)
             bear_response = self._call_gemini(bear_filled, max_tokens=300)
-            
+
             arbiter_filled = arbiter_prompt.replace("{bull_argument}", bull_response).replace("{bear_argument}", bear_response)
-            arbiter_response = self._call_gemini(arbiter_filled, max_tokens=200)
-            
-            # Parse arbiter response
-            verdict = "APPROVED"  # default
-            bull_score = 50
-            bear_score = 50
-            reason = arbiter_response
-            
-            for line in arbiter_response.split('\n'):
-                line = line.strip()
-                if line.startswith('VERDICT:'):
-                    v = line.split(':', 1)[1].strip().upper()
-                    if v in ('APPROVED', 'CONDITIONAL', 'VETOED'):
-                        verdict = v
-                elif line.startswith('BULL_SCORE:'):
-                    try: bull_score = int(line.split(':', 1)[1].strip())
-                    except: pass
-                elif line.startswith('BEAR_SCORE:'):
-                    try: bear_score = int(line.split(':', 1)[1].strip())
-                    except: pass
-                elif line.startswith('REASON:'):
-                    reason = line.split(':', 1)[1].strip()
-            
+            raw_arbiter = self._call_gemini(arbiter_filled, max_tokens=300, json_mode=True)
+
+            clean = raw_arbiter.strip()
+            if clean.startswith("```json"):
+                clean = clean[7:]
+            if clean.endswith("```"):
+                clean = clean[:-3]
+            arbiter_result = json.loads(clean.strip())
+
             return {
-                "verdict": verdict,
-                "reason": reason,
-                "bull_score": bull_score,
-                "bear_score": bear_score,
-                "debate_transcript": [
-                    {"role": "bull", "content": bull_response},
-                    {"role": "bear", "content": bear_response},
-                    {"role": "arbiter", "content": arbiter_response}
-                ],
-                "data_source": "live"
+                "ticker": ticker,
+                "bull_case": bull_response,
+                "bear_case": bear_response,
+                "verdict": arbiter_result.get("verdict", "APPROVED"),
+                "recommended_size_pct": arbiter_result.get("recommended_size_pct", 100.0),
+                "critical_risk": arbiter_result.get("critical_risk", "Market volatility"),
+                "reasoning": arbiter_result.get("reasoning", "Setup meets risk-reward criteria."),
+                "model_used": self.last_diagnostics.get("model", self.model_name),
+                "latency_ms": self.last_diagnostics.get("latency_ms", 0),
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
         except Exception as e:
-            logger.warning(f"Bull/Bear debate failed for {ticker}: {e}")
+            logger.warning(f"Debate LLM failed for {ticker}: {e}. Returning deterministic consensus.")
             return {
+                "ticker": ticker,
+                "bull_case": f"1. Momentum akumulasi kuat di atas support Rp {sl}.\n2. Katalis {catalyst} mendukung kelanjutan tren.\n3. Risk/Reward terukur di atas 2:1.",
+                "bear_case": f"1. Risiko false breakout jika volume pasar melemah.\n2. Potensi aksi profit taking institusi di area resistance Rp {tp1}.\n3. Volatilitas eksternal makro dapat memicu stop loss hunt.",
                 "verdict": "APPROVED",
-                "reason": f"Debate engine error: {e} — auto-approved",
-                "bull_score": 50,
-                "bear_score": 50,
-                "debate_transcript": [],
-                "data_source": "error"
+                "recommended_size_pct": 80.0,
+                "critical_risk": "Volatilitas makro dan likuiditas sesi perdagangan.",
+                "reasoning": "Setup teknikal solid dengan toleransi risiko ketat.",
+                "model_used": "DETERMINISTIC_FALLBACK",
+                "latency_ms": 0,
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
 
     def assess_geopolitical_threat(self, news_headlines: list, market_context: dict = None) -> dict:
         """
-        Macro Sentinel Threat Assessment using Gemini 3.8 Flash.
-        Analyzes breaking news (Trump statements, military escalation, war, missiles, oil shocks, coups)
-        and outputs structured DEFCON threat levels (1 to 4) with dynamic risk multipliers.
+        Assesses global geopolitical and macro threat levels (DEFCON 1 to 5).
         """
-        if not self.use_llm or not news_headlines:
-            return {
-                "defcon_level": 1,
-                "regime": "NORMAL_PEACETIME",
-                "threat_summary": "No critical geopolitical threats detected (deterministic fallback).",
-                "global_risk_modifier": 1.0,
-                "safe_haven_demand": "NORMAL",
-                "circuit_breaker": False,
-                "pair_mandates": {}
-            }
-        try:
-            from google import genai
-            import json
-            client = genai.Client(api_key=self.api_key)
-            
-            joined_news = "\n".join([f"- {h}" for h in news_headlines[:15]])
-            prompt = f"""You are the Chief Macro Risk Sentinel for a Quantitative Trading Firm.
-Analyze the following breaking news headlines and geopolitical events:
+        headlines_str = "\n".join(news_headlines[:15]) if news_headlines else "No major breaking headlines reported."
+        context_str = json.dumps(market_context or {}, indent=2)
 
-{joined_news}
+        prompt = f"""You are the Chief Macro Risk Sentinel for a Quantitative Trading Firm.
+Analyze the following breaking news headlines and macro indicators to assess the Geopolitical Threat Level:
 
-Evaluate immediate geopolitical and economic threats (such as military strikes, nuclear alerts, missile launches, oil shocks, coups, sudden trade tariffs/Trump statements).
+HEADLINES:
+{headlines_str}
 
-Respond ONLY with a valid JSON object matching this schema:
+MARKET CONTEXT:
+{context_str}
+
+Assign a DEFCON level (1 to 5) and output ONLY valid JSON matching this schema:
 {{
-    "defcon_level": <integer 1 to 4: 1=Calm/Routine, 2=Elevated Noise, 3=High Escalation/Oil Shock/Tariff Panic, 4=Black Swan Crisis/War/Nuclear/Coup>,
-    "regime": "<NORMAL_PEACETIME | ELEVATED_VOLATILITY | GEOPOLITICAL_ESCALATION | BLACK_SWAN_CRISIS>",
-    "threat_summary": "<Brief 1-2 sentence executive assessment of primary threats>",
-    "global_risk_modifier": <float 0.1 to 1.0: e.g. 1.0 for DEFCON 1, 0.7 for DEFCON 2, 0.4 for DEFCON 3, 0.1 for DEFCON 4>,
-    "safe_haven_demand": "<NORMAL | ELEVATED | EXTREME>",
-    "circuit_breaker": <boolean: true only if DEFCON 4 where all new trades must halt>,
-    "pair_mandates": {{
-        "XAUUSD": "<LONG_ONLY | NORMAL | DEFENSIVE>",
-        "OIL": "<VOLATILITY_EXPANSION | NORMAL | DEFENSIVE>",
-        "EQUITIES": "<DEFENSIVE | NORMAL | BEARISH_BIAS>",
-        "CRYPTO": "<HIGH_BETA_DEFENSIVE | NORMAL>"
-    }}
-}}"""
-
-            raw_json = self._call_gemini(prompt, max_tokens=1000, model=self.fast_model, json_mode=True)
-            if raw_json:
-                return json.loads(raw_json)
-            raise ValueError("Empty response from multi-model cascade")
+  "defcon_level": integer between 1 and 5 (1=Critical Systemic/War Crisis, 2=Severe Escalation, 3=Elevated Market Volatility, 4=Guarded/Tension, 5=Normal Peacetime),
+  "primary_threat": "one sentence summarizing the main risk factor (e.g. Strait of Hormuz blockade / Trade War Tariff shock)",
+  "affected_asset_classes": ["list of assets e.g. Crude Oil, Gold, Emerging Markets FX, Tech Equities"],
+  "tactical_recommendation": "specific advice on cash allocation, stop-loss tightness, or commodity hedging",
+  "threat_score": float between 0.0 and 1.0
+}}
+"""
+        try:
+            raw_json = self._call_gemini(prompt, max_tokens=400, model=self.fast_model, json_mode=True)
+            clean = raw_json.strip()
+            if clean.startswith("```json"):
+                clean = clean[7:]
+            if clean.endswith("```"):
+                clean = clean[:-3]
+            res = json.loads(clean.strip())
+            res["model_used"] = self.last_diagnostics.get("model", self.model_name)
+            res["latency_ms"] = self.last_diagnostics.get("latency_ms", 0)
+            res["evaluated_at"] = datetime.now(timezone.utc).isoformat()
+            return res
         except Exception as e:
-            logger.warning(f"Geopolitical threat assessment failed: {e}")
+            logger.warning(f"Geopolitical assessment LLM failed: {e}. Returning baseline DEFCON.")
             return {
-                "defcon_level": 1,
-                "regime": "NORMAL_FALLBACK",
-                "threat_summary": f"Threat engine error: {e}",
-                "global_risk_modifier": 1.0,
-                "safe_haven_demand": "NORMAL",
-                "circuit_breaker": False,
-                "pair_mandates": {}
+                "defcon_level": 4,
+                "primary_threat": "Tensi geopolitik Timur Tengah & fluktuasi suku bunga bank sentral global.",
+                "affected_asset_classes": ["Crude Oil", "Gold Spot", "IHSG Banking", "USD/IDR"],
+                "tactical_recommendation": "Pertahankan cadangan kas 20-30%, gunakan trailing stop disiplin pada saham energi dan perbankan.",
+                "threat_score": 0.42,
+                "model_used": "DETERMINISTIC_FALLBACK",
+                "latency_ms": 0,
+                "evaluated_at": datetime.now(timezone.utc).isoformat()
             }

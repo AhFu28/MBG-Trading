@@ -27,6 +27,30 @@ export default function NewsTab({
   const [ttsState, setTtsState] = useState({ isPlaying: false, activeId: null });
   const [copiedId, setCopiedId] = useState(null);
   const [toastMsg, setToastMsg] = useState(null);
+  const [researchArchive, setResearchArchive] = useState([]);
+  const [archiveDateFilter, setArchiveDateFilter] = useState('ALL');
+  const [archiveLoading, setArchiveLoading] = useState(false);
+
+  // Fetch 14-day historical research archive
+  useEffect(() => {
+    const fetchArchive = async () => {
+      try {
+        setArchiveLoading(true);
+        const res = await fetch(`/data/research_archive.json?v=${Date.now()}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (Array.isArray(json) && json.length > 0) {
+            setResearchArchive(json);
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to load research archive from public json:', err);
+      } finally {
+        setArchiveLoading(false);
+      }
+    };
+    fetchArchive();
+  }, []);
 
   // Sync bookmarks to localStorage
   useEffect(() => {
@@ -55,6 +79,7 @@ export default function NewsTab({
 
   const categories = [
     { id: 'ALL', label: '📰 ALL RESEARCH' },
+    { id: 'ARCHIVE', label: `🏛️ ARSIP RISET (14 HARI)` },
     { id: 'DAILY_BRIEF', label: '☕ DAILY BRIEF' },
     { id: 'RESEARCH', label: '📑 RESEARCH NOTES' },
     { id: 'CRYPTO', label: '⚡ CRYPTO & ETFS' },
@@ -133,6 +158,23 @@ export default function NewsTab({
 
   // Filter and Search logic
   const filteredNews = useMemo(() => {
+    if (newsFilter === 'ARCHIVE') {
+      const pool = researchArchive.length > 0 ? researchArchive : items.filter(it => it.tag === 'DAILY_BRIEF' || it.tag === 'RESEARCH');
+      let res = pool;
+      if (archiveDateFilter !== 'ALL') {
+        res = res.filter(it => it.date_iso === archiveDateFilter);
+      }
+      if (newsSearch) {
+        const q = newsSearch.toLowerCase();
+        res = res.filter(it =>
+          (it.title && it.title.toLowerCase().includes(q)) ||
+          (it.summary && it.summary.toLowerCase().includes(q)) ||
+          (it.related_tickers && it.related_tickers.some(t => t.toLowerCase().includes(q)))
+        );
+      }
+      return res;
+    }
+
     return items.filter((item, idx) => {
       const itemId = item.id || `news-${idx}`;
       const isBookmarked = bookmarks.includes(itemId);
@@ -182,9 +224,18 @@ export default function NewsTab({
         (item.related_tickers && item.related_tickers.some(t => t.toLowerCase().includes(q)))
       );
     }).sort((a, b) => new Date(b.pub_date || 0) - new Date(a.pub_date || 0));
-  }, [items, newsFilter, newsSearch, bookmarks]);
+  }, [items, newsFilter, newsSearch, bookmarks, researchArchive, archiveDateFilter]);
 
   // Daily Snips summary text for WA / Telegram export
+  // Unique dates for archive selector
+  const availableArchiveDates = useMemo(() => {
+    const dates = new Set();
+    researchArchive.forEach(item => {
+      if (item.date_iso) dates.add(item.date_iso);
+    });
+    return Array.from(dates).sort().reverse();
+  }, [researchArchive]);
+
   const snipsExportText = useMemo(() => {
     const snips = macro?.daily_snips || {};
     const verdict = snips.market_verdict || {};
@@ -242,6 +293,27 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
           <span className="badge badge-bull" style={{ fontSize: '9px', padding: '1px 6px' }}>
             24/7 DUAL-STREAM
           </span>
+          <button
+            onClick={() => setNewsFilter(prev => prev === 'ARCHIVE' ? 'ALL' : 'ARCHIVE')}
+            className={`telemetry-btn ${newsFilter === 'ARCHIVE' ? 'active' : ''}`}
+            style={{
+              padding: '2px 8px',
+              fontSize: '10px',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: '800',
+              color: newsFilter === 'ARCHIVE' ? '#fff' : 'var(--accent-blue)',
+              background: newsFilter === 'ARCHIVE' ? 'var(--accent-blue)' : 'rgba(59, 130, 246, 0.15)',
+              borderColor: 'rgba(59, 130, 246, 0.4)',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+            title="Buka Arsip 14 Edisi Riset & Daily Brief Terdahulu"
+          >
+            <span>🏛️</span>
+            <span>Arsip Riset (14 Edisi)</span>
+          </button>
           <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: '6px' }}>
             // IDX Equities &amp; Global Crypto ETF Intelligence
           </span>
@@ -355,6 +427,61 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
               </div>
             </div>
           </div>
+
+          {/* Historical Archive Banner & Date Selector */}
+          {newsFilter === 'ARCHIVE' && (
+            <div className="telemetry-panel" style={{
+              background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.45) 0%, rgba(15, 23, 42, 0.55) 100%)',
+              border: '1px solid rgba(59, 130, 246, 0.35)',
+              padding: '14px 16px',
+              borderRadius: '6px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '12px'
+            }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '14px' }}>🏛️</span>
+                  <span style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', letterSpacing: '0.04em' }}>
+                    HISTORICAL RESEARCH ARCHIVE DESK (14 HARI)
+                  </span>
+                </div>
+                <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '3px' }}>
+                  Histori riset &amp; daily brief tersimpan aman (Kapasitas FIFO 14 hari terkelola, bebas memory leak).
+                </div>
+              </div>
+
+              {/* Date Filter Dropdown */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                  PILIH TANGGAL:
+                </span>
+                <select
+                  value={archiveDateFilter}
+                  onChange={e => setArchiveDateFilter(e.target.value)}
+                  style={{
+                    padding: '5px 10px',
+                    fontSize: '11px',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: '700',
+                    background: 'var(--bg-panel-dark)',
+                    border: '1px solid var(--border-color)',
+                    color: 'var(--text-primary)',
+                    borderRadius: '4px',
+                    outline: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="ALL">Semua Tanggal ({researchArchive.length} Edisi)</option>
+                  {availableArchiveDates.map(d => (
+                    <option key={d} value={d}>{d}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
 
           {/* Research Articles Feed */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -485,6 +612,35 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                 >
                   {news.title}
                 </h4>
+
+                {/* Support & Resistance Mini Bar if available */}
+                {news.technical_levels && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    flexWrap: 'wrap',
+                    fontSize: '10px',
+                    fontFamily: 'var(--font-mono)',
+                    background: 'rgba(59, 130, 246, 0.08)',
+                    border: '1px solid rgba(59, 130, 246, 0.25)',
+                    padding: '5px 10px',
+                    borderRadius: '4px',
+                    color: 'var(--text-secondary)'
+                  }}>
+                    <span>📐 <strong>LEVEL TEKNIKAL:</strong></span>
+                    <span>Pivot: <strong style={{ color: 'var(--accent-blue)' }}>{news.technical_levels.pivot?.toLocaleString()}</strong></span>
+                    <span>•</span>
+                    <span>S1: <strong style={{ color: 'var(--accent-green)' }}>{news.technical_levels.s1?.toLocaleString()}</strong></span>
+                    <span>•</span>
+                    <span>R1: <strong style={{ color: 'var(--accent-red)' }}>{news.technical_levels.r1?.toLocaleString()}</strong></span>
+                    <span>•</span>
+                    <span>Cut Loss: <strong style={{ color: '#f59e0b' }}>&lt; {news.technical_levels.invalidation?.toLocaleString()}</strong></span>
+                    <span style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: '700' }} onClick={() => onSelectNews && onSelectNews(news)}>
+                      Lihat Chart &amp; S/R Lengkap ↗
+                    </span>
+                  </div>
+                )}
 
                 {/* Structured Key Highlights / Bullet Points */}
                 <div style={{

@@ -20,6 +20,20 @@ const MarketHeatmapTab = lazy(() => import('./components/MarketHeatmapTab.jsx'))
 const NewsDetailModal = lazy(() => import('./components/NewsDetailModal.jsx'));
 const SecurityHubDrawer = lazy(() => import('./components/SecurityHubDrawer.jsx'));
 const AiAgentArenaTab = lazy(() => import('./components/AiAgentArenaTab.jsx'));
+const AiIntelligenceDrawer = lazy(() => import('./components/AiIntelligenceDrawer.jsx'));
+
+const isIdxMarketOpen = () => {
+  const now = new Date();
+  const jktStr = now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+  const jktDate = new Date(jktStr);
+  const day = jktDate.getDay();
+  if (day === 0 || day === 6) return false;
+  const totalMin = jktDate.getHours() * 60 + jktDate.getMinutes();
+  if (day === 5) {
+    return (totalMin >= 540 && totalMin <= 690) || (totalMin >= 840 && totalMin <= 960);
+  }
+  return (totalMin >= 540 && totalMin <= 720) || (totalMin >= 810 && totalMin <= 960);
+};
 
 const jakartaTimeFormatter = new Intl.DateTimeFormat('id-ID', {
   timeZone: 'Asia/Jakarta',
@@ -168,6 +182,8 @@ export default function App() {
   }, []);
 
   // Institutional Security Hub Drawer State
+  const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
+
   const [securityHub, setSecurityHub] = useState({
     isOpen: false,
     symbol: 'BBCA',
@@ -264,6 +280,8 @@ export default function App() {
       case 'US_STOCKS': return '🇺🇸 US Stock Intelligence';
       case 'CHANGELOG': return '📜 Changelog Update & Catatan Rilis';
       case 'AI_AGENTS': return '🤖 AI Multi-Agent Arena';
+      case 'AI_SENTINEL':
+      case 'SENTINEL': return '🛡️ AI Intelligence & Sentinel Desk';
       default: return 'Institutional Desk';
     }
   };
@@ -296,6 +314,7 @@ export default function App() {
           livePrices={livePrices}
           flashMap={flashMap}
           onSelectTicker={handleOpenSecurityHub}
+          onOpenAiSentinel={() => setIsAiDrawerOpen(true)}
         />
 
         {/* ===== MAIN CONTENT AREA ===== */}
@@ -334,8 +353,50 @@ export default function App() {
               {/* Bursa Luar Negeri (Global Market Sessions Ticker) */}
               <GlobalMarketTicker onNavigateGlobal={() => setActiveTab('GLOBAL_MARKETS')} />
 
+              {/* IDX Market Status Badge */}
+              <div
+                style={{
+                  fontSize: '9.5px',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: '700',
+                  padding: '2px 6px',
+                  borderRadius: 'var(--radius-xs)',
+                  background: isIdxMarketOpen() ? 'rgba(0, 208, 132, 0.12)' : 'rgba(239, 68, 68, 0.1)',
+                  color: isIdxMarketOpen() ? 'var(--accent-green)' : 'var(--accent-red)',
+                  border: isIdxMarketOpen() ? '1px solid rgba(0, 208, 132, 0.3)' : '1px solid rgba(239, 68, 68, 0.25)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+                title={isIdxMarketOpen() ? "Sesi Perdagangan BEI Buka (Harga Saham Bergerak Real-Time)" : "Bursa BEI Tutup (Data Menampilkan Harga Penutupan Terakhir / Last Close)"}
+              >
+                <span>{isIdxMarketOpen() ? "🟢" : "🔴"}</span>
+                <span>{isIdxMarketOpen() ? "IDX LIVE" : "IDX TUTUP (LAST CLOSE)"}</span>
+              </div>
+
               {/* Master Terminal Time */}
               <HeaderClock />
+
+              {/* AI Sentinel & Geopolitical Desk Quick Launch */}
+              <button
+                className="telemetry-btn"
+                onClick={() => setIsAiDrawerOpen(true)}
+                style={{
+                  fontSize: '10px',
+                  padding: '3px 8px',
+                  color: '#3b82f6',
+                  borderColor: 'rgba(59, 130, 246, 0.4)',
+                  background: 'rgba(59, 130, 246, 0.12)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  cursor: 'pointer'
+                }}
+                title="Buka AI Sentinel Desk: Evaluasi Geopolitik (DEFCON), Transkrip Debat Bull vs Bear, & Monitor API Runtime"
+              >
+                <span>🛡️</span>
+                <span>DEFCON {data?.geopolitical_threat?.defcon_level || 4} // AI Desk</span>
+              </button>
 
               {/* Quick Launch Lot Calculator Modal */}
               <button 
@@ -395,7 +456,45 @@ export default function App() {
               <div style={{ fontWeight: '700', fontFamily: 'var(--font-mono)' }}>MEMUAT MODUL KUANTITATIF...</div>
             </div>
           }>
-            {activeTab === 'WATCHLIST' ? (
+            {activeTab === 'AI_SENTINEL' || activeTab === 'SENTINEL' ? (
+              <main style={{ padding: '16px 0' }}>
+                <div className="telemetry-panel" style={{
+                  padding: '24px',
+                  textAlign: 'center',
+                  background: 'var(--bg-panel)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <div style={{ fontSize: '32px' }}>🛡️</div>
+                  <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '800', color: 'var(--text-primary)' }}>
+                    AI INTELLIGENCE &amp; GEOPOLITICAL SENTINEL DESK
+                  </h3>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', maxWidth: '520px', lineHeight: 1.5 }}>
+                    Sentinel desk memantau ancaman krisis perang/makro (DEFCON 1-5), log perdebatan Bull vs Bear AI, dan status multi-model dynamic discovery (Gemini 4 / 3.8 Flash).
+                  </div>
+                  <button
+                    onClick={() => setIsAiDrawerOpen(true)}
+                    className="telemetry-btn active"
+                    style={{
+                      padding: '8px 18px',
+                      fontSize: '12px',
+                      fontWeight: '800',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      marginTop: '8px'
+                    }}
+                  >
+                    <span>🛡️</span>
+                    <span>Buka Panel AI Intelligence &amp; Sentinel Drawer ↗</span>
+                  </button>
+                </div>
+              </main>
+            ) : activeTab === 'WATCHLIST' ? (
               /* PERSONAL WATCHLIST (Star Marked Items) */
               <main>
                 <PersonalWatchlistTab
@@ -556,6 +655,17 @@ export default function App() {
                   handleCloseSecurityHub();
                   setActiveTab(tab);
                 }}
+              />
+            )}
+
+            {/* AI Intelligence & Geopolitical Sentinel Drawer */}
+            {isAiDrawerOpen && (
+              <AiIntelligenceDrawer
+                isOpen={isAiDrawerOpen}
+                onClose={() => setIsAiDrawerOpen(false)}
+                threatData={data?.geopolitical_threat}
+                debateData={data?.ai_agent_arena}
+                aiDiagnostics={data?.ai_agent_arena?.diagnostics}
               />
             )}
           </Suspense>

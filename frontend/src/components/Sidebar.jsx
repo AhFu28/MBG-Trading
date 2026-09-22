@@ -18,6 +18,7 @@ const PRIMARY_NAV_ITEMS = [
   { id: 'GLOBAL_MARKETS',      icon: '🌍', label: 'Pasar Global',     section: 'MARKETS' },
   { id: 'NEWS',                icon: '📰', label: 'Live News Wire',   section: 'INTELLIGENCE' },
   { id: 'ECONOMIC_CALENDAR',   icon: '📅', label: 'Kalender Makro',   section: 'INTELLIGENCE' },
+  { id: 'AI_SENTINEL',        icon: '🛡️', label: 'AI Sentinel Desk', section: 'INTELLIGENCE' },
 ];
 
 // Secondary tools tucked into expandable accordion
@@ -53,12 +54,14 @@ export default function Sidebar({
   newsCount = 0,
   livePrices = {},
   flashMap = {},
-  onSelectTicker
+  onSelectTicker,
+  onOpenAiSentinel
 }) {
   const [showMoreTools, setShowMoreTools] = useState(false);
 
   const getBadge = (id) => {
     if (id === 'AI_AGENTS') return 'PRO';
+    if (id === 'AI_SENTINEL') return 'DEFCON';
     if (id === 'CHARTING') return 'PRO';
     if (id === 'WHALES') return 'LIVE';
     if (id === 'FUTURES') return 'LIVE';
@@ -140,7 +143,11 @@ export default function Sidebar({
                     key={item.id}
                     className={`sidebar-nav-item ${isActive ? 'active' : ''}`}
                     onClick={() => {
-                      setActiveTab(item.id);
+                      if (item.id === 'AI_SENTINEL' && onOpenAiSentinel) {
+                        onOpenAiSentinel();
+                      } else {
+                        setActiveTab(item.id);
+                      }
                       if (isMobileOpen) setMobileOpen(false);
                     }}
                     title={item.label}
@@ -323,7 +330,11 @@ export default function Sidebar({
                     key={item.id}
                     className={`sidebar-nav-item ${isActive ? 'active' : ''}`}
                     onClick={() => {
-                      setActiveTab(item.id);
+                      if (item.id === 'AI_SENTINEL' && onOpenAiSentinel) {
+                        onOpenAiSentinel();
+                      } else {
+                        setActiveTab(item.id);
+                      }
                       if (isMobileOpen) setMobileOpen(false);
                     }}
                     style={{ fontSize: '10px', padding: '5px 12px' }}

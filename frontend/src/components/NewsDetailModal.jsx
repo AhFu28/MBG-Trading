@@ -10,11 +10,18 @@ export default function NewsDetailModal({
   const [currentNews, setCurrentNews] = useState(news);
   const [isTtsPlaying, setIsTtsPlaying] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [activeChartSymbol, setActiveChartSymbol] = useState(null);
 
   // Sync internal state when parent news prop changes
   useEffect(() => {
     if (news) {
       setCurrentNews(news);
+      // Reset active chart symbol to news primary symbol
+      const tickers = Array.isArray(news.related_tickers) ? news.related_tickers : [];
+      const isCrypto = news.stream === 'CRYPTO' || tickers.some(t => ['BTC', 'ETH', 'SOL', 'BNB', 'DOGE', 'XRP', 'SUI'].includes(t));
+      const firstTicker = news.primary_ticker || (tickers.length > 0 ? tickers[0] : (news.tag === 'DAILY_BRIEF' ? 'IHSG' : 'BBCA'));
+      const defaultSymbol = news.chart_symbol || (firstTicker === 'IHSG' ? 'IDX:COMPOSITE' : (isCrypto ? `BINANCE:${firstTicker}USDT` : `IDX:${firstTicker}`));
+      setActiveChartSymbol(defaultSymbol);
     }
   }, [news]);
 
@@ -28,8 +35,8 @@ export default function NewsDetailModal({
   // Compute current index in allNews for prev/next navigation
   const currentIndex = useMemo(() => {
     if (!Array.isArray(allNews) || allNews.length === 0 || !currentNews) return -1;
-    return allNews.findIndex(item => 
-      (item.id && item.id === currentNews.id) || 
+    return allNews.findIndex(item =>
+      (item.id && item.id === currentNews.id) ||
       (item.title && item.title === currentNews.title)
     );
   }, [allNews, currentNews]);
@@ -74,13 +81,13 @@ export default function NewsDetailModal({
   const source = (currentNews.source || 'Market Wire').toUpperCase();
   const sentiment = (currentNews.sentiment || 'NEUTRAL').toUpperCase();
   const tag = currentNews.tag || 'MARKET';
-  const pubDate = currentNews.pub_date 
-    ? new Date(currentNews.pub_date).toLocaleString('id-ID', { 
-        day: '2-digit', 
-        month: 'short', 
-        year: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit' 
+  const pubDate = currentNews.pub_date
+    ? new Date(currentNews.pub_date).toLocaleString('id-ID', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
       }) + ' WIB'
     : 'Hari ini';
 
@@ -92,16 +99,19 @@ export default function NewsDetailModal({
   const tickers = Array.isArray(currentNews.related_tickers) ? currentNews.related_tickers : [];
   const isCrypto = currentNews.stream === 'CRYPTO' || tickers.some(t => ['BTC', 'ETH', 'SOL', 'BNB', 'DOGE', 'XRP', 'SUI'].includes(t));
 
-  // Key takeaways bullet points
   const bulletPoints = generateSmartBulletPoints(currentNews);
-
-  // Reading time
   const readingTimeSec = currentNews.reading_time_sec || 60;
   const readingTimeStr = `⏱️ ~${Math.max(1, Math.round(readingTimeSec / 60))} mnt baca`;
 
-  // Narrative / summary text
-  const narrative = currentNews.summary || currentNews.full_narrative || 
+  const narrative = currentNews.summary || currentNews.full_narrative ||
     'Perkembangan pasar domestik dan global terus dipantau oleh pelaku pasar institusi seiring dinamika rotasi likuiditas dan sentimen makro terkini.';
+
+  // Technical Levels & Playbook
+  const techLevels = currentNews.technical_levels;
+  const playbook = currentNews.actionable_playbook;
+
+  // Active chart symbol for iframe
+  const resolvedChartSymbol = activeChartSymbol || (tickers.length > 0 ? (isCrypto ? `BINANCE:${tickers[0]}USDT` : `IDX:${tickers[0]}`) : 'IDX:COMPOSITE');
 
   // TTS Toggle
   const handleToggleTts = () => {
@@ -117,7 +127,12 @@ export default function NewsDetailModal({
 
   // Copy Summary
   const handleCopySummary = () => {
-    const textToCopy = `📰 [${source}] ${title}\n📅 ${pubDate} | Sentimen: ${sentiment}\n\n📌 KEY TAKEAWAYS:\n${bulletPoints.map(b => '• ' + b).join('\n')}\n\n📝 KONTEKS:\n${narrative}\n\nVia MBG Trading Terminal`;
+    let textToCopy = `📰 [${source}] ${title}\n📅 ${pubDate} | Sentimen: ${sentiment}\n\n📌 KEY TAKEAWAYS:\n${bulletPoints.map(b => '• ' + b).join('\n')}\n\n📝 KONTEKS & NARASI:\n${narrative}`;
+    if (techLevels) {
+      textToCopy += `\n\n📊 LEVEL TEKNIKAL:\n• Pivot: ${techLevels.pivot}\n• Support: S1 ${techLevels.s1} | S2 ${techLevels.s2}\n• Resistance: R1 ${techLevels.r1} | R2 ${techLevels.r2}\n• Invalidation: ${techLevels.invalidation}`;
+    }
+    textToCopy += `\n\nVia MBG Quantitative Terminal`;
+
     if (navigator.clipboard) {
       navigator.clipboard.writeText(textToCopy).then(() => {
         setCopied(true);
@@ -135,9 +150,9 @@ export default function NewsDetailModal({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(8, 10, 14, 0.78)',
-        backdropFilter: 'blur(5px)',
-        WebkitBackdropFilter: 'blur(5px)',
+        backgroundColor: 'rgba(8, 10, 14, 0.82)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
         zIndex: 9999,
         display: 'flex',
         alignItems: 'center',
@@ -150,8 +165,8 @@ export default function NewsDetailModal({
         className="telemetry-panel"
         style={{
           width: '100%',
-          maxWidth: '740px',
-          maxHeight: '90vh',
+          maxWidth: '820px',
+          maxHeight: '92vh',
           display: 'flex',
           flexDirection: 'column',
           background: 'var(--bg-panel)',
@@ -179,7 +194,7 @@ export default function NewsDetailModal({
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '14px' }}>📰</span>
             <span style={{ fontSize: '11px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
-              MARKET INTEL BRIEF
+              INSTITUTIONAL RESEARCH DESK
             </span>
             <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>//</span>
             <span style={{
@@ -211,11 +226,10 @@ export default function NewsDetailModal({
 
           {/* Right Action Icons */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            {/* Audio TTS Button */}
             <button
               onClick={handleToggleTts}
               className="telemetry-btn"
-              title={isTtsPlaying ? 'Hentikan Audio' : 'Dengarkan Ringkasan Berita'}
+              title={isTtsPlaying ? 'Hentikan Audio' : 'Dengarkan Ringkasan Riset'}
               style={{
                 padding: '3px 8px',
                 fontSize: '10px',
@@ -231,11 +245,10 @@ export default function NewsDetailModal({
               <span>{isTtsPlaying ? 'Membaca...' : 'Audio'}</span>
             </button>
 
-            {/* Copy Summary Button */}
             <button
               onClick={handleCopySummary}
               className="telemetry-btn"
-              title="Salin ringkasan berita ke clipboard"
+              title="Salin ringkasan riset ke clipboard"
               style={{
                 padding: '3px 8px',
                 fontSize: '10px',
@@ -249,7 +262,6 @@ export default function NewsDetailModal({
               <span>{copied ? 'Tersalin' : 'Salin'}</span>
             </button>
 
-            {/* Close Modal Button */}
             <button
               onClick={onClose}
               className="telemetry-btn"
@@ -293,10 +305,16 @@ export default function NewsDetailModal({
               <span>📅 {pubDate}</span>
               <span>•</span>
               <span>{readingTimeStr}</span>
+              {currentNews.metrics && currentNews.metrics.length > 0 && (
+                <>
+                  <span>•</span>
+                  <span style={{ color: 'var(--accent-blue)' }}>{currentNews.metrics.slice(0, 2).join(' | ')}</span>
+                </>
+              )}
             </div>
             {currentIndex >= 0 && (
               <div>
-                Berita <strong style={{ color: 'var(--text-primary)' }}>{currentIndex + 1}</strong> dari {allNews.length}
+                Edisi <strong style={{ color: 'var(--text-primary)' }}>{currentIndex + 1}</strong> dari {allNews.length}
               </div>
             )}
           </div>
@@ -315,7 +333,7 @@ export default function NewsDetailModal({
             {title}
           </h2>
 
-          {/* Related Tickers Row (Clickable directly to TradingView Chart!) */}
+          {/* Tickers Selector & Quick Navigation */}
           {tickers.length > 0 && (
             <div
               style={{
@@ -336,42 +354,263 @@ export default function NewsDetailModal({
                 color: 'var(--text-muted)',
                 letterSpacing: '0.04em'
               }}>
-                🎯 EMITEN TERDAMPAK:
+                🎯 INSTRUMEN SOROTAN:
               </span>
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                {tickers.map(ticker => (
-                  <button
-                    key={ticker}
-                    onClick={() => onSelectTicker && onSelectTicker(ticker, isCrypto ? 'CRYPTO' : 'IDX')}
-                    className="telemetry-btn"
-                    title={`Klik untuk buka Chart ${ticker} di TradingView`}
-                    style={{
-                      padding: '2px 8px',
-                      fontSize: '10px',
-                      fontFamily: 'var(--font-mono)',
-                      fontWeight: '800',
-                      color: 'var(--accent-blue)',
-                      background: 'rgba(59, 130, 246, 0.12)',
-                      borderColor: 'rgba(59, 130, 246, 0.4)',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <span>📊</span>
-                    <span>${ticker}</span>
-                    <span style={{ fontSize: '8px', opacity: 0.7 }}>↗</span>
-                  </button>
-                ))}
+                {tickers.map(ticker => {
+                  const tvSym = ticker === 'IHSG' ? 'IDX:COMPOSITE' : (isCrypto ? `BINANCE:${ticker}USDT` : `IDX:${ticker}`);
+                  const isActive = resolvedChartSymbol === tvSym;
+                  return (
+                    <button
+                      key={ticker}
+                      onClick={() => setActiveChartSymbol(tvSym)}
+                      className="telemetry-btn"
+                      title={`Tampilkan chart ${ticker} di bawah`}
+                      style={{
+                        padding: '2px 8px',
+                        fontSize: '10px',
+                        fontFamily: 'var(--font-mono)',
+                        fontWeight: '800',
+                        color: isActive ? '#fff' : 'var(--accent-blue)',
+                        background: isActive ? 'var(--accent-blue)' : 'rgba(59, 130, 246, 0.12)',
+                        borderColor: 'rgba(59, 130, 246, 0.4)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <span>📊</span>
+                      <span>${ticker}</span>
+                    </button>
+                  );
+                })}
               </div>
               <span style={{ fontSize: '9px', color: 'var(--text-muted)', marginLeft: 'auto' }}>
-                (Klik ticker untuk buka chart interaktif)
+                (Pilih ticker untuk berganti cuplikan grafik)
               </span>
             </div>
           )}
 
-          {/* 3. Key Takeaways Panel (Stockbit Snips Style) */}
+          {/* 3. Support / Resistance Quantitative Matrix Card */}
+          {techLevels && (
+            <div
+              style={{
+                background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.35) 0%, rgba(15, 23, 42, 0.45) 100%)',
+                border: '1px solid rgba(59, 130, 246, 0.3)',
+                borderRadius: '6px',
+                padding: '14px 16px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px'
+              }}
+            >
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderBottom: '1px dashed rgba(59, 130, 246, 0.25)',
+                paddingBottom: '8px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '13px' }}>📐</span>
+                  <span style={{
+                    fontSize: '11px',
+                    fontWeight: '800',
+                    fontFamily: 'var(--font-mono)',
+                    color: 'var(--accent-blue)',
+                    letterSpacing: '0.04em'
+                  }}>
+                    SUPPORT & RESISTANCE TECHNICAL MATRIX ({techLevels.unit || 'IDR'})
+                  </span>
+                </div>
+                <span style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                  CLASSIC PIVOT FORMULA
+                </span>
+              </div>
+
+              {/* 4 Cards Grid */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+                gap: '8px'
+              }}>
+                {/* Pivot */}
+                <div style={{
+                  background: 'rgba(59, 130, 246, 0.08)',
+                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  padding: '8px 10px',
+                  borderRadius: '4px'
+                }}>
+                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', fontWeight: '700' }}>
+                    ⚖️ PIVOT (POROS)
+                  </div>
+                  <div style={{ fontSize: '14px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--text-primary)', marginTop: '2px' }}>
+                    {typeof techLevels.pivot === 'number' ? techLevels.pivot.toLocaleString() : techLevels.pivot}
+                  </div>
+                  <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    Equilibrium harian
+                  </div>
+                </div>
+
+                {/* Support S1 & S2 */}
+                <div style={{
+                  background: 'rgba(0, 208, 132, 0.08)',
+                  border: '1px solid rgba(0, 208, 132, 0.3)',
+                  padding: '8px 10px',
+                  borderRadius: '4px'
+                }}>
+                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)', fontWeight: '700' }}>
+                    🛡️ SUPPORT (S1 / S2)
+                  </div>
+                  <div style={{ fontSize: '14px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--accent-green)', marginTop: '2px' }}>
+                    {techLevels.s1?.toLocaleString()} / {techLevels.s2?.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    Zona toleransi koreksi
+                  </div>
+                </div>
+
+                {/* Resistance R1 & R2 */}
+                <div style={{
+                  background: 'rgba(239, 68, 68, 0.08)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  padding: '8px 10px',
+                  borderRadius: '4px'
+                }}>
+                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--accent-red)', fontWeight: '700' }}>
+                    🎯 RESISTANCE (R1 / R2)
+                  </div>
+                  <div style={{ fontSize: '14px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--accent-red)', marginTop: '2px' }}>
+                    {techLevels.r1?.toLocaleString()} / {techLevels.r2?.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    Target take profit / rawan retest
+                  </div>
+                </div>
+
+                {/* Invalidation */}
+                <div style={{
+                  background: 'rgba(245, 158, 11, 0.08)',
+                  border: '1px solid rgba(245, 158, 11, 0.3)',
+                  padding: '8px 10px',
+                  borderRadius: '4px'
+                }}>
+                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: '#f59e0b', fontWeight: '700' }}>
+                    ⚠️ INVALIDATION (CUT LOSS)
+                  </div>
+                  <div style={{ fontSize: '14px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: '#f59e0b', marginTop: '2px' }}>
+                    {techLevels.invalidation?.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    Batas risiko mutlak
+                  </div>
+                </div>
+              </div>
+
+              {techLevels.invalidation_thesis && (
+                <div style={{
+                  fontSize: '10px',
+                  color: 'var(--text-muted)',
+                  fontStyle: 'italic',
+                  background: 'rgba(0,0,0,0.2)',
+                  padding: '6px 10px',
+                  borderRadius: '3px'
+                }}>
+                  💡 <strong>Catatan Disiplin Risiko:</strong> {techLevels.invalidation_thesis}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 4. Interactive TradingView Chart Snippet */}
+          <div
+            style={{
+              background: 'var(--bg-panel-subtle)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '6px',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <div style={{
+              padding: '8px 12px',
+              background: 'var(--bg-panel-dark)',
+              borderBottom: 'var(--border-hairline)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '12px' }}>📈</span>
+                <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--text-primary)' }}>
+                  TRADINGVIEW LIVE SNIPPET // {resolvedChartSymbol}
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  const cleanSym = resolvedChartSymbol.replace(/^(IDX:|BINANCE:|TVC:)/, '').replace('USDT', '');
+                  onSelectTicker && onSelectTicker(cleanSym, isCrypto ? 'CRYPTO' : 'IDX');
+                }}
+                className="telemetry-btn"
+                style={{
+                  fontSize: '9px',
+                  padding: '2px 8px',
+                  color: 'var(--accent-blue)',
+                  borderColor: 'rgba(59, 130, 246, 0.4)'
+                }}
+              >
+                Buka Fullscreen Chart ↗
+              </button>
+            </div>
+            <div style={{ width: '100%', height: '230px', position: 'relative' }}>
+              <iframe
+                title={`Chart ${resolvedChartSymbol}`}
+                src={`https://s.tradingview.com/widgetembed/?frameElementId=tradingview_news_snippet&symbol=${encodeURIComponent(resolvedChartSymbol)}&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=12151b&studies=[]&theme=dark&style=1&timezone=Asia%2FJakarta&locale=id`}
+                style={{ width: '100%', height: '100%', border: 'none' }}
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          {/* 5. Actionable Tactical Playbook Card */}
+          {playbook && (
+            <div
+              style={{
+                background: 'linear-gradient(180deg, rgba(16, 185, 129, 0.04) 0%, rgba(59, 130, 246, 0.04) 100%)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                borderRadius: '6px',
+                padding: '12px 14px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}
+            >
+              <div style={{
+                fontSize: '11px',
+                fontWeight: '800',
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--accent-green)',
+                letterSpacing: '0.04em'
+              }}>
+                🛡️ ACTIONABLE TACTICAL PLAYBOOK
+              </div>
+              <div style={{ fontSize: '11px', lineHeight: 1.5, color: 'var(--text-primary)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <div>
+                  <strong style={{ color: 'var(--accent-green)' }}>[🟢 Skenario Bullish]:</strong> {playbook.bull_scenario}
+                </div>
+                <div>
+                  <strong style={{ color: 'var(--accent-red)' }}>[🔴 Skenario Bearish]:</strong> {playbook.bear_scenario}
+                </div>
+                <div>
+                  <strong style={{ color: '#f59e0b' }}>[⚠️ Aturan Invalidation]:</strong> {playbook.invalidation_rule}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 6. Key Takeaways Panel (Stockbit Snips Style) */}
           <div
             style={{
               background: 'linear-gradient(180deg, rgba(0, 208, 132, 0.04) 0%, rgba(59, 130, 246, 0.04) 100%)',
@@ -399,7 +638,7 @@ export default function NewsDetailModal({
                   color: 'var(--accent-green)',
                   letterSpacing: '0.04em'
                 }}>
-                  KEY TAKEAWAYS // SNIPS INTELLIGENCE
+                  KEY TAKEAWAYS // STRATEGIC SUMMARY
                 </span>
               </div>
               <span style={{
@@ -415,8 +654,8 @@ export default function NewsDetailModal({
             {/* Bullet Points List */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {bulletPoints.map((bullet, idx) => {
-                const icons = ['📌', '📊', '🎯'];
-                const labels = ['Inti Peristiwa', 'Dampak Sektor & Pasar', 'Actionable Playbook'];
+                const icons = ['📌', '📊', '🎯', '💡'];
+                const labels = ['Inti Narasi', 'Dampak Sektor & Pasar', 'Actionable Guidance', 'Risiko & Invalidation'];
                 return (
                   <div
                     key={idx}
@@ -425,7 +664,7 @@ export default function NewsDetailModal({
                       alignItems: 'flex-start',
                       gap: '8px',
                       fontSize: '11px',
-                      lineHeight: 1.45,
+                      lineHeight: 1.5,
                       color: 'var(--text-primary)'
                     }}
                   >
@@ -450,7 +689,7 @@ export default function NewsDetailModal({
             </div>
           </div>
 
-          {/* 4. Full Context & Narrative */}
+          {/* 7. Full Layman Context & Narrative */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <div style={{
               fontSize: '10px',
@@ -460,7 +699,7 @@ export default function NewsDetailModal({
               letterSpacing: '0.04em',
               textTransform: 'uppercase'
             }}>
-              📝 Konteks & Narasi Pasar
+              📝 Konteks & Narasi Pasar (Penjelasan Bahasa Awam)
             </div>
             <div
               style={{
@@ -478,7 +717,7 @@ export default function NewsDetailModal({
           </div>
         </div>
 
-        {/* 3. Footer Navigation & External Action Bar */}
+        {/* 8. Footer Navigation Bar */}
         <div
           style={{
             padding: '12px 18px',
@@ -491,7 +730,6 @@ export default function NewsDetailModal({
             flexWrap: 'wrap'
           }}
         >
-          {/* Previous Button */}
           <button
             onClick={handlePrev}
             disabled={!hasPrev}
@@ -509,10 +747,9 @@ export default function NewsDetailModal({
             title="Berita Sebelumnya (Panah Kiri)"
           >
             <span>◀</span>
-            <span>Berita Sebelumnya</span>
+            <span>Edisi Sebelumnya</span>
           </button>
 
-          {/* Center External Source Link & Primary Chart */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {tickers.length > 0 && (
               <button
@@ -531,7 +768,7 @@ export default function NewsDetailModal({
                 }}
               >
                 <span>📈</span>
-                <span>Chart ${tickers[0]}</span>
+                <span>Buka Chart ${tickers[0]}</span>
               </button>
             )}
 
@@ -553,13 +790,12 @@ export default function NewsDetailModal({
                 }}
                 title="Buka berita di situs web sumber asli"
               >
-                <span>Buka Sumber Asli</span>
+                <span>Buka Sumber</span>
                 <span>↗</span>
               </a>
             )}
           </div>
 
-          {/* Next Button */}
           <button
             onClick={handleNext}
             disabled={!hasNext}
@@ -576,7 +812,7 @@ export default function NewsDetailModal({
             }}
             title="Berita Selanjutnya (Panah Kanan)"
           >
-            <span>Berita Selanjutnya</span>
+            <span>Edisi Selanjutnya</span>
             <span>▶</span>
           </button>
         </div>
