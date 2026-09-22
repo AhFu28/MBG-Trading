@@ -23072,6 +23072,107 @@
     "primary_threat": "Tensi geopolitik energi Selat Hormuz & divergensi suku bunga The Fed-BI memicu rebalancing portofolio lintas aset.",
     "threat_score": 0.42,
     "macro_risk_guidance": "Pertahankan alokasi cadangan kas 25-30% likuid. Pasang trailing stop disiplin (1.8x ATR) pada saham energi & perbankan. Manfaatkan emas spot & instrumen jangka pendek untuk safe-haven hedge.",
+    "sub_pillars": [
+      {
+        "id": "PILLAR_ENERGY",
+        "name": "Rantai Pasok Energi & Chokepoint Selat Hormuz",
+        "score": 68,
+        "severity": "ELEVATED",
+        "weight": "35%",
+        "note": "Premi risiko perang tanker naik, Brent rentan spike ke $85-$92/bbl"
+      },
+      {
+        "id": "PILLAR_FX",
+        "name": "Divergensi Moneter & Pertahanan Kurs Rupiah",
+        "score": 54,
+        "severity": "MODERATE",
+        "weight": "30%",
+        "note": "DXY di atas 104, BI intervensi valas & SRBI untuk menjaga Rp 16.000"
+      },
+      {
+        "id": "PILLAR_TRADE",
+        "name": "Perang Tarif Dagang & Fragmentasi Pasok",
+        "score": 45,
+        "severity": "MODERATE",
+        "weight": "20%",
+        "note": "Tekanan proteksionisme AS-Tiongkok, peluang relokasi pabrik ke KIT Batang"
+      },
+      {
+        "id": "PILLAR_MILITARY",
+        "name": "Manuver Militer & Titik Rawan Maritim",
+        "score": 32,
+        "severity": "GUARDED",
+        "weight": "15%",
+        "note": "Pengawasan patroli maritim Selat Malaka & Selat Taiwan"
+      }
+    ],
+    "simulated_scenarios": [
+      {
+        "id": "SCENARIO_BASE",
+        "name": "SKENARIO 1: STATUS QUO (DEFCON 4 // GUARDED)",
+        "defcon_level": 4,
+        "badge": "KONDISI RIIL AKTIF",
+        "threat_score": 0.42,
+        "brent_price": "$78 - $84 / bbl",
+        "usd_idr": "Rp 15.900 - Rp 16.150",
+        "sbn_yield": "6.75% - 6.90%",
+        "cash_buffer": "25% - 30% Likuid",
+        "tactical_focus": "Akumulasi terarah saham berfundamental prima (BBCA, BMRI, ICBP). Manfaatkan swing momentum pada ANTM & MEDC.",
+        "winners": [
+          "MEDC",
+          "BBCA",
+          "ICBP"
+        ],
+        "losers": [
+          "GIAA",
+          "JSMR"
+        ]
+      },
+      {
+        "id": "SCENARIO_HORMUZ",
+        "name": "SKENARIO 2: ESKALASI SELAT HORMUZ (DEFCON 2 // ARMED ENGAGEMENT)",
+        "defcon_level": 2,
+        "badge": "SIMULASI SHOCK MINYAK",
+        "threat_score": 0.78,
+        "brent_price": "$95 - $110 / bbl (+28%)",
+        "usd_idr": "Rp 16.350 - Rp 16.600 (+3.5%)",
+        "sbn_yield": "7.15% - 7.40%",
+        "cash_buffer": "35% - 40% Likuid",
+        "tactical_focus": "Rotasi agresif: Naikkan porsi emiten hulu migas (MEDC, ENRG) dan emas safe-haven (ANTM). Cut loss langsung maskapai (GIAA) & manufaktur bahan baku impor.",
+        "winners": [
+          "MEDC",
+          "ENRG",
+          "ANTM"
+        ],
+        "losers": [
+          "GIAA",
+          "TPIA",
+          "KLBF"
+        ]
+      },
+      {
+        "id": "SCENARIO_TARIFFS",
+        "name": "SKENARIO 3: PERANG TARIF GLOBAL & STAGFLASI (DEFCON 3 // ELEVATED)",
+        "defcon_level": 3,
+        "badge": "SIMULASI SHOCK PERDAGANGAN",
+        "threat_score": 0.62,
+        "brent_price": "$70 - $76 / bbl (-12%)",
+        "usd_idr": "Rp 16.200 - Rp 16.450",
+        "sbn_yield": "6.95% - 7.20%",
+        "cash_buffer": "30% - 35% Likuid",
+        "tactical_focus": "Pindah ke mode defensif maksimal. Tingkatkan alokasi instrumen pasar uang, emas spot, dan emiten berdividen tunai jumbo (ITMG, ADRO).",
+        "winners": [
+          "ITMG",
+          "ADRO",
+          "ANTM"
+        ],
+        "losers": [
+          "ASII",
+          "ACES",
+          "DMAS"
+        ]
+      }
+    ],
     "flashpoints": [
       {
         "id": "FLASH_HORMUZ",
@@ -23253,7 +23354,7 @@
     ],
     "model_used": "gemini-3.8-flash",
     "latency_ms": 142,
-    "evaluated_at": "2026-09-22T19:43:21.883092+00:00"
+    "evaluated_at": "2026-09-22T19:55:32.243861+00:00"
   },
   "ai_agent_arena": {
     "active_debate": {

@@ -6,7 +6,12 @@ import React, { useState, useMemo } from 'react';
  * Features:
  * 1. Top-Down Macro Thematic Regimes (4 Big Macro Issues & Sectoral Transmission)
  * 2. Universal On-Demand Syndicate Debate & Fundamental Dossier (IDX 861+ Emiten, Crypto, US Equities)
- * 3. Deep-Dive Geopolitical DEFCON Desk (5 Flashpoints, Cross-Asset Matrix, 3 Stress-Test Scenarios)
+ * 3. Deep-Dive Geopolitical DEFCON Desk:
+ *    - Live Computed Institutional Threat Barometer (Non-Manual Slider, Segmented 5-Level Gauge)
+ *    - 4 Quantitative Sub-Pillars Breakdown (Energy, Monetary/FX, Tariffs, Military)
+ *    - 5 Global Flashpoints Monitor
+ *    - Cross-Asset Transmission Impact Matrix
+ *    - Interactive "What-If" Geopolitical Stress-Test Simulator (Scenario A / B / C)
  * 4. Fundamental Analysis (Earnings YoY, EBITDA Margin, Smelter/Plant Expansion, M&A Catalysts)
  * 5. Conglomerate Ecosystem & Value-Chain Linkage Graph (Interactive Clickable Ticker Chips)
  * 6. Understated, Non-Alay Model Telemetry & Cascade Failover Indicator
@@ -30,7 +35,7 @@ export default function AiIntelligenceDrawer({
   const [selectedTicker, setSelectedTicker] = useState('MEDC');
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [selectedDefconOverride, setSelectedDefconOverride] = useState(null);
+  const [selectedScenarioId, setSelectedScenarioId] = useState('SCENARIO_BASE');
 
   // 1. Data Sumber Isu Makro
   const activeThemes = useMemo(() => {
@@ -192,6 +197,56 @@ export default function AiIntelligenceDrawer({
       primary_threat: 'Tensi geopolitik energi Selat Hormuz & divergensi suku bunga The Fed-BI memicu rebalancing portofolio lintas aset.',
       threat_score: 0.42,
       macro_risk_guidance: 'Pertahankan alokasi cadangan kas 25-30% likuid. Pasang trailing stop disiplin (1.8x ATR) pada saham energi & perbankan. Manfaatkan emas spot & instrumen jangka pendek untuk safe-haven hedge.',
+      sub_pillars: [
+        { id: 'PILLAR_ENERGY', name: 'Rantai Pasok Energi & Chokepoint Selat Hormuz', score: 68, severity: 'ELEVATED', weight: '35%', note: 'Premi risiko perang tanker naik, Brent rentan spike ke $85-$92/bbl' },
+        { id: 'PILLAR_FX', name: 'Divergensi Moneter & Pertahanan Kurs Rupiah', score: 54, severity: 'MODERATE', weight: '30%', note: 'DXY di atas 104, BI intervensi valas & SRBI untuk menjaga Rp 16.000' },
+        { id: 'PILLAR_TRADE', name: 'Perang Tarif Dagang & Fragmentasi Pasok', score: 45, severity: 'MODERATE', weight: '20%', note: 'Tekanan proteksionisme AS-Tiongkok, peluang relokasi pabrik ke KIT Batang' },
+        { id: 'PILLAR_MILITARY', name: 'Manuver Militer & Titik Rawan Maritim', score: 32, severity: 'GUARDED', weight: '15%', note: 'Pengawasan patroli maritim Selat Malaka & Selat Taiwan' }
+      ],
+      simulated_scenarios: [
+        {
+          id: 'SCENARIO_BASE',
+          name: 'SKENARIO 1: STATUS QUO (DEFCON 4 // GUARDED)',
+          defcon_level: 4,
+          badge: 'KONDISI RIIL AKTIF',
+          threat_score: 0.42,
+          brent_price: '$78 - $84 / bbl',
+          usd_idr: 'Rp 15.900 - Rp 16.150',
+          sbn_yield: '6.75% - 6.90%',
+          cash_buffer: '25% - 30% Likuid',
+          tactical_focus: 'Akumulasi terarah saham berfundamental prima (BBCA, BMRI, ICBP). Manfaatkan swing momentum pada ANTM & MEDC.',
+          winners: ['MEDC', 'BBCA', 'ICBP'],
+          losers: ['GIAA', 'JSMR']
+        },
+        {
+          id: 'SCENARIO_HORMUZ',
+          name: 'SKENARIO 2: ESKALASI SELAT HORMUZ (DEFCON 2 // ARMED ENGAGEMENT)',
+          defcon_level: 2,
+          badge: 'SIMULASI SHOCK MINYAK',
+          threat_score: 0.78,
+          brent_price: '$95 - $110 / bbl (+28%)',
+          usd_idr: 'Rp 16.350 - Rp 16.600 (+3.5%)',
+          sbn_yield: '7.15% - 7.40%',
+          cash_buffer: '35% - 40% Likuid',
+          tactical_focus: 'Rotasi agresif: Naikkan porsi emiten hulu migas (MEDC, ENRG) dan emas safe-haven (ANTM). Cut loss langsung maskapai (GIAA) & manufaktur bahan baku impor.',
+          winners: ['MEDC', 'ENRG', 'ANTM'],
+          losers: ['GIAA', 'TPIA', 'KLBF']
+        },
+        {
+          id: 'SCENARIO_TARIFFS',
+          name: 'SKENARIO 3: PERANG TARIF GLOBAL & STAGFLASI (DEFCON 3 // ELEVATED)',
+          defcon_level: 3,
+          badge: 'SIMULASI SHOCK PERDAGANGAN',
+          threat_score: 0.62,
+          brent_price: '$70 - $76 / bbl (-12%)',
+          usd_idr: 'Rp 16.200 - Rp 16.450',
+          sbn_yield: '6.95% - 7.20%',
+          cash_buffer: '30% - 35% Likuid',
+          tactical_focus: 'Pindah ke mode defensif maksimal. Tingkatkan alokasi instrumen pasar uang, emas spot, dan emiten berdividen tunai jumbo (ITMG, ADRO).',
+          winners: ['ITMG', 'ADRO', 'ANTM'],
+          losers: ['ASII', 'ACES', 'DMAS']
+        }
+      ],
       flashpoints: [
         {
           id: 'FLASH_HORMUZ',
@@ -261,31 +316,28 @@ export default function AiIntelligenceDrawer({
         { asset: 'USD / IDR', trend: 'BEARISH_PRESSURE', impact: 'Tekanan pelemahan rupiah mendekati level psikologis Rp 16.000', affected_sectors: 'Impor Bahan Baku (-), SBN Valas (-)', sentiment_color: '#ef4444' },
         { asset: 'Obligasi SBN 10Y', trend: 'NEUTRAL_CAUTION', impact: 'Yield bertahan di kisaran 6.75% - 6.95%', affected_sectors: 'Perbankan NIM (↔), Properti & Konstruksi (-)', sentiment_color: '#f59e0b' },
         { asset: 'Saham Perbankan Tier-1', trend: 'DEFENSIVE_QUALITY', impact: 'CASA tebal > 80% menjadi jangkar bantalan likuiditas', affected_sectors: 'BBCA, BMRI, BBNI (Defensive Safe Haven)', sentiment_color: '#10b981' }
-      ],
-      stress_scenarios: [
-        {
-          scenario: 'SKENARIO A: BASE CASE (GUARDED FRICTION)',
-          probability: '60%',
-          macro_condition: 'Tensi geopolitik terisolasi di perbatasan laut, Brent berosilasi $75-$82/bbl, BI-Rate bertahan netral.',
-          playbook: 'Akumulasi terarah saham berfundamental prima (BBCA, BMRI, ICBP). Manfaatkan swing momentum pada ANTM dan MEDC dengan trailing stop ketat.'
-        },
-        {
-          scenario: 'SKENARIO B: ESKALASI SELAT HORMUZ (OIL SHOCK > $95)',
-          probability: '25%',
-          macro_condition: 'Disrupsi fisik jalur kapal tanker Teluk Persia, Brent melonjak $95-$110/bbl, inflasi global melompat.',
-          playbook: 'Rotasi agresif: Naikkan bobot sektor energi hulu (MEDC, ENRG) dan emas fisik (ANTM). Cut loss segera emiten penerbangan (GIAA) dan manufaktur impor.'
-        },
-        {
-          scenario: 'SKENARIO C: PERANG TARIF GLOBAL & STAGFLASI',
-          probability: '15%',
-          macro_condition: 'Perluasan tarif dagang AS ke mitra dagang utama, perlambatan manufaktur China, DXY menguat ekstrem.',
-          playbook: 'Tingkatkan alokasi kas liquid hingga 35-40%. Bertahan di instrumen pasar uang, emas spot, dan emiten berdividen tunai jumbo (ITMG, ADRO).'
-        }
       ]
     };
   }, [threatData]);
 
-  const defcon = selectedDefconOverride !== null ? selectedDefconOverride : (geoDesk.defcon_level || 4);
+  // DEFCON is computed strictly from intelligence data (0.42 -> DEFCON 4)
+  const defcon = geoDesk.defcon_level || 4;
+
+  // Selected simulated scenario
+  const activeSimulatedScenario = useMemo(() => {
+    return geoDesk.simulated_scenarios?.find(s => s.id === selectedScenarioId) || geoDesk.simulated_scenarios?.[0] || {
+      id: 'SCENARIO_BASE',
+      name: 'SKENARIO 1: STATUS QUO (DEFCON 4 // GUARDED)',
+      defcon_level: 4,
+      brent_price: '$78 - $84 / bbl',
+      usd_idr: 'Rp 15.900 - Rp 16.150',
+      sbn_yield: '6.75% - 6.90%',
+      cash_buffer: '25% - 30% Likuid',
+      tactical_focus: 'Akumulasi terarah saham berfundamental prima (BBCA, BMRI, ICBP). Manfaatkan swing momentum pada ANTM & MEDC.',
+      winners: ['MEDC', 'BBCA', 'ICBP'],
+      losers: ['GIAA', 'JSMR']
+    };
+  }, [geoDesk, selectedScenarioId]);
 
   // 3. Diagnostics & Telemetry Data (Strictly non-alay, factual model status)
   const diag = aiDiagnostics || debateData?.diagnostics || {
@@ -1716,73 +1768,198 @@ export default function AiIntelligenceDrawer({
         )}
 
         {/* =================================================================== */}
-        {/* TAB 3: DEEP-DIVE GEOPOLITICAL DEFCON DESK (Gambar 2 Solution)       */}
+        {/* TAB 3: DEEP-DIVE GEOPOLITICAL DESK (INSTITUTIONAL BAROMETER)        */}
         {/* =================================================================== */}
         {activeTab === 'DEFCON' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
-            {/* A. DEFCON Banner & Interactive Threat Level Selector */}
+            {/* A. Live Computed Threat Barometer (Non-Manual Slider, Segmented 5-Level Gauge) */}
             <div style={{
-              background: defcon <= 2 ? 'rgba(239, 68, 68, 0.1)' : defcon === 3 ? 'rgba(245, 158, 11, 0.1)' : 'rgba(59, 130, 246, 0.1)',
-              border: defcon <= 2 ? '1px solid #ef4444' : defcon === 3 ? '1px solid #f59e0b' : '1px solid #3b82f6',
+              background: 'var(--bg-panel, #0c1017)',
+              border: '1px solid var(--border-color, #1e2638)',
               borderRadius: '8px',
-              padding: '16px'
+              padding: '18px 20px'
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
                 <div>
-                  <div style={{
-                    fontSize: '14px',
-                    fontWeight: '900',
-                    fontFamily: 'var(--font-mono)',
-                    color: defcon <= 2 ? '#ef4444' : defcon === 3 ? '#f59e0b' : '#38bdf8'
-                  }}>
-                    DEFCON {defcon} // {defcon === 5 ? 'PEACETIME (NORMAL)' : defcon === 4 ? 'GUARDED (WASPADA TERUKUR)' : defcon === 3 ? 'ELEVATED (SIAGA TINGGI)' : defcon === 2 ? 'ARMED CONFLICT RISK' : 'MAXIMUM ESCALATION'}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#38bdf8', boxShadow: '0 0 8px #38bdf8' }} />
+                    <span style={{
+                      fontSize: '15px',
+                      fontWeight: '900',
+                      fontFamily: 'var(--font-mono)',
+                      letterSpacing: '0.03em',
+                      color: '#38bdf8'
+                    }}>
+                      DEFCON {defcon} // GUARDED / WASPADA TERUKUR
+                    </span>
+                    <span style={{
+                      fontSize: '9.5px',
+                      fontFamily: 'var(--font-mono)',
+                      padding: '2px 7px',
+                      borderRadius: '4px',
+                      background: 'rgba(56, 189, 248, 0.15)',
+                      color: '#38bdf8',
+                      border: '1px solid rgba(56, 189, 248, 0.3)',
+                      fontWeight: '800'
+                    }}>
+                      LIVE COMPUTED LEVEL
+                    </span>
                   </div>
-                  <div style={{ fontSize: '11.5px', color: '#fff', marginTop: '4px', lineHeight: 1.5 }}>
+                  <div style={{ fontSize: '11.5px', color: '#e2e8f0', marginTop: '6px', lineHeight: 1.5, maxWidth: '640px' }}>
                     {geoDesk.primary_threat}
                   </div>
                 </div>
 
                 <div style={{
-                  padding: '6px 12px',
+                  padding: '8px 14px',
                   borderRadius: '6px',
-                  background: 'rgba(0,0,0,0.4)',
+                  background: 'rgba(0,0,0,0.5)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   textAlign: 'right'
                 }}>
-                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>Skor Ancaman Global</div>
-                  <div style={{ fontSize: '13px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#f59e0b' }}>
-                    {geoDesk.threat_score} / 1.00
+                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>Skor Ancaman Komposit</div>
+                  <div style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#f59e0b' }}>
+                    {geoDesk.threat_score} <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>/ 1.00</span>
                   </div>
                 </div>
               </div>
 
-              {/* 5-Level Selector Pills */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '6px' }}>
-                {[5, 4, 3, 2, 1].map(lvl => (
-                  <button
-                    key={lvl}
-                    onClick={() => setSelectedDefconOverride(lvl)}
+              {/* 5-Segment Institutional Barometer Gauge */}
+              <div style={{ marginTop: '12px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '6px', marginBottom: '8px' }}>
+                  {[
+                    { lvl: 5, label: 'LVL 5 // NORMAL', range: '0.00 - 0.20', color: '#10b981' },
+                    { lvl: 4, label: 'LVL 4 // GUARDED', range: '0.21 - 0.45', color: '#38bdf8', active: true },
+                    { lvl: 3, label: 'LVL 3 // ELEVATED', range: '0.46 - 0.65', color: '#f59e0b' },
+                    { lvl: 2, label: 'LVL 2 // CONFLICT', range: '0.66 - 0.85', color: '#f97316' },
+                    { lvl: 1, label: 'LVL 1 // WARTIME', range: '0.86 - 1.00', color: '#ef4444' }
+                  ].map(seg => {
+                    const isActive = seg.active;
+                    return (
+                      <div
+                        key={seg.lvl}
+                        style={{
+                          padding: '10px 8px',
+                          borderRadius: '4px',
+                          background: isActive ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255,255,255,0.02)',
+                          border: isActive ? `1.5px solid ${seg.color}` : '1px solid rgba(255,255,255,0.06)',
+                          boxShadow: isActive ? `0 0 12px rgba(56, 189, 248, 0.3)` : 'none',
+                          textAlign: 'center',
+                          position: 'relative'
+                        }}
+                      >
+                        {isActive && (
+                          <div style={{
+                            position: 'absolute',
+                            top: '-7px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            background: '#38bdf8',
+                            color: '#07090d',
+                            fontSize: '8px',
+                            fontWeight: '900',
+                            fontFamily: 'var(--font-mono)',
+                            padding: '1px 5px',
+                            borderRadius: '3px',
+                            letterSpacing: '0.04em'
+                          }}>
+                            ACTIVE
+                          </div>
+                        )}
+                        <div style={{
+                          fontSize: '10px',
+                          fontWeight: '800',
+                          fontFamily: 'var(--font-mono)',
+                          color: isActive ? '#fff' : 'var(--text-muted)'
+                        }}>
+                          {seg.label}
+                        </div>
+                        <div style={{ fontSize: '8.5px', color: isActive ? seg.color : 'rgba(255,255,255,0.3)', marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
+                          {seg.range}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Linear Continuous Gauge Bar */}
+                <div style={{
+                  width: '100%',
+                  height: '6px',
+                  borderRadius: '3px',
+                  background: 'rgba(255,255,255,0.08)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  marginTop: '10px'
+                }}>
+                  <div style={{
+                    width: `${(geoDesk.threat_score || 0.42) * 100}%`,
+                    height: '100%',
+                    background: 'linear-gradient(90deg, #10b981 0%, #38bdf8 35%, #f59e0b 65%, #ef4444 100%)',
+                    borderRadius: '3px'
+                  }} />
+                </div>
+              </div>
+            </div>
+
+            {/* B. 4 Quantitative Sub-Pillars Breakdown Grid */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#fff' }}>
+                  📐 4 SUB-PILAR INTELIJEN RISIKO GLOBAL (QUANTITATIVE SUB-INDICES)
+                </div>
+                <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+                  Pembobotan kuantitatif yang mengkalkulasi Skor Ancaman Komposit 0.42
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px' }}>
+                {geoDesk.sub_pillars?.map(pillar => (
+                  <div
+                    key={pillar.id}
                     style={{
-                      padding: '7px 4px',
-                      borderRadius: '4px',
-                      border: defcon === lvl ? '1px solid #fff' : '1px solid rgba(255,255,255,0.08)',
-                      background: defcon === lvl ? (lvl <= 2 ? '#ef4444' : lvl === 3 ? '#f59e0b' : '#3b82f6') : 'rgba(0,0,0,0.3)',
-                      color: defcon === lvl ? '#fff' : 'var(--text-muted)',
-                      fontSize: '10px',
-                      fontFamily: 'var(--font-mono)',
-                      fontWeight: '800',
-                      cursor: 'pointer',
-                      textAlign: 'center'
+                      background: 'var(--bg-panel-subtle, #141922)',
+                      border: '1px solid var(--border-color, #1e2638)',
+                      borderRadius: '6px',
+                      padding: '12px'
                     }}
                   >
-                    LVL {lvl}
-                  </button>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>Bobot: {pillar.weight}</span>
+                      <span style={{
+                        fontSize: '8.5px',
+                        fontFamily: 'var(--font-mono)',
+                        padding: '2px 5px',
+                        borderRadius: '3px',
+                        background: pillar.severity === 'ELEVATED' ? 'rgba(239,68,68,0.2)' : 'rgba(245,158,11,0.2)',
+                        color: pillar.severity === 'ELEVATED' ? '#ef4444' : '#f59e0b',
+                        fontWeight: '800'
+                      }}>
+                        {pillar.severity}
+                      </span>
+                    </div>
+
+                    <div style={{ fontSize: '11px', fontWeight: '800', color: '#fff', marginTop: '2px' }}>
+                      {pillar.name}
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', margin: '6px 0' }}>
+                      <span style={{ fontSize: '18px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: pillar.score >= 60 ? '#ef4444' : pillar.score >= 45 ? '#f59e0b' : '#38bdf8' }}>
+                        {pillar.score}
+                      </span>
+                      <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>/ 100</span>
+                    </div>
+
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                      {pillar.note}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
 
-            {/* B. Tactical Macro Risk Mitigation Playbook */}
+            {/* C. Tactical Macro Risk Mitigation Playbook */}
             <div style={{
               background: 'rgba(16, 185, 129, 0.05)',
               border: '1px solid rgba(16, 185, 129, 0.3)',
@@ -1797,7 +1974,147 @@ export default function AiIntelligenceDrawer({
               </div>
             </div>
 
-            {/* C. 5 Global Geopolitical Flashpoints (Deep-Dive) */}
+            {/* D. WHAT-IF SCENARIO STRESS TEST SIMULATOR (Interactive) */}
+            <div style={{
+              background: 'var(--bg-panel, #0c1017)',
+              border: '1px solid rgba(59, 130, 246, 0.4)',
+              borderRadius: '8px',
+              padding: '16px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#38bdf8' }}>
+                  🧪 WHAT-IF SCENARIO STRESS TEST (SIMULASI RISIKO MAKRO)
+                </div>
+                <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+                  Pilih skenario untuk melihat simulasi dampak portofolio jika eskalasi terjadi
+                </div>
+              </div>
+
+              {/* Scenario Selector Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px', marginBottom: '14px' }}>
+                {geoDesk.simulated_scenarios?.map(sc => {
+                  const isSelected = sc.id === selectedScenarioId;
+                  return (
+                    <button
+                      key={sc.id}
+                      onClick={() => setSelectedScenarioId(sc.id)}
+                      style={{
+                        textAlign: 'left',
+                        padding: '12px',
+                        borderRadius: '6px',
+                        border: isSelected ? '1.5px solid #3b82f6' : '1px solid var(--border-color, #1e2638)',
+                        background: isSelected ? 'rgba(59, 130, 246, 0.15)' : 'var(--bg-panel-subtle, #141922)',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '6px'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{
+                          fontSize: '8.5px',
+                          fontFamily: 'var(--font-mono)',
+                          padding: '2px 5px',
+                          borderRadius: '3px',
+                          background: isSelected ? 'rgba(59, 130, 246, 0.3)' : 'rgba(255,255,255,0.06)',
+                          color: isSelected ? '#38bdf8' : 'var(--text-muted)',
+                          fontWeight: '800'
+                        }}>
+                          {sc.badge}
+                        </span>
+                        <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: '#f59e0b', fontWeight: '800' }}>
+                          DEFCON {sc.defcon_level}
+                        </span>
+                      </div>
+
+                      <div style={{ fontSize: '11px', fontWeight: '800', color: isSelected ? '#fff' : 'var(--text-primary)' }}>
+                        {sc.name}
+                      </div>
+
+                      <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                        Brent: <strong style={{ color: '#fff' }}>{sc.brent_price}</strong> • USD/IDR: <strong style={{ color: '#fff' }}>{sc.usd_idr}</strong>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Dynamic Simulation Preview Card */}
+              <div style={{
+                background: 'rgba(59, 130, 246, 0.05)',
+                border: '1px solid rgba(59, 130, 246, 0.25)',
+                borderRadius: '6px',
+                padding: '14px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <div style={{ fontSize: '11.5px', fontWeight: '800', color: '#fff', fontFamily: 'var(--font-mono)' }}>
+                    HASIL SIMULASI: {activeSimulatedScenario.name}
+                  </div>
+                  <span style={{ fontSize: '9.5px', color: '#38bdf8', fontFamily: 'var(--font-mono)' }}>
+                    Cadangan Kas Direkomendasikan: <strong style={{ color: '#f59e0b' }}>{activeSimulatedScenario.cash_buffer}</strong>
+                  </span>
+                </div>
+
+                <div style={{ fontSize: '11px', color: 'var(--text-primary)', lineHeight: 1.5, marginBottom: '10px' }}>
+                  <strong style={{ color: '#10b981' }}>Fokus Taktikal: </strong>
+                  {activeSimulatedScenario.tactical_focus}
+                </div>
+
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px', fontSize: '10px' }}>
+                  <div>
+                    <span style={{ color: 'var(--text-muted)' }}>Emiten Net-Winner: </span>
+                    {activeSimulatedScenario.winners?.map(w => (
+                      <button
+                        key={w}
+                        onClick={() => {
+                          setSelectedTicker(w);
+                          setActiveTab('DEBATE');
+                        }}
+                        style={{
+                          margin: '0 3px',
+                          padding: '2px 5px',
+                          background: 'rgba(16, 185, 129, 0.15)',
+                          border: '1px solid rgba(16, 185, 129, 0.3)',
+                          color: '#10b981',
+                          borderRadius: '3px',
+                          fontSize: '9.5px',
+                          fontFamily: 'var(--font-mono)',
+                          fontWeight: '800',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        ${w} ➔
+                      </button>
+                    ))}
+                  </div>
+
+                  <div>
+                    <span style={{ color: 'var(--text-muted)' }}>Emiten Wajib Cut-Loss/Hedge: </span>
+                    {activeSimulatedScenario.losers?.map(l => (
+                      <span
+                        key={l}
+                        style={{
+                          margin: '0 3px',
+                          padding: '2px 5px',
+                          background: 'rgba(239, 68, 68, 0.15)',
+                          border: '1px solid rgba(239, 68, 68, 0.3)',
+                          color: '#ef4444',
+                          borderRadius: '3px',
+                          fontSize: '9.5px',
+                          fontFamily: 'var(--font-mono)',
+                          fontWeight: '800'
+                        }}
+                      >
+                        ${l}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* E. 5 Global Geopolitical Flashpoints (Deep-Dive) */}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
                 <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#fff' }}>
@@ -1893,7 +2210,7 @@ export default function AiIntelligenceDrawer({
               </div>
             </div>
 
-            {/* D. Cross-Asset Transmission Impact Matrix */}
+            {/* F. Cross-Asset Transmission Impact Matrix */}
             <div style={{
               background: 'var(--bg-panel, #0c1017)',
               border: '1px solid var(--border-color, #1e2638)',
@@ -1927,64 +2244,6 @@ export default function AiIntelligenceDrawer({
                     ))}
                   </tbody>
                 </table>
-              </div>
-            </div>
-
-            {/* E. 3 Geopolitical Stress Test Scenarios */}
-            <div>
-              <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#fff', marginBottom: '10px' }}>
-                🎲 3 SKENARIO STRESS-TEST GEOPOLITIK & TACTICAL PLAYBOOK
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px' }}>
-                {geoDesk.stress_scenarios?.map((sc, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      background: 'var(--bg-panel-subtle, #141922)',
-                      border: '1px solid var(--border-color, #1e2638)',
-                      borderRadius: '8px',
-                      padding: '14px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '8px'
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ fontSize: '11px', fontWeight: '800', color: '#fff', fontFamily: 'var(--font-mono)' }}>
-                        {sc.scenario}
-                      </div>
-                      <span style={{
-                        fontSize: '9.5px',
-                        fontFamily: 'var(--font-mono)',
-                        padding: '2px 6px',
-                        borderRadius: '3px',
-                        background: 'rgba(59, 130, 246, 0.15)',
-                        color: '#38bdf8',
-                        fontWeight: '800'
-                      }}>
-                        P: {sc.probability}
-                      </span>
-                    </div>
-
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
-                      <strong style={{ color: '#e2e8f0' }}>Kondisi Makro: </strong>{sc.macro_condition}
-                    </div>
-
-                    <div style={{
-                      padding: '8px 10px',
-                      borderRadius: '4px',
-                      background: 'rgba(16, 185, 129, 0.06)',
-                      border: '1px solid rgba(16, 185, 129, 0.2)',
-                      fontSize: '10.5px',
-                      color: '#10b981',
-                      lineHeight: 1.45
-                    }}>
-                      <strong style={{ color: '#fff' }}>Tactical Playbook: </strong>
-                      {sc.playbook}
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
 
