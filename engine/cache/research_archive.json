@@ -1,5 +1,124 @@
 [
   {
+    "id": "research-note-202609230856",
+    "title": "🔬 MBG Sector Research Note (23 Sep 2026): Rotasi Likuiditas Perbankan vs Komoditas Emas",
+    "source": "MBG RESEARCH INTELLIGENCE",
+    "link": "#research-note",
+    "pub_date": "Wed, 23 Sep 2026 01:56:55 GMT",
+    "date_iso": "2026-09-23",
+    "scope": "DAILY",
+    "tag": "RESEARCH",
+    "stream": "RESEARCH",
+    "sentiment": "BULLISH",
+    "sentiment_score": 0.48,
+    "related_tickers": [
+      "BBCA",
+      "BBRI",
+      "ANTM",
+      "MEDC",
+      "MDKA"
+    ],
+    "primary_ticker": "BBCA",
+    "chart_symbol": "IDX:BBCA",
+    "metrics": [
+      "Alokasi Barbell: 60% Bank : 40% Emas",
+      "BBCA Pivot: Rp 6,200",
+      "ANTM Pivot: Rp 1,650",
+      "R:R Target: >= 2.2"
+    ],
+    "reading_time_sec": 120,
+    "summary": "Panduan Analisis Sederhana: Mengapa saham bank dan tambang bergerak berlawanan arah? Ketika ekspektasi suku bunga dunia tinggi, bank menikmati margin bunga (NIM) yang sehat. Sebaliknya saat risiko tensi perang meningkat, institusi memindahkan dana ke aset lindung nilai seperti emas (ANTM). Strategi terbaik bagi investor adalah membagi portofolio secara berimbang ('Barbell Strategy').",
+    "full_narrative": "Panduan Analisis Sederhana: Mengapa saham bank dan tambang bergerak berlawanan arah? Ketika ekspektasi suku bunga dunia tinggi, bank menikmati margin bunga (NIM) yang sehat. Sebaliknya saat risiko tensi perang meningkat, institusi memindahkan dana ke aset lindung nilai seperti emas (ANTM). Strategi terbaik bagi investor adalah membagi portofolio secara berimbang ('Barbell Strategy').\n\nLevel Teknikal BBCA: Pivot Rp 6,200, S1 Rp 6,150, R1 Rp 6,250. Level Teknikal ANTM: Pivot Rp 1,650, S1 Rp 1,637, R1 Rp 1,663.",
+    "technical_levels": {
+      "pivot": 6200.0,
+      "s1": 6150.0,
+      "s2": 6088.0,
+      "r1": 6250.0,
+      "r2": 6312.0,
+      "invalidation": 6072.0,
+      "unit": "IDR",
+      "invalidation_thesis": "Penutupan candle harian di bawah 6,088 membatalkan skenario akumulasi dan mewajibkan cut-loss defensif."
+    },
+    "secondary_technical_levels": {
+      "pivot": 1650.0,
+      "s1": 1637.0,
+      "s2": 1620.0,
+      "r1": 1663.0,
+      "r2": 1680.0,
+      "invalidation": 1616.0,
+      "unit": "IDR",
+      "invalidation_thesis": "Penutupan candle harian di bawah 1,620 membatalkan skenario akumulasi dan mewajibkan cut-loss defensif."
+    },
+    "key_takeaways": [
+      "🏦 Klaster Perbankan (BBCA, BBRI, BMRI): Valuasi historis menarik dengan konsistensi deviden yield 4-6%. Pivot BBCA berada di Rp 6,200, Support S1 Rp 6,150, Target R1 Rp 6,250.",
+      "⛏️ Klaster Tambang Emas (ANTM, BRMS, MDKA): Sensitivitas tinggi terhadap harga emas spot dunia ($4,381.8). Pivot ANTM di Rp 1,650, Support S1 Rp 1,637, Target R1 Rp 1,663.",
+      "💡 Rekomendasi Alokasi Portofolio: Terapkan 'Barbell Strategy' institusional: 60% saham defensif dividen tinggi (BBCA/BBRI/BMRI) + 40% saham momentum komoditas energi/emas (ANTM/MEDC).",
+      "🛡️ Invalidation Level & Manajemen Risiko: Cut-loss disiplin jika emiten menembus level batas bawah (BBCA < Rp 6,072 / ANTM < Rp 1,616)."
+    ],
+    "actionable_playbook": {
+      "bull_scenario": "Akumulasi bertahap BBCA di area Rp 6,150 - 6,200 dengan target profit Rp 6,250 s/d Rp 6,312.",
+      "bear_scenario": "Jika terjadi capital outflow asing > Rp 500 Milyar per sesi, kurangi eksposur saham beta tinggi dan perbesar porsi cash.",
+      "invalidation_rule": "Batal jika BBCA breakdown penutupan harian di bawah Rp 6,072."
+    },
+    "is_pinned": true,
+    "edition_type": "RESEARCH_NOTE"
+  },
+  {
+    "id": "daily-brief-202609230856",
+    "title": "☕ MBG Morning Brief (23 Sep 2026): Proyeksi IHSG, Transmisi Makro & Level Kunci",
+    "source": "MBG RESEARCH DESK",
+    "link": "#daily-brief",
+    "pub_date": "Wed, 23 Sep 2026 01:56:55 GMT",
+    "date_iso": "2026-09-23",
+    "session": "MORNING",
+    "tag": "DAILY_BRIEF",
+    "stream": "DAILY_BRIEF",
+    "sentiment": "BEARISH",
+    "sentiment_score": -0.45,
+    "related_tickers": [
+      "IHSG",
+      "BBCA",
+      "BBRI",
+      "ANTM",
+      "MEDC"
+    ],
+    "primary_ticker": "IHSG",
+    "chart_symbol": "IDX:COMPOSITE",
+    "metrics": [
+      "IHSG: 6,385 (-0.88%)",
+      "Pivot: 6,385",
+      "S1/R1: 6,334 / 6,436",
+      "Emas: $4,381.8",
+      "Brent: $99.2"
+    ],
+    "reading_time_sec": 90,
+    "summary": "Bagi investor dan trader awam: Semalam pasar saham global dipengaruhi pergerakan suku bunga AS dan harga komoditas. Penguatan emas ($4,381.8) dan minyak ($99.2) menjadi pedang bermata dua: menguntungkan saham tambang dan energi Indonesia, namun indeks dolar (DXY 100.63) menahan laju penguatan rupiah. Hari ini IHSG diproyeksikan menguji titik poros 6,385.",
+    "full_narrative": "Bagi investor dan trader awam: Semalam pasar saham global dipengaruhi pergerakan suku bunga AS dan harga komoditas. Penguatan emas ($4,381.8) dan minyak ($99.2) menjadi pedang bermata dua: menguntungkan saham tambang dan energi Indonesia, namun indeks dolar (DXY 100.63) menahan laju penguatan rupiah. Hari ini IHSG diproyeksikan menguji titik poros 6,385.\n\nLevel Pivot: 6,385, Support 1: 6,334, Resistance 1: 6,436. Batas risiko cut-loss disiplin di bawah 6,253.",
+    "technical_levels": {
+      "pivot": 6385.0,
+      "s1": 6334.0,
+      "s2": 6270.0,
+      "r1": 6436.0,
+      "r2": 6500.0,
+      "invalidation": 6253.0,
+      "unit": "IDR",
+      "invalidation_thesis": "Penutupan candle harian di bawah 6,270 membatalkan skenario akumulasi dan mewajibkan cut-loss defensif."
+    },
+    "key_takeaways": [
+      "🌍 Kondisi Makro Semalam: Emas $4,381.8 (-0.1%), Brent $99.2 (-1.1%), DXY 100.63 pts, Yield US10Y 4.97%. Inflasi global dalam kisaran terkendali.",
+      "🏛️ Transmisi ke Bursa Domestik: Mekanisme Transmisi Makro: Yield US10Y (4.97%) stabil -> Tekanan outflow obligasi berkurang -> Likuiditas institusi merotasi dana ke saham perbankan kapitalisasi besar (BBCA, BMRI) dan komoditas energi (MEDC, ANTM).",
+      "📊 Matriks Teknikal IHSG: Pivot 6,385 | Support S1 6,334 | S2 6,270 | Target R1 6,436 | Invalidation 6,253.",
+      "🛡️ Actionable Playbook: Akumulasi bertahap hanya jika indeks bertahan di atas Pivot 6,385. Jika tembus di bawah S1 (6,334), tahan aksi beli dan siapkan cadangan kas 30%."
+    ],
+    "actionable_playbook": {
+      "bull_scenario": "Jika bertahan di atas Pivot 6,385: Akumulasi saham klaster perbankan dan tambang target R1 6,436.",
+      "bear_scenario": "Jika breakdown di bawah S1 6,334: Kurangi porsi saham spekulatif, naikkan cash 35%, pantau reaksi di S2 6,270.",
+      "invalidation_rule": "Cut-loss ketat jika IHSG menembus level 6,253 pada candle harian."
+    },
+    "is_pinned": true,
+    "edition_type": "DAILY_BRIEF"
+  },
+  {
     "id": "research-note-202609222246",
     "title": "🔬 MBG Sector Research Note (22 Sep 2026): Rotasi Likuiditas Perbankan vs Komoditas Emas",
     "source": "MBG RESEARCH INTELLIGENCE",
@@ -702,125 +821,6 @@
     "key_takeaways": [
       "🏦 Klaster Perbankan (BBCA, BBRI, BMRI): Valuasi historis menarik dengan konsistensi deviden yield 4-6%. Pivot BBCA berada di Rp 6,200, Support S1 Rp 6,150, Target R1 Rp 6,250.",
       "⛏️ Klaster Tambang Emas (ANTM, BRMS, MDKA): Sensitivitas tinggi terhadap harga emas spot dunia ($2,625.0). Pivot ANTM di Rp 1,650, Support S1 Rp 1,637, Target R1 Rp 1,663.",
-      "💡 Rekomendasi Alokasi Portofolio: Terapkan 'Barbell Strategy' institusional: 60% saham defensif dividen tinggi (BBCA/BBRI/BMRI) + 40% saham momentum komoditas energi/emas (ANTM/MEDC).",
-      "🛡️ Invalidation Level & Manajemen Risiko: Cut-loss disiplin jika emiten menembus level batas bawah (BBCA < Rp 6,072 / ANTM < Rp 1,616)."
-    ],
-    "actionable_playbook": {
-      "bull_scenario": "Akumulasi bertahap BBCA di area Rp 6,150 - 6,200 dengan target profit Rp 6,250 s/d Rp 6,312.",
-      "bear_scenario": "Jika terjadi capital outflow asing > Rp 500 Milyar per sesi, kurangi eksposur saham beta tinggi dan perbesar porsi cash.",
-      "invalidation_rule": "Batal jika BBCA breakdown penutupan harian di bawah Rp 6,072."
-    },
-    "is_pinned": true,
-    "edition_type": "RESEARCH_NOTE"
-  },
-  {
-    "id": "daily-brief-20260916",
-    "title": "☕ MBG Morning Brief (16 Sep 2026): Proyeksi IHSG, Transmisi Makro & Level Kunci",
-    "source": "MBG RESEARCH DESK",
-    "link": "#daily-brief",
-    "pub_date": "Wed, 16 Sep 2026 15:45:22 GMT",
-    "date_iso": "2026-09-16",
-    "session": "MORNING",
-    "tag": "DAILY_BRIEF",
-    "stream": "DAILY_BRIEF",
-    "sentiment": "NEUTRAL",
-    "sentiment_score": 0.05,
-    "related_tickers": [
-      "IHSG",
-      "BBCA",
-      "BBRI",
-      "ANTM",
-      "MEDC"
-    ],
-    "primary_ticker": "IHSG",
-    "chart_symbol": "IDX:COMPOSITE",
-    "metrics": [
-      "IHSG: 7,267 (-0.40%)",
-      "Pivot: 7,267",
-      "S1/R1: 7,209 / 7,325",
-      "Emas: $2,618.0",
-      "Brent: $79.2"
-    ],
-    "reading_time_sec": 90,
-    "summary": "Bagi investor dan trader awam: Semalam pasar saham global dipengaruhi pergerakan suku bunga AS dan harga komoditas. Penguatan emas ($2,618.0) dan minyak ($79.2) menjadi pedang bermata dua: menguntungkan saham tambang dan energi Indonesia, namun indeks dolar (DXY 101.6) menahan laju penguatan rupiah. Hari ini IHSG diproyeksikan menguji titik poros 7,267.",
-    "full_narrative": "Bagi investor dan trader awam: Semalam pasar saham global dipengaruhi pergerakan suku bunga AS dan harga komoditas. Penguatan emas ($2,618.0) dan minyak ($79.2) menjadi pedang bermata dua: menguntungkan saham tambang dan energi Indonesia, namun indeks dolar (DXY 101.6) menahan laju penguatan rupiah. Hari ini IHSG diproyeksikan menguji titik poros 7,267.\n\nLevel Pivot: 7,267, Support 1: 7,209, Resistance 1: 7,325. Batas risiko cut-loss disiplin di bawah 7,117.",
-    "technical_levels": {
-      "pivot": 7267.0,
-      "s1": 7209.0,
-      "s2": 7136.0,
-      "r1": 7325.0,
-      "r2": 7398.0,
-      "invalidation": 7117.0,
-      "unit": "IDR",
-      "invalidation_thesis": "Penutupan candle harian di bawah 7,136 membatalkan skenario akumulasi dan mewajibkan cut-loss defensif."
-    },
-    "key_takeaways": [
-      "🌍 Kondisi Makro Semalam: Emas $2,618.0 (+0.5%), Brent $79.2 (-0.4%), DXY 101.6 pts, Yield US10Y 4.18%. Inflasi global dalam kisaran terkendali.",
-      "🏛️ Transmisi ke Bursa Domestik: Mekanisme Transmisi Makro: Yield US10Y (4.18%) stabil -> Tekanan outflow obligasi berkurang -> Likuiditas institusi merotasi dana ke saham perbankan kapitalisasi besar (BBCA, BMRI) dan komoditas energi (MEDC, ANTM).",
-      "📊 Matriks Teknikal IHSG: Pivot 7,267 | Support S1 7,209 | S2 7,136 | Target R1 7,325 | Invalidation 7,117.",
-      "🛡️ Actionable Playbook: Akumulasi bertahap hanya jika indeks bertahan di atas Pivot 7,267. Jika tembus di bawah S1 (7,209), tahan aksi beli dan siapkan cadangan kas 30%."
-    ],
-    "actionable_playbook": {
-      "bull_scenario": "Jika bertahan di atas Pivot 7,267: Akumulasi saham klaster perbankan dan tambang target R1 7,325.",
-      "bear_scenario": "Jika breakdown di bawah S1 7,209: Kurangi porsi saham spekulatif, naikkan cash 35%, pantau reaksi di S2 7,136.",
-      "invalidation_rule": "Cut-loss ketat jika IHSG menembus level 7,117 pada candle harian."
-    },
-    "is_pinned": true,
-    "edition_type": "DAILY_BRIEF"
-  },
-  {
-    "id": "research-note-20260916",
-    "title": "🔬 MBG Sector Research Note (16 Sep 2026): Rotasi Likuiditas Perbankan vs Komoditas Emas",
-    "source": "MBG RESEARCH INTELLIGENCE",
-    "link": "#research-note",
-    "pub_date": "Wed, 16 Sep 2026 15:45:22 GMT",
-    "date_iso": "2026-09-16",
-    "scope": "DAILY",
-    "tag": "RESEARCH",
-    "stream": "RESEARCH",
-    "sentiment": "BULLISH",
-    "sentiment_score": 0.48,
-    "related_tickers": [
-      "BBCA",
-      "BBRI",
-      "ANTM",
-      "MEDC",
-      "MDKA"
-    ],
-    "primary_ticker": "BBCA",
-    "chart_symbol": "IDX:BBCA",
-    "metrics": [
-      "Alokasi Barbell: 60% Bank : 40% Emas",
-      "BBCA Pivot: Rp 6,200",
-      "ANTM Pivot: Rp 1,650",
-      "R:R Target: >= 2.2"
-    ],
-    "reading_time_sec": 120,
-    "summary": "Panduan Analisis Sederhana: Mengapa saham bank dan tambang bergerak berlawanan arah? Ketika ekspektasi suku bunga dunia tinggi, bank menikmati margin bunga (NIM) yang sehat. Sebaliknya saat risiko tensi perang meningkat, institusi memindahkan dana ke aset lindung nilai seperti emas (ANTM). Strategi terbaik bagi investor adalah membagi portofolio secara berimbang ('Barbell Strategy').",
-    "full_narrative": "Panduan Analisis Sederhana: Mengapa saham bank dan tambang bergerak berlawanan arah? Ketika ekspektasi suku bunga dunia tinggi, bank menikmati margin bunga (NIM) yang sehat. Sebaliknya saat risiko tensi perang meningkat, institusi memindahkan dana ke aset lindung nilai seperti emas (ANTM). Strategi terbaik bagi investor adalah membagi portofolio secara berimbang ('Barbell Strategy').\n\nLevel Teknikal BBCA: Pivot Rp 6,200, S1 Rp 6,150, R1 Rp 6,250. Level Teknikal ANTM: Pivot Rp 1,650, S1 Rp 1,637, R1 Rp 1,663.",
-    "technical_levels": {
-      "pivot": 6200.0,
-      "s1": 6150.0,
-      "s2": 6088.0,
-      "r1": 6250.0,
-      "r2": 6312.0,
-      "invalidation": 6072.0,
-      "unit": "IDR",
-      "invalidation_thesis": "Penutupan candle harian di bawah 6,088 membatalkan skenario akumulasi dan mewajibkan cut-loss defensif."
-    },
-    "secondary_technical_levels": {
-      "pivot": 1650.0,
-      "s1": 1637.0,
-      "s2": 1620.0,
-      "r1": 1663.0,
-      "r2": 1680.0,
-      "invalidation": 1616.0,
-      "unit": "IDR",
-      "invalidation_thesis": "Penutupan candle harian di bawah 1,620 membatalkan skenario akumulasi dan mewajibkan cut-loss defensif."
-    },
-    "key_takeaways": [
-      "🏦 Klaster Perbankan (BBCA, BBRI, BMRI): Valuasi historis menarik dengan konsistensi deviden yield 4-6%. Pivot BBCA berada di Rp 6,200, Support S1 Rp 6,150, Target R1 Rp 6,250.",
-      "⛏️ Klaster Tambang Emas (ANTM, BRMS, MDKA): Sensitivitas tinggi terhadap harga emas spot dunia ($2,618.0). Pivot ANTM di Rp 1,650, Support S1 Rp 1,637, Target R1 Rp 1,663.",
       "💡 Rekomendasi Alokasi Portofolio: Terapkan 'Barbell Strategy' institusional: 60% saham defensif dividen tinggi (BBCA/BBRI/BMRI) + 40% saham momentum komoditas energi/emas (ANTM/MEDC).",
       "🛡️ Invalidation Level & Manajemen Risiko: Cut-loss disiplin jika emiten menembus level batas bawah (BBCA < Rp 6,072 / ANTM < Rp 1,616)."
     ],

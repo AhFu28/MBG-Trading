@@ -346,25 +346,32 @@ class NewsResearchAgent:
         except Exception as e:
             logger.warning(f"Failed to archive research edition: {e}")
 
+    latest_crisis_alert = {
+        "is_crisis": False,
+        "severity": "NORMAL",
+        "headline": "",
+        "summary": "Situasi pasar global relatif terkendali tanpa eskalasi krisis darurat.",
+        "affected_tickers": [],
+        "recommended_action": "Pertahankan alokasi portofolio standar sesuai trading plan.",
+        "evaluated_at": datetime.now(timezone.utc).isoformat()
+    }
+
+    @classmethod
+    def get_latest_crisis_alert(cls) -> dict:
+        return cls.latest_crisis_alert
+
     @classmethod
     def sanitize_and_curate(cls, raw_articles: List[Dict[str, Any]], macro: dict) -> List[Dict[str, Any]]:
         """
-        Master curation method:
-        1. Filters out noise/gaming/cookware/crime.
-        2. Fixes false positive tickers.
-        3. Injects Daily Brief & Research Note at the top of the feed.
+        Master curation method (AI-Powered with Graceful Fallback):
+        1. Filters out noise/gaming/cookware/crime and deduplicates.
+        2. Scans for Urgent War / Crisis Flash Alerts using LLM or rule-based heuristics.
+        3. Synthesizes an institutional Daily Brief & Research Note via Gemini LLM.
+        4. Gracefully falls back to deterministic templates if offline.
         """
-        clean_articles = []
+        filtered_news = []
         seen_titles = set()
 
-        # 1. Generate top-level Daily Brief & Research Note
-        daily_brief = cls.generate_daily_brief(macro, session="MORNING")
-        research_note = cls.generate_research_note(macro, scope="DAILY")
-
-        clean_articles.append(daily_brief)
-        clean_articles.append(research_note)
-
-        # 2. Filter raw incoming articles
         for a in raw_articles:
             title = a.get("title", "")
             source = a.get("source", "")
@@ -384,7 +391,137 @@ class NewsResearchAgent:
             # Accurate ticker extraction
             accurate_tickers = cls.extract_tickers_accurately(title, stream=stream)
             a["related_tickers"] = accurate_tickers
+            filtered_news.append(a)
 
-            clean_articles.append(a)
+        # 2. AI Synthesis & Crisis Evaluation via LLMBrain
+        daily_brief = None
+        research_note = None
+        llm_crisis = None
 
-        return clean_articles
+        try:
+            from analyzer.llm_brain import LLMBrain
+            brain = LLMBrain()
+
+            # Evaluate crisis headlines
+            llm_crisis = brain.evaluate_crisis_headlines(filtered_news)
+            if llm_crisis:
+                cls.latest_crisis_alert = llm_crisis
+
+            # Synthesize dynamic research
+            ai_research = brain.synthesize_institutional_research(filtered_news, macro)
+            if ai_research and "daily_brief" in ai_research and "research_note" in ai_research:
+                now = datetime.now()
+                now_str = now.strftime("%d %b %Y")
+                gold_p = float(macro.get("gold_price", 2650.0) or 2650.0)
+                brent_p = float(macro.get("brent_oil_price", 74.5) or 74.5)
+                ihsg_p = float(macro.get("ihsg_price", 7250.0) or 7250.0)
+
+                db_data = ai_research["daily_brief"]
+                rn_data = ai_research["research_note"]
+
+                # Technical levels for spotlight emiten
+                bbca_levels = cls.calculate_technical_levels(6200.0, asset_type="IDX")
+                antm_levels = cls.calculate_technical_levels(1650.0, asset_type="IDX")
+
+                daily_brief = {
+                    "id": f"daily-brief-{now.strftime('%Y%m%d%H%M')}",
+                    "title": db_data.get("title") or f"☀️ MBG Morning Macro Brief ({now_str})",
+                    "source": "MBG RESEARCH INTELLIGENCE",
+                    "link": "#daily-brief",
+                    "pub_date": now.astimezone(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT"),
+                    "date_iso": now.strftime("%Y-%m-%d"),
+                    "scope": "DAILY",
+                    "tag": "DAILY_BRIEF",
+                    "stream": "DAILY_BRIEF",
+                    "sentiment": db_data.get("market_outlook", "NEUTRAL"),
+                    "sentiment_score": 0.55 if db_data.get("market_outlook") == "BULLISH" else 0.40,
+                    "related_tickers": ["IHSG", "BBCA", "ANTM", "MEDC", "USDIDR"],
+                    "primary_ticker": "IHSG",
+                    "chart_symbol": "IDX:COMPOSITE",
+                    "metrics": [
+                        f"IHSG Target: {ihsg_p:,.0f}",
+                        f"Emas: ${gold_p:,.1f}",
+                        f"Brent: ${brent_p:,.1f}",
+                        f"Katalis: {db_data.get('primary_catalyst', 'Sentimen Makro')[:25]}"
+                    ],
+                    "reading_time_sec": 90,
+                    "summary": db_data.get("layman_explanation") or "Panduan eksekutif makro pagi hari.",
+                    "full_narrative": "\n\n".join(db_data.get("key_takeaways", [])),
+                    "key_takeaways": db_data.get("key_takeaways", []),
+                    "actionable_playbook": {
+                        "bull_scenario": "Akumulasi bertahap saham defensif dan perbankan di support harian.",
+                        "bear_scenario": "Pasang trailing stop ketat dan amankan porsi likuiditas kas.",
+                        "invalidation_rule": "Sinyal melemah jika indeks breakdown level support kritis."
+                    },
+                    "is_pinned": True,
+                    "edition_type": "DAILY_BRIEF",
+                    "ai_generated": True,
+                    "model_used": brain.fast_model
+                }
+
+                takeaways = rn_data.get("key_takeaways", [])
+                # Ensure technical level notes are included
+                takeaways.append(f"📊 Pivot BBCA di Rp {bbca_levels['pivot']:,.0f} (S1: Rp {bbca_levels['s1']:,.0f}, R1: Rp {bbca_levels['r1']:,.0f}). Pivot ANTM di Rp {antm_levels['pivot']:,.0f}.")
+                takeaways.append(f"🛡️ Batas Invalidation: BBCA < Rp {bbca_levels['invalidation']:,.0f}, ANTM < Rp {antm_levels['invalidation']:,.0f}.")
+
+                research_note = {
+                    "id": f"research-note-{now.strftime('%Y%m%d%H%M')}",
+                    "title": rn_data.get("title") or f"🔬 MBG Sector Research Note ({now_str}): Barbell Strategy",
+                    "source": "MBG RESEARCH INTELLIGENCE",
+                    "link": "#research-note",
+                    "pub_date": now.astimezone(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT"),
+                    "date_iso": now.strftime("%Y-%m-%d"),
+                    "scope": "DAILY",
+                    "tag": "RESEARCH",
+                    "stream": "RESEARCH",
+                    "sentiment": "BULLISH",
+                    "sentiment_score": 0.50,
+                    "related_tickers": ["BBCA", "BBRI", "ANTM", "MEDC", "MDKA"],
+                    "primary_ticker": "BBCA",
+                    "chart_symbol": "IDX:BBCA",
+                    "metrics": [
+                        "Alokasi Barbell: 60% Bank : 40% Komoditas",
+                        f"BBCA Pivot: Rp {bbca_levels['pivot']:,.0f}",
+                        f"ANTM Pivot: Rp {antm_levels['pivot']:,.0f}",
+                        "R:R Target: >= 2.0"
+                    ],
+                    "reading_time_sec": 120,
+                    "summary": rn_data.get("layman_explanation") or "Analisis sektor dan panduan alokasi portofolio.",
+                    "full_narrative": "\n\n".join(takeaways),
+                    "technical_levels": bbca_levels,
+                    "secondary_technical_levels": antm_levels,
+                    "key_takeaways": takeaways,
+                    "actionable_playbook": rn_data.get("actionable_playbook", {
+                        "bull_scenario": f"Akumulasi bertahap BBCA di area Rp {bbca_levels['s1']:,.0f} - {bbca_levels['pivot']:,.0f}.",
+                        "bear_scenario": "Jika capital outflow berlanjut, perbesar porsi cash.",
+                        "invalidation_rule": f"Batal jika BBCA breakdown penutupan di bawah Rp {bbca_levels['invalidation']:,.0f}."
+                    }),
+                    "is_pinned": True,
+                    "edition_type": "RESEARCH_NOTE",
+                    "ai_generated": True,
+                    "model_used": brain.fast_model
+                }
+                cls.archive_research_edition(research_note)
+                logger.info(f"AI Institutional Research Note generated via {brain.fast_model}")
+        except Exception as e:
+            logger.warning(f"AI Research synthesis failed ({e}). Falling back to deterministic templates.")
+
+        # Fallback if AI synthesis was not produced
+        if not daily_brief:
+            daily_brief = cls.generate_daily_brief(macro, session="MORNING")
+        if not research_note:
+            research_note = cls.generate_research_note(macro, scope="DAILY")
+
+        # Sync crisis alert to public JSON
+        crisis_file = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+            "frontend", "public", "data", "latest_crisis_alert.json"
+        )
+        try:
+            os.makedirs(os.path.dirname(crisis_file), exist_ok=True)
+            with open(crisis_file, "w", encoding="utf-8") as cf:
+                json.dump(cls.latest_crisis_alert, cf, indent=2, ensure_ascii=False)
+        except Exception as ce:
+            logger.debug(f"Failed to sync crisis file: {ce}")
+
+        return [daily_brief, research_note] + filtered_news

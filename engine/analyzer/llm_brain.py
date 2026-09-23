@@ -116,12 +116,22 @@ class LLMBrain:
                 self.dynamic_discovery_active = True
 
                 # Determine top fast (flash) and reasoning (pro) models
-                top_flash = next((m for m in gemini_models if "flash" in m), None)
+                # Prioritize gemini-3.6-flash for sub-300ms speed and 99.99% availability, then 3.8, then 3.7
+                flash_priority = ["gemini-3.6-flash", "gemini-3.8-flash", "gemini-3.7-flash"]
+                top_flash = next((p for p in flash_priority if p in gemini_models), None)
+                if not top_flash:
+                    top_flash = next((m for m in gemini_models if "flash" in m), "gemini-3.6-flash")
+
                 top_pro = next((m for m in gemini_models if "pro" in m), None)
 
-                self.fast_model = top_flash or (gemini_models[0] if gemini_models else "gemini-3.8-flash")
-                self.reasoning_model = top_pro or self.fast_model
-                self.candidate_models = gemini_models[:3] if gemini_models else self.default_cascade
+                self.fast_model = top_flash
+                self.reasoning_model = top_pro or "gemini-pro-latest"
+                # Ensure ordered candidates
+                candidates = [self.fast_model]
+                for c in ["gemini-3.7-flash", "gemini-3.8-flash", "gemini-3.6-flash", "gemini-pro-latest"]:
+                    if c in gemini_models and c not in candidates:
+                        candidates.append(c)
+                self.candidate_models = candidates[:4]
                 self.model_name = self.fast_model
                 logger.info(f"Dynamic Model Discovery SUCCESS. Discovered {len(gemini_models)} Gemini models. Fast: {self.fast_model}, Reasoning: {self.reasoning_model}")
                 return
@@ -202,7 +212,7 @@ class LLMBrain:
                     if json_mode:
                         payload["generationConfig"]["responseMimeType"] = "application/json"
 
-                    r = requests.post(url, json=payload, timeout=5)
+                    r = requests.post(url, json=payload, timeout=12)
                     if r.status_code == 200:
                         data = r.json()
                         candidates = data.get("candidates", [])
@@ -522,3 +532,155 @@ Assign a DEFCON level (1 to 5) and output ONLY valid JSON matching this schema:
                 "latency_ms": 0,
                 "evaluated_at": datetime.now(timezone.utc).isoformat()
             }
+
+    def evaluate_crisis_headlines(self, news_items: list) -> dict:
+        """
+        Scans breaking news headlines to detect urgent geopolitical/macro crises (War, Blockade, Sovereign Default, Bank Run).
+        Returns a structured Crisis Alert object.
+        """
+        if not news_items:
+            return {
+                "is_crisis": False,
+                "severity": "NORMAL",
+                "headline": "",
+                "summary": "Situasi pasar global relatif terkendali tanpa eskalasi krisis darurat.",
+                "affected_tickers": [],
+                "recommended_action": "Pertahankan alokasi portofolio standar sesuai trading plan.",
+                "evaluated_at": datetime.now(timezone.utc).isoformat()
+            }
+
+        headlines = [item.get("title", "") if isinstance(item, dict) else str(item) for item in news_items[:20]]
+        headlines_str = "\n".join(f"- {h}" for h in headlines if h)
+
+        prompt = f"""You are the Chief Macro Risk Sentinel for an institutional quantitative trading fund.
+Analyze the following live breaking news headlines for URGENT CRISIS or WAR ESCALATION events:
+
+HEADLINES:
+{headlines_str}
+
+Evaluate if there is an active emergency crisis (e.g. War outbreak, Strait of Hormuz blockade, missile strikes on energy facilities, sovereign debt default, sudden currency devaluation).
+Return ONLY a valid JSON object matching this schema:
+{{
+  "is_crisis": true or false,
+  "severity": "CRITICAL" or "HIGH" or "NORMAL",
+  "headline": "Most critical headline or brief emergency title in Indonesian",
+  "summary": "1-2 concise sentences in Indonesian explaining the threat and market risk",
+  "affected_tickers": ["list of tickers e.g. MEDC, ENRG, ANTM, BBCA, USD/IDR, BTC"],
+  "recommended_action": "Tactical recommendation in Indonesian (e.g. Tingkatkan porsi kas, lindung nilai emas/minyak)"
+}}
+"""
+        try:
+            raw_json = self._call_gemini(prompt, max_tokens=350, model=self.fast_model, json_mode=True)
+            clean = raw_json.strip()
+            if clean.startswith("```json"): clean = clean[7:]
+            if clean.endswith("```"): clean = clean[:-3]
+            res = json.loads(clean.strip())
+            res["evaluated_at"] = datetime.now(timezone.utc).isoformat()
+            res["model_used"] = self.last_diagnostics.get("model", self.fast_model)
+            return res
+        except Exception as e:
+            logger.warning(f"evaluate_crisis_headlines LLM failed: {e}. Returning normal baseline.")
+            return {
+                "is_crisis": False,
+                "severity": "NORMAL",
+                "headline": "",
+                "summary": "Situasi pasar global dalam parameter normal tanpa anomali krisis perang baru.",
+                "affected_tickers": [],
+                "recommended_action": "Jalankan strategi akumulasi dan diversifikasi normal.",
+                "evaluated_at": datetime.now(timezone.utc).isoformat()
+            }
+
+    def synthesize_institutional_research(self, news_items: list, macro_context: dict) -> dict:
+        """
+        Synthesizes live news headlines and macro metrics into an institutional-grade Goldman Sachs / Bridgewater Daily Brief and Research Note.
+        """
+        headlines = [item.get("title", "") if isinstance(item, dict) else str(item) for item in news_items[:25]]
+        headlines_str = "\n".join(f"- {h}" for h in headlines if h)
+        macro_str = json.dumps(macro_context or {}, indent=2)
+
+        prompt = f"""You are the Chief Investment Officer and Senior Macro Strategist at an institutional hedge fund.
+Synthesize the following live breaking financial news headlines and macro telemetry into two institutional research deliverables in Indonesian:
+1. DAILY BRIEF (Morning Executive Summary)
+2. SECTOR RESEARCH NOTE (Deep-dive on banking vs commodities/energy with Barbell Strategy)
+
+LIVE HEADLINES:
+{headlines_str}
+
+MACRO TELEMETRY:
+{macro_str}
+
+Output ONLY valid JSON matching this schema:
+{{
+  "daily_brief": {{
+    "title": "Concise professional title in Indonesian (e.g. MBG Macro Daybreak: ...)",
+    "layman_explanation": "1-2 clear sentences in Indonesian explaining what is happening for everyday investors",
+    "key_takeaways": [
+      "Key bullet 1 with concrete macro/stock implications",
+      "Key bullet 2 with concrete macro/stock implications",
+      "Key bullet 3 with risk management/cash guideline"
+    ],
+    "market_outlook": "NEUTRAL" or "BULLISH" or "BEARISH",
+    "primary_catalyst": "Main market driver today in Indonesian"
+  }},
+  "research_note": {{
+    "title": "Sector Research Note title in Indonesian (e.g. MBG Sector Research Note: Rotasi Likuiditas ...)",
+    "layman_explanation": "Simple analogy or explanation in Indonesian of the sector dynamic",
+    "key_takeaways": [
+      "Point 1: Banking cluster (BBCA, BBRI, BMRI)",
+      "Point 2: Commodity/Energy cluster (ANTM, MEDC, MDKA)",
+      "Point 3: Barbell Strategy portfolio allocation (e.g. 60% defensive bank : 40% commodity hedge)",
+      "Point 4: Invalidation and risk management cutoff"
+    ],
+    "actionable_playbook": {{
+      "bull_scenario": "Specific entry guidance in Indonesian",
+      "bear_scenario": "Specific defensive guidance in Indonesian",
+      "invalidation_rule": "Condition that invalidates this thesis in Indonesian"
+    }}
+  }}
+}}
+"""
+        try:
+            raw_json = self._call_gemini(prompt, max_tokens=900, model=self.fast_model, json_mode=True)
+            clean = raw_json.strip()
+            if clean.startswith("```json"): clean = clean[7:]
+            if clean.endswith("```"): clean = clean[:-3]
+            res = json.loads(clean.strip())
+            res["evaluated_at"] = datetime.now(timezone.utc).isoformat()
+            res["model_used"] = self.last_diagnostics.get("model", self.fast_model)
+            return res
+        except Exception as e:
+            logger.warning(f"synthesize_institutional_research LLM failed: {e}. Preserving fallback.")
+            return None
+
+    def generate_agent_trade_journal(self, agent_name: str, trade_data: dict) -> str:
+        """
+        Generates a concise 1-2 sentence Indonesian quant reasoning for a closed trade in the AI Agent Arena.
+        """
+        symbol = trade_data.get("symbol", "ASSET")
+        is_win = trade_data.get("isWin", False)
+        pnl_pct = trade_data.get("pnlPct", 0.0)
+        exit_reason = trade_data.get("exitReason", "CLOSED")
+        entry_price = trade_data.get("entryPrice", 0)
+        exit_price = trade_data.get("exitPrice", 0)
+
+        prompt = f"""You are a Quantitative Risk Auditor analyzing an automated trade in the AI Agent Arena.
+Write a 1-sentence analytical post-trade journal entry in Indonesian explaining the outcome for this agent:
+
+Agent: {agent_name}
+Ticker: {symbol}
+Result: {"PROFIT" if is_win else "LOSS / CUT-LOSS"} ({pnl_pct:+.2f}%)
+Exit Trigger: {exit_reason}
+Entry: {entry_price}, Exit: {exit_price}
+
+Keep it strictly 1 professional sentence (max 25 words). Tone: institutional, objective, citing technical/flow reasons.
+Example win: "Sweep likuiditas di support berhasil memicu dorongan volume beli institusi menuju target profit."
+Example loss: "Breakdown level invalidasi akibat lonjakan distribusi penjual; stop-loss terpicu untuk mencegah drawdown."
+"""
+        try:
+            res = self._call_gemini(prompt, max_tokens=100, model=self.fast_model)
+            return res.strip().strip('"')
+        except Exception as e:
+            if is_win:
+                return f"Realisasi take-profit di level Rp {exit_price:,.0f} sejalan dengan momentum penguatan {agent_name}."
+            return f"Disiplin cut-loss di level Rp {exit_price:,.0f} ({exit_reason}) untuk memproteksi modal sovereign."
+

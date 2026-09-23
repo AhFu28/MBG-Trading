@@ -40,6 +40,9 @@ export default function BloombergNewsWire({ macro, bundle, livePrices = {}, onSe
 
   const [headlineIndex, setHeadlineIndex] = useState(0);
 
+  const crisisAlert = bundle?.crisis_alert || macro?.crisis_alert;
+  const isCrisisActive = crisisAlert && (crisisAlert.is_crisis || crisisAlert.severity === 'CRITICAL' || crisisAlert.severity === 'HIGH');
+
   useEffect(() => {
     if (headlines.length <= 1) return;
     const timer = setInterval(() => {
@@ -63,6 +66,47 @@ export default function BloombergNewsWire({ macro, bundle, livePrices = {}, onSe
   return (
     <div className='telemetry-panel' style={{ marginBottom: '6px', border: 'var(--border-hairline)' }}>
       
+      {/* 0. EMERGENCY CRISIS / WAR FLASH BANNER */}
+      {isCrisisActive && (
+        <div style={{
+          background: 'linear-gradient(90deg, rgba(220, 38, 38, 0.25) 0%, rgba(185, 28, 28, 0.45) 50%, rgba(220, 38, 38, 0.25) 100%)',
+          borderBottom: '1px solid rgba(239, 68, 68, 0.6)',
+          padding: '6px 12px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '8px',
+          fontSize: '11px',
+          color: '#fee2e2'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '13px' }}>🚨</span>
+            <span style={{ fontWeight: '900', color: '#f87171', letterSpacing: '0.05em' }}>
+              EMERGENCY MACRO FLASH ALERT // [{crisisAlert.severity} THREAT]
+            </span>
+            <span style={{ color: '#fff', fontWeight: '700' }}>
+              {crisisAlert.headline || crisisAlert.summary}
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            {crisisAlert.affected_tickers && crisisAlert.affected_tickers.slice(0, 4).map(t => (
+              <span key={t} style={{
+                fontSize: '9px',
+                fontWeight: '800',
+                padding: '2px 5px',
+                borderRadius: '3px',
+                background: 'rgba(0,0,0,0.4)',
+                border: '1px solid rgba(248, 113, 113, 0.5)',
+                color: '#fca5a5'
+              }}>
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* 1. Streaming Macro Ticker Tape */}
       <div style={{
         background: 'var(--bg-strip-wire, var(--bg-panel-dark))',
@@ -81,6 +125,17 @@ export default function BloombergNewsWire({ macro, bundle, livePrices = {}, onSe
           <span style={{ width: '8px', height: '8px', background: 'var(--accent-green)', display: 'inline-block', borderRadius: '50%', boxShadow: '0 0 6px var(--accent-green)' }}></span>
           <strong style={{ color: 'var(--accent-green-text, var(--accent-green))', letterSpacing: '0.04em' }}>MBG MACRO INTELLIGENCE WIRE</strong>
           <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>// CONTINUOUS 24/7 LIVE FEED</span>
+          <span style={{
+            fontSize: '9px',
+            fontWeight: '800',
+            color: isCrisisActive ? '#f87171' : 'var(--accent-green)',
+            background: isCrisisActive ? 'rgba(239, 68, 68, 0.15)' : 'rgba(34, 197, 94, 0.12)',
+            padding: '1px 6px',
+            borderRadius: '3px',
+            border: `1px solid ${isCrisisActive ? 'rgba(239, 68, 68, 0.4)' : 'rgba(34, 197, 94, 0.3)'}`
+          }}>
+            {isCrisisActive ? `⚠️ CRISIS DETECTED: ${crisisAlert?.severity}` : '● THREAT: DEFCON 4 GUARDED'}
+          </span>
         </div>
 
         {/* Continuous Running Marquee Ticker Tape */}

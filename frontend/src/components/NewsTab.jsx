@@ -559,6 +559,25 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                       #{news.tag || 'IHSG'}
                     </span>
 
+                    {/* AI Synthesized Badge */}
+                    {news.ai_generated && (
+                      <span style={{
+                        fontSize: '8.5px',
+                        fontWeight: '800',
+                        color: 'var(--accent-gold-text, var(--accent-gold))',
+                        background: 'rgba(234, 179, 8, 0.12)',
+                        border: '1px solid rgba(234, 179, 8, 0.35)',
+                        borderRadius: '3px',
+                        padding: '1px 5px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '3px'
+                      }}>
+                        <span>🤖</span>
+                        <span>AI SYNTHESIZED ({news.model_used || 'Gemini'})</span>
+                      </span>
+                    )}
+
                     {/* Sentiment Badge */}
                     <span className={`badge ${
                       sentiment === 'BULLISH' ? 'badge-bull' : sentiment === 'BEARISH' ? 'badge-bear' : ''

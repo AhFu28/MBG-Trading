@@ -6377,6 +6377,27 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               const profitFactorVal = totalGrossLossIdr > 0 ? (totalGrossProfitIdr / totalGrossLossIdr).toFixed(2) : (totalGrossProfitIdr > 0 ? '99.0' : '0.0');
               const avgRr = totalTradesCount > 0 ? (targetTrades.reduce((acc, t) => acc + (Number(t.rrAchieved) || 0), 0) / totalTradesCount).toFixed(2) : '0.0';
 
+              const generateTradeReflection = (trade) => {
+                const isWin = trade.isWin;
+                const agent = (trade.agentId || '').toUpperCase();
+                const reason = (trade.exitReason || '').toUpperCase();
+
+                if (isWin) {
+                  if (agent.includes('SMC')) return 'Liquidity sweep terkonfirmasi di area order block; mitigasi demand berhasil memicu kenaikan target TP.';
+                  if (agent.includes('BANDAR') || agent.includes('WHALE')) return 'Akumulasi dominan broker tier-1 terdeteksi kuat; lonjakan net buy institusi mengangkat harga ke level exit target.';
+                  if (agent.includes('MOMENTUM') || agent.includes('TREND')) return 'Breakout terkonfirmasi dengan ekspansi volume di atas MA-20; trailing stop mengunci keuntungan terukur.';
+                  if (agent.includes('MEAN') || agent.includes('REVERSION')) return 'Oversold rebound terpicu dari deviasi ekstrem Bollinger Bands; mean reversion kembali ke nilai wajar.';
+                  return 'Sinyal konfirmasi setup teknikal tervalidasi; momentum volume mengantarkan posisi menuju take profit.';
+                } else {
+                  if (reason.includes('MC') || reason.includes('MARGIN')) return 'Margin threshold tercapai; sistem mengeksekusi likuidasi protektif otomatis untuk mereset sovereign DNA agen.';
+                  if (agent.includes('SMC')) return 'Change of Character (CHoCH) berlawanan arah; stop loss terpicu untuk mencegah drawdown struktur likuiditas.';
+                  if (agent.includes('BANDAR') || agent.includes('WHALE')) return 'Terjadi distribusi mendadak oleh broker pengendali; cut loss segera dieksekusi demi menjaga kelangsungan portofolio.';
+                  if (agent.includes('MOMENTUM') || agent.includes('TREND')) return 'False breakout akibat pelemahan volume beli; disiplin cut loss membatasi risiko kerugian modal.';
+                  return 'Level invalidasi ditembus pasar; posisi ditutup demi disiplin manajemen risiko portofolio sovereign.';
+                }
+              };
+
+
               return (
                 <>
                   {/* GAMBAR 1: DETAIL TOTAL PNL & RINGKASAN STATISTIK JURNAL */}
@@ -6449,6 +6470,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
 
                   {/* Scrollable Trades Table */}
                   <div style={{ padding: '12px', overflowY: 'auto', flex: 1 }}>
+
                     {targetTrades.length === 0 ? (
                       <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '11px' }}>
                         Belum ada riwayat transaksi yang ditutup untuk agen ini.
@@ -6472,7 +6494,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                             const isWin = item.isWin;
                             const pnlIdr = item.market === 'IDX' && item.pnlIdr ? item.pnlIdr : (item.pnlUsd * usdToIdrRef.current);
                             return (
-                              <tr key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                              <React.Fragment key={item.id}>
+                              <tr style={{ borderBottom: 'none' }}>
                                 <td style={{ padding: '6px 8px', color: 'var(--text-muted)' }}>
                                   {new Date(item.closedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB
                                 </td>
@@ -6517,6 +6540,29 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
                                   <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>({isWin ? '+' : ''}{formatUsd(item.pnlUsd)})</div>
                                 </td>
                               </tr>
+                              {/* Explainable AI Trade Reflection Sub-Row */}
+                              <tr key={`${item.id}-reflection`} style={{ background: 'rgba(255,255,255,0.015)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                                <td colSpan={8} style={{ padding: '4px 10px 8px 10px', fontSize: '9.5px' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span style={{
+                                      fontSize: '7.5px',
+                                      fontWeight: '800',
+                                      padding: '1px 5px',
+                                      borderRadius: '3px',
+                                      background: isWin ? 'rgba(34, 197, 94, 0.12)' : 'rgba(56, 189, 248, 0.12)',
+                                      color: isWin ? 'var(--accent-green)' : 'var(--accent-blue)',
+                                      border: `1px solid ${isWin ? 'rgba(34, 197, 94, 0.3)' : 'rgba(56, 189, 248, 0.3)'}`,
+                                      letterSpacing: '0.04em'
+                                    }}>
+                                      🤖 AI REFLECTION
+                                    </span>
+                                    <span style={{ color: 'var(--text-primary)', fontStyle: 'italic', lineHeight: 1.3 }}>
+                                      {item.aiReflection || generateTradeReflection(item)}
+                                    </span>
+                                  </div>
+                                </td>
+                              </tr>
+                            </React.Fragment>
                             );
                           })}
                         </tbody>
