@@ -314,25 +314,27 @@ Ekosistem simulasi perdagangan otonom 16 bot terbagi dalam 5 tingkatan DNA strat
 
 ---
 
-## 🔬 Executive Hedge Fund Working Paper Series (MBG-WP-2026) & Quant Academy
 
-Modul edukasi dan riset kuantitatif MBG telah ditingkatkan ke standar **Hedge Fund Research Paper Series** yang menggabungkan kedalaman akademis dengan aksesibilitas investor awam melalui arsitektur **Dual-Layer Reading (Executive Layman vs Quant Formalism)** dan **Embedded Interactive Widgets**.
+---
 
-### Daftar Publikasi Kuantitatif MBG-WP:
-| Paper ID | Judul Publikasi Kuantitatif | Literatur & Teori Resmi | Widget Interaktif Live |
+## 🎓 MBG Quant Academy: 6-Level Masterclass (20 Modul Terstruktur)
+
+Akademi edukasi kuantitatif MBG dirancang bertahap dari nol (*ground zero*) hingga penguasaan standar analis *hedge fund*, dibawakan dengan bahasa Indonesia yang membumi, analogi kehidupan nyata, rantai kausalitas sebab-akibat, dan studi kasus sejarah nyata:
+
+### 🏛️ Jenjang Kurikulum 6 Level & 20 Modul:
+| Jenjang | Fokus Utama Pembelajaran | Modul Pembelajaran | Fitur Simulator Live |
 |---|---|---|---|
-| **MBG-WP-01** | *Capital Preservation & Discrete BEI Lot Sizing: A Probabilistic Framework for Asymmetric Risk in Indonesian Equity Portfolios* | **Ralph Vince (1990)** (*The Mathematics of Money Management*), **Robert Carver (2015)** (*Systematic Trading*) | *Live Drawdown Recovery & Fixed Fractional Lot Calculator* |
-| **MBG-WP-02** | *Global Macro Transmission Channels & Carry Trade Mechanics: Cross-Asset Yield Differentials, Sovereign Spread Dynamics, and IDX Capital Flow Sensitivity* | **John J. Murphy (1999)** (*Technical Analysis of the Financial Markets*), **Abdulkader Aljandali (2016)** | *Interactive Macro Flow Tree & Cross-Asset Sensitivity Matrix* |
-| **MBG-WP-03** | *Market Microstructure & Order Book Asymmetry: Limit Order Book Dynamics, Queue Imbalance, and Institutional Spoofing Signatures* | **Mark Andrew Lim (2016)** (*The Handbook of Trading Strategies*) | *Real-Time L2 Queue Imbalance & Spoofing Detector Sandbox* |
-| **MBG-WP-04** | *Smart Money Concepts: Imbalance, Liquidity Voids, and the 50% Consequent Encroachment Magnet on Low-Frequency Equities* | **Marcos López de Prado (2018)** (*Advances in Financial Machine Learning*), ICT Frameworks | *3-Candle Fair Value Gap & 50% C.E. Interactive Magnet* |
-| **MBG-WP-05** | *Cyclical Commodity Dividend Cascade Trap: Liquidity Exits, Pre-Ex-Date Institutional Distribution, and Post-Ex Dividend Gap Decay in High-Beta Indonesian Equities* | **Thomas N. Bulkowski (2013)** (*Fundamental Analysis and Position Trading*) | *Historical $PTBA Dividend Trap Net-PnL Simulator* |
-| **MBG-WP-06** | *Deflated Sharpe Ratio & Statistical Defensibility: Combating Backtest Overfitting, Selection Bias, and Multiple Testing in Quantitative Strategy Verification* | **David H. Bailey & Marcos López de Prado (2014, 2018)** | *Deflated Sharpe Ratio (DSR) Multiple-Testing Decay Sandbox* |
+| **Level 1** | **Mekanisme Mesin Uang Dunia (*The Plumbing*)** | Modul 1.1 (Asal Uang & Likuiditas), Modul 1.2 (Hegemoni Dolar & Petrodollar), Modul 1.3 (Suku Bunga & Inflasi) | *Fed Rate Hike Impact Simulator* |
+| **Level 2** | **Transmisi Makro & Sejarah Krisis (*The Domino Machine*)** | Modul 2.1 (8 Rantai Efek The Fed ke IHSG), Modul 2.2 (Intermarket Matrix Antar-Aset), Modul 2.3 (Bedah 5 Krisis: 1997, 2008, 2013, 2020, 2022) | *Pohon Transmisi Kausalitas & Timeline Krisis* |
+| **Level 3** | **Anatomi 5 Instrumen & Fundamental Riil (*The Engines*)** | Modul 3.1 (Saham, Obligasi, Forex, Komoditas, Kripto), Modul 3.2 (Kas Operasional Riil vs Laba Akuntansi), Modul 3.3 (Hukum Siklus Komoditas Supercycle) | *Asset Profiler & Financial Health Audit* |
+| **Level 4** | **Mikrostruktur Pasar & Bandarmology (*The Hidden Game*)** | Modul 4.1 (Mekanika Lelang Limit vs Market Order), Modul 4.2 (Ekosistem BEI: Ritel, Asing, Bandar), Modul 4.3 (4 Fase Wyckoff), Modul 4.4 (Jebakan Dividen $PTBA) | *Buku Order L2 & Wyckoff Phase Sandbox* |
+| **Level 5** | **Analisis Teknikal & Struktur Harga (*Liquidity Price Action*)** | Modul 5.1 (Auction Theory & Trend BOS/CHoCH), Modul 5.2 (Support/Resistance Likuiditas), Modul 5.3 (Celah FVG Magnet 50% CE), Modul 5.4 (Liquidity Sweeps Stop Loss Ritel) | *Sandbox Celah FVG 50% Magnet & Sweeps* |
+| **Level 6** | **Risk Desk & Psikologi Hedge Fund (*The Survival Cockpit*)** | Modul 6.1 (Asimetri Drawdown), Modul 6.2 (Formula Ukuran Lot Diskrit BEI 1-2%), Modul 6.3 (R:R >= 1:2 & Win Rate 40%), Modul 6.4 (Pre-Flight Checklist 5 Menit) | *Kalkulator Lot Diskrit & Asimetri Drawdown* |
 
-### Fitur Unggulan Riset:
-- **Dual-Layer Toggle Mode**: Mode **👔 Executive / Layman View** menyajikan analogi praktis (mobil tanpa rem, lompatan 3-candle, madu beracun dividen) tanpa rumus rumit, sedangkan mode **🔬 Quant Formalism & Proofs** memuat pembuktian matematis, persamaan LaTeX, dan kode Python/VectorBT.
-- **6 Embedded Interactive Sandbox Widgets**: Menguji langsung teori di dalam paper (simulasi pemulihan drawdown, deteksi spoofing order book L2, tarikan magnet 50% FVG, dan sensitivitas DSR).
-- **Master Quantitative Glossary (66 Istilah)**: Standarisasi istilah kuantitatif mikrostruktur pasar, ekonometrika, dan probabilitas.
-- **7 Visual Institutional Diagrams**: Diagram arsitektur visual resolusi tinggi untuk membedah struktur pasar finansial.
+### Fitur Unggulan Kurikulum:
+- **Analogi Kehidupan Nyata**: Setiap konsep abstrak dijelaskan dengan mental model sederhana (bendungan irigasi, lelang ikan dermaga, termostat AC, mobil melaju kencang).
+- **Studi Kasus Sejarah Nyata**: Mengurai krisis riil dengan tanggal dan fakta pasar: Krismon 1997, Lehman GFC 2008, Taper Tantrum 2013, Pandemi 2020, Kenaikan Bunga The Fed 2022, dan Siklus Dividen $PTBA 2022-2023.
+- **Kamus 66 Istilah Finansial Terpadu**: Glosarium makroekonomi, mikrostruktur bursa, dan manajemen risiko dengan filter kategori dan pencarian instan.
 
 ## 🏗️ Arsitektur Sistem & Aliran Data
 

@@ -1,43 +1,40 @@
 // Master Changelog Data Registry (Official Documentation & Release History)
 
 export const CHANGELOG_DATA = [
-  {
+    {
     id: 'pkg-23092026-v53',
     version: 'Package 23092026-D',
     semanticVersion: 'v5.3.0',
     date: '23 September 2026',
     status: 'LATEST',
     statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / QUANT RESEARCH PAPERS',
-    title: 'Update v5.3.0: Executive Hedge Fund Working Paper Series (MBG-WP-2026), Dual-Layer Layman/Quant Views, 6 Embedded Interactive Widgets, and Authoritative Literature Integration',
-    description: 'Transformasi menyeluruh modul Quant Academy dari level dasar menjadi Executive Hedge Fund Research Paper Series (MBG-WP-01 s/d MBG-WP-06). Mengintegrasikan teori literatur resmi (Ralph Vince, Robert Carver, John J. Murphy, Mark Andrew Lim, Thomas Bulkowski, Marcos López de Prado), sistem Dual-Layer View (👔 Executive / Layman View vs 🔬 Quant Formalism & Proofs), 6 widget interaktif simulasi langsung di dalam paper, 66 istilah glosarium kuantitatif, dan 7 diagram visual institusional.',
+    badgeLabel: 'LATEST / 6-LEVEL MASTERCLASS',
+    title: 'Update v5.3.0: 6-Level Masterclass Curriculum (20 Modul), Ground-Zero to Hedge Fund Progression, & Interactive Pedagogical Sandbox',
+    description: 'Transformasi menyeluruh modul Quant Academy menjadi kurikulum masterclass berjenjang (Level 1 s/d Level 6 dengan 20 modul tematik). Menghapus jargon akademis rumit dan menggantinya dengan analogi kehidupan nyata, rantai kausalitas sebab-akibat, studi kasus sejarah riil (1997, 2008, 2013, 2020, 2022), kamus berita ekonomi, analisis lelang buku order, bandarmology 4 fase Wyckoff, serta formula lot sizing diskrit anti-bangkrut 1-2%.',
     processFlow: [
-      { step: '1. Working Papers (WP-01 - WP-06)', label: 'Riset selevel hedge fund: Risk/Lot Sizing, Macro Carry, Microstructure L2, SMC 50% CE, Dividend Trap PTBA, & Deflated Sharpe' },
-      { step: '2. Dual-Layer View Mode', label: 'Toggle instan antara penjelasan analogi awam bebas rumus vs rigor matematis LaTeX & kode Python/VectorBT' },
-      { step: '3. 6 Interactive Widgets', label: 'Simulasi interaktif langsung: Drawdown Recovery, Macro Tree, L2 Spoofing Detector, FVG Magnet, Dividend Net-PnL, & DSR Decay' },
-      { step: '4. Master Glossary (66 Terms)', label: 'Kamus kuantitatif institusional lengkap dengan filter pencarian instan' },
-      { step: '5. Institutional Architecture Diagrams', label: '7 diagram visual beresolusi tinggi memetakan struktur pasar, likuiditas, dan manajemen risiko' }
+      { step: '1. Level 1: Mesin Uang Dunia', label: 'Asal uang fiat, bendungan likuiditas, hegemoni Dolar (Petrodollar), dan suku bunga termostat' },
+      { step: '2. Level 2: Transmisi Makro & Krisis', label: '8 efek domino The Fed, korelasi lintas-aset, dan bedah 5 krisis finansial nyata' },
+      { step: '3. Level 3: 5 Instrumen & Fundamental', label: 'Profil 5 aset, arus kas operasional riil vs laba akuntansi, dan siklus komoditas supercycle' },
+      { step: '4. Level 4: Mikrostruktur & Bandar', label: 'Lelang buku order (Limit vs Market), ekosistem BEI, 4 fase Wyckoff, dan jebakan dividen $PTBA' },
+      { step: '5. Level 5: Analisis Teknikal & Likuiditas', label: 'Auction theory, S/R likuiditas, celah FVG magnet 50% CE, dan sapuan stop loss ritel' },
+      { step: '6. Level 6: Risk Desk Hedge Fund', label: 'Matematika drawdown, formula lot sizing BEI 1-2%, R:R >= 1:2, dan checklist 5 menit' }
     ],
     markdownContent: `
-### 🎓 v5.3.0 — Executive Hedge Fund Working Paper Series (MBG-WP-2026)
+### 🎓 v5.3.0 — MBG Quant Academy: 6-Level Masterclass (20 Modul)
 
-#### 🏛️ 1. Enam Working Paper Institusional Berlandaskan Literatur Resmi
-- **MBG-WP-01 (Risk & Lot Sizing):** Framework pelestarian modal asimetris & ukuran lot diskrit BEI berdasarkan Ralph Vince (1990) & Robert Carver (2015).
-- **MBG-WP-02 (Global Macro Transmission):** Dinamika kurva imbal hasil, spread sovereign BI-Fed, dan sensitivitas arus modal IDX berdasarkan John J. Murphy (1999) & Abdulkader Aljandali (2016).
-- **MBG-WP-03 (Market Microstructure & Order Book):** Mekanika Limit Order Book (LOB), queue imbalance, dan deteksi spoofing institusional berdasarkan Mark Andrew Lim (2016).
-- **MBG-WP-04 (Smart Money Concepts):** Analisis ketidakseimbangan likuiditas (FVG) dan fenomena magnet 50% Consequent Encroachment (C.E.) berdasarkan Marcos López de Prado (2018).
-- **MBG-WP-05 (Cyclical Dividend Cascade Trap):** Anatomi jebakan dividen komoditas siklikal, distribusi likuiditas institusional pra-cum date, dan gap decay pasca-ex date (Studi Kasus $PTBA) berdasarkan Thomas N. Bulkowski (2013).
-- **MBG-WP-06 (Deflated Sharpe Ratio):** Mitigasi bias seleksi dan data mining overfitting pada verifikasi strategi kuantitatif berdasarkan David H. Bailey & Marcos López de Prado (2014, 2018).
+#### 🏛️ 1. Kurikulum Bertahap Dari Nol Hingga Standar Hedge Fund
+- **Level 1 (Mekanisme Mesin Uang Dunia):** Pondasi likuiditas, bank sentral, dan hegemoni Dolar.
+- **Level 2 (Transmisi Makro & Sejarah Krisis):** Pohon kausalitas 8 langkah The Fed dan bedah krisis 1997, 2008, 2013, 2020, 2022.
+- **Level 3 (Anatomi 5 Instrumen & Fundamental):** Saham, Obligasi, Forex, Komoditas, Kripto, arus kas riil vs laba akrual, dan siklus komoditas.
+- **Level 4 (Mikrostruktur & Bandarmology):** Lelang buku order, ekosistem BEI, 4 fase Wyckoff, dan jebakan dividen komoditas siklikal.
+- **Level 5 (Analisis Teknikal & Likuiditas):** Trend structure, zona likuiditas, magnet 50% FVG, dan liquidity sweeps.
+- **Level 6 (Risk Desk & Psikologi):** Asimetri drawdown, kalkulator lot diskrit BEI anti-bangkrut, ekspektansi R:R minimal 1:2, dan pre-flight checklist.
 
-#### 👔 vs 🔬 2. Dual-Layer View Architecture
-- **Executive / Layman View:** Disajikan dengan analogi dunia nyata tanpa hambatan rumus (mobil kencang tanpa rem, lompatan 3-candle, madu beracun jebakan dividen), kesimpulan taktis, dan pre-flight checklist.
-- **Quant Formalism & Proofs:** Memuat bukti teorema matematis lengkap, notasi formal LaTeX, sitasi jurnal, serta kode algoritma Python/VectorBT siap pakai.
-
-#### 🎛️ 3. Enam Widget Riset Interaktif Live
-- Dilengkapi kalkulator pemulihan drawdown, pohon transmisi makro interaktif, simulasi deteksi spoofing buku order L2, magnet interaktif 50% FVG, kalkulator net-PnL jebakan dividen saham komoditas, dan simulator deflasi Sharpe ratio.
+#### 💡 2. Pedagogi Berbasis Analogi & Bukti Sejarah
+- Setiap modul dilengkapi analogi kehidupan nyata (bendungan air, lelang dermaga, termostat pendingin), penjelasan mekanisme rantai transmisi, jebakan ritel vs tindakan taktis institusi, serta simulator live.
 `
   },
-  {
+{
     id: 'pkg-23092026-v52',
     version: 'Package 23092026-C',
     semanticVersion: 'v5.2.0',

@@ -16,32 +16,27 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [2026-09-23] — Institutional Cockpit Refinement, Tactical Defense & Quant Synthesis
 
-### Sprint 4 (Malam) — Executive Hedge Fund Working Paper Series (MBG-WP-2026) & Quant Academy
-- **[QUANT & AGENTIC ENGINES] Transformation to Executive Research Paper Series**:
-  - Re-architected naive video-game levels into an **Executive Hedge Fund Research Paper Series** featuring 6 seminal working papers grounded in authoritative quantitative finance literature:
-    * **`MBG-WP-01`**: *Capital Preservation & Discrete BEI Lot Sizing: A Probabilistic Framework for Asymmetric Risk in Indonesian Equity Portfolios* (Ref: Ralph Vince 1990, Robert Carver 2015).
-    * **`MBG-WP-02`**: *Global Macro Transmission Channels & Carry Trade Mechanics: Cross-Asset Yield Differentials, Sovereign Spread Dynamics, and IDX Capital Flow Sensitivity* (Ref: John J. Murphy 1999, Abdulkader Aljandali 2016).
-    * **`MBG-WP-03`**: *Market Microstructure & Order Book Asymmetry: Limit Order Book Dynamics, Queue Imbalance, and Institutional Spoofing Signatures* (Ref: Mark Andrew Lim 2016).
-    * **`MBG-WP-04`**: *Smart Money Concepts: Imbalance, Liquidity Voids, and the 50% Consequent Encroachment Magnet on Low-Frequency Equities* (Ref: Marcos López de Prado 2018, ICT Frameworks).
-    * **`MBG-WP-05`**: *Cyclical Commodity Dividend Cascade Trap: Liquidity Exits, Pre-Ex-Date Institutional Distribution, and Post-Ex Dividend Gap Decay in High-Beta Indonesian Equities* (Ref: Thomas N. Bulkowski 2013).
-    * **`MBG-WP-06`**: *Deflated Sharpe Ratio & Statistical Defensibility: Combating Backtest Overfitting, Selection Bias, and Multiple Testing in Quantitative Strategy Verification* (Ref: David H. Bailey & Marcos López de Prado 2014, 2018).
-- **[COCKPIT UI/UX] Dual-Layer Executive / Layman Reading Architecture**:
-  - Implemented an interactive mode switcher for every working paper:
-    * **`[👔 Executive / Layman View]`**: Written for retail investors and executives using intuitive, real-world analogies (e.g. driving at 120 km/h without brakes for drawdown, 3-candle sudden leaps for liquidity imbalance, poisoned honey bait for dividend traps) with zero mathematical friction, strategic takeaways, and pre-flight checklists.
-    * **`[🔬 Quant Formalism & Proofs]`**: Written for quantitative researchers featuring formal mathematical theorems, LaTeX proofs, formal parameters, institutional edges, and full production Python/VectorBT algorithmic implementations.
-- **[QUANT & AGENTIC ENGINES] 6 Embedded Live Interactive Research Widgets**:
-  1. *Drawdown Recovery & Fixed Fractional Lot Calculator* (`MBG-WP-01`): Dynamic loss vs recovery slider with exact BEI lot size calculation.
-  2. *Macro Transmission Flow Tree & Cross-Asset Sensitivity Matrix* (`MBG-WP-02`): Interactive root driver selector showing live propagation to IDX sectors.
-  3. *L2 Queue Imbalance & Spoofing Detector Sandbox* (`MBG-WP-03`): Real-time bid/ask order book depth with queue imbalance metric ($QI$) and spoofing alert.
-  4. *3-Candle Fair Value Gap & 50% C.E. Interactive Magnet* (`MBG-WP-04`): Visual candlestick imbalance sandbox with automatic Consequent Encroachment line.
-  5. *Historical $PTBA Dividend Trap Net-PnL Simulator* (`MBG-WP-05`): Interactive scenario calculator computing dividend yield vs post-ex gap decay.
-  6. *Deflated Sharpe Ratio (DSR) Multiple-Testing Decay Sandbox* (`MBG-WP-06`): Live statistical significance tester demonstrating how backtest variance decays true Sharpe ratio.
-- **[RESEARCH & NEWS] Quantitative Glossary & Reference Suite**:
-  - Integrated 66 institutional quantitative finance and market microstructure terms with real-time fuzzy search.
-  - Retained 7 visual institutional architecture diagrams, standalone lot calculator, interactive quant lab, and final certification exam.
-- **[VERIFICATION & QA] Strict Production Build Validation**:
-  - Built and validated with `npm run build` (0 errors, 75 modules transformed in 3.17s).
-  - Verified in browser with automated subagent across both Layman and Quant modes.
+### Sprint 4 (Malam) — 6-Level Masterclass Curriculum & Ground-Zero to Hedge Fund Transformation
+- **[QUANT ACADEMY & PEDAGOGY] Arsitektur 6 Level & 20 Modul Terstruktur**:
+  - Mentransformasi kurikulum menjadi akademi bertahap berstandar program pelatihan analis hedge fund global (Point72 / Bridgewater Associates) tanpa jargon membingungkan:
+    * **`LEVEL 1: Mekanisme Mesin Uang Dunia (The Plumbing)`**: Asal-usul uang fiat, likuiditas bendungan, sistem Petrodollar, dan suku bunga sebagai termostat ekonomi.
+    * **`LEVEL 2: Transmisi Makro & Sejarah Krisis (The Domino Machine)`**: 8 rantai efek domino The Fed ke IHSG & Rupiah, matriks korelasi antar-aset, dan laboratorium 5 krisis nyata (1997 Krismon, 2008 GFC, 2013 Taper Tantrum, 2020 Covid Crash, 2022 Fed Hike 500 bps).
+    * **`LEVEL 3: Anatomi 5 Instrumen & Fundamental Riil (The Engines)`**: Karakteristik Saham, Obligasi, Forex, Komoditas, & Kripto; kas operasional riil vs laba akuntansi; serta siklus komoditas (*Commodity Supercycle*).
+    * **`LEVEL 4: Mikrostruktur Pasar & Bandarmology (The Hidden Game)`**: Mekanika lelang buku order (Limit vs Market order), ekosistem BEI (Ritel, Institusi, Asing, Bandar), 4 fase Wyckoff, dan jebakan dividen komoditas ($PTBA).
+    * **`LEVEL 5: Analisis Teknikal & Struktur Harga (Liquidity Price Action)`**: Auction market theory, Support/Resistance sejati sebagai zona likuiditas, Fair Value Gap (magnet 50% C.E.), dan aksi *liquidity sweep* pemburu stop loss.
+    * **`LEVEL 6: Risk Desk & Psikologi Hedge Fund (The Survival Cockpit)`**: Asimetri matematika drawdown (rugi 50% butuh cuan 100%), formula lot sizing diskrit BEI anti-bangkrut 1-2%, rasio R:R >= 1:2 (mengapa win rate 40% tetap kaya raya), dan checklist pra-trading 5 menit.
+- **[COCKPIT UI/UX] Navigasi Dua Panel (Sidebar Modul & Kanvas Pembelajaran)**:
+  - Sidebar daftar modul terintegrasi dengan progress tracking (0 s/d 20 modul selesai).
+  - Setiap modul memuat 5 blok konsisten: Pertanyaan Kunci, Analogi Kehidupan Nyata, Mekanisme & Transmisi, Jebakan Ritel vs Playbook Institusi, dan Pedoman Taktis.
+- **[QUANT & AGENTIC ENGINES] Embedded Live Interactive Sandbox Suite**:
+  - *Fed Hike Domino Simulator (Level 1)*: Pengujian kenaikan suku bunga The Fed terhadap DXY, kurs USD/IDR, dan diskon valuasi IHSG.
+  - *Discrete BEI Lot Sizing Calculator (Level 6)*: Kalkulasi jumlah lot aman otomatis berbasis toleransi risiko modal akun.
+  - *Drawdown Recovery Slider (Level 6)*: Uji beban pemulihan modal akibat kelalaian stop loss.
+  - *Fair Value Gap (FVG) 50% C.E. Magnet Sandbox (Level 5)*: Celah harga dan penarikan magnet 50% Consequent Encroachment.
+- **[RESEARCH & REFERENCE] Kamus 66 Istilah Finansial & Glosarium Terpadu**:
+  - Filter kategori instan (Makro, Mikrostruktur, Smart Money, Risiko) dan kotak pencarian real-time.
+- **[VERIFICATION & QA] Zero-Error Production Build**:
+  - Berhasil divalidasi via `npm run build` (0 error, 75 modul dalam 2.76s) dan browser subagent testing.
 
 ### Sprint 3 (Malam) — Symmetrical Cockpit Alignment, Defense Alert HUD & Standardized Financial Terminology
 - **[COCKPIT UI/UX] Symmetrical 50/50 Vertical Axis Alignment**:
