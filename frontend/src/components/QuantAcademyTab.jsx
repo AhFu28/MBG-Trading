@@ -732,6 +732,513 @@ export const VISUAL_FIGURES_GALLERY = [
   { id: 10, title: 'Mikrostruktur Order Book: Fake Bid Spoofing', file: '/figures/10_orderbook_spoofing_anatomy.png', category: 'Bandarmologi & Flow', desc: 'Anatomi antrean palsu bandar untuk memancing HAKA ritel vs penyerapan riil di pasar.' }
 ];
 
+
+/**
+ * InteractiveQuantLabSandbox - OpenQuant Initiative Inspired Math-First Interactive Simulator
+ * Features:
+ * 1. Bandarmology Concentration (BCR & HHI)
+ * 2. Robert Carver Volatility-Targeted Position Sizing
+ * 3. Marcos López de Prado Deflated Sharpe Ratio (DSR) Multi-Testing Simulator
+ */
+function InteractiveQuantLabSandbox() {
+  const [labMode, setLabMode] = useState('BCR'); // 'BCR' | 'CARVER' | 'DSR'
+
+  // Module 1: BCR & HHI State
+  const [b1, setB1] = useState(145000);
+  const [b2, setB2] = useState(98000);
+  const [b3, setB3] = useState(62000);
+  const [bRest, setBRest] = useState(195000);
+
+  const totalVol = b1 + b2 + b3 + bRest;
+  const s1 = totalVol > 0 ? (b1 / totalVol) * 100 : 0;
+  const s2 = totalVol > 0 ? (b2 / totalVol) * 100 : 0;
+  const s3 = totalVol > 0 ? (b3 / totalVol) * 100 : 0;
+  const sRest = totalVol > 0 ? (bRest / totalVol) * 100 : 0;
+
+  const bcr1 = s1.toFixed(1);
+  const bcr3 = (s1 + s2 + s3).toFixed(1);
+  const hhi = Math.round((s1 * s1) + (s2 * s2) + (s3 * s3) + (sRest * sRest));
+
+  let bcrGrade = 'NEUTRAL / RETAIL DISPERSED';
+  let bcrColor = 'var(--text-muted, #94a3b8)';
+  if (hhi > 2500 || Number(bcr3) > 65) {
+    bcrGrade = '🚨 EXTREME ACCUMULATION / MONOPOLY (Bandar Masif)';
+    bcrColor = '#10b981';
+  } else if (hhi >= 1500 || Number(bcr3) >= 45) {
+    bcrGrade = '⚖️ MODERATE ACCUMULATION (Konsentrasi Menengah)';
+    bcrColor = '#3b82f6';
+  }
+
+  // Module 2: Robert Carver Sizing State
+  const [equity, setEquity] = useState(50000000);
+  const [targetVolAnn, setTargetVolAnn] = useState(16); // %
+  const [dailyVolPct, setDailyVolPct] = useState(2.4); // %
+  const [stockPrice, setStockPrice] = useState(3850); // Rp
+
+  const dailyTargetRupiah = (equity * (targetVolAnn / 100)) / Math.sqrt(252);
+  const dailyCashVolPerShare = stockPrice * (dailyVolPct / 100);
+  const carverLots = dailyCashVolPerShare > 0 ? Math.floor(dailyTargetRupiah / (100 * dailyCashVolPerShare)) : 0;
+  const carverAllocRupiah = carverLots * 100 * stockPrice;
+  const carverAllocPct = equity > 0 ? ((carverAllocRupiah / equity) * 100).toFixed(1) : 0;
+
+  // Module 3: Deflated Sharpe Ratio State
+  const [obsSharpe, setObsSharpe] = useState(1.75);
+  const [numTrials, setNumTrials] = useState(12);
+  const [skewness, setSkewness] = useState(-0.35);
+  const [kurtosis, setKurtosis] = useState(4.2);
+  const [trackYears, setTrackYears] = useState(2.0);
+
+  // DSR calculation
+  const eulerGamma = 0.5772156649;
+  const lnN = Math.log(Math.max(1, numTrials));
+  const expectedMaxSR = Math.sqrt(2 * lnN) + (eulerGamma / Math.sqrt(2 * lnN));
+  const sampleT = trackYears * 252;
+  const denomVariance = 1 - (skewness * obsSharpe) + (((kurtosis - 1) / 4) * (obsSharpe * obsSharpe));
+  const zScore = denomVariance > 0
+    ? ((obsSharpe - expectedMaxSR) * Math.sqrt(sampleT - 1)) / Math.sqrt(denomVariance)
+    : 0;
+
+  // Approx norm cdf
+  const approxNormCdf = (z) => {
+    const t = 1 / (1 + 0.2316419 * Math.abs(z));
+    const d = 0.3989423 * Math.exp(-z * z / 2);
+    const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+    return z > 0 ? 1 - p : p;
+  };
+  const dsrScore = Math.max(0.01, Math.min(0.999, approxNormCdf(zScore)));
+  const dsrDefensible = dsrScore >= 0.95;
+
+  return (
+    <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '18px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
+              🔬 OPENQUANT INTERACTIVE LAB // QUANTITATIVE FORMULA SIMULATOR
+            </span>
+            <span style={{ fontSize: '9px', fontWeight: 800, background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', padding: '2px 6px', borderRadius: '4px' }}>
+              OPENQUANT SPEC v3.0
+            </span>
+          </div>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px', maxWidth: '720px', lineHeight: 1.5 }}>
+            Eksplorasi formula kuantitatif institusional tanpa tebak-tebakan: uji sensitivitas konsentrasi broker bandar (BCR/HHI), sizing target volatilitas Carver, dan haircut Deflated Sharpe Ratio (DSR) dari Marcos López de Prado.
+          </div>
+        </div>
+
+        {/* Module Switcher Buttons */}
+        <div style={{ display: 'flex', gap: '4px', background: 'rgba(0,0,0,0.3)', padding: '3px', borderRadius: '6px' }}>
+          {[
+            { id: 'BCR', label: '📊 1. Bandarmology HHI' },
+            { id: 'CARVER', label: '🎯 2. Vol Sizing Carver' },
+            { id: 'DSR', label: '🛡️ 3. Deflated Sharpe' }
+          ].map(m => (
+            <button
+              key={m.id}
+              onClick={() => setLabMode(m.id)}
+              style={{
+                padding: '5px 10px',
+                fontSize: '11px',
+                fontWeight: 700,
+                borderRadius: '4px',
+                border: 'none',
+                cursor: 'pointer',
+                background: labMode === m.id ? 'var(--accent-blue, #0066cc)' : 'transparent',
+                color: labMode === m.id ? '#fff' : 'var(--text-muted)'
+              }}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* MODULE 1: BCR & HHI */}
+      {labMode === 'BCR' && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+          {/* Controls */}
+          <div style={{ background: 'var(--bg-panel)', padding: '14px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)' }}>
+              1. Parameter Volume Broker Pembeli (Lot)
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Top 1 Broker (cth: YU / AK):</span>
+                <strong style={{ color: '#60a5fa' }}>{b1.toLocaleString()} Lot ({s1.toFixed(1)}%)</strong>
+              </div>
+              <input
+                type="range"
+                min="10000"
+                max="500000"
+                step="5000"
+                value={b1}
+                onChange={e => setB1(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Top 2 Broker (cth: BK):</span>
+                <strong style={{ color: '#60a5fa' }}>{b2.toLocaleString()} Lot ({s2.toFixed(1)}%)</strong>
+              </div>
+              <input
+                type="range"
+                min="10000"
+                max="300000"
+                step="5000"
+                value={b2}
+                onChange={e => setB2(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Top 3 Broker (cth: CC):</span>
+                <strong style={{ color: '#60a5fa' }}>{b3.toLocaleString()} Lot ({s3.toFixed(1)}%)</strong>
+              </div>
+              <input
+                type="range"
+                min="10000"
+                max="200000"
+                step="5000"
+                value={b3}
+                onChange={e => setB3(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Broker Lain / Ritel (PD, XC, NI...):</span>
+                <strong style={{ color: 'var(--text-muted)' }}>{bRest.toLocaleString()} Lot ({sRest.toFixed(1)}%)</strong>
+              </div>
+              <input
+                type="range"
+                min="20000"
+                max="600000"
+                step="10000"
+                value={bRest}
+                onChange={e => setBRest(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '6px' }}>
+              Total Volume Transaksi: <strong>{totalVol.toLocaleString()} Lot</strong>
+            </div>
+          </div>
+
+          {/* Math Output & Analytics */}
+          <div style={{ background: 'var(--bg-panel)', padding: '14px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '12px' }}>
+            <div>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
+                Output Matriks Konsentrasi Pasar
+              </div>
+
+              {/* Formula Snippet */}
+              <div style={{ background: 'rgba(0,0,0,0.35)', padding: '8px', borderRadius: '4px', fontFamily: 'serif', fontSize: '11px', color: '#93c5fd', marginBottom: '10px' }}>
+                BCR_k = (∑ V_buy,i / V_total) × 100% &nbsp;|&nbsp; HHI = ∑ (s_i)^2
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '11px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 8px', background: 'var(--bg-panel-subtle)', borderRadius: '4px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>BCR Top 1 (Konsentrasi Tunggal):</span>
+                  <strong style={{ color: '#60a5fa' }}>{bcr1}%</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 8px', background: 'var(--bg-panel-subtle)', borderRadius: '4px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>BCR Top 3 (Akumulasi Oligopoli):</span>
+                  <strong style={{ color: '#10b981', fontSize: '12px' }}>{bcr3}%</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 8px', background: 'var(--bg-panel-subtle)', borderRadius: '4px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Herfindahl-Hirschman Index (HHI):</span>
+                  <strong style={{ color: '#fbbf24', fontSize: '12px' }}>{hhi}</strong>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ padding: '10px', borderRadius: '6px', background: 'rgba(0,0,0,0.4)', border: `1px solid ${bcrColor}` }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                STATUS STRUKTUR PASAR:
+              </div>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: bcrColor, marginTop: '3px' }}>
+                {bcrGrade}
+              </div>
+              <div style={{ fontSize: '10px', color: '#cbd5e1', marginTop: '4px', lineHeight: 1.4 }}>
+                {hhi > 2500
+                  ? 'Kondisi ideal untuk mengikuti aksi Smart Money (Ride the Whale) karena akumulasi sangat terpusat.'
+                  : 'Arus transaksi terdistribusi ke banyak broker ritel; hindari menganggap lonjakan harga sebagai akumulasi bandar terstruktur.'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODULE 2: ROBERT CARVER VOLATILITY SIZING */}
+      {labMode === 'CARVER' && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+          {/* Controls */}
+          <div style={{ background: 'var(--bg-panel)', padding: '14px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)' }}>
+              2. Parameter Portofolio & Volatilitas Aset (Carver Model)
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Total Ekuitas Akun:</span>
+                <strong style={{ color: '#60a5fa' }}>Rp {equity.toLocaleString('id-ID')}</strong>
+              </div>
+              <input
+                type="range"
+                min="10000000"
+                max="500000000"
+                step="5000000"
+                value={equity}
+                onChange={e => setEquity(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Target Volatilitas Portofolio Tahunan (σ_target):</span>
+                <strong style={{ color: '#10b981' }}>{targetVolAnn}% / tahun</strong>
+              </div>
+              <input
+                type="range"
+                min="6"
+                max="30"
+                step="1"
+                value={targetVolAnn}
+                onChange={e => setTargetVolAnn(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Volatilitas Harian Saham (σ_daily via ATR%):</span>
+                <strong style={{ color: '#fbbf24' }}>{dailyVolPct}% / hari</strong>
+              </div>
+              <input
+                type="range"
+                min="0.8"
+                max="6.0"
+                step="0.1"
+                value={dailyVolPct}
+                onChange={e => setDailyVolPct(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Harga Saham BEI:</span>
+                <strong style={{ color: 'var(--text-primary)' }}>Rp {stockPrice.toLocaleString('id-ID')}</strong>
+              </div>
+              <input
+                type="range"
+                min="200"
+                max="25000"
+                step="50"
+                value={stockPrice}
+                onChange={e => setStockPrice(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+          </div>
+
+          {/* Carver Output */}
+          <div style={{ background: 'var(--bg-panel)', padding: '14px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '12px' }}>
+            <div>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
+                Ukuran Posisi Sesuai Doktrin Robert Carver (Systematic Trading)
+              </div>
+
+              <div style={{ background: 'rgba(0,0,0,0.35)', padding: '8px', borderRadius: '4px', fontFamily: 'serif', fontSize: '11px', color: '#93c5fd', marginBottom: '10px' }}>
+                N_lots = ⌊ (Equity × (σ_ann / √252)) / (100 × Price × σ_daily) ⌋
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '11px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 8px', background: 'var(--bg-panel-subtle)', borderRadius: '4px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Alokasi Risiko Harian (Daily Vol Cash):</span>
+                  <strong>Rp {Math.round(dailyTargetRupiah).toLocaleString('id-ID')}</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 8px', background: 'var(--bg-panel-subtle)', borderRadius: '4px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Ukuran Posisi Optimal BEI:</span>
+                  <strong style={{ color: '#10b981', fontSize: '14px' }}>{carverLots.toLocaleString()} Lot</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 8px', background: 'var(--bg-panel-subtle)', borderRadius: '4px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Nilai Pembelian Total:</span>
+                  <strong>Rp {Math.round(carverAllocRupiah).toLocaleString('id-ID')} ({carverAllocPct}% modal)</strong>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ padding: '10px', borderRadius: '6px', background: 'rgba(0,0,0,0.4)', border: Number(carverAllocPct) > 30 ? '1px solid #ef4444' : '1px solid #10b981' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                DISIPLIN RISIKO PORTOFOLIO:
+              </div>
+              <div style={{ fontSize: '11px', fontWeight: 800, color: Number(carverAllocPct) > 30 ? '#f87171' : '#34d399', marginTop: '2px' }}>
+                {Number(carverAllocPct) > 30
+                  ? '⚠️ EKSPOSUR TINGGI (>30% Modal). Pertimbangkan menurunkan target volatilitas tahunan.'
+                  : '✅ EKSPOSUR SEIMBANG. Sesuai prinsip Volatility Parity institusional.'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODULE 3: DEFLATED SHARPE RATIO (LÓPEZ DE PRADO) */}
+      {labMode === 'DSR' && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+          {/* Controls */}
+          <div style={{ background: 'var(--bg-panel)', padding: '14px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)' }}>
+              3. Parameter Backtest & Distribusi Return Non-Normal
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Sharpe Ratio Terobservasi (SR):</span>
+                <strong style={{ color: '#60a5fa' }}>{obsSharpe.toFixed(2)}</strong>
+              </div>
+              <input
+                type="range"
+                min="0.5"
+                max="3.5"
+                step="0.05"
+                value={obsSharpe}
+                onChange={e => setObsSharpe(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Jumlah Percobaan Trial Backtest (N):</span>
+                <strong style={{ color: '#fbbf24' }}>{numTrials} Model Diuji</strong>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="100"
+                step="1"
+                value={numTrials}
+                onChange={e => setNumTrials(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+              <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                Semakin banyak kombinasi parameter yang Anda coba, semakin tinggi risiko overfit!
+              </div>
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Skewness Return (γ_3):</span>
+                <strong style={{ color: skewness < 0 ? '#ef4444' : '#10b981' }}>{skewness.toFixed(2)}</strong>
+              </div>
+              <input
+                type="range"
+                min="-1.5"
+                max="1.5"
+                step="0.05"
+                value={skewness}
+                onChange={e => setSkewness(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Kurtosis (Fat Tail γ_4, Normal = 3):</span>
+                <strong style={{ color: kurtosis > 3 ? '#fbbf24' : 'var(--text-primary)' }}>{kurtosis.toFixed(1)}</strong>
+              </div>
+              <input
+                type="range"
+                min="2.0"
+                max="9.0"
+                step="0.2"
+                value={kurtosis}
+                onChange={e => setKurtosis(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Durasi Track Record Backtest:</span>
+                <strong>{trackYears.toFixed(1)} Tahun ({Math.round(sampleT)} Bar)</strong>
+              </div>
+              <input
+                type="range"
+                min="0.5"
+                max="5.0"
+                step="0.5"
+                value={trackYears}
+                onChange={e => setTrackYears(Number(e.target.value))}
+                style={{ width: '100%', cursor: 'pointer' }}
+              />
+            </div>
+          </div>
+
+          {/* DSR Output */}
+          <div style={{ background: 'var(--bg-panel)', padding: '14px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '12px' }}>
+            <div>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
+                Hasil Audit López de Prado (2018) Deflated Sharpe Ratio
+              </div>
+
+              <div style={{ background: 'rgba(0,0,0,0.35)', padding: '8px', borderRadius: '4px', fontFamily: 'serif', fontSize: '11px', color: '#93c5fd', marginBottom: '10px' }}>
+                SR* = √(2 ln N) + γ/√(2 ln N) &nbsp;|&nbsp; DSR = Φ( (SR - SR*)√(T-1) / √V )
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '11px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 8px', background: 'var(--bg-panel-subtle)', borderRadius: '4px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Expected Max Sharpe dari Kebetulan Acak (SR*):</span>
+                  <strong style={{ color: '#f59e0b' }}>{expectedMaxSR.toFixed(2)}</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 8px', background: 'var(--bg-panel-subtle)', borderRadius: '4px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Deflated Sharpe Ratio (DSR):</span>
+                  <strong style={{ color: dsrDefensible ? '#10b981' : '#ef4444', fontSize: '14px' }}>
+                    {(dsrScore * 100).toFixed(1)}% (p-val: {(1 - dsrScore).toFixed(3)})
+                  </strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 8px', background: 'var(--bg-panel-subtle)', borderRadius: '4px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Ambang Batas Signifikansi:</span>
+                  <strong>Minimal 95.0% (α = 0.05)</strong>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ padding: '10px', borderRadius: '6px', background: 'rgba(0,0,0,0.4)', border: dsrDefensible ? '1px solid #10b981' : '1px solid #ef4444' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                KESIMPULAN AUDIT STATISTIK KUANTITATIF:
+              </div>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: dsrDefensible ? '#34d399' : '#f87171', marginTop: '3px' }}>
+                {dsrDefensible ? '🛡️ STATISTICALLY DEFENSIBLE (Bebas Dari False Discovery)' : '⚠️ SUSPECT OVERFITTING (Kemungkinan Hasil Kebetulan Acak)'}
+              </div>
+              <div style={{ fontSize: '10px', color: '#cbd5e1', marginTop: '4px', lineHeight: 1.4 }}>
+                {dsrDefensible
+                  ? 'Strategi ini terbukti secara statistik memiliki alpha murni yang bertahan melewati koreksi multiple-testing.'
+                  : 'Jumlah percobaan backtest yang terlalu banyak memudarkan keandalan Sharpe Ratio. Jangan deploy ke akun riil sebelum lolos DSR ≥ 95%.'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function QuantAcademyTab() {
   const [activeTab, setActiveTab] = useState('academy'); // 'academy' | 'dictionary' | 'gallery' | 'calculator' | 'certificate'
   const [activeLevel, setActiveLevel] = useState(1);
@@ -916,6 +1423,20 @@ export default function QuantAcademyTab() {
           style={{ fontSize: '11px', padding: '6px 13px', fontWeight: '700' }}
         >
           🧮 Kalkulator Lot & Cockpit Checklist
+        </button>
+        <button
+          onClick={() => setActiveTab('quant_lab')}
+          className={'telemetry-btn ' + (activeTab === 'quant_lab' ? 'active' : '')}
+          style={{
+            fontSize: '11px',
+            padding: '6px 13px',
+            fontWeight: '700',
+            background: activeTab === 'quant_lab' ? 'rgba(59, 130, 246, 0.25)' : undefined,
+            color: activeTab === 'quant_lab' ? '#60a5fa' : undefined,
+            border: activeTab === 'quant_lab' ? '1px solid rgba(59, 130, 246, 0.4)' : undefined
+          }}
+        >
+          🔬 Interactive Quant Lab (OpenQuant)
         </button>
         {progress.completedLevels.length === 5 && (
           <button
@@ -1244,6 +1765,11 @@ export default function QuantAcademyTab() {
         </div>
       )}
 
+      {/* TAB 4.5: INTERACTIVE QUANT LAB & MATH SANDBOX (OPENQUANT INITIATIVE) */}
+      {activeTab === 'quant_lab' && (
+        <InteractiveQuantLabSandbox />
+      )}
+
       {/* TAB 3: GALERI VISUAL 10 INFOGRAFIS */}
       {activeTab === 'gallery' && (
         <div>
@@ -1428,6 +1954,11 @@ export default function QuantAcademyTab() {
           </div>
 
         </div>
+      )}
+
+      {/* TAB 4.5: INTERACTIVE QUANT LAB & MATH SANDBOX (OPENQUANT INITIATIVE) */}
+      {activeTab === 'quant_lab' && (
+        <InteractiveQuantLabSandbox />
       )}
 
       {/* TAB 5: CERTIFICATE VIEW (UNLOCKED AT 5/5 LEVELS) */}
