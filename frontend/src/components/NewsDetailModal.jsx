@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { generateSmartBulletPoints, playTTS, stopTTS } from './newsHelpers.js';
+import { generateSmartBulletPoints, getIntelligenceArtifact, playTTS, stopTTS } from './newsHelpers.js';
 
 export default function NewsDetailModal({
   news,
@@ -99,6 +99,8 @@ export default function NewsDetailModal({
   const tickers = Array.isArray(currentNews.related_tickers) ? currentNews.related_tickers : [];
   const isCrypto = currentNews.stream === 'CRYPTO' || tickers.some(t => ['BTC', 'ETH', 'SOL', 'BNB', 'DOGE', 'XRP', 'SUI'].includes(t));
 
+  const intel = getIntelligenceArtifact(currentNews);
+  const snrScore = currentNews.snr_score || intel.what_matters?.snr_score || 90;
   const bulletPoints = generateSmartBulletPoints(currentNews);
   const readingTimeSec = currentNews.reading_time_sec || 60;
   const readingTimeStr = `⏱️ ~${Math.max(1, Math.round(readingTimeSec / 60))} mnt baca`;
@@ -119,7 +121,7 @@ export default function NewsDetailModal({
       stopTTS();
       setIsTtsPlaying(false);
     } else {
-      const speechText = `${title}. Rangkuman poin penting: ${bulletPoints.join('. ')}. ${narrative}`;
+      const speechText = `${title}. What Changed: ${intel.what_changed?.summary || ''}. Why It Changed: ${intel.why_it_changed?.primary_driver || ''}. What Matters: ${intel.what_matters?.signal_vs_noise || ''}. What's Next: ${intel.whats_next?.guidance || ''}`;
       setIsTtsPlaying(true);
       playTTS(speechText, () => setIsTtsPlaying(false));
     }
@@ -127,7 +129,7 @@ export default function NewsDetailModal({
 
   // Copy Summary
   const handleCopySummary = () => {
-    let textToCopy = `📰 [${source}] ${title}\n📅 ${pubDate} | Sentimen: ${sentiment}\n\n📌 KEY TAKEAWAYS:\n${bulletPoints.map(b => '• ' + b).join('\n')}\n\n📝 KONTEKS & NARASI:\n${narrative}`;
+    let textToCopy = `🏛️ [${source}] ${title}\n📅 ${pubDate} | Sentimen: ${sentiment} | SNR: ${snrScore}%\n\n📊 [1] WHAT CHANGED:\n${intel.what_changed?.summary}\n\n🔍 [2] WHY IT CHANGED:\n${intel.why_it_changed?.primary_driver}\n\n🎯 [3] WHAT MATTERS:\n${intel.what_matters?.signal_vs_noise}\n\n⚡ [4] WHAT'S NEXT (${intel.whats_next?.urgency} IMPACT):\n${intel.whats_next?.action}: ${intel.whats_next?.guidance}`;
     if (techLevels) {
       textToCopy += `\n\n📊 LEVEL TEKNIKAL:\n• Pivot: ${techLevels.pivot}\n• Support: S1 ${techLevels.s1} | S2 ${techLevels.s2}\n• Resistance: R1 ${techLevels.r1} | R2 ${techLevels.r2}\n• Invalidation: ${techLevels.invalidation}`;
     }
@@ -221,6 +223,24 @@ export default function NewsDetailModal({
               borderRadius: '2px'
             }}>
               #{tag}
+            </span>
+
+            {/* SNR Gauge */}
+            <span style={{
+              fontSize: '8.5px',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: '800',
+              padding: '2px 6px',
+              borderRadius: '3px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '3px',
+              background: snrScore >= 85 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+              color: snrScore >= 85 ? 'var(--accent-green)' : 'var(--accent-gold)',
+              border: snrScore >= 85 ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(245, 158, 11, 0.35)'
+            }}>
+              <span>⚡</span>
+              <span>{snrScore}% SIGNAL RATIO</span>
             </span>
           </div>
 
@@ -332,6 +352,67 @@ export default function NewsDetailModal({
           >
             {title}
           </h2>
+
+          {/* Executive One-Liner Summary (Institutional Standard) */}
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(16, 185, 129, 0.06) 100%)',
+            border: '1px solid rgba(59, 130, 246, 0.35)',
+            borderRadius: '6px',
+            padding: '12px 14px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '10px'
+          }}>
+            <span style={{ fontSize: '16px', flexShrink: 0, marginTop: '2px' }}>🏛️</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <div style={{
+                fontSize: '9.5px',
+                fontWeight: '800',
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--accent-blue)',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase'
+              }}>
+                EXECUTIVE INTELLIGENCE SYNTHESIS // 4-PILLAR FRAMEWORK
+              </div>
+              <div style={{
+                fontSize: '12px',
+                fontWeight: '600',
+                color: 'var(--text-primary)',
+                lineHeight: 1.5
+              }}>
+                {currentNews.summary || `${title}. ${intel.why_it_changed?.primary_driver || ''} ${intel.whats_next?.guidance || ''}`}
+              </div>
+            </div>
+          </div>
+
+          {/* 4-Pillar Grid Overview */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            gap: '8px',
+            background: 'var(--bg-canvas, #090b10)',
+            padding: '10px',
+            borderRadius: '6px',
+            border: '1px solid rgba(255, 255, 255, 0.08)'
+          }}>
+            <div style={{ padding: '6px 8px', background: 'rgba(59, 130, 246, 0.04)', borderRadius: '4px', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+              <div style={{ fontSize: '8.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>[1] WHAT CHANGED</div>
+              <div style={{ fontSize: '10.5px', color: 'var(--text-primary)', marginTop: '2px', lineHeight: 1.35 }}>{intel.what_changed?.summary}</div>
+            </div>
+            <div style={{ padding: '6px 8px', background: 'rgba(245, 158, 11, 0.04)', borderRadius: '4px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+              <div style={{ fontSize: '8.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)' }}>[2] WHY IT CHANGED</div>
+              <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35 }}>{intel.why_it_changed?.primary_driver}</div>
+            </div>
+            <div style={{ padding: '6px 8px', background: 'rgba(168, 85, 247, 0.04)', borderRadius: '4px', border: '1px solid rgba(168, 85, 247, 0.2)' }}>
+              <div style={{ fontSize: '8.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#c084fc' }}>[3] WHAT MATTERS</div>
+              <div style={{ fontSize: '10.5px', color: 'var(--text-primary)', marginTop: '2px', lineHeight: 1.35 }}>{intel.what_matters?.signal_vs_noise}</div>
+            </div>
+            <div style={{ padding: '6px 8px', background: 'rgba(16, 185, 129, 0.04)', borderRadius: '4px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+              <div style={{ fontSize: '8.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>[4] WHAT'S NEXT ({intel.whats_next?.urgency})</div>
+              <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35 }}>{intel.whats_next?.action}: {intel.whats_next?.guidance}</div>
+            </div>
+          </div>
 
           {/* Tickers Selector & Quick Navigation */}
           {tickers.length > 0 && (
@@ -610,82 +691,136 @@ export default function NewsDetailModal({
             </div>
           )}
 
-          {/* 6. Key Takeaways Panel (Stockbit Snips Style) */}
+          {/* 6. Driver Decomposition & Key Intelligence Panel (Vijay Subramanian Framework) */}
           <div
             style={{
-              background: 'linear-gradient(180deg, rgba(0, 208, 132, 0.04) 0%, rgba(59, 130, 246, 0.04) 100%)',
-              border: '1px solid rgba(0, 208, 132, 0.3)',
+              background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.45) 0%, rgba(15, 23, 42, 0.55) 100%)',
+              border: '1px solid rgba(59, 130, 246, 0.35)',
               borderRadius: '6px',
-              padding: '14px 16px',
+              padding: '16px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '10px'
+              gap: '14px'
             }}
           >
+            {/* Header */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              borderBottom: '1px dashed rgba(0, 208, 132, 0.25)',
-              paddingBottom: '8px'
+              borderBottom: '1px dashed rgba(59, 130, 246, 0.25)',
+              paddingBottom: '10px',
+              flexWrap: 'wrap',
+              gap: '8px'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ fontSize: '13px' }}>📋</span>
+                <span style={{ fontSize: '14px' }}>🌊</span>
                 <span style={{
                   fontSize: '11px',
                   fontWeight: '800',
                   fontFamily: 'var(--font-mono)',
-                  color: 'var(--accent-green)',
+                  color: 'var(--accent-blue)',
                   letterSpacing: '0.04em'
                 }}>
-                  KEY TAKEAWAYS // STRATEGIC SUMMARY
+                  DRIVER DECOMPOSITION & ATRIBUSI PENGGERAK PASAR
                 </span>
               </div>
-              <span style={{
-                fontSize: '9px',
-                fontFamily: 'var(--font-mono)',
-                color: sentimentColor,
-                fontWeight: '700'
-              }}>
-                SENTIMEN: {sentiment}
-              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{
+                  fontSize: '9px',
+                  fontFamily: 'var(--font-mono)',
+                  color: snrScore >= 85 ? 'var(--accent-green)' : 'var(--accent-gold)',
+                  fontWeight: '800',
+                  background: 'rgba(255,255,255,0.05)',
+                  padding: '2px 6px',
+                  borderRadius: '3px'
+                }}>
+                  ⚡ SNR: {snrScore}% (SIGNAL VERIFIED)
+                </span>
+                <span style={{
+                  fontSize: '9px',
+                  fontFamily: 'var(--font-mono)',
+                  color: sentimentColor,
+                  fontWeight: '800'
+                }}>
+                  SENTIMEN: {sentiment}
+                </span>
+              </div>
             </div>
 
-            {/* Bullet Points List */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {bulletPoints.map((bullet, idx) => {
-                const icons = ['📌', '📊', '🎯', '💡'];
-                const labels = ['Inti Narasi', 'Dampak Sektor & Pasar', 'Actionable Guidance', 'Risiko & Invalidation'];
-                return (
-                  <div
-                    key={idx}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '8px',
-                      fontSize: '11px',
-                      lineHeight: 1.5,
-                      color: 'var(--text-primary)'
-                    }}
-                  >
-                    <span style={{ fontSize: '11px', flexShrink: 0, marginTop: '1px' }}>
-                      {icons[idx] || '•'}
-                    </span>
-                    <div>
-                      <strong style={{
-                        fontSize: '10px',
-                        fontFamily: 'var(--font-mono)',
-                        color: 'var(--text-secondary)',
-                        textTransform: 'uppercase',
-                        marginRight: '6px'
-                      }}>
-                        [{labels[idx] || `Poin ${idx + 1}`}]:
-                      </strong>
-                      <span>{bullet}</span>
+            {/* Waterfall Driver Progress Bars */}
+            {Array.isArray(intel.why_it_changed?.drivers) && (
+              <div style={{
+                background: 'rgba(0,0,0,0.25)',
+                padding: '12px 14px',
+                borderRadius: '6px',
+                border: '1px solid rgba(255,255,255,0.05)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '9.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)' }}>
+                    📊 DEKOMPOSISI FAKTOR PENYEBAB (KENAPA BERGERAK?):
+                  </span>
+                  <span style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                    Total Kontribusi: 100%
+                  </span>
+                </div>
+
+                {intel.why_it_changed.drivers.map((d, dIdx) => (
+                  <div key={dIdx} style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
+                      <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>
+                        {dIdx === 0 ? '①' : dIdx === 1 ? '②' : '③'} {d.factor}
+                      </span>
+                      <strong style={{ color: d.color }}>+{d.weight_pct}%</strong>
+                    </div>
+                    <div style={{ height: '6px', width: '100%', background: 'rgba(255,255,255,0.06)', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${d.weight_pct}%`, background: d.color, borderRadius: '3px' }} />
                     </div>
                   </div>
-                );
-              })}
+                ))}
+              </div>
+            )}
+
+            {/* 4-Pillar Detailed Insights */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px' }}>
+              <div style={{ background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.25)', borderRadius: '5px', padding: '10px' }}>
+                <div style={{ fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <span>📊</span> [1] WHAT CHANGED (FAKTA PASAR)
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-primary)', marginTop: '4px', lineHeight: 1.45 }}>
+                  {intel.what_changed?.summary}
+                </div>
+              </div>
+
+              <div style={{ background: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: '5px', padding: '10px' }}>
+                <div style={{ fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <span>🔍</span> [2] WHY IT CHANGED (TRANSMISI UTAMA)
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.45 }}>
+                  {intel.why_it_changed?.primary_driver}
+                </div>
+              </div>
+
+              <div style={{ background: 'rgba(168, 85, 247, 0.05)', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '5px', padding: '10px' }}>
+                <div style={{ fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#c084fc', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <span>🎯</span> [3] WHAT MATTERS (SIGNAL VS NOISE)
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-primary)', marginTop: '4px', lineHeight: 1.45 }}>
+                  {intel.what_matters?.signal_vs_noise}
+                </div>
+              </div>
+
+              <div style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '5px', padding: '10px' }}>
+                <div style={{ fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <span>⚡</span> [4] WHAT'S NEXT ({intel.whats_next?.urgency} IMPACT)
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-primary)', marginTop: '4px', lineHeight: 1.45 }}>
+                  <strong style={{ color: 'var(--accent-green)' }}>{intel.whats_next?.action}:</strong> {intel.whats_next?.guidance}
+                </div>
+              </div>
             </div>
           </div>
 

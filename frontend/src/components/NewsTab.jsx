@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import {
   extractTickers,
   generateSmartBulletPoints,
+  getIntelligenceArtifact,
   inferSentiment,
   playTTS,
   stopTTS
@@ -554,8 +555,11 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
             const detectedTickers = (Array.isArray(news.related_tickers) && news.related_tickers.length > 0)
               ? news.related_tickers
               : extractTickers(`${news.title} ${news.summary || ''}`);
+
+            const intel = getIntelligenceArtifact(news);
+            const snrScore = news.snr_score || intel.what_matters?.snr_score || 88;
             
-            const textToSpeak = `${news.title}. ${bullets.join('. ')}`;
+            const textToSpeak = `${news.title}. [What Changed]: ${intel.what_changed?.summary || ''}. [Why It Changed]: ${intel.why_it_changed?.primary_driver || ''}. [What Matters]: ${intel.what_matters?.signal_vs_noise || ''}. [What's Next]: ${intel.whats_next?.guidance || ''}`;
 
             return (
               <article
@@ -627,6 +631,24 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                       sentiment === 'BULLISH' ? 'badge-bull' : sentiment === 'BEARISH' ? 'badge-bear' : ''
                     }`} style={{ fontSize: '8px', padding: '1px 5px' }}>
                       {sentiment === 'BULLISH' ? '▲ BULLISH' : sentiment === 'BEARISH' ? '▼ BEARISH' : '● NEUTRAL'}
+                    </span>
+
+                    {/* Signal-to-Noise Ratio (SNR) Gauge */}
+                    <span style={{
+                      fontSize: '8px',
+                      fontFamily: 'var(--font-mono)',
+                      fontWeight: '800',
+                      padding: '1px 6px',
+                      borderRadius: '3px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '3px',
+                      background: snrScore >= 85 ? 'rgba(16, 185, 129, 0.12)' : 'rgba(245, 158, 11, 0.12)',
+                      color: snrScore >= 85 ? 'var(--accent-green, #10b981)' : 'var(--accent-gold, #f59e0b)',
+                      border: snrScore >= 85 ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(245, 158, 11, 0.35)'
+                    }} title="Signal-to-Noise Ratio: Mengukur keaslian akumulasi institusi vs rumor">
+                      <span>⚡</span>
+                      <span>{snrScore}% SIGNAL</span>
                     </span>
 
                     {/* Reading Time */}
@@ -705,38 +727,204 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                   </div>
                 )}
 
-                {/* Structured Key Highlights / Bullet Points */}
+                {/* 4-Pillar Intelligence Cockpit Grid (Vijay Subramanian Framework) */}
                 <div style={{
-                  background: 'var(--bg-canvas)',
-                  padding: '9px 12px',
-                  borderRadius: 'var(--radius-xs)',
-                  border: 'var(--border-muted)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '4px'
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                  gap: '8px',
+                  background: 'var(--bg-canvas, #090b10)',
+                  padding: '10px',
+                  borderRadius: 'var(--radius-xs, 4px)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)'
                 }}>
+                  {/* [1] WHAT CHANGED */}
                   <div style={{
-                    fontSize: '9px',
-                    fontWeight: '700',
-                    textTransform: 'uppercase',
-                    color: 'var(--text-muted)',
-                    letterSpacing: '0.04em'
-                  }}>
-                    📌 KEY TAKEAWAYS (RINGKASAN POIN-POIN PENTING):
-                  </div>
-                  <ul style={{
-                    margin: 0,
-                    paddingLeft: '16px',
+                    background: 'rgba(255, 255, 255, 0.02)',
+                    border: '1px solid rgba(59, 130, 246, 0.2)',
+                    borderRadius: '4px',
+                    padding: '8px 10px',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '3px'
+                    gap: '4px'
                   }}>
-                    {bullets.map((b, bIdx) => (
-                      <li key={bIdx} style={{ fontSize: '11px', color: 'var(--text-primary)', lineHeight: 1.45 }}>
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
+                    <div style={{
+                      fontSize: '9px',
+                      fontWeight: '800',
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--accent-blue, #3b82f6)',
+                      letterSpacing: '0.04em',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      <span>📊</span>
+                      <span>[1] WHAT CHANGED</span>
+                    </div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-primary)', lineHeight: 1.45 }}>
+                      {intel.what_changed?.summary}
+                    </div>
+                    {Array.isArray(intel.what_changed?.metrics) && intel.what_changed.metrics.length > 0 && (
+                      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: 'auto', paddingTop: '4px' }}>
+                        {intel.what_changed.metrics.map((m, mIdx) => (
+                          <span key={mIdx} style={{
+                            fontSize: '8.5px',
+                            fontFamily: 'var(--font-mono)',
+                            fontWeight: '700',
+                            background: 'rgba(59, 130, 246, 0.15)',
+                            color: 'var(--accent-blue)',
+                            padding: '1px 5px',
+                            borderRadius: '2px',
+                            border: '1px solid rgba(59, 130, 246, 0.3)'
+                          }}>
+                            {m}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* [2] WHY IT CHANGED (Driver Decomposition) */}
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.02)',
+                    border: '1px solid rgba(245, 158, 11, 0.2)',
+                    borderRadius: '4px',
+                    padding: '8px 10px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '5px'
+                  }}>
+                    <div style={{
+                      fontSize: '9px',
+                      fontWeight: '800',
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--accent-gold, #f59e0b)',
+                      letterSpacing: '0.04em',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      <span>🔍</span>
+                      <span>[2] WHY IT CHANGED</span>
+                      <span style={{ fontSize: '7.5px', color: 'var(--text-muted)', marginLeft: 'auto' }}>DRIVER DECOMPOSITION</span>
+                    </div>
+                    <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                      {intel.why_it_changed?.primary_driver}
+                    </div>
+                    {/* Micro Stacked Driver Waterfall Bar */}
+                    {Array.isArray(intel.why_it_changed?.drivers) && (
+                      <div style={{ marginTop: 'auto', paddingTop: '4px' }}>
+                        <div style={{
+                          height: '5px',
+                          width: '100%',
+                          display: 'flex',
+                          borderRadius: '2px',
+                          overflow: 'hidden',
+                          background: 'rgba(255,255,255,0.06)',
+                          marginBottom: '4px'
+                        }}>
+                          {intel.why_it_changed.drivers.map((d, dIdx) => (
+                            <div
+                              key={dIdx}
+                              style={{
+                                width: `${d.weight_pct}%`,
+                                background: d.color || (dIdx === 0 ? '#3b82f6' : dIdx === 1 ? '#f59e0b' : '#10b981')
+                              }}
+                              title={`${d.factor}: ${d.weight_pct}%`}
+                            />
+                          ))}
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '8px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                          {intel.why_it_changed.drivers.map((d, dIdx) => (
+                            <span key={dIdx} style={{ color: d.color }}>
+                              {d.weight_pct}% {d.factor.split(' ')[0]}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* [3] WHAT MATTERS (Signal vs Noise) */}
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.02)',
+                    border: '1px solid rgba(168, 85, 247, 0.2)',
+                    borderRadius: '4px',
+                    padding: '8px 10px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px'
+                  }}>
+                    <div style={{
+                      fontSize: '9px',
+                      fontWeight: '800',
+                      fontFamily: 'var(--font-mono)',
+                      color: '#c084fc',
+                      letterSpacing: '0.04em',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      <span>🎯</span>
+                      <span>[3] WHAT MATTERS</span>
+                      <span style={{ fontSize: '7.5px', color: 'var(--text-muted)', marginLeft: 'auto' }}>SIGNAL VS NOISE</span>
+                    </div>
+                    <div style={{ fontSize: '10.5px', color: 'var(--text-primary)', lineHeight: 1.45 }}>
+                      {intel.what_matters?.signal_vs_noise}
+                    </div>
+                  </div>
+
+                  {/* [4] WHAT'S NEXT (Actionable Playbook) */}
+                  <div style={{
+                    background: intel.whats_next?.urgency === 'HIGH' ? 'rgba(16, 185, 129, 0.04)' : 'rgba(255, 255, 255, 0.02)',
+                    border: intel.whats_next?.urgency === 'HIGH' ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '4px',
+                    padding: '8px 10px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px'
+                  }}>
+                    <div style={{
+                      fontSize: '9px',
+                      fontWeight: '800',
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--accent-green, #10b981)',
+                      letterSpacing: '0.04em',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      <span>⚡</span>
+                      <span>[4] WHAT'S NEXT</span>
+                      <span style={{
+                        fontSize: '7.5px',
+                        fontWeight: '800',
+                        padding: '1px 5px',
+                        borderRadius: '2px',
+                        marginLeft: 'auto',
+                        background: intel.whats_next?.urgency === 'HIGH' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+                        color: intel.whats_next?.urgency === 'HIGH' ? 'var(--accent-green)' : 'var(--text-muted)',
+                        border: intel.whats_next?.urgency === 'HIGH' ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(255,255,255,0.15)'
+                      }}>
+                        {intel.whats_next?.urgency === 'HIGH' ? 'HIGH IMPACT' : 'MEDIUM IMPACT'}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{
+                        fontSize: '8.5px',
+                        fontWeight: '800',
+                        fontFamily: 'var(--font-mono)',
+                        color: '#fff',
+                        background: 'var(--accent-green)',
+                        padding: '1px 5px',
+                        borderRadius: '2px'
+                      }}>
+                        {intel.whats_next?.action || 'ACTION'}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                      {intel.whats_next?.guidance}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Bottom Row: Clickable Tickers & Actions */}

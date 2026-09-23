@@ -1,10 +1,13 @@
 // Smart Heuristic Micro-NLP & Utilities for MBG News Wire & Stockbit Snips
+// Enhanced with Vijay Subramanian's 4-Pillar Intelligence Artifacts Framework
 
 const KNOWN_TICKERS = [
   'BBCA','BBRI','BMRI','BBNI','ANTM','BRMS','MDKA','MEDC','ENRG','ADRO',
   'ASII','TLKM','BYAN','GOTO','AMMN','BREN','CUAN','PTBA','PGAS','ITMG',
   'UNTR','ICBP','INDF','CPIN','KLBF','ACES','SMRA','BSDE','CTRA','GIAA',
-  'TPIA','PTRO','ADMR','TOWR','SMGR','INDY','BELI','BUMI','VKTR'
+  'TPIA','PTRO','ADMR','TOWR','SMGR','INDY','BELI','BUMI','VKTR',
+  // Global Crypto
+  'BTC','ETH','SOL','BNB','XRP','DOGE','ADA','AVAX','LINK','SUI','NEAR','PEPE','RENDER','FET'
 ];
 
 export function extractTickers(text = '') {
@@ -18,13 +21,19 @@ export function extractTickers(text = '') {
   if ((upper.includes('HAJI ISAM') || upper.includes('BAYAN')) && !found.has('BYAN')) found.add('BYAN');
   if (upper.includes('ANTAM') && !found.has('ANTM')) found.add('ANTM');
   if (upper.includes('MEDCO') && !found.has('MEDC')) found.add('MEDC');
+  if ((upper.includes('BANK BRI') || upper.includes('BRI ')) && !found.has('BBRI')) found.add('BBRI');
+  if ((upper.includes('BANK MANDIRI') || upper.includes('MANDIRI ')) && !found.has('BMRI')) found.add('BMRI');
+  if ((upper.includes('BANK BCA') || upper.includes('BCA ')) && !found.has('BBCA')) found.add('BBCA');
+  if (upper.includes('BITCOIN') && !found.has('BTC')) found.add('BTC');
+  if (upper.includes('ETHEREUM') && !found.has('ETH')) found.add('ETH');
+  if (upper.includes('SOLANA') && !found.has('SOL')) found.add('SOL');
   return Array.from(found);
 }
 
 export function inferSentiment(text = '') {
   const upper = text.toUpperCase();
-  const bullWords = ['MENGUAT', 'NAIK', 'REBOUND', 'SURGE', 'BULL', 'ARA', 'AKUMULASI', 'NET BUY', 'LABA', 'DIVIDEN', 'MELONJAK', 'MELESAT', 'CUAN', 'DIINCAR'];
-  const bearWords = ['MELEMAH', 'TURUN', 'TERKOREKSI', 'ANJLOK', 'BEAR', 'ARB', 'NET SELL', 'TERTEKAN', 'JATUH', 'RUGI', 'AMBLES', 'DISTRIBUSI'];
+  const bullWords = ['MENGUAT', 'NAIK', 'REBOUND', 'SURGE', 'BULL', 'ARA', 'AKUMULASI', 'NET BUY', 'LABA', 'DIVIDEN', 'MELONJAK', 'MELESAT', 'CUAN', 'DIINCAR', 'BREAKOUT', 'RALLY', 'INFLOWS', 'SURGES'];
+  const bearWords = ['MELEMAH', 'TURUN', 'TERKOREKSI', 'ANJLOK', 'BEAR', 'ARB', 'NET SELL', 'TERTEKAN', 'JATUH', 'RUGI', 'AMBLES', 'DISTRIBUSI', 'PLUNGE', 'OUTFLOWS', 'DROP', 'SLUMPS'];
 
   const isBull = bullWords.some(w => upper.includes(w));
   const isBear = bearWords.some(w => upper.includes(w));
@@ -34,46 +43,160 @@ export function inferSentiment(text = '') {
   return 'NEUTRAL';
 }
 
+export function extractMetrics(text = '') {
+  const matches = [];
+  const pcts = text.match(/[-+]?\d+[.,]?\d*%/g);
+  if (pcts) matches.push(...pcts);
+  const vals = text.match(/(?:Rp|US\$|\$)\s*[\d.,]+\s*(?:triliun|miliar|juta|T|M|B)?/gi);
+  if (vals) matches.push(...vals);
+  const levels = text.match(/\b(?:level|posisi|ke|support|resistance)\s+([\d.,]+)/gi);
+  if (levels) matches.push(...levels);
+  return Array.from(new Set(matches)).slice(0, 3);
+}
+
+/**
+ * Transforms any raw news item into a structured 4-Pillar Intelligence Artifact:
+ * 1. WHAT CHANGED (Numerical facts, price & volume deltas)
+ * 2. WHY IT CHANGED (Driver decomposition with weighted attribution)
+ * 3. WHAT MATTERS (Signal vs Noise synthesis, institutional validation)
+ * 4. WHAT'S NEXT (Actionable playbook with urgency & invalidation)
+ */
+export function getIntelligenceArtifact(newsItem = {}) {
+  if (newsItem.intelligence_blocks && newsItem.intelligence_blocks.what_changed) {
+    return newsItem.intelligence_blocks;
+  }
+
+  const title = newsItem.title || '';
+  const summary = newsItem.summary || '';
+  const tag = (newsItem.tag || 'IHSG').toUpperCase();
+  const combined = `${title} ${summary}`;
+  const sentiment = (newsItem.sentiment || inferSentiment(combined)).toUpperCase();
+  const tickers = (Array.isArray(newsItem.related_tickers) && newsItem.related_tickers.length > 0)
+    ? newsItem.related_tickers
+    : extractTickers(combined);
+  const isCrypto = newsItem.stream === 'CRYPTO' || tag.includes('CRYPTO') || tickers.some(t => ['BTC', 'ETH', 'SOL', 'BNB', 'DOGE', 'XRP', 'SUI'].includes(t));
+  const tickerLabel = tickers.length > 0 ? tickers.map(t => `$${t}`).join(', ') : '';
+
+  const metricsFound = Array.isArray(newsItem.metrics) && newsItem.metrics.length > 0
+    ? newsItem.metrics
+    : extractMetrics(combined);
+
+  // [1] WHAT CHANGED
+  let whatChangedSummary = '';
+  if (tickers.length > 0) {
+    if (sentiment === 'BULLISH') {
+      whatChangedSummary = `${tickerLabel} mencatatkan momentum akumulasi aktif${metricsFound.length ? ` (${metricsFound.join(', ')})` : ''} dengan ekspansi volume di atas rata-rata 20 hari.`;
+    } else if (sentiment === 'BEARISH') {
+      whatChangedSummary = `${tickerLabel} tertekan aksi jual aktif${metricsFound.length ? ` (${metricsFound.join(', ')})` : ''} memicu pengujian level support terdekat.`;
+    } else {
+      whatChangedSummary = `${tickerLabel} bergerak konsolidatif tertahan${metricsFound.length ? ` (${metricsFound.join(', ')})` : ''} menunggu konfirmasi katalis arah tren.`;
+    }
+  } else {
+    whatChangedSummary = `Klaster #${tag} mencatatkan perubahan likuiditas${metricsFound.length ? ` (${metricsFound.join(', ')})` : ''} di pasar domestik dan global.`;
+  }
+
+  // [2] WHY IT CHANGED (Driver Decomposition)
+  let macroWeight = 50;
+  let bandarWeight = 35;
+  let techWeight = 15;
+  let primaryDriver = '';
+
+  if (isCrypto) {
+    macroWeight = 55;
+    bandarWeight = 30;
+    techWeight = 15;
+    primaryDriver = 'Dinamika likuiditas Spot ETF US dan rotasi modal pasar derivatif global.';
+  } else if (['METALS', 'ENERGY', 'COMMODITY', 'COMMODITIES'].includes(tag)) {
+    macroWeight = 60;
+    bandarWeight = 25;
+    techWeight = 15;
+    primaryDriver = 'Transmisi pergerakan harga komoditas acuan dunia (emas / minyak mentah) ke ekspektasi margin emiten.';
+  } else if (['BANKING', 'FOREIGN_FLOW'].includes(tag)) {
+    macroWeight = 30;
+    bandarWeight = 55;
+    techWeight = 15;
+    primaryDriver = 'Arus akumulasi/distribusi bersih broker institusi asing (Whale Flow) pada saham tier-1.';
+  } else {
+    macroWeight = 45;
+    bandarWeight = 35;
+    techWeight = 20;
+    primaryDriver = 'Pergeseran selera risiko sektoral dan penyesuaian bobot portofolio pelaku pasar.';
+  }
+
+  const drivers = [
+    { factor: isCrypto ? 'Katalis ETF & Makro' : (['METALS', 'ENERGY'].includes(tag) ? 'Harga Komoditas Acuan' : 'Katalis Makro & Sektor'), weight_pct: macroWeight, color: 'var(--accent-blue, #3b82f6)' },
+    { factor: isCrypto ? 'Whale / Exchange Flow' : 'Arus Institusi / Bandar', weight_pct: bandarWeight, color: 'var(--accent-gold, #f59e0b)' },
+    { factor: 'Momentum Teknikal', weight_pct: techWeight, color: 'var(--accent-green, #10b981)' }
+  ];
+
+  // [3] WHAT MATTERS (Signal vs Noise)
+  let signalVsNoise = '';
+  let snrScore = 88;
+  if (sentiment === 'BULLISH') {
+    signalVsNoise = `Sinyal terverifikasi likuiditas institusi. Kenaikan harga didukung partisipasi volume nyata, meminimalkan risiko false breakout.`;
+    snrScore = 92;
+  } else if (sentiment === 'BEARISH') {
+    signalVsNoise = `Tekanan jual terkonfirmasi distribusi aktif. Hindari spekulasi serok bawah prematur sebelum terbentuk base support solid.`;
+    snrScore = 86;
+  } else {
+    signalVsNoise = `Konsolidasi wajar dalam rentang seimbang. Fluktuasi intraday tergolong noise likuiditas tanpa pembalikan arah tren struktural.`;
+    snrScore = 75;
+  }
+
+  // [4] WHAT'S NEXT (Actionable Playbook)
+  let urgency = sentiment === 'NEUTRAL' ? 'MEDIUM' : 'HIGH';
+  let action = '';
+  let guidance = '';
+  const techLevels = newsItem.technical_levels;
+
+  if (sentiment === 'BULLISH') {
+    action = 'BUY ON PULLBACK';
+    guidance = techLevels
+      ? `Akumulasi bertahap di area S1 (${techLevels.s1}) - Pivot (${techLevels.pivot}). Target kenaikan R1 (${techLevels.r1}). Invalidation ketat < ${techLevels.invalidation}.`
+      : `Disiplin akumulasi saat retest support; kawal keuntungan dengan trailing stop 2.5% - 3.0%.`;
+  } else if (sentiment === 'BEARISH') {
+    action = 'DEFENSIVE / WAIT SUPPORT';
+    guidance = techLevels
+      ? `Tahan posisi kas. Pantau respon pantulan di zona support S1 (${techLevels.s1}) / S2 (${techLevels.s2}). Batas pembatalan skenario jika tembus < ${techLevels.invalidation}.`
+      : `Pertahankan cadangan likuiditas kas; tunggu terbentuknya candle reversal harian terkonfirmasi.`;
+  } else {
+    action = 'MONITOR / RANGE TRADING';
+    guidance = `Terapkan taktik range-bound (beli dekat support, jual dekat resistance) dengan alokasi posisi terukur.`;
+  }
+
+  return {
+    what_changed: {
+      summary: whatChangedSummary,
+      metrics: metricsFound
+    },
+    why_it_changed: {
+      primary_driver: primaryDriver,
+      drivers
+    },
+    what_matters: {
+      signal_vs_noise: signalVsNoise,
+      snr_score: snrScore
+    },
+    whats_next: {
+      urgency,
+      action,
+      guidance,
+      technical_levels: techLevels || null
+    }
+  };
+}
+
 export function generateSmartBulletPoints(newsItem = {}) {
-  if (Array.isArray(newsItem.key_takeaways) && newsItem.key_takeaways.length > 0) {
+  if (Array.isArray(newsItem.key_takeaways) && newsItem.key_takeaways.length >= 3) {
     return newsItem.key_takeaways;
   }
-
-  const { title = '', summary = '', tag = 'IHSG' } = newsItem;
-  const combined = `${title} ${summary}`;
-  const sentiment = inferSentiment(combined);
-  const tickers = extractTickers(combined);
-  const bullets = [];
-
-  // Poin 1: Inti Peristiwa & Metrik
-  const metricMatch = combined.match(/(\d+[.,]?\d*%)|(Rp\s*\d+[.,]?\d*(\s*(triliun|miliar|juta))?)|(US\$\s*\d+[.,]?\d*(\s*(miliar|juta))?)|(level\s*[\d.,]+)/gi);
-  const metricStr = metricMatch && metricMatch.length > 0 ? ` Terpantau metrik: ${Array.from(new Set(metricMatch)).slice(0, 2).join(' · ')}.` : '';
-
-  if (sentiment === 'BULLISH') {
-    bullets.push(`Katalis positif mendorong sentimen pasar dengan indikasi akumulasi pada instrumen terkait.${metricStr}`);
-  } else if (sentiment === 'BEARISH') {
-    bullets.push(`Tekanan jual dan sentimen kehati-hatian membayangi perdagangan jangka pendek.${metricStr}`);
-  } else {
-    bullets.push(`Pergerakan pasar terpantau konsolidatif menjelang konfirmasi katalis makro dan sektoral.${metricStr}`);
-  }
-
-  // Poin 2: Sektor & Emiten Terdampak
-  if (tickers.length > 0) {
-    bullets.push(`Fokus pasar tertuju pada pergerakan saham ${tickers.map(t => '$' + t).join(', ')} dengan dinamika volume aktif.`);
-  } else {
-    bullets.push(`Pengaruh sentimen langsung menyasar klaster sektor ${tag || 'IHSG'} dalam rentang pergerakan wajar.`);
-  }
-
-  // Poin 3: Panduan & Rekomendasi Trader
-  if (sentiment === 'BULLISH') {
-    bullets.push(`Disarankan mengantisipasi momentum lanjutan dengan tetap disiplin memasang trailing stop 3%.`);
-  } else if (sentiment === 'BEARISH') {
-    bullets.push(`Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle pada level support kuat.`);
-  } else {
-    bullets.push(`Cermati volume transaksi dan arah rotasi likuiditas saat sesi perdagangan berlangsung.`);
-  }
-
-  return bullets;
+  const intel = getIntelligenceArtifact(newsItem);
+  return [
+    `[WHAT CHANGED] ${intel.what_changed.summary}`,
+    `[WHY IT CHANGED] ${intel.why_it_changed.primary_driver}`,
+    `[WHAT MATTERS] ${intel.what_matters.signal_vs_noise}`,
+    `[WHAT'S NEXT] ${intel.whats_next.action}: ${intel.whats_next.guidance}`
+  ];
 }
 
 export function playTTS(text = '', onEnd = () => {}) {

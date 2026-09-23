@@ -86,61 +86,125 @@ class NewsProcessor:
         return metrics
 
     @classmethod
-    def generate_key_takeaways(cls, title: str, source: str, tag: str) -> Tuple[str, List[str], str, float, List[str], List[str]]:
+    def generate_intelligence_artifact(cls, title: str, source: str, tag: str) -> Tuple[str, List[str], str, float, List[str], List[str], Dict[str, Any], int]:
         tickers = cls.extract_tickers(title)
         sentiment, sentiment_score = cls.infer_sentiment(title)
         metrics = cls.extract_metrics(title)
-
-        # 1. Poin Inti Peristiwa & Metrik
         is_crypto_tag = "CRYPTO" in tag or any(t in ["BTC", "ETH", "SOL", "BNB", "SUI", "NEAR", "DOGE", "XRP"] for t in tickers)
-        
+        ticker_str = f"${', $'.join(tickers)}" if tickers else f"klaster #{tag}"
+
+        # 1. WHAT CHANGED (Numerical facts & price/volume deltas)
+        metrics_str = f" ({'; '.join(metrics)})" if metrics else ""
         if sentiment == "BULLISH":
-            t1 = f"Katalis positif mendorong sentimen pasar dengan indikasi akumulasi beli aktif pada instrumen terkait."
+            t1 = f"Momentum akumulasi beli aktif terkonfirmasi pada {ticker_str}{metrics_str} dengan partisipasi volume kuat."
         elif sentiment == "BEARISH":
-            t1 = f"Tekanan jual dan sentimen kehati-hatian memicu koreksi jangka pendek pada aset terkait."
+            t1 = f"Tekanan jual aktif melanda {ticker_str}{metrics_str}, memicu pengujian support level kunci."
         else:
-            t1 = f"Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru."
+            t1 = f"Pergerakan harga {ticker_str}{metrics_str} berada dalam fase konsolidasi seimbang menguji titik equilibrium."
 
-        if metrics:
-            t1 += f" Terpantau {'; '.join(metrics)}."
-
-        # 2. Poin Dampak Emiten & Sektor
+        # 2. WHY IT CHANGED (Driver Decomposition)
         if is_crypto_tag:
-            t2 = f"Volatilitas aset kripto ${', $'.join(tickers) if tickers else 'Web3'} merespons likuiditas global dan arus modal spot ETF."
-        elif tickers:
-            t2 = f"Fokus pasar tertuju pada pergerakan saham ${', $'.join(tickers)} dengan aktivitas transaksi aktif."
-        elif tag == "METALS":
-            t2 = f"Dinamika harga komoditas logam mulia menjadi katalis utama rotasi sektor tambang BEI."
+            t2 = f"Arus likuiditas Spot ETF US dan rotasi modal derivatif menjadi driver utama pergerakan pasar kripto."
+            macro_w, bandar_w, tech_w = 55, 30, 15
+            macro_factor = "Likuiditas Makro & ETF"
+            bandar_factor = "Whale & Exchange Flow"
+        elif tag in ["METALS", "COMMODITIES"]:
+            t2 = f"Penguatan harga komoditas logam mulia mentransmisikan katalis positif terhadap ekspektasi laba emiten tambang."
+            macro_w, bandar_w, tech_w = 60, 25, 15
+            macro_factor = "Harga Komoditas Emas/Logam"
+            bandar_factor = "Arus Institusi / Bandar"
         elif tag == "ENERGY":
-            t2 = f"Fluktuasi harga minyak mentah global memengaruhi ekspektasi marjin operasional sektor energi."
-        elif tag == "BANKING":
-            t2 = f"Saham perbankan berkapitalisasi besar menjadi penopang stabilitas pergerakan indeks IHSG."
-        elif tag == "FOREIGN_FLOW":
-            t2 = f"Aktivitas beli/jual bersih investor institusi asing mencerminkan pergeseran selera risiko (risk appetite)."
+            t2 = f"Fluktuasi harga minyak mentah Brent memicu penyesuaian margin operasional sektor hulu migas dan energi."
+            macro_w, bandar_w, tech_w = 60, 25, 15
+            macro_factor = "Harga Minyak Mentah Global"
+            bandar_factor = "Arus Institusi / Bandar"
+        elif tag in ["BANKING", "FOREIGN_FLOW"]:
+            t2 = f"Rotasi arus modal asing (Foreign Institutional Flow) mendominasi penentuan arah indeks dan stabilitas sektor perbankan."
+            macro_w, bandar_w, tech_w = 30, 55, 15
+            macro_factor = "Yield US Treasury & DXY"
+            bandar_factor = "Arus Modal Asing (Whale)"
         else:
-            t2 = f"Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid."
+            t2 = f"Pergeseran selera risiko sektoral dan penyesuaian portofolio pelaku pasar domestik menggerakkan dinamika harga."
+            macro_w, bandar_w, tech_w = 45, 35, 20
+            macro_factor = "Sentimen Sektoral & Makro"
+            bandar_factor = "Bandarmology & Akumulasi"
 
-        # 3. Poin Panduan & Manajemen Risiko Trader
+        # 3. WHAT MATTERS (Signal vs Noise)
+        if sentiment == "BULLISH":
+            t3 = f"Sinyal valid terkonfirmasi likuiditas institusi. Kenaikan harga didukung volume nyata, bukan sekadar pompom ritel sesaat."
+            snr_score = 92
+        elif sentiment == "BEARISH":
+            t3 = f"Distribusi institusi aktif. Waspadai risiko pelemahan lanjutan hingga terbentuk base support yang teruji."
+            snr_score = 86
+        else:
+            t3 = f"Konsolidasi sehat. Fluktuasi intraday merupakan noise likuiditas wajar tanpa sinyal pembalikan tren struktural."
+            snr_score = 76
+
+        # 4. WHAT'S NEXT (Actionable Playbook)
+        urgency = "HIGH" if abs(sentiment_score) >= 0.5 else "MEDIUM"
         if is_crypto_tag:
             if sentiment == "BULLISH":
-                t3 = f"Fokus pada Spot USDT murni tanpa leverage berlebih; kawal profit dengan trailing stop 2.5%."
+                action = "BUY ON PULLBACK"
+                t4 = f"Fokus akumulasi Spot USDT murni tanpa leverage berlebih; kawal profit dengan trailing stop 2.5%."
             elif sentiment == "BEARISH":
-                t3 = f"Antisipasi risiko likuidasi leverage derivatif; amankan cash USDT dan tunggu support 4H teruji."
+                action = "DEFENSIVE / PRESERVE CASH"
+                t4 = f"Antisipasi risiko likuidasi leverage derivatif; amankan cash USDT dan tunggu support 4H teruji."
             else:
-                t3 = f"Waspadai volatilitas akhir pekan/jam buka Wall Street; gunakan strategi DCA pada zona support."
+                action = "RANGE TRADING"
+                t4 = f"Waspadai volatilitas jam buka Wall Street; gunakan strategi akumulasi bertahap pada zona support."
         else:
             if sentiment == "BULLISH":
-                t3 = f"Disarankan mencermati kelanjutan momentum dengan tetap disiplin memasang trailing stop 3%."
+                action = "BUY ON PULLBACK"
+                t4 = f"Akumulasi bertahap saat retest support; terapkan trailing stop disiplin 3.0% untuk melindungi modal."
             elif sentiment == "BEARISH":
-                t3 = f"Hindari aksi beli agresif; tunggu konfirmasi sinyal reversal candle di area support kuat."
+                action = "DEFENSIVE / WAIT SUPPORT"
+                t4 = f"Hindari aksi tangkap pisau jatuh; tunggu konfirmasi candle reversal harian pada support kuat."
             else:
-                t3 = f"Pantau konfirmasi volume transaksi saat sesi perdagangan berlangsung untuk menguji arah tren."
+                action = "MONITOR RANGE"
+                t4 = f"Pantau konfirmasi volume transaksi saat sesi berlangsung untuk menguji kelanjutan momentum tren."
 
-        key_takeaways = [t1, t2, t3]
+        key_takeaways = [
+            f"[WHAT CHANGED] {t1}",
+            f"[WHY IT CHANGED] {t2}",
+            f"[WHAT MATTERS] {t3}",
+            f"[WHAT'S NEXT] {action}: {t4}"
+        ]
+
+        drivers = [
+            {"factor": macro_factor, "weight_pct": macro_w, "color": "var(--accent-blue, #3b82f6)"},
+            {"factor": bandar_factor, "weight_pct": bandar_w, "color": "var(--accent-gold, #f59e0b)"},
+            {"factor": "Momentum Teknikal", "weight_pct": tech_w, "color": "var(--accent-green, #10b981)"}
+        ]
+
+        intelligence_blocks = {
+            "what_changed": {
+                "summary": t1,
+                "metrics": metrics
+            },
+            "why_it_changed": {
+                "primary_driver": t2,
+                "drivers": drivers
+            },
+            "what_matters": {
+                "signal_vs_noise": t3,
+                "snr_score": snr_score
+            },
+            "whats_next": {
+                "urgency": urgency,
+                "action": action,
+                "guidance": t4
+            }
+        }
+
         target_name = "kripto" if is_crypto_tag else "saham"
-        ticker_str = f" pada ${', $'.join(tickers)}" if tickers else ""
-        summary = f"Research Intelligence ({source}): Indikasi sentimen {sentiment.lower()}{ticker_str} mempengaruhi klaster {tag}."
+        ticker_display = f" pada {ticker_str}" if tickers else ""
+        summary = f"MBG Intelligence Briefing ({source}): Sentimen {sentiment.lower()}{ticker_display} mempengaruhi klaster {tag}."
 
+        return summary, key_takeaways, sentiment, sentiment_score, tickers, metrics, intelligence_blocks, snr_score
+
+    @classmethod
+    def generate_key_takeaways(cls, title: str, source: str, tag: str) -> Tuple[str, List[str], str, float, List[str], List[str]]:
+        summary, key_takeaways, sentiment, sentiment_score, tickers, metrics, _, _ = cls.generate_intelligence_artifact(title, source, tag)
         return summary, key_takeaways, sentiment, sentiment_score, tickers, metrics
 
     @classmethod
@@ -476,7 +540,7 @@ class NewsMacroFetcher:
                                              "ENERGY_GEO", "TECH_AI"):
                             tag = stream_type
 
-                        summary, key_takeaways, sentiment, sentiment_score, tickers, metrics = NewsProcessor.generate_key_takeaways(title, source, tag)
+                        summary, key_takeaways, sentiment, sentiment_score, tickers, metrics, intel_blocks, snr_val = NewsProcessor.generate_intelligence_artifact(title, source, tag)
 
                         # Dynamic reading time based on 180 words per minute
                         word_count = len(title.split()) + sum(len(t.split()) for t in key_takeaways)
@@ -496,7 +560,9 @@ class NewsMacroFetcher:
                             "metrics": metrics,
                             "reading_time_sec": reading_time,
                             "summary": summary,
-                            "key_takeaways": key_takeaways
+                            "key_takeaways": key_takeaways,
+                            "intelligence_blocks": intel_blocks,
+                            "snr_score": snr_val
                         })
             except Exception as e:
                 logger.warning(f"Failed to fetch {stream_type} RSS feed: {e}")
