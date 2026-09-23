@@ -311,6 +311,29 @@ Ekosistem simulasi perdagangan otonom 16 bot terbagi dalam 5 tingkatan DNA strat
 
 ---
 
+
+---
+
+## 🔬 Executive Hedge Fund Working Paper Series (MBG-WP-2026) & Quant Academy
+
+Modul edukasi dan riset kuantitatif MBG telah ditingkatkan ke standar **Hedge Fund Research Paper Series** yang menggabungkan kedalaman akademis dengan aksesibilitas investor awam melalui arsitektur **Dual-Layer Reading (Executive Layman vs Quant Formalism)** dan **Embedded Interactive Widgets**.
+
+### Daftar Publikasi Kuantitatif MBG-WP:
+| Paper ID | Judul Publikasi Kuantitatif | Literatur & Teori Resmi | Widget Interaktif Live |
+|---|---|---|---|
+| **MBG-WP-01** | *Capital Preservation & Discrete BEI Lot Sizing: A Probabilistic Framework for Asymmetric Risk in Indonesian Equity Portfolios* | **Ralph Vince (1990)** (*The Mathematics of Money Management*), **Robert Carver (2015)** (*Systematic Trading*) | *Live Drawdown Recovery & Fixed Fractional Lot Calculator* |
+| **MBG-WP-02** | *Global Macro Transmission Channels & Carry Trade Mechanics: Cross-Asset Yield Differentials, Sovereign Spread Dynamics, and IDX Capital Flow Sensitivity* | **John J. Murphy (1999)** (*Technical Analysis of the Financial Markets*), **Abdulkader Aljandali (2016)** | *Interactive Macro Flow Tree & Cross-Asset Sensitivity Matrix* |
+| **MBG-WP-03** | *Market Microstructure & Order Book Asymmetry: Limit Order Book Dynamics, Queue Imbalance, and Institutional Spoofing Signatures* | **Mark Andrew Lim (2016)** (*The Handbook of Trading Strategies*) | *Real-Time L2 Queue Imbalance & Spoofing Detector Sandbox* |
+| **MBG-WP-04** | *Smart Money Concepts: Imbalance, Liquidity Voids, and the 50% Consequent Encroachment Magnet on Low-Frequency Equities* | **Marcos López de Prado (2018)** (*Advances in Financial Machine Learning*), ICT Frameworks | *3-Candle Fair Value Gap & 50% C.E. Interactive Magnet* |
+| **MBG-WP-05** | *Cyclical Commodity Dividend Cascade Trap: Liquidity Exits, Pre-Ex-Date Institutional Distribution, and Post-Ex Dividend Gap Decay in High-Beta Indonesian Equities* | **Thomas N. Bulkowski (2013)** (*Fundamental Analysis and Position Trading*) | *Historical $PTBA Dividend Trap Net-PnL Simulator* |
+| **MBG-WP-06** | *Deflated Sharpe Ratio & Statistical Defensibility: Combating Backtest Overfitting, Selection Bias, and Multiple Testing in Quantitative Strategy Verification* | **David H. Bailey & Marcos López de Prado (2014, 2018)** | *Deflated Sharpe Ratio (DSR) Multiple-Testing Decay Sandbox* |
+
+### Fitur Unggulan Riset:
+- **Dual-Layer Toggle Mode**: Mode **👔 Executive / Layman View** menyajikan analogi praktis (mobil tanpa rem, lompatan 3-candle, madu beracun dividen) tanpa rumus rumit, sedangkan mode **🔬 Quant Formalism & Proofs** memuat pembuktian matematis, persamaan LaTeX, dan kode Python/VectorBT.
+- **6 Embedded Interactive Sandbox Widgets**: Menguji langsung teori di dalam paper (simulasi pemulihan drawdown, deteksi spoofing order book L2, tarikan magnet 50% FVG, dan sensitivitas DSR).
+- **Master Quantitative Glossary (66 Istilah)**: Standarisasi istilah kuantitatif mikrostruktur pasar, ekonometrika, dan probabilitas.
+- **7 Visual Institutional Diagrams**: Diagram arsitektur visual resolusi tinggi untuk membedah struktur pasar finansial.
+
 ## 🏗️ Arsitektur Sistem & Aliran Data
 
 ### 1. End-to-End Data Pipeline & Streaming Architecture

@@ -1,247 +1,597 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
-export const ACADEMY_LEVELS = [
+/**
+ * =========================================================================
+ * MBG QUANT ACADEMY // INSTITUTIONAL WORKING PAPERS (WP SERIES 2026)
+ * Curriculum Transformation: From Simple Levels to Hedge Fund Research Papers
+ * Foundational Literature:
+ *  - Ralph Vince (1990) The Mathematics of Money Management
+ *  - Robert Carver (2015) Systematic Trading
+ *  - Marcos López de Prado (2018) Advances in Financial Machine Learning
+ *  - John J. Murphy (1999) Technical Analysis of the Financial Markets
+ *  - Mark Andrew Lim (2016) The Handbook of Technical Analysis
+ *  - Abdulkader Aljandali (2016) Quantitative Analysis & Statistics for Finance
+ *  - Thomas N. Bulkowski (2013) Fundamental Analysis and Position Trading
+ * =========================================================================
+ */
+export const INSTITUTIONAL_PAPERS = [
   {
     id: 1,
-    title: 'LEVEL 1: Fondasi Disiplin Modal & Kalkulator Lot MBG Apex (Pemula)',
-    badge: 'Discipline Shield 🛡️',
-    summary: '90% trader boncos karena mengabaikan risiko. Pelajari rem darurat 2% dan cara menghitung lot eksak agar Anda tidak pernah terkena margin call.',
-    lessons: [
+    paperCode: 'MBG-WP-01',
+    category: 'PORTFOLIO RISK & APEX SIZING',
+    badge: 'Risk Sovereign 🛡️',
+    title: 'The Mathematics of Capital Preservation: Non-Linear Drawdown Dynamics & Discrete BEI Lot Sizing',
+    subtitle: 'Mekanika Asimetri Penurunan Modal, Ralph Vince Fixed Fractional 2%, dan Sistem Rem Ganda Portofolio',
+    authors: 'MBG Quantitative Desk • Ralph Vince (1990) & Robert Carver (2015) Alignment',
+    jelCodes: 'G11, C58, D81',
+    rigor: 'Mathematical Rigor: High',
+    abstract: 'Studi empiris membuktikan bahwa kegagalan 90% pelaku pasar ritel dalam 90 hari pertama (Hukum 90/90/90) berakar dari ketidaktahuan atas fungsi hiperbolik pemulihan modal (drawdown recovery). Makalah ini menyajikan formulasi penentuan ukuran lot diskret terikat fraksi bursa BEI, membatasi risiko maksimal r <= 0.02 (2% ekuitas) dengan proteksi ganda (Dual Brake System) guna mengeliminasi peluang kebangkrutan modal.',
+    
+    laymanSection: {
+      headline: 'Mengapa 90% Trader Boncos? Jurang Kematian Finansial & Sabuk Pengaman 2%',
+      analogy: 'Ibarat menyetir mobil sport di jalan tol: Sebagian besar pemula menginjak gas sedalam-dalamnya (All-In) tanpa memastikan apakah mobil tersebut memiliki rem darurat yang berfungsi. Ketika terjadi kecelakaan (pasar berbalik arah), mobil langsung hancur total.',
+      keyTakeaways: [
+        'Sifat Asimetris Kerugian: Jika modal Anda rugi 50%, Anda TIDAK cukup untung 50% untuk balik modal! Anda wajib untung 100% dari sisa saldo baru hanya untuk sekadar kembali ke titik impas modal awal.',
+        'Jurang Kematian Modal: Penurunan modal di atas 30% adalah zona merah berbahaya, dan di atas 50% adalah jurang kematian finansial di mana pemulihan membutuhkan keuntungan luar biasa (+100% hingga +900%).',
+        'Aturan Emas 2%: Dengan membatasi risiko maksimal 2% dari total modal per transaksi, Anda membutuhkan 35 kali kalah beruntun tanpa pernah menang sekalipun untuk membuat modal terpangkas separuh. Ini memberi Anda napas panjang untuk bertahan dan bertumbuh.'
+      ]
+    },
+
+    quantSection: {
+      theorems: [
+        {
+          name: 'Hyperbolic Recovery Formula',
+          formula: 'Recovery Required (%) = [ 1 / (1 - Drawdown) - 1 ] x 100%',
+          description: 'Membuktikan peningkatan eksponensial keuntungan yang dibutuhkan untuk memulihkan modal awal seiring bertambahnya persentase drawdown modal.'
+        },
+        {
+          name: 'Discrete BEI Lot Sizing (Ralph Vince Model)',
+          formula: 'Max Lots = floor( (Equity x r) / ( (Entry - Hard_SL) x 100 ) )',
+          description: 'Perhitungan ukuran posisi diskret terstandarisasi 1 lot = 100 lembar pada Pasar Reguler BEI, selalu dibulatkan ke bawah (floor) untuk kepatuhan batas risiko.'
+        },
+        {
+          name: 'Dual Brake Safety Invariant',
+          formula: 'Optimal Position = min( Max Lots_Risk2%, Max Lots_Allocation20% )',
+          description: 'Rem Ganda: Memastikan alokasi pada satu saham tunggal tidak melampaui 20% total ekuitas portofolio meskipun jarak Stop Loss sangat sempit.'
+        }
+      ],
+      codeSnippet: `def calculate_bei_lot_sizing(equity: float, entry_price: float, sl_price: float, risk_pct: float = 0.02, max_allocation_pct: float = 0.20) -> int:
+    risk_budget_idr = equity * risk_pct
+    sl_distance = max(1.0, abs(entry_price - sl_price))
+    
+    # Brake 1: Risk-based sizing
+    lots_brake_1 = int(risk_budget_idr / (sl_distance * 100))
+    
+    # Brake 2: Portfolio concentration cap (max 20% equity)
+    max_position_value = equity * max_allocation_pct
+    lots_brake_2 = int(max_position_value / (entry_price * 100))
+    
+    # Dual Brake Invariant
+    return max(1, min(lots_brake_1, lots_brake_2))`
+    },
+
+    historicalCase: {
+      ticker: '$BBRI / Second Liner Mining',
+      period: 'Koreksi Volatilitas 2024',
+      narrative: 'Kasus Pemodal Ekuitas Rp 10.000.000: Membeli saham di harga Rp 1.500 dengan Stop Loss di Rp 1.425 (jarak Rp 75 = 5%). Tanpa sizing, pemula membeli 60 lot (Rp 9.000.000 = 90% modal). Saat terkena SL, ia rugi Rp 450.000 (4.5% modal). Dengan Doktrin 2% Rem Ganda, ukuran lot dibatasi tepat 26 lot (Rp 3.900.000), sehingga saat terkena SL kerugian terkunci tepat di Rp 195.000 (<2%). Portofolio selamat dan siap mengeksekusi peluang berikutnya.'
+    },
+
+    preFlightChecklist: [
+      'Modal ekuitas akun dan batas risiko 2% telah dikalkulasi secara presisi.',
+      'Level Stop Loss rasional telah ditentukan sebelum memasukkan order antrean beli.',
+      'Ukuran lot dibulatkan ke bawah (floor) dan memenuhi fraksi harga resmi BEI.',
+      'Nilai transaksi total tidak melampaui batas konsentrasi 20% modal portofolio.',
+      'Jurnal perdagangan mencatat alasan entry dan rasio Risk/Reward minimal 1:2.0.'
+    ],
+
+    comprehensionQuiz: [
       {
-        id: '1.1',
-        title: 'Pelajaran 1.1: Anatomi Boncos & Hukum 90/90/90 di Bursa',
-        content: 'Fakta pahit bursa: 90% trader pemula kehilangan 90% modal mereka dalam 90 hari pertama karena tidak memiliki sistem manajemen risiko tertulis. Kerugian di pasar saham bekerja secara asimetris: jika modal Anda jatuh 50%, Anda butuh keuntungan 100% hanya untuk kembali impas (balik modal)! Cut loss bukan tanda kegagalan, melainkan sabuk pengaman penyelamat nyawa trading Anda.',
-        figure: '/figures/03_drawdown_vs_recovery.png',
-        figureCaption: 'Gambar 1: Kurva Hiperbolik Drawdown vs Recovery Return (Ralph Vince, 1990). Hindari zona merah (>30%).'
+        question: 'Jika portofolio Anda mengalami drawdown modal sebesar 50%, berapa persen keuntungan yang dibutuhkan untuk kembali ke modal awal (break-even)?',
+        options: ['Cukup 50%', 'Dibutuhkan 75%', 'Wajib 100% dari sisa modal', 'Membutuhkan 150%'],
+        answer: 2,
+        explanation: 'Karena basis modal berkurang separuh, Anda butuh keuntungan 100% dari saldo sisa hanya untuk impas modal awal.'
       },
       {
-        id: '1.2',
-        title: 'Pelajaran 1.2: Mengapa Wajib Membatasi Risiko Maksimal 2%?',
-        content: 'Aturan 2% Doktrin MBG Apex: dalam 1 kali transaksi, Anda maksimal hanya boleh merisikokan 2% dari total ekuitas akun Anda. Jika modal Anda Rp 10.000.000, maka risiko per trade maksimal Rp 200.000. Dengan aturan ini, Anda butuh 35 kali kalah berturut-turut untuk membuat modal terpangkas separuh. Ini memberi napas panjang untuk terus belajar tanpa takut bangkrut.',
-        figure: null
+        question: 'Apa fungsi utama Sistem Rem Ganda (Dual Brake System) dalam kalkulator lot MBG?',
+        options: ['Memaksa trader membeli sebanyak mungkin lot', 'Menjaga kerugian <= 2% DAN mencegah penumpukan modal > 20% pada 1 saham', 'Menghilangkan keharusan memasang Stop Loss', 'Menjamin harga saham pasti naik'],
+        answer: 1,
+        explanation: 'Rem ganda membatasi risiko maksimal 2% sekaligus mencegah konsentrasi berlebih jika jarak SL sangat dekat.'
       },
       {
-        id: '1.3',
-        title: 'Pelajaran 1.3: Rumus Hitung Lot Eksak & Fraksi Harga BEI',
-        content: 'Banyak pemula membeli saham secara acak (All-In). Trader kuantitatif selalu menghitung lot secara diskret: Max Lots = floor((Modal x 2%) / ((Entry - Hard SL) x 100)). Jika hasil hitung adalah 26.8 lot, selalu bulatkan ke bawah menjadi 26 lot agar batas toleransi risiko tidak terlampaui. Selalu sesuaikan antrean dengan fraksi harga resmi BEI (Rp 1, Rp 2, Rp 5, Rp 10, Rp 25).',
-        figure: '/figures/04_astra_5_step_flowchart.png',
-        figureCaption: 'Gambar 2: Diagram Alur SOP 5 Langkah Eksekusi MBG Apex Standard (Makro -> IIFS -> SMC -> Lot 2% -> Journal).'
+        question: 'Mengapa pembulatan ukuran lot di bursa BEI wajib menggunakan fungsi floor (dibulatkan ke bawah)?',
+        options: ['Agar menghemat komisi broker', 'Agar toleransi risiko rupiah tidak melampaui batas maksimal yang diizinkan', 'Aturan acak tanpa dasar matematis', 'Agar antrean lot menjadi genap'],
+        answer: 1,
+        explanation: 'Pembulatan ke bawah memastikan nilai kerugian potensial tidak pernah melampaui alokasi risiko 2% yang telah ditetapkan.'
       }
     ],
-    quiz: [
-      {
-        question: 'Berapa persen batas maksimal risiko per transaksi yang diwajibkan Doktrin MBG Apex?',
-        options: ['10% modal', '5% modal', 'Maksimal 2% modal portofolio', '50% modal'],
-        answer: 2,
-        explanation: 'Aturan emas 2% memastikan modal Anda tetap bertahan melewati rentetan kerugian pasar (drawdown).'
-      },
-      {
-        question: 'Jika modal Anda turun 50%, berapa persen keuntungan yang dibutuhkan untuk kembali impas (balik modal)?',
-        options: ['50%', '75%', '100%', '150%'],
-        answer: 2,
-        explanation: 'Karena basis modal telah berkurang separuh, Anda butuh kenaikan 100% dari saldo baru hanya untuk kembali ke titik semula.'
-      },
-      {
-        question: 'Bagaimana cara menentukan jumlah lot yang benar saat membeli saham?',
-        options: ['Menebak sesuai firasat', 'Membeli semaksimal mungkin (All In)', 'Membagi batas toleransi rupiah 2% dengan jarak harga Stop Loss dikali 100', 'Mengikuti ajakan influencer'],
-        answer: 2,
-        explanation: 'Position sizing rasional dihitung dari toleransi risiko rupiah dibagi selisih (Entry - Stop Loss) dikali 100 lembar per lot.'
-      }
+
+    references: [
+      'Ralph Vince (1990) The Mathematics of Money Management: Risk Analysis Techniques for Traders, John Wiley & Sons.',
+      'Robert Carver (2015) Systematic Trading: A Unique New Method for Designing Trading and Investing Systems, Harriman House.',
+      'Keputusan Direksi PT Bursa Efek Indonesia No. Kep-00101/BEI/12-2021 tentang Fraksi Harga Pasar Reguler.'
     ]
   },
+
   {
     id: 2,
-    title: 'LEVEL 2: Membaca Arus Makroekonomi & Komoditas Global (Menengah)',
+    paperCode: 'MBG-WP-02',
+    category: 'GLOBAL MACRO & TRANSMISSION',
     badge: 'Macro Navigator 🧭',
-    summary: 'Pahami korelasi Indeks Dolar (DXY), imbal hasil US10Y, serta transmisi harga Emas dunia (XAU) dan Minyak Mentah ke saham BEI.',
-    lessons: [
+    title: 'Global Macroeconomic Transmission Channels: Sovereign Yield Curves, Carry Trade Dynamics, and Emerging Market Equity Regimes',
+    subtitle: 'Segitiga Emas Makro: Korelasi US10Y, DXY, Transmisi Suku Bunga BI-Fed, dan Sensitivitas Sektor Komoditas BEI',
+    authors: 'MBG Quantitative Desk • John J. Murphy (1999) & Abdulkader Aljandali (2016) Alignment',
+    jelCodes: 'E43, E52, F31, G15',
+    rigor: 'Mathematical Rigor: High',
+    abstract: 'Makalah ini membedah mekanisme transmisi likuiditas intermarket global terhadap pergerakan pasar saham Indonesia (IHSG). Menggunakan framework Segitiga Emas Makro (US Dollar Index DXY, US 10-Year Treasury Yield, dan Inflasi CPI), kami memformulasikan Carry Spread Suku Bunga Bank Indonesia vs Federal Reserve (+125 bps) sebagai bantalan pelindung volatilitas Rupiah dan penggerak aliran dana asing (Foreign Capital Flow).',
+
+    laymanSection: {
+      headline: 'Mengapa Bank Sentral AS (The Fed) Mengendalikan Nasib Saham di Jakarta?',
+      analogy: 'Ibarat gravitasi matahari dalam tata surya: Dolar AS dan obligasi pemerintah Amerika adalah magnet raksasa. Ketika suku bunga AS melonjak tinggi, likuiditas uang global tersedot pulang ke Wall Street, menyebabkan bursa negara berkembang seperti Indonesia mengalami kekeringan modal.',
+      keyTakeaways: [
+        'DXY (Indeks Dolar) Melandai = Angin Segar untuk IHSG: Ketika dolar AS melemah (DXY < 101), investor global cenderung mendistribusikan modalnya ke aset negara berkembang berimbal hasil tinggi, memicu aksi beli bersih asing (Foreign Net Buy).',
+        'Kurva Imbal Hasil (Yield Curve 10Y-2Y): Selisih positif obligasi AS 10Y > 2Y menandakan ekonomi global dalam fase ekspansi sehat. Sebaliknya jika terjadi kurva terbalik (Inversi 2Y > 10Y), bursa global membunyikan sirine bahaya resesi dalam 6-18 bulan.',
+        'Transmisi Emas & Minyak ke BEI: Kenaikan harga minyak mentah dunia (Brent) langsung mengerek laba emiten energi ($MEDC, $ELSA), sedangkan reli harga emas dunia ($XAU/USD) mentransmisikan sentimen bullish ke saham tambang logam mulia ($ANTM, $BRMS).'
+      ]
+    },
+
+    quantSection: {
+      theorems: [
+        {
+          name: 'Intermarket Sovereign Carry Spread Invariant',
+          formula: 'Carry Spread = Yield(BI_Rate) - Yield(Fed_Funds_Rate) >= +100 bps',
+          description: 'Spread positif minimal +100 bps berfungsi sebagai bantalan penahan depresiasi nilai tukar USD/IDR dari aksi jual agresif carry trader global.'
+        },
+        {
+          name: 'Equity Valuation Transmission Model',
+          formula: 'd_Valuation_IDX = beta_DXY*(d_DXY) + beta_US10Y*(d_US10Y) + beta_Oil*(d_Brent) + beta_Gold*(d_Gold)',
+          description: 'Dekomposisi pergerakan valuasi IHSG terhadap vektor sensitivitas makro global menggunakan matriks kovariansi bergulir.'
+        }
+      ],
+      codeSnippet: `def evaluate_macro_transmission_regime(dxy: float, us10y_yield: float, bi_rate: float, fed_rate: float) -> dict:
+    carry_bps = (bi_rate - fed_rate) * 100
+    is_idr_shielded = carry_bps >= 100.0
+    risk_appetite = "RISK_ON" if dxy < 101.5 and us10y_yield < 4.25 else "RISK_OFF"
+    return {
+        "carry_spread_bps": carry_bps,
+        "is_idr_shielded": is_idr_shielded,
+        "macro_regime": risk_appetite,
+        "foreign_flow_bias": "NET_INFLOW" if risk_appetite == "RISK_ON" else "DEFENSIVE"
+    }`
+    },
+
+    historicalCase: {
+      ticker: 'IHSG vs $MEDC, $ANTM',
+      period: 'Eskalasi Geopolitik Timur Tengah 2024',
+      narrative: 'Saat ketegangan militer memicu lonjakan harga minyak mentah Brent menembus $90/bbl dan Emas melonjak ke rekor tertinggi, IHSG broad-market sempat tertekan inflasi energi. Namun, model transmisi makro MBG mengeksekusi rotasi barbell: saham $MEDC melonjak +18% dan $ANTM melesat +14%, membuktikan bahwa pemahaman transmisi makro memberikan keunggulan kompetitif di atas analisis teknikal murni.'
+    },
+
+    preFlightChecklist: [
+      'Indeks Dolar AS (DXY) dan imbal hasil US10Y telah diperiksa di running banner pagi.',
+      'Spread suku bunga BI vs Fed terkonfirmasi berada di atas batas aman minimal +100 bps.',
+      'Arah komoditas benchmark (Brent & Gold) selaras dengan sektor saham yang dipilih.',
+      'Status DEFCON geopolitik tidak berada pada level ancaman darurat (DEFCON 1/2).',
+      'Sentimen global 4-Barometer (Fear & Greed, VIX) mendukung risk appetite pasar.'
+    ],
+
+    comprehensionQuiz: [
       {
-        id: '2.1',
-        title: 'Pelajaran 2.1: Monster Inflasi CPI & Suku Bunga The Fed',
-        content: 'Saat inflasi Amerika Serikat (CPI) melonjak, bank sentral The Fed menaikkan suku bunga acuan Fed Funds Rate (FFR). Suku bunga tinggi menaikkan biaya pinjaman korporasi dan meningkatkan imbal hasil obligasi bebas risiko. Akibatnya, valuasi saham-saham bertumbuh (growth stock) dan teknologi tertekan karena investor menuntut diskonto laba masa depan yang lebih tinggi.',
-        figure: null
+        question: 'Kondisi kurva imbal hasil obligasi AS (Yield Curve 10Y-2Y) yang curam ke atas (Steepening / Imbal Hasil 10Y > 2Y) menandakan kondisi apa bagi ekonomi global?',
+        options: ['Sinyal resesi ekonomi parah', 'Kondisi ekspansi ekonomi normal dan sehat', 'Tanda kebangkrutan perbankan AS', 'Perang dunia akan segera pecah'],
+        answer: 1,
+        explanation: 'Kurva yield normal (10Y lebih tinggi dari 2Y) menunjukkan investor optimis terhadap pertumbuhan ekonomi jangka panjang.'
       },
       {
-        id: '2.2',
-        title: 'Pelajaran 2.2: Hubungan Yield Obligasi US10Y & Indeks Dolar DXY',
-        content: 'US 10-Year Treasury Yield dan Dolar AS (DXY) adalah magnet likuiditas terbesar di dunia. Ketika yield obligasi AS melonjak, investor global menarik modal mereka dari pasar berkembang (emerging markets seperti IHSG Indonesia) untuk kembali ke aset Dolar AS. Hal ini memicu depresiasi Rupiah (USD/IDR melemah) dan aksi jual bersih (net foreign outflow) di bursa Jakarta.',
-        figure: '/figures/08_macro_commodity_transmission.png',
-        figureCaption: 'Gambar 3: Peta Transmisi Makro Segitiga Emas: DXY, US10Y, Kurs IDR, dan Dampaknya ke Sektor BEI.'
+        question: 'Berapa batas spread minimal suku bunga BI vs Fed yang sehat untuk melindungi nilai tukar Rupiah dari pelarian modal asing?',
+        options: ['Minus -200 bps', 'Nol (0 bps)', 'Minimal +100 hingga +125 bps Carry Spread', 'Wajib di atas +1.000 bps'],
+        answer: 2,
+        explanation: 'Selisih suku bunga domestik minimal +100 hingga +125 bps di atas Fed Rate memberikan insentif carry trade positif agar dana asing bertahan di instrumen IDR.'
       },
       {
-        id: '2.3',
-        title: 'Pelajaran 2.3: Transmisi Harga Komoditas Dunia & Paradoks Operating Leverage',
-        content: 'Indonesia adalah surga emiten berbasis komoditas. Lonjakan harga emas dunia (XAU) dan minyak mentah (Brent) mentransmisikan keuntungan langsung ke emiten tambang. Namun waspadai paradoks Operating Leverage: emiten tambang murni dengan biaya produksi tetap (seperti BRMS) akan menikmati lonjakan margin laba jauh lebih spektakuler dibanding emiten trading/refining dengan margin tipis (seperti ANTM).',
-        figure: '/figures/09_operating_leverage_gold_brms_vs_antm.png',
-        figureCaption: 'Gambar 4: Infografis Paradoks Operating Leverage: Mengapa Saham BRMS Naik Lebih Eksplosif Dibanding ANTM saat Harga Emas Menguat.'
+        question: 'Ketika Indeks Dolar AS (DXY) mengalami penurunan tajam (melandai), bagaimana dampak tipikalnya terhadap aliran dana asing di bursa saham BEI?',
+        options: ['Asing keluar dari semua saham Indonesia', 'Asing cenderung melakukan aksi beli bersih (Net Buy) karena selera risiko membaik', 'IHSG otomatis terkena suspend', 'Tidak ada pengaruh sama sekali'],
+        answer: 1,
+        explanation: 'Pelemahan dolar melonggarkan likuiditas global dan memicu rotasi modal dari aset berdenominasi USD ke pasar ekuitas berkembang berimbal hasil tinggi.'
       }
     ],
-    quiz: [
-      {
-        question: 'Jika Indeks Dolar AS (DXY) melonjak drastis, apa dampak umum terhadap IHSG dan Rupiah?',
-        options: ['Rupiah melemah dan potensi outflow dana asing dari IHSG', 'Rupiah menguat tajam', 'IHSG pasti langsung ARA 25%', 'Tidak ada dampak sama sekali'],
-        answer: 0,
-        explanation: 'Dolar yang terlalu perkasa menekan nilai tukar Rupiah dan memicu aksi jual bersih (net foreign sell) investor asing di BEI.'
-      },
-      {
-        question: 'Mengapa saham tambang dengan operating leverage tinggi melompat lebih kencang saat harga komoditas naik?',
-        options: ['Karena biaya produksinya tetap, sehingga setiap kenaikan harga komoditas langsung menggelembungkan laba bersih', 'Karena bandar menyukai namanya', 'Karena bebas pajak penghasilan', 'Karena tidak punya utang'],
-        answer: 0,
-        explanation: 'Operating leverage membuat peningkatan pendapatan langsung berubah menjadi lonjakan persentase laba operasional yang eksponensial.'
-      },
-      {
-        question: 'Instrumen komoditas apa yang memiliki fungsi historis sebagai Safe Haven saat krisis geopolitik memanas?',
-        options: ['Minyak Sawit CPO', 'Emas Murni (Gold / XAU)', 'Batu Bara', 'Nikel'],
-        answer: 1,
-        explanation: 'Emas dipandang sebagai aset penyimpan nilai paling aman dari risiko inflasi dan kekacauan geopolitik.'
-      }
+
+    references: [
+      'John J. Murphy (1999) Technical Analysis of the Financial Markets & Intermarket Technical Analysis, New York Institute of Finance.',
+      'Abdulkader Aljandali (2016) Quantitative Analysis and Statistics and Econometrics for Finance, Springer.',
+      'Bank Indonesia (2024) Laporan Kebijakan Moneter & Transmisi Nilai Tukar Berkala.'
     ]
   },
+
   {
     id: 3,
-    title: 'LEVEL 3: Smart Money Concepts (SMC) & Liquidity (Mahir)',
-    badge: 'Smart Money Seeker 👁️',
-    summary: 'Bedah footprint transaksi institusi: Order Block (OB), Fair Value Gap (FVG), Break of Structure (BOS), dan perangkap Liquidity Sweep.',
-    lessons: [
+    paperCode: 'MBG-WP-03',
+    category: 'MARKET MICROSTRUCTURE & IIFS',
+    badge: 'Order Book Quant 📊',
+    title: 'Market Microstructure & Order Book Asymmetry: Institutional Absorption vs Algorithmic Spoofing Post-Broker Obfuscation',
+    subtitle: 'Dekonstruksi Mikrostruktur Pasca Penutupan Kode Broker BEI, Institutional Inflow Flow Score (IIFS), dan Antrean Semu (Spoofing)',
+    authors: 'MBG Quantitative Desk • Mark Andrew Lim (2016) Alignment',
+    jelCodes: 'G12, G14, C13',
+    rigor: 'Mathematical Rigor: High',
+    abstract: 'Regulasi penutupan kode broker saat jam bursa (Desember 2021) dan penutupan tipe investor domestik/asing real-time (Juni 2022) mengubah lanskap mikrostruktur BEI. Makalah ini memperkenalkan algoritma Institutional Inflow Flow Score (IIFS) berbasis 4 indikator kuantitatif terintegrasi (OBV, MFI, VWAP Spread, Chaikin A/D), mendeteksi anomali penyerapan pasif institusi (Passive Absorption) serta membedakannya dari manipulasi antrean semu (Fake Bid Spoofing).',
+
+    laymanSection: {
+      headline: 'Cara Membaca Gerakan Bandar Tanpa Terkecoh Antrean Palsu',
+      analogy: 'Ibarat taktik papan catur: Bandar memasang "benteng palsu" berupa antrean beli raksasa 50.000 lot di papan Bid untuk meyakinkan investor ritel bahwa harga tidak akan jatuh. Begitu investor ritel tergiur dan ikut membeli (HAKA), bandar seketika mencabut antrean 50.000 lot tersebut dan melemparkan jutaan sahamnya ke muka investor ritel.',
+      keyTakeaways: [
+        'Realitas Pasca Penutupan Kode Broker: Kita tidak bisa lagi melihat kode broker (CC, AK, YP) bergerak secara langsung saat bursa berjalan. Mengandalkan running trade kasat mata tanpa filter kuantitatif adalah jebakan empuk bagi bandar.',
+        'Antrean Palsu (Spoofing) vs Akumulasi Nyata: Antrean bid raksasa yang mendadak hilang saat harga mendekat adalah spoofing. Akumulasi nyata ditandai oleh antrean yang konsisten menyerap transaksi jual (Passive Absorption) dengan skor IIFS Z-Score > +1.5.',
+        'Harga Rata-Rata Bandar (Bandar VWAP): Smart Money selalu mengumpulkan saham di bawah atau di dekat harga rata-rata mereka. Membeli saham di harga diskon terhadap rata-rata akumulasi bandar memberikan probabilitas menang yang tinggi.'
+      ]
+    },
+
+    quantSection: {
+      theorems: [
+        {
+          name: 'Queue Imbalance Ratio (Microstructure Depth)',
+          formula: 'QIR = (Volume_Bid - Volume_Ask) / (Volume_Bid + Volume_Ask)',
+          description: 'Mengukur tekanan antrean buku order Level 2 dalam rentang [-1.0, +1.0]. Nilai ekstrem positif (> +0.65) tanpa diiringi lonjakan transaksi eksekusi riil merupakan indikator utama spoofing.'
+        },
+        {
+          name: 'Institutional Inflow Flow Score (IIFS Composite Z-Score)',
+          formula: 'IIFS_Composite = 0.35*(Z_OBV) + 0.25*(Z_MFI) + 0.20*(Z_VWAP_Spread) + 0.20*(Z_ChaikinAD)',
+          description: 'Komposit bobot 4 variabel mikrostruktur bursa untuk mendeteksi jejak volume uang pintar institusi di balik layar.'
+        }
+      ],
+      codeSnippet: `def evaluate_order_book_microstructure(bid_vol: int, ask_vol: int, trade_vol: int, iifs_score: float) -> dict:
+    total_depth = bid_vol + ask_vol
+    qir = (bid_vol - ask_vol) / total_depth if total_depth > 0 else 0.0
+    
+    # Spoofing Detection Logic
+    is_spoofing_suspect = (qir > 0.60) and (trade_vol < 0.15 * bid_vol) and (iifs_score < 0.5)
+    is_true_accumulation = (iifs_score >= 1.5) and (qir >= 0.15)
+    
+    return {
+        "queue_imbalance": round(qir, 3),
+        "spoofing_alert": is_spoofing_suspect,
+        "stealth_accumulation": is_true_accumulation,
+        "recommendation": "DO_NOT_CHASE" if is_spoofing_suspect else ("BUY_DIP" if is_true_accumulation else "NEUTRAL")
+    }`
+    },
+
+    historicalCase: {
+      ticker: '$BUMI & $AMMN',
+      period: 'Distribusi Tersembunyi 2023',
+      narrative: 'Di saham berlikuiditas tinggi, antrean tebal 100.000 lot dipasang di harga Rp 150 untuk memancing ritel berbelanja agresif. Algoritma IIFS mendeteksi Z-Score Chaikin A/D anjlok negatif (-2.3 sigma) menandakan distribusi masif broker asing. Beberapa menit kemudian antrean 100.000 lot dicabut, dan harga amblas -7% ke Rp 139. Trader yang mematuhi skor IIFS selamat dari jebakan likuiditas ini.'
+    },
+
+    preFlightChecklist: [
+      'Antrean tebal pada papan bid telah diuji bukan merupakan antrean semu (spoofing).',
+      'Skor komposit IIFS berada di zona positif akumulasi (Z-Score > +1.0).',
+      'Harga eksekusi berada di dekat atau di bawah estimasi harga modal rata-rata bandar (Bandar VWAP).',
+      'Volume transaksi harian memiliki rasio likuiditas memadai terhadap ukuran posisi portofolio.',
+      'Foreign Net Flow harian tidak menunjukkan aksi distribusi agresif berturut-turut.'
+    ],
+
+    comprehensionQuiz: [
       {
-        id: '3.1',
-        title: 'Pelajaran 3.1: Anatomi Candlestick & Bullish Order Block (OB)',
-        content: 'Order Block adalah candle berlawanan arah terakhir sebelum terjadi dorongan harga impulsif besar (>2x ATR). Di zona inilah institusi memasang jutaan lot order beli yang belum tuntas terserap. Jangan mengejar harga yang sedang melonjak. Tunggu harga pullback kembali menguji (retest) kotak zona Order Block untuk entry dengan rasio Risk/Reward maksimal.',
-        figure: '/figures/01_candlestick_order_block.png',
-        figureCaption: 'Gambar 5: Anatomi Candlestick & Pembentukan Bullish Order Block Institusi di Zona Demand.'
+        question: 'Apa ciri khas taktik antrean palsu (Fake Bid Spoofing) yang sering digunakan bandar di bursa BEI?',
+        options: ['Antrean beli tipis tapi harga perlahan naik', 'Antrean beli raksasa yang mendadak dicabut tepat saat harga pasar mendekatinya', 'Bandar membeli langsung dengan harga pasar (HAKA)', 'Broker mengirim email pengumuman'],
+        answer: 1,
+        explanation: 'Spoofing bertujuan memanipulasi psikologi ritel dengan ilusi antrean beli tebal yang sebenarnya tidak pernah berniat dieksekusi.'
       },
       {
-        id: '3.2',
-        title: 'Pelajaran 3.2: Fair Value Gap (FVG) sebagai Celah Hampa & Magnet Harga',
-        content: 'Fair Value Gap (FVG) adalah celah ketidakseimbangan harga antara titik tertinggi Candle ke-1 dan titik terendah Candle ke-3. Lonjakan agresif satu arah menciptakan ruang hampa likuiditas. Algoritma institusional cenderung melakukan rebalancing harga dengan menarik harga kembali menutup celah FVG (khususnya level 50% Consequent Encroachment) sebelum melanjutkan reli.',
-        figure: '/figures/02_fair_value_gap_fvg.png',
-        figureCaption: 'Gambar 6: Struktur Imbalance 3 Candlestick & Area Fair Value Gap (FVG) dengan Titik Ekuilibrium 50%.'
+        question: 'Mengapa investor dilarang hanya mengandalkan running trade kasat mata pasca regulasi penutupan kode broker BEI?',
+        options: ['Karena running trade memakan banyak kuota internet', 'Karena identitas broker ditutup saat jam bursa, sehingga transaksi frekuensi tinggi mudah disamarkan bandar', 'Karena running trade dilarang oleh bursa', 'Karena data running trade selalu salah'],
+        answer: 1,
+        explanation: 'Tanpa identitas broker real-time, bandar dapat melakukan transaksi wash trading silang antar sekuritas untuk memancing kerumunan ritel.'
       },
       {
-        id: '3.3',
-        title: 'Pelajaran 3.3: Break of Structure (BOS) & Liquidity Sweep (Turtle Soup)',
-        content: 'Pasar digerakkan oleh perburuan likuiditas stop loss. Seringkali harga sengaja didorong menembus titik tertinggi (swing high) sesaat untuk memancing ritel melakukan breakout buying dan memicu stop loss penjual, lalu harga dibanting kembali ke arah berlawanan meninggalkan ekor panjang (rejection wick). Pola ini disebut Turtle Soup atau Liquidity Sweep.',
-        figure: '/figures/07_liquidity_sweep_turtle_soup.png',
-        figureCaption: 'Gambar 7: Anatomi Perangkap Liquidity Sweep (Stop Hunt): Fake Breakout dan Sumbu Rejection Wick.'
+        question: 'Bagaimana cara terbaik memvalidasi apakah akumulasi suatu saham benar-benar nyata (Passive Absorption)?',
+        options: ['Membaca komentar di media sosial', 'Melihat apakah skor komposit IIFS positif dan didukung volume penyerapan stabil di dekat harga VWAP', 'Menunggu hingga harga saham naik 50%', 'Meminta rekomendasi teman kantor'],
+        answer: 1,
+        explanation: 'Akumulasi sejati terbukti secara matematis melalui persistensi skor IIFS dan konfirmasi volume penyerapan terdistribusi di dekat volume weighted average price.'
       }
     ],
-    quiz: [
-      {
-        question: 'Apa ciri utama sebuah Bullish Order Block institusi yang valid?',
-        options: ['Candle merah kecil tanpa volume', 'Candle bearish terakhir sebelum dorongan impulsif naik yang kuat (>2x ATR)', 'Candle doji di tengah sideways', 'Sembarang garis support acak'],
-        answer: 1,
-        explanation: 'Bullish OB mewakili jejak footprint institusi sebelum mereka memicu lonjakan harga ke atas.'
-      },
-      {
-        question: 'Mengapa area Fair Value Gap (FVG) sangat diperhatikan oleh trader quant?',
-        options: ['Karena bertindak sebagai magnet ketidakseimbangan harga yang sering diuji ulang (retest)', 'Karena pasti langsung tembus tanpa koreksi', 'Karena garisnya terlihat keren di chart', 'Karena sinyal jual mutlak'],
-        answer: 0,
-        explanation: 'FVG adalah celah likuiditas tidak efisien, di mana algoritma institusional cenderung melakukan rebalancing harga.'
-      },
-      {
-        question: 'Apa yang dimaksud dengan fenomena Liquidity Sweep (Stop Hunt)?',
-        options: ['Pembersihan cache aplikasi', 'Harga sengaja menembus support/resisten sesaat untuk menyapu order Stop Loss lalu berbalik arah tajam', 'Bursa tutup lebih awal', 'Pembagian dividen saham'],
-        answer: 1,
-        explanation: 'Institusi memanfaatkan order Stop Loss ritel yang terpicu di luar swing level sebagai likuiditas untuk memenuhi order raksasa mereka.'
-      }
+
+    references: [
+      'Mark Andrew Lim (2016) The Handbook of Technical Analysis: The Practitioner’s Comprehensive Guide to Technical Analysis, John Wiley & Sons.',
+      'Surat Edaran Direksi PT Bursa Efek Indonesia No. SE-00010/BEI/12-2021 tentang Penutupan Kode Broker pada Jam Perdagangan.',
+      'Otoritas Jasa Keuangan (OJK) Salinan Peraturan Nomor 22/POJK.04/2021 tentang Transparansi Transaksi Efek.'
     ]
   },
+
   {
     id: 4,
-    title: 'LEVEL 4: Bandarmologi Modern & Foreign Flow (Kuantitatif)',
-    badge: 'Bandar Detective 🕵️',
-    summary: 'Deteksi akumulasi/distribusi senyap pasca penutupan kode broker BEI menggunakan Z-Score IIFS, mikrostruktur Order Book, dan radar Dividend Trap.',
-    lessons: [
+    paperCode: 'MBG-WP-04',
+    category: 'SMART MONEY CONCEPTS & ALGO',
+    badge: 'Liquidity Architect ⚡',
+    title: 'Smart Money Concepts & Liquidity Architecture: Algorithmic Fair Value Gaps, Consequent Encroachment, and Rejection Sweeps',
+    subtitle: 'Anatomi Imbalance Tiga Candlestick, Titik Magnet 50% Consequent Encroachment (C.E.), dan Perburuan Likuiditas Stop-Hunt (Turtle Soup)',
+    authors: 'MBG Quantitative Desk • Inner Circle Trader (ICT) & Marcos López de Prado Alignment',
+    jelCodes: 'G14, C45, C53',
+    rigor: 'Mathematical Rigor: High',
+    abstract: 'Algoritma eksekusi frekuensi tinggi institusional (Smart Money) meninggalkan jejak disekuilibrium likuiditas akibat ketidakseimbangan order beli/jual secara sepihak. Makalah ini membedah formulasi Fair Value Gap (FVG) tiga candlestick, membuktikan secara kuantitatif tingkat penarikan kembali harga ke titik magnet 50% Consequent Encroachment (C.E.), serta memanfaatkan fenomena Liquidity Sweep (Turtle Soup) untuk menghasilkan eksekusi dengan rasio Risk/Reward asimetris >= 1:3.',
+
+    laymanSection: {
+      headline: 'Menemukan Celah Magnet Harga Melalui Lompatan Tiga Lilin',
+      analogy: 'Ibarat melompati anak tangga: Ketika seorang pelari melompat terburu-buru dari anak tangga ke-1 langsung menginjak tangga ke-3, tercipta ruang hampa udara kosong di anak tangga ke-2. Hukum fisika pasar mengharuskan harga untuk kembali menjejakkan kaki di ruang kosong tersebut sebelum melanjutkan pendakian.',
+      keyTakeaways: [
+        'Anatomi Fair Value Gap (FVG): Celah harga tercipta di antara titik tertinggi Candle 1 dan titik terendah Candle 3, di mana Candle 2 melesat terlalu kencang. Celah ini adalah area ketidakseimbangan likuiditas.',
+        'Magnet 50% Consequent Encroachment (C.E.): Level tepat di titik tengah (50%) dari celah FVG berfungsi sebagai magnet paling akurat untuk entry pantulan harga. Trader disiplin tidak mengejar harga di puncak, melainkan sabar menunggu harga ditarik ke level C.E.',
+        'Perburuan Likuiditas (Turtle Soup / Stop Hunt): Bandar sengaja menusuk level support kunci untuk memicu Stop Loss investor ritel (melikuidasi posisi). Begitu harga berbalik dan ditutup kembali di atas support (Daily Reclaim), terbentuk sinyal beli berdaya ledak tinggi.'
+      ]
+    },
+
+    quantSection: {
+      theorems: [
+        {
+          name: 'Bullish Fair Value Gap Formulation',
+          formula: 'Bullish_FVG = Low(Candle_3) - High(Candle_1) > 0',
+          description: 'Kondisi mutlak terciptanya celah likuiditas kosong searah pada formasi 3 candlestick sekuensial.'
+        },
+        {
+          name: 'Consequent Encroachment (C.E.) Magnet Level',
+          formula: 'Level_CE = High(Candle_1) + 0.50 * Bullish_FVG',
+          description: 'Level 50% retracement geometris dari zona ketidakseimbangan yang memiliki densitas limit order institusi tertinggi.'
+        },
+        {
+          name: 'Turtle Soup Reclaim Condition',
+          formula: 'Low_Intraday < Key_Support AND Close_Daily >= Key_Support',
+          description: 'Validasi formasi rejection wick ekstrim yang menandakan penyerapan likuiditas jual paksa ritel oleh institusi.'
+        }
+      ],
+      codeSnippet: `def detect_ict_fvg_and_ce(c1_high: float, c2_high: float, c2_low: float, c3_low: float) -> dict:
+    has_bullish_fvg = c3_low > c1_high
+    fvg_size = (c3_low - c1_high) if has_bullish_fvg else 0.0
+    ce_level = c1_high + (0.5 * fvg_size) if has_bullish_fvg else None
+    
+    return {
+        "is_imbalance_valid": has_bullish_fvg,
+        "fvg_top": round(c3_low, 2),
+        "fvg_bottom": round(c1_high, 2),
+        "ce_magnet_50pct": round(ce_level, 2) if ce_level else None,
+        "entry_bracket": f"Limit Buy at {round(ce_level, 2)}" if ce_level else "NO_GAP"
+    }`
+    },
+
+    historicalCase: {
+      ticker: 'Bitcoin Spot & $CUAN',
+      period: 'Breakout Cluster Barito & BTC Reclaim $60.500',
+      narrative: 'Pada grafik BTC Spot harian, harga menusuk tajam ke $56.400 melikuidasi miliaran dolar posisi leverage ritel. Namun penutupan harian membentuk Rejection Wick panjang dan ditutup kembali di $61.500 (Daily Reclaim). Di saat bersamaan terbentuk Bullish FVG di $58.200 - $60.400 dengan C.E. tepat di $59.300. Entry buy limit di $59.300 dengan SL di $56.400 menghasilkan reli eksplosif menuju $71.900 (R:R 1:4.3).'
+    },
+
+    preFlightChecklist: [
+      'Struktur tren pasar utama (Market Structure) terkonfirmasi Bullish via Break of Structure (BOS).',
+      'Zona Fair Value Gap (FVG) tiga candlestick teridentifikasi dengan jelas tanpa saling overlap.',
+      'Order entry dipasang secara pasif pada level 50% Consequent Encroachment (C.E.).',
+      'Stop Loss ditempatkan secara logis di bawah ekor rejection wick terdalam.',
+      'Proyeksi Take Profit menuju zona Buy-Side Liquidity menghasilkan rasio minimal 1:3.0.'
+    ],
+
+    comprehensionQuiz: [
       {
-        id: '4.1',
-        title: 'Pelajaran 4.1: Melacak Uang Bandar Pasca Penutupan Kode Broker BEI',
-        content: 'Sejak BEI menutup kode broker real-time pada 6 Desember 2021 dan kode domisili pada 27 Juni 2022, trader ritel tidak lagi bisa mengintip siapa yang sedang membeli. Metode kuantitatif modern menggantikan cara lama dengan melacak Z-Score Foreign Net Flow, Volume Spread Analysis, dan deteksi manipulasi antrean Fake Bid/Offer (Spoofing) pada order book.',
-        figure: '/figures/10_orderbook_spoofing_anatomy.png',
-        figureCaption: 'Gambar 8: Mikrostruktur Order Book BEI: Fake Bid Spoofing untuk Menjebak HAKA vs Penyerapan Riil (Real Absorption).'
+        question: 'Bagaimana cara mengidentifikasi zona Fair Value Gap (FVG) Bullish pada grafik candlestick?',
+        options: ['Melihat moving average bersilangan', 'Titik terendah Candle ke-3 lebih tinggi daripada titik tertinggi Candle ke-1 (terdapat celah kosong di Candle 2)', 'Candle berwarna hijau tiga kali beruntun', 'Volume transaksi menyusut drastis'],
+        answer: 1,
+        explanation: 'FVG bullish terbentuk ketika Candle 2 melesat kencang sehingga ada ruang kosong antara High Candle 1 dan Low Candle 3.'
       },
       {
-        id: '4.2',
-        title: 'Pelajaran 4.2: Komposit IIFS 4 Pilar (OBV, MFI, VWAP, Chaikin A/D)',
-        content: 'IIFS (Institutional Inflow Flow Score) menggabungkan 4 indikator arus dana: On-Balance Volume (bobot 30%), Money Flow Index (25%), Deviasi VWAP (25%), dan Chaikin Accumulation/Distribution (20%). Skor distandarisasi menjadi Z-Score (-2.0 s/d +2.0). Skor Z > +1.5 mengonfirmasi akumulasi agresif institusi, sedangkan Z < -1.5 adalah alarm bahaya distribusi masif.',
-        figure: null
+        question: 'Apa makna fungsional dari level 50% Consequent Encroachment (C.E.) dalam Smart Money Concepts?',
+        options: ['Level untuk segera cut loss seluruh posisi', 'Level magnet di mana institusi menempatkan limit order untuk mengisi separuh celah ketidakseimbangan likuiditas', 'Harga tertinggi sepanjang sejarah saham', 'Penanda bahwa emiten akan membagikan dividen'],
+        answer: 1,
+        explanation: 'Consequent Encroachment (C.E.) adalah garis tengah 50% dari zona FVG yang bekerja sebagai area pantulan probabilitas tertinggi.'
       },
       {
-        id: '4.3',
-        title: 'Pelajaran 4.3: Anatomi 4 Fase Dividend Trap Saham Siklikal',
-        content: 'Jangan tergiur dividen jumbo 15%-25%! Banyak pemula terjebak membeli saham batubara/komoditas pada Cum-Date demi dividen, namun menderita penurunan harga beruntun (ARB) pada Ex-Date yang menghapus seluruh nilai dividen dan modal pokok. Amati pola distribusi bandar 2-4 minggu sebelum pengumuman RUPS dividen.',
-        figure: '/figures/05_dividend_trap_anatomy.png',
-        figureCaption: 'Gambar 9: Anatomi 4 Fase Dividend Trap Saham Siklikal: Akumulasi, Euforia Ritel, Kaskade ARB Ex-Date, dan Depresi.'
+        question: 'Apa yang dimaksud dengan peristiwa Liquidity Sweep (Turtle Soup / Stop Hunt)?',
+        options: ['Harga menembus support dan terus anjlok tanpa henti', 'Harga menusuk menembus support kunci untuk menyapu stop loss ritel, lalu memantul cepat dan ditutup kembali di atas support', 'Perusahaan membeli kembali sahamnya di pasar reguler', 'Investor asing menjual seluruh kepemilikannya'],
+        answer: 1,
+        explanation: 'Liquidity sweep adalah manuver rekayasa likuiditas untuk memicu stop-loss ritel sebelum harga berbalik reli kencang.'
       }
     ],
-    quiz: [
-      {
-        question: 'Apa yang dimaksud dengan fenomena Dividend Trap di pasar saham?',
-        options: ['Perusahaan membagikan bonus saham cuma-cuma', 'Harga saham jatuh tajam pasca Cum-Date melebihi keuntungan dividen yang diterima', 'Saham yang tidak pernah membagikan dividen', 'Pajak dividen yang terlalu tinggi'],
-        answer: 1,
-        explanation: 'Banyak ritel terjebak membeli di pucuk sebelum ex-date, lalu menderita capital loss lebih besar daripada dividen tunainya.'
-      },
-      {
-        question: 'Indikator apa yang menjadi patokan harga modal rata-rata yang dibayar pemain besar institusi sepanjang hari?',
-        options: ['RSI', 'VWAP (Volume-Weighted Average Price)', 'Stochastic', 'Bollinger Bands'],
-        answer: 1,
-        explanation: 'VWAP adalah benchmark harga acuan volume tertimbang yang dipakai manajer investasi institusional.'
-      },
-      {
-        question: 'Jika skor komposit IIFS berada di atas angka +2.0, apa interpretasi aliran dananya?',
-        options: ['HEAVY_DISTRIBUTION', 'NEUTRAL', 'MILD_DISTRIBUTION', 'HEAVY_ACCUMULATION'],
-        answer: 3,
-        explanation: 'Z-score di atas +2.0 adalah anomali statistik kuat yang mencerminkan akumulasi masif oleh pemain raksasa.'
-      }
+
+    references: [
+      'Michael J. Huddleston (Inner Circle Trader) The Algorithmic Theory of Price Delivery and Imbalance.',
+      'Marcos López de Prado (2018) Advances in Financial Machine Learning, Chapter 3: Financial Labels & Triple-Barrier Method, Wiley.',
+      'Mark Andrew Lim (2016) The Handbook of Technical Analysis, John Wiley & Sons.'
     ]
   },
+
   {
     id: 5,
-    title: 'LEVEL 5: Kripto Spot Mastery & Siklus Pasar (Spesialis Kripto)',
-    badge: 'Crypto Whale Tracker 🐋',
-    summary: 'Kuasai navigasi aset kripto murni tanpa leverage: proteksi flash dump, siklus Halving 4 tahunan, dan piramida likuiditas Bitcoin Dominance (BTC.D).',
-    lessons: [
+    paperCode: 'MBG-WP-05',
+    category: 'COMMODITY CYCLE & DIVIDEND ARBITRAGE',
+    badge: 'Arbitrage Fellow 🎯',
+    title: 'The Cyclical Commodity Dividend Cascade Trap: Empirical Anatomy, Distribution Schedules, and Net Realized Yield Optimization',
+    subtitle: 'Anatomi 4 Fase Jebakan Dividen Saham Siklikal Batubara/Komoditas BEI, Kaskade ARB Simetris, dan Aksi Distribusi Smart Money',
+    authors: 'MBG Quantitative Desk • Thomas N. Bulkowski Alignment',
+    jelCodes: 'G11, G14, G35',
+    rigor: 'Mathematical Rigor: High',
+    abstract: 'Saham komoditas siklikal sering kali memikat investor ritel dengan yield dividen spektakuler (> 20%). Makalah ini membuktikan secara empiris fenomena "Dividend Trap" pada bursa BEI, di mana penerimaan dividen tunai justru berujung pada kerugian bersih portofolio (-9.3%) akibat kaskade penurunan harga Auto Reject Bawah (ARB) pasca Ex-Date dan aksi distribusi terencana oleh Smart Money.',
+
+    laymanSection: {
+      headline: 'Tragedi Jebakan Dividen Jumbo: Umpan Madu Beracun di Puncak Pesta',
+      analogy: 'Ibarat makan prasmanan gratis di atas kapal yang sedang bocor: Investor tergiur mendapatkan hidangan lezat senilai Rp 100.000 (dividen), namun tanpa disadari kapal tersebut tenggelam dan menenggelamkan koper uangnya senilai Rp 300.000 (penurunan modal harga saham).',
+      keyTakeaways: [
+        'Anatomi 4 Fase Dividend Trap: (1) Akumulasi senyap 60 hari sebelum RUPS, (2) Euforia HAKA ritel pada Cum-Date, (3) Kaskade ARB terjun bebas pada Ex-Date tanpa ada pembeli, (4) Stagnasi panjang berbulan-bulan.',
+        'Kalkulasi Riil Pasca Pajak: Dividen tunai dipotong pajak PPh 10%. Jika dividen Rp 1.094/saham diterima bersih Rp 985, namun harga saham anjlok Rp 1.250 pasca Ex-Date, investor justru mengalami kerugian bersih nyata.',
+        'Distribusi Terbalik Smart Money: Smart Money justru memanfaatkan volume HAKA raksasa para pemburu dividen pada hari Cum-Date untuk mendistribusikan jutaan lot saham mereka di harga tertinggi.'
+      ]
+    },
+
+    quantSection: {
+      theorems: [
+        {
+          name: 'Net Realized Dividend PnL Equation',
+          formula: 'Net_PnL = (Exit_Price - Cum_Entry_Price) + (Gross_DPS x (1 - Tax_Rate))',
+          description: 'Persamaan matematis untuk mengevaluasi apakah partisipasi dalam cum-date dividen menghasilkan alfa positif atau destruksi modal.'
+        },
+        {
+          name: 'Dividend Trap Vulnerability Ratio (DTVR)',
+          formula: 'DTVR = Expected_Post_Ex_Drop / Gross_DPS',
+          description: 'Rasio kerentanan jebakan dividen. Jika DTVR > 1.0, penurunan harga pasca Ex-Date diproyeksikan menghapus seluruh nilai dividen tunai yang diterima.'
+        }
+      ],
+      codeSnippet: `def simulate_dividend_trap_scenario(cum_entry_price: float, gross_dps: float, post_ex_drop_pct: float, tax_rate: float = 0.10) -> dict:
+    net_dps = gross_dps * (1.0 - tax_rate)
+    ex_date_price = cum_entry_price * (1.0 - (post_ex_drop_pct / 100.0))
+    capital_loss = cum_entry_price - ex_date_price
+    net_pnl = net_dps - capital_loss
+    net_return_pct = (net_pnl / cum_entry_price) * 100.0
+    
+    return {
+        "cum_entry_price": cum_entry_price,
+        "net_dividend_per_share": round(net_dps, 2),
+        "capital_loss_per_share": round(capital_loss, 2),
+        "net_pnl_per_share": round(net_pnl, 2),
+        "net_return_pct": round(net_return_pct, 2),
+        "is_trap": net_pnl < 0
+    }`
+    },
+
+    historicalCase: {
+      ticker: '$PTBA (Tambang Batubara Bukit Asam)',
+      period: 'Tragedi Dividen Jumbo Juni 2023 & 2024',
+      narrative: 'Kasus Nyata PTBA 2023: Emiten mengumumkan dividen rekor Rp 1.094/lembar (yield 28% pada harga Rp 3.900). Ritel berbondong-bondong HAKA hingga volume meledak 8x lipat di Cum-Date. Pada Ex-Date, harga saham seketika terkunci ARB simetris berhari-hari turun menuju Rp 2.650 (-32%). Ritel yang menahan demi dividen menderita kerugian modal Rp 1.250/lembar, sementara dividen bersih yang diterima hanya Rp 984.6/lembar. Hasil bersih: Rugi total -Rp 265/lembar (-9.3%) dan modal terkunci berbulan-bulan.'
+    },
+
+    preFlightChecklist: [
+      'Siklus komoditas acuan (misal: harga batubara Newcastle) tidak sedang berada dalam tren penurunan curam.',
+      'Kalkulasi DTVR membuktikan potensi penurunan pasca Ex-Date tidak melampaui nilai dividen bersih.',
+      'Posisi saham telah dikumpulkan jauh hari sebelum Cum-Date (fase akumulasi senyap), bukan dibeli di hari H.',
+      'Strategi exit telah dirancang: apakah menjual pada euforia Cum-Date atau menahan untuk investasi jangka panjang.',
+      'Porsi alokasi modal tidak melampaui batas toleransi risiko portofolio.'
+    ],
+
+    comprehensionQuiz: [
       {
-        id: '5.1',
-        title: 'Pelajaran 5.1: Mengapa Wajib Kripto Spot USDT (Nol Leverage, Nol Likuidasi)',
-        content: 'Pasar derivatif/futures kripto dipenuhi manipulasi likuidasi long/short akibat leverage 20x hingga 100x. Trader quant profesional MBG berfokus pada pasar Spot USDT 1:1 murni. Pada pasar Spot, aset koin Anda dimiliki secara penuh tanpa beban bunga menginap (funding rate) dan nol risiko modal musnah tersita paksa saat terjadi pergerakan ekstrem (flash dump).',
-        figure: null
+        question: 'Mengapa investor ritel yang membeli saham komoditas siklikal pada hari Cum-Date sering kali menderita kerugian bersih meskipun yield dividennya sangat besar (misal 25%)?',
+        options: ['Karena dividen tidak pernah dibayarkan oleh emiten', 'Karena penurunan harga saham pasca Ex-Date (ARB cascade) jauh lebih dalam daripada nilai dividen bersih yang diterima setelah pajak', 'Karena bursa memotong saldo rekening ritel secara sepihak', 'Karena uang dividen dibayar dalam bentuk voucer belanja'],
+        answer: 1,
+        explanation: 'Jebakan dividen terjadi ketika capital loss akibat anjloknya harga pasca ex-date melampaui total dividen bersih yang diterima.'
       },
       {
-        id: '5.2',
-        title: 'Pelajaran 5.2: Piramida Likuiditas (Capital Waterfall) & Siklus BTC.D',
-        content: 'Aliran dana kripto bergerak mengikuti hukum air terjun likuiditas (The Capital Waterfall): Uang Fiat/Stablecoin pertama kali masuk memompa Bitcoin (BTC). Ketika Bitcoin Dominance (BTC.D) mencapai puncak jenuh dan mulai berbelok turun, modal berotasi mengalir ke Ethereum (ETH), lalu ke Large-Cap Altcoins (SOL, BNB), dan akhirnya memicu musim ledakan Altseason pada koin berkapitalisasi kecil.',
-        figure: '/figures/06_crypto_liquidity_pyramid.png',
-        figureCaption: 'Gambar 10: Piramida Aliran Likuiditas Kripto (Capital Waterfall) & Rotasi Bitcoin Dominance (BTC.D) ke Altseason.'
+        question: 'Bagaimana perilaku transaksi Smart Money institusi pada hari Cum-Date saham dividen jumbo?',
+        options: ['Ikut berebut membeli saham bersama ritel', 'Memanfaatkan likuiditas euforia beli ritel di puncak harga untuk mendistribusikan (menjual) jutaan lot saham mereka', 'Menutup operasional kantor mereka', 'Membeli surat utang pemerintah'],
+        answer: 1,
+        explanation: 'Smart money yang telah mengakumulasi di harga bawah memanfaatkan lonjakan volume pemburu dividen di hari cum-date untuk merealisasikan keuntungan (distribusi).'
       },
       {
-        id: '5.3',
-        title: 'Pelajaran 5.3: Siklus 4 Tahunan Bitcoin Halving & Flash Liquidity Sweep',
-        content: 'Pasokan Bitcoin baru yang dicetak oleh penambang dipotong separuh (Halving) setiap 210.000 blok (~4 tahun sekali). Kejutan pasokan ini secara historis selalu menjadi fondasi bull-run makro. Sebelum reli besar dimulai, bursa kripto sering mengalami Flash Liquidity Sweep (seperti sapuan level $60.000 pada 1 Mei 2024 yang melikuidasi $450M leverage) untuk membersihkan pasar dari spekulan rapuh.',
-        figure: null
+        question: 'Berapakah tarif pemotongan Pajak Penghasilan (PPh) final atas dividen saham yang berlaku bagi wajib pajak di Indonesia jika tidak diinvestasikan kembali?',
+        options: ['Nol (0%)', 'PPh Final 10%', 'PPh Final 25%', 'PPh Progresif 35%'],
+        answer: 1,
+        explanation: 'Dividen tunai saham domestik dikenakan PPh final 10% kecuali diinvestasikan kembali dalam instrumen tertentu sesuai regulasi perpajakan.'
       }
     ],
-    quiz: [
+
+    references: [
+      'Thomas N. Bulkowski (2013) Fundamental Analysis and Position Trading: Evolution of a Trader, John Wiley & Sons.',
+      'Data Historis Corporate Action & Dividen PT Bursa Efek Indonesia (KSEI / BEI 2022-2024).',
+      'Undang-Undang Republik Indonesia Nomor 7 Tahun 2021 tentang Harmonisasi Peraturan Perpajakan (HPP).'
+    ]
+  },
+
+  {
+    id: 6,
+    paperCode: 'MBG-WP-06',
+    category: 'QUANTITATIVE VALIDATION & DSR',
+    badge: 'Statistical Fellow 🔬',
+    title: 'Deflated Sharpe Ratio & Statistical Defensibility: Eliminating Multiple-Testing Snooping Bias in Multi-Agent Quant Ensembles',
+    subtitle: 'Koreksi Bias Seleksi Data-Snooping, Non-Normal Return Distributions, dan Verifikasi Matematis Strategi Bot Trading Otonom',
+    authors: 'MBG Quantitative Desk • David H. Bailey & Marcos López de Prado (2014) Alignment',
+    jelCodes: 'C12, C52, G11',
+    rigor: 'Mathematical Rigor: High',
+    abstract: 'Dalam pengembangan strategi kuantitatif modern dan bot trading multi-agent, 95% model yang terlihat sangat menguntungkan pada pengujian historis (backtesting) mengalami kegagalan total saat dioperasikan secara live. Makalah ini menerapkan formulasi Deflated Sharpe Ratio (DSR) dari Marcos López de Prado untuk mengoreksi inflasi Sharpe semu akibat pengujian berulang (multiple-testing / data snooping) dan distribusi return non-normal dengan kemencengan negatif serta fat-tail kurtosis tebal.',
+
+    laymanSection: {
+      headline: 'Alat Detektor Kebohongan Bot Trading: Membedakan Keberuntungan dengan Keahlian Sejati',
+      analogy: 'Ibarat melempar koin: Jika ada 1.000 orang disuruh melempar koin sebanyak 10 kali, secara statistik pasti ada 1 orang yang berhasil melempar sisi "Gambar" 10 kali berturut-turut. Apakah orang tersebut peramal sakti? Bukan, itu hanyalah kebetulan statistik dari uji coba yang terlalu banyak. DSR adalah rumus untuk membongkar kebetulan tersebut.',
+      keyTakeaways: [
+        'Mengapa Backtest Sering Menipu? Jika seorang trader mengutak-atik 50 indikator berbeda sampai menemukan 1 kombinasi yang menghasilkan profit di masa lalu, hasil tersebut 99% adalah overfitting (cocoklogi) yang akan bangkrut saat trading live.',
+        'Standar Defensible Spec (DSR >= 0.95): Hanya bot atau strategi yang memiliki nilai DSR di atas 0.95 yang diakui secara ilmiah memiliki keunggulan kompetitif (edge) sejati dan layak dialokasikan modal riil.',
+        'Penalti Kurtosis & Skewness: Strategi yang sering untung kecil tapi sesekali mengalami kerugian raksasa (ekor tebal/fat-tail) akan mendapatkan pemotongan nilai Sharpe drastis oleh mesin DSR.'
+      ]
+    },
+
+    quantSection: {
+      theorems: [
+        {
+          name: 'Expected Maximum Sharpe Ratio under Null Hypothesis',
+          formula: 'SR* = sqrt(2 * ln(N)) + gamma / sqrt(2 * ln(N))',
+          description: 'Nilai ekspektasi Sharpe Ratio tertinggi yang dapat muncul murni karena faktor keberuntungan acak dari N kali percobaan backtest independen.'
+        },
+        {
+          name: 'Deflated Sharpe Ratio (Bailey & López de Prado 2014)',
+          formula: 'DSR = Phi( [ (SR_hat - SR*) * sqrt(T - 1) ] / sqrt[ 1 - gamma3 * SR_hat + ((gamma4 - 1)/4) * SR_hat^2 ] )',
+          description: 'Probabilitas bahwa strategi yang diobservasi memiliki Sharpe Ratio di atas nol setelah memperhitungkan bias seleksi N pengujian, kemencengan (gamma3), dan kurtosis (gamma4).'
+        }
+      ],
+      codeSnippet: `import math
+
+def calculate_deflated_sharpe_ratio(observed_sr: float, num_trials: int, sample_length_years: float, skewness: float = -0.3, kurtosis: float = 4.2) -> dict:
+    euler_mascheroni = 0.5772156649
+    n = max(1, num_trials)
+    
+    # Expected Max SR under Null
+    sr_star = math.sqrt(2 * math.log(n)) + (euler_mascheroni / math.sqrt(2 * math.log(n))) if n > 1 else 0.0
+    
+    # Variance under Non-Normality
+    sr_var = 1.0 - (skewness * observed_sr) + (((kurtosis - 1.0) / 4.0) * (observed_sr ** 2))
+    sr_std = math.sqrt(max(0.001, sr_var))
+    
+    # T samples (assuming 252 daily bars per year)
+    t_samples = sample_length_years * 252
+    z_stat = ((observed_sr - sr_star) * math.sqrt(max(1.0, t_samples - 1))) / sr_std
+    
+    # Standard Normal CDF approximation
+    dsr = 0.5 * (1.0 + math.erf(z_stat / math.sqrt(2.0)))
+    
+    return {
+        "observed_sr": round(observed_sr, 2),
+        "expected_max_sr_null": round(sr_star, 2),
+        "deflated_sharpe_ratio": round(dsr, 3),
+        "is_defensible": dsr >= 0.95
+    }`
+    },
+
+    historicalCase: {
+      ticker: 'Bot-02 Momentum Alpha vs Bot-16 Chaos Anomaly',
+      period: 'Audit Multi-Agent Arena Season 0.1',
+      narrative: 'Dalam pengujian 24 model kuantitatif, sebuah strategi momentum mentah memperlihatkan Sharpe Ratio fantastis 2.85. Namun setelah diaudit dengan DSR memperhitungkan $N=24$ percobaan dan kurtosis 5.8, nilai DSR anjlok menjadi 0.72 (Overfitted). Sebaliknya, strategi Bandarmology VWAP dengan Sharpe konservatif 1.75 menghasilkan DSR 0.96 (Defensible Spec) karena memiliki kurtosis normal dan diuji tanpa data snooping.'
+    },
+
+    preFlightChecklist: [
+      'Jumlah total variasi parameter backtest (N) telah dicatat secara jujur.',
+      'Distribusi return telah diuji dari keberadaan kemencengan negatif ekstrem dan fat-tail kurtosis.',
+      'Nilai Deflated Sharpe Ratio (DSR) terbukti melampaui batas signifikansi 0.95 (alpha = 0.05).',
+      'Strategi diuji pada data di luar sampel (Out-of-Sample / Walk-Forward testing).',
+      'Biaya friksi nyata (komisi bursa BEI 0.45% bolak-balik & slippage eksekusi) telah dikurangkan.'
+    ],
+
+    comprehensionQuiz: [
       {
-        question: 'Mengapa trader quant disiplin memilih bertransaksi di pasar Kripto Spot USDT dibanding pasar Futures ber-leverage tinggi?',
-        options: ['Karena koin dimiliki murni 1:1, bebas biaya bunga inap (funding rate), dan nol risiko likuidasi paksa modal musnah', 'Karena pasar Spot lebih cepat kaya', 'Karena pasar Futures dilarang undang-undang', 'Karena koin Spot tidak pernah turun nilainya'],
-        answer: 0,
-        explanation: 'Pasar Spot memberikan kepemilikan aset riil sehingga investor dapat tidur nyenyak tanpa khawatir terkena margin call saat flash dump.'
-      },
-      {
-        question: 'Apa yang biasanya terjadi di pasar kripto saat Bitcoin Dominance (BTC.D) mulai patah tren turun dari puncaknya?',
-        options: ['Seluruh pasar kripto langsung mati', 'Rotasi modal mengalir dari Bitcoin menuju Ethereum dan Altcoin besar, memicu Altseason', 'Harga USDT turun menjadi nol', 'Semua penambang Bitcoin bangkrut'],
+        question: 'Mengapa nilai Sharpe Ratio yang sangat tinggi pada hasil backtest (misal SR 3.5) sering kali menipu dan gagal total saat dijalankan di pasar riil?',
+        options: ['Karena pasar riil tidak pernah ada', 'Karena terjadi bias seleksi (data snooping / multiple testing) di mana model dipilih murni karena kebetulan acak dari puluhan variasi yang dicoba', 'Karena komputer salah menghitung matematika dasar', 'Karena komisi broker selalu 90%'],
         answer: 1,
-        explanation: 'Penurunan BTC.D saat harga Bitcoin stabil merupakan indikator klasik bahwa likuiditas sedang berotasi ke altcoin (Altseason).'
+        explanation: 'Semakin banyak variasi backtest yang Anda coba, semakin besar kemungkinan Anda menemukan model yang tampak hebat murni karena faktor keberuntungan statistik.'
       },
       {
-        question: 'Berapa tahun sekali siklus Bitcoin Halving terjadi secara terprogram di protokol blockchain?',
-        options: ['Setiap 1 tahun sekali', 'Setiap 2 tahun sekali', 'Setiap 4 tahun sekali (210.000 blok)', 'Setiap 10 tahun sekali'],
+        question: 'Berapakah nilai ambang batas minimal Deflated Sharpe Ratio (DSR) agar suatu strategi kuantitatif dinyatakan "Defensible Spec" (lolos verifikasi ilmiah)?',
+        options: ['DSR >= 0.10', 'DSR >= 0.50', 'DSR >= 0.95 (Taraf signifikansi alpha = 0.05)', 'DSR wajib tepat 100.0'],
         answer: 2,
-        explanation: 'Siklus Halving Bitcoin diprogram terjadi setiap 210.000 blok transaksi atau rata-rata 4 tahun sekali.'
+        explanation: 'Ambang batas DSR >= 0.95 memastikan dengan tingkat keyakinan 95% bahwa performa strategi bukan merupakan produk dari keberuntungan pengujian berulang.'
+      },
+      {
+        question: 'Faktor apa saja yang diperhitungkan oleh rumus Deflated Sharpe Ratio ciptaan Marcos López de Prado yang tidak ada pada Sharpe Ratio konvensional?',
+        options: ['Warna latar belakang grafik', 'Jumlah percobaan uji coba (N), durasi waktu sampel data, serta kemencengan (skewness) dan kurtosis dari return', 'Nama pembuat strategi', 'Harga emas dunia saat ini'],
+        answer: 1,
+        explanation: 'DSR mengoreksi bias pengujian berganda (N) dan mempertimbangkan distribusi return non-normal (skewness dan fat-tail kurtosis).'
       }
+    ],
+
+    references: [
+      'David H. Bailey & Marcos López de Prado (2014) The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting and Non-Normality, Journal of Portfolio Management.',
+      'Marcos López de Prado (2018) Advances in Financial Machine Learning, Chapter 11 & 14, John Wiley & Sons.',
+      'Campbell R. Harvey & Yan Liu (2015) Backtesting, The Journal of Portfolio Management.'
     ]
   }
 ];
+
+// Alias for backwards compatibility
+export const ACADEMY_LEVELS = INSTITUTIONAL_PAPERS;
 
 export const DICTIONARY_CATEGORIES = [
   'ALL',
@@ -740,6 +1090,422 @@ export const VISUAL_FIGURES_GALLERY = [
  * 2. Robert Carver Volatility-Targeted Position Sizing
  * 3. Marcos López de Prado Deflated Sharpe Ratio (DSR) Multi-Testing Simulator
  */
+
+
+/**
+ * =========================================================================
+ * IN-PAPER INTERACTIVE WIDGETS (HEDGE FUND SANDBOX LABS)
+ * Embedded directly inside each working paper for immediate empirical validation
+ * =========================================================================
+ */
+
+// Widget 1: Hyperbolic Drawdown Recovery & Dual-Brake Lot Sizing (Paper 1)
+function Paper1DrawdownWidget() {
+  const [ddPct, setDdPct] = useState(30);
+  const [equity, setEquity] = useState(10000000);
+  const [entryPrice, setEntryPrice] = useState(1500);
+  const [slPrice, setSlPrice] = useState(1425);
+
+  const recoveryReq = ddPct < 100 ? ((1 / (1 - ddPct / 100)) - 1) * 100 : 9999;
+  const riskBudget = equity * 0.02;
+  const slDist = Math.max(1, Math.abs(entryPrice - slPrice));
+  const brake1Lots = Math.floor(riskBudget / (slDist * 100));
+  const maxCap = equity * 0.20;
+  const brake2Lots = Math.floor(maxCap / (entryPrice * 100));
+  const finalLots = Math.max(1, Math.min(brake1Lots, brake2Lots));
+  const activeBrake = brake1Lots <= brake2Lots ? 'Brake 1 (Risk 2%)' : 'Brake 2 (Cap 20% Portfolio)';
+
+  return (
+    <div style={{ background: 'rgba(15, 23, 42, 0.75)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '4px', padding: '12px 14px', margin: '14px 0' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <div style={{ fontSize: '11px', fontWeight: '800', color: '#60a5fa', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span>🔬 INTERACTIVE LAB:</span>
+          <span>Hyperbolic Drawdown & Dual-Brake Lot Calculator (Vince & Carver Model)</span>
+        </div>
+        <span className="badge badge-bull" style={{ fontSize: '8.5px' }}>LIVE SIMULATOR</span>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)', gap: '14px' }}>
+        {/* Left: Drawdown slider */}
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', marginBottom: '4px' }}>
+            <span style={{ color: 'var(--text-muted)' }}>Simulasi Drawdown Modal:</span>
+            <strong style={{ color: ddPct > 30 ? '#ef4444' : '#f59e0b', fontFamily: 'var(--font-mono)' }}>-{ddPct}%</strong>
+          </div>
+          <input
+            type="range"
+            min="5"
+            max="80"
+            step="5"
+            value={ddPct}
+            onChange={e => setDdPct(Number(e.target.value))}
+            style={{ width: '100%', accentColor: ddPct > 30 ? '#ef4444' : '#f59e0b' }}
+          />
+          <div style={{ background: 'rgba(0,0,0,0.3)', padding: '6px 8px', borderRadius: '3px', marginTop: '6px', fontSize: '9px', lineHeight: 1.4 }}>
+            <span>Target Pemulihan (Recovery): </span>
+            <strong style={{ color: ddPct > 30 ? '#ef4444' : '#10b981', fontFamily: 'var(--font-mono)' }}>+{recoveryReq.toFixed(1)}%</strong>
+            <div style={{ color: 'var(--text-muted)', fontSize: '8px', marginTop: '2px' }}>
+              {ddPct <= 20 ? '✅ Zona Aman Terkendali' : ddPct <= 30 ? '⚠️ Batas Waspada Toleransi' : '🚨 JURANG KEMATIAN MODAL (>30% DD)'}
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Exact BEI lot calculator */}
+        <div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '9px', marginBottom: '6px' }}>
+            <div>
+              <span style={{ color: 'var(--text-muted)' }}>Modal Ekuitas:</span>
+              <input
+                type="number"
+                value={equity}
+                onChange={e => setEquity(Number(e.target.value))}
+                style={{ width: '100%', background: '#111827', border: '1px solid #374151', color: '#fff', fontSize: '9px', padding: '2px 4px', borderRadius: '2px' }}
+              />
+            </div>
+            <div>
+              <span style={{ color: 'var(--text-muted)' }}>Entry / SL (Rp):</span>
+              <div style={{ display: 'flex', gap: '2px' }}>
+                <input
+                  type="number"
+                  value={entryPrice}
+                  onChange={e => setEntryPrice(Number(e.target.value))}
+                  style={{ width: '50%', background: '#111827', border: '1px solid #374151', color: '#34d399', fontSize: '9px', padding: '2px 4px', borderRadius: '2px' }}
+                  title="Harga Entry"
+                />
+                <input
+                  type="number"
+                  value={slPrice}
+                  onChange={e => setSlPrice(Number(e.target.value))}
+                  style={{ width: '50%', background: '#111827', border: '1px solid #374151', color: '#ef4444', fontSize: '9px', padding: '2px 4px', borderRadius: '2px' }}
+                  title="Harga Stop Loss"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.4)', padding: '5px 8px', borderRadius: '3px' }}>
+            <div>
+              <div style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>REKOMENDASI LOT BEI (REM GANDA):</div>
+              <strong style={{ fontSize: '13px', color: '#60a5fa', fontFamily: 'var(--font-mono)' }}>{finalLots} Lot</strong>
+              <span style={{ fontSize: '8px', color: 'var(--text-muted)', marginLeft: '6px' }}>Rp {(finalLots * entryPrice * 100).toLocaleString('id-ID')}</span>
+            </div>
+            <span style={{ fontSize: '7.5px', color: '#a78bfa', background: 'rgba(167, 139, 250, 0.15)', padding: '2px 5px', borderRadius: '2px' }}>
+              {activeBrake}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Widget 2: Macro Transmission & Carry Spread Simulator (Paper 2)
+function Paper2MacroWidget() {
+  const [dxy, setDxy] = useState(100.6);
+  const [us10y, setUs10y] = useState(4.18);
+  const [biRate, setBiRate] = useState(6.00);
+  const [fedRate, setFedRate] = useState(4.75);
+
+  const carryBps = Math.round((biRate - fedRate) * 100);
+  const isCarryShielded = carryBps >= 100;
+  const riskRegime = dxy < 101.5 && us10y < 4.25 ? 'RISK-ON (KONDUSIF UNTUK IHSG)' : 'RISK-OFF (DEFENSIVE)';
+
+  return (
+    <div style={{ background: 'rgba(15, 23, 42, 0.75)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '4px', padding: '12px 14px', margin: '14px 0' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <div style={{ fontSize: '11px', fontWeight: '800', color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span>🧭 INTERACTIVE LAB:</span>
+          <span>Global Macro Transmission & Carry Spread Engine</span>
+        </div>
+        <span className="badge badge-bull" style={{ fontSize: '8.5px' }}>INTERMARKET ALPHA</span>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', fontSize: '9px', marginBottom: '8px' }}>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>DXY Index: <strong style={{ color: '#fff' }}>{dxy.toFixed(1)}</strong></span>
+          <input type="range" min="95" max="110" step="0.2" value={dxy} onChange={e => setDxy(Number(e.target.value))} style={{ width: '100%' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>US 10Y Yield: <strong style={{ color: '#fff' }}>{us10y.toFixed(2)}%</strong></span>
+          <input type="range" min="3.0" max="5.5" step="0.05" value={us10y} onChange={e => setUs10y(Number(e.target.value))} style={{ width: '100%' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>BI-Rate: <strong style={{ color: '#fff' }}>{biRate.toFixed(2)}%</strong></span>
+          <input type="range" min="4.0" max="8.0" step="0.25" value={biRate} onChange={e => setBiRate(Number(e.target.value))} style={{ width: '100%' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Fed Funds Rate: <strong style={{ color: '#fff' }}>{fedRate.toFixed(2)}%</strong></span>
+          <input type="range" min="2.0" max="6.0" step="0.25" value={fedRate} onChange={e => setFedRate(Number(e.target.value))} style={{ width: '100%' }} />
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', background: 'rgba(0,0,0,0.3)', padding: '6px 10px', borderRadius: '3px', fontSize: '9px' }}>
+        <div>
+          <span>Carry Spread BI vs Fed: </span>
+          <strong style={{ color: isCarryShielded ? '#10b981' : '#ef4444', fontFamily: 'var(--font-mono)' }}>+{carryBps} bps</strong>
+          <span style={{ color: 'var(--text-muted)', marginLeft: '6px' }}>({isCarryShielded ? '🛡️ IDR Terlindungi' : '⚠️ Rentan Depresiasi'})</span>
+        </div>
+        <div>
+          <span>Rezim Transmisi Global: </span>
+          <strong style={{ color: riskRegime.includes('RISK-ON') ? '#10b981' : '#f59e0b' }}>{riskRegime}</strong>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Widget 3: Live L2 Queue Imbalance & Spoofing Tester (Paper 3)
+function Paper3OrderBookWidget() {
+  const [bidVol, setBidVol] = useState(48500);
+  const [askVol, setAskVol] = useState(12400);
+  const [tradeVol, setTradeVol] = useState(2500);
+
+  const totalDepth = bidVol + askVol;
+  const qir = totalDepth > 0 ? (bidVol - askVol) / totalDepth : 0;
+  const isSpoofing = qir > 0.55 && tradeVol < 0.12 * bidVol;
+
+  return (
+    <div style={{ background: 'rgba(15, 23, 42, 0.75)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '4px', padding: '12px 14px', margin: '14px 0' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <div style={{ fontSize: '11px', fontWeight: '800', color: '#34d399', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span>📊 INTERACTIVE LAB:</span>
+          <span>Order Book L2 Queue Imbalance & Spoofing Detector</span>
+        </div>
+        <span className="badge badge-bull" style={{ fontSize: '8.5px' }}>MICROSTRUCTURE</span>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', fontSize: '9px', marginBottom: '8px' }}>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Antrean Bid (Lot): <strong style={{ color: '#34d399' }}>{bidVol.toLocaleString()}</strong></span>
+          <input type="range" min="5000" max="100000" step="2500" value={bidVol} onChange={e => setBidVol(Number(e.target.value))} style={{ width: '100%', accentColor: '#10b981' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Antrean Ask (Lot): <strong style={{ color: '#ef4444' }}>{askVol.toLocaleString()}</strong></span>
+          <input type="range" min="5000" max="100000" step="2500" value={askVol} onChange={e => setAskVol(Number(e.target.value))} style={{ width: '100%', accentColor: '#ef4444' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Volume Eksekusi Riil (Lot): <strong style={{ color: '#60a5fa' }}>{tradeVol.toLocaleString()}</strong></span>
+          <input type="range" min="500" max="25000" step="500" value={tradeVol} onChange={e => setTradeVol(Number(e.target.value))} style={{ width: '100%', accentColor: '#60a5fa' }} />
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.3)', padding: '6px 10px', borderRadius: '3px', fontSize: '9px' }}>
+        <div>
+          <span>Queue Imbalance Ratio (QIR): </span>
+          <strong style={{ color: qir > 0 ? '#34d399' : '#ef4444', fontFamily: 'var(--font-mono)' }}>{qir > 0 ? '+' : ''}{qir.toFixed(3)}</strong>
+        </div>
+        <div>
+          <span style={{
+            padding: '2px 7px',
+            borderRadius: '2px',
+            fontWeight: '800',
+            fontSize: '8.5px',
+            background: isSpoofing ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)',
+            color: isSpoofing ? '#ef4444' : '#10b981',
+            border: isSpoofing ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(16, 185, 129, 0.4)'
+          }}>
+            {isSpoofing ? '🚨 DETEKSI ANOMALI: SPOOFING FAKE BID (JANGAN HAKA)' : '✅ PENYERAPAN PASIF SEJATI (PASSIVE ABSORPTION)'}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Widget 4: 3-Candle Imbalance & 50% Consequent Encroachment (C.E.) Magnet Calculator (Paper 4)
+function Paper4SmcFvgWidget() {
+  const [c1High, setC1High] = useState(940);
+  const [c2High, setC2High] = useState(1010);
+  const [c2Low, setC2Low] = useState(935);
+  const [c3Low, setC3Low] = useState(980);
+
+  const hasBullishFvg = c3Low > c1High;
+  const fvgHeight = hasBullishFvg ? c3Low - c1High : 0;
+  const ce50 = hasBullishFvg ? c1High + (fvgHeight * 0.5) : null;
+  const sl = c2Low;
+  const risk = ce50 ? ce50 - sl : 1;
+  const tp1 = ce50 ? ce50 + (risk * 2.0) : 0;
+  const tp2 = ce50 ? ce50 + (risk * 3.5) : 0;
+
+  return (
+    <div style={{ background: 'rgba(15, 23, 42, 0.75)', border: '1px solid rgba(139, 92, 246, 0.3)', borderRadius: '4px', padding: '12px 14px', margin: '14px 0' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <div style={{ fontSize: '11px', fontWeight: '800', color: '#c084fc', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span>⚡ INTERACTIVE LAB:</span>
+          <span>SMC 3-Candle Imbalance & 50% Consequent Encroachment (C.E.) Calculator</span>
+        </div>
+        <span className="badge badge-bull" style={{ fontSize: '8.5px' }}>ALGORITHMIC SMC</span>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', fontSize: '9px', marginBottom: '8px' }}>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Candle 1 High:</span>
+          <input type="number" value={c1High} onChange={e => setC1High(Number(e.target.value))} style={{ width: '100%', background: '#111827', border: '1px solid #374151', color: '#fff', fontSize: '9px', padding: '2px 4px', borderRadius: '2px' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Candle 2 Low:</span>
+          <input type="number" value={c2Low} onChange={e => setC2Low(Number(e.target.value))} style={{ width: '100%', background: '#111827', border: '1px solid #374151', color: '#fff', fontSize: '9px', padding: '2px 4px', borderRadius: '2px' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Candle 2 High:</span>
+          <input type="number" value={c2High} onChange={e => setC2High(Number(e.target.value))} style={{ width: '100%', background: '#111827', border: '1px solid #374151', color: '#fff', fontSize: '9px', padding: '2px 4px', borderRadius: '2px' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Candle 3 Low:</span>
+          <input type="number" value={c3Low} onChange={e => setC3Low(Number(e.target.value))} style={{ width: '100%', background: '#111827', border: '1px solid #374151', color: '#fff', fontSize: '9px', padding: '2px 4px', borderRadius: '2px' }} />
+        </div>
+      </div>
+
+      <div style={{ background: 'rgba(0,0,0,0.3)', padding: '6px 10px', borderRadius: '3px', fontSize: '9px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <span>Status FVG: </span>
+          <strong style={{ color: hasBullishFvg ? '#10b981' : '#ef4444' }}>
+            {hasBullishFvg ? `VALID BULLISH FVG (${c1High} - ${c3Low})` : 'TIDAK ADA CELAH (OVERLAPPING)'}
+          </strong>
+        </div>
+        {hasBullishFvg && (
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <span>Magnet C.E. (50%): <strong style={{ color: '#fbbf24', fontFamily: 'var(--font-mono)' }}>Rp {ce50}</strong></span>
+            <span>Stop Loss: <strong style={{ color: '#ef4444', fontFamily: 'var(--font-mono)' }}>Rp {sl}</strong></span>
+            <span>Target TP2 (1:3.5): <strong style={{ color: '#34d399', fontFamily: 'var(--font-mono)' }}>Rp {Math.round(tp2)}</strong></span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Widget 5: Dividend Trap Net PnL Scenario Modeler (Paper 5)
+function Paper5DividendTrapWidget() {
+  const [cumPrice, setCumPrice] = useState(3900);
+  const [grossDps, setGrossDps] = useState(1094);
+  const [exDropPct, setExDropPct] = useState(32);
+
+  const netDps = grossDps * 0.90; // 10% tax
+  const exPrice = Math.round(cumPrice * (1 - (exDropPct / 100)));
+  const capLoss = cumPrice - exPrice;
+  const netPnL = netDps - capLoss;
+  const isTrap = netPnL < 0;
+
+  return (
+    <div style={{ background: 'rgba(15, 23, 42, 0.75)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '4px', padding: '12px 14px', margin: '14px 0' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <div style={{ fontSize: '11px', fontWeight: '800', color: '#f87171', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span>🎯 INTERACTIVE LAB:</span>
+          <span>Dividend Trap Realized Net PnL Simulator ($PTBA Case Study)</span>
+        </div>
+        <span className="badge badge-bull" style={{ fontSize: '8.5px' }}>ARBITRAGE ANOMALY</span>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', fontSize: '9px', marginBottom: '8px' }}>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Harga Beli Cum-Date (Rp):</span>
+          <input type="number" value={cumPrice} onChange={e => setCumPrice(Number(e.target.value))} style={{ width: '100%', background: '#111827', border: '1px solid #374151', color: '#fff', fontSize: '9px', padding: '2px 4px', borderRadius: '2px' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Dividen Kotor / Lembar (DPS):</span>
+          <input type="number" value={grossDps} onChange={e => setGrossDps(Number(e.target.value))} style={{ width: '100%', background: '#111827', border: '1px solid #374151', color: '#fff', fontSize: '9px', padding: '2px 4px', borderRadius: '2px' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Penurunan Ex-Date: <strong style={{ color: '#ef4444' }}>-{exDropPct}%</strong></span>
+          <input type="range" min="5" max="45" step="1" value={exDropPct} onChange={e => setExDropPct(Number(e.target.value))} style={{ width: '100%', accentColor: '#ef4444' }} />
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.3)', padding: '6px 10px', borderRadius: '3px', fontSize: '9px' }}>
+        <div>
+          <span>Dividen Bersih (PPh 10%): <strong style={{ color: '#34d399' }}>+Rp {netDps.toFixed(0)}</strong></span>
+          <span style={{ marginLeft: '10px' }}>Capital Loss: <strong style={{ color: '#ef4444' }}>-Rp {capLoss}</strong></span>
+        </div>
+        <div>
+          <span style={{
+            padding: '2px 8px',
+            borderRadius: '2px',
+            fontWeight: '800',
+            fontSize: '9px',
+            background: isTrap ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)',
+            color: isTrap ? '#ef4444' : '#10b981',
+            border: isTrap ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(16, 185, 129, 0.4)'
+          }}>
+            {isTrap ? `🚨 DIVIDEND TRAP: RUGI BERSIH -Rp ${Math.abs(netPnL).toFixed(0)}/LEMBAR` : `✅ CUAN BERSIH: +Rp ${netPnL.toFixed(0)}/LEMBAR`}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Widget 6: Deflated Sharpe Ratio Multi-Testing Simulator (Paper 6)
+function Paper6DsrWidget() {
+  const [observedSr, setObservedSr] = useState(2.2);
+  const [trialsN, setTrialsN] = useState(24);
+  const [skewness, setSkewness] = useState(-0.3);
+  const [kurtosis, setKurtosis] = useState(4.2);
+
+  const euler = 0.5772156649;
+  const n = Math.max(1, trialsN);
+  const srStar = n > 1 ? Math.sqrt(2 * Math.log(n)) + (euler / Math.sqrt(2 * Math.log(n))) : 0.0;
+  const srVar = 1.0 - (skewness * observedSr) + (((kurtosis - 1.0) / 4.0) * (observedSr ** 2));
+  const srStd = Math.sqrt(Math.max(0.001, srVar));
+  const tSamples = 2.0 * 252; // 2 years
+  const zStat = ((observedSr - srStar) * Math.sqrt(Math.max(1.0, tSamples - 1))) / srStd;
+  
+  // Normal CDF approximation
+  const dsr = Math.min(0.999, Math.max(0.001, 0.5 * (1.0 + Math.tanh(zStat * 0.79788456 * (1 + 0.044715 * zStat * zStat)))));
+  const isDefensible = dsr >= 0.95;
+
+  return (
+    <div style={{ background: 'rgba(15, 23, 42, 0.75)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '4px', padding: '12px 14px', margin: '14px 0' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <div style={{ fontSize: '11px', fontWeight: '800', color: '#60a5fa', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span>🔬 INTERACTIVE LAB:</span>
+          <span>Deflated Sharpe Ratio (DSR) Multiple-Testing Decay Sandbox</span>
+        </div>
+        <span className="badge badge-bull" style={{ fontSize: '8.5px' }}>LÓPEZ DE PRADO ENGINE</span>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', fontSize: '9px', marginBottom: '8px' }}>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Observed Sharpe: <strong style={{ color: '#fff' }}>{observedSr.toFixed(2)}</strong></span>
+          <input type="range" min="0.5" max="3.5" step="0.1" value={observedSr} onChange={e => setObservedSr(Number(e.target.value))} style={{ width: '100%' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Trials Count (N): <strong style={{ color: '#fff' }}>{trialsN}</strong></span>
+          <input type="range" min="1" max="100" step="1" value={trialsN} onChange={e => setTrialsN(Number(e.target.value))} style={{ width: '100%' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Skewness: <strong style={{ color: '#fff' }}>{skewness.toFixed(1)}</strong></span>
+          <input type="range" min="-1.5" max="1.5" step="0.1" value={skewness} onChange={e => setSkewness(Number(e.target.value))} style={{ width: '100%' }} />
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-muted)' }}>Kurtosis (Fat Tails): <strong style={{ color: '#fff' }}>{kurtosis.toFixed(1)}</strong></span>
+          <input type="range" min="2.0" max="8.0" step="0.2" value={kurtosis} onChange={e => setKurtosis(Number(e.target.value))} style={{ width: '100%' }} />
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.3)', padding: '6px 10px', borderRadius: '3px', fontSize: '9px' }}>
+        <div>
+          <span>Sharpe Ambang Keberuntungan (SR*): <strong style={{ color: '#f59e0b', fontFamily: 'var(--font-mono)' }}>{srStar.toFixed(2)}</strong></span>
+          <span style={{ marginLeft: '12px' }}>Nilai DSR Terhitung: <strong style={{ color: isDefensible ? '#10b981' : '#ef4444', fontFamily: 'var(--font-mono)' }}>{dsr.toFixed(3)}</strong></span>
+        </div>
+        <div>
+          <span style={{
+            padding: '2px 8px',
+            borderRadius: '2px',
+            fontWeight: '800',
+            fontSize: '9px',
+            background: isDefensible ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+            color: isDefensible ? '#10b981' : '#ef4444',
+            border: isDefensible ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(239, 68, 68, 0.4)'
+          }}>
+            {isDefensible ? '🛡️ DEFENSIBLE SPEC (LOLOS STATISTIK ALPHA = 0.05)' : '⚠️ OVERFITTED (GAGAL SIGNIFIKANSI / MURNI KEBETULAN)'}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function InteractiveQuantLabSandbox() {
   const [labMode, setLabMode] = useState('BCR'); // 'BCR' | 'CARVER' | 'DSR'
 
@@ -1239,9 +2005,23 @@ function InteractiveQuantLabSandbox() {
   );
 }
 
+/**
+ * =========================================================================
+ * MAIN COMPONENT: QuantAcademyTab
+ * Redesigned as an Executive Hedge Fund Working Paper Reader & Research Portal
+ * =========================================================================
+ */
+
+/**
+ * =========================================================================
+ * MAIN COMPONENT: QuantAcademyTab
+ * Redesigned as an Executive Hedge Fund Working Paper Reader & Research Portal
+ * =========================================================================
+ */
 export default function QuantAcademyTab() {
-  const [activeTab, setActiveTab] = useState('academy'); // 'academy' | 'dictionary' | 'gallery' | 'calculator' | 'certificate'
-  const [activeLevel, setActiveLevel] = useState(1);
+  const [activeTab, setActiveTab] = useState('academy'); // 'academy' | 'dictionary' | 'gallery' | 'calculator' | 'quant_lab' | 'certificate'
+  const [activePaperId, setActivePaperId] = useState(1);
+  const [viewMode, setViewMode] = useState('LAYMAN'); // 'LAYMAN' | 'QUANT'
   const [activeQuiz, setActiveQuiz] = useState(null);
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
@@ -1249,13 +2029,13 @@ export default function QuantAcademyTab() {
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [selectedGalleryImg, setSelectedGalleryImg] = useState(null);
 
-  // Mini Interactive Lot Calculator State
+  // Standalone Mini Lot Calculator State
   const [calcEquity, setCalcEquity] = useState(10000000);
   const [calcEntry, setCalcEntry] = useState(1500);
   const [calcStopLoss, setCalcStopLoss] = useState(1425);
   const [calcRiskPct, setCalcRiskPct] = useState(2);
 
-  // Pre-Flight Checklist State
+  // Standalone Pre-Flight Checklist State
   const [checklist, setChecklist] = useState({
     gate1: false,
     gate2: false,
@@ -1264,6 +2044,7 @@ export default function QuantAcademyTab() {
     gate5: false
   });
 
+  // User LocalStorage Progress
   const [progress, setProgress] = useState(() => {
     try {
       const saved = localStorage.getItem('mbg_academy_progress');
@@ -1279,11 +2060,15 @@ export default function QuantAcademyTab() {
     } catch {}
   }, [progress]);
 
-  const handleLessonComplete = (lessonId) => {
-    if (!progress.completedLessons.includes(lessonId)) {
+  const currentPaper = useMemo(() => {
+    return INSTITUTIONAL_PAPERS.find(p => p.id === activePaperId) || INSTITUTIONAL_PAPERS[0];
+  }, [activePaperId]);
+
+  const handlePaperComplete = (paperId) => {
+    if (!progress.completedLessons.includes(`wp-${paperId}`)) {
       setProgress(prev => ({
         ...prev,
-        completedLessons: [...prev.completedLessons, lessonId]
+        completedLessons: [...prev.completedLessons, `wp-${paperId}`]
       }));
     }
   };
@@ -1293,21 +2078,21 @@ export default function QuantAcademyTab() {
     setQuizAnswers(prev => ({ ...prev, [qIdx]: optIdx }));
   };
 
-  const handleQuizSubmit = (level) => {
+  const handleQuizSubmit = (paper) => {
     setQuizSubmitted(true);
-    const allCorrect = level.quiz.every((q, idx) => quizAnswers[idx] === q.answer);
+    const allCorrect = paper.comprehensionQuiz.every((q, idx) => quizAnswers[idx] === q.answer);
     if (allCorrect) {
-      if (!progress.completedLevels.includes(level.id)) {
+      if (!progress.completedLevels.includes(paper.id)) {
         setProgress(prev => ({
           ...prev,
-          completedLevels: [...prev.completedLevels, level.id]
+          completedLevels: [...prev.completedLevels, paper.id]
         }));
       }
     }
   };
 
   const handleReset = () => {
-    if (window.confirm('Reset seluruh progres belajar dan sertifikat MBG Academy?')) {
+    if (window.confirm('Reset seluruh progres membaca paper dan sertifikat MBG Academy?')) {
       setProgress({ completedLessons: [], completedLevels: [] });
       setQuizAnswers({});
       setQuizSubmitted(false);
@@ -1315,47 +2100,40 @@ export default function QuantAcademyTab() {
     }
   };
 
-  // Calculations
+  const percentComplete = Math.round((progress.completedLevels.length / INSTITUTIONAL_PAPERS.length) * 100);
+  const earnedBadges = INSTITUTIONAL_PAPERS
+    .filter(p => progress.completedLevels.includes(p.id))
+    .map(p => p.badge);
+
+  // Standalone lot calculations
   const riskRupiahMax = Math.round((calcEquity * calcRiskPct) / 100);
   const slDistanceRupiah = Math.max(1, calcEntry - calcStopLoss);
-  const slDistancePct = ((slDistanceRupiah / calcEntry) * 100).toFixed(2);
-  const calculatedLots = Math.max(0, Math.floor(riskRupiahMax / (slDistanceRupiah * 100)));
-  const totalPositionValue = calculatedLots * 100 * calcEntry;
-  const portfolioExposurePct = calcEquity > 0 ? ((totalPositionValue / calcEquity) * 100).toFixed(1) : 0;
-  const actualRiskRupiah = calculatedLots * 100 * slDistanceRupiah;
+  const exactLotSizing = Math.max(1, Math.floor(riskRupiahMax / (slDistanceRupiah * 100)));
+  const totalPositionValue = exactLotSizing * calcEntry * 100;
+  const positionWeightPct = (totalPositionValue / calcEquity) * 100;
 
-  const totalLessons = ACADEMY_LEVELS.reduce((acc, l) => acc + l.lessons.length, 0);
-  const percentComplete = Math.round((progress.completedLevels.length / 5) * 100);
-  const earnedBadges = ACADEMY_LEVELS.filter(l => progress.completedLevels.includes(l.id)).map(l => l.badge);
-
-  const filteredGlossary = GLOSSARY_TERMS.filter(g => {
-    const termLower = searchTerm.toLowerCase();
-    const matchesSearch = !searchTerm ||
-      g.term.toLowerCase().includes(termLower) ||
-      g.desc.toLowerCase().includes(termLower) ||
-      (g.practical && g.practical.toLowerCase().includes(termLower)) ||
-      (g.category && g.category.toLowerCase().includes(termLower));
-    
-    if (!matchesSearch) return false;
-    if (activeCategory === 'ALL') return true;
-    return g.category === activeCategory;
+  // Filter dictionary
+  const filteredTerms = GLOSSARY_TERMS.filter(item => {
+    const matchesCat = activeCategory === 'ALL' || item.category === activeCategory;
+    const matchesSearch = item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          item.definition.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          item.tips.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCat && matchesSearch;
   });
 
-  const allGatesChecked = Object.values(checklist).every(Boolean);
-
   return (
-    <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', padding: '16px', fontFamily: 'var(--font-mono)' }}>
+    <div className="tab-pane" style={{ padding: '14px', maxWidth: '1480px', margin: '0 auto' }}>
       
-      {/* 1. Academy HUD Header */}
-      <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '14px', marginBottom: '14px' }}>
+      {/* 1. ACADEMY EXECUTIVE HERO HEADER */}
+      <div className="telemetry-panel" style={{ padding: '14px 18px', marginBottom: '14px', borderLeft: '4px solid var(--accent-blue)', background: 'linear-gradient(135deg, var(--bg-panel) 0%, rgba(59, 130, 246, 0.05) 100%)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '10px' }}>
           <div>
             <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.06em', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>🎓 MBG QUANT ACADEMY // MBG APEX DISCIPLINARY SYSTEM</span>
-              <span className="badge badge-bull" style={{ fontSize: '9px' }}>5 LEVELS COMPLETE</span>
+              <span>🎓 MBG QUANT ACADEMY // WORKING PAPER SERIES 2026</span>
+              <span className="badge badge-bull" style={{ fontSize: '9px' }}>6 RESEARCH PAPERS</span>
             </div>
-            <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '3px' }}>
-              KURIKULUM FINANSIAL & TRADING KUANTITATIF BERJENJANG · MANAJEMEN MODAL · SMART MONEY · BANDARMOLOGI · KRIPTO SPOT
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '3px', fontFamily: 'var(--font-mono)' }}>
+              STANDAR PENDIDIKAN HEDGE FUND · RALPH VINCE 2% · ROBERT CARVER VOL SIZING · LÓPEZ DE PRADO DSR · MICROSTRUCTURE IIFS · SMC FAIR VALUE GAPS
             </div>
           </div>
           <button
@@ -1371,9 +2149,9 @@ export default function QuantAcademyTab() {
         {/* Progress Bar */}
         <div style={{ marginBottom: '10px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', marginBottom: '4px' }}>
-            <span style={{ color: 'var(--text-muted)' }}>Status Kelulusan Materi & Evaluasi Kuis:</span>
+            <span style={{ color: 'var(--text-muted)' }}>Status Evaluasi & Peer-Review Research Papers:</span>
             <span style={{ fontWeight: '800', color: percentComplete === 100 ? 'var(--accent-green)' : 'var(--accent-blue)' }}>
-              {percentComplete}% SELESAI ({progress.completedLevels.length} / 5 LEVEL LULUS)
+              {percentComplete}% SELESAI ({progress.completedLevels.length} / {INSTITUTIONAL_PAPERS.length} PAPERS VERIFIED)
             </span>
           </div>
           <div style={{ width: '100%', height: '7px', background: '#202228', borderRadius: '2px', overflow: 'hidden' }}>
@@ -1383,421 +2161,462 @@ export default function QuantAcademyTab() {
 
         {/* Badges Earned */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', fontSize: '10px' }}>
-          <span style={{ fontWeight: '700', color: 'var(--accent-orange)' }}>LENCANA DIRAIH:</span>
+          <span style={{ fontWeight: '700', color: 'var(--accent-orange)' }}>SPESIALISASI DIRAIH:</span>
           {earnedBadges.length > 0 ? (
             earnedBadges.map((b, i) => (
               <span key={i} className="badge badge-bull" style={{ fontSize: '9.5px' }}>{b}</span>
             ))
           ) : (
-            <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Selesaikan kuis evaluasi tiap level untuk meraih lencana keahlian Anda.</span>
+            <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Pelajari dan selesaikan evaluasi tiap research paper untuk meraih lencana keahlian Anda.</span>
           )}
         </div>
       </div>
 
-      {/* 2. Sub Navigation */}
+      {/* 2. SUB NAVIGATION TABS */}
       <div style={{ display: 'flex', gap: '6px', marginBottom: '14px', borderBottom: 'var(--border-hairline)', paddingBottom: '8px', flexWrap: 'wrap' }}>
         <button
           onClick={() => setActiveTab('academy')}
           className={'telemetry-btn ' + (activeTab === 'academy' ? 'active' : '')}
           style={{ fontSize: '11px', padding: '6px 13px', fontWeight: '700' }}
         >
-          📚 Kurikulum Pelatihan (5 Level)
-        </button>
-        <button
-          onClick={() => setActiveTab('dictionary')}
-          className={'telemetry-btn ' + (activeTab === 'dictionary' ? 'active' : '')}
-          style={{ fontSize: '11px', padding: '6px 13px', fontWeight: '700' }}
-        >
-          📖 Quick Dictionary ({GLOSSARY_TERMS.length})
-        </button>
-        <button
-          onClick={() => setActiveTab('gallery')}
-          className={'telemetry-btn ' + (activeTab === 'gallery' ? 'active' : '')}
-          style={{ fontSize: '11px', padding: '6px 13px', fontWeight: '700' }}
-        >
-          🖼️ Galeri Visual ({VISUAL_FIGURES_GALLERY.length} Infografis)
-        </button>
-        <button
-          onClick={() => setActiveTab('calculator')}
-          className={'telemetry-btn ' + (activeTab === 'calculator' ? 'active' : '')}
-          style={{ fontSize: '11px', padding: '6px 13px', fontWeight: '700' }}
-        >
-          🧮 Kalkulator Lot & Cockpit Checklist
+          📄 Working Papers (6 Modul Riset)
         </button>
         <button
           onClick={() => setActiveTab('quant_lab')}
           className={'telemetry-btn ' + (activeTab === 'quant_lab' ? 'active' : '')}
-          style={{
-            fontSize: '11px',
-            padding: '6px 13px',
+          style={{ 
+            fontSize: '11px', 
+            padding: '6px 13px', 
             fontWeight: '700',
             background: activeTab === 'quant_lab' ? 'rgba(59, 130, 246, 0.25)' : undefined,
             color: activeTab === 'quant_lab' ? '#60a5fa' : undefined,
             border: activeTab === 'quant_lab' ? '1px solid rgba(59, 130, 246, 0.4)' : undefined
           }}
         >
-          🔬 Interactive Quant Lab (OpenQuant)
+          🔬 Interactive Quant Lab (OpenQuant Sandbox)
         </button>
-        {progress.completedLevels.length === 5 && (
-          <button
-            onClick={() => setActiveTab('certificate')}
-            className={'telemetry-btn ' + (activeTab === 'certificate' ? 'active' : '')}
-            style={{ fontSize: '11px', padding: '6px 13px', fontWeight: '700', color: 'var(--accent-gold)' }}
-          >
-            🏆 Sertifikat Kelulusan
-          </button>
-        )}
+        <button
+          onClick={() => setActiveTab('dictionary')}
+          className={'telemetry-btn ' + (activeTab === 'dictionary' ? 'active' : '')}
+          style={{ fontSize: '11px', padding: '6px 13px', fontWeight: '700' }}
+        >
+          📖 Master Glossary (66 Istilah)
+        </button>
+        <button
+          onClick={() => setActiveTab('gallery')}
+          className={'telemetry-btn ' + (activeTab === 'gallery' ? 'active' : '')}
+          style={{ fontSize: '11px', padding: '6px 13px', fontWeight: '700' }}
+        >
+          🖼️ Visual Anatomy Gallery
+        </button>
+        <button
+          onClick={() => setActiveTab('calculator')}
+          className={'telemetry-btn ' + (activeTab === 'calculator' ? 'active' : '')}
+          style={{ fontSize: '11px', padding: '6px 13px', fontWeight: '700' }}
+        >
+          💰 Kalkulator Lot Mandiri
+        </button>
+        <button
+          onClick={() => setActiveTab('certificate')}
+          className={'telemetry-btn ' + (activeTab === 'certificate' ? 'active' : '')}
+          style={{ fontSize: '11px', padding: '6px 13px', fontWeight: '700', color: progress.completedLevels.length === INSTITUTIONAL_PAPERS.length ? 'var(--accent-gold)' : undefined }}
+        >
+          🏆 Sertifikasi Resmi {progress.completedLevels.length === INSTITUTIONAL_PAPERS.length ? '✓ Terbuka' : `(${progress.completedLevels.length}/${INSTITUTIONAL_PAPERS.length})`}
+        </button>
       </div>
 
-      {/* TAB 1: ACADEMY CURRICULUM */}
+      {/* =========================================================================
+          TAB 1: WORKING PAPERS READER (HEDGE FUND LEVEL CURRICULUM)
+          ========================================================================= */}
       {activeTab === 'academy' && (
         <div>
-          {/* Level Selection Tabs */}
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '14px' }}>
-            {ACADEMY_LEVELS.map(l => {
-              const isPassed = progress.completedLevels.includes(l.id);
+          {/* Paper Selector Ribbon */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '6px', marginBottom: '14px' }}>
+            {INSTITUTIONAL_PAPERS.map(p => {
+              const isPassed = progress.completedLevels.includes(p.id);
+              const isActive = activePaperId === p.id;
               return (
                 <button
-                  key={l.id}
-                  onClick={() => { setActiveLevel(l.id); setActiveQuiz(null); setQuizSubmitted(false); setQuizAnswers({}); }}
-                  className={'telemetry-btn ' + (activeLevel === l.id ? 'active' : '')}
-                  style={{ fontSize: '10.5px', padding: '5px 12px', fontWeight: '700' }}
+                  key={p.id}
+                  onClick={() => { setActivePaperId(p.id); setActiveQuiz(null); setQuizSubmitted(false); setQuizAnswers({}); }}
+                  style={{
+                    background: isActive ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(30, 41, 59, 0.8) 100%)' : 'var(--bg-panel-subtle)',
+                    border: isActive ? '1px solid var(--accent-blue)' : 'var(--border-hairline)',
+                    padding: '8px 10px',
+                    borderRadius: '4px',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    minHeight: '52px',
+                    transition: 'all 0.2s ease'
+                  }}
                 >
-                  Level {l.id} {isPassed ? '✓ Lulus' : ''}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                    <span style={{ fontSize: '9px', fontWeight: '800', color: isActive ? '#60a5fa' : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                      [{p.paperCode}]
+                    </span>
+                    {isPassed && <span style={{ color: 'var(--accent-green)', fontSize: '9px', fontWeight: '800' }}>✓ LULUS</span>}
+                  </div>
+                  <div style={{ fontSize: '9.5px', fontWeight: '700', color: isActive ? '#fff' : 'var(--text-secondary)', lineHeight: 1.2, marginTop: '3px' }}>
+                    {p.badge.split(' ')[0]}
+                  </div>
                 </button>
               );
             })}
           </div>
 
-          {/* Active Level Body */}
-          {ACADEMY_LEVELS.filter(l => l.id === activeLevel).map(level => {
-            const isLevelPassed = progress.completedLevels.includes(level.id);
-            return (
-              <div key={level.id} style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '16px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
-                  <div>
-                    <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>{level.title}</div>
-                    <div style={{ fontSize: '10.5px', color: 'var(--accent-blue)', marginTop: '2px' }}>Penghargaan: {level.badge}</div>
-                  </div>
-                  {isLevelPassed && <span className="badge badge-bull" style={{ padding: '4px 10px', fontSize: '10px' }}>✓ RESMI LULUS EVALUASI</span>}
-                </div>
-
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '14px', fontStyle: 'italic', borderBottom: 'var(--border-muted)', paddingBottom: '8px' }}>
-                  {level.summary}
-                </div>
-
-                {!activeQuiz ? (
-                  <>
-                    {/* Lessons */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '18px' }}>
-                      {level.lessons.map(lesson => {
-                        const isRead = progress.completedLessons.includes(lesson.id);
-                        return (
-                          <div key={lesson.id} style={{ background: 'var(--bg-panel)', border: 'var(--border-muted)', padding: '14px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                              <strong style={{ fontSize: '11.5px', color: 'var(--text-primary)' }}>{lesson.title}</strong>
-                              {isRead ? (
-                                <span style={{ color: 'var(--accent-green)', fontSize: '10px', fontWeight: '700' }}>✓ Selesai Dibaca</span>
-                              ) : (
-                                <button
-                                  onClick={() => handleLessonComplete(lesson.id)}
-                                  className="telemetry-btn"
-                                  style={{ fontSize: '9.5px', padding: '3px 8px' }}
-                                >
-                                  Tandai Selesai Dibaca
-                                </button>
-                              )}
-                            </div>
-
-                            <p style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.6, margin: '6px 0 10px 0' }}>
-                              {lesson.content}
-                            </p>
-
-                            {/* Embedded Visual Figure if exists */}
-                            {lesson.figure && (
-                              <div style={{ marginTop: '12px', background: '#0a0c10', border: '1px solid #232732', padding: '8px', textAlign: 'center' }}>
-                                <img
-                                  src={lesson.figure}
-                                  alt={lesson.title}
-                                  style={{ maxWidth: '100%', height: 'auto', maxHeight: '340px', objectFit: 'contain', cursor: 'pointer', borderRadius: '2px' }}
-                                  onClick={() => setSelectedGalleryImg(lesson.figure)}
-                                  title="Klik untuk memperbesar tampilan"
-                                />
-                                {lesson.figureCaption && (
-                                  <div style={{ fontSize: '10px', color: 'var(--accent-orange)', marginTop: '6px', fontWeight: '600' }}>
-                                    {lesson.figureCaption}
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    <div style={{ textAlign: 'center', paddingTop: '12px', borderTop: 'var(--border-muted)' }}>
-                      <button
-                        onClick={() => { setActiveQuiz(level.id); setQuizSubmitted(false); setQuizAnswers({}); }}
-                        className="telemetry-btn"
-                        style={{ padding: '9px 24px', fontSize: '11.5px', fontWeight: '800', background: 'var(--accent-orange)', color: '#fff' }}
-                      >
-                        {isLevelPassed ? '🔄 Ulangi Kuis Ujian Level ' + level.id : '📝 Mulai Ujian Evaluasi Kelulusan Level ' + level.id}
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  /* Quiz Interface */
-                  <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', borderBottom: 'var(--border-muted)', paddingBottom: '8px' }}>
-                      <span style={{ fontWeight: '700', fontSize: '12px', color: 'var(--accent-orange)' }}>
-                        UJIAN EVALUASI KELULUSAN: LEVEL {level.id} (3 SOAL WAJIB LULUS 100%)
-                      </span>
-                      <button
-                        onClick={() => setActiveQuiz(null)}
-                        className="telemetry-btn"
-                        style={{ fontSize: '10px', padding: '3px 8px' }}
-                      >
-                        ✕ Tutup Kuis & Kembali ke Materi
-                      </button>
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '18px' }}>
-                      {level.quiz.map((q, qIdx) => {
-                        const userAns = quizAnswers[qIdx];
-                        const isCorrect = userAns === q.answer;
-                        return (
-                          <div key={qIdx} style={{ background: 'var(--bg-panel)', border: 'var(--border-muted)', padding: '14px' }}>
-                            <div style={{ fontSize: '11.5px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '10px' }}>
-                              {qIdx + 1}. {q.question}
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                              {q.options.map((opt, optIdx) => {
-                                let optBg = 'var(--bg-panel-subtle)';
-                                let optBorder = 'var(--border-muted)';
-                                if (userAns === optIdx) {
-                                  optBg = '#1c2438';
-                                  optBorder = '1px solid #0066cc';
-                                }
-                                if (quizSubmitted) {
-                                  if (optIdx === q.answer) {
-                                    optBg = '#064e3b';
-                                    optBorder = '1px solid var(--accent-green)';
-                                  } else if (userAns === optIdx && !isCorrect) {
-                                    optBg = '#881337';
-                                    optBorder = '1px solid var(--accent-rust)';
-                                  }
-                                }
-                                return (
-                                  <div
-                                    key={optIdx}
-                                    onClick={() => handleOptionSelect(qIdx, optIdx)}
-                                    style={{
-                                      padding: '9px 12px',
-                                      background: optBg,
-                                      border: optBorder,
-                                      fontSize: '11px',
-                                      color: 'var(--text-primary)',
-                                      cursor: quizSubmitted ? 'default' : 'pointer',
-                                      transition: 'background 0.15s'
-                                    }}
-                                  >
-                                    <strong>{String.fromCharCode(65 + optIdx)}.</strong> {opt}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                            {quizSubmitted && (
-                              <div style={{ marginTop: '10px', fontSize: '10.5px', color: isCorrect ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                                {isCorrect ? '✅ JAWABAN TEPAT!' : '❌ KURANG TEPAT.'} {q.explanation}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    <div style={{ textAlign: 'center' }}>
-                      {!quizSubmitted ? (
-                        <button
-                          onClick={() => handleQuizSubmit(level)}
-                          disabled={Object.keys(quizAnswers).length < level.quiz.length}
-                          className="telemetry-btn"
-                          style={{ padding: '9px 28px', fontSize: '11.5px', fontWeight: '800', background: 'var(--accent-green)', color: '#fff' }}
-                        >
-                          Kirim Jawaban &amp; Cek Kelulusan
-                        </button>
-                      ) : (
-                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                          <button
-                            onClick={() => { setQuizSubmitted(false); setQuizAnswers({}); }}
-                            className="telemetry-btn"
-                            style={{ padding: '7px 16px', fontSize: '10.5px' }}
-                          >
-                            Ulangi Kuis
-                          </button>
-                          <button
-                            onClick={() => setActiveQuiz(null)}
-                            className="telemetry-btn"
-                            style={{ padding: '7px 16px', fontSize: '10.5px', background: 'var(--accent-blue)', color: '#fff' }}
-                          >
-                            Selesai &amp; Kembali ke Materi
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* TAB 2: QUICK DICTIONARY (MODEL TABEL KEBAWAH RAPI) */}
-      {activeTab === 'dictionary' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          
-          {/* Header & Filter Controls */}
-          <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-              <div>
-                <span style={{ fontSize: '12.5px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
-                  📖 MASTER GLOSSARY // KAMUS KILAT 66 ISTILAH TRADING & QUANT TERVERIFIKASI
-                </span>
-                <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                  Disajikan dalam format tabel vertikal terstruktur untuk pemula. Dilengkapi definisi ramah awam, analogi dunia nyata, dan aturan praktis eksekusi pasar.
-                </div>
-              </div>
-              <span className="badge badge-blue" style={{ fontSize: '10.5px', padding: '4px 10px' }}>
-                Menampilkan {filteredGlossary.length} dari {GLOSSARY_TERMS.length} Istilah
-              </span>
-            </div>
-
-            {/* Search Input */}
-            <div>
-              <input
-                type="text"
-                placeholder="🔍 Cari istilah, singkatan (SL, FVG, ARA, NFF, VWAP, BTC.D, TimesFM...), definisi, atau tips pasar..."
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '9px 13px',
-                  background: 'var(--bg-panel)',
-                  border: 'var(--border-hairline)',
-                  color: 'var(--text-primary)',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  outline: 'none'
-                }}
-              />
-            </div>
-
-            {/* Category Filter Pills */}
-            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)', marginRight: '4px' }}>KATEGORI:</span>
-              {DICTIONARY_CATEGORIES.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={'telemetry-btn ' + (activeCategory === cat ? 'active' : '')}
-                  style={{ fontSize: '10px', padding: '3px 8px' }}
-                >
-                  {cat === 'ALL' ? 'SEMUA KATEGORI (66)' : cat}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Model Tabel Kebawah Rapi (4 Kolom Sesuai Permintaan User) */}
-          <div style={{ overflowX: 'auto', border: 'var(--border-hairline)', background: 'var(--bg-panel-subtle)' }}>
-            <table className="telemetry-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr>
-                  <th style={{ width: '42px', textAlign: 'center' }}>#</th>
-                  <th style={{ width: '230px' }}>ISTILAH & KATEGORI</th>
-                  <th style={{ width: '42%' }}>PENJELASAN KONSEP (RAMAH PEMULA)</th>
-                  <th style={{ width: '42%' }}>ATURAN / TIPS PRAKTIS DI PASAR</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredGlossary.length > 0 ? (
-                  filteredGlossary.map((item, idx) => (
-                    <tr key={item.id || idx} style={{ verticalAlign: 'top', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                      <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '10px', fontWeight: '700', padding: '11px 6px' }}>
-                        {item.id || idx + 1}
-                      </td>
-                      <td style={{ whiteSpace: 'normal', padding: '11px 12px' }}>
-                        <div style={{ fontSize: '11.5px', fontWeight: '800', color: 'var(--accent-blue)', marginBottom: '5px' }}>
-                          {item.term}
-                        </div>
-                        <span className={`badge ${
-                          item.category === 'Manajemen Risiko' ? 'badge-alert' :
-                          item.category === 'Mekanisme Bursa' ? 'badge-blue' :
-                          item.category === 'Price Action & SMC' ? 'badge-bull' :
-                          item.category === 'Bandarmologi & Flow' ? 'badge-blue' :
-                          item.category === 'Model Quant & AI' ? 'badge-alert' :
-                          item.category === 'Indikator & Analisis' ? 'badge-bull' : 'badge-alert'
-                        }`} style={{ fontSize: '9px' }}>
-                          {item.category}
-                        </span>
-                      </td>
-                      <td style={{ whiteSpace: 'normal', fontSize: '11px', lineHeight: 1.5, color: 'var(--text-primary)', padding: '11px 12px' }}>
-                        {item.desc}
-                      </td>
-                      <td style={{ whiteSpace: 'normal', fontSize: '10.5px', lineHeight: 1.5, color: 'var(--text-muted)', padding: '11px 12px' }}>
-                        <span style={{ color: 'var(--accent-orange)', fontWeight: '700' }}>💡 Aturan Praktis: </span>
-                        {item.practical}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" style={{ textAlign: 'center', padding: '36px 14px', color: 'var(--text-muted)', fontSize: '11px' }}>
-                      Tidak ada istilah yang cocok dengan kata kunci "<strong>{searchTerm}</strong>". Coba kata kunci lain atau klik tombol SEMUA KATEGORI.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-        </div>
-      )}
-
-      {/* TAB 3: GALERI VISUAL 10 INFOGRAFIS */}
-      {activeTab === 'gallery' && (
-        <div>
-          <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '14px', marginBottom: '14px' }}>
-            <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>
-              🖼️ MASTER INFOGRAPHICS & DIAGRAM PROCESS GALLERY (10 FIGUR 300 DPI)
-            </div>
-            <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '2px' }}>
-              Seluruh grafik dan visualisasi proses yang dirancang khusus untuk mempermudah orang awam memahami logika pasar, risiko, dan aliran institusi dalam waktu 5 detik.
-            </div>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '14px' }}>
-            {VISUAL_FIGURES_GALLERY.map(fig => (
-              <div key={fig.id} style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)' }}>
-                    Figur {fig.id}: {fig.title}
+          {/* Active Research Paper Container */}
+          <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', borderRadius: '4px', padding: '20px 24px', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
+            
+            {/* Academic Paper Header */}
+            <div style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '16px', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '9.5px', fontWeight: '800', color: 'var(--accent-blue)', background: 'rgba(59, 130, 246, 0.15)', padding: '2px 7px', borderRadius: '3px', fontFamily: 'var(--font-mono)' }}>
+                    {currentPaper.paperCode}
                   </span>
-                  <span className="badge badge-blue" style={{ fontSize: '9px' }}>{fig.category}</span>
-                </div>
-                
-                <div style={{ background: '#0a0c10', border: '1px solid #232732', padding: '6px', textAlign: 'center', cursor: 'pointer' }} onClick={() => setSelectedGalleryImg(fig.file)}>
-                  <img
-                    src={fig.file}
-                    alt={fig.title}
-                    style={{ width: '100%', height: '180px', objectFit: 'contain' }}
-                  />
-                  <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginTop: '4px' }}>🔍 Klik untuk memperbesar</div>
+                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '2px' }}>
+                    JEL: {currentPaper.jelCodes}
+                  </span>
+                  <span style={{ fontSize: '9px', color: '#10b981', background: 'rgba(16, 185, 129, 0.12)', padding: '2px 6px', borderRadius: '2px', fontWeight: '700' }}>
+                    {currentPaper.rigor}
+                  </span>
+                  <span style={{ fontSize: '9px', color: '#fbbf24', background: 'rgba(245, 158, 11, 0.12)', padding: '2px 6px', borderRadius: '2px' }}>
+                    {currentPaper.category}
+                  </span>
                 </div>
 
-                <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
-                  {fig.desc}
+                {/* Dual-Layer View Mode Switch */}
+                <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.4)', borderRadius: '4px', padding: '2px', border: 'var(--border-hairline)' }}>
+                  <button
+                    onClick={() => setViewMode('LAYMAN')}
+                    style={{
+                      background: viewMode === 'LAYMAN' ? 'var(--accent-blue)' : 'transparent',
+                      color: viewMode === 'LAYMAN' ? '#fff' : 'var(--text-muted)',
+                      border: 'none',
+                      borderRadius: '3px',
+                      fontSize: '9px',
+                      padding: '4px 10px',
+                      fontWeight: '800',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    👔 Executive / Layman View
+                  </button>
+                  <button
+                    onClick={() => setViewMode('QUANT')}
+                    style={{
+                      background: viewMode === 'QUANT' ? 'var(--accent-purple)' : 'transparent',
+                      color: viewMode === 'QUANT' ? '#fff' : 'var(--text-muted)',
+                      border: 'none',
+                      borderRadius: '3px',
+                      fontSize: '9px',
+                      padding: '4px 10px',
+                      fontWeight: '800',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    🔬 Quant Formalism &amp; Proofs
+                  </button>
+                </div>
+              </div>
+
+              {/* Title & Authors */}
+              <h2 style={{ fontSize: '16px', fontWeight: '800', color: 'var(--text-primary)', margin: '6px 0 4px 0', lineHeight: 1.35, letterSpacing: '0.02em' }}>
+                {currentPaper.title}
+              </h2>
+              <div style={{ fontSize: '11px', color: 'var(--accent-blue)', fontWeight: '600', marginBottom: '8px' }}>
+                {currentPaper.subtitle}
+              </div>
+              <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                {currentPaper.authors}
+              </div>
+            </div>
+
+            {/* Executive Abstract Box */}
+            <div style={{ background: 'rgba(15, 23, 42, 0.6)', borderLeft: '3px solid var(--accent-blue)', padding: '10px 14px', borderRadius: '0 4px 4px 0', marginBottom: '16px' }}>
+              <div style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: '4px', textTransform: 'uppercase' }}>
+                EXECUTIVE ABSTRACT &amp; PROBLEM STATEMENT
+              </div>
+              <p style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+                {currentPaper.abstract}
+              </p>
+            </div>
+
+            {/* DUAL-LAYER BODY CONTENT */}
+            {viewMode === 'LAYMAN' ? (
+              /* ================= LAYMAN / EXECUTIVE VIEW ================= */
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '4px', padding: '14px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: '800', color: '#34d399', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>💡</span>
+                    <span>{currentPaper.laymanSection.headline}</span>
+                  </div>
+                  <div style={{ fontSize: '10.5px', color: 'var(--text-primary)', lineHeight: 1.55, fontStyle: 'italic', marginBottom: '10px', background: 'rgba(0,0,0,0.25)', padding: '8px 10px', borderRadius: '3px' }}>
+                    {currentPaper.laymanSection.analogy}
+                  </div>
+                  <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                    <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '6px' }}>Poin Kunci yang Wajib Dipahami:</strong>
+                    <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {currentPaper.laymanSection.keyTakeaways.map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* ================= QUANT FORMALISM VIEW ================= */
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div style={{ background: 'rgba(139, 92, 246, 0.05)', border: '1px solid rgba(139, 92, 246, 0.25)', borderRadius: '4px', padding: '14px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: '800', color: '#c084fc', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>📐</span>
+                    <span>MATHEMATICAL THEOREMS &amp; FORMULATION</span>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '12px' }}>
+                    {currentPaper.quantSection.theorems.map((t, idx) => (
+                      <div key={idx} style={{ background: 'rgba(0,0,0,0.35)', padding: '10px 12px', borderRadius: '3px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ fontSize: '10px', fontWeight: '800', color: '#93c5fd' }}>{t.name}</div>
+                        <div style={{ fontSize: '12px', fontWeight: '800', color: '#fbbf24', fontFamily: 'var(--font-mono)', margin: '4px 0' }}>
+                          {t.formula}
+                        </div>
+                        <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                          {t.description}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Code Block */}
+                  <div>
+                    <div style={{ fontSize: '9px', fontWeight: '800', color: 'var(--text-muted)', marginBottom: '4px', fontFamily: 'var(--font-mono)' }}>
+                      PYTHON / VECTORBT ALGORITHMIC IMPLEMENTATION:
+                    </div>
+                    <pre style={{
+                      background: '#090d16',
+                      border: '1px solid #1f2937',
+                      borderRadius: '3px',
+                      padding: '10px 12px',
+                      fontSize: '9.5px',
+                      color: '#a5f3fc',
+                      fontFamily: 'var(--font-mono)',
+                      overflowX: 'auto',
+                      lineHeight: 1.5,
+                      margin: 0
+                    }}>
+                      {currentPaper.quantSection.codeSnippet}
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* EMBEDDED IN-PAPER INTERACTIVE WIDGET SANDBOX */}
+            {currentPaper.id === 1 && <Paper1DrawdownWidget />}
+            {currentPaper.id === 2 && <Paper2MacroWidget />}
+            {currentPaper.id === 3 && <Paper3OrderBookWidget />}
+            {currentPaper.id === 4 && <Paper4SmcFvgWidget />}
+            {currentPaper.id === 5 && <Paper5DividendTrapWidget />}
+            {currentPaper.id === 6 && <Paper6DsrWidget />}
+
+            {/* REAL HISTORICAL MARKET CASE STUDY */}
+            <div style={{ background: 'rgba(30, 41, 59, 0.4)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', padding: '12px 14px', margin: '14px 0' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span>🗂️</span>
+                  <span>STUDI KASUS EMPIRIS HISTORIS: {currentPaper.historicalCase.ticker}</span>
+                </div>
+                <span style={{ fontSize: '8.5px', color: 'var(--accent-blue)', fontFamily: 'var(--font-mono)' }}>
+                  {currentPaper.historicalCase.period}
+                </span>
+              </div>
+              <p style={{ fontSize: '10.5px', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+                {currentPaper.historicalCase.narrative}
+              </p>
+            </div>
+
+            {/* PRE-FLIGHT EXECUTION SOP CHECKLIST */}
+            <div style={{ background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '4px', padding: '12px 14px', marginBottom: '16px' }}>
+              <div style={{ fontSize: '10.5px', fontWeight: '800', color: '#fbbf24', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span>📋</span>
+                <span>INSTITUTIONAL PRE-FLIGHT EXECUTION CHECKLIST (5 GATES):</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                {currentPaper.preFlightChecklist.map((gate, gIdx) => (
+                  <label key={gIdx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '10px', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                    <input type="checkbox" style={{ accentColor: '#10b981' }} />
+                    <span>Gate {gIdx + 1}: {gate}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* LITERATURE BIBLIOGRAPHY */}
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '12px', marginBottom: '16px', fontSize: '9px', color: 'var(--text-muted)' }}>
+              <strong style={{ color: 'var(--text-primary)' }}>DAFTAR PUSTAKA &amp; REFERENSI RESMI BUKU:</strong>
+              <ul style={{ margin: '4px 0 0 0', paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                {currentPaper.references.map((ref, rIdx) => (
+                  <li key={rIdx}>{ref}</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* COMPREHENSION EVALUATION QUIZ */}
+            <div style={{ borderTop: '2px solid rgba(59, 130, 246, 0.3)', paddingTop: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <div>
+                  <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)' }}>
+                    ✍️ UJI KOMPREHENSI KUANTITATIF RESMI ({currentPaper.paperCode})
+                  </div>
+                  <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    Jawab seluruh pertanyaan dengan benar untuk memperoleh verifikasi kelulusan dan lencana spesialisasi.
+                  </div>
+                </div>
+                {progress.completedLevels.includes(currentPaper.id) && (
+                  <span className="badge badge-bull" style={{ fontSize: '9px', padding: '3px 8px' }}>
+                    ✓ LULUS VERIFIKASI (100% SCORE)
+                  </span>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '16px' }}>
+                {currentPaper.comprehensionQuiz.map((q, qIdx) => (
+                  <div key={qIdx} style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div style={{ fontSize: '10.5px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>
+                      {qIdx + 1}. {q.question}
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                      {q.options.map((opt, oIdx) => {
+                        const isSelected = quizAnswers[qIdx] === oIdx;
+                        let optionStyle = {
+                          background: isSelected ? 'rgba(59, 130, 246, 0.25)' : 'rgba(255,255,255,0.03)',
+                          border: isSelected ? '1px solid var(--accent-blue)' : '1px solid rgba(255,255,255,0.05)',
+                          padding: '6px 10px',
+                          borderRadius: '3px',
+                          fontSize: '10px',
+                          color: isSelected ? '#fff' : 'var(--text-secondary)',
+                          cursor: quizSubmitted ? 'default' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px'
+                        };
+
+                        if (quizSubmitted) {
+                          if (oIdx === q.answer) {
+                            optionStyle.background = 'rgba(16, 185, 129, 0.2)';
+                            optionStyle.border = '1px solid #10b981';
+                            optionStyle.color = '#34d399';
+                          } else if (isSelected && oIdx !== q.answer) {
+                            optionStyle.background = 'rgba(239, 68, 68, 0.2)';
+                            optionStyle.border = '1px solid #ef4444';
+                            optionStyle.color = '#f87171';
+                          }
+                        }
+
+                        return (
+                          <div
+                            key={oIdx}
+                            onClick={() => handleOptionSelect(qIdx, oIdx)}
+                            style={optionStyle}
+                          >
+                            <span style={{ fontFamily: 'var(--font-mono)', fontWeight: '800' }}>
+                              {String.fromCharCode(65 + oIdx)}.
+                            </span>
+                            <span>{opt}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {quizSubmitted && (
+                      <div style={{ marginTop: '8px', fontSize: '9.5px', color: quizAnswers[qIdx] === q.answer ? '#34d399' : '#f87171', background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: '2px' }}>
+                        <strong>Penjelasan Ilmiah:</strong> {q.explanation}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Submit Quiz Button */}
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <button
+                  onClick={() => handleQuizSubmit(currentPaper)}
+                  className="telemetry-btn"
+                  style={{ fontSize: '11px', padding: '7px 18px', fontWeight: '800', background: 'var(--accent-blue)', color: '#fff' }}
+                >
+                  🚀 Submit &amp; Verifikasi Jawaban
+                </button>
+                {quizSubmitted && (
+                  <button
+                    onClick={() => { setQuizSubmitted(false); setQuizAnswers({}); }}
+                    className="telemetry-btn"
+                    style={{ fontSize: '10px', padding: '7px 12px' }}
+                  >
+                    🔄 Coba Ulang Kuis
+                  </button>
+                )}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          TAB 2: MASTER GLOSSARY (PRESERVED & EXPANDED)
+          ========================================================================= */}
+      {activeTab === 'dictionary' && (
+        <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', borderRadius: '4px', padding: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '10px' }}>
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>
+                📖 MASTER GLOSSARY &amp; TAXONOMY TRADING
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                66 Istilah Finansial, Mikrostruktur Bursa BEI, SMC, dan Kripto Terverifikasi
+              </div>
+            </div>
+            <input
+              type="text"
+              placeholder="Cari istilah, definisi, kata kunci..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid #374151', color: '#fff', fontSize: '10.5px', padding: '5px 10px', borderRadius: '3px', width: '220px' }}
+            />
+          </div>
+
+          {/* Category Tabs */}
+          <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '12px' }}>
+            {DICTIONARY_CATEGORIES.map(cat => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={'telemetry-btn ' + (activeCategory === cat.id ? 'active' : '')}
+                style={{ fontSize: '9.5px', padding: '3px 8px' }}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Glossary Terms List */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '10px', maxHeight: '680px', overflowY: 'auto', paddingRight: '4px' }}>
+            {filteredTerms.map((item, idx) => (
+              <div key={idx} style={{ background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '3px', padding: '10px 12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <strong style={{ fontSize: '11px', color: '#60a5fa' }}>{item.term}</strong>
+                  <span style={{ fontSize: '8px', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', padding: '1px 5px', borderRadius: '2px' }}>
+                    {item.category}
+                  </span>
+                </div>
+                <p style={{ fontSize: '10px', color: 'var(--text-secondary)', lineHeight: 1.45, margin: '4px 0 6px 0' }}>
+                  {item.definition}
+                </p>
+                <div style={{ fontSize: '9px', color: '#34d399', background: 'rgba(16, 185, 129, 0.08)', padding: '3px 6px', borderRadius: '2px' }}>
+                  💡 {item.tips}
                 </div>
               </div>
             ))}
@@ -1805,169 +2624,107 @@ export default function QuantAcademyTab() {
         </div>
       )}
 
-      {/* TAB 4: INTERACTIVE LOT CALCULATOR & PRE-FLIGHT CHECKLIST */}
-      {activeTab === 'calculator' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '16px' }}>
-          
-          {/* Box 1: Position Sizing Calculator */}
-          <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '16px' }}>
-            <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>
-              🧮 KALKULATOR LOT PRESISI MBG APEX (2% RULE)
-            </div>
-            <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginBottom: '14px' }}>
-              Hitung jumlah lot belanja maksimal secara matematis agar toleransi kerugian Anda terkunci saklek di 2% modal.
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '14px' }}>
-              <div>
-                <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>MODAL PORTOFOLIO (RP):</label>
-                <input
-                  type="number"
-                  value={calcEquity}
-                  onChange={e => setCalcEquity(Number(e.target.value))}
-                  style={{ width: '100%', padding: '7px 10px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '11px' }}
-                />
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div>
-                  <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>HARGA ENTRY (RP):</label>
-                  <input
-                    type="number"
-                    value={calcEntry}
-                    onChange={e => setCalcEntry(Number(e.target.value))}
-                    style={{ width: '100%', padding: '7px 10px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '11px' }}
-                  />
-                </div>
-                <div>
-                  <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>HARD STOP LOSS (RP):</label>
-                  <input
-                    type="number"
-                    value={calcStopLoss}
-                    onChange={e => setCalcStopLoss(Number(e.target.value))}
-                    style={{ width: '100%', padding: '7px 10px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '11px' }}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>BATAS RISIKO PER TRADE (%):</label>
-                <select
-                  value={calcRiskPct}
-                  onChange={e => setCalcRiskPct(Number(e.target.value))}
-                  style={{ width: '100%', padding: '7px 10px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '11px' }}
-                >
-                  <option value={1}>1.0% (Sangat Konservatif / Akun Besar)</option>
-                  <option value={2}>2.0% (Standar Baku Doktrin MBG Apex)</option>
-                  <option value={3}>3.0% (Agresif Terkontrol)</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Calculation Output Cards */}
-            <div style={{ background: 'var(--bg-panel)', border: 'var(--border-muted)', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Toleransi Rugi Maksimal (2%):</span>
-                <span style={{ fontWeight: '700', color: 'var(--accent-rust)' }}>Rp {riskRupiahMax.toLocaleString('id-ID')}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Jarak ke Stop Loss:</span>
-                <span style={{ fontWeight: '700', color: 'var(--accent-orange)' }}>-Rp {slDistanceRupiah} (-{slDistancePct}%)</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', borderTop: 'var(--border-muted)', paddingTop: '8px' }}>
-                <span style={{ fontWeight: '800', color: 'var(--accent-blue)' }}>JUMLAH LOT DISARANKAN:</span>
-                <span style={{ fontWeight: '900', color: 'var(--accent-green)', fontSize: '15px' }}>{calculatedLots} LOT</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10.5px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Nilai Modal Terpakai:</span>
-                <span style={{ color: 'var(--text-primary)' }}>Rp {totalPositionValue.toLocaleString('id-ID')} ({portfolioExposurePct}% Ekuitas)</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10.5px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Risiko Riil Jika Kena SL:</span>
-                <span style={{ color: 'var(--accent-rust)' }}>Rp {actualRiskRupiah.toLocaleString('id-ID')}</span>
-              </div>
-
-              {Number(portfolioExposurePct) > 25 && (
-                <div style={{ marginTop: '6px', padding: '6px 8px', background: '#3b1c1c', border: '1px solid var(--accent-rust)', fontSize: '10px', color: '#ffb3b3' }}>
-                  ⚠️ PERINGATAN: Eksposur posisi ({portfolioExposurePct}%) melebihi batas 25% modal per emiten. Disarankan memilih titik SL yang lebih dekat atau memperbesar modal.
-                </div>
-              )}
-            </div>
+      {/* =========================================================================
+          TAB 3: VISUAL ANATOMY GALLERY
+          ========================================================================= */}
+      {activeTab === 'gallery' && (
+        <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', borderRadius: '4px', padding: '16px' }}>
+          <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>
+            🖼️ VISUAL ANATOMY GALLERY (7 MASTER FIGURES)
+          </div>
+          <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '14px' }}>
+            Diagram Resmi Kurikulum Finansial Kuantitatif MBG 2026. Klik gambar untuk memperbesar (Full Resolution).
           </div>
 
-          {/* Box 2: Pre-Flight Safety Checklist */}
-          <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '16px' }}>
-            <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>
-              ✈️ PRE-FLIGHT COCKPIT CHECKLIST (5 PINTU KESELAMATAN)
-            </div>
-            <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginBottom: '14px' }}>
-              SOP wajib sebelum menekan tombol beli di aplikasi sekuritas. 1 Lampu Merah = BATALKAN TRANSAKSI!
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
-              {[
-                { key: 'gate1', text: '1. Risiko Per Trade ≤ 2% Modal (Lot sudah dihitung pakai kalkulator di samping).' },
-                { key: 'gate2', text: '2. Rasio Cuan vs Rugi (R:R) Minimal 1:2 (Potensi TP minimal dua kali lipat jarak SL).' },
-                { key: 'gate3', text: '3. Arus Uang Bandar / Asing Terkonfirmasi (IIFS Z-Score > 0 atau Foreign Net Buy stabil).' },
-                { key: 'gate4', text: '4. Titik Batal (Invalidation) & Hard Stop Loss sudah ditentukan dan siap dipasang.' },
-                { key: 'gate5', text: '5. Pikiran Tenang, Tidak Ada FOMO atau Desakan Ingin Cepat Kaya Mendadak.' }
-              ].map(gate => (
-                <label
-                  key={gate.key}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '8px 10px',
-                    background: checklist[gate.key] ? '#0b2b1a' : 'var(--bg-panel)',
-                    border: checklist[gate.key] ? '1px solid var(--accent-green)' : 'var(--border-muted)',
-                    cursor: 'pointer',
-                    fontSize: '11px',
-                    color: checklist[gate.key] ? 'var(--accent-green)' : 'var(--text-primary)'
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={checklist[gate.key]}
-                    onChange={e => setChecklist(prev => ({ ...prev, [gate.key]: e.target.checked }))}
-                  />
-                  <span>{gate.text}</span>
-                </label>
-              ))}
-            </div>
-
-            <div style={{ textAlign: 'center', padding: '12px', background: allGatesChecked ? '#064e3b' : '#3d1a24', border: allGatesChecked ? '1px solid var(--accent-green)' : '1px solid var(--accent-rust)' }}>
-              <div style={{ fontSize: '12px', fontWeight: '900', color: allGatesChecked ? 'var(--accent-green)' : 'var(--accent-rust)', letterSpacing: '0.04em' }}>
-                {allGatesChecked ? '✅ SEMUA PINTU LOLOS // SIAP EKSEKUSI DI BURSA!' : '🛑 LAMPU MERAH // DILARANG BELI (STAND DOWN)'}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '14px' }}>
+            {VISUAL_FIGURES_GALLERY.map(fig => (
+              <div
+                key={fig.id}
+                onClick={() => setSelectedGalleryImg(fig)}
+                style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden', cursor: 'zoom-in', transition: 'transform 0.2s' }}
+              >
+                <div style={{ height: '140px', background: '#0a0c10', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                  <img src={fig.src} alt={fig.caption} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                </div>
+                <div style={{ padding: '8px 10px' }}>
+                  <div style={{ fontSize: '10px', fontWeight: '800', color: '#60a5fa', marginBottom: '2px' }}>{fig.title}</div>
+                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', lineHeight: 1.35 }}>{fig.caption}</div>
+                </div>
               </div>
-              <div style={{ fontSize: '10px', color: '#ccc', marginTop: '3px' }}>
-                {allGatesChecked
-                  ? 'Kondisi disiplin terpenuhi 100%. Pasang automatic order Stop Loss seketika setelah order match.'
-                  : 'Centang kelima poin keselamatan di atas untuk memastikan Anda tidak bertrading karena emosi semata.'}
-              </div>
-            </div>
+            ))}
           </div>
-
         </div>
       )}
 
-      {/* TAB 4.5: INTERACTIVE QUANT LAB & MATH SANDBOX (OPENQUANT INITIATIVE) */}
+      {/* =========================================================================
+          TAB 4: STANDALONE LOT CALCULATOR
+          ========================================================================= */}
+      {activeTab === 'calculator' && (
+        <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', borderRadius: '4px', padding: '18px', maxWidth: '820px', margin: '0 auto' }}>
+          <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '4px' }}>
+            💰 KALKULATOR UKURAN LOT MANDIRI (APEX DISCIPLINE)
+          </div>
+          <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '16px' }}>
+            Formula Matematis: Max Lots = floor( (Modal x Risk%) / ( (Entry - SL) x 100 lembar ) )
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '14px' }}>
+            <div>
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Modal Ekuitas (Rp):</span>
+              <input type="number" value={calcEquity} onChange={e => setCalcEquity(Number(e.target.value))} style={{ width: '100%', background: '#111827', border: '1px solid #374151', color: '#fff', fontSize: '10px', padding: '4px', borderRadius: '3px' }} />
+            </div>
+            <div>
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Toleransi Risiko (%):</span>
+              <input type="number" step="0.5" value={calcRiskPct} onChange={e => setCalcRiskPct(Number(e.target.value))} style={{ width: '100%', background: '#111827', border: '1px solid #374151', color: '#34d399', fontSize: '10px', padding: '4px', borderRadius: '3px' }} />
+            </div>
+            <div>
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Harga Entry (Rp):</span>
+              <input type="number" value={calcEntry} onChange={e => setCalcEntry(Number(e.target.value))} style={{ width: '100%', background: '#111827', border: '1px solid #374151', color: '#fff', fontSize: '10px', padding: '4px', borderRadius: '3px' }} />
+            </div>
+            <div>
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Harga Stop Loss (Rp):</span>
+              <input type="number" value={calcStopLoss} onChange={e => setCalcStopLoss(Number(e.target.value))} style={{ width: '100%', background: '#111827', border: '1px solid #374151', color: '#ef4444', fontSize: '10px', padding: '4px', borderRadius: '3px' }} />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '4px', textAlign: 'center' }}>
+            <div>
+              <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>BATAS RUGI RUPIAH:</div>
+              <strong style={{ fontSize: '13px', color: '#f59e0b', fontFamily: 'var(--font-mono)' }}>Rp {riskRupiahMax.toLocaleString('id-ID')}</strong>
+            </div>
+            <div>
+              <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>UKURAN LOT EKSAK:</div>
+              <strong style={{ fontSize: '16px', color: '#60a5fa', fontFamily: 'var(--font-mono)' }}>{exactLotSizing} Lot</strong>
+            </div>
+            <div>
+              <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>BOBOT MODAL TERPAKAI:</div>
+              <strong style={{ fontSize: '13px', color: positionWeightPct > 25 ? '#ef4444' : '#10b981', fontFamily: 'var(--font-mono)' }}>{positionWeightPct.toFixed(1)}%</strong>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          TAB 5: INTERACTIVE QUANT LAB (OPENQUANT SANDBOX)
+          ========================================================================= */}
       {activeTab === 'quant_lab' && (
         <InteractiveQuantLabSandbox />
       )}
 
-      {/* TAB 5: CERTIFICATE VIEW (UNLOCKED AT 5/5 LEVELS) */}
-      {activeTab === 'certificate' && progress.completedLevels.length === 5 && (
+      {/* =========================================================================
+          TAB 6: CERTIFICATE VIEW
+          ========================================================================= */}
+      {activeTab === 'certificate' && progress.completedLevels.length === INSTITUTIONAL_PAPERS.length && (
         <div style={{ background: 'var(--bg-panel-subtle)', border: '2px solid var(--accent-gold)', padding: '36px 24px', textAlign: 'center', maxWidth: '680px', margin: '0 auto', boxShadow: '0 0 30px rgba(217, 119, 6, 0.15)' }}>
           <div style={{ fontSize: '38px', marginBottom: '10px' }}>🏆</div>
           <div style={{ fontSize: '11px', letterSpacing: '0.12em', color: 'var(--accent-gold)', fontWeight: '800', textTransform: 'uppercase' }}>
             SERTIFIKAT KELULUSAN DISIPLIN FINANSIAL RESMI
           </div>
           <div style={{ fontSize: '20px', fontWeight: '900', color: 'var(--text-primary)', margin: '12px 0 6px 0', letterSpacing: '0.04em' }}>
-            MBG APEX-CERTIFIED DISCIPLINED QUANT TRADER
+            MBG APEX-CERTIFIED QUANTITATIVE RESEARCH FELLOW
           </div>
           <p style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '22px', maxWidth: '540px', margin: '0 auto 22px auto' }}>
-            Diberikan kepada trader yang telah berhasil menyelesaikan seluruh 5 tingkat kurikulum kuantitatif: Fondasi Disiplin Risiko 2%, Makroekonomi & Komoditas Global, Smart Money Concepts (SMC), Bandarmologi Modern IIFS, dan Kripto Spot Mastery dengan kelulusan evaluasi sempurna (100%).
+            Diberikan kepada researcher / trader yang telah berhasil menyelesaikan dan memverifikasi seluruh 6 Institutional Working Papers: The Mathematics of Capital Preservation, Macroeconomic Transmission Channels, Market Microstructure &amp; IIFS, Smart Money Concepts &amp; FVG Magnet, Dividend Cascade Anomaly, dan Deflated Sharpe Ratio (DSR) Verification.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderTop: 'var(--border-muted)', paddingTop: '16px', fontSize: '10px', gap: '10px' }}>
             <div>
@@ -1976,11 +2733,11 @@ export default function QuantAcademyTab() {
             </div>
             <div>
               <div style={{ color: 'var(--text-muted)' }}>STATUS VERIFIKASI:</div>
-              <div style={{ fontWeight: '700', color: 'var(--accent-green)', marginTop: '2px' }}>VERIFIED (100% PASS)</div>
+              <div style={{ fontWeight: '700', color: 'var(--accent-green)', marginTop: '2px' }}>PEER-REVIEWED (100% PASS)</div>
             </div>
             <div>
               <div style={{ color: 'var(--text-muted)' }}>OTORITAS SISTEM:</div>
-              <div style={{ fontWeight: '700', color: 'var(--accent-orange)', marginTop: '2px' }}>MBG Apex Quant Intelligence Desk</div>
+              <div style={{ fontWeight: '700', color: 'var(--accent-orange)', marginTop: '2px' }}>MBG Quant Intelligence Desk</div>
             </div>
           </div>
         </div>
@@ -2005,15 +2762,10 @@ export default function QuantAcademyTab() {
             cursor: 'zoom-out'
           }}
         >
-          <div style={{ position: 'relative', maxWidth: '90vw', maxHeight: '90vh' }}>
-            <img
-              src={selectedGalleryImg}
-              alt="Preview Zoom"
-              style={{ maxWidth: '100%', maxHeight: '88vh', objectFit: 'contain', border: '2px solid #3b82f6' }}
-            />
-            <div style={{ textAlign: 'center', color: '#fff', fontSize: '11px', marginTop: '8px' }}>
-              Klik di mana saja untuk menutup tampilan penuh.
-            </div>
+          <div style={{ maxWidth: '90vw', maxHeight: '90vh', textAlign: 'center' }}>
+            <img src={selectedGalleryImg.src} alt={selectedGalleryImg.caption} style={{ maxWidth: '100%', maxHeight: '80vh', objectFit: 'contain' }} />
+            <div style={{ color: '#fff', fontSize: '12px', marginTop: '10px', fontWeight: '700' }}>{selectedGalleryImg.title}</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '10px', marginTop: '4px', maxWidth: '600px', margin: '4px auto 0 auto' }}>{selectedGalleryImg.caption}</div>
           </div>
         </div>
       )}

@@ -2,13 +2,49 @@
 
 export const CHANGELOG_DATA = [
   {
+    id: 'pkg-23092026-v53',
+    version: 'Package 23092026-D',
+    semanticVersion: 'v5.3.0',
+    date: '23 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / QUANT RESEARCH PAPERS',
+    title: 'Update v5.3.0: Executive Hedge Fund Working Paper Series (MBG-WP-2026), Dual-Layer Layman/Quant Views, 6 Embedded Interactive Widgets, and Authoritative Literature Integration',
+    description: 'Transformasi menyeluruh modul Quant Academy dari level dasar menjadi Executive Hedge Fund Research Paper Series (MBG-WP-01 s/d MBG-WP-06). Mengintegrasikan teori literatur resmi (Ralph Vince, Robert Carver, John J. Murphy, Mark Andrew Lim, Thomas Bulkowski, Marcos López de Prado), sistem Dual-Layer View (👔 Executive / Layman View vs 🔬 Quant Formalism & Proofs), 6 widget interaktif simulasi langsung di dalam paper, 66 istilah glosarium kuantitatif, dan 7 diagram visual institusional.',
+    processFlow: [
+      { step: '1. Working Papers (WP-01 - WP-06)', label: 'Riset selevel hedge fund: Risk/Lot Sizing, Macro Carry, Microstructure L2, SMC 50% CE, Dividend Trap PTBA, & Deflated Sharpe' },
+      { step: '2. Dual-Layer View Mode', label: 'Toggle instan antara penjelasan analogi awam bebas rumus vs rigor matematis LaTeX & kode Python/VectorBT' },
+      { step: '3. 6 Interactive Widgets', label: 'Simulasi interaktif langsung: Drawdown Recovery, Macro Tree, L2 Spoofing Detector, FVG Magnet, Dividend Net-PnL, & DSR Decay' },
+      { step: '4. Master Glossary (66 Terms)', label: 'Kamus kuantitatif institusional lengkap dengan filter pencarian instan' },
+      { step: '5. Institutional Architecture Diagrams', label: '7 diagram visual beresolusi tinggi memetakan struktur pasar, likuiditas, dan manajemen risiko' }
+    ],
+    markdownContent: `
+### 🎓 v5.3.0 — Executive Hedge Fund Working Paper Series (MBG-WP-2026)
+
+#### 🏛️ 1. Enam Working Paper Institusional Berlandaskan Literatur Resmi
+- **MBG-WP-01 (Risk & Lot Sizing):** Framework pelestarian modal asimetris & ukuran lot diskrit BEI berdasarkan Ralph Vince (1990) & Robert Carver (2015).
+- **MBG-WP-02 (Global Macro Transmission):** Dinamika kurva imbal hasil, spread sovereign BI-Fed, dan sensitivitas arus modal IDX berdasarkan John J. Murphy (1999) & Abdulkader Aljandali (2016).
+- **MBG-WP-03 (Market Microstructure & Order Book):** Mekanika Limit Order Book (LOB), queue imbalance, dan deteksi spoofing institusional berdasarkan Mark Andrew Lim (2016).
+- **MBG-WP-04 (Smart Money Concepts):** Analisis ketidakseimbangan likuiditas (FVG) dan fenomena magnet 50% Consequent Encroachment (C.E.) berdasarkan Marcos López de Prado (2018).
+- **MBG-WP-05 (Cyclical Dividend Cascade Trap):** Anatomi jebakan dividen komoditas siklikal, distribusi likuiditas institusional pra-cum date, dan gap decay pasca-ex date (Studi Kasus $PTBA) berdasarkan Thomas N. Bulkowski (2013).
+- **MBG-WP-06 (Deflated Sharpe Ratio):** Mitigasi bias seleksi dan data mining overfitting pada verifikasi strategi kuantitatif berdasarkan David H. Bailey & Marcos López de Prado (2014, 2018).
+
+#### 👔 vs 🔬 2. Dual-Layer View Architecture
+- **Executive / Layman View:** Disajikan dengan analogi dunia nyata tanpa hambatan rumus (mobil kencang tanpa rem, lompatan 3-candle, madu beracun jebakan dividen), kesimpulan taktis, dan pre-flight checklist.
+- **Quant Formalism & Proofs:** Memuat bukti teorema matematis lengkap, notasi formal LaTeX, sitasi jurnal, serta kode algoritma Python/VectorBT siap pakai.
+
+#### 🎛️ 3. Enam Widget Riset Interaktif Live
+- Dilengkapi kalkulator pemulihan drawdown, pohon transmisi makro interaktif, simulasi deteksi spoofing buku order L2, magnet interaktif 50% FVG, kalkulator net-PnL jebakan dividen saham komoditas, dan simulator deflasi Sharpe ratio.
+`
+  },
+  {
     id: 'pkg-23092026-v52',
     version: 'Package 23092026-C',
     semanticVersion: 'v5.2.0',
     date: '23 September 2026',
-    status: 'LATEST',
+    status: 'STABLE',
     statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / INSTITUTIONAL COCKPIT REFINE',
+    badgeLabel: 'STABLE / INSTITUTIONAL COCKPIT REFINE',
     title: 'Update v5.2.0: Symmetrical 50/50 Cockpit Alignment, 4-Barometer Top Row HUD, Tactical Defense & Nuclear Alert HUD, Restored 14-Category News Wire, dan Standardisasi Istilah Finansial Bilingual',
     description: 'Penyempurnaan arsitektur visual dan fungsional Home Cockpit: garis tengah vertikal Smart Money Order Flow & Bandarmology sejajar presisi 50/50 dengan baris kartu di atasnya, relokasi 4 barometer sentimen ke baris teratas dengan progress meter dinamis, banner peringatan taktis geopolitik militer & nuklir standar OSINT hedge fund (DEFCON 2/3), restorasi 14 kategori berita dalam track horizontal satu baris, serta standarisasi istilah finansial institusional bilingual bebas terjemahan kaku.',
     processFlow: [
