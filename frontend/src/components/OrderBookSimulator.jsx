@@ -267,9 +267,21 @@ const OrderBookSimulator = ({
           flexWrap: 'wrap',
           gap: '10px'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <span className="badge badge-blue" style={{ fontSize: '11px', padding: '3px 8px' }}>
               {isCrypto ? '🟢 CRYPTO LIVE L2' : '🏛️ IDX OFFICIAL FEED'}
+            </span>
+            <span style={{
+              fontSize: '9.5px',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 700,
+              padding: '2px 6px',
+              borderRadius: '3px',
+              background: isCrypto ? 'rgba(16, 185, 129, 0.15)' : 'rgba(168, 85, 247, 0.15)',
+              color: isCrypto ? '#34d399' : '#c084fc',
+              border: '1px solid ' + (isCrypto ? 'rgba(16, 185, 129, 0.3)' : 'rgba(168, 85, 247, 0.3)')
+            }}>
+              {isCrypto ? 'PROVENANCE: BINANCE/BAPPEBTI L2 FEED' : 'PROVENANCE: IDX OJK FRAKSI MODEL DEPTH + EOD BROKER SUMMARY'}
             </span>
             <h2 style={{ fontSize: '16px', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
               {ticker}

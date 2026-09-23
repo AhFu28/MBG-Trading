@@ -10,10 +10,7 @@ export default function GlobalMarketTicker({ onNavigateGlobal }) {
   }, []);
 
   const getExchangeStatus = () => {
-    // 1. Jakarta (IDX)
     const jkt = getIdxSessionDetail(currentTime);
-
-    // 2. Tokyo (TSE)
     const tyo = getZoneInfo(currentTime, 'Asia/Tokyo');
     const tyoMin = tyo.minuteOfDay;
     const isTyoWeekend = tyo.weekday === 'Sat' || tyo.weekday === 'Sun';
@@ -30,7 +27,6 @@ export default function GlobalMarketTicker({ onNavigateGlobal }) {
       tyoOpen = true; tyoStatus = 'SESI 2';
     }
 
-    // 3. London (LSE)
     const lon = getZoneInfo(currentTime, 'Europe/London');
     const lonMin = lon.minuteOfDay;
     const isLonWeekend = lon.weekday === 'Sat' || lon.weekday === 'Sun';
@@ -43,7 +39,6 @@ export default function GlobalMarketTicker({ onNavigateGlobal }) {
       lonOpen = true; lonStatus = 'BUKA';
     }
 
-    // 4. New York (NYSE)
     const ny = getUsSessionDetail(currentTime);
 
     return [
@@ -63,56 +58,54 @@ export default function GlobalMarketTicker({ onNavigateGlobal }) {
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: '4px',
+        gap: '3px',
         background: 'var(--bg-ticker-pill, var(--bg-panel-subtle))',
-        padding: '2px 6px',
-        borderRadius: '4px',
+        padding: '1px 5px',
+        borderRadius: '3px',
         border: 'var(--border-hairline)',
         cursor: 'pointer',
         userSelect: 'none',
         flexWrap: 'nowrap',
-        maxWidth: '100%',
-        overflowX: 'auto',
-        WebkitOverflowScrolling: 'touch'
+        whiteSpace: 'nowrap'
       }}
     >
       <span style={{
-        fontSize: '9px',
+        fontSize: '8.5px',
         color: 'var(--text-muted)',
         fontWeight: '800',
         letterSpacing: '0.04em',
-        paddingRight: '2px',
+        paddingRight: '1px',
         display: 'flex',
         alignItems: 'center',
-        gap: '3px'
+        gap: '2px'
       }}>
-        <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 4px var(--accent-green)' }} />
+        <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 3px var(--accent-green)' }} />
         BURSA
       </span>
 
       {sessions.map((s, idx) => (
         <React.Fragment key={s.code}>
-          {idx > 0 && <span style={{ color: 'var(--border-color)', fontSize: '9px' }}>·</span>}
+          {idx > 0 && <span style={{ color: 'var(--border-color)', fontSize: '8px' }}>·</span>}
           <div
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '3px',
-              fontSize: '10px',
+              gap: '2px',
+              fontSize: '8.5px',
               fontFamily: 'var(--font-mono)',
-              padding: '1px 3px'
+              padding: '0 1px'
             }}
           >
-            <span style={{ fontSize: '10px' }}>{s.flag}</span>
-            <span style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '10px' }}>{s.name}</span>
-            <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>{s.time}</span>
+            <span style={{ fontSize: '9px' }}>{s.flag}</span>
+            <span style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{s.name}</span>
+            <span style={{ color: 'var(--text-muted)' }}>{s.time}</span>
             <span
               style={{
-                width: '6px',
-                height: '6px',
+                width: '5px',
+                height: '5px',
                 borderRadius: '50%',
                 background: s.open ? 'var(--accent-green)' : s.status === 'PRE-MKT' || s.status === 'ISTIRAHAT' ? 'var(--accent-orange)' : 'var(--accent-rust)',
-                boxShadow: s.open ? '0 0 5px var(--accent-green)' : 'none',
+                boxShadow: s.open ? '0 0 4px var(--accent-green)' : 'none',
                 display: 'inline-block'
               }}
               title={`${s.code}: ${s.status}`}

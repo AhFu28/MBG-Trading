@@ -8,9 +8,9 @@
 
 ## 📸 Interface Preview & Cockpit Showcase
 
-### 1. Home Command Center (Macro Wire, Emergency Flash Alert, Bento Barometer, & Alpha Picks)
+### 1. Home Command Center (1-Line Header, Market Benchmarks Marquee, Symmetrical 50/50 Flow & Defense HUD)
 ![MBG Trading Cockpit Dashboard](docs/screenshots/dashboard_overview.png)
-*Tampilan Cockpit Utama: Bloomberg-style Macro Wire terintegrasi dengan deteksi ancaman darurat (DEFCON Guarded), 4 Bento Cards Barometer Makro & Komoditas Global, Matriks Net Foreign Flow & Bandarmology Broker, serta tabel sinyal multi-pasar terintegrasi (IDX, Crypto, US Stocks).*
+*Tampilan Cockpit Utama Mutakhir: Header 1-Baris Horizontal terintegrasi dengan jam bursa dunia (JKT, TYO, LON, NYC), Market Benchmarks Running Marquee (24px), Top Macro Trio Grid 3-Panel Simetris (US Yield Curve 10Y-2Y, Portfolio Risk & Capital Allocation, 4-Barometer Sentiment HUD), Tactical Defense & Geopolitical Threat Alert HUD (DEFCON 2/3 tail-risk flight to safety), Matriks Foreign Flow & Bandarmology sejajar presisi 50/50 di garis tengah vertikal, dan track berita horizontal 14-kategori.*
 
 ### 2. AI Quant Intelligence & Sentinel Desk (Macro Regimes, Transmission Tree, & Thematic Stocks)
 ![AI Sentinel Desk](docs/screenshots/ai_sentinel_desk.png)
@@ -215,6 +215,17 @@ Memetakan rezim makro ekonomi makro global dan menyusun **Pohon Transmisi Likuid
 
 ---
 
+### 11. Tactical Defense & Geopolitical Tail-Risk Engine (`WorldMonitor` & `God's Eye View` Synthesis)
+Dalam manajemen portofolio hedge fund makro global (Bridgewater Associates, Citadel, Brevan Howard), eskalasi geopolitik ekstrem (ancaman serangan militer, blokade choke-point maritim Selat Hormuz, potensi konfrontasi nuklir) dipantau secara otomatis untuk memicu protokol mitigasi risiko (*Flight-to-Safety*):
+- **Sinyal Peringatan DEFCON (1 - 5):** Mendeteksi lonjakan anomali berita OSINT militer global.
+- **Transmisi Portofolio Ekuitas:** Mengidentifikasi risiko disrupsi suplai komoditas global (lonjakan harga minyak mentah Brent $\Delta P_{	ext{Brent}} > 0$) dan flight-to-safety ke emas murni ($\Delta P_{	ext{Gold}} > 0$).
+- **Local Equity Proxy Hedges (BEI):** Memberikan rekomendasi taktis instan saham proxy komoditas energi & emas domestik (`$MEDC`, `$ELSA`, `$ANTM`) sebagai lindung nilai alami terhadap devaluasi pasar saham broad-market.
+
+### 12. Symmetrical Market Microstructure & Flow Alignment
+Arsitektur layout cockpit menerapkan prinsip simetri proporsional rasio emas:
+- **Foreign Flow Radar (Intraday)** dan **Smart Money Accumulation (EOD)** dialokasikan secara simetris $50\% : 50\%$ menggunakan grid `repeat(2, minmax(0, 1fr))`.
+- Garis pembatas tengah vertikal sejajar secara sub-piksel dengan sumbu tengah baris kartu bento di atasnya, menghasilkan kenyamanan visual (*visual hierarchy*) optimal bagi operator terminal quant tanpa distorsi asimetri.
+
 ### 10. AI Multi-Agent Elemental Arena (16 Autonomous Syndicate Bots)
 Ekosistem simulasi perdagangan otonom 16 bot terbagi dalam 5 tingkatan DNA strategi:
 
@@ -282,7 +293,9 @@ Ekosistem simulasi perdagangan otonom 16 bot terbagi dalam 5 tingkatan DNA strat
 | **🧭 DEFCON Computed Threat Barometer & Simulator** | Barometer ancaman 5 segmen terkunci matematis (0.42 / 1.00 Guarded) dengan 4 sub-pilar terbobot dan What-If Stress Simulator portofolio. |
 | **📰 Live Gemini News Research Engine & Emergency Flash** | Daily Brief bahasa awam, Sector Research Note standar Goldman Sachs Barbell, S/R Technical Matrix, dan banner pulsating emergency flash alert. |
 | **🤖 AI Multi-Agent Arena (16 Sovereign Bots)** | Ekosistem trading 16 bot dengan modal berdaulat Rp 1.000.000/bot, proteksi MC <=15%, dan Explainable AI Trade Reflection pada jurnal transaksi. |
-| **🔴 Macro Intelligence Wire** | Ticker strip bergaya terminal Bloomberg di bagian atas cockpit, menayangkan berita geopolitik, pidato The Fed, dan pergerakan makro seketika. |
+| **🔴 Macro Intelligence Wire & Tactical Defense HUD** | Marquee pita harga benchmark makro 24px + Banner peringatan ancaman geopolitik militer & nuklir terintegrasi (WorldMonitor & God's Eye View) dengan rekomendasi instan aset safe-haven (Brent, Emas, $MEDC, $ELSA, $ANTM). |
+| **📐 Symmetrical 50/50 Cockpit Architecture** | Tata letak simetris matematis: pembagian kolom Foreign Flow vs Bandarmology Accumulation sejajar presisi dengan garis tengah 4 kartu bento di atasnya, dilengkapi 4-Barometer progress meters di baris atas. |
+| **🏛️ Standardized Institutional Financial Desk** | Terminologi finansial institusional baku: Gross Exposure, Net Bias, 1D VaR 95%, Portfolio Beta, Normal Expansion Yield Regime, dan Carry Spread BI-Fed pelindung Rupiah. |
 | **🧭 Bento Telemetry Barometer** | 4 Kartu HUD interaktif: Rezim IHSG, Komoditas Global (Emas & Minyak), Top Crypto Movers, dan Alpha Picker harian. |
 | **📊 Real-time Multi-Asset Matrix** | Kuotasi aktual 5 kelas aset: 861+ Saham BEI, 744+ Pasangan USDT Binance, 31 US Mega-Caps, Major Forex Pairs, dan Komoditas Strategis. |
 | **⚡ Running Trade Live BEI** | Pita transaksi tape bursa cepat dengan indikasi ukuran lot paus (Whale $\ge$ 500 lot, Mega Whale $\ge$ 1.000 lot) dan penanda otomatis saat bursa tutup. |

@@ -981,11 +981,42 @@ th.sticky-col-num, th.sticky-col-ticker {
    ============================================================ */
 .home-dashboard-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 260px;
+  grid-template-columns: 330px minmax(0, 1fr);
   gap: 6px;
   width: 100%;
   box-sizing: border-box;
   align-items: stretch;
+}
+
+.home-news-sidebar-left {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-panel);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 5px;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 100%;
+  max-height: calc(100vh - 65px);
+  position: sticky;
+  top: 6px;
+  overflow: hidden;
+}
+
+.home-news-sidebar-left .news-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.home-main-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
 }
 
 .home-bento-row {
@@ -1075,6 +1106,99 @@ th.sticky-col-num, th.sticky-col-ticker {
   overflow: hidden;
 }
 
+/* ============================================================
+   INSTITUTIONAL TRI-TIER COCKPIT (HEDGE FUND DESK)
+   ============================================================ */
+.home-tri-tier-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.home-macro-risk-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.home-trinity-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+.home-trinity-grid > * {
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  height: 295px;
+  max-height: 295px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 1100px) {
+  .home-trinity-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .home-trinity-grid > * {
+    height: auto !important;
+    max-height: none !important;
+  }
+}
+
+/* ============================================================
+   INSTITUTIONAL NEWS-FIRST COMMAND ROW (BLOOMBERG TOP SPEC)
+   ============================================================ */
+.home-news-flow-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.75fr);
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+.home-news-flow-split > * {
+  min-width: 0;
+  box-sizing: border-box;
+  height: 380px;
+  max-height: 380px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 1100px) {
+  .home-news-flow-split {
+    grid-template-columns: 1fr !important;
+  }
+  .home-news-flow-split > * {
+    height: auto !important;
+    max-height: none !important;
+  }
+}
+
+.home-execution-desk-card {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1200px) {
+  .home-macro-risk-row {
+    grid-template-columns: 1fr !important;
+  }
+  .home-middle-split-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 @media (max-width: 1200px) {
   .home-bento-row {
     grid-template-columns: repeat(2, 1fr);
@@ -1097,9 +1221,10 @@ th.sticky-col-num, th.sticky-col-ticker {
   .home-tri-bento-grid {
     grid-template-columns: 1fr !important;
   }
-  .home-news-sidebar {
+  .home-news-sidebar, .home-news-sidebar-left {
     height: 480px !important;
     max-height: 480px !important;
+    position: static !important;
   }
   .news-scroll-container {
     max-height: 400px !important;
@@ -1215,3 +1340,114 @@ th.sticky-col-num, th.sticky-col-ticker {
 
 
 
+
+/* ============================================================
+   REFINED INSTITUTIONAL COCKPIT: NEWS ON THE RIGHT
+   Spans vertically from Bento (Quant IDX Alpha) to Bandarmology
+   ============================================================ */
+.home-middle-cockpit-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: stretch;
+  height: 460px;
+  max-height: 460px;
+}
+
+.home-cockpit-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  height: 460px;
+  max-height: 460px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.home-cockpit-right {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 460px;
+  max-height: 460px;
+  box-sizing: border-box;
+}
+
+.home-macro-compact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1150px) {
+  .home-middle-cockpit-split {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+  .home-cockpit-left {
+    height: auto !important;
+    max-height: none !important;
+  }
+  .home-cockpit-right {
+    height: 460px !important;
+    max-height: 460px !important;
+  }
+  .home-macro-compact-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* Home Macro Trio Grid (Barometer Likuiditas + Risk Radar + 4 Gauges) */
+.home-macro-trio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Tactical Defense & Nuclear Alert HUD (WorldMonitor / God's Eye View inspiration) */
+.tactical-defense-alert-banner {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.22) 0%, rgba(153, 27, 27, 0.35) 50%, rgba(30, 20, 20, 0.6) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  border-left: 3px solid #ef4444;
+  border-radius: 4px;
+  padding: 5px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+  animation: tacticalPulse 3s infinite ease-in-out;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+@keyframes tacticalPulse {
+  0% { box-shadow: 0 0 4px rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); }
+  50% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.45); border-color: rgba(239, 68, 68, 0.85); }
+  100% { box-shadow: 0 0 4px rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); }
+}
+
+/* Horizontal Category Pills Track */
+.news-category-track {
+  display: flex;
+  gap: 3px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.news-category-track::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .home-macro-trio-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

@@ -2,11 +2,67 @@
 
 export const CHANGELOG_DATA = [
   {
+    id: 'pkg-23092026-v52',
+    version: 'Package 23092026-C',
+    semanticVersion: 'v5.2.0',
+    date: '23 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / INSTITUTIONAL COCKPIT REFINE',
+    title: 'Update v5.2.0: Symmetrical 50/50 Cockpit Alignment, 4-Barometer Top Row HUD, Tactical Defense & Nuclear Alert HUD, Restored 14-Category News Wire, dan Standardisasi Istilah Finansial Bilingual',
+    description: 'Penyempurnaan arsitektur visual dan fungsional Home Cockpit: garis tengah vertikal Smart Money Order Flow & Bandarmology sejajar presisi 50/50 dengan baris kartu di atasnya, relokasi 4 barometer sentimen ke baris teratas dengan progress meter dinamis, banner peringatan taktis geopolitik militer & nuklir standar OSINT hedge fund (DEFCON 2/3), restorasi 14 kategori berita dalam track horizontal satu baris, serta standarisasi istilah finansial institusional bilingual bebas terjemahan kaku.',
+    processFlow: [
+      { step: '1. Symmetrical Split', label: '50/50 vertical center alignment: Foreign Flow & Bandar Accumulation sejajar baris bento atas' },
+      { step: '2. 4-Barometer Top HUD', label: 'Fear & Greed (71 Greed), VIX (14.21 Calm), BTC DOM, DXY pindah ke baris atas sejajar Yield Curve' },
+      { step: '3. Tactical Defense HUD', label: 'Banner alert ancaman militer/nuklir (WorldMonitor & Gods Eye View) + rekomendasi safe haven instan' },
+      { step: '4. Restored 14 Categories', label: 'Chip track horizontal scrollable 14 kategori berita tanpa memakan tinggi vertikal' },
+      { step: '5. Bilingual Terms', label: 'Standarisasi istilah: Gross Exposure, Net Bias, 1D VaR 95%, Portfolio Beta, Carry Spread' }
+    ],
+    markdownContent: `
+### 🚀 v5.2.0 — Institutional Cockpit Refinement & Tactical Defense HUD
+
+#### 📐 1. Symmetrical 50/50 Vertical Axis Alignment
+- **Smart Money Order Flow & Bandarmology:** Grid diubah dari asimetris \`1.15fr : 1.25fr\` menjadi proporsional \`repeat(2, minmax(0, 1fr))\` dengan gap 6px.
+- **Presisi Garis Tengah:** Garis pemisah antara **\`FOREIGN FLOW // ARUS ASING (INTRADAY)\`** dan **\`SMART MONEY ACCUMULATION (EOD)\`** kini sejajar lurus ke tingkat sub-piksel dengan garis pemisah kartu **\`COMMODITIES & DXY\`** dan **\`#1 QUANT CRYPTO SPOT\`** di atasnya.
+- **Top Macro Trio Grid:** Grid baris atas distandarisasi ke \`repeat(3, minmax(0, 1fr))\` sehingga ketiga panel teratas memiliki lebar simetris 33.33%.
+
+#### 🧭 2. 4-Barometer Sentimen & Volatilitas di Baris Teratas
+- **Relokasi ke Panel 3 Atas:** Memindahkan 4 indikator mikro yang sebelumnya tercecer di dasar Smart Money ke baris teratas berdampingan dengan Portfolio Risk Radar.
+- **Visual Progress Bar:** Dilengkapi meteran warna dan label desk:
+  - **Fear & Greed:** \`71 GREED\` (Optimisme pasar sehat).
+  - **VIX Volatility:** \`14.21 CALM\` (Risiko guncangan ekuitas rendah).
+  - **BTC Dominance:** \`58.7% DOM\` (Konsentrasi likuiditas kripto).
+  - **DXY Dollar Index:** \`100.63 SOFT\` (Pelemahan dolar katalis positif IHSG/BEI).
+- **Zero Dead Space:** Menghilangkan sisa ruang kosong di dasar panel Bandarmology.
+
+#### 🛡️ 3. Tactical Defense & Geopolitical Threat Alert HUD
+- **Inspirasi WorldMonitor & God's Eye View:** Banner peringatan taktis eskalasi militer & risiko nuklir [DEFCON 2/3 WATCH] di puncak News Wire.
+- **Flight-to-Safety Hedging:** Rekomendasi aksi lindung nilai real-world hedge fund:
+  - *Long Brent Oil & Emas ($XAU/USD)*
+  - *Saham Proxy Energi/Komoditas BEI: $MEDC, $ELSA, $ANTM*
+- **One-Click Filter:** Tombol langsung menuju 29 feed intelijen konflik geopolitik.
+
+#### 📰 4. Restorasi Penuh 14 Kategori Berita
+- Mengembalikan seluruh 14 kategori (\`SEMUA\`, \`NUKLIR & PERANG\`, \`BRIEF\`, \`RISET\`, \`SAHAM IDX\`, \`PERBANKAN\`, \`KRIPTO\`, \`MAKRO & FED\`, \`GEOPOLITIK\`, \`LOGAM & EMAS\`, \`ENERGI & MINYAK\`, \`US MARKET\`, \`CHINA\`, \`TECH & AI\`) dalam **horizontal scrollable chip track** yang ramping tanpa memboroskan ruang vertikal.
+
+#### 🏛️ 5. Standarisasi Istilah Finansial Bilingual Bebas Terjemahan Kaku
+- Mengganti istilah literal canggung dengan terminologi baku desk kuantitatif:
+  - \`KURVA IMBAL HASIL\` ➔ **\`US YIELD CURVE & LIQUIDITY (10Y-2Y)\`**
+  - \`Status: Ekspansi Normal (Bukan Resesi)\` ➔ **\`Regime: Normal Expansion (Low Recession Risk)\`**
+  - \`MODAL AKTIF\` ➔ **\`GROSS EXPOSURE\`** (78.4%)
+  - \`ARAH POSISI\` ➔ **\`NET BIAS\`** (+64.2%)
+  - \`MAX RUGI 1D\` ➔ **\`1D VaR (95%)\`** (1.18%)
+  - \`BETA IHSG\` ➔ **\`PORTFOLIO BETA\`** (1.05x)
+  - \`71 TAMAK\` ➔ **\`71 GREED\`**
+  - \`14.21 TENANG\` ➔ **\`14.21 CALM\`**
+`
+  },
+  {
     id: 'pkg-23092026-v51',
     version: 'Package 23092026-B',
     semanticVersion: 'v5.1.0',
     date: '23 September 2026',
-    status: 'LATEST',
+    status: 'STABLE',
     statusColor: 'var(--accent-green)',
     badgeLabel: 'LATEST / INSTITUTIONAL QUANT SPRINT v3.0',
     title: 'Update v5.1.0 (INSTITUTIONAL QUANT SPRINT v3.0): Jev-Trade Execution HUD, OpenQuant Strategy Contracts & Deflated Sharpe Ratio (DSR), Interactive Math Lab Sandbox, dan QuantDinger Local-First MCP Server',
