@@ -2,13 +2,84 @@
 
 export const CHANGELOG_DATA = [
   {
+    id: 'pkg-23092026-v51',
+    version: 'Package 23092026-B',
+    semanticVersion: 'v5.1.0',
+    date: '23 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / INSTITUTIONAL QUANT SPRINT v3.0',
+    title: 'Update v5.1.0 (INSTITUTIONAL QUANT SPRINT v3.0): Jev-Trade Execution HUD, OpenQuant Strategy Contracts & Deflated Sharpe Ratio (DSR), Interactive Math Lab Sandbox, dan QuantDinger Local-First MCP Server',
+    description: 'Transformasi arsitektur kuantitatif standar hedge fund terinspirasi dari jev-trade, QuantDinger, dan OpenQuant Initiative: visual trade execution overlay HUD & triple-barrier brackets di atas K-Line TradingView, audit kontrak perilaku strategi (strategy_spec.json) dengan Deflated Sharpe Ratio (López de Prado 2018), Interactive Math Quant Lab sandbox dengan live parameter sliders (BCR/HHI, Carver Volatility Sizing, DSR decay), dan stdlib JSON-RPC 2.0 Local-First MCP Gateway Server.',
+    processFlow: [
+      { step: '1. Jev-Trade HUD', label: 'Floating glassmorphism execution HUD + Triple-Barrier (TP, SL, Time 24 Bars) + TWAP slip' },
+      { step: '2. Strategy Contract', label: 'OpenQuant strategy_spec.json inspector + Deflated Sharpe Ratio (DSR) multiple-testing correction' },
+      { step: '3. Math Quant Lab', label: 'Interactive sandbox: Bandarmology HHI/BCR, Robert Carver Lot Sizing BEI, DSR Trial Decay' },
+      { step: '4. Local MCP Gateway', label: 'Zero-dependency JSON-RPC 2.0 MCP server (engine/mcp/mbg_server.py) dengan 5 tools AI quant' },
+      { step: '5. Subramanian News', label: '4-Pilar Intelligence: What Changed, Why It Changed waterfall, What Matters, What Next' }
+    ],
+    markdownContent: `
+### 🚀 v5.1.0 — Institutional Quant Sprint v3.0 (Jev-Trade, OpenQuant & QuantDinger Synthesis)
+
+#### 🎯 1. Jev-Trade Visual Trade Execution Overlay & Triple-Barrier Brackets
+- **Floating Execution HUD Canvas:** Papan telemetri melayang (*glassmorphism*, \`backdrop-filter: blur(8px)\`) tepat di atas chart TradingView pada tab **Charting Desk**.
+- **Triple-Barrier Brackets (López de Prado):**
+  - **Barrier 1 (Take Profit):** Level harga target profit dinamis (+8.2%).
+  - **Barrier 2 (Stop Loss):** Level hard invalidation cut-off (-3.5%).
+  - **Barrier 3 (Time Expiry):** Batas kadaluarsa waktu (Bar 14/24, H+3) untuk *de-risking* posisi sebelum penutupan pasar.
+- **Microstructure Telemetry:** Tracking posisi bot aktif (\`Bot-06 Bandarmology VWAP\`), lot sizing BEI diskret, *realized/unrealized PnL*, dan estimasi *slippage execution route* (\`TWAP Sliced: 0.08% slip\`).
+- **Interactive Mini Controls:** Tombol toggle \`🎯 HUD ON / HUD\` di mini toolbar setiap pane multi-grid chart.
+
+#### 🛡️ 2. OpenQuant Behavioral Strategy Contracts & Deflated Sharpe Ratio (DSR)
+- **Strategy Behavioral Contract (\`strategy_spec.json\` v2.1):** Drawer inspeksi kontrak perilaku strategi di **Backtest Performance Lab** yang membedah spesifikasi formal:
+  - *Objective & Hypothesis*
+  - *Universe Filter* (Turnover > Rp 10 Miliar, Spread <= 50 bps)
+  - *Trigger & Confirmation Logic* (BOS + FVG + Net Buy Foreign >= 35%)
+  - *Triple-Barrier Execution Rules* (Horizontal TP, Horizontal SL, Vertical Time Barrier)
+  - *Volatility Sizing* (Robert Carver model batas risiko 1.5% - 2%)
+- **Marcos López de Prado (2018) Deflated Sharpe Ratio (DSR):**
+  - Mengoreksi inflasi Sharpe Ratio semu akibat *multiple-testing / data-snooping bias* ($N = 6\dots24$ percobaan backtest).
+  - Penyesuaian distribusi return *non-normal* (kemencengan/skewness dan fat tails/kurtosis).
+  - Kolom metrik mandiri **\`DSR (Deflated)\`** dan lencana defensibilitas:
+    - \`[🛡️ DEFENSIBLE SPEC]\` jika $DSR \ge 0.95$ (Lolos signifikansi $\alpha = 0.05$).
+    - \`[⚠️ OVERFITTED]\` jika $DSR < 0.95$ (Diduga hasil kebetulan acak).
+
+#### 🔬 3. OpenQuant Initiative Interactive Math Quant Lab & Sandbox
+- **Sub-tab ke-5 di Quant Academy (\`🔬 INTERACTIVE QUANT LAB\`):**
+  - **Simulator 1 — Bandarmology Concentration (BCR & HHI):**
+    - Slider interaktif volume broker Top 1, Top 2, Top 3 vs Ritel.
+    - Kalkulasi instan rasio $BCR_1, BCR_3$ dan Herfindahl-Hirschman Index ($HHI = \sum s_i^2$).
+    - Diagnosis otomatis: *Extreme Monopoly Accumulation* ($HHI > 2500$) vs *Retail Dispersed*.
+  - **Simulator 2 — Robert Carver Volatility Sizing (Systematic Trading 2015):**
+    - Slider ekuitas portofolio ($Rp 10Jt - Rp 500Jt$), target volatilitas tahunan $\sigma_{ann}$, volatilitas harian saham $\sigma_{daily}$, dan harga saham BEI.
+    - Menghitung secara eksak alokasi kas harian (*Daily Cash Volatility*) dan ukuran posisi diskret lot BEI:
+      $$N_{lots} = \left\lfloor \frac{\text{Equity} \times (\sigma_{ann} / \sqrt{252})}{100 \times \text{Price} \times \sigma_{daily}} \right\rfloor$$
+  - **Simulator 3 — Deflated Sharpe Ratio Multi-Testing Decay:**
+    - Slider interaktif Sharpe terobservasi, jumlah model diuji ($N$), return skewness, kurtosis, dan durasi tahun backtest untuk melihat haircut Sharpe secara real time.
+
+#### 🤖 4. QuantDinger Local-First MCP Agentic Gateway
+- **Zero-Dependency stdlib JSON-RPC 2.0 MCP Server (\`engine/mcp/mbg_server.py\`):**
+  - Berjalan lokal melalui \`stdio\` untuk menghubungkan agen AI (Claude Code, Antigravity, Cursor) dengan data kuantitatif MBG.
+  - **5 Tools Kuantitatif Terintegrasi:**
+    1. \`mbg_get_orderbook\`: Snapshot L2 book depth, spread bps, dan rasio bid/ask imbalance.
+    2. \`mbg_calc_bandarmology\`: Formulasi konsentrasi broker $BCR_k$, $HHI$, dan net foreign flow.
+    3. \`mbg_get_macro_transmission\`: Telemetri DXY, US10Y, Minyak Brent, Emas XAU, USD/IDR, dan transmisi sektor.
+    4. \`mbg_validate_strategy_spec\`: Validator formal kontrak \`strategy_spec.json\` terhadap kriteria DSR.
+    5. \`mbg_get_bot_arena_status\`: Status 6 bot sovereign arena & bobot EXP3 bandit.
+  - Mode diagnostik mandiri via \`py engine/mcp/mbg_server.py --test\`.
+
+#### 📰 5. Subramanian 4-Pillar News Intelligence
+- Format intelijen eksekutif terstruktur: **What Changed** (fakta kuantitatif), **Why It Changed** (dekomposisi waterfall driver), **What Matters** (analisis transmisi ke saham), dan **What Next** (skenario kontinjensi & batas invalidasi).
+`
+  },
+  {
     id: 'pkg-23092026-v50',
     version: 'Package 23092026-A',
     semanticVersion: 'v5.0.0',
     date: '23 September 2026',
-    status: 'LATEST',
-    statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / INSTITUTIONAL AI DESK',
+    status: 'PREVIOUS',
+    statusColor: 'var(--text-muted)',
+    badgeLabel: 'PREVIOUS / STABLE',
     title: 'Update v5.0.0 (INSTITUTIONAL AI DESK): Sentinel Desk Macro & Geopolitical, DEFCON Computed Threat Barometer, Live News Research Synthesis, dan Explainable AI Agent Arena',
     description: 'Peningkatan besar-besaran standar hedge fund: peluncuran AI Quant Intelligence & Sentinel Desk dengan analisis transmisi makro & debat sindikasi multi-universe (IDX 861+ emiten, Crypto, US Stocks), transformasi DEFCON menjadi Threat Barometer terkuantisasi (0.42 / 1.00) dengan What-If Stress Simulator, integrasi live Gemini LLM ke Daily Brief & Research Note format Goldman Sachs Barbell, Emergency Macro & War Flash Alert Sentinel, Explainable AI Trade Reflection pada jurnal transaksi Agent Arena, tombol manual sync ber-cache-busting, perbaikan kritis parsing data anti-NaN, dan penegasan arsitektur Multi-Agent Sovereign untuk pensiunnya modul EXP3 bandit.',
     processFlow: [

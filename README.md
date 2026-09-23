@@ -288,7 +288,10 @@ Ekosistem simulasi perdagangan otonom 16 bot terbagi dalam 5 tingkatan DNA strat
 | **⚡ Running Trade Live BEI** | Pita transaksi tape bursa cepat dengan indikasi ukuran lot paus (Whale $\ge$ 500 lot, Mega Whale $\ge$ 1.000 lot) dan penanda otomatis saat bursa tutup. |
 | **🐋 Whale Intelligence Hub** | Analisis akumulasi/distribusi bandar, ringkasan net foreign buy/sell, dan perbandingan aliran dana LQ45 vs Alam Semesta BEI. |
 | **🏢 Klaster Saham Konglomerat** | Pengelompokan emiten kongsi strategis: Barito Group, Salim Group, Astra Group, Djarum Group, Bakrie Group, dan Medco Group. |
-| **📈 Institutional Charting Desk** | Grafik TradingView modal interaktif multi-timeframe lengkap dengan level entry presisi, stop-loss, dan take-profit. |
+| **📈 Institutional Charting Desk & Jev-Trade HUD** | Multi-pane TradingView workstation dengan visual execution HUD overlay, Triple-Barrier brackets (TP, SL, 24-Bar Time Expiry), trailing stop, dan TWAP slippage. |
+| **🛡️ OpenQuant Strategy Contract & DSR Matrix** | Inspeksi kontrak formal `strategy_spec.json` (v2.1) dan audit Deflated Sharpe Ratio (López de Prado 2018) untuk mengeliminasi bias seleksi multiple-testing ($N=6\dots24$). |
+| **🔬 OpenQuant Interactive Math Quant Lab** | Sandbox interaktif 3 modul di Quant Academy dengan live slider: Bandarmology HHI/BCR, Volatility-Targeted Carver Lot Sizing, dan DSR Decay Simulator. |
+| **🔌 QuantDinger Local-First MCP Server** | Gateway protokol MCP JSON-RPC 2.0 stdlib (`engine/mcp/mbg_server.py`) mengekspos 5 tools kuantitatif terstandarisasi untuk AI agents (Claude, Antigravity, Cursor). |
 | **💰 Apex Risk & Lot Calculator** | Kalkulator ukuran lot matematis anti-kebangkrutan berdasarkan toleransi risiko portofolio: `Lot = (Modal × Risk%) ÷ (Entry - SL)`. |
 | **⭐ Personal Watchlist** | Fasilitas bookmark emiten pilihan dengan sinkronisasi local-storage dan efek flash visual hijau/merah saat terjadi perubahan harga. |
 | **🔄 Manual Sync & Cache-Busting Controls** | Tombol `[🔄 Refresh Riset AI]` dan `[🔄 Sync Desk]` untuk memaksa pembaruan data tanpa terkendala cache browser. |
