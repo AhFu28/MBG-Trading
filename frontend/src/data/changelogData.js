@@ -2,6 +2,43 @@
 
 export const CHANGELOG_DATA = [
     {
+    id: 'pkg-24092026-v54',
+    version: 'Package 24092026-A',
+    semanticVersion: 'v5.4.0',
+    date: '24 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / COMPLIANCE & QA/QC',
+    title: 'Update v5.4.0: Compliance Audit, QA/QC Bugfixes, UI/UX Full-Width Canvas Restoration & GitHub Synchronization',
+    description: 'Sertifikasi kepatuhan menyeluruh (Zero Simulation Policy & zero exposed credentials), debugging engine interaktif (FVG Sweep Playground Level 5, Supercycle Sine Wave Modul 3.3, OrderBook timer cleanup), dan audit UI/UX restorasi tata letak (.quant-academy-main-grid) yang mengembalikan lebar kanvas materi pembelajaran ke 100% full-width tanpa penyusutan.',
+    processFlow: [
+      { step: '1. Compliance & Security Audit', label: 'Verifikasi Zero Simulation Policy (0 Math.random()) & keamanan credentials' },
+      { step: '2. Level 5 FVG & Sweep Playground', label: 'Implementasi kanvas interaktif celah harga 3-candle & sapuan likuiditas 4 tahap' },
+      { step: '3. Modul 3.3 Supercycle Sine Wave', label: 'Simulasi 4 fase siklus belanja modal komoditas (Capex) & panduan alokasi aset' },
+      { step: '4. Full-Width Layout Restoration', label: 'Penguncian sidebar 280px sticky & ekspansi kanvas materi pembelajaran hingga 1680px' },
+      { step: '5. QA/QC & Production Build', label: 'Vite production build sukses (75 modul, 0 error, gzip teroptimasi)' }
+    ],
+    markdownContent: `
+### 🛡️ v5.4.0 — Full Compliance, UI/UX Layout Restoration & QA/QC Certification
+
+#### 🔒 1. Audit Kepatuhan & Keamanan (Zero Simulation Policy)
+- **Zero Simulation Policy:** Terverifikasi 100% bebas dari \`Math.random()\` artifisial pada data pasar dan logika edukasi akademi.
+- **Security & Secret Leak Prevention:** Audit menyeluruh memverifikasi tidak ada API key, token rahasia, maupun kredensial privat yang terekspos.
+
+#### 🛠️ 2. QA/QC & Perbaikan Komponen Interaktif
+- **Level 5 FVG & Sweep Playground:** Menggantikan duplikasi OrderBook dengan kanvas interaktif Fair Value Gap 3-candle dan simulasi animasi sapuan likuiditas 4 tahap.
+- **Modul 3.3 Supercycle Sine Wave:** Visualisasi interaktif siklus komoditas 4 fase (Under-investment, Windfall Boom, Capex Glut, Crash) dengan rekomendasi alokasi aset.
+- **Memory Leak Protection:** Penambahan lifecycle ref cleanup pada timer simulasi OrderBook (\`spoofTimerRef\`, \`marketBuyTimerRef\`).
+- **Defensive Calculation:** Sanitasi input numerik (\`Math.abs\`, \`Math.max\`) dan peringatan harga terbalik pada Visual Execution Bracket.
+
+#### 🎨 3. UI/UX Audit & Solusi Layout Mengecil
+- **Akar Masalah:** CSS Grid sebelumnya membagi viewport 50%:50%, menyebabkan materi terhimpit oleh sidebar modul yang terlalu lebar.
+- **Solusi Tuntas:** Arsitektur asimetris \`.quant-academy-main-grid\` (sidebar terkunci rapi 280px \`sticky\`, panel materi mengambil seluruh sisa lebar hingga 1680px).
+- **Tipografi Optimal:** Peningkatan skala teks menjadi 13.5px line-height 1.75 dengan ruang nafas visual luas untuk seluruh widget.
+`
+  },
+
+    {
     id: 'pkg-23092026-v53',
     version: 'Package 23092026-D',
     semanticVersion: 'v5.3.0',
