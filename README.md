@@ -8,13 +8,25 @@
 
 ## 📸 Interface Preview & Cockpit Showcase
 
-### 1. Home Command Center (Macro Wire, Bento Barometer, & Alpha Picks)
+### 1. Home Command Center (Macro Wire, Emergency Flash Alert, Bento Barometer, & Alpha Picks)
 ![MBG Trading Cockpit Dashboard](docs/screenshots/dashboard_overview.png)
-*Tampilan Cockpit Utama: Bloomberg-style News Wire di bagian atas, 4 Bento Cards Barometer Makro & Komoditas, Matriks Net Foreign Flow, Rekap Konglomerat, dan Top 5 Alpha Setups.*
+*Tampilan Cockpit Utama: Bloomberg-style Macro Wire terintegrasi dengan deteksi ancaman darurat (DEFCON Guarded), 4 Bento Cards Barometer Makro & Komoditas Global, Matriks Net Foreign Flow & Bandarmology Broker, serta tabel sinyal multi-pasar terintegrasi (IDX, Crypto, US Stocks).*
 
-### 2. Multi-Market US Equities & Global Signals
+### 2. AI Quant Intelligence & Sentinel Desk (Macro Regimes, Transmission Tree, & Thematic Stocks)
+![AI Sentinel Desk](docs/screenshots/ai_sentinel_desk.png)
+*AI Quant Intelligence & Sentinel Desk: Pemetaan rezim tematik makro (Suku Bunga Fed/BI, Inflasi, Dolar AS), Rantai Kausalitas Transmisi Makro ke Mikro (Root Driver $\to$ Transmisi Perantara $\to$ Dampak Ekonomi RI), Analisis Sektor Penerima Manfaat (Net Winner) vs Sektor Tertekan (Margin Compression), dan Saham Primadona Tema ($MEDC, $ENRG, $PGAS, $AKRA) dengan tombol sinkronisasi live API.*
+
+### 3. Autonomous News Research Desk (Daily Brief & Goldman Sachs Barbell Strategy Note)
+![News Research Desk](docs/screenshots/news_research_note.png)
+*Autonomous News Research Intelligence: Live synthesis berita finansial harian via Google Gemini Flash, ringkasan Daily Brief bahasa awam, Sector Research Note standar Goldman Sachs Barbell (60% Perbankan Dividen Tinggi : 40% Komoditas Emas/Energi), Matriks Level Teknikal (Pivot, S1/S2, R1/R2, Invalidation Cut-Off), dan tombol kontrol sinkronisasi manual [🔄 REFRESH RISET AI].*
+
+### 4. AI Multi-Agent Elemental Arena (16 Autonomous Sovereign Bots & Locked 4-Column Grid)
+![AI Agent Arena](docs/screenshots/ai_agent_arena.png)
+*AI Multi-Agent Elemental Arena: 16 Bot Trading Otonom (4 Base, 6 Duo, 4 Trio, 1 Master AVATAR, 1 Chaos Anomaly) tersusun dalam kanban locked 4-column grid. Setiap bot beroperasi dengan modal berdaulat mandiri (Rp 1.000.000 per bot / Total AUM Rp 16.000.000), proteksi independen Margin Call (MC $\le 15\%$), dan log refleksi post-mortem kuantitatif.*
+
+### 5. Multi-Market US Equities & Global Signals
 ![US Stocks Signals Table](docs/screenshots/us_stocks_signals.png)
-*Sinyal Kuantitatif US Equities Institusional (AAPL, NVDA, MSFT, TSLA, dll.) dengan kuotasi harga aktual, persentase fluktuasi riil, dan level eksekusi teknikal.*
+*Sinyal Kuantitatif US Equities Institusional (AAPL, NVDA, MSFT, TSLA, AMD, dll.) dengan kuotasi harga aktual, persentase fluktuasi riil, setup teknikal kuantitatif, dan level eksekusi terukur.*
 
 ---
 

@@ -28,9 +28,10 @@ export default function AiIntelligenceDrawer({
   allIdxStocks = [],
   cryptoData = [],
   usStocksData = null,
-  onRefreshDesk = null
+  onRefreshDesk = null,
+  defaultTab = 'THEMATIC'
 }) {
-  const [activeTab, setActiveTab] = useState('THEMATIC'); // 'THEMATIC' | 'DEBATE' | 'DEFCON'
+  const [activeTab, setActiveTab] = useState(defaultTab);
   const [selectedThemeId, setSelectedThemeId] = useState('THEME_ENERGY_GEOPOLITICS');
   const [selectedUniverse, setSelectedUniverse] = useState('IDX'); // 'IDX' | 'CRYPTO' | 'US_EQUITIES'
   const [selectedTicker, setSelectedTicker] = useState('MEDC');

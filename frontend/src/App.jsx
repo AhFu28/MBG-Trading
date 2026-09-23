@@ -84,6 +84,11 @@ export default function App() {
 
   // Native hash routing
   const getTabFromHash = () => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const qTab = params.get('tab');
+      if (qTab) return qTab.toUpperCase();
+    } catch (e) {}
     const hash = window.location.hash.replace('#', '').toUpperCase();
     return hash || 'HOME';
   };
@@ -281,6 +286,8 @@ export default function App() {
       case 'CHANGELOG': return '📜 Changelog Update & Catatan Rilis';
       case 'AI_AGENTS': return '🤖 AI Multi-Agent Arena';
       case 'AI_SENTINEL':
+      case 'AI_SENTINEL_DEFCON':
+      case 'AI_SENTINEL_DEBATE':
       case 'SENTINEL': return '🛡️ AI Intelligence & Sentinel Desk';
       default: return 'Institutional Desk';
     }
@@ -435,12 +442,13 @@ export default function App() {
               <div style={{ fontWeight: '700', fontFamily: 'var(--font-mono)' }}>MEMUAT MODUL KUANTITATIF...</div>
             </div>
           }>
-            {activeTab === 'AI_SENTINEL' || activeTab === 'SENTINEL' ? (
+            {activeTab === 'AI_SENTINEL' || activeTab === 'AI_SENTINEL_DEFCON' || activeTab === 'AI_SENTINEL_DEBATE' || activeTab === 'SENTINEL' ? (
               /* AI SENTINEL EMBEDDED DESK VIEW */
               <main style={{ padding: '12px 0' }}>
                 <AiIntelligenceDrawer
                   isDrawer={false}
                   isOpen={true}
+                  defaultTab={activeTab === 'AI_SENTINEL_DEFCON' ? 'DEFCON' : activeTab === 'AI_SENTINEL_DEBATE' ? 'DEBATE' : 'THEMATIC'}
                   threatData={data?.geopolitical_threat}
                   debateData={data?.ai_agent_arena}
                   aiDiagnostics={data?.ai_agent_arena?.diagnostics}
