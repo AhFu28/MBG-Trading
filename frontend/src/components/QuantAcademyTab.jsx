@@ -1765,11 +1765,6 @@ export default function QuantAcademyTab() {
         </div>
       )}
 
-      {/* TAB 4.5: INTERACTIVE QUANT LAB & MATH SANDBOX (OPENQUANT INITIATIVE) */}
-      {activeTab === 'quant_lab' && (
-        <InteractiveQuantLabSandbox />
-      )}
-
       {/* TAB 3: GALERI VISUAL 10 INFOGRAFIS */}
       {activeTab === 'gallery' && (
         <div>
