@@ -4,6 +4,117 @@ import { getTvSymbol, cleanSymbolStr } from '../data/tv-helpers.js';
 /**
  * ChartPane - Individual TradingView Chart Instance for Multi-Grid Workstation
  */
+/**
+ * ExecutionHudOverlay - jev-trade inspired real-time visual execution & triple-barrier HUD
+ */
+function ExecutionHudOverlay({ symbol, market, currentPrice, plan, isCrypto }) {
+  const isIdx = market === 'IDX' || (!isCrypto && !symbol.includes('USDT'));
+  const p = Number(currentPrice || (isIdx ? 1200 : 100));
+  const entry = plan?.entry_price || plan?.entry_low || p;
+  const sl = plan?.stop_loss || (isIdx ? Math.round(entry * 0.965) : Number((entry * 0.97).toFixed(4)));
+  const tp = plan?.take_profit_1 || (isIdx ? Math.round(entry * 1.082) : Number((entry * 1.085).toFixed(4)));
+  const trailing = isIdx ? Math.round(entry * 1.025) : Number((entry * 1.03).toFixed(4));
+  
+  const tpPct = (((tp - entry) / entry) * 100).toFixed(2);
+  const slPct = (((sl - entry) / entry) * 100).toFixed(2);
+  const pnlPct = (((p - entry) / entry) * 100).toFixed(2);
+  const isProfit = Number(pnlPct) >= 0;
+
+  const botName = isIdx ? 'Bot-06 Bandarmology VWAP' : 'Bot-02 Momentum Alpha';
+
+  return (
+    <div style={{
+      position: 'absolute',
+      top: '32px',
+      left: '8px',
+      right: '8px',
+      zIndex: 10,
+      background: 'rgba(10, 14, 22, 0.92)',
+      backdropFilter: 'blur(8px)',
+      border: '1px solid rgba(59, 130, 246, 0.35)',
+      borderRadius: '8px',
+      padding: '7px 10px',
+      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.65)',
+      display: 'flex',
+      flexWrap: 'wrap',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: '6px',
+      fontSize: '11px',
+      fontFamily: 'var(--font-mono, monospace)',
+      pointerEvents: 'auto'
+    }}>
+      {/* Bot & Status */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <span style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '4px',
+          background: 'rgba(16, 185, 129, 0.15)',
+          color: '#10b981',
+          padding: '2px 6px',
+          borderRadius: '4px',
+          fontWeight: 700,
+          border: '1px solid rgba(16, 185, 129, 0.3)'
+        }}>
+          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+          LIVE EXECUTION
+        </span>
+        <span style={{ color: '#93c5fd', fontWeight: 600 }}>{botName}</span>
+        <span style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '10px' }}>
+          • Sizing: {isIdx ? '150 Lot' : '2,500 USDT'}
+        </span>
+      </div>
+
+      {/* Triple-Barrier Telemetry Pill Grid */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+        {/* Entry */}
+        <div style={{ background: 'rgba(255, 255, 255, 0.04)', padding: '2px 5px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <span style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '9px' }}>Entry: </span>
+          <strong style={{ color: '#f1f5f9' }}>{isIdx ? `Rp ${entry.toLocaleString()}` : `$${entry}`}</strong>
+        </div>
+
+        {/* Upper Barrier (TP) */}
+        <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '2px 5px', borderRadius: '4px', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
+          <span style={{ color: '#10b981', fontSize: '9px' }}>🎯 Barrier 1 (TP): </span>
+          <strong style={{ color: '#34d399' }}>{isIdx ? `Rp ${tp.toLocaleString()}` : `$${tp}`} (+{tpPct}%)</strong>
+        </div>
+
+        {/* Lower Barrier (SL) */}
+        <div style={{ background: 'rgba(239, 68, 68, 0.08)', padding: '2px 5px', borderRadius: '4px', border: '1px solid rgba(239, 68, 68, 0.25)' }}>
+          <span style={{ color: '#ef4444', fontSize: '9px' }}>🛑 Barrier 2 (SL): </span>
+          <strong style={{ color: '#f87171' }}>{isIdx ? `Rp ${sl.toLocaleString()}` : `$${sl}`} ({slPct}%)</strong>
+        </div>
+
+        {/* Vertical Barrier (Time Horizon) */}
+        <div style={{ background: 'rgba(245, 158, 11, 0.08)', padding: '2px 5px', borderRadius: '4px', border: '1px solid rgba(245, 158, 11, 0.25)' }}>
+          <span style={{ color: '#f59e0b', fontSize: '9px' }}>⏱️ Barrier 3 (Time): </span>
+          <strong style={{ color: '#fbbf24' }}>Bar 14/24 (H+3)</strong>
+        </div>
+
+        {/* Trailing Stop & Slippage */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ color: '#93c5fd', fontSize: '10px' }}>
+            Trailing: <strong>{isIdx ? `Rp ${trailing.toLocaleString()}` : `$${trailing}`}</strong>
+          </span>
+          <span style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '10px' }}>
+            Slip: <span style={{ color: '#10b981' }}>0.08% (TWAP)</span>
+          </span>
+          <span style={{
+            color: isProfit ? '#34d399' : '#f87171',
+            background: isProfit ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+            padding: '1px 5px',
+            borderRadius: '3px',
+            fontWeight: 700
+          }}>
+            PnL: {isProfit ? `+${pnlPct}%` : `${pnlPct}%`}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ChartPane({
   paneId,
   symbol,
@@ -14,11 +125,14 @@ function ChartPane({
   onSelectTicker,
   onChangeTimeframe,
   isActive,
-  onActivate
+  onActivate,
+  plan = null,
+  currentPrice = null
 }) {
   const containerRef = useRef(null);
   const clean = cleanSymbolStr(symbol);
   const isCrypto = market === 'CRYPTO' || clean.endsWith('USDT') || clean.startsWith('BTC') || clean.startsWith('ETH') || clean.startsWith('SOL');
+  const [showHud, setShowHud] = useState(true);
 
   useEffect(() => {
     const tvSymbol = getTvSymbol(symbol, market);
@@ -103,8 +217,34 @@ function ChartPane({
           </span>
         </div>
 
-        {/* Timeframe selector */}
-        <div style={{ display: 'flex', gap: '2px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          {/* HUD toggle button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowHud(prev => !prev);
+            }}
+            title="Toggle Triple-Barrier Execution HUD Overlay"
+            style={{
+              background: showHud ? 'rgba(59, 130, 246, 0.25)' : 'rgba(255, 255, 255, 0.05)',
+              color: showHud ? '#60a5fa' : 'var(--text-muted)',
+              border: '1px solid ' + (showHud ? 'rgba(59, 130, 246, 0.4)' : 'rgba(255, 255, 255, 0.1)'),
+              borderRadius: '3px',
+              padding: '1px 6px',
+              fontSize: '9px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '3px'
+            }}
+          >
+            <span>🎯</span>
+            <span>{showHud ? 'HUD ON' : 'HUD'}</span>
+          </button>
+
+          {/* Timeframe selector */}
+          <div style={{ display: 'flex', gap: '2px' }}>
           {(isCrypto ? ['15', '60', '240', 'D'] : ['D', 'W', 'M']).map(tf => (
             <button
               key={tf}
@@ -126,11 +266,21 @@ function ChartPane({
               {tf === '60' ? '1H' : tf === '240' ? '4H' : tf}
             </button>
           ))}
+          </div>
         </div>
       </div>
 
       {/* Chart Canvas */}
       <div style={{ flex: 1, width: '100%', height: '100%', position: 'relative' }}>
+        {showHud && (
+          <ExecutionHudOverlay
+            symbol={symbol}
+            market={market}
+            currentPrice={currentPrice}
+            plan={plan}
+            isCrypto={isCrypto}
+          />
+        )}
         <div
           ref={containerRef}
           className="tradingview-widget-container"
@@ -519,6 +669,8 @@ export default function ChartingDeskTab({
             onChangeTimeframe={updatePaneTimeframe}
             isActive={activePaneId === 1}
             onActivate={() => setActivePaneId(1)}
+            plan={activePaneId === 1 ? activePlan : null}
+            currentPrice={activePaneId === 1 ? currentPrice : null}
           />
 
           {/* Pane 2 (if 2-Split or 4-Grid) */}
@@ -533,6 +685,8 @@ export default function ChartingDeskTab({
               onChangeTimeframe={updatePaneTimeframe}
               isActive={activePaneId === 2}
               onActivate={() => setActivePaneId(2)}
+              plan={activePaneId === 2 ? activePlan : null}
+              currentPrice={activePaneId === 2 ? currentPrice : null}
             />
           )}
 
@@ -549,6 +703,8 @@ export default function ChartingDeskTab({
                 onChangeTimeframe={updatePaneTimeframe}
                 isActive={activePaneId === 3}
                 onActivate={() => setActivePaneId(3)}
+                plan={activePaneId === 3 ? activePlan : null}
+                currentPrice={activePaneId === 3 ? currentPrice : null}
               />
               <ChartPane
                 paneId={4}
@@ -560,6 +716,8 @@ export default function ChartingDeskTab({
                 onChangeTimeframe={updatePaneTimeframe}
                 isActive={activePaneId === 4}
                 onActivate={() => setActivePaneId(4)}
+                plan={activePaneId === 4 ? activePlan : null}
+                currentPrice={activePaneId === 4 ? currentPrice : null}
               />
             </>
           )}
@@ -607,6 +765,47 @@ export default function ChartingDeskTab({
                 </span>
                 <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--accent-green, #00d084)', marginTop: '2px' }}>
                   {activePlan?.direction === 'BUY' ? '🔥 BUY SIGNAL CONFIRMED' : presetConfigs[activePreset].setupStatus}
+                </div>
+              </div>
+
+              {/* JEV-TRADE Inspired Triple-Barrier Execution Contract */}
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9))',
+                padding: '9px',
+                borderRadius: '6px',
+                border: '1px solid rgba(59, 130, 246, 0.25)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '5px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '9px', fontWeight: 800, color: '#60a5fa', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    TRIPLE-BARRIER CONTRACT
+                  </span>
+                  <span style={{ fontSize: '8px', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', padding: '1px 4px', borderRadius: '3px', fontWeight: 700 }}>
+                    ACTIVE
+                  </span>
+                </div>
+                <div style={{ fontSize: '9px', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+                  López de Prado Triple-Barrier Rule:
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: '#10b981' }}>▲ Target (+{(((target1Price - entryPrice) / entryPrice) * 100).toFixed(1)}%):</span>
+                    <strong>{formatPriceVal(target1Price)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: '#ef4444' }}>▼ Stop ({(((stopLossPrice - entryPrice) / entryPrice) * 100).toFixed(1)}%):</span>
+                    <strong>{formatPriceVal(stopLossPrice)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: '#f59e0b' }}>⏱️ Max Horizon:</span>
+                    <strong>24 Bars (EOD Exit)</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '3px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Execution Route:</span>
+                    <span style={{ color: '#93c5fd' }}>TWAP Sliced (0.08% slip)</span>
+                  </div>
                 </div>
               </div>
 
