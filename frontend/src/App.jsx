@@ -446,6 +446,7 @@ export default function App() {
                   aiDiagnostics={data?.ai_agent_arena?.diagnostics}
                   thematicData={data?.thematic_macro_regimes}
                   allIdxStocks={allIdxStocks}
+                  onRefreshDesk={refetchAll}
                 />
               </main>
             ) : activeTab === 'WATCHLIST' ? (
@@ -622,6 +623,7 @@ export default function App() {
                 aiDiagnostics={data?.ai_agent_arena?.diagnostics}
                 thematicData={data?.thematic_macro_regimes}
                 allIdxStocks={allIdxStocks}
+                onRefreshDesk={refetchAll}
               />
             )}
           </Suspense>

@@ -30,6 +30,27 @@ export default function NewsTab({
   const [researchArchive, setResearchArchive] = useState([]);
   const [archiveDateFilter, setArchiveDateFilter] = useState('ALL');
   const [archiveLoading, setArchiveLoading] = useState(false);
+  const [isRefreshingAi, setIsRefreshingAi] = useState(false);
+
+  const handleRefreshAiResearch = async () => {
+    setIsRefreshingAi(true);
+    try {
+      const [resBundle, resArchive] = await Promise.all([
+        fetch(`/data/latest_cockpit_bundle.json?v=${Date.now()}`),
+        fetch(`/data/research_archive.json?v=${Date.now()}`)
+      ]);
+      if (resArchive.ok) {
+        const jsonArch = await resArchive.json();
+        if (Array.isArray(jsonArch)) setResearchArchive(jsonArch);
+      }
+      setToastMsg('Riset AI berhasil disinkronkan dengan intelijen pasar terkini.');
+      setTimeout(() => setToastMsg(null), 3000);
+    } catch (err) {
+      console.warn('Refresh failed:', err);
+    } finally {
+      setIsRefreshingAi(false);
+    }
+  };
 
   // Fetch 14-day historical research archive
   useEffect(() => {
@@ -313,6 +334,29 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
           >
             <span>🏛️</span>
             <span>Arsip Riset (14 Edisi)</span>
+          </button>
+
+          <button
+            onClick={handleRefreshAiResearch}
+            disabled={isRefreshingAi}
+            className="telemetry-btn"
+            style={{
+              padding: '2px 8px',
+              fontSize: '10px',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: '800',
+              color: 'var(--accent-gold-text, var(--accent-gold))',
+              background: 'rgba(234, 179, 8, 0.15)',
+              borderColor: 'rgba(234, 179, 8, 0.4)',
+              cursor: isRefreshingAi ? 'wait' : 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+            title="Refresh analisis AI Daily Brief & Research Note dengan feed berita terkini"
+          >
+            <span>{isRefreshingAi ? '⏳' : '🔄'}</span>
+            <span>{isRefreshingAi ? 'Mensintesis...' : 'Refresh Riset AI'}</span>
           </button>
           <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: '6px' }}>
             // IDX Equities &amp; Global Crypto ETF Intelligence

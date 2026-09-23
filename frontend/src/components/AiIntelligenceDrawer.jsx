@@ -27,7 +27,8 @@ export default function AiIntelligenceDrawer({
   thematicData = null,
   allIdxStocks = [],
   cryptoData = [],
-  usStocksData = null
+  usStocksData = null,
+  onRefreshDesk = null
 }) {
   const [activeTab, setActiveTab] = useState('THEMATIC'); // 'THEMATIC' | 'DEBATE' | 'DEFCON'
   const [selectedThemeId, setSelectedThemeId] = useState('THEME_ENERGY_GEOPOLITICS');
@@ -1000,6 +1001,34 @@ export default function AiIntelligenceDrawer({
             }} />
             <span>MODEL: {activeModelName} {isFailover ? '(Failover)' : '(Online)'}</span>
           </div>
+
+          <button
+            onClick={() => {
+              if (onRefreshDesk) {
+                onRefreshDesk();
+              } else {
+                window.location.reload();
+              }
+            }}
+            className="telemetry-btn"
+            style={{
+              padding: '3px 8px',
+              fontSize: '10px',
+              fontFamily: 'var(--font-mono, monospace)',
+              fontWeight: '700',
+              color: '#38bdf8',
+              borderColor: 'rgba(56, 189, 248, 0.4)',
+              background: 'rgba(56, 189, 248, 0.12)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              cursor: 'pointer'
+            }}
+            title="Sinkronisasi ulang data intelijen makro dan DEFCON geopolitik terkini"
+          >
+            <span>🔄</span>
+            <span>Sync Desk</span>
+          </button>
 
           {isDrawer && (
             <button
