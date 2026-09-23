@@ -1296,7 +1296,7 @@ export default function QuantAcademyTab() {
   }, [searchGlossary, selectedGlossaryCategory]);
 
   return (
-    <div style={{ padding: '16px', maxWidth: '1440px', margin: '0 auto', color: 'var(--text-primary)' }}>
+    <div style={{ padding: '16px 20px', width: '100%', maxWidth: '1680px', margin: '0 auto', color: 'var(--text-primary)' }}>
       {/* COCKPIT HEADER BANNER */}
       <div style={{
         background: 'linear-gradient(135deg, rgba(16, 24, 40, 0.95), rgba(20, 32, 54, 0.95))',
@@ -1401,13 +1401,15 @@ export default function QuantAcademyTab() {
 
       {/* MAIN CONTENT AREA */}
       {activeLevelId !== 'glossary' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+        <div className="quant-academy-main-grid">
           {/* LEFT SIDEBAR */}
           <div style={{
             background: 'var(--bg-card)',
             border: '1px solid var(--border-subtle)',
             borderRadius: '10px',
             padding: '16px',
+            position: 'sticky',
+            top: '16px',
             height: 'fit-content'
           }}>
             <div style={{ fontSize: '11px', fontWeight: '800', color: activeLevel.badgeColor, marginBottom: '4px' }}>
@@ -1454,7 +1456,7 @@ export default function QuantAcademyTab() {
           </div>
 
           {/* RIGHT PANEL */}
-          <div style={{ display: 'grid', gap: '16px' }}>
+          <div style={{ display: 'grid', gap: '16px', minWidth: 0 }}>
             {/* MODULE HEADER */}
             <div style={{
               background: 'var(--bg-card)',
@@ -1475,7 +1477,7 @@ export default function QuantAcademyTab() {
               </h2>
               <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px 14px', borderRadius: '6px', borderLeft: '3px solid var(--accent-cyan)' }}>
                 <span style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-cyan)' }}>PERTANYAAN KUNCI: </span>
-                <span style={{ fontSize: '13px', color: 'var(--text-primary)' }}>{activeModule.keyQuestion}</span>
+                <span style={{ fontSize: '13.5px', color: 'var(--text-primary)', lineHeight: '1.5' }}>{activeModule.keyQuestion}</span>
               </div>
             </div>
 
@@ -1489,7 +1491,7 @@ export default function QuantAcademyTab() {
               <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-cyan)', marginBottom: '4px' }}>
                 💡 ANALOGI KEHIDUPAN NYATA (MENTAL MODEL):
               </div>
-              <div style={{ fontSize: '13px', color: 'var(--text-primary)', lineHeight: '1.6' }}>
+              <div style={{ fontSize: '13.5px', color: 'var(--text-primary)', lineHeight: '1.65' }}>
                 {activeModule.analogy}
               </div>
             </div>
@@ -1516,7 +1518,7 @@ export default function QuantAcademyTab() {
               <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#fff', margin: '0 0 10px 0' }}>
                 ⚙️ Bagaimana Mekanisme & Rantai Transmisi di Baliknya?
               </h3>
-              <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.7', whiteSpace: 'pre-line' }}>
+              <div style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: '1.75', whiteSpace: 'pre-line' }}>
                 {activeModule.mechanism}
               </div>
             </div>

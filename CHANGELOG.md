@@ -25,9 +25,11 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
   - **Module 3.3 Visual Sine Wave**: Added `<SupercycleSineWave />` with 4 dynamic capex phases (Under-investment, Windfall Boom, Capex Glut, Crash) and tactical playbook recommendations.
   - **Timer Memory Safety**: Bound all `setTimeout` calls in `<OrderBookDepthLadder />` to active component lifecycle refs (`spoofTimerRef`, `marketBuyTimerRef`) to eliminate memory leaks on rapid navigation.
   - **Defensive Position Math**: Injected numeric sanitization (`Math.abs`, `Math.max`) and inverted stop/target safeguards in `<VisualExecutionBracket />`.
-- **[COCKPIT UI/UX] Visual Hierarchy & Telemetry Polish**:
-  - Validated responsive breakpoints, typography contrast, and SVG rendering across all 6 Quant Academy levels.
-  - Certified production bundle: 75 modules compiled in 2.92s with 0 errors/warnings.
+- **[COCKPIT UI/UX & LAYOUT FIX] Solusi Penyusutan Konten Materi Pembelajaran**:
+  - **Restorasi Lebar Kanvas Edukasi**: Memperbaiki bug grid layout di mana penggunaan `repeat(auto-fit, minmax(280px, 1fr))` membagi viewport 50%-50% antara sidebar modul dan panel materi, yang menyebabkan seluruh modul pembelajaran menyusut ke separuh layar.
+  - **Arsitektur Asimetris Lebar (.quant-academy-main-grid)**: Mengunci sidebar modul pada `280px` (sticky on scroll) dan mengalokasikan seluruh sisa ruang layar (`minmax(0, 1fr)`) untuk materi pembelajaran hingga lebar maksimal `1680px`.
+  - **Penyempurnaan Tipografi**: Menyesuaikan skala teks (judul 22px, narasi analogi/mekanisme 13.5px line-height 1.75) agar seluruh grafik, tabel, dan simulator memiliki ruang nafas visual (*breathing room*) yang optimal.
+  - Certified production bundle: 75 modules compiled with 0 errors/warnings.
 
 ### Sprint 4 (Malam) — 6-Level Masterclass Curriculum & Ground-Zero to Hedge Fund Transformation
 - **[QUANT ACADEMY & PEDAGOGY] Arsitektur 6 Level & 20 Modul Terstruktur**:
