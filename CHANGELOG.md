@@ -28,6 +28,15 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 - **[COCKPIT UI/UX] Navigasi Dua Panel (Sidebar Modul & Kanvas Pembelajaran)**:
   - Sidebar daftar modul terintegrasi dengan progress tracking (0 s/d 20 modul selesai).
   - Setiap modul memuat 5 blok konsisten: Pertanyaan Kunci, Analogi Kehidupan Nyata, Mekanisme & Transmisi, Jebakan Ritel vs Playbook Institusi, dan Pedoman Taktis.
+  - **[INTERACTIVE VISUALS & SVG SUITE] Ilustrasi Grafis & Simulasi Hands-On**:
+    * **SVG Dam Simulator (Level 1)**: Ilustrasi grafis waduk likuiditas Bank Sentral dengan slider pintu air (0% - 100%) yang mengalirkan debit air ke 4 kolam aset (Saham, Obligasi, Emas/Komoditas, Kripto).
+    * **Domino Stepper (Level 2)**: Diagram 8-tahap interaktif yang memperlihatkan transmisi kausalitas The Fed ke BEI dengan tombol navigasi bertahap.
+    * **Historical Crisis Line Chart (Level 2)**: Grafik trajektori SVG 4 krisis besar (1997, 2008, 2013 Taper Tantrum, 2020 Covid Crash) dengan titik penanda panik dan rebound.
+    * **Timbangan Kas Riil vs Laba Akuntansi (Level 3)**: Neraca timbangan interaktif deteksi rekayasa laba akrual vs arus kas operasional riil.
+    * **Order Book Depth Ladder & Spoofing (Level 4)**: Ladder antrian Bid/Ask dengan tombol simulasi pasang order palsu 50.000 lot dan sapuan market buy paus.
+    * **Simulator Dividen $PTBA (Level 4)**: Kalkulator pemilihan waktu beli (Cum vs Ex date) dengan breakdown net PnL dividen vs penurunan modal.
+    * **Visual Execution Bracket (Level 6)**: Kalkulator bracket posisi visual dengan garis Entry, SL, dan TP untuk memastikan rasio R:R >= 1:2.
+    * **Pre-Flight Launch Scorecard (Level 6)**: Scorecard keselamatan 5 protokol sebelum transaksi dengan indikator kesiapan eksekusi.
 - **[QUANT & AGENTIC ENGINES] Embedded Live Interactive Sandbox Suite**:
   - *Fed Hike Domino Simulator (Level 1)*: Pengujian kenaikan suku bunga The Fed terhadap DXY, kurs USD/IDR, dan diskon valuasi IHSG.
   - *Discrete BEI Lot Sizing Calculator (Level 6)*: Kalkulasi jumlah lot aman otomatis berbasis toleransi risiko modal akun.

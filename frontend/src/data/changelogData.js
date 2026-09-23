@@ -30,7 +30,17 @@ export const CHANGELOG_DATA = [
 - **Level 5 (Analisis Teknikal & Likuiditas):** Trend structure, zona likuiditas, magnet 50% FVG, dan liquidity sweeps.
 - **Level 6 (Risk Desk & Psikologi):** Asimetri drawdown, kalkulator lot diskrit BEI anti-bangkrut, ekspektansi R:R minimal 1:2, dan pre-flight checklist.
 
-#### 💡 2. Pedagogi Berbasis Analogi & Bukti Sejarah
+#### 🎨 2. Grafik Interaktif & Ilustrasi Visual SVG
+- **SVG Dam Simulator (Level 1):** Waduk likuiditas bank sentral dengan debit air ke 4 kolam aset.
+- **Domino Stepper (Level 2):** 8 tahap transmisi The Fed dengan tombol langkah demi langkah.
+- **Crisis Line Chart (Level 2):** Trajektori 4 krisis besar (1997, 2008, 2013, 2020) dengan titik panik & rebound.
+- **Timbangan Kas vs Laba (Level 3):** Deteksi rekayasa akrual vs arus kas operasional nyata.
+- **Order Book Ladder & Spoofing (Level 4):** Simulasi pasang antrian palsu 50.000 lot & sapuan paus.
+- **Dividend Trap Sandbox (Level 4):** Simulasi net return dividen $PTBA vs gap down pasca Ex-Date.
+- **Visual Execution Bracket (Level 6):** Bracket visual posisi Entry, SL, TP (R:R minimal 1:2).
+- **Pre-Flight Scorecard (Level 6):** Checklist keselamatan 5 protokol (100% GO FOR LAUNCH).
+
+#### 💡 3. Pedagogi Berbasis Analogi & Bukti Sejarah
 - Setiap modul dilengkapi analogi kehidupan nyata (bendungan air, lelang dermaga, termostat pendingin), penjelasan mekanisme rantai transmisi, jebakan ritel vs tindakan taktis institusi, serta simulator live.
 `
   },

@@ -1,9 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 // ============================================================================
-// MBG QUANT ACADEMY // MASTERCLASS CURRICULUM (LEVEL 1 - LEVEL 6)
+// DATA KURIKULUM 6 LEVEL & 20 MODUL LENGKAP
 // ============================================================================
-
 const CURRICULUM_LEVELS = [
   {
     id: 'lvl-1',
@@ -24,7 +23,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Uang modern (fiat) diciptakan melalui sistem perbankan (fractional reserve banking) dan kebijakan Bank Sentral. Ketika bank sentral memangkas suku bunga atau membeli obligasi melalui Quantitative Easing (QE), jumlah uang beredar meningkat drastis. Lembaga pengelola dana (dana pensiun, sovereign funds, manajer investasi) memiliki kas berlebih yang harus diinvestasikan agar tidak tergerus inflasi. Sebaliknya, saat likuiditas disedot melalui Quantitative Tightening (QT), uang tunai menjadi barang langka (Cash is King) dan aset-aset berisiko mengalami tekanan jual.',
         retailTrap: 'Investor pemula mengira harga saham naik semata-mata karena "kinerja keuangan emiten bagus". Faktanya, di tengah banjir likuiditas global, saham perusahaan merugi pun bisa naik 300%. Sebaliknya, saat krisis likuiditas, saham dengan laba rekor pun bisa anjlok 30%. Arus likuiditas selalu mengalahkan fundamental dalam jangka pendek.',
         takeaway: 'Jangan pernah melawan arah kebijakan Bank Sentral (Don\'t fight the Fed). Saat bank sentral sedang mengetatkan likuiditas, pertahankan porsi kas yang besar.',
-        widget: 'fed-hike-simulator'
+        interactiveType: 'dam-simulator'
       },
       {
         id: 'mod-1-2',
@@ -35,7 +34,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Sejak Perjanjian Bretton Woods (1944) dan lahirnya sistem Petrodollar (1973) di mana minyak mentah dunia wajib diperdagangkan dalam USD, Dolar AS menjadi mata uang cadangan devisa utama dunia (mencakup 58%+ transaksi dan cadangan bank sentral global). Ketika pemerintah AS menerbitkan obligasi (US Treasury), seluruh dunia membelinya sebagai aset teraman. Akibatnya, setiap pergeseran nilai Dolar AS (DXY) langsung menggoncang kurs mata uang negara berkembang, termasuk Rupiah Indonesia.',
         retailTrap: 'Mengabaikan pergerakan indeks Dolar (DXY) saat trading saham BEI. Jika DXY sedang reli menembus level 105+, sangat sulit bagi IHSG untuk mencetak rekor baru karena dana asing sedang ditarik kembali ke Dolar.',
         takeaway: 'Pantau indeks DXY setiap hari. Pelemahan Dolar (DXY < 101) adalah katalis positif bagi pasar saham Indonesia (IHSG).',
-        widget: 'dxy-impact-matrix'
+        interactiveType: 'dam-simulator'
       },
       {
         id: 'mod-1-3',
@@ -45,7 +44,8 @@ const CURRICULUM_LEVELS = [
         analogy: 'Suku bunga bekerja persis seperti termostat AC. Jika ruangan terlalu panas (inflasi melonjak, harga kebutuhan tak terkendali), termostat disetel dingin (bunga dinaikkan) agar konsumsi masyarakat dan belanja korporasi mengerem. Jika ekonomi kedinginan (resesi, pabrik tutup), termostat dipanaskan (bunga dipotong) agar kredit kembali murah.',
         mechanism: 'The Federal Reserve mengendalikan suku bunga acuan dunia (Fed Funds Rate), sementara Bank Indonesia mengendalikan BI-Rate (7-Day Reverse Repo Rate). Bank Indonesia wajib menjaga selisih imbal hasil positif (Carry Spread minimal 100-200 bps) di atas bunga The Fed agar investor asing tidak mencairkan dana mereka dari Surat Berharga Negara (SBN) untuk dipindahkan ke obligasi AS.',
         retailTrap: 'Membeli saham berutang tinggi (High Debt-to-Equity Ratio) saat siklus kenaikan suku bunga baru dimulai. Beban bunga utang emiten akan melonjak berlipat ganda dan menggerus dividen.',
-        takeaway: 'Pilih emiten kaya kas bebas utang (Net Cash) saat suku bunga tinggi, dan beli emiten ekspansif saat suku bunga mulai dipangkas.'
+        takeaway: 'Pilih emiten kaya kas bebas utang (Net Cash) saat suku bunga tinggi, dan beli emiten ekspansif saat suku bunga mulai dipangkas.',
+        interactiveType: 'dam-simulator'
       }
     ]
   },
@@ -68,7 +68,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Rantai sebab-akibat 8 langkah transmisi moneter global:\n1. Inflasi AS Panas -> The Fed menaikkan Fed Funds Rate (+50 bps).\n2. Yield US Treasury 10Y Naik -> Menawarkan kupon bebas risiko yang sangat menarik bagi institusi global.\n3. Indeks Dolar (DXY) Menguat -> Modal global memburu Dolar untuk ditempatkan di surat utang AS.\n4. Capital Outflow dari Emerging Markets -> Manajer investasi asing menarik modal dari BEI, Thailand, Filipina.\n5. Kurs Rupiah (USD/IDR) Tertekan -> Penjualan aset Rupiah untuk dikonversi ke USD mendepresiasi kurs.\n6. Bank Indonesia Naikkan BI-Rate -> BI mempertahankan selisih carry spread agar cadangan devisa tidak terkuras.\n7. Biaya Pinjaman Emiten Naik -> Suku bunga kredit modal kerja dan investasi bank domestik naik.\n8. Valuasi Saham BEI Terkoreksi -> Laba bersih emiten tergerus beban bunga dan investor menuntut diskon harga saham.',
         retailTrap: 'Mengira depresiasi Rupiah selalu buruk untuk semua saham. Padahal emiten eksportir komoditas (emas, batubara, CPO) yang pendapatannya berdenominasi Dolar AS justru meraup windfall profit lonjakan laba dalam Rupiah!',
         takeaway: 'Saat Rupiah melemah akibat The Fed hawkish, rotasikan portofolio ke saham eksportir berbasis Dolar ($MEDC, $ITMG, $ANTM) dan hindari emiten dengan utang valas besar.',
-        widget: 'domino-interactive-tree'
+        interactiveType: 'domino-stepper'
       },
       {
         id: 'mod-2-2',
@@ -79,7 +79,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Hukum Korelasi Antar-Aset Institusional:\n- Dolar AS (DXY) vs Emas (XAU/USD): Berbanding terbalik. Pelemahan Dolar membuat emas lebih murah bagi pembeli luar AS sehingga memicu lonjakan harga emas.\n- Yield Obligasi 10Y vs Saham Teknologi: Berbanding terbalik. Kenaikan yield obligasi mendiskon nilai kas masa depan (discounted cash flow) saham pertumbuhan teknologi.\n- Minyak Mentah (Brent) vs Saham Manufaktur: Kenaikan minyak menyulut biaya produksi pabrik dan logistik transportasi, menekan margin emiten konsumer dan semen.\n- Inversi Kurva Imbal Hasil (Yield Curve Inversion 10Y-2Y): Ketika bunga obligasi 2 tahun lebih tinggi dari obligasi 10 tahun, pasar sedang memprediksi terjadinya resesi ekonomi dalam 12-18 bulan ke depan.',
         retailTrap: 'Melihat saham secara terisolasi tanpa memantau harga komoditas acuan dunia dan kurva obligasi negara.',
         takeaway: 'Gunakan kurva imbal hasil dan harga minyak dunia sebagai radar cuaca awal sebelum mengambil keputusan investasi besar.',
-        widget: 'intermarket-matrix-table'
+        interactiveType: 'crisis-charts'
       },
       {
         id: 'mod-2-3',
@@ -90,7 +90,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Analisis 5 Peristiwa Bersejarah Pasar Modal:\n1. Krisis Moneter Asia (1997-1998): Serangan spekulasi pada mata uang Baht Thailand menular ke Rupiah (anjlok dari Rp 2.500 ke Rp 16.000/USD). Korporasi dengan utang valas tanpa lindung nilai (hedging) bangkrut massal.\n2. Krisis Finansial Global (2008): Keruntuhan subprime mortgage AS memicu kebangkrutan Lehman Brothers. BEI membekukan perdagangan (suspend). Lahirlah era pencetakan uang QE.\n3. Taper Tantrum (2013): Pidato The Fed yang memberi sinyal pengurangan stimulus memicu capital outflow mendadak. IHSG anjlok -25% dan Rupiah terpuruk.\n4. Crash Pandemi Covid-19 (Maret 2020): Kepanikan lockdown merontokkan IHSG ke 3.900, disusul injeksi likuiditas moneter terbesar sejarah yang melontarkan IHSG ke 7.300+.\n5. Kenaikan Suku Bunga Agresif 500 bps (2022-2023): Inflasi global perang Ukraina memaksa The Fed menaikkan bunga tercepat dalam 4 dekade, mengakhiri era uang murah.',
         retailTrap: 'Panik menjual seluruh portofolio di titik terendah krisis saat berita di televisi paling menakutkan, lalu membeli kembali saat harga sudah reli di pucuk.',
         takeaway: 'Krisis likuiditas akut selalu menciptakan peluang pembelian terbaik dalam satu dekade jika Anda memegang porsi kas siap eksekusi.',
-        widget: 'historical-timeline-explorer'
+        interactiveType: 'crisis-charts'
       }
     ]
   },
@@ -113,7 +113,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Karakteristik 5 Kelas Aset:\n- Saham (Equities): Hak kepemilikan bisnis riil, pembagian dividen dari laba bersih, potensi capital gain. Pemain: Ritel, Manajer Investasi, Institusi.\n- Obligasi (Bonds): Pasar utang terbesar dunia ($130 Triliun+). Membayar kupon bunga berkala dan pengembalian pokok. Pemain: Bank Sentral, Dana Pensiun, Asuransi.\n- Valuta Asing (Forex): Volume transaksi harian raksasa $7.5 Triliun. Beroperasi 24 jam dengan leverage tinggi. Pemain: Bank Multinasional, Eksportir-Importir.\n- Komoditas Strategis: Emas (asuransi moneter bebas risiko kredit), Minyak Mentah (bahan bakar energi industri), Batubara & Nikel (motor devisa ekspor RI).\n- Kripto (Digital Assets): Bitcoin dengan pasokan tetap (21 juta koin). Spons likuiditas paling sensitif terhadap ekspansi suplai uang global M2.',
         retailTrap: 'Menaruh seluruh modal di aset berisiko tinggi (kripto koin micin / saham gorengan) tanpa memiliki bantalan aset pelindung di obligasi atau saham berdividen sehat.',
         takeaway: 'Susun portofolio seimbang: 60% saham defensif berdividen kuat, 20% obligasi/kas, 20% komoditas/pertumbuhan tinggi.',
-        widget: 'asset-comparator-tool'
+        interactiveType: 'balance-scale'
       },
       {
         id: 'mod-3-2',
@@ -124,7 +124,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Laba bersih (Net Profit) di laporan laba rugi dihitung berdasarkan prinsip akuntansi akrual (pendapatan dicatat saat barang dikirim walau pembeli belum membayar). Emiten bisa merekayasa laba dengan piutang fiktif. Sebaliknya, Laporan Arus Kas Operasional (Operating Cash Flow / OCF) mencatat uang tunai nyata yang benar-benar masuk ke rekening bank perusahaan. Jika Laba Bersih naik tapi Arus Kas Operasional negatif berturut-turut, itu tanda bahaya merah!',
         retailTrap: 'Hanya melihat Price to Earnings Ratio (PER) dan laba bersih di aplikasi sekuritas tanpa pernah memeriksa apakah kas operasional perusahaan positif.',
         takeaway: 'Selalu pastikan Arus Kas Operasional perusahaan setara atau lebih besar daripada Laba Bersihnya (Cash Conversion Ratio >= 1.0).',
-        widget: 'financial-health-audit'
+        interactiveType: 'balance-scale'
       },
       {
         id: 'mod-3-3',
@@ -135,7 +135,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Anatomi 4 Babak Siklus Komoditas:\n1. Babak Bawah (Under-investment): Harga komoditas murah bertahun-tahun, tambang tutup, belanja modal (Capex) ditekan minim.\n2. Babak Ledakan (Shock & Windfall): Pasokan langka berbenturan dengan lonjakan permintaan global. Harga tambang meroket ke rekor tertinggi. Emiten mencetak laba abnormal triliunan.\n3. Babak Ekspansi Berlebih: Laba melimpah membuat emiten berbondong-bondong membuka tambang baru secara agresif.\n4. Babak Kelebihan Pasokan (Glut & Crash): Tambang-tambang baru serentak beroperasi, pasar kebanjiran pasokan, harga komoditas jatuh bebas kembali ke titik dasar.',
         retailTrap: 'Membeli saham tambang saat rasio PER terlihat "sangat murah" (misal PER 2x-3x) di puncak siklus panen laba, tepat sebelum harga komoditas jatuh.',
         takeaway: 'Hukum Emas Saham Komoditas: Belilah saat PER terlihat mahal (laba di dasar siklus) dan juallah saat PER terlihat sangat murah (laba di puncak siklus).',
-        widget: 'commodity-cycle-map'
+        interactiveType: 'supercycle-sine'
       }
     ]
   },
@@ -158,7 +158,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Buku order (Limit Order Book) mempertemukan antrian beli pasif (Bid) dan antrian jual pasif (Offer/Ask). Selisih harga terbaik disebut Spread. Pergerakan harga adalah produk dari pesanan agresif (Market Order) yang melahap likuiditas pasif di buku order. Pesanan beli pasar menyapu antrian ask ke atas (Lifting the Ask), sedangkan pesanan jual pasar membanting antrian bid ke bawah (Hitting the Bid).',
         retailTrap: 'Mengira antrian tebal di kolom Bid berarti "harga aman tidak akan turun". Seringkali antrian bid tebal itu adalah order palsu (spoofing) dari bandar yang dibatalkan seketika saat ritel ikut antri di atasnya.',
         takeaway: 'Perhatikan volume running trade riil yang terjadi, bukan ilusi antrian bid/offer yang belum tentu tereksekusi.',
-        widget: 'order-book-depth-sandbox'
+        interactiveType: 'orderbook-ladder'
       },
       {
         id: 'mod-4-2',
@@ -169,7 +169,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Karakteristik 4 Pelaku Utama di BEI:\n1. Investor Ritel: Jumlah akun jutaan, modal rata-rata kecil, reaktif terhadap berita headline media sosial, mudah panik saat merah dan serakah saat hijau.\n2. Institusi Domestik (BPJS TK, Taspen, Asuransi, MI): Modal ratusan triliun, pergerakan sangat lambat, terikat mandat regulasi yang ketat.\n3. Asing (Foreign Institutional Funds): Membeli emiten berkapitalisasi pasar besar (Big Caps) berbasis alokasi makro regional. Keluar-masuk dalam volume triliunan per hari.\n4. Bandar / Market Maker / Sponsor Saham: Pelaku bermodal besar dengan puluhan akun nominee yang bertugas menjaga likuiditas atau mengarahkan tren harga saham lapis dua dan tiga (Mid-Small Caps).',
         retailTrap: 'Mencoba melawan arah gerak bandar atau dana asing pada saham-saham likuiditas tipis.',
         takeaway: 'Jangan pernah mencoba menjadi penggerak pasar. Jadilah ikan remora cerdas yang berenang di samping sirip paus dan ikut menikmati arus likuiditasnya.',
-        widget: 'broker-flow-profiler'
+        interactiveType: 'orderbook-ladder'
       },
       {
         id: 'mod-4-3',
@@ -180,7 +180,7 @@ const CURRICULUM_LEVELS = [
         mechanism: '4 Babak Siklus Wyckoff di BEI:\n1. Akumulasi: Harga bergerak mendatar (sideways) membosankan selama berbulan-bulan. Berita media bernada sepi atau negatif. Ritel putus asa menjual sahamnya, dan smart money menyerap barang perlahan tanpa membuat harga melonjak.\n2. Markup: Setelah sebagian besar saham beredar dikuasai, smart money menyapu penawaran harga ke atas. Volume transaksi meningkat, memicu scanner teknikal ritel untuk ikut memburu.\n3. Distribusi: Harga berada di level tertinggi. Berita-berita fantastis membanjiri media sosial, target harga analis dinaikkan tinggi-tinggi, dividen jumbo diumumkan. Ritel berbondong-bondong memborong karena takut ketinggalan (FOMO). Di balik layar, smart money menjual barangnya ke antrian beli ritel.\n4. Markdown: Smart money sudah selesai mengosongkan inventarisnya dan tidak lagi menaruh antrian beli penopang. Harga saham longsor bebas tanpa rem, mengunci ritel di pucuk.',
         retailTrap: 'Membeli saham di fase distribusi hanya karena melihat grafik harga sedang reli kencang dan berita di media sangat optimis.',
         takeaway: 'Beli saat pasar sedang membosankan di akhir fase akumulasi, dan jual saat pasar sedang riuh gegap gempita di fase distribusi.',
-        widget: 'wyckoff-phase-interactive'
+        interactiveType: 'dividend-trap-sandbox'
       },
       {
         id: 'mod-4-4',
@@ -191,7 +191,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Kronologi Nyata Jebakan Dividen di BEI:\n1. Menjelang RUPS & Cum-Date: Harga saham dikerek naik dengan narasi bombastis "Dividen Yield 25% Terbesar Sepanjang Sejarah".\n2. Hari Cum-Date (Batas Akhir Dapat Dividen): Ritel memborong saham habis-habisan di harga tertinggi demi mendapatkan dividen instan.\n3. Hari Ex-Date: Pagi hari bursa dibuka, harga saham langsung anjlok Auto Reject Bawah (ARB) berturut-turut minus -25% hingga -35% karena tidak ada lagi insentif dividen.\n4. Hasil Akhir: Dividen yang didapat (misal Rp 1.000 per lembar) langsung hangus tertelan penurunan modal harga saham (-Rp 1.500 per lembar), menyisakan kerugian bersih dan modal terkunci berbulan-bulan.',
         retailTrap: 'Masuk membeli saham di hari Cum-Date tanpa memperhitungkan penurunan harga di hari Ex-Date.',
         takeaway: 'Jika Anda sudah memegang saham siklikal dengan keuntungan modal yang besar menjelang dividen, juallah di hari Cum-Date saat ritel sedang berebut membelinya di harga puncak.',
-        widget: 'dividend-trap-netpnl-calc'
+        interactiveType: 'dividend-trap-sandbox'
       }
     ]
   },
@@ -214,7 +214,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Struktur tren terbentuk dari keseimbangan harga lelang. Dalam Uptrend, pembeli agresif rela membayar di harga yang semakin mahal di setiap lembah koreksi. Dalam Downtrend, penjual pasrah melepas barang di harga yang semakin murah di setiap puncak pantulan. Konfirmasi tren didapat melalui Break of Structure (BOS), sedangkan pembalikan arah tren diawali dengan Change of Character (CHoCH) saat titik struktur swing penting berhasil ditembus.',
         retailTrap: 'Menebak-nebak titik pembalikan harga (reversal) dan melawan tren utama yang sedang berlangsung (Bottom Fishing di pisau jatuh).',
         takeaway: 'Tren harga adalah sahabat terbaik Anda. Ikuti arah struktur tren hingga muncul tanda pembalikan arah yang terkonfirmasi secara objektif.',
-        widget: 'trend-structure-builder'
+        interactiveType: 'fvg-sweep-playground'
       },
       {
         id: 'mod-5-2',
@@ -225,7 +225,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Support dan Resistance sejati bukanlah garis horizontal acak, melainkan area harga di mana volume transaksi besar institusi sebelumnya terkonsentrasi. Jika harga kembali mengunjungi zona tersebut, pembeli institusi yang belum selesai mengisi muatan akan kembali menaruh pesanan beli mereka untuk melindungi harga rata-rata kepemilikan mereka.',
         retailTrap: 'Menaruh Stop Loss tepat 1 tick di bawah garis support yang sangat kentara bagi semua orang.',
         takeaway: 'Tandai Support dan Resistance sebagai zona rentang harga (area box), bukan garis tipis tunggal.',
-        widget: 'liquidity-zone-mapper'
+        interactiveType: 'fvg-sweep-playground'
       },
       {
         id: 'mod-5-3',
@@ -236,7 +236,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Fair Value Gap (FVG) terjadi ketika muncul satu candle impulsif raksasa di mana sumbu tertinggi Candle 1 dan sumbu terendah Candle 3 tidak saling bersentuhan. Celah kosong ini mencerminkan transaksi satu arah yang tidak seimbang. Sifat alamiah lelang pasar cenderung menarik harga kembali untuk mengisi minimal 50% dari ruang kosong ini (disebut Consequent Encroachment / C.E.) sebelum melanjutkan arah tren aslinya.',
         retailTrap: 'Langsung memburu (chasing) harga yang sedang melesat kencang meninggalkan FVG besar, padahal harga berpeluang besar mengalami retrace ke level 50% FVG.',
         takeaway: 'Tunggulah harga retrace kembali mengisi 50% Fair Value Gap untuk mendapatkan harga beli dengan rasio risk-to-reward terbaik.',
-        widget: 'fvg-50-magnet-sandbox'
+        interactiveType: 'fvg-sweep-playground'
       },
       {
         id: 'mod-5-4',
@@ -247,7 +247,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Institusi yang butuh membeli 1.000.000 lot saham tidak bisa menekan tombol beli di pasar tipis karena harga akan langsung meroket tajam dan harga beli mereka jadi sangat mahal. Mereka butuh volume jual dalam jumlah raksasa di harga murah. Karena trader ritel diajarkan menaruh Stop Loss bergerombol tepat di bawah garis support, institusi dengan sengaja menekan harga turun sedikit menembus support. Ribuan Stop Loss ritel terpicu massal menjadi order jual pasar. Di kolam likuiditas inilah institusi dengan tenang menampung jutaan lot tersebut, lalu membiarkan harga melesat terbang tinggi!',
         retailTrap: 'Menaruh Stop Loss di tempat yang sama dengan jutaan trader ritel lainnya tanpa memberi ruang toleransi volatilitas.',
         takeaway: 'Masuklah membeli SETELAH liquidity sweep terjadi, yaitu ketika harga menembus support lalu dengan cepat kembali ditutup di atas support (False Breakdown / Spring).',
-        widget: 'liquidity-sweep-simulator'
+        interactiveType: 'fvg-sweep-playground'
       }
     ]
   },
@@ -270,7 +270,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Hukum Asimetri Kerugian Modal Finansial:\n- Modal turun -10% -> Butuh cuan +11.1% untuk kembali ke modal awal.\n- Modal turun -20% -> Butuh cuan +25.0% untuk kembali ke modal awal.\n- Modal turun -30% -> Butuh cuan +42.9% untuk kembali ke modal awal.\n- Modal turun -50% -> Butuh cuan +100.0% (DUA KALI LIPAT!) hanya untuk sekadar impas!\n- Modal turun -80% -> Butuh cuan +400.0% (LIMA KALI LIPAT!).\n- Modal turun -90% -> Butuh cuan +900.0% (SEPULUH KALI LIPAT!).',
         retailTrap: 'Membiarkan kerugian -5% membesar menjadi -20%, lalu -50% dengan alasan "menjadi investor jangka panjang", hingga modal terkunci permanen.',
         takeaway: 'Tebas kerugian sedini mungkin saat masih kecil (-2% hingga -5%). Jangan pernah membiarkan satu transaksi merusak seluruh portofolio Anda.',
-        widget: 'drawdown-recovery-slider'
+        interactiveType: 'execution-bracket'
       },
       {
         id: 'mod-6-2',
@@ -281,7 +281,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Rumus Ukuran Lot Diskrit Standar Hedge Fund BEI:\nJumlah Lot = Floor((Total Modal Akun x Toleransi Risiko %) / ((Harga Beli - Harga Stop Loss) x 100))\n\nContoh Nyata Perhitungan:\n- Total Kas Portofolio: Rp 100.000.000\n- Batas Toleransi Risiko: 1.5% = Rp 1.500.000 (Kerugian maksimal yang diizinkan)\n- Harga Beli Saham: Rp 3.000 per lembar\n- Batas Stop Loss Disiplin: Rp 2.850 per lembar (Jarak risiko = Rp 150 per lembar)\n- Maksimal Lot yang Boleh Dibeli = Rp 1.500.000 / (Rp 150 x 100) = 100 LOT\n- Total Modal Terpakai: 100 lot x 100 lembar x Rp 3.000 = Rp 30.000.000 (30% dari total kas).\n- Jika Stop Loss tersentuh di Rp 2.850, Anda menjual disiplin dan kerugian Anda TEPAT Rp 1.500.000 (1.5% modal). Modal Anda tetap utuh 98.5% untuk peluang berikutnya!',
         retailTrap: 'Membeli saham dengan menghabiskan seluruh kas akun (all-in) tanpa menghitung jarak stop loss terlebih dahulu.',
         takeaway: 'Hitung ukuran lot berdasarkan jarak stop loss, bukan berdasarkan sisa uang tunai yang ada di akun sekuritas Anda.',
-        widget: 'exact-lot-calculator'
+        interactiveType: 'execution-bracket'
       },
       {
         id: 'mod-6-3',
@@ -292,7 +292,7 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Simulasi Matematika Ekspektansi:\nDari 10 kali transaksi, Anda salah 6 kali (Win Rate 40%):\n- 6 kali kalah x Rp 1.000.000 = -Rp 6.000.000\n- 4 kali menang x Rp 2.500.000 (R:R 1:2.5) = +Rp 10.000.000\n- Hasil Keuntungan Bersih: +Rp 4.000.000 Profit Konsisten!\n\nTrader profesional tidak membutuhkan akurasi 90%. Kunci keberhasilan mereka adalah membiarkan posisi profit berjalan hingga target (Let your winners run) dan memotong posisi rugi dengan cepat (Cut your losses short).',
         retailTrap: 'Terlalu cepat mengambil profit kecil (+2%) karena takut hilang, tetapi membiarkan posisi rugi membengkak (-30%) karena berharap harga akan balik.',
         takeaway: 'Jangan pernah masuk ke dalam transaksi jika potensi keuntungannya tidak minimal dua kali lipat lebih besar daripada jarak risiko stop loss-nya (R:R minimal 1:2).',
-        widget: 'expectancy-winrate-table'
+        interactiveType: 'execution-bracket'
       },
       {
         id: 'mod-6-4',
@@ -303,14 +303,14 @@ const CURRICULUM_LEVELS = [
         mechanism: 'Checklist Pra-Terbang 5 Menit MBG:\n1. Arah Arus Likuiditas Makro: Apakah DXY dan yield obligasi sedang mendukung atau menekan IHSG?\n2. Logika Katalis & Fundamental: Apakah perusahaan memiliki arus kas sehat atau sedang dalam fase akumulasi Wyckoff?\n3. Level Batas Pembatalan (Invalidation Stop Loss): Di mana letak pasti titik yang membuktikan bahwa analisa saya keliru?\n4. Ukuran Lot Terukur: Apakah jumlah lot yang diinput sudah sesuai dengan formula risiko 1-2% modal?\n5. Rasio Risk-to-Reward: Apakah jarak ke Target Profit minimal 2x lebih jauh daripada jarak ke Stop Loss?',
         retailTrap: 'Membeli saham karena panik melihat harga tiba-tiba melonjak di running trade tanpa rencana transaksi tertulis.',
         takeaway: 'Jika ada satu saja poin dalam checklist keselamatan yang tidak terpenuhi, batalkan transaksi dan tunggu peluang berikutnya.',
-        widget: 'preflight-interactive-checklist'
+        interactiveType: 'preflight-scorecard'
       }
     ]
   }
 ];
 
 // ============================================================================
-// 66 GLOSSARY TERMS
+// 66 GLOSSARY ITEMS
 // ============================================================================
 const GLOSSARY_CATEGORIES = ['Semua', 'Makro & Suku Bunga', 'Mikrostruktur & Order Book', 'Smart Money & Teknikal', 'Manajemen Risiko'];
 
@@ -354,7 +354,718 @@ const GLOSSARY_DATA = [
 ];
 
 // ============================================================================
-// MAIN COMPONENT
+// KOMPONEN VISUAL 1: BENDUNGAN LIKUIDITAS BANK SENTRAL (SVG INTERACTIVE DAM)
+// ============================================================================
+function SvgDamSimulator() {
+  const [gateOpening, setGateOpening] = useState(65); // 0 to 100%
+
+  // Asset pool heights based on sluice gate
+  const stockHeight = Math.round(20 + gateOpening * 0.7);
+  const bondYield = (5.5 - (gateOpening * 0.03)).toFixed(2);
+  const cryptoHeight = Math.round(10 + gateOpening * 0.85);
+  const goldHeight = Math.round(30 + gateOpening * 0.5);
+
+  return (
+    <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: '10px', padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
+        <div>
+          <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#fff', margin: '0 0 4px 0' }}>
+            🌊 ILUSTRASI VISUAL: BENDUNGAN LIKUIDITAS BANK SENTRAL
+          </h3>
+          <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>
+            Geser bukaan pintu bendungan untuk melihat bagaimana debit likuiditas mengalir mengisi 4 kolam aset finansial dunia.
+          </p>
+        </div>
+        <div style={{ fontSize: '16px', fontWeight: '900', color: gateOpening > 50 ? 'var(--accent-green)' : 'var(--accent-red)' }}>
+          Pintu Bendungan: {gateOpening}% {gateOpening >= 70 ? '(Stimulus / Bunga Rendah)' : gateOpening <= 30 ? '(Kering / QT Ketat)' : '(Netral)'}
+        </div>
+      </div>
+
+      <input
+        type="range"
+        min="10"
+        max="100"
+        value={gateOpening}
+        onChange={(e) => setGateOpening(Number(e.target.value))}
+        style={{ width: '100%', accentColor: 'var(--accent-cyan)', marginBottom: '18px', cursor: 'pointer' }}
+      />
+
+      {/* SVG RESERVOIR & 4 ASSET POOLS */}
+      <div style={{ background: 'rgba(0, 0, 0, 0.45)', borderRadius: '8px', padding: '16px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+        <svg viewBox="0 0 800 200" style={{ width: '100%', height: 'auto', display: 'block' }}>
+          {/* DAM STRUCTURE */}
+          <rect x="20" y="20" width="160" height="90" fill="#1e293b" stroke="#334155" strokeWidth="2" rx="4" />
+          <text x="100" y="45" fill="#38bdf8" fontSize="11" fontWeight="800" textAnchor="middle">THE FED & BI</text>
+          <text x="100" y="62" fill="#94a3b8" fontSize="9" textAnchor="middle">Waduk Likuiditas Global</text>
+          
+          {/* SLUICE GATE OPENING */}
+          <rect x="70" y="75" width="60" height="30" fill="#0f172a" stroke="#475569" strokeWidth="1" />
+          <rect x="70" y={105 - (gateOpening * 0.25)} width="60" height={gateOpening * 0.25} fill="#0284c7" opacity="0.8" />
+          <text x="100" y="94" fill="#fff" fontSize="8" fontWeight="800" textAnchor="middle">PINTU AIR</text>
+
+          {/* WATER FLOW PIPELINE */}
+          <path d="M 130 90 L 220 90 L 220 140 L 750 140" fill="none" stroke="#0284c7" strokeWidth={Math.max(2, gateOpening * 0.08)} strokeDasharray="4" opacity={gateOpening / 100} />
+
+          {/* 4 ASSET POOLS */}
+          {/* POOL 1: SAHAM */}
+          <g transform="translate(240, 50)">
+            <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="#334155" strokeWidth="1.5" rx="4" />
+            <rect x="3" y={127 - stockHeight} width="99" height={stockHeight} fill="var(--accent-green)" opacity="0.65" rx="2" />
+            <text x="52" y="24" fill="#fff" fontSize="11" fontWeight="800" textAnchor="middle">📈 SAHAM (BEI)</text>
+            <text x="52" y="40" fill={stockHeight > 55 ? 'var(--accent-green)' : 'var(--accent-red)'} fontSize="12" fontWeight="900" textAnchor="middle">
+              {stockHeight > 55 ? `+${((stockHeight - 50) * 0.6).toFixed(1)}%` : `-${((50 - stockHeight) * 0.6).toFixed(1)}%`}
+            </text>
+            <text x="52" y="120" fill="#94a3b8" fontSize="8" textAnchor="middle">Air: {stockHeight}%</text>
+          </g>
+
+          {/* POOL 2: OBLIGASI */}
+          <g transform="translate(370, 50)">
+            <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="#334155" strokeWidth="1.5" rx="4" />
+            <rect x="3" y={127 - (100 - gateOpening * 0.7)} width="99" height={100 - gateOpening * 0.7} fill="var(--accent-blue)" opacity="0.65" rx="2" />
+            <text x="52" y="24" fill="#fff" fontSize="11" fontWeight="800" textAnchor="middle">🏛️ OBLIGASI</text>
+            <text x="52" y="40" fill="var(--accent-cyan)" fontSize="11" fontWeight="800" textAnchor="middle">
+              Yield: {bondYield}%
+            </text>
+            <text x="52" y="120" fill="#94a3b8" fontSize="8" textAnchor="middle">Kupon Relatif</text>
+          </g>
+
+          {/* POOL 3: KOMODITAS */}
+          <g transform="translate(500, 50)">
+            <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="#334155" strokeWidth="1.5" rx="4" />
+            <rect x="3" y={127 - goldHeight} width="99" height={goldHeight} fill="var(--accent-orange)" opacity="0.65" rx="2" />
+            <text x="52" y="24" fill="#fff" fontSize="11" fontWeight="800" textAnchor="middle">⛏️ EMAS & MINYAK</text>
+            <text x="52" y="40" fill="var(--accent-orange)" fontSize="11" fontWeight="800" textAnchor="middle">
+              {goldHeight > 55 ? 'Lindung Nilai' : 'Stabil'}
+            </text>
+            <text x="52" y="120" fill="#94a3b8" fontSize="8" textAnchor="middle">Air: {goldHeight}%</text>
+          </g>
+
+          {/* POOL 4: KRIPTO */}
+          <g transform="translate(630, 50)">
+            <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="#334155" strokeWidth="1.5" rx="4" />
+            <rect x="3" y={127 - cryptoHeight} width="99" height={cryptoHeight} fill="var(--accent-purple)" opacity="0.65" rx="2" />
+            <text x="52" y="24" fill="#fff" fontSize="11" fontWeight="800" textAnchor="middle">🪙 KRIPTO (BTC)</text>
+            <text x="52" y="40" fill={cryptoHeight > 55 ? 'var(--accent-green)' : 'var(--accent-red)'} fontSize="12" fontWeight="900" textAnchor="middle">
+              {cryptoHeight > 55 ? `+${((cryptoHeight - 45) * 1.5).toFixed(0)}%` : `-${((45 - cryptoHeight) * 1.5).toFixed(0)}%`}
+            </text>
+            <text x="52" y="120" fill="#94a3b8" fontSize="8" textAnchor="middle">Air: {cryptoHeight}%</text>
+          </g>
+        </svg>
+      </div>
+      <div style={{ marginTop: '10px', fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center' }}>
+        💡 Kesimpulan: Ketika The Fed membuka pintu air likuiditas, saham dan kripto meluap paling cepat. Saat pintu air ditutup, uang lari ke kas dan obligasi berbunga tinggi.
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// KOMPONEN VISUAL 2: DIAGRAM INTERAKTIF EFEK DOMINO 8-TAHAP (LEVEL 2)
+// ============================================================================
+function DominoStepper() {
+  const [activeStep, setActiveStep] = useState(0);
+
+  const steps = [
+    { title: '1. The Fed Naikkan Bunga', desc: 'The Fed di Washington menaikkan Fed Funds Rate (+50 bps) untuk mendinginkan inflasi di AS.' },
+    { title: '2. Yield US 10Y Melonjak', desc: 'Obligasi pemerintah AS menawarkan bunga lebih tinggi tanpa risiko gagal bayar.' },
+    { title: '3. Indeks Dolar (DXY) Menguat', desc: 'Investor global memburu Dolar AS untuk membeli surat utang AS berbunga tinggi.' },
+    { title: '4. Capital Outflow dari Emerging Markets', desc: 'Manajer investasi asing menarik modal dari bursa berkembang (BEI, Thailand, Filipina).' },
+    { title: '5. Nilai Tukar Rupiah Tertekan', desc: 'Penjualan aset berdenominasi Rupiah untuk dikonversi ke USD mendepresiasi kurs USD/IDR.' },
+    { title: '6. Bank Indonesia Naikkan BI-Rate', desc: 'BI menaikkan suku bunga untuk mempertahankan selisih bunga (carry spread) pelindung devisa.' },
+    { title: '7. Beban Bunga Emiten Bertambah', desc: 'Bunga kredit perbankan dalam negeri naik, menggerus laba bersih perusahaan berutang.' },
+    { title: '8. Valuasi Saham BEI Terkoreksi', desc: 'Harga saham di IHSG mengalami diskon valuasi dan indeks cenderung bergerak volatil.' }
+  ];
+
+  return (
+    <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: '10px', padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+        <div>
+          <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#fff', margin: '0 0 4px 0' }}>
+            ⚡ DIAGRAM ALUR INTERAKTIF: 8 TAHAP RANTAI TRANSMISI THE FED KE BEI
+          </h3>
+          <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>
+            Klik tombol langkah demi langkah untuk melihat bagaimana keputusan moneter di Washington merambat hingga ke lantai bursa Jakarta.
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          <button
+            onClick={() => setActiveStep(prev => Math.max(0, prev - 1))}
+            disabled={activeStep === 0}
+            style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '4px', cursor: activeStep === 0 ? 'not-allowed' : 'pointer', fontSize: '11px', fontWeight: '700' }}
+          >
+            ← Mundur
+          </button>
+          <button
+            onClick={() => setActiveStep(prev => Math.min(steps.length - 1, prev + 1))}
+            disabled={activeStep === steps.length - 1}
+            style={{ padding: '6px 12px', background: 'var(--accent-cyan)', border: 'none', color: '#000', borderRadius: '4px', cursor: activeStep === steps.length - 1 ? 'not-allowed' : 'pointer', fontSize: '11px', fontWeight: '800' }}
+          >
+            Langkah Selanjutnya →
+          </button>
+        </div>
+      </div>
+
+      {/* 8 CONNECTED NODES */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px', marginBottom: '16px' }}>
+        {steps.map((st, idx) => {
+          const isCurrent = idx === activeStep;
+          const isPassed = idx < activeStep;
+          return (
+            <div
+              key={idx}
+              onClick={() => setActiveStep(idx)}
+              style={{
+                background: isCurrent ? 'rgba(56, 189, 248, 0.2)' : isPassed ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255,255,255,0.02)',
+                border: isCurrent ? '2px solid var(--accent-cyan)' : isPassed ? '1px solid var(--accent-green)' : '1px solid rgba(255,255,255,0.06)',
+                borderRadius: '6px',
+                padding: '10px 8px',
+                textAlign: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+            >
+              <div style={{ fontSize: '10px', fontWeight: '800', color: isCurrent ? 'var(--accent-cyan)' : isPassed ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+                TAHAP {idx + 1}
+              </div>
+              <div style={{ fontSize: '11px', fontWeight: '700', color: isCurrent ? '#fff' : 'var(--text-secondary)', marginTop: '4px', lineHeight: '1.2' }}>
+                {st.title.split('. ')[1]}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* DETAIL OF ACTIVE STEP */}
+      <div style={{ background: 'rgba(0, 0, 0, 0.4)', borderLeft: '4px solid var(--accent-cyan)', padding: '16px 20px', borderRadius: '0 8px 8px 0' }}>
+        <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-cyan)', marginBottom: '4px' }}>
+          PENJELASAN TAHAP {activeStep + 1} DARI 8:
+        </div>
+        <div style={{ fontSize: '14px', fontWeight: '800', color: '#fff', marginBottom: '6px' }}>
+          {steps[activeStep].title}
+        </div>
+        <div style={{ fontSize: '13px', color: 'var(--text-primary)', lineHeight: '1.6' }}>
+          {steps[activeStep].desc}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// KOMPONEN VISUAL 3: CHART SEJARAH 5 KRISIS BESAR (LEVEL 2)
+// ============================================================================
+function CrisisChartViewer() {
+  const [selectedCrisis, setSelectedCrisis] = useState('taper-2013');
+
+  const crisisData = {
+    'asia-1997': {
+      title: 'Krisis Moneter Asia (1997 - 1998)',
+      trigger: 'Serangan spekulasi Baht Thailand menular ke Rupiah. Utang valas membengkak.',
+      drawdown: '-65% IHSG, Rupiah Rp 2.500 -> Rp 16.000',
+      rebound: 'Reformasi moneter & restrukturisasi perbankan nasional.',
+      points: '20,80 80,75 140,50 200,160 260,180 320,150 380,120 440,90 500,40'
+    },
+    'gfc-2008': {
+      title: 'Krisis Finansial Global / Lehman Collapse (2008)',
+      trigger: 'Subprime mortgage AS runtuh, likuiditas global membeku seketika.',
+      drawdown: '-60% IHSG (2.800 ke 1.100), bursa suspend 3 hari.',
+      rebound: 'The Fed meluncurkan cetak uang Quantitative Easing (QE) 0%.',
+      points: '20,40 80,45 140,70 200,170 260,185 320,140 380,80 440,50 500,30'
+    },
+    'taper-2013': {
+      title: 'Taper Tantrum (Mei - September 2013)',
+      trigger: 'Sinyal pemangkasan stimulus The Fed (Bernanke) memicu capital outflow mendadak.',
+      drawdown: '-25% IHSG dalam beberapa pekan, Rupiah tembus Rp 12.000/USD.',
+      rebound: 'BI menaikkan suku bunga 175 bps mengunci modal asing kembali.',
+      points: '20,50 80,45 140,40 200,120 260,140 320,110 380,90 440,70 500,55'
+    },
+    'covid-2020': {
+      title: 'Crash Pandemi Covid-19 (Maret 2020)',
+      trigger: 'Lockdown global mematikan aktivitas riil seketika.',
+      drawdown: '-37% IHSG sentuh dasar 3.900 akibat panic selling masif.',
+      rebound: 'Injeksi stimulus moneter $5 Triliun mendorong reli IHSG ke 7.300+.',
+      points: '20,60 80,55 140,65 200,180 260,160 320,110 380,60 440,35 500,20'
+    }
+  };
+
+  const curr = crisisData[selectedCrisis];
+
+  return (
+    <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: '10px', padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+        <div>
+          <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#fff', margin: '0 0 4px 0' }}>
+            📈 REKONSTRUKSI VISUAL: TRAJEKTORI 4 KRISIS BESAR PASAR MODAL
+          </h3>
+          <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>
+            Pilih peristiwa bersejarah untuk melihat pola kejatuhan dan kecepatan pemulihannya.
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+          {Object.keys(crisisData).map(k => (
+            <button
+              key={k}
+              onClick={() => setSelectedCrisis(k)}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '4px',
+                background: selectedCrisis === k ? 'var(--accent-blue)' : 'rgba(255,255,255,0.05)',
+                color: selectedCrisis === k ? '#fff' : 'var(--text-secondary)',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '11px',
+                fontWeight: '700'
+              }}
+            >
+              {crisisData[k].title.split(' (')[0]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '8px', padding: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+          <span style={{ fontSize: '14px', fontWeight: '800', color: '#fff' }}>{curr.title}</span>
+          <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-red)' }}>Penurunan Maks: {curr.drawdown}</span>
+        </div>
+
+        <svg viewBox="0 0 520 200" style={{ width: '100%', height: 'auto', display: 'block' }}>
+          <line x1="20" y1="180" x2="500" y2="180" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+          <line x1="20" y1="20" x2="500" y2="20" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="3" />
+          
+          {/* TRAJECTORY LINE */}
+          <polyline
+            fill="none"
+            stroke="var(--accent-cyan)"
+            strokeWidth="3"
+            points={curr.points}
+          />
+
+          {/* CALLOUT PINS */}
+          <circle cx="200" cy="170" r="5" fill="var(--accent-red)" />
+          <text x="210" y="165" fill="var(--accent-red)" fontSize="9" fontWeight="800">TITIK DASAR PANIK</text>
+
+          <circle cx="500" cy="30" r="5" fill="var(--accent-green)" />
+          <text x="440" y="25" fill="var(--accent-green)" fontSize="9" fontWeight="800">REBOUND REKOR</text>
+        </svg>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '10px' }}>
+          <div style={{ background: 'rgba(239, 68, 68, 0.08)', padding: '8px 12px', borderRadius: '4px', fontSize: '11px', color: 'var(--text-primary)' }}>
+            <strong style={{ color: 'var(--accent-red)' }}>Pemicu Krisis:</strong> {curr.trigger}
+          </div>
+          <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '8px 12px', borderRadius: '4px', fontSize: '11px', color: 'var(--text-primary)' }}>
+            <strong style={{ color: 'var(--accent-green)' }}>Katalis Pemulihan:</strong> {curr.rebound}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// KOMPONEN VISUAL 4: TIMBANGAN KAS RIIL VS LABA AKRUAL (LEVEL 3)
+// ============================================================================
+function BalanceScaleSimulator() {
+  const [netIncome, setNetIncome] = useState(1000); // Miliar Rp
+  const [cashFlow, setCashFlow] = useState(300); // Miliar Rp
+
+  const ratio = (cashFlow / Math.max(1, netIncome)).toFixed(2);
+  const isRedFlag = ratio < 0.7;
+
+  return (
+    <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '10px', padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+        <div>
+          <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#fff', margin: '0 0 4px 0' }}>
+            ⚖️ TIMBANGAN KAS OPERASIONAL VS LABA DI ATAS KERTAS
+          </h3>
+          <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>
+            Uji kesehatan keuangan emiten: geser laba bersih vs arus kas masuk riil untuk mendeteksi manipulasi akuntansi.
+          </p>
+        </div>
+        <div style={{ fontSize: '14px', fontWeight: '900', color: isRedFlag ? 'var(--accent-red)' : 'var(--accent-green)' }}>
+          {isRedFlag ? '⚠️ BAHAYA: Manipulasi Akrual' : '✅ SEHAT: Kas Riil Menopang Laba'}
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+        <div>
+          <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+            Laba Bersih Akuntansi: Rp {netIncome.toLocaleString()} Miliar
+          </label>
+          <input
+            type="range"
+            min="200"
+            max="2000"
+            step="50"
+            value={netIncome}
+            onChange={(e) => setNetIncome(Number(e.target.value))}
+            style={{ width: '100%', accentColor: 'var(--accent-cyan)' }}
+          />
+        </div>
+        <div>
+          <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+            Arus Kas Operasional Riil: Rp {cashFlow.toLocaleString()} Miliar
+          </label>
+          <input
+            type="range"
+            min="50"
+            max="2000"
+            step="50"
+            value={cashFlow}
+            onChange={(e) => setCashFlow(Number(e.target.value))}
+            style={{ width: '100%', accentColor: 'var(--accent-green)' }}
+          />
+        </div>
+      </div>
+
+      {/* SVG BALANCE SCALE */}
+      <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '8px', padding: '16px', textAlign: 'center' }}>
+        <svg viewBox="0 0 400 130" style={{ width: '100%', maxWidth: '400px', height: 'auto', margin: '0 auto', display: 'block' }}>
+          {/* CENTRAL PIVOT */}
+          <polygon points="200,90 190,120 210,120" fill="#475569" />
+          <circle cx="200" cy="90" r="4" fill="#fff" />
+
+          {/* BEAM (TILTS BASED ON RATIO) */}
+          <line
+            x1="80"
+            y1={90 + (netIncome - cashFlow) * 0.02}
+            x2="320"
+            y2={90 - (netIncome - cashFlow) * 0.02}
+            stroke="#94a3b8"
+            strokeWidth="4"
+          />
+
+          {/* LEFT PAN: LABA BERSIH */}
+          <rect x="50" y={90 + (netIncome - cashFlow) * 0.02} width="60" height="20" fill="#0284c7" rx="3" />
+          <text x="80" y={104 + (netIncome - cashFlow) * 0.02} fill="#fff" fontSize="8" fontWeight="800" textAnchor="middle">LABA KERTAS</text>
+
+          {/* RIGHT PAN: KAS OPERASIONAL */}
+          <rect x="290" y={90 - (netIncome - cashFlow) * 0.02} width="60" height="20" fill="#10b981" rx="3" />
+          <text x="320" y={104 - (netIncome - cashFlow) * 0.02} fill="#fff" fontSize="8" fontWeight="800" textAnchor="middle">KAS RIIL</text>
+        </svg>
+
+        <div style={{ fontSize: '13px', fontWeight: '700', color: isRedFlag ? 'var(--accent-red)' : 'var(--accent-green)', marginTop: '8px' }}>
+          Rasio Kas terhadap Laba: {ratio}x {isRedFlag ? '(Kas operasional kurang dari 70% laba bersih!)' : '(Kas operasional sehat mengalir lancar)'}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// KOMPONEN VISUAL 5: ORDER BOOK DEPTH LADDER & SPOOFING SIMULATOR (LEVEL 4)
+// ============================================================================
+function OrderBookDepthLadder() {
+  const [spoofActive, setSpoofActive] = useState(false);
+  const [marketBuyActive, setMarketBuyActive] = useState(false);
+
+  const handleSpoof = () => {
+    setSpoofActive(true);
+    setTimeout(() => setSpoofActive(false), 3000);
+  };
+
+  const handleMarketBuy = () => {
+    setMarketBuyActive(true);
+    setTimeout(() => setMarketBuyActive(false), 2500);
+  };
+
+  return (
+    <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(251, 146, 60, 0.3)', borderRadius: '10px', padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+        <div>
+          <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#fff', margin: '0 0 4px 0' }}>
+            📊 LADDER BUKU ORDER: DETEKSI SPOOFING & SAPUAN PAUS
+          </h3>
+          <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>
+            Simulasikan bagaimana bandar memasang antrian palsu (spoofing) dan bagaimana paus menyapu antrian offer.
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button
+            onClick={handleSpoof}
+            disabled={spoofActive}
+            style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid var(--accent-red)', color: 'var(--accent-red)', borderRadius: '4px', cursor: 'pointer', fontSize: '11px', fontWeight: '800' }}
+          >
+            {spoofActive ? '⏳ Spoofing Aktif (Menghilang dalam 3s)...' : '🔴 Pasang Spoofing 50.000 Lot'}
+          </button>
+          <button
+            onClick={handleMarketBuy}
+            disabled={marketBuyActive}
+            style={{ padding: '6px 12px', background: 'var(--accent-green)', border: 'none', color: '#000', borderRadius: '4px', cursor: 'pointer', fontSize: '11px', fontWeight: '800' }}
+          >
+            {marketBuyActive ? '💥 Paus Menyapu Offer!' : '🟢 Haka / Market Buy Paus 25.000 Lot'}
+          </button>
+        </div>
+      </div>
+
+      {/* LADDER TABLE */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', background: 'rgba(0,0,0,0.3)', padding: '14px', borderRadius: '8px' }}>
+        {/* BID SIDE */}
+        <div>
+          <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '8px', textAlign: 'center' }}>
+            ANTRIAN BELI (BID)
+          </div>
+          {[
+            { price: 2980, lots: 1250 },
+            { price: 2960, lots: spoofActive ? 51400 : 1400, isSpoof: spoofActive },
+            { price: 2940, lots: 2100 },
+            { price: 2920, lots: 3500 },
+            { price: 2900, lots: 4800 }
+          ].map((row, idx) => (
+            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 10px', background: row.isSpoof ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.05)', marginBottom: '4px', borderRadius: '4px', borderLeft: row.isSpoof ? '3px solid var(--accent-red)' : 'none' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-green)' }}>Rp {row.price}</span>
+              <span style={{ fontSize: '12px', fontWeight: '700', color: row.isSpoof ? 'var(--accent-red)' : '#fff' }}>
+                {row.lots.toLocaleString()} Lot {row.isSpoof && '⚠️ (PALSU)'}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* ASK SIDE */}
+        <div>
+          <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-red)', marginBottom: '8px', textAlign: 'center' }}>
+            ANTRIAN JUAL (OFFER / ASK)
+          </div>
+          {[
+            { price: 3000, lots: marketBuyActive ? 0 : 850, isEaten: marketBuyActive },
+            { price: 3020, lots: marketBuyActive ? 0 : 2100, isEaten: marketBuyActive },
+            { price: 3040, lots: 4200 },
+            { price: 3060, lots: 5600 },
+            { price: 3080, lots: 8900 }
+          ].map((row, idx) => (
+            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 10px', background: row.isEaten ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.05)', marginBottom: '4px', borderRadius: '4px' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-red)' }}>Rp {row.price}</span>
+              <span style={{ fontSize: '12px', fontWeight: '700', color: row.isEaten ? 'var(--accent-green)' : '#fff' }}>
+                {row.isEaten ? '0 Lot (TERLAHAP PAUS!)' : `${row.lots.toLocaleString()} Lot`}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// KOMPONEN VISUAL 6: SIMULATOR JEBAKAN DIVIDEN $PTBA (LEVEL 4)
+// ============================================================================
+function DividendTrapSandbox() {
+  const [buyTiming, setBuyTiming] = useState('cum-date'); // 'pre-cum', 'cum-date', 'post-ex'
+
+  const scenarios = {
+    'pre-cum': {
+      label: 'Beli H-14 Sebelum Cum Date (Rp 3.200)',
+      dividend: 800,
+      sellPrice: 3800,
+      action: 'Jual di hari Cum Date saat ritel berebut beli.',
+      netPnL: '+Rp 600 per lembar (+18.7% Capital Gain)',
+      color: 'var(--accent-green)'
+    },
+    'cum-date': {
+      label: 'Beli di Hari H Cum Date Demi Dividen (Rp 3.800)',
+      dividend: 800,
+      sellPrice: 2600,
+      action: 'Dapat dividen Rp 800, tapi saham ARB berturut-turut ke Rp 2.600.',
+      netPnL: '-Rp 400 per lembar (-10.5% Net Kerugian Bersih)',
+      color: 'var(--accent-red)'
+    },
+    'post-ex': {
+      label: 'Beli Pasca Ex-Date Setelah 3x ARB (Rp 2.500)',
+      dividend: 0,
+      sellPrice: 2850,
+      action: 'Menampung barang saat ritel panik cut-loss.',
+      netPnL: '+Rp 350 per lembar (+14.0% Technical Rebound)',
+      color: 'var(--accent-green)'
+    }
+  };
+
+  const curr = scenarios[buyTiming];
+
+  return (
+    <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '20px' }}>
+      <h3 style={{ fontSize: '15px', fontWeight: '800', color: 'var(--accent-red)', margin: '0 0 4px 0' }}>
+        🍯 SIMULATOR JEBAKAN DIVIDEN SIKLIKAL ($PTBA CASE STUDY)
+      </h3>
+      <p style={{ margin: '0 0 14px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>
+        Pilih waktu pembelian Anda untuk melihat kalkulasi keuntungan riil vs kerugian modal setelah dividen dibagikan.
+      </p>
+
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '14px', flexWrap: 'wrap' }}>
+        {Object.keys(scenarios).map(k => (
+          <button
+            key={k}
+            onClick={() => setBuyTiming(k)}
+            style={{
+              padding: '8px 14px',
+              borderRadius: '4px',
+              background: buyTiming === k ? scenarios[k].color : 'rgba(255,255,255,0.05)',
+              color: buyTiming === k ? (scenarios[k].color === 'var(--accent-green)' ? '#000' : '#fff') : 'var(--text-secondary)',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '11px',
+              fontWeight: '800'
+            }}
+          >
+            {scenarios[k].label.split(' (')[0]}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '8px', padding: '16px', borderLeft: `4px solid ${curr.color}` }}>
+        <div style={{ fontSize: '14px', fontWeight: '800', color: '#fff', marginBottom: '6px' }}>{curr.label}</div>
+        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '10px' }}>{curr.action}</div>
+        <div style={{ fontSize: '16px', fontWeight: '900', color: curr.color }}>
+          HASIL AKHIR: {curr.netPnL}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// KOMPONEN VISUAL 7: BRACKET RISK-REWARD & EXECUTION TOOL (LEVEL 6)
+// ============================================================================
+function VisualExecutionBracket() {
+  const [modal, setModal] = useState(100000000);
+  const [riskPct, setRiskPct] = useState(1.5);
+  const [entryPrice, setEntryPrice] = useState(3000);
+  const [slPrice, setSlPrice] = useState(2850);
+  const [tpPrice, setTpPrice] = useState(3375);
+
+  const riskPerShare = Math.max(1, entryPrice - slPrice);
+  const rewardPerShare = Math.max(1, tpPrice - entryPrice);
+  const rrRatio = (rewardPerShare / riskPerShare).toFixed(2);
+
+  const riskRupiah = (modal * riskPct) / 100;
+  const calculatedLots = Math.max(1, Math.floor(riskRupiah / (riskPerShare * 100)));
+  const profitPotentialRupiah = calculatedLots * 100 * rewardPerShare;
+
+  return (
+    <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '10px', padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+        <div>
+          <h3 style={{ fontSize: '15px', fontWeight: '800', color: 'var(--accent-green)', margin: '0 0 4px 0' }}>
+            🎯 VISUAL EXECUTION BRACKET: KALKULASI LOT & TARGET PROFIT
+          </h3>
+          <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>
+            Garis visual Entry, Stop Loss, dan Target Profit interaktif standar desk perdagangan hedge fund.
+          </p>
+        </div>
+        <div style={{ fontSize: '16px', fontWeight: '900', color: rrRatio >= 2 ? 'var(--accent-green)' : 'var(--accent-red)' }}>
+          Rasio R:R: 1 : {rrRatio} {rrRatio >= 2 ? '✅ (Layak Eksekusi)' : '⚠️ (Rasio Risiko Terlalu Buruk)'}
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px', marginBottom: '16px' }}>
+        <div>
+          <label style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Target Profit (TP Rp)</label>
+          <input
+            type="number"
+            value={tpPrice}
+            onChange={(e) => setTpPrice(Number(e.target.value))}
+            style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--accent-green)', padding: '6px 10px', borderRadius: '4px', color: 'var(--accent-green)', fontWeight: '800' }}
+          />
+        </div>
+        <div>
+          <label style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Harga Beli (Entry Rp)</label>
+          <input
+            type="number"
+            value={entryPrice}
+            onChange={(e) => setEntryPrice(Number(e.target.value))}
+            style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--accent-cyan)', padding: '6px 10px', borderRadius: '4px', color: '#fff', fontWeight: '800' }}
+          />
+        </div>
+        <div>
+          <label style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Batas Cut-Loss (SL Rp)</label>
+          <input
+            type="number"
+            value={slPrice}
+            onChange={(e) => setSlPrice(Number(e.target.value))}
+            style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--accent-red)', padding: '6px 10px', borderRadius: '4px', color: 'var(--accent-red)', fontWeight: '800' }}
+          />
+        </div>
+      </div>
+
+      {/* VISUAL BRACKET SUMMARY */}
+      <div style={{ background: 'rgba(0,0,0,0.3)', padding: '16px', borderRadius: '8px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>
+        <div>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Maksimal Boleh Dibeli</div>
+          <div style={{ fontSize: '18px', fontWeight: '900', color: 'var(--accent-green)' }}>{calculatedLots.toLocaleString()} LOT</div>
+        </div>
+        <div>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Risiko Terkunci Jika SL Kena</div>
+          <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--accent-red)' }}>-Rp {riskRupiah.toLocaleString()}</div>
+        </div>
+        <div>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Potensi Cuan Jika TP Kena</div>
+          <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--accent-green)' }}>+Rp {profitPotentialRupiah.toLocaleString()}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// KOMPONEN VISUAL 8: PRE-FLIGHT SCORECARD 5 MENIT (LEVEL 6)
+// ============================================================================
+function PreflightScorecard() {
+  const [checks, setChecks] = useState({
+    c1: false,
+    c2: false,
+    c3: false,
+    c4: false,
+    c5: false
+  });
+
+  const toggleCheck = (k) => setChecks(prev => ({ ...prev, [k]: !prev[k] }));
+  const score = Object.values(checks).filter(Boolean).length * 20;
+
+  return (
+    <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '10px', padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+        <div>
+          <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#fff', margin: '0 0 4px 0' }}>
+            🚀 PRE-FLIGHT LAUNCH SCORECARD: KESIAPAN SEBELUM MEMBELI
+          </h3>
+          <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>
+            Centang 5 protokol keselamatan sebelum menekan tombol beli di aplikasi sekuritas Anda.
+          </p>
+        </div>
+        <div style={{ fontSize: '16px', fontWeight: '900', color: score === 100 ? 'var(--accent-green)' : 'var(--accent-red)' }}>
+          Kesiapan: {score}% {score === 100 ? '✅ GO FOR LAUNCH' : '⛔ FLIGHT ABORTED'}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {[
+          { key: 'c1', label: '1. Arah Arus Makro Mendukung: Dolar DXY sedang melunak & arus asing net buy di IHSG.' },
+          { key: 'c2', label: '2. Katalis Fundamental Sehat: Emiten memiliki arus kas operasional riil positif.' },
+          { key: 'c3', label: '3. Titik Stop Loss Jelas: Level pembatalan skenario telah ditentukan sebelum entry.' },
+          { key: 'c4', label: '4. Ukuran Lot Terukur: Lot dihitung berbasis risiko 1-2% modal (bukan all-in).' },
+          { key: 'c5', label: '5. Rasio R:R Minimal 1:2: Potensi target profit minimal 2x lipat lebih besar dari risiko.' }
+        ].map(item => (
+          <label key={item.key} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.03)', padding: '10px 12px', borderRadius: '6px', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={checks[item.key]}
+              onChange={() => toggleCheck(item.key)}
+              style={{ width: '16px', height: '16px', accentColor: 'var(--accent-green)', cursor: 'pointer' }}
+            />
+            <span style={{ fontSize: '12px', color: checks[item.key] ? '#fff' : 'var(--text-secondary)', fontWeight: checks[item.key] ? '700' : '400' }}>
+              {item.label}
+            </span>
+          </label>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// MAIN TAB EXPORT
 // ============================================================================
 export default function QuantAcademyTab() {
   const [activeLevelId, setActiveLevelId] = useState('lvl-1');
@@ -363,17 +1074,6 @@ export default function QuantAcademyTab() {
   const [searchGlossary, setSearchGlossary] = useState('');
   const [selectedGlossaryCategory, setSelectedGlossaryCategory] = useState('Semua');
 
-  // Interactive Widgets State
-  const [fedBps, setFedBps] = useState(50);
-  const [drawdownPct, setDrawdownPct] = useState(30);
-  const [fvgHeight, setFvgHeight] = useState(60);
-  const [lotModal, setLotModal] = useState(100000000);
-  const [lotRiskPct, setLotRiskPct] = useState(1.5);
-  const [lotEntry, setLotEntry] = useState(3000);
-  const [lotSL, setLotSL] = useState(2850);
-  const [activeHistoryCase, setActiveHistoryCase] = useState(0);
-
-  // Active level & module derivation
   const activeLevel = useMemo(() => {
     return CURRICULUM_LEVELS.find(l => l.id === activeLevelId) || CURRICULUM_LEVELS[0];
   }, [activeLevelId]);
@@ -390,17 +1090,6 @@ export default function QuantAcademyTab() {
     }
   };
 
-  // Calculations for lot sizing
-  const lotRiskRupiah = (lotModal * lotRiskPct) / 100;
-  const riskPerShare = Math.max(1, lotEntry - lotSL);
-  const calculatedLots = Math.max(1, Math.floor(lotRiskRupiah / (riskPerShare * 100)));
-  const totalModalUsed = calculatedLots * 100 * lotEntry;
-  const modalUsagePct = ((totalModalUsed / lotModal) * 100).toFixed(1);
-
-  // Drawdown recovery
-  const recoveryNeeded = ((1 / (1 - drawdownPct / 100) - 1) * 100).toFixed(1);
-
-  // Filtered glossary
   const filteredGlossary = useMemo(() => {
     return GLOSSARY_DATA.filter(item => {
       const matchCat = selectedGlossaryCategory === 'Semua' || item.category === selectedGlossaryCategory;
@@ -424,15 +1113,15 @@ export default function QuantAcademyTab() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
               <span style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-cyan)', padding: '3px 8px', borderRadius: '4px', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
-                MBG QUANT ACADEMY // 6-LEVEL MASTERCLASS
+                MBG QUANT ACADEMY // 6-LEVEL INTERACTIVE MASTERCLASS
               </span>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>• Dari Nol Hingga Standar Analis Hedge Fund</span>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>• Visual, Diagram Interaktif, & Simulasi Riil</span>
             </div>
             <h1 style={{ fontSize: '22px', fontWeight: '800', margin: '0 0 6px 0', letterSpacing: '-0.3px', color: '#fff' }}>
               Bagaimana Dunia Finansial Bekerja & Cara Bertahan di Pasar Modal
             </h1>
             <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', maxWidth: '920px', lineHeight: '1.5' }}>
-              Kurikulum bertahap 20 modul terstruktur tanpa jargon membingungkan. Pelajari bagaimana uang bergerak di seluruh dunia, transmisi makro The Fed, anatomi 5 instrumen pasar, analisis fundamental & teknikal riil, rahasia bandarmology di BEI, serta sistem manajemen risiko pelindung modal.
+              Kurikulum bertahap 20 modul visual tanpa jargon membingungkan. Dilengkapi diagram alur hidup, simulator bendungan likuiditas, grafik rekonstruksi krisis sejarah, timbangan kas riil, ladder order book, dan instrumen manajemen risiko.
             </p>
           </div>
 
@@ -516,7 +1205,7 @@ export default function QuantAcademyTab() {
       {/* MAIN CONTENT AREA */}
       {activeLevelId !== 'glossary' && (
         <div style={{ display: 'grid', gridTemplateColumns: '260px minmax(0, 1fr)', gap: '16px' }}>
-          {/* LEFT SIDEBAR: MODULE LIST OF CURRENT LEVEL */}
+          {/* LEFT SIDEBAR */}
           <div style={{
             background: 'var(--bg-card)',
             border: '1px solid var(--border-subtle)',
@@ -567,9 +1256,9 @@ export default function QuantAcademyTab() {
             </div>
           </div>
 
-          {/* RIGHT PANEL: ACTIVE MODULE CONTENT */}
+          {/* RIGHT PANEL */}
           <div style={{ display: 'grid', gap: '16px' }}>
-            {/* MODULE HEADER CARD */}
+            {/* MODULE HEADER */}
             <div style={{
               background: 'var(--bg-card)',
               border: '1px solid var(--border-subtle)',
@@ -593,7 +1282,7 @@ export default function QuantAcademyTab() {
               </div>
             </div>
 
-            {/* ANALOGY BOX */}
+            {/* MENTAL MODEL ANALOGY */}
             <div style={{
               background: 'rgba(56, 189, 248, 0.08)',
               borderLeft: '4px solid var(--accent-cyan)',
@@ -608,7 +1297,18 @@ export default function QuantAcademyTab() {
               </div>
             </div>
 
-            {/* REAL MECHANISM BOX */}
+            {/* EMBEDDED VISUAL SIMULATORS & INTERACTIVE CHARTS */}
+            {activeLevel.id === 'lvl-1' && <SvgDamSimulator />}
+            {activeLevel.id === 'lvl-2' && activeModule.id === 'mod-2-1' && <DominoStepper />}
+            {activeLevel.id === 'lvl-2' && (activeModule.id === 'mod-2-2' || activeModule.id === 'mod-2-3') && <CrisisChartViewer />}
+            {activeLevel.id === 'lvl-3' && <BalanceScaleSimulator />}
+            {activeLevel.id === 'lvl-4' && (activeModule.id === 'mod-4-1' || activeModule.id === 'mod-4-2') && <OrderBookDepthLadder />}
+            {activeLevel.id === 'lvl-4' && (activeModule.id === 'mod-4-3' || activeModule.id === 'mod-4-4') && <DividendTrapSandbox />}
+            {activeLevel.id === 'lvl-5' && <OrderBookDepthLadder />}
+            {activeLevel.id === 'lvl-6' && (activeModule.id === 'mod-6-1' || activeModule.id === 'mod-6-2' || activeModule.id === 'mod-6-3') && <VisualExecutionBracket />}
+            {activeLevel.id === 'lvl-6' && activeModule.id === 'mod-6-4' && <PreflightScorecard />}
+
+            {/* MECHANISM */}
             <div style={{
               background: 'var(--bg-card)',
               border: '1px solid var(--border-subtle)',
@@ -623,7 +1323,7 @@ export default function QuantAcademyTab() {
               </div>
             </div>
 
-            {/* RETAIL TRAP VS SMART MONEY PLAYBOOK */}
+            {/* TRAP VS PLAYBOOK */}
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -658,197 +1358,7 @@ export default function QuantAcademyTab() {
               </div>
             </div>
 
-            {/* INTERACTIVE WIDGET SECTION */}
-            {activeModule.widget === 'fed-hike-simulator' && (
-              <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: '10px', padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <div>
-                    <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#fff', margin: '0 0 4px 0' }}>
-                      🎛️ Simulator Interaktif: Kenaikan Suku Bunga The Fed vs Dampak ke BEI
-                    </h3>
-                    <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>
-                      Geser slider untuk melihat bagaimana kenaikan suku bunga The Fed memengaruhi DXY, Rupiah, dan Valuasi IHSG.
-                    </p>
-                  </div>
-                  <div style={{ fontSize: '18px', fontWeight: '900', color: 'var(--accent-cyan)' }}>
-                    +{fedBps} bps ({fedBps / 100}%)
-                  </div>
-                </div>
-
-                <input
-                  type="range"
-                  min="0"
-                  max="150"
-                  step="25"
-                  value={fedBps}
-                  onChange={(e) => setFedBps(Number(e.target.value))}
-                  style={{ width: '100%', accentColor: 'var(--accent-cyan)', marginBottom: '16px', cursor: 'pointer' }}
-                />
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
-                  <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '6px' }}>
-                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Indeks Dolar (DXY)</div>
-                    <div style={{ fontSize: '16px', fontWeight: '800', color: fedBps > 50 ? 'var(--accent-green)' : '#fff' }}>
-                      {(100.5 + fedBps * 0.04).toFixed(2)} ({fedBps > 0 ? `+${(fedBps * 0.04).toFixed(1)}%` : '0%'})
-                    </div>
-                  </div>
-                  <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '6px' }}>
-                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Estimasi Kurs USD/IDR</div>
-                    <div style={{ fontSize: '16px', fontWeight: '800', color: fedBps > 50 ? 'var(--accent-red)' : '#fff' }}>
-                      Rp {Math.round(15500 + fedBps * 8.5).toLocaleString()}
-                    </div>
-                  </div>
-                  <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '6px' }}>
-                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Diskon Valuasi IHSG</div>
-                    <div style={{ fontSize: '16px', fontWeight: '800', color: fedBps > 0 ? 'var(--accent-red)' : 'var(--accent-green)' }}>
-                      {fedBps === 0 ? 'Netral / Stabil' : `-${(fedBps * 0.035).toFixed(2)}%`}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* LOT CALCULATOR WIDGET (LEVEL 6) */}
-            {activeModule.widget === 'exact-lot-calculator' && (
-              <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '10px', padding: '20px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: '800', color: 'var(--accent-green)', margin: '0 0 6px 0' }}>
-                  🛡️ Kalkulator Ukuran Lot Diskrit Saham BEI (Aturan Anti-Bangkrut 1-2%)
-                </h3>
-                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '0 0 16px 0' }}>
-                  Hitung ukuran lot aman berdasarkan batas toleransi kerugian modal akun Anda, bukan berdasarkan tebakan.
-                </p>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '16px' }}>
-                  <div>
-                    <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Total Kas Akun (Rp)</label>
-                    <input
-                      type="number"
-                      value={lotModal}
-                      onChange={(e) => setLotModal(Number(e.target.value))}
-                      style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)', padding: '8px 10px', borderRadius: '4px', color: '#fff', fontSize: '13px' }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Toleransi Risiko (%)</label>
-                    <input
-                      type="number"
-                      value={lotRiskPct}
-                      onChange={(e) => setLotRiskPct(Number(e.target.value))}
-                      style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)', padding: '8px 10px', borderRadius: '4px', color: '#fff', fontSize: '13px' }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Harga Beli (Entry Rp)</label>
-                    <input
-                      type="number"
-                      value={lotEntry}
-                      onChange={(e) => setLotEntry(Number(e.target.value))}
-                      style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)', padding: '8px 10px', borderRadius: '4px', color: '#fff', fontSize: '13px' }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Batas Cut-Loss (Stop Loss Rp)</label>
-                    <input
-                      type="number"
-                      value={lotSL}
-                      onChange={(e) => setLotSL(Number(e.target.value))}
-                      style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)', padding: '8px 10px', borderRadius: '4px', color: '#fff', fontSize: '13px' }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: '8px', padding: '16px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
-                  <div>
-                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Maksimal Boleh Dibeli</div>
-                    <div style={{ fontSize: '20px', fontWeight: '900', color: 'var(--accent-green)' }}>{calculatedLots.toLocaleString()} LOT</div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>({(calculatedLots * 100).toLocaleString()} Lembar)</div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Total Modal Terpakai</div>
-                    <div style={{ fontSize: '16px', fontWeight: '800', color: '#fff' }}>Rp {totalModalUsed.toLocaleString()}</div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{modalUsagePct}% dari total kas akun</div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Risiko Maksimal Jika Kena SL</div>
-                    <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--accent-red)' }}>Rp {lotRiskRupiah.toLocaleString()}</div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Tepat {lotRiskPct}% dari total modal</div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* DRAWDOWN RECOVERY SLIDER (LEVEL 6) */}
-            {activeModule.widget === 'drawdown-recovery-slider' && (
-              <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '20px' }}>
-                <h3 style={{ fontSize: '15px', fontWeight: '800', color: 'var(--accent-red)', margin: '0 0 8px 0' }}>
-                  📉 Simulator Asimetri Drawdown: Uji Beban Pemulihan Modal Anda
-                </h3>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Kerugian Modal Anda:</span>
-                  <span style={{ fontSize: '18px', fontWeight: '900', color: 'var(--accent-red)' }}>-{drawdownPct}%</span>
-                </div>
-                <input
-                  type="range"
-                  min="5"
-                  max="90"
-                  step="5"
-                  value={drawdownPct}
-                  onChange={(e) => setDrawdownPct(Number(e.target.value))}
-                  style={{ width: '100%', accentColor: 'var(--accent-red)', marginBottom: '14px' }}
-                />
-                <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '12px 16px', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '12px', color: '#fff' }}>Keuntungan Wajib Dicapai Hanya untuk Balik Modal:</span>
-                  <span style={{ fontSize: '18px', fontWeight: '900', color: 'var(--accent-green)' }}>+{recoveryNeeded}%</span>
-                </div>
-              </div>
-            )}
-
-            {/* FVG SANDBOX (LEVEL 5) */}
-            {activeModule.widget === 'fvg-50-magnet-sandbox' && (
-              <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: '10px', padding: '20px' }}>
-                <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#fff', margin: '0 0 8px 0' }}>
-                  🎯 Sandbox Celah Harga: Mengapa 50% Consequent Encroachment (C.E.) Menjadi Magnet?
-                </h3>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
-                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Tinggi Celah FVG:</span>
-                  <input
-                    type="range"
-                    min="30"
-                    max="100"
-                    value={fvgHeight}
-                    onChange={(e) => setFvgHeight(Number(e.target.value))}
-                    style={{ flex: 1, accentColor: 'var(--accent-purple)' }}
-                  />
-                  <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-purple)' }}>{fvgHeight} Pts</span>
-                </div>
-
-                <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '8px', padding: '24px', display: 'flex', justifyContent: 'center', alignItems: 'flex-end', height: '180px', position: 'relative' }}>
-                  <div style={{ width: '28px', height: '60px', background: 'var(--accent-green)', borderRadius: '3px', margin: '0 16px' }} />
-                  <div style={{
-                    position: 'absolute',
-                    left: '30%',
-                    right: '30%',
-                    bottom: '65px',
-                    height: `${fvgHeight}px`,
-                    background: 'rgba(168, 85, 247, 0.15)',
-                    border: '1px dashed var(--accent-purple)',
-                    borderRadius: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <span style={{ fontSize: '10px', fontWeight: '800', color: 'var(--accent-purple)' }}>FVG IMBALANCE</span>
-                    <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, borderTop: '1px solid var(--accent-cyan)' }}>
-                      <span style={{ position: 'absolute', right: '4px', top: '-12px', fontSize: '9px', color: 'var(--accent-cyan)', fontWeight: '800' }}>50% C.E.</span>
-                    </div>
-                  </div>
-                  <div style={{ width: '32px', height: `${80 + fvgHeight * 0.7}px`, background: 'var(--accent-green)', borderRadius: '3px', margin: '0 16px', zIndex: 2 }} />
-                  <div style={{ width: '28px', height: '50px', background: 'var(--accent-red)', borderRadius: '3px', margin: '0 16px', alignSelf: 'flex-start' }} />
-                </div>
-              </div>
-            )}
-
-            {/* NAVIGATION BUTTONS PREV / NEXT */}
+            {/* NAVIGATION PREV / NEXT */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px', flexWrap: 'wrap', gap: '8px' }}>
               <button
                 onClick={() => {
