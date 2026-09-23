@@ -6,9 +6,9 @@ export const CHANGELOG_DATA = [
     version: 'Package 23092026-D',
     semanticVersion: 'v5.3.0',
     date: '23 September 2026',
-    status: 'LATEST',
-    statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / 6-LEVEL MASTERCLASS',
+    status: 'STABLE',
+    statusColor: 'var(--text-muted)',
+    badgeLabel: 'STABLE / 6-LEVEL MASTERCLASS',
     title: 'Update v5.3.0: 6-Level Masterclass Curriculum (20 Modul), Ground-Zero to Hedge Fund Progression, & Interactive Pedagogical Sandbox',
     description: 'Transformasi menyeluruh modul Quant Academy menjadi kurikulum masterclass berjenjang (Level 1 s/d Level 6 dengan 20 modul tematik). Menghapus jargon akademis rumit dan menggantinya dengan analogi kehidupan nyata, rantai kausalitas sebab-akibat, studi kasus sejarah riil (1997, 2008, 2013, 2020, 2022), kamus berita ekonomi, analisis lelang buku order, bandarmology 4 fase Wyckoff, serta formula lot sizing diskrit anti-bangkrut 1-2%.',
     processFlow: [

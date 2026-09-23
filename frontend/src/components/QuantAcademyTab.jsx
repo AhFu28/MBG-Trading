@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 // ============================================================================
 // DATA KURIKULUM 6 LEVEL & 20 MODUL LENGKAP
@@ -357,9 +357,8 @@ const GLOSSARY_DATA = [
 // KOMPONEN VISUAL 1: BENDUNGAN LIKUIDITAS BANK SENTRAL (SVG INTERACTIVE DAM)
 // ============================================================================
 function SvgDamSimulator() {
-  const [gateOpening, setGateOpening] = useState(65); // 0 to 100%
+  const [gateOpening, setGateOpening] = useState(65);
 
-  // Asset pool heights based on sluice gate
   const stockHeight = Math.round(20 + gateOpening * 0.7);
   const bondYield = (5.5 - (gateOpening * 0.03)).toFixed(2);
   const cryptoHeight = Math.round(10 + gateOpening * 0.85);
@@ -376,7 +375,7 @@ function SvgDamSimulator() {
             Geser bukaan pintu bendungan untuk melihat bagaimana debit likuiditas mengalir mengisi 4 kolam aset finansial dunia.
           </p>
         </div>
-        <div style={{ fontSize: '16px', fontWeight: '900', color: gateOpening > 50 ? 'var(--accent-green)' : 'var(--accent-red)' }}>
+        <div style={{ fontSize: '15px', fontWeight: '900', color: gateOpening > 50 ? 'var(--accent-green)' : 'var(--accent-red)' }}>
           Pintu Bendungan: {gateOpening}% {gateOpening >= 70 ? '(Stimulus / Bunga Rendah)' : gateOpening <= 30 ? '(Kering / QT Ketat)' : '(Netral)'}
         </div>
       </div>
@@ -390,23 +389,18 @@ function SvgDamSimulator() {
         style={{ width: '100%', accentColor: 'var(--accent-cyan)', marginBottom: '18px', cursor: 'pointer' }}
       />
 
-      {/* SVG RESERVOIR & 4 ASSET POOLS */}
       <div style={{ background: 'rgba(0, 0, 0, 0.45)', borderRadius: '8px', padding: '16px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-        <svg viewBox="0 0 800 200" style={{ width: '100%', height: 'auto', display: 'block' }}>
-          {/* DAM STRUCTURE */}
+        <svg viewBox="0 0 800 200" preserveAspectRatio="xMidYMid meet" style={{ width: '100%', height: 'auto', display: 'block' }}>
           <rect x="20" y="20" width="160" height="90" fill="#1e293b" stroke="#334155" strokeWidth="2" rx="4" />
           <text x="100" y="45" fill="#38bdf8" fontSize="11" fontWeight="800" textAnchor="middle">THE FED & BI</text>
           <text x="100" y="62" fill="#94a3b8" fontSize="9" textAnchor="middle">Waduk Likuiditas Global</text>
           
-          {/* SLUICE GATE OPENING */}
           <rect x="70" y="75" width="60" height="30" fill="#0f172a" stroke="#475569" strokeWidth="1" />
           <rect x="70" y={105 - (gateOpening * 0.25)} width="60" height={gateOpening * 0.25} fill="#0284c7" opacity="0.8" />
           <text x="100" y="94" fill="#fff" fontSize="8" fontWeight="800" textAnchor="middle">PINTU AIR</text>
 
-          {/* WATER FLOW PIPELINE */}
           <path d="M 130 90 L 220 90 L 220 140 L 750 140" fill="none" stroke="#0284c7" strokeWidth={Math.max(2, gateOpening * 0.08)} strokeDasharray="4" opacity={gateOpening / 100} />
 
-          {/* 4 ASSET POOLS */}
           {/* POOL 1: SAHAM */}
           <g transform="translate(240, 50)">
             <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="#334155" strokeWidth="1.5" rx="4" />
@@ -451,9 +445,6 @@ function SvgDamSimulator() {
             <text x="52" y="120" fill="#94a3b8" fontSize="8" textAnchor="middle">Air: {cryptoHeight}%</text>
           </g>
         </svg>
-      </div>
-      <div style={{ marginTop: '10px', fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center' }}>
-        💡 Kesimpulan: Ketika The Fed membuka pintu air likuiditas, saham dan kripto meluap paling cepat. Saat pintu air ditutup, uang lari ke kas dan obligasi berbunga tinggi.
       </div>
     </div>
   );
@@ -505,7 +496,6 @@ function DominoStepper() {
         </div>
       </div>
 
-      {/* 8 CONNECTED NODES */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px', marginBottom: '16px' }}>
         {steps.map((st, idx) => {
           const isCurrent = idx === activeStep;
@@ -535,7 +525,6 @@ function DominoStepper() {
         })}
       </div>
 
-      {/* DETAIL OF ACTIVE STEP */}
       <div style={{ background: 'rgba(0, 0, 0, 0.4)', borderLeft: '4px solid var(--accent-cyan)', padding: '16px 20px', borderRadius: '0 8px 8px 0' }}>
         <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-cyan)', marginBottom: '4px' }}>
           PENJELASAN TAHAP {activeStep + 1} DARI 8:
@@ -630,11 +619,10 @@ function CrisisChartViewer() {
           <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-red)' }}>Penurunan Maks: {curr.drawdown}</span>
         </div>
 
-        <svg viewBox="0 0 520 200" style={{ width: '100%', height: 'auto', display: 'block' }}>
+        <svg viewBox="0 0 520 200" preserveAspectRatio="xMidYMid meet" style={{ width: '100%', height: 'auto', display: 'block' }}>
           <line x1="20" y1="180" x2="500" y2="180" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
           <line x1="20" y1="20" x2="500" y2="20" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="3" />
           
-          {/* TRAJECTORY LINE */}
           <polyline
             fill="none"
             stroke="var(--accent-cyan)"
@@ -642,7 +630,6 @@ function CrisisChartViewer() {
             points={curr.points}
           />
 
-          {/* CALLOUT PINS */}
           <circle cx="200" cy="170" r="5" fill="var(--accent-red)" />
           <text x="210" y="165" fill="var(--accent-red)" fontSize="9" fontWeight="800">TITIK DASAR PANIK</text>
 
@@ -667,8 +654,8 @@ function CrisisChartViewer() {
 // KOMPONEN VISUAL 4: TIMBANGAN KAS RIIL VS LABA AKRUAL (LEVEL 3)
 // ============================================================================
 function BalanceScaleSimulator() {
-  const [netIncome, setNetIncome] = useState(1000); // Miliar Rp
-  const [cashFlow, setCashFlow] = useState(300); // Miliar Rp
+  const [netIncome, setNetIncome] = useState(1000);
+  const [cashFlow, setCashFlow] = useState(300);
 
   const ratio = (cashFlow / Math.max(1, netIncome)).toFixed(2);
   const isRedFlag = ratio < 0.7;
@@ -720,14 +707,11 @@ function BalanceScaleSimulator() {
         </div>
       </div>
 
-      {/* SVG BALANCE SCALE */}
       <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '8px', padding: '16px', textAlign: 'center' }}>
-        <svg viewBox="0 0 400 130" style={{ width: '100%', maxWidth: '400px', height: 'auto', margin: '0 auto', display: 'block' }}>
-          {/* CENTRAL PIVOT */}
+        <svg viewBox="0 0 400 130" preserveAspectRatio="xMidYMid meet" style={{ width: '100%', maxWidth: '400px', height: 'auto', margin: '0 auto', display: 'block' }}>
           <polygon points="200,90 190,120 210,120" fill="#475569" />
           <circle cx="200" cy="90" r="4" fill="#fff" />
 
-          {/* BEAM (TILTS BASED ON RATIO) */}
           <line
             x1="80"
             y1={90 + (netIncome - cashFlow) * 0.02}
@@ -737,11 +721,9 @@ function BalanceScaleSimulator() {
             strokeWidth="4"
           />
 
-          {/* LEFT PAN: LABA BERSIH */}
           <rect x="50" y={90 + (netIncome - cashFlow) * 0.02} width="60" height="20" fill="#0284c7" rx="3" />
           <text x="80" y={104 + (netIncome - cashFlow) * 0.02} fill="#fff" fontSize="8" fontWeight="800" textAnchor="middle">LABA KERTAS</text>
 
-          {/* RIGHT PAN: KAS OPERASIONAL */}
           <rect x="290" y={90 - (netIncome - cashFlow) * 0.02} width="60" height="20" fill="#10b981" rx="3" />
           <text x="320" y={104 - (netIncome - cashFlow) * 0.02} fill="#fff" fontSize="8" fontWeight="800" textAnchor="middle">KAS RIIL</text>
         </svg>
@@ -755,20 +737,112 @@ function BalanceScaleSimulator() {
 }
 
 // ============================================================================
+// KOMPONEN VISUAL: SIKLUS SUPER KOMODITAS SINE WAVE (LEVEL 3 MODUL 3.3)
+// ============================================================================
+function SupercycleSineWave() {
+  const [activePhase, setActivePhase] = useState(1);
+
+  const phases = [
+    { title: 'Fase 1: Under-Investment (Dasar Siklus)', desc: 'Harga komoditas murah bertahun-tahun. Tambang tutup. Smart Money mulai mencicil akumulasi saat PE ratio terlihat mahal (karena laba sedang tertekan).', actor: 'Smart Money Masuk Diam-Diam', markerX: 80, markerY: 140, color: 'var(--accent-cyan)' },
+    { title: 'Fase 2: Ledakan Permintaan / Windfall Boom (Puncak Siklus)', desc: 'Pasokan langka memicu lonjakan harga komoditas global ($400/ton batubara). Laba emiten melompat 500%, dividen yield fantastis diumumkan.', actor: 'Laba Rekor Tertinggi', markerX: 250, markerY: 30, color: 'var(--accent-green)' },
+    { title: 'Fase 3: Ekspansi Berlebih & Jebakan Ritel (Capex Glut)', desc: 'Ritel berbondong-bondong membeli karena terpikat PER rendah (2x-3x). Emiten jor-joran belanja modal membuka tambang baru secara serentak.', actor: 'Ritel Terjebak FOMO', markerX: 370, markerY: 80, color: 'var(--accent-orange)' },
+    { title: 'Fase 4: Kelebihan Pasokan & Kejatuhan Harga (Crash)', desc: 'Tambang baru banjir pasokan, harga komoditas jatuh bebas kembali ke dasar, mengunci modal ritel yang membeli di pucuk.', actor: 'Margin Tergerus Drastis', markerX: 470, markerY: 170, color: 'var(--accent-red)' }
+  ];
+
+  const curr = phases[activePhase];
+
+  return (
+    <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(251, 146, 60, 0.3)', borderRadius: '10px', padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+        <div>
+          <h3 style={{ fontSize: '15px', fontWeight: '800', color: 'var(--accent-orange)', margin: '0 0 4px 0' }}>
+            🔄 GELOMBANG SIKLUS SUPER KOMODITAS (COMMODITY SUPERCYCLE)
+          </h3>
+          <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>
+            Klik 4 fase siklus tambang untuk memahami mengapa membeli saham komoditas saat PER "murah" adalah jebakan maut.
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+          {phases.map((p, idx) => (
+            <button
+              key={idx}
+              onClick={() => setActivePhase(idx)}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '4px',
+                background: activePhase === idx ? p.color : 'rgba(255,255,255,0.05)',
+                color: activePhase === idx ? '#000' : 'var(--text-secondary)',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '11px',
+                fontWeight: '800'
+              }}
+            >
+              Fase {idx + 1}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '8px', padding: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <svg viewBox="0 0 520 200" preserveAspectRatio="xMidYMid meet" style={{ width: '100%', height: 'auto', display: 'block' }}>
+          {/* BASELINE */}
+          <line x1="20" y1="180" x2="500" y2="180" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+          <line x1="20" y1="100" x2="500" y2="100" stroke="rgba(255,255,255,0.08)" strokeDasharray="3" />
+
+          {/* SINE WAVE OF COMMODITY CYCLE */}
+          <path
+            d="M 20 160 Q 140 160 170 100 T 250 30 T 370 80 T 490 170"
+            fill="none"
+            stroke="var(--accent-orange)"
+            strokeWidth="3.5"
+          />
+
+          {/* ACTIVE MARKER */}
+          <circle cx={curr.markerX} cy={curr.markerY} r="7" fill={curr.color} stroke="#fff" strokeWidth="2" />
+          <text x={curr.markerX} y={curr.markerY - 14} fill={curr.color} fontSize="10" fontWeight="900" textAnchor="middle">
+            {curr.actor.toUpperCase()}
+          </text>
+        </svg>
+
+        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px 16px', borderRadius: '6px', borderLeft: `4px solid ${curr.color}`, marginTop: '10px' }}>
+          <div style={{ fontSize: '13px', fontWeight: '800', color: '#fff', marginBottom: '4px' }}>{curr.title}</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>{curr.desc}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
 // KOMPONEN VISUAL 5: ORDER BOOK DEPTH LADDER & SPOOFING SIMULATOR (LEVEL 4)
 // ============================================================================
 function OrderBookDepthLadder() {
   const [spoofActive, setSpoofActive] = useState(false);
   const [marketBuyActive, setMarketBuyActive] = useState(false);
 
+  const spoofTimerRef = useRef(null);
+  const marketBuyTimerRef = useRef(null);
+
+  // Clean timers on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (spoofTimerRef.current) clearTimeout(spoofTimerRef.current);
+      if (marketBuyTimerRef.current) clearTimeout(marketBuyTimerRef.current);
+    };
+  }, []);
+
   const handleSpoof = () => {
     setSpoofActive(true);
-    setTimeout(() => setSpoofActive(false), 3000);
+    if (spoofTimerRef.current) clearTimeout(spoofTimerRef.current);
+    spoofTimerRef.current = setTimeout(() => setSpoofActive(false), 3000);
   };
 
   const handleMarketBuy = () => {
     setMarketBuyActive(true);
-    setTimeout(() => setMarketBuyActive(false), 2500);
+    if (marketBuyTimerRef.current) clearTimeout(marketBuyTimerRef.current);
+    marketBuyTimerRef.current = setTimeout(() => setMarketBuyActive(false), 2500);
   };
 
   return (
@@ -801,9 +875,7 @@ function OrderBookDepthLadder() {
         </div>
       </div>
 
-      {/* LADDER TABLE */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', background: 'rgba(0,0,0,0.3)', padding: '14px', borderRadius: '8px' }}>
-        {/* BID SIDE */}
         <div>
           <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '8px', textAlign: 'center' }}>
             ANTRIAN BELI (BID)
@@ -824,7 +896,6 @@ function OrderBookDepthLadder() {
           ))}
         </div>
 
-        {/* ASK SIDE */}
         <div>
           <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-red)', marginBottom: '8px', textAlign: 'center' }}>
             ANTRIAN JUAL (OFFER / ASK)
@@ -853,7 +924,7 @@ function OrderBookDepthLadder() {
 // KOMPONEN VISUAL 6: SIMULATOR JEBAKAN DIVIDEN $PTBA (LEVEL 4)
 // ============================================================================
 function DividendTrapSandbox() {
-  const [buyTiming, setBuyTiming] = useState('cum-date'); // 'pre-cum', 'cum-date', 'post-ex'
+  const [buyTiming, setBuyTiming] = useState('cum-date');
 
   const scenarios = {
     'pre-cum': {
@@ -926,6 +997,125 @@ function DividendTrapSandbox() {
 }
 
 // ============================================================================
+// KOMPONEN VISUAL: FVG & LIQUIDITY SWEEP PLAYGROUND (LEVEL 5)
+// ============================================================================
+function FvgSweepPlayground() {
+  const [fvgHeight, setFvgHeight] = useState(60);
+  const [sweepState, setSweepState] = useState(0); // 0: Normal, 1: Retail Stop Loss Placed, 2: Sweep Wick, 3: Rebound
+
+  const handleSweepPlay = () => {
+    setSweepState(1);
+    setTimeout(() => {
+      setSweepState(2);
+      setTimeout(() => {
+        setSweepState(3);
+      }, 1500);
+    }, 1200);
+  };
+
+  return (
+    <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: '10px', padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+        <div>
+          <h3 style={{ fontSize: '15px', fontWeight: '800', color: 'var(--accent-purple)', margin: '0 0 4px 0' }}>
+            🕯️ PLAYGROUND CANDLESTICK: CELAH FVG & SAPUAN PAUS (SWEEP)
+          </h3>
+          <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>
+            Uji interaktif tarikan magnet 50% Consequent Encroachment (C.E.) dan bagaimana paus melahap stop loss ritel.
+          </p>
+        </div>
+
+        <button
+          onClick={handleSweepPlay}
+          style={{ padding: '7px 14px', background: 'var(--accent-purple)', border: 'none', color: '#fff', borderRadius: '4px', cursor: 'pointer', fontSize: '11px', fontWeight: '800' }}
+        >
+          {sweepState === 0 ? '▶ Putar Rekonstruksi Sapuan Paus' : sweepState === 3 ? '🔄 Ulangi Rekonstruksi' : '⏳ Mensimulasikan Sapuan...'}
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
+        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Tinggi Celah FVG:</span>
+        <input
+          type="range"
+          min="30"
+          max="100"
+          value={fvgHeight}
+          onChange={(e) => setFvgHeight(Number(e.target.value))}
+          style={{ flex: 1, accentColor: 'var(--accent-purple)' }}
+        />
+        <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-purple)' }}>{fvgHeight} Pts</span>
+      </div>
+
+      {/* SVG CANDLESTICK CANVAS */}
+      <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '8px', padding: '16px', position: 'relative' }}>
+        <svg viewBox="0 0 500 180" preserveAspectRatio="xMidYMid meet" style={{ width: '100%', height: 'auto', display: 'block' }}>
+          {/* SUPPORT LEVEL LINE */}
+          <line x1="20" y1="120" x2="480" y2="120" stroke="rgba(56, 189, 248, 0.4)" strokeWidth="1.5" strokeDasharray="4" />
+          <text x="30" y="115" fill="var(--accent-cyan)" fontSize="9" fontWeight="800">SUPPORT LEVEL RITEL</text>
+
+          {/* CANDLE 1 (BULLISH) */}
+          <rect x="80" y="70" width="24" height="50" fill="var(--accent-green)" rx="2" />
+          <line x1="92" y1="50" x2="92" y2="130" stroke="var(--accent-green)" strokeWidth="2" />
+
+          {/* FVG ZONE BOX */}
+          <rect x="120" y={120 - fvgHeight} width="120" height={fvgHeight} fill="rgba(168, 85, 247, 0.15)" stroke="var(--accent-purple)" strokeWidth="1" strokeDasharray="3" rx="2" />
+          <line x1="120" y1={120 - (fvgHeight / 2)} x2="240" y2={120 - (fvgHeight / 2)} stroke="var(--accent-cyan)" strokeWidth="1.5" />
+          <text x="180" y={116 - (fvgHeight / 2)} fill="var(--accent-cyan)" fontSize="8" fontWeight="800" textAnchor="middle">50% C.E. MAGNET</text>
+
+          {/* CANDLE 2 (IMPULSE PAUS) */}
+          <rect x="130" y={120 - fvgHeight - 20} width="30" height={fvgHeight + 20} fill="var(--accent-green)" rx="2" />
+          <line x1="145" y1={120 - fvgHeight - 35} x2="145" y2="130" stroke="var(--accent-green)" strokeWidth="2" />
+
+          {/* CANDLE 3 (RETRACE / SWEEP CANDLE) */}
+          {sweepState === 0 && (
+            <g>
+              <rect x="280" y="70" width="24" height="40" fill="var(--accent-red)" rx="2" />
+              <line x1="292" y1="60" x2="292" y2="115" stroke="var(--accent-red)" strokeWidth="2" />
+            </g>
+          )}
+
+          {sweepState === 1 && (
+            <g>
+              <rect x="280" y="70" width="24" height="45" fill="var(--accent-red)" rx="2" />
+              <line x1="292" y1="60" x2="292" y2="125" stroke="var(--accent-red)" strokeWidth="2" />
+              {/* RETAIL STOP LOSS HIGHLIGHT */}
+              <circle cx="292" cy="135" r="5" fill="var(--accent-red)" />
+              <text x="305" y="138" fill="var(--accent-red)" fontSize="9" fontWeight="800">STOP LOSS RITEL TERSAPU!</text>
+            </g>
+          )}
+
+          {(sweepState === 2 || sweepState === 3) && (
+            <g>
+              {/* HAMMER / PINBAR SWEEP CANDLE */}
+              <rect x="280" y="60" width="24" height="25" fill="var(--accent-green)" rx="2" />
+              <line x1="292" y1="50" x2="292" y2="155" stroke="var(--accent-green)" strokeWidth="2.5" />
+              <circle cx="292" cy="155" r="4" fill="var(--accent-cyan)" />
+              <text x="305" y="158" fill="var(--accent-cyan)" fontSize="9" fontWeight="800">SPRING SWEEP (PAUS MENAMPUNG)</text>
+
+              {sweepState === 3 && (
+                <g>
+                  {/* EXPLOSIVE CANDLE 4 */}
+                  <rect x="330" y="30" width="26" height="70" fill="var(--accent-green)" rx="2" />
+                  <line x1="343" y1="20" x2="343" y2="110" stroke="var(--accent-green)" strokeWidth="2" />
+                  <text x="343" y="15" fill="var(--accent-green)" fontSize="9" fontWeight="900" textAnchor="middle">TERBANG KE ATAS!</text>
+                </g>
+              )}
+            </g>
+          )}
+        </svg>
+
+        <div style={{ fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '6px' }}>
+          {sweepState === 0 && 'Kondisi netral: Ritel menunggu di support.'}
+          {sweepState === 1 && 'Tahap 1: Harga mendekati support, ritel pasang stop loss di bawahnya.'}
+          {sweepState === 2 && 'Tahap 2: Jarum panjang menusuk ke bawah support melahap stop loss ritel.'}
+          {sweepState === 3 && 'Tahap 3: Likuiditas terserap, candle ditutup hammer dan harga melesat terbang!'}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
 // KOMPONEN VISUAL 7: BRACKET RISK-REWARD & EXECUTION TOOL (LEVEL 6)
 // ============================================================================
 function VisualExecutionBracket() {
@@ -935,11 +1125,17 @@ function VisualExecutionBracket() {
   const [slPrice, setSlPrice] = useState(2850);
   const [tpPrice, setTpPrice] = useState(3375);
 
-  const riskPerShare = Math.max(1, entryPrice - slPrice);
-  const rewardPerShare = Math.max(1, tpPrice - entryPrice);
+  const safeModal = Math.max(1000000, Number(modal) || 0);
+  const safeRiskPct = Math.max(0.1, Number(riskPct) || 0);
+  const safeEntry = Math.max(1, Number(entryPrice) || 0);
+  const safeSL = Math.max(1, Number(slPrice) || 0);
+  const safeTP = Math.max(1, Number(tpPrice) || 0);
+
+  const riskPerShare = Math.max(1, Math.abs(safeEntry - safeSL));
+  const rewardPerShare = Math.max(0, safeTP - safeEntry);
   const rrRatio = (rewardPerShare / riskPerShare).toFixed(2);
 
-  const riskRupiah = (modal * riskPct) / 100;
+  const riskRupiah = (safeModal * safeRiskPct) / 100;
   const calculatedLots = Math.max(1, Math.floor(riskRupiah / (riskPerShare * 100)));
   const profitPotentialRupiah = calculatedLots * 100 * rewardPerShare;
 
@@ -954,8 +1150,8 @@ function VisualExecutionBracket() {
             Garis visual Entry, Stop Loss, dan Target Profit interaktif standar desk perdagangan hedge fund.
           </p>
         </div>
-        <div style={{ fontSize: '16px', fontWeight: '900', color: rrRatio >= 2 ? 'var(--accent-green)' : 'var(--accent-red)' }}>
-          Rasio R:R: 1 : {rrRatio} {rrRatio >= 2 ? '✅ (Layak Eksekusi)' : '⚠️ (Rasio Risiko Terlalu Buruk)'}
+        <div style={{ fontSize: '16px', fontWeight: '900', color: Number(rrRatio) >= 2 ? 'var(--accent-green)' : 'var(--accent-red)' }}>
+          Rasio R:R: 1 : {rrRatio} {Number(rrRatio) >= 2 ? '✅ (Layak Eksekusi)' : '⚠️ (Rasio Risiko Terlalu Buruk)'}
         </div>
       </div>
 
@@ -968,6 +1164,7 @@ function VisualExecutionBracket() {
             onChange={(e) => setTpPrice(Number(e.target.value))}
             style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--accent-green)', padding: '6px 10px', borderRadius: '4px', color: 'var(--accent-green)', fontWeight: '800' }}
           />
+          {safeTP <= safeEntry && <div style={{ fontSize: '10px', color: 'var(--accent-red)', marginTop: '2px' }}>TP harus di atas Entry!</div>}
         </div>
         <div>
           <label style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Harga Beli (Entry Rp)</label>
@@ -986,10 +1183,10 @@ function VisualExecutionBracket() {
             onChange={(e) => setSlPrice(Number(e.target.value))}
             style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--accent-red)', padding: '6px 10px', borderRadius: '4px', color: 'var(--accent-red)', fontWeight: '800' }}
           />
+          {safeSL >= safeEntry && <div style={{ fontSize: '10px', color: 'var(--accent-red)', marginTop: '2px' }}>SL harus di bawah Entry!</div>}
         </div>
       </div>
 
-      {/* VISUAL BRACKET SUMMARY */}
       <div style={{ background: 'rgba(0,0,0,0.3)', padding: '16px', borderRadius: '8px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>
         <div>
           <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Maksimal Boleh Dibeli</div>
@@ -1204,7 +1401,7 @@ export default function QuantAcademyTab() {
 
       {/* MAIN CONTENT AREA */}
       {activeLevelId !== 'glossary' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '260px minmax(0, 1fr)', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
           {/* LEFT SIDEBAR */}
           <div style={{
             background: 'var(--bg-card)',
@@ -1301,10 +1498,11 @@ export default function QuantAcademyTab() {
             {activeLevel.id === 'lvl-1' && <SvgDamSimulator />}
             {activeLevel.id === 'lvl-2' && activeModule.id === 'mod-2-1' && <DominoStepper />}
             {activeLevel.id === 'lvl-2' && (activeModule.id === 'mod-2-2' || activeModule.id === 'mod-2-3') && <CrisisChartViewer />}
-            {activeLevel.id === 'lvl-3' && <BalanceScaleSimulator />}
+            {activeLevel.id === 'lvl-3' && (activeModule.id === 'mod-3-1' || activeModule.id === 'mod-3-2') && <BalanceScaleSimulator />}
+            {activeLevel.id === 'lvl-3' && activeModule.id === 'mod-3-3' && <SupercycleSineWave />}
             {activeLevel.id === 'lvl-4' && (activeModule.id === 'mod-4-1' || activeModule.id === 'mod-4-2') && <OrderBookDepthLadder />}
             {activeLevel.id === 'lvl-4' && (activeModule.id === 'mod-4-3' || activeModule.id === 'mod-4-4') && <DividendTrapSandbox />}
-            {activeLevel.id === 'lvl-5' && <OrderBookDepthLadder />}
+            {activeLevel.id === 'lvl-5' && <FvgSweepPlayground />}
             {activeLevel.id === 'lvl-6' && (activeModule.id === 'mod-6-1' || activeModule.id === 'mod-6-2' || activeModule.id === 'mod-6-3') && <VisualExecutionBracket />}
             {activeLevel.id === 'lvl-6' && activeModule.id === 'mod-6-4' && <PreflightScorecard />}
 
