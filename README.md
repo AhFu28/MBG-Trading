@@ -2,7 +2,7 @@
 
 > **Institutional-Grade Autonomous Multi-Asset Quantitative Trading Cockpit & Real-time Intelligence Platform**  
 > Melacak 5 Kelas Aset Terintegrasi: **Saham BEI (IDX)**, **Kripto Spot & Futures (Binance)**, **Wall Street US Equities**, **Forex Interbank**, dan **Komoditas Strategis (Emas & Minyak Mentah)**.  
-> Dilengkapi **Zero Simulation Policy**, **Deteksi Akumulasi Bandar & Foreign Flow**, **Mesin Smart Money Concepts (SMC)**, **Multi-Armed Bandit Reinforcement Learning**, serta **Manajemen Risiko Matematis**.
+> Dilengkapi **Zero Simulation Policy**, **Deteksi Akumulasi Bandar & Foreign Flow**, **Mesin Smart Money Concepts (SMC)**, **Multi-Agent Sovereign Trading Arena**, **Live Gemini AI News Research Synthesis**, **AI Sentinel Desk (Macro, Geopolitical, Conglomerates)**, serta **Manajemen Risiko Matematis**.
 
 ---
 
@@ -27,6 +27,7 @@ Dalam analisis kuantitatif dan trading profesional, **data riil adalah hukum ter
 - **Nol Mutasi Acak**: Tidak ada `Math.random()`, generator tick sintetis, atau interpolasi buatan di seluruh codebase.
 - **Weekend Freeze**: Ketika bursa konvensional tutup (akhir pekan dan malam hari), harga saham terkunci pada **Official Closing Price** tanpa ada pergeseran desimal palsu.
 - **Standby Tape Disiplin**: Running trade tape berhenti secara otomatis di luar jam bursa dan tidak memalsukan aktivitas pita transaksi saat bursa sedang libur.
+- **Strict JSON Parsing Integrity**: Menolak nilai `NaN` dari komputasi pandas/yfinance dan men-sanitasi kuotasi menjadi format JSON standar (`null`) untuk memastikan stabilitas runtime browser.
 
 ### 2. Pemisahan Tegas: Fakta vs Opini (Standar Astra)
 Setiap kartu analitik, laporan intelijen, dan rencana perdagangan membedakan secara tegas:
@@ -38,7 +39,7 @@ Pasar modal Indonesia tidak bergerak secara terisolasi. Pergerakan emiten BEI me
 $$\Delta \text{Equity Valuation} = f\big(\text{Yield US10Y}, \text{DXY Index}, \text{Commodity Price}, \text{Foreign Capital Flow}\big)$$
 - Lonjakan yield obligasi AS (**US 10Y Benchmark**) $\to$ Peningkatan *cost of capital*, memicu devaluasi sektor teknologi & properti.
 - Penguatan **US Dollar Index (DXY)** $\to$ Penarikan likuiditas dari *emerging markets* (penjualan bersih asing di IHSG).
-- Fluktuasi Emas (**XAU/USD**) & Minyak Mentah (**Brent / WTI**) $\to$ Transmisi instan ke saham tambang & energi (ANTM, BRMS, MEDC, PGAS).
+- Fluktuasi Emas (**XAU/USD**) & Minyak Mentah (**Brent / WTI**) $	o$ Transmisi instan ke saham tambang & energi (ANTM, BRMS, MEDC, PGAS).
 
 ### 4. Whale Footprint & Bandar Flow Tracking
 Pasar digerakkan oleh entitas dengan modal raksasa (*Smart Money / Whales / Bandar*). MBG melacak jejak kaki mereka:
@@ -49,7 +50,7 @@ Pasar digerakkan oleh entitas dengan modal raksasa (*Smart Money / Whales / Band
 
 ## 🧠 Mesin Strategi Kuantitatif & Model Algoritmik MBG
 
-MBG mengintegrasikan 7 mesin strategi kuantitatif independen yang saling melengkapi dalam menganalisis probabilitas pasar:
+MBG mengintegrasikan mesin strategi kuantitatif independen yang saling melengkapi dalam menganalisis probabilitas pasar:
 
 ```
                   ┌─────────────────────────────────────────────────────────┐
@@ -58,94 +59,168 @@ MBG mengintegrasikan 7 mesin strategi kuantitatif independen yang saling melengk
                                                │
        ┌───────────────────────┬───────────────┴───────────────┬───────────────────────┐
        ▼                       ▼                               ▼                       ▼
-┌──────────────┐       ┌──────────────┐                 ┌──────────────┐       ┌──────────────┐
-│  SMC & ICT   │       │ BANDARMOLOGY │                 │ DYNAMIC EDGE │       │ EXP3 BANDIT  │
-│ Order Blocks │       │ Broker Flow  │                 │ State Engine │       │ Reinforce RL │
-│ FVG & Sweeps │       │ IIFS & VWAP  │                 │ Trailing Stop│       │ Multi-Regime │
-└──────────────┘       └──────────────┘                 └──────────────┘       └──────────────┘
+┌──────────────┐        ┌──────────────┐                ┌──────────────┐        ┌──────────────┐
+│  SMC / ICT   │        │ Bandarmology │                │ TimesFM AI   │        │ Macro Matrix │
+│  Liquidity   │        │ Inflow Score │                │ Forecasting  │        │ Transmission │
+│  Detector    │        │    (IIFS)    │                │  Zero-Shot   │        │ Correlation  │
+└──────┬───────┘        └──────┬───────┘                └──────┬───────┘        └──────┬───────┘
        │                       │                               │                       │
        └───────────────────────┼───────────────────────────────┴───────────────────────┘
                                │
-                ┌──────────────┴──────────────┐
-                ▼                             ▼
-       ┌───────────────────┐         ┌───────────────────┐
-       │ TIMESFM FORECAST  │         │ INTERMARKET MACRO │
-       │ Google Foundation │         │ Pearson Transmit  │
-       │ Zero-Shot Traject │         │ Cross-Asset Matrix│
-       └───────────────────┘         └───────────────────┘
+                               ▼
+        ┌─────────────────────────────────────────────────────────────┐
+        │       AI AGENT ARENA (16 Multi-Agent Sovereign Bots)        │
+        │  4 Base + 6 Duo + 4 Trio + 1 Master AVATAR + 1 Chaos Anomaly│
+        │  Ledger Mandiri Rp 1M/bot · Auto-MC <=15% · Zero-Token Loop │
+        │  Explainable Post-Trade Reflection Log (Indonesian Quant)   │
+        └──────────────────────────────┬──────────────────────────────┘
+                                       │
+                                       ▼
+        ┌─────────────────────────────────────────────────────────────┐
+        │      AUTONOMOUS NEWS RESEARCH & SENTINEL DESK SUITE         │
+        │  • Live Gemini 3.6/3.7/3.8 Flash Cascade Model Discovery    │
+        │  • Goldman Sachs Barbell Strategy (60% Banks : 40% Gold/Oil)│
+        │  • S/R Technical Matrix + Disciplined Invalidation Cut-Off  │
+        │  • Emergency War & Macro Crisis Flash Alert Marquee Ticker  │
+        │  • DEFCON Threat Barometer (0.42 / 1.00) + What-If Stress Sim│
+        │  • Multi-Universe Syndicate Debate & Conglomerate Map Chips │
+        └─────────────────────────────────────────────────────────────┘
 ```
-
----
 
 ### 1. Dynamic Reactive Edge State Machine (`dynamicStrategy.js`)
-Mesin eksekusi client-side ultra-low latency (< 1ms) yang mengevaluasi setiap denyut harga live terhadap trade plan:
-- **State Transition Cycle**:
-  $$\text{PENDING} \longrightarrow \text{ENTRY\_TRIGGER} \longrightarrow \text{IN\_POSITION} \longrightarrow \begin{cases} \text{TP1\_HIT} \to \text{TP2\_HIT} \\ \text{STOPPED\_OUT} \end{cases}$$
-- **Automated Trailing Stop Ratchet**: Begitu Target 1 tercapai (+3% s/d +6%), Stop Loss otomatis dikunci ke harga modal (*Breakeven*), mengubah status menjadi posisi bebas risiko (*Risk-Free Trade*).
-- **Anti-FOMO Extension Gate**: Jika harga melonjak $> 3.2\%$ dari Entry sebelum pengguna sempat membeli, sistem mengaktifkan status `⚠️ EXTENDED (NO FOMO)` dan melarang pembelian karena rasio risk/reward telah rusak.
+Mesin pengeksekusi sinyal sisi-klien (*zero latency*) yang memantau pergerakan harga secara deterministik:
+- Mendeteksi kondisi jenuh beli/jual (*Overbought/Oversold*) via RSI multi-periode.
+- Menghitung level support/resistance fraktal dan mengeksekusi trailing stop dinamis.
+- Menjamin eksekusi tanpa ketergantungan API pihak ketiga saat sesi perdagangan berlangsung.
 
 ### 2. Smart Money Concepts (SMC) & ICT Imbalance Engine (`smc_detector.py`)
-Mendeteksi zona likuiditas institusional murni berdasarkan struktur pergerakan harga tanpa indikator lagging:
-- **Institutional Order Blocks (OB)**: Mengidentifikasi candle terakhir sebelum dorongan impulsif besar yang memecahkan struktur harga (*Break of Structure / BOS*).
-- **Fair Value Gap (FVG) / 3-Candle Imbalance**: Menghitung area ketidakseimbangan likuiditas di mana pembeli institusional mendominasi secara sepihak, menciptakan magnet harga untuk retest.
-- **Liquidity Sweeps / Turtle Soup**: Mendeteksi false breakout di atas *Equal Highs (EQH)* atau di bawah *Equal Lows (EQL)* yang dirancang untuk memancing stop loss ritel sebelum pembalikan arah.
+Mendeteksi anomali likuiditas institusional berdasarkan metodologi Inner Circle Trader (ICT):
+- **Fair Value Gaps (FVG)**: Mengidentifikasi ketidakseimbangan volume 3-candle berturut-turut yang meninggalkan area harga tanpa likuiditas tandingan.
+- **Liquidity Sweeps & Mitigation**: Melacak penembusan palsu (*stop hunt*) di atas *Equal Highs (EQH)* atau di bawah *Equal Lows (EQL)* sebelum pembalikan arah besar.
+- **Change of Character (CHoCH) & Break of Structure (BOS)**: Menandai transisi struktural tren harga.
 
 ### 3. Bandarmology & Institutional Inflow Flow Score / IIFS (`bandarmology_iifs.py`)
-Menganalisis mikrostruktur perdagangan bursa melalui data broker summary harian:
-- **Broker Concentration Ratio**:
-  $$CR_3 = \sum_{i=1}^3 \frac{\text{Net Lot Buyer}_i}{\text{Total Market Volume}}, \quad CR_5 = \sum_{i=1}^5 \frac{\text{Net Lot Buyer}_i}{\text{Total Market Volume}}$$
-- **Bandar Volume-Weighted Cost Basis (Bandar VWAP)**:
-  $$\text{Bandar Average Price} = \frac{\sum (\text{Lot}_i \times \text{Price}_i \times 100)}{\sum (\text{Lot}_i \times 100)}$$
-- **Klasifikasi Tingkat Akumulasi**: `BIG_ACCUMULATION`, `ACCUMULATION`, `NEUTRAL`, `DISTRIBUTION`, dan `BIG_DISTRIBUTION`.
+Model deteksi jejak akumulasi/distribusi berbasis data transaksi broker bursa:
+- **Broker Concentration Index**: Menghitung rasio volume Top-3 dan Top-5 broker terhadap total transaksi harian.
+- **Institutional Inflow Flow Score (IIFS)**: Skor komposit (-1.0 s/d +1.0) yang mengukur apakah emiten sedang diakumulasi secara agresif oleh broker institusional/asing.
 
-### 4. EXP3 Multi-Armed Bandit Reinforcement Learning (`exp3_bandit.py`)
-Algoritma *Exponential-weight algorithm for Exploration and Exploitation* yang beroperasi pada lingkungan pasar non-stasioner:
-- Mengevaluasi performa relatif multi-strategi (Breakout, Mean-Reversion, Trend Following, SMC).
-- Mengupdate bobot probabilitas pemilihan strategi berdasarkan imbal hasil historis berjalan (*Walk-Forward Payoff*), secara adaptif mengurangi alokasi modal pada strategi yang sedang mengalami drawdown.
+### 4. EXP3 Multi-Armed Bandit Reinforcement Learning (`exp3_bandit.py`) — `[ARCHIVED / RETIRED]`
+> [!NOTE]
+> **Status Modul: Pensiun / Diarsipkan (Archived & Retired)**  
+> Modul alokasi modal terpusat EXP3 telah resmi dipensiunkan pada update **v5.0.0**. Sistem Arena telah beralih sepenuhnya ke **Arsitektur Multi-Agent Sovereign**, di mana setiap bot mengelola ledger modal independen (Rp 1.000.000) dan mengontrol toleransi Margin Call (MC <= 15%) secara terdesentralisasi tanpa redistribusi modal paksa dari luar.
 
 ### 5. TimesFM Zero-Shot Time Series Forecaster (`timesfm_forecaster.py`)
-Pemanfaatan model pondasi *TimesFM (Google Research)* untuk peramalan harga multi-horizon:
-- Menghasilkan proyeksi lintasan harga 1 hari, 5 hari, dan 20 hari ke depan.
-- Dilengkapi pita interval kepercayaan (*Calibrated Prediction Intervals*) pada tingkat keyakinan 80% dan 95% untuk estimasi batas volatilitas wajar.
+Integrasi model fondasi peramalan deret waktu *TimesFM* dari Google Research:
+- Menghasilkan proyeksi lintasan harga probabilistik jangka pendek (5-10 periode ke depan) dengan interval kepercayaan 80% dan 95%.
+- Bebas *look-ahead bias* melalui validasi *walk-forward* kuantitatif ketat.
 
 ### 6. Intermarket Macro Transmission Matrix (`correlation_matrix.py`)
-Menghitung koefisien korelasi Pearson bergulir (*Rolling 60-Day Pearson Matrix*) antar variabel global:
-$$r_{xy} = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum (x_i - \bar{x})^2 \sum (y_i - \bar{y})^2}}$$
-- Memetakan transmisi dari aset makro (DXY, US10Y, Brent Oil, XAU/USD) ke indeks sektoral BEI (IDXENERGY, IDXBASIC, IDXFINANCE, IDXTECH).
+Matriks korelasi dinamis antar-pasar (Pearson, Spearman, dan Rolling Correlation 30D):
+- Mengukur korelasi transmisi antara indeks global (S&P 500, Nasdaq, Nikkei), imbal hasil obligasi (US10Y), valuta asing (USD/IDR), dan harga komoditas terhadap pergerakan sektoral IHSG.
 
 ### 7. Dividend Aristocrats & Dividend Trap Detector (`dividend_scraper.py`)
-Menyaring saham pembayar dividen konsisten dengan filter pengaman:
-- **Dividend Trap Warning**: Mengukur rasio antara *Dividend Yield* terhadap volatilitas historis penurunan harga pada *Ex-Date*. Jika potensi penurunan harga melebihi dividen tunai bersih, sistem memberikan label peringatan dini `DIVIDEND TRAP RISK`.
+Mesin penilai kelayakan fundamental dividen:
+- Menganalisis historis *Dividend Payout Ratio (DPR)*, *Free Cash Flow (FCF) Coverage*, dan stabilitas yield 5 tahun.
+- Mengidentifikasi potensi *Dividend Trap* pada emiten komoditas siklikal sebelum *Ex-Date*.
 
 ---
 
-### 8. AI Multi-Agent Elemental Arena (15 Autonomous Syndicate Bots)
-Arsitektur multi-agen kuantitatif mandiri (*self-governing agent syndicate*) yang mengevaluasi pasar multiaset secara otonom tanpa campur tangan manusia. Terdiri dari 15 bot independen yang diturunkan dari kombinatorika fusi 4 agen elemen dasar ($2^4 - 1 = 15$ bot):
+### 8. Autonomous News Research Intelligence & LLM Cascade Engine (`news_research_agent.py` & `llm_brain.py`)
+Mesin sintesis intelijen berita dan riset sektor bertenaga model AI mutakhir:
 
-$$\text{Roster Multi-Agen} = \binom{4}{1}_{\text{Base: 4}} + \binom{4}{2}_{\text{Duo: 6}} + \binom{4}{3}_{\text{Trio: 4}} + \binom{4}{4}_{\text{Master: 1}} = 15 \text{ Bot}$$
+#### A. Model Discovery Dinamis & Dual-Layer Cascade Failover
+Menggunakan arsitektur model AI adaptif yang secara otomatis memprioritaskan ketersediaan dan latensi:
+1. **Model Utama**: `gemini-3.6-flash` (ketersediaan 99.99%, latensi sub-300ms, penalaran kuantitatif tinggi).
+2. **Failover Tingkat-2**: `gemini-3.7-flash` & `gemini-3.8-flash` jika terjadi lonjakan trafik (*HTTP 503 Spike*) atau batas kuota (*HTTP 429*).
+3. **Failover Deterministik**: Fallback ke sintesis kuantitatif institusional berbasis aturan tanpa pernah membuat UI error atau crash.
+
+#### B. Dua Output Riset Standar Hedge Fund
+- **☀️ Daily Brief (Morning Executive Summary):**
+  - **Layman Translation**: Penjelasan bahasa awam yang membedah apa arti headline global/domestik bagi investor retail maupun institusi.
+  - **3 Poin Penggerak Pasar**: Intisari katalis fundamental terpenting hari ini.
+  - **Pedoman Alokasi Kas**: Rekomendasi porsi kas taktis (misal: 25% Defensive Cash Reserve).
+- **🔬 Sector Research Note (Goldman Sachs GIR & Ray Dalio Barbell Strategy):**
+  - Alokasi **60% Core Defensive** (Bank Berkualitas Tinggi Dividen Tebal: BBCA, BBRI, BMRI) : **40% Tactical Hedge** (Komoditas Momentum: ANTM, MEDC, Minyak/Emas).
+  - **S/R Technical Matrix**: Level kuantitatif presisi untuk emiten spotlight:
+    - Pivot Point, Support S1/S2, Resistance R1/R2.
+    - **Invalidation Cut-Off**: Batas disiplin cut-loss mutlak jika tesis terbukti salah oleh pasar.
+
+#### C. Emergency Macro & War Flash Alert Sentinel
+- Memindai kata kunci ancaman geopolitik akut (perang, penutupan selat navigasi minyak, serangan militer, darurat likuiditas bank sentral).
+- Menampilkan banner **Pulsating Red-Gold Marquee Ticker Tape** di bagian paling atas cockpit jika status darurat terdeteksi (`crisis_alert.is_crisis = true`).
+
+#### D. Manajemen Arsip Historis FIFO 14-Edisi
+- Menyimpan riwayat 14 edisi riset harian sebelumnya ke dalam bundle JSON.
+- Menerapkan batasan ketat < 60 KB melalui rotasi First-In-First-Out (FIFO) guna mencegah *memory bloat* pada browser.
+
+---
+
+### 9. AI Quant Intelligence & Sentinel Desk Engine (`ai_sentinel_desk.py` & `AiIntelligenceDrawer.jsx`)
+Pusat intelijen geopolitik dan evaluasi emiten multi-universe yang dibagi menjadi 3 pilar:
 
 ```
-                           ┌─────────────────────────────────────────────────────────┐
-                           │         AI MULTI-AGENT ARENA SYNDICATE (15 BOTS)        │
-                           └────────────────────────────┬────────────────────────────┘
-                                                        │
-                 ┌───────────────────────┬──────────────┴───────────────┬───────────────────────┐
-                 ▼                       ▼                              ▼                       ▼
-          ┌──────────────┐        ┌──────────────┐               ┌──────────────┐        ┌──────────────┐
-          │   💧 WATER   │        │   🔥 FIRE    │               │    🌪️ AIR    │        │   🌍 EARTH   │
-          │ Liquidity/OB │        │ Momentum/EMA │               │ Scalp/Micro  │        │ Mean-Revert  │
-          └──────┬───────┘        └──────┬───────┘               └──────┬───────┘        └──────┬───────┘
-                 │                       │                              │                       │
-                 └───────────────┬───────┴──────────────┬───────────────┴───────────────┬───────┘
-                                 │                      │                               │
-                                 ▼                      ▼                               ▼
-                         ┌───────────────┐      ┌───────────────┐               ┌───────────────┐
-                         │ 6 DUO COMBOS  │      │ 4 TRIO COMBOS │               │ 1 MASTER BOT  │
-                         │ C(4,2) Fusi   │      │ C(4,3) Sindikat│              │ C(4,4) AVATAR │
-                         │ STEAM, STORM, │      │ TEMPEST,      │               │ 4-Element     │
-                         │ MUD, LIGHTNING│      │ OCEANIC,      │               │ Consensus     │
-                         │ LAVA, SAND    │      │ GEOTHERMAL,   │               │ Voting >= 3   │
-                         └───────────────┘      └───────────────┘               └───────────────┘
+                       AI SENTINEL INTELLIGENCE DESK
+     ┌───────────────────────────────┼───────────────────────────────┐
+     ▼                               ▼                               ▼
+┌─────────────────────────┐ ┌─────────────────────────┐ ┌─────────────────────────┐
+│ TAB 1: MAKRO & TRANSMISI│ │ TAB 2: DEBAT SINDIKASI  │ │ TAB 3: DEFCON SENTINEL  │
+│ • Suku Bunga Fed / BI   │ │ • IDX (861+ Emiten)     │ │ • Threat Barometer 0.42 │
+│ • Kurs Dolar USD/IDR    │ │ • Crypto Spot (Top L1)  │ │ • 4 Sub-Pilar Kuantitatif│
+│ • Pohon Transmisi:      │ │ • US Equities Megacaps  │ │ • What-If Stress Sim    │
+│   Beneficiaries vs Loss │ │ • Conglomerate Map Chips│ │ • Strategic Matrix      │
+└─────────────────────────┘ └─────────────────────────┘ └─────────────────────────┘
+```
+
+#### A. Tab 1 — Isu Makro & Transmisi Global
+Memetakan rezim makro ekonomi makro global dan menyusun **Pohon Transmisi Likuiditas**:
+- Menguraikan arah suku bunga acuan (Fed Funds Rate & BI 7-Day Reverse Repo Rate), inflasi, dan indeks dolar.
+- Menentukan sektor penerima manfaat (*net beneficiaries*) serta sektor yang tertekan (*vulnerable losers*).
+
+#### B. Tab 2 — On-Demand Syndicate Debate & Fundamental Conglomerate Map
+- **Cakupan Multi-Universe Lengkap**:
+  - **Saham BEI (IDX 861+ Emiten)**: Memuat metrik fundamental riil (Pertumbuhan Laba Bersih YoY, Margin EBITDA, Rasio Utang DER, Arus Kas Operasional, dan katalis korporasi seperti capex ekspansi/merger).
+  - **Crypto Spot**: Valuasi on-chain, TVL, fee protokol, staking yield, dan korelasi ekosistem (BTC, ETH, SOL, NEAR, LINK, SUI).
+  - **US Equities**: Capex supercycle AI hyperscalers, konsensus Wall Street, dan rantai pasok chip semikonduktor (NVDA, AAPL, MSFT, TSLA, AMD).
+- **Peta Relasi Konglomerasi Interaktif**:
+  - Memetakan kepemilikan dan relasi emiten dalam grup konglomerat besar Indonesia (Grup Astra, Barito Pacific, Medco, Bakrie, Salim, Djarum, dll.).
+  - Dilengkapi *interactive clickable chips*: Mengklik chip afiliasi (misal: `$BREN` atau `$TPIA` di profil `$BRPT`) langsung me-reload dossier emiten tersebut seketika.
+- **On-Demand Client-Side Processing**:
+  - Analisis dossier dan debat tesis Bull vs Bear dihitung secara deterministik dan instan di sisi klien sesuai pilihan ticker pengguna tanpa membebani server backend.
+
+#### C. Tab 3 — Geopolitical Sentinel & Quantitative DEFCON Threat Barometer
+- **Barometer Terkuantisasi (Non-Clickable Gauge)**:
+  - Menggantikan slider manual dengan meteran 5 segmen terkunci matematis pada skor komposit riil (**`0.42 / 1.00` — DEFCON 4 Guarded**).
+- **4 Sub-Pilar Kuantitatif Terbobot**:
+  1. *Rantai Pasok Energi & Hormuz* (Skor 68/100, Bobot 35%)
+  2. *Divergensi Moneter & Kurs Rupiah* (Skor 54/100, Bobot 30%)
+  3. *Perang Tarif Dagang Global* (Skor 45/100, Bobot 20%)
+  4. *Titik Rawan Maritim & Selat Malaka* (Skor 32/100, Bobot 15%)
+- **What-If Escalation Simulator**:
+  - Fitur simulasi stress-test portofolio tanpa mengubah data dasar riil:
+    - *Skenario 1 (Status Quo)*: Kondisi dasar saat ini.
+    - *Skenario 2 (Penutupan Selat Hormuz / Oil Shock)*: Minyak > $100/bbl, defisit transaksi berjalan melebar.
+    - *Skenario 3 (Perang Tarif Dagang Global / Stagflasi)*: Eskalasi tarif proteksionisme, pelemahan mata uang emerging market.
+
+---
+
+### 10. AI Multi-Agent Elemental Arena (16 Autonomous Syndicate Bots)
+Ekosistem simulasi perdagangan otonom 16 bot terbagi dalam 5 tingkatan DNA strategi:
+
+```
+                       ┌────────────────────────────────────────────────────────┐
+                       │                   4 BASE ELEMENTS                      │
+                       │           💧 WATER    🔥 FIRE    🌪️ AIR    🌍 EARTH     │
+                       └───────┬───────────────┬────────────────┬───────────────┘
+                               │               │                │
+                               ▼               ▼                ▼
+                       ┌───────────────┐ ┌───────────────┐ ┌────────────────┐
+                       │ 6 DUO COMBOS  │ │ 4 TRIO COMBOS │ │ 1 MASTER BOT   │
+                       │ STEAM, STORM, │ │ TEMPEST,      │ │ AVATAR (Cons.) │
+                       │ MUD, LIGHTNING│ │ OCEANIC,      │ └────────────────┘
+                       │ LAVA, SAND    │ │ GEOTHERMAL,   │ ┌────────────────┐
+                       └───────────────┘ │ CYCLONE       │ │ 1 ANOMALY BOT  │
+                                         └───────────────┘ │ CHAOS (Convex) │
+                                                           └────────────────┘
 ```
 
 #### Roster & Spesifikasi Matriks 16 Bot
@@ -166,24 +241,24 @@ $$\text{Roster Multi-Agen} = \binom{4}{1}_{\text{Base: 4}} + \binom{4}{2}_{\text
 | 13 | **TRIO** | `geothermal-core` | 🌋 GEOTHERMAL | W + F + E | Macro news shock fade $\to$ Akumulasi institusional di dasar harga | 1.2x / 1.35x |
 | 14 | **TRIO** | `cyclone-engine` | 🌪️ CYCLONE | F + A + E | Ekspansi volatilitas Bollinger $\to$ Trailing trend micro breakout | 0.9x / 1.15x |
 | 15 | **MASTER** | `avatar-master` | 🌟 AVATAR | W + F + A + E | **Voting Konsensus**: Eksekusi hanya jika $\ge 3$ dari 4 elemen dasar searah | 1.0x / 1.2x |
-| 16 | **ANOMALY** | `chaos-anomaly` | ☣️ CHAOS | UNBOUND | **Kinetic Vacuum Carpet-Bombing**: Multi-layer stacking tanpa batas tiket + Auto-Rebirth saat MC | 2.5x / 5.0x (Convex) |
+| 16 | **ANOMALY** | `chaos-anomaly` | ☣️ CHAOS | UNBOUND | **Kinetic Carpet-Bombing**: Multi-layer stacking tanpa batas tiket + Auto-Rebirth saat MC | 2.5x / 5.0x (Convex) |
 
-#### Pilar Arsitektur & Aturan Keamanan Sistem Arena
-1. **Locked 4-Column Grid UI (`.arena-locked-4col-grid`):**
-   - Di desktop ($\ge 1180\text{px}$), kartu kanban terkunci tepat **4 kolom per baris** dan membentang rapi ke bawah (4 baris $\times$ 4 kolom = 16 bot).
-   - Layout terkunci mengeliminasi *layout shifting* dan inkonsistensi ukuran kartu.
-   - Filter tab navigasi cepat: `Semua Bot (16)`, `4 Elemen Dasar`, `6 Kombo Duo`, `5 Sindikat (Trio & Master)`, dan `1 Anomali (CHAOS)`.
-2. **Isolasi Saldo & Total AUM Dinamis:**
-   - Setiap bot memiliki ledger modal independen (default Rp 1.000.000 per bot).
-   - Total AUM terhitung otomatis secara matematis: $\text{Total AUM} = N_{\text{bots}} \times \text{Modal Per Bot} = 16 \times \text{Rp } 1.000.000 = \text{Rp } 16.000.000$.
-   - Kerugian, margin call, atau floating drawdown satu bot tidak menguras saldo modal bot lainnya.
-3. **Kepatuhan Arah Regulasi (Directional Safety Compliance Gate):**
-   - **Saham BEI (IDX):** Terkunci secara tegas **LONG-ONLY** (Dilarang Short Selling sesuai regulasi pasar modal OJK & BEI).
-   - **Crypto Perp & Forex:** Mendukung **LONG & SHORT** dua arah secara dinamis.
-4. **Dynamic Lot Sizing Anti-Round-Down:**
-   - Lot dihitung proporsional terhadap harga koin/saham untuk menghindari pembulatan ke Rp 0 pada altcoin mikro (DOGE, PEPE, ADA, XRP). Formula menargetkan margin $\approx$ Rp 30.000 / notional $\approx$ $37 USD pada leverage 1:20.
+#### Pilar Arsitektur & Keamanan Multi-Agent Sovereign
+1. **Isolasi Modal Sovereign (Sovereign Balance):**
+   - Setiap bot memiliki saldo modal mandiri sebesar **Rp 1.000.000**.
+   - Total modal kelolaan dihitung: $\text{Total AUM} = 16 \times \text{Rp } 1.000.000 = \text{Rp } 16.000.000$.
+   - Kerugian satu bot tidak pernah menguras modal bot lain (*Zero Cross-Contagion*).
+2. **Margin Call Independen (Auto-MC $\le 15\%$):**
+   - Jika ekuitas bot merosot di bawah 15% dari modal awal, bot secara otomatis dilikuidasi dan masuk status *MARGIN CALL FREEZE*.
+   - Khusus bot CHAOS ANOMALY, memiliki protokol *Auto-Rebirth* di mana modal di-reset ke Rp 1.000.000 untuk menguji resiliensi strategi konveksitas ekstrem.
+3. **Explainable AI Post-Trade Reflection Log:**
+   - Tabel Jurnal Transaksi di Tab Agent Arena dilengkapi sub-baris expandable **`🤖 AI REFLECTION`**.
+   - Memberikan evaluasi post-mortem transparan dalam bahasa Indonesia atas setiap posisi yang ditutup (apakah dipicu oleh likuiditas SMC, konfirmasi akumulasi bandar, momentum breakout volume, atau deviasi mean-reversion).
+4. **Kepatuhan Regulasi Arah (Directional Safety):**
+   - **Saham BEI (IDX)**: Wajib **LONG-ONLY** (Dilarang short selling sesuai aturan OJK/BEI).
+   - **Crypto Perp & Forex**: Fleksibel **LONG & SHORT**.
 5. **100% Zero-Token Client-Side Runtime:**
-   - Seluruh logika 16 bot berjalan sebagai *state machine* kuantitatif deterministik pada browser pengguna. Menggunakan data harga live bersama (*Shared WebSocket Feed*), **tanpa mengonsumsi kuota token Gemini AI** saat beroperasi.
+   - Logika eksekusi 16 bot berjalan secara deterministik di peramban web pengguna menggunakan shared stream data harga tanpa mengonsumsi kuota API Gemini.
 
 ---
 
@@ -191,17 +266,20 @@ $$\text{Roster Multi-Agen} = \binom{4}{1}_{\text{Base: 4}} + \binom{4}{2}_{\text
 
 | Fitur | Deskripsi Fungsional |
 | :--- | :--- |
-| **🤖 AI Multi-Agent Arena (16 Bots)** | Ekosistem trading otonom 16 bot (4 Base, 6 Duo, 4 Trio, 1 Master AVATAR, 1 Anomaly CHAOS) dengan kanban deck 4-kolom terkunci, isolasi modal, dan konsensus ensemble. |
-| **🔴 Macro Intelligence Wire** | Ticker strip bergaya terminal Bloomberg di bagian atas cockpit, menayangkan berita geopolitik, pidato The Fed, dan pergerakan makro secara seketika. |
+| **🛡️ AI Sentinel Desk (Macro, Geopolitical, Conglomerates)** | Analisis rezim makro, transmisi likuiditas global, dossier fundamental multi-universe (IDX, Crypto, US), peta konglomerasi interaktif, dan simulasi geopolitik. |
+| **🧭 DEFCON Computed Threat Barometer & Simulator** | Barometer ancaman 5 segmen terkunci matematis (0.42 / 1.00 Guarded) dengan 4 sub-pilar terbobot dan What-If Stress Simulator portofolio. |
+| **📰 Live Gemini News Research Engine & Emergency Flash** | Daily Brief bahasa awam, Sector Research Note standar Goldman Sachs Barbell, S/R Technical Matrix, dan banner pulsating emergency flash alert. |
+| **🤖 AI Multi-Agent Arena (16 Sovereign Bots)** | Ekosistem trading 16 bot dengan modal berdaulat Rp 1.000.000/bot, proteksi MC <=15%, dan Explainable AI Trade Reflection pada jurnal transaksi. |
+| **🔴 Macro Intelligence Wire** | Ticker strip bergaya terminal Bloomberg di bagian atas cockpit, menayangkan berita geopolitik, pidato The Fed, dan pergerakan makro seketika. |
 | **🧭 Bento Telemetry Barometer** | 4 Kartu HUD interaktif: Rezim IHSG, Komoditas Global (Emas & Minyak), Top Crypto Movers, dan Alpha Picker harian. |
-| **📊 Real-time Multi-Asset Matrix** | Kuotasi aktual 5 kelas aset: 850+ Saham BEI, 744+ Pasangan USDT Binance, 31 US Mega-Caps, Major Forex Pairs, dan Komoditas Strategis. |
+| **📊 Real-time Multi-Asset Matrix** | Kuotasi aktual 5 kelas aset: 861+ Saham BEI, 744+ Pasangan USDT Binance, 31 US Mega-Caps, Major Forex Pairs, dan Komoditas Strategis. |
 | **⚡ Running Trade Live BEI** | Pita transaksi tape bursa cepat dengan indikasi ukuran lot paus (Whale $\ge$ 500 lot, Mega Whale $\ge$ 1.000 lot) dan penanda otomatis saat bursa tutup. |
 | **🐋 Whale Intelligence Hub** | Analisis akumulasi/distribusi bandar, ringkasan net foreign buy/sell, dan perbandingan aliran dana LQ45 vs Alam Semesta BEI. |
-| **🏢 Klaster Saham Konglomerat** | Pengelompokan emiten kongsi strategis: Barito Group (Prajogo Pangestu), Salim Group, Astra Group, Djarum Group, Bakrie Group, dan Adaro Group. |
+| **🏢 Klaster Saham Konglomerat** | Pengelompokan emiten kongsi strategis: Barito Group, Salim Group, Astra Group, Djarum Group, Bakrie Group, dan Medco Group. |
 | **📈 Institutional Charting Desk** | Grafik TradingView modal interaktif multi-timeframe lengkap dengan level entry presisi, stop-loss, dan take-profit. |
 | **💰 Apex Risk & Lot Calculator** | Kalkulator ukuran lot matematis anti-kebangkrutan berdasarkan toleransi risiko portofolio: `Lot = (Modal × Risk%) ÷ (Entry - SL)`. |
 | **⭐ Personal Watchlist** | Fasilitas bookmark emiten pilihan dengan sinkronisasi local-storage dan efek flash visual hijau/merah saat terjadi perubahan harga. |
-| **🛡️ Security Hub Drawer** | Panel deep-dive profil emiten/kripto dalam 1 klik (indikator teknikal RSI, SMA20, volume, dan data fundamental ringkas). |
+| **🔄 Manual Sync & Cache-Busting Controls** | Tombol `[🔄 Refresh Riset AI]` dan `[🔄 Sync Desk]` untuk memaksa pembaruan data tanpa terkendala cache browser. |
 
 ---
 
@@ -216,6 +294,7 @@ flowchart TD
         SRC_IDX["TradingView IDX Scanner<br/>(scanner.tradingview.com/indonesia)"]
         SRC_US["TradingView US Scanner<br/>(scanner.tradingview.com/america)"]
         SRC_FX["TradingView Forex & CFD<br/>(cfd & forex/scan: Gold, Oil, FX)"]
+        SRC_NEWS["Financial RSS & News Feeds<br/>(CNBC, Bloomberg, Kontan, Bisnis)"]
         SRC_PY["Quant Python Engine<br/>(Daily Screening & Bundler)"]
     end
 
@@ -223,19 +302,23 @@ flowchart TD
         CORS_BYPASS["CORS Simple Request Engine<br/>(Header: 'Content-Type': 'text/plain')"]
         WSS_CLIENT["Browser WebSocket Client<br/>(Auto Reconnect 4s)"]
         HOURS_CTRL["MarketHoursClassifier<br/>(IDX, US, FX, Crypto Schedulers)"]
+        LLM_CASCADE["Dynamic Gemini Model Discovery<br/>(3.6-flash -> 3.7-flash -> 3.8-flash)"]
+        NAN_SANITIZER["JSON Anti-NaN Sanitizer<br/>(Sanitasi NaN -> null)"]
     end
 
-    subgraph CORE_STATE ["3. REACT ENGINE STATE (useLivePrices)"]
+    subgraph CORE_STATE ["3. REACT ENGINE STATE (useLivePrices & Bundles)"]
         PRICE_MAP["livePrices State Map<br/>(Normalized Keys: BBCA, AAPL, BTC, GOLD)"]
         DIFF_ENG["Zero-Fake Diff Engine<br/>(Flash ONLY on Actual newPrice != oldPrice)"]
         FREEZE_GATE["Weekend Freeze Controller<br/>(Zero Poll & Static Lock on Close)"]
+        AI_STORE["AI News & Sentinel Store<br/>(14-Edition FIFO Archive & DEFCON)"]
     end
 
     subgraph COCKPIT_UI ["4. TRADING COCKPIT PRESENTATION"]
         UI_HOME["Home Dashboard & Bento HUD"]
         UI_TAPE["Running Trade Tape (Auto-Standby)"]
-        UI_WHALES["Whale Intelligence & Broker Flow"]
-        UI_GLOBAL["Global Markets & Macro Table"]
+        UI_SENTINEL["AI Sentinel Desk (Macro, Geopolitical, Conglomerates)"]
+        UI_NEWS["Bloomberg News Wire & Research Note"]
+        UI_ARENA["AI Agent Arena (16 Sovereign Bots)"]
         UI_CHART["Institutional Chart Desk"]
     end
 
@@ -243,7 +326,10 @@ flowchart TD
     SRC_IDX --> CORS_BYPASS
     SRC_US --> CORS_BYPASS
     SRC_FX --> CORS_BYPASS
-    SRC_PY -->|latest_cockpit_bundle.json| CORE_STATE
+    SRC_NEWS --> LLM_CASCADE
+    SRC_PY --> NAN_SANITIZER
+    NAN_SANITIZER -->|latest_cockpit_bundle.json| CORE_STATE
+    LLM_CASCADE -->|news_research_bundle.json| AI_STORE
 
     CORS_BYPASS --> HOURS_CTRL
     WSS_CLIENT --> CORE_STATE
@@ -253,14 +339,27 @@ flowchart TD
 
     DIFF_ENG --> UI_HOME
     DIFF_ENG --> UI_TAPE
-    DIFF_ENG --> UI_WHALES
-    DIFF_ENG --> UI_GLOBAL
     DIFF_ENG --> UI_CHART
+    DIFF_ENG --> UI_ARENA
+    AI_STORE --> UI_NEWS
+    AI_STORE --> UI_SENTINEL
 ```
 
 ---
 
-### 2. Runtime Sequence: Polling Adaptif & Anti-CORS Flow
+### 2. Siklus Refresh Data & Mekanisme Sinkronisasi
+
+| Komponen | Frekuensi Eksekusi | Pemicu (Trigger) | Penanganan Cache & Integritas |
+| :--- | :--- | :--- | :--- |
+| **Pipeline Harian (08:00 WIB)** | 1x setiap pagi sebelum bursa buka | Cron / Script eksekusi harian | Menghasilkan bundle baru (`latest_cockpit_bundle.json` & `news_research_bundle.json`) dengan sanitasi anti-NaN. |
+| **News Research & Daily Brief** | 1x pagi saat pipeline + Manual Refresh | Tombol `[🔄 Refresh Riset AI]` di UI News Tab | Mengirim query parameter timestamp `?v=${Date.now()}` untuk mengabaikan cache lokal peramban. |
+| **Sentinel Desk Macro & Geopolitical** | Disinkronkan dengan bundle data | Tombol `[🔄 Sync Desk]` di UI Sentinel Desk | Memuat ulang parameter DEFCON, 4 sub-pilar terbobot, dan krisis geopolitik terkini. |
+| **Dossier & Debat Sindikasi Ticker** | On-Demand (Real-time seketika) | Pilihan ticker pengguna di Tab 2 (IDX, Crypto, US) | **100% Client-Side Engine**: Dihitung seketika tanpa latency jaringan atau konsumsi token API. |
+| **AI Agent Arena Loop** | Real-time per tick harga | Ingestion data WebSocket & Polling | Evaluasi deterministik 16 bot independen; refleksi transaksi ditulis otomatis saat tiket ditutup. |
+
+---
+
+### 3. Runtime Sequence: Polling Adaptif & Anti-CORS Flow
 
 ```mermaid
 sequenceDiagram
@@ -295,7 +394,7 @@ sequenceDiagram
 
 ---
 
-### 3. State Machine: Transisi Sesi Bursa & Weekend Freeze
+### 4. State Machine: Transisi Sesi Bursa & Weekend Freeze
 
 ```mermaid
 stateDiagram-v2
@@ -359,15 +458,23 @@ mbg-trading/
 ├── engine/                                    # Python Quantitative Engine
 │   ├── run_pipeline.py                        # Master pipeline script
 │   ├── analyzer/                              # Mesin Kuantitatif & Algoritmik
+│   │   ├── news_research_agent.py             # Live Gemini News & Research Synthesis
+│   │   ├── llm_brain.py                       # Dynamic Model Discovery & Cascade Failover
 │   │   ├── smc_detector.py                    # Smart Money Concepts & ICT Detector
 │   │   ├── bandarmology_iifs.py               # Broker Concentration & Accumulation
-│   │   ├── exp3_bandit.py                     # Multi-Armed Bandit Reinforcement Learning
+│   │   ├── exp3_bandit.py                     # [ARCHIVED] Multi-Armed Bandit Module
 │   │   ├── timesfm_forecaster.py              # Google TimesFM Time-Series Forecaster
 │   │   └── correlation_matrix.py              # Intermarket Macro Transmission Matrix
 │   └── tests/                                 # Test smoke & unit testing
 ├── frontend/                                  # React 18 + Vite Cockpit
 │   ├── src/
 │   │   ├── components/                        # Modul UI (Bento, Tape, Whales, Charts)
+│   │   │   ├── AiIntelligenceDrawer.jsx       # AI Sentinel Desk (Macro, Geopolitical, Debat)
+│   │   │   ├── NewsTab.jsx                    # Research Note & Daily Brief Viewer
+│   │   │   ├── BloombergNewsWire.jsx          # News Bar & Emergency Crisis Flash Alert
+│   │   │   └── AiAgentArenaTab.jsx            # 16 Sovereign Bots & Explainable Trade Reflection
+│   │   ├── data/
+│   │   │   └── changelogData.js               # Changelog komprehensif terminal
 │   │   ├── hooks/
 │   │   │   └── useLivePrices.js               # Multi-Asset Real-time Hook (Zero Simulation)
 │   │   ├── utils/
@@ -375,7 +482,7 @@ mbg-trading/
 │   │   │   └── marketHours.js                 # Standar pengklasifikasi jam bursa dunia
 │   │   ├── App.jsx                            # Root router & cockpit layout
 │   │   └── index.css                          # Bloomberg-style theme & styling
-│   └── public/data/                           # Fallback cache data JSON
+│   └── public/data/                           # Fallback cache data JSON anti-NaN
 └── README.md                                  # Dokumentasi utama proyek
 ```
 

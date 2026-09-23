@@ -2,13 +2,65 @@
 
 export const CHANGELOG_DATA = [
   {
+    id: 'pkg-23092026-v50',
+    version: 'Package 23092026-A',
+    semanticVersion: 'v5.0.0',
+    date: '23 September 2026',
+    status: 'LATEST',
+    statusColor: 'var(--accent-green)',
+    badgeLabel: 'LATEST / INSTITUTIONAL AI DESK',
+    title: 'Update v5.0.0 (INSTITUTIONAL AI DESK): Sentinel Desk Macro & Geopolitical, DEFCON Computed Threat Barometer, Live News Research Synthesis, dan Explainable AI Agent Arena',
+    description: 'Peningkatan besar-besaran standar hedge fund: peluncuran AI Quant Intelligence & Sentinel Desk dengan analisis transmisi makro & debat sindikasi multi-universe (IDX 861+ emiten, Crypto, US Stocks), transformasi DEFCON menjadi Threat Barometer terkuantisasi (0.42 / 1.00) dengan What-If Stress Simulator, integrasi live Gemini LLM ke Daily Brief & Research Note format Goldman Sachs Barbell, Emergency Macro & War Flash Alert Sentinel, Explainable AI Trade Reflection pada jurnal transaksi Agent Arena, tombol manual sync ber-cache-busting, perbaikan kritis parsing data anti-NaN, dan penegasan arsitektur Multi-Agent Sovereign untuk pensiunnya modul EXP3 bandit.',
+    processFlow: [
+      { step: '1. Model Discovery', label: 'Dynamic Gemini 3.6/3.7/3.8 discovery dengan cascade failover aman' },
+      { step: '2. Threat Barometer', label: 'DEFCON komposit matematis 4 sub-pilar terbobot + What-If Stress Simulator' },
+      { step: '3. Research Synthesis', label: 'Live News Daily Brief & Sector Research Note (Barbell Strategy + S/R Matrix)' },
+      { step: '4. Crisis Flash Alert', label: 'Pulsating emergency alert banner untuk deteksi ancaman perang/krisis makro' },
+      { step: '5. Trade Reflection', label: 'Explainable AI quant reasoning pada setiap closed trade di Agent Arena' },
+      { step: '6. Cache & Sync', label: 'Tombol manual [🔄 Refresh Riset AI] & [🔄 Sync Desk] dengan cache-busting' }
+    ],
+    markdownContent: `
+### 🛡️ v5.0.0 — Institutional AI Quant Intelligence & Sentinel Desk
+
+#### 🏛️ 1. AI Quant Intelligence & Sentinel Desk
+- **Struktur 3 Tab Institusional (Bebas Alay & Tanpa Tab Promosi):**
+  - **Tab 1 — Isu Makro & Transmisi:** Pemetaan rezim tematik makro (Suku Bunga Fed/BI, Inflasi, Dolar AS) dan rantai transmisinya ke emiten penerima manfaat (*beneficiaries*) serta emiten yang tertekan (*losers*).
+  - **Tab 2 — Debat Sindikasi & On-Demand Dossier:** Analisis fundamental dan debat tesis Bull vs Bear untuk **seluruh instrumen pasar**:
+    - **Saham BEI (IDX 861+ Emiten):** Dilengkapi analisis pertumbuhan laba YoY, margin EBITDA, rasio utang/DER, arus kas, katalis korporasi riil (ekspansi/merger), dan **Peta Relasi Konglomerasi** (Grup Astra, Barito, Medco, Bakrie, Salim, dll) dengan *clickable chips* untuk navigasi instan antar emiten afiliasi.
+    - **Crypto Spot:** Valuasi on-chain, fee protokol, staking yield, dan korelasi ekosistem (BTC, ETH, SOL, NEAR, LINK, SUI).
+    - **US Equities:** Supercycle capex AI datacenter hyperscalers, Wall Street consensus, dan rantai pasok chip semikonduktor (NVDA, AAPL, MSFT, TSLA, AMD).
+  - **Tab 3 — Geopolitical Sentinel & DEFCON Threat Barometer:**
+    - Transformasi DEFCON dari slider manual menjadi **Threat Barometer Terkuantisasi 5 Segmen** yang terkunci pada skor ancaman komposit riil (\`0.42 / 1.00\`, Level 4 Guarded).
+    - **4 Sub-Pilar Kuantitatif:** Rantai Pasok Energi & Hormuz (68/100, bobot 35%), Divergensi Moneter & Kurs Rupiah (54/100, bobot 30%), Perang Tarif Dagang (45/100, bobot 20%), dan Titik Rawan Maritim (32/100, bobot 15%).
+    - **What-If Escalation Simulator:** Simulasi stress-test portofolio tanpa mengubah data riil (Skenario 1: Status Quo, Skenario 2: Penutupan Selat Hormuz / Oil Shock, Skenario 3: Perang Tarif Global / Stagflasi).
+
+#### 📰 2. Autonomous News Research Intelligence
+- **Live AI Synthesis via Gemini LLM:** Mengganti template statis dengan pemanggilan model Gemini terkini (\`gemini-3.6-flash\`) untuk memproses feed berita finansial harian aktual.
+- **Dua Output Riset Standar Hedge Fund:**
+  - **☀️ Daily Brief (Morning Executive Summary):** Penjelasan bahasa awam (*layman translation*), rangkuman poin penggerak pasar, dan pedoman likuiditas kas.
+  - **🔬 Sector Research Note:** Pendekatan *Goldman Sachs GIR / Ray Dalio Barbell Strategy* (60% Saham Perbankan Dividen Tinggi : 40% Saham Momentum Komoditas/Emas).
+  - **S/R Technical Matrix:** Level kuantitatif terukur (Pivot, S1/S2, R1/R2, dan batas *Invalidation Cut-off* disiplin risiko) untuk emiten spotlight (\`$BBCA\` & \`$ANTM\`).
+- **Emergency Macro & War Flash Alert Sentinel:** Banner pulsating merah-emas di atas cockpit yang otomatis aktif jika terdeteksi headline ancaman krisis perang darurat atau disrupsi makro ekstrem.
+- **14-Edition Historical Research Archive:** Manajemen arsip FIFO otomatis untuk menjaga riwayat 14 edisi sebelumnya dengan ukuran data di bawah 60 KB (mencegah memory bloat).
+- **Tombol Sinkronisasi Manual:** Tombol **\`[🔄 Refresh Riset AI]\`** di News Tab dan **\`[🔄 Sync Desk]\`** di Sentinel Desk dengan parameter cache-busting (\`?v=\${Date.now()}\`).
+
+#### 🤖 3. Explainable AI Trade Reflection (AI Agent Arena)
+- **Sub-row \`🤖 AI REFLECTION\` di Jurnal Transaksi:** Setiap posisi tertutup (*closed trade*) kini menyertakan catatan reasoning kuantitatif independen dalam bahasa Indonesia yang menjelaskan mengapa bot mengambil keputusan tersebut (apakah liquidity sweep SMC, akumulasi broker bandarmology, momentum breakout volume, atau deviasi mean reversion).
+- **Penegasan Status EXP3 Multi-Armed Bandit:** Modul \`exp3_bandit.py\` resmi berstatus **ARCHIVED / RETIRED** karena arsitektur Arena telah beralih ke **Multi-Agent Sovereign** di mana setiap bot memiliki modal mandiri **Rp 1.000.000** dan mengelola risiko Margin Call (MC <= 15%) sendiri secara independen.
+
+#### 🛡️ 4. Data Reliability & Engine Hardening
+- **JSON Parser Anti-NaN Bug Fix:** Menuntaskan bug kritis di mana kuotasi \`NaN\` dari pandas/yfinance menyebabkan kegagalan parsing JSON pada browser. Seluruh nilai \`NaN\` kini disanitasi menjadi \`null\` secara otomatis.
+- **Dual-Layer Cascade Failover:** Jika Google Gemini API mengalami lonjakan trafik (*HTTP 503 Spike*) atau limit kuota (*HTTP 429*), sistem otomatis melakukan failover bertingkat antar model (\`3.6-flash\` -> \`3.7-flash\` -> \`3.8-flash\`) hingga fallback ke template deterministik institusional tanpa pernah menyebabkan UI crash atau blank.
+`
+  },
+  {
     id: 'pkg-21092026-v48',
     version: 'Package 21092026-B',
     semanticVersion: 'v4.8.0',
     date: '21 September 2026',
-    status: 'LATEST',
-    statusColor: 'var(--accent-green)',
-    badgeLabel: 'LATEST / SESSION 0.1 READY',
+    status: 'PREVIOUS',
+    statusColor: 'var(--text-muted)',
+    badgeLabel: 'PREVIOUS / STABLE',
     title: 'Update v4.8.0 (SEASON 0.1): Auto-Label Sesi Kalibrasi #0.1, Pair Recap Sub-Tab dengan Long/Short Breakdown & Bug Fix Auto-Start',
     description: 'Penambahan fitur Pair Recap (sub-tab di dalam Session Recap modal) dengan breakdown performa per instrumen berdasarkan arah trade (Long/Short). Sesi pertama setelah Genesis #0 kini otomatis dilabeli Sesi #0.1 (Calibration & Hardening). Data allPairs kini disimpan ke laporan epoch untuk histori jangka panjang. Bug kritis diperbaiki: tombol di sesi arsip tidak lagi auto-start trading.',
     processFlow: [
