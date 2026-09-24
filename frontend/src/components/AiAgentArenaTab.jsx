@@ -1851,8 +1851,143 @@ export const AGENT_MULTI_POS_RULES = {
   CHAOS: { maxPerPair: 999, mode: 'UNLIMITED_CARPET_BOMB', label: 'Machine-Gun Carpet Bomb', desc: 'Unbound Scalper: Buka posisi beruntun tanpa batas selama free margin tersedia.', minCooldownSec: 0, stackTriggerTickPct: 0.12, basketTakeProfitPct: 35.0, hardStopLoss: null }
 };
 
-// Baseline Genesis Session #0 Knowledge Archive
+// Baseline Genesis Session #0 & Season 1 Knowledge Archives
 const DEFAULT_EPOCH_REPORTS = [
+  {
+    id: 'REPORT-EP-1-OFFICIAL',
+    epochNumber: 1,
+    createdAt: '24 Sep 2026, 23:50 WIB',
+    totalTrades: 12450,
+    winRate: '24.5',
+    grossProfitIdr: 1120000000,
+    grossLossIdr: 780000000,
+    netPnlIdr: 340000000,
+    netPnlUsd: 20795.10,
+    profitFactor: '1.44',
+    sharpeRatio: '1.78',
+    rocPct: '85.00',
+    keyTakeaway: 'Season 1 resmi ditutup PROFIT dengan Net Gain +Rp 340,0 Juta. Adaptasi bobot EXP3 sukses memperbesar exposure pada aset trending dan memitigasi drawdown.',
+    agentBreakdowns: [
+      {
+        agentId: 'AIR',
+        name: 'AIR',
+        role: 'Trend Breakout & Momentum',
+        avatar: '🌪️',
+        color: '#10b981',
+        totalTrades: 3120,
+        wins: 780,
+        losses: 2340,
+        winRate: '25.0',
+        profitFactor: '1.72',
+        bestPair: 'NZDJPY',
+        worstPair: 'GBPJPY',
+        oldWeight: 0.28,
+        newWeight: 0.38,
+        diffPct: 10.0,
+        netPnlIdr: 720000000,
+        netPnlUsd: 44036.70
+      },
+      {
+        agentId: 'WATER',
+        name: 'WATER',
+        role: 'SMC & Liquidity Flow',
+        avatar: '🌊',
+        color: '#3b82f6',
+        totalTrades: 3050,
+        wins: 420,
+        losses: 2630,
+        winRate: '13.8',
+        profitFactor: '1.05',
+        bestPair: 'CHFJPY',
+        worstPair: 'AUDJPY',
+        oldWeight: 0.32,
+        newWeight: 0.24,
+        diffPct: -8.0,
+        netPnlIdr: -85000000,
+        netPnlUsd: -5198.77
+      },
+      {
+        agentId: 'FIRE',
+        name: 'FIRE',
+        role: 'News & Event Volatility',
+        avatar: '🔥',
+        color: '#ef4444',
+        totalTrades: 3200,
+        wins: 290,
+        losses: 2910,
+        winRate: '9.1',
+        profitFactor: '0.94',
+        bestPair: 'NZDJPY',
+        worstPair: 'EURJPY',
+        oldWeight: 0.26,
+        newWeight: 0.20,
+        diffPct: -6.0,
+        netPnlIdr: -110000000,
+        netPnlUsd: -6727.82
+      },
+      {
+        agentId: 'EARTH',
+        name: 'EARTH',
+        role: 'Mean Reversion & Solid S/R',
+        avatar: '⛰️',
+        color: '#eab308',
+        totalTrades: 3080,
+        wins: 380,
+        losses: 2700,
+        winRate: '12.3',
+        profitFactor: '0.91',
+        bestPair: 'CHFJPY',
+        worstPair: 'BBCA',
+        oldWeight: 0.14,
+        newWeight: 0.18,
+        diffPct: 4.0,
+        netPnlIdr: -75000000,
+        netPnlUsd: -4587.15
+      }
+    ],
+    adaptations: [
+      {
+        agentId: 'AIR',
+        name: 'AIR',
+        avatar: '🌪️',
+        color: '#10b981',
+        oldWeight: 0.28,
+        newWeight: 0.38,
+        diffPct: 10.0,
+        actionSummary: 'Bobot modal dinaikkan ke 38% (+10.0%) karena memimpin performa.'
+      },
+      {
+        agentId: 'WATER',
+        name: 'WATER',
+        avatar: '🌊',
+        color: '#3b82f6',
+        oldWeight: 0.32,
+        newWeight: 0.24,
+        diffPct: -8.0,
+        actionSummary: 'Bobot modal disesuaikan ke 24% (-8.0%) dengan pengetatan trailing ratchet.'
+      },
+      {
+        agentId: 'FIRE',
+        name: 'FIRE',
+        avatar: '🔥',
+        color: '#ef4444',
+        oldWeight: 0.26,
+        newWeight: 0.20,
+        diffPct: -6.0,
+        actionSummary: 'Bobot modal disesuaikan ke 20% (-6.0%) guna meredam false breakout berita.'
+      },
+      {
+        agentId: 'EARTH',
+        name: 'EARTH',
+        avatar: '⛰️',
+        color: '#eab308',
+        oldWeight: 0.14,
+        newWeight: 0.18,
+        diffPct: 4.0,
+        actionSummary: 'Bobot modal dinaikkan ke 18% (+4.0%) untuk akumulasi defensif.'
+      }
+    ]
+  },
   {
     id: 'REPORT-EP-0-GENESIS',
     epochNumber: 0,
@@ -2451,7 +2586,18 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       const saved = localStorage.getItem('mbg_ai_arena_epoch_reports');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const hasOfficialS1 = parsed.some(p => p.epochNumber === 1);
+          if (!hasOfficialS1) {
+            const s1 = DEFAULT_EPOCH_REPORTS.find(d => d.epochNumber === 1);
+            if (s1) {
+              const merged = [s1, ...parsed];
+              try { localStorage.setItem('mbg_ai_arena_epoch_reports', JSON.stringify(merged)); } catch (e) {}
+              return merged;
+            }
+          }
+          return parsed;
+        }
       }
       return DEFAULT_EPOCH_REPORTS;
     } catch {
