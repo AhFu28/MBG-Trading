@@ -7,6 +7,8 @@ import GlobalMarketTicker from './components/GlobalMarketTicker.jsx';
 import { useLivePrices } from './hooks/useLivePrices.js';
 import PersonalWatchlistTab from './components/PersonalWatchlistTab.jsx';
 import CommandPaletteModal from './components/CommandPaletteModal.jsx';
+import DataIntegrityModal from './components/DataIntegrityModal.jsx';
+import ComplianceRiskModal from './components/ComplianceRiskModal.jsx';
 
 // Code Splitting for heavy secondary modules
 const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'));
@@ -31,9 +33,9 @@ const isIdxMarketOpen = () => {
   if (day === 0 || day === 6) return false;
   const totalMin = jktDate.getHours() * 60 + jktDate.getMinutes();
   if (day === 5) {
-    return (totalMin >= 540 && totalMin <= 690) || (totalMin >= 840 && totalMin <= 960);
+    return (totalMin >= 540 && totalMin <= 690) || (totalMin >= 840 && totalMin <= 949); // Friday close 15:49 WIB
   }
-  return (totalMin >= 540 && totalMin <= 720) || (totalMin >= 810 && totalMin <= 960);
+  return (totalMin >= 540 && totalMin <= 720) || (totalMin >= 810 && totalMin <= 950);
 };
 
 const jakartaTimeFormatter = new Intl.DateTimeFormat('id-ID', {
@@ -111,6 +113,16 @@ export default function App() {
 
   const [isMobileOpen, setMobileOpen] = useState(false);
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
+  const [isIntegrityOpen, setIsIntegrityOpen] = useState(false);
+
+  // Dynamic Data Health & Gemini Model derivation
+  const bundleDate = data?.last_updated ? new Date(data.last_updated) : null;
+  const bundleAgeMin = bundleDate ? Math.max(0, Math.round((Date.now() - bundleDate.getTime()) / 60000)) : 999;
+  const isBundleFresh = bundleAgeMin < 60;
+  const bundleStatus = isBundleFresh ? '🟢 SYNCED' : (bundleAgeMin < 360 ? '🟡 DEGRADED' : '🔴 STALE');
+  const bundleColor = isBundleFresh ? '#10b981' : (bundleAgeMin < 360 ? '#f59e0b' : '#ef4444');
+  const activeGeminiModel = data?.model_used || data?.daily_snips?.model_used || 'gemini-3.8-flash';
+  const geminiShortLabel = String(activeGeminiModel).toUpperCase().replace('GEMINI-', '').replace(' (AUTO-DISCOVERED)', '');
 
   // Global Keyboard Listener for Command Palette (Ctrl + K / Cmd + K)
   useEffect(() => {
@@ -336,6 +348,7 @@ export default function App() {
           flashMap={flashMap}
           onSelectTicker={handleOpenSecurityHub}
           onOpenAiSentinel={() => setActiveTab('AI_SENTINEL')}
+          onOpenDataIntegrity={() => setIsIntegrityOpen(true)}
         />
 
         {/* ===== MAIN CONTENT AREA ===== */}
@@ -419,6 +432,29 @@ export default function App() {
                 <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isWsConnected ? '#10b981' : '#f59e0b', display: 'inline-block' }} />
                 <span>{isWsConnected ? 'LIVE FEED WS' : 'REST (5S)'}</span>
               </div>
+
+              {/* Data Integrity Drawer Quick Launch */}
+              <button
+                className="telemetry-btn"
+                onClick={() => setIsIntegrityOpen(true)}
+                style={{
+                  fontSize: '9px',
+                  padding: '2px 6px',
+                  color: bundleColor,
+                  borderColor: `${bundleColor}40`,
+                  background: `${bundleColor}14`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  cursor: 'pointer',
+                  fontWeight: 800,
+                  whiteSpace: 'nowrap'
+                }}
+                title="Periksa Integritas, Provenance & Freshness Semua Data"
+              >
+                <span>🛡️</span>
+                <span>{isBundleFresh ? 'DATA SEHAT' : 'INTEGRITAS DATA'}</span>
+              </button>
 
               {/* Master Terminal Time */}
               <HeaderClock />
@@ -717,17 +753,39 @@ export default function App() {
             color: 'var(--text-muted)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <span style={{ fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
-                FEED HEALTH:
-              </span>
-              <span>IDX BEI: <strong style={{ color: '#10b981' }}>🟢 ACTIVE (48ms)</strong></span>
+              <button
+                onClick={() => setIsIntegrityOpen(true)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: isBundleFresh ? '#10b981' : '#f59e0b',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  letterSpacing: '0.04em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: 0,
+                  fontFamily: 'inherit',
+                  fontSize: 'inherit'
+                }}
+                title="Buka Telemetri Audit Integritas Data"
+              >
+                <span>🛡️ FEED HEALTH:</span>
+                <span>{isBundleFresh ? '🟢 VERIFIED' : '🟡 DEGRADED'}</span>
+              </button>
+              <span>IDX BEI: <strong style={{ color: '#10b981' }}>🟢 849 STOCKS</strong></span>
               <span>Binance WS: <strong style={{ color: isWsConnected ? '#10b981' : '#f59e0b' }}>{isWsConnected ? '🟢 CONNECTED' : '🟡 POLLING'}</strong></span>
-              <span>US Yield Curve: <strong style={{ color: '#10b981' }}>🟢 SYNCED</strong></span>
-              <span>Gemini LLM: <strong style={{ color: '#10b981' }}>🟢 READY (3.6-FLASH)</strong></span>
-              <span>MCP Server: <strong style={{ color: '#38bdf8' }}>🟢 STDIO v3.0</strong></span>
+              <span>Macro Bundle: <strong style={{ color: bundleColor }}>{bundleStatus} ({bundleAgeMin}m)</strong></span>
+              <span>Gemini LLM: <strong style={{ color: '#38bdf8' }}>🟢 {geminiShortLabel}</strong></span>
+              <span>MCP Server: <strong style={{ color: '#38bdf8' }}>🟢 READY</strong></span>
             </div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '8.5px' }}>
-              PROVENANCE ENVELOPE: ZERO UNVERIFIED METRICS
+            <div
+              style={{ color: 'var(--text-muted)', fontSize: '8.5px', cursor: 'pointer' }}
+              onClick={() => setIsIntegrityOpen(true)}
+              title="Periksa integritas data"
+            >
+              KLIK UNTUK AUDIT PROVENANCE & FRESHNESS ↗
             </div>
           </div>
 
@@ -755,6 +813,7 @@ export default function App() {
         </div>{/* /main-content */}
 
       </div>{/* /app-layout */}
+
       {/* Global Command Palette Modal (Ctrl + K) */}
       <CommandPaletteModal
         isOpen={isPaletteOpen}
@@ -770,6 +829,22 @@ export default function App() {
           setSyncTrigger(prev => prev + 1);
         }}
       />
+
+      {/* Data Integrity & Provenance Telemetry Modal */}
+      <DataIntegrityModal
+        isOpen={isIntegrityOpen}
+        onClose={() => setIsIntegrityOpen(false)}
+        data={data}
+        isWsConnected={isWsConnected}
+        lastUpdateTime={lastUpdateTime}
+        onRefetchAll={() => {
+          refetchAll();
+          setSyncTrigger(prev => prev + 1);
+        }}
+      />
+
+      {/* Compliance & Risk Disclosure Modal (First-Run Acknowledgment) */}
+      <ComplianceRiskModal />
     </PasswordGate>
   );
 }

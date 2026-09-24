@@ -55,7 +55,8 @@ export default function Sidebar({
   livePrices = {},
   flashMap = {},
   onSelectTicker,
-  onOpenAiSentinel
+  onOpenAiSentinel,
+  onOpenDataIntegrity
 }) {
   const [showMoreTools, setShowMoreTools] = useState(false);
 
@@ -355,12 +356,20 @@ export default function Sidebar({
       <div className="sidebar-footer">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 10px' }}>
           <button
+            onClick={() => onOpenDataIntegrity ? onOpenDataIntegrity() : setActiveTab('CHANGELOG')}
+            style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: '700' }}
+            title="Periksa Integritas & Provenance Data Terminal"
+          >
+            <span>🛡️</span>
+            <span>Integritas</span>
+          </button>
+          <button
             onClick={() => setActiveTab('CHANGELOG')}
-            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: '600' }}
+            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '3px', fontWeight: '600' }}
             title="Catatan Rilis Terminal"
           >
             <span>📜</span>
-            <span>v3.0 Gacor</span>
+            <span>Changelog</span>
           </button>
           <button
             onClick={handleLogout}

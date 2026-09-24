@@ -3,14 +3,49 @@
 
 export const CHANGELOG_DATA = [
   {
+    "id": "pkg-24092026-audit",
+    "sprintLabel": "Sprint 6 (Audit & Hardening) — Data Integrity & Compliance",
+    "version": "Package 24092026-R2",
+    "semanticVersion": "v5.5.0",
+    "date": "24 September 2026",
+    "status": "LATEST",
+    "statusColor": "var(--accent-green)",
+    "badgeLabel": "LATEST / DATA INTEGRITY & AUDIT HARDENING",
+    "title": "Update v5.5.0: Pre-Launch Forensics Hardening, Centralized Data Integrity Audit Modal, Stablecoin Filters, Short-Position Lot Calculator & Zero-Cost Compliance",
+    "description": "Implementasi menyeluruh hasil audit forensik Antigravity & GLM: Peluncuran Modal Audit Integritas & Provenance Data 6-jalur (menggantikan status hardcoded), filter proteksi pasangan stablecoin (USDC, USDT, FDUSD), perbaikan kalkulasi posisi Short pada Lot Calculator Modal, banner pengungkapan risiko Backtest Hipotetis, sinkronisasi harga live pada on-chain Whale Tracker, serta modal kepatuhan regulasi non-advisory OJK.",
+    "processFlow": [
+      {
+        "step": "1. Data Integrity & Provenance Modal",
+        "label": "Peluncuran drawer verifikasi 6 sumber data aktual dengan indikator kesehatan real-time"
+      },
+      {
+        "step": "2. Stablecoin Signal Blacklist",
+        "label": "Penyaringan 10+ stablecoin pada loop Binance spot agar terhindar dari sinyal pump artifisial"
+      },
+      {
+        "step": "3. Lot Calculator Short Position Fix",
+        "label": "Dukungan penuh kalkulasi lot dan target harga untuk transaksi Short (SL > Entry)"
+      },
+      {
+        "step": "4. On-Chain Whale Price Derivation",
+        "label": "Sinkronisasi kalkulasi fiat volume whale terhadap harga live ticker secara dinamis"
+      },
+      {
+        "step": "5. Compliance & Regulatory Acknowledgment",
+        "label": "Penyematan modal persetujuan risiko non-advisory dan banner transparansi DSR backtest"
+      }
+    ],
+    "markdownContent": "\n### 🛡️ v5.5.0 — Institutional Data Integrity, Compliance Audit & Math Hardening\n\n#### 🔍 1. Peluncuran Modal Audit Integritas Data (Data Integrity & Provenance Modal)\n- **Single Source of Truth:** Menggantikan status bar hardcoded dengan modal telemetri transparan 6 sumber data: Macro Bundle, IDX BEI, Binance WebSocket, Valuta Global/CFD, Kurs USD/IDR, dan Gemini LLM.\n- **Penyematan Tombol HUD:** Akses cepat langsung dari Top Navigation HUD (`DATA SEHAT / DATA INTEGRITAS`) serta footer sidebar (`Integritas Data`).\n- **Sinkronisasi Model AI:** Deteksi dinamis model LLM aktif dari bundle (`gemini-3.8-flash (Auto-Discovered)`) tanpa string statis.\n\n#### 🧮 2. Perbaikan Logika Matematika & Filter Pasangan Kripto\n- **Stablecoin Filter:** Menambahkan saringan ketat (`USDC`, `FDUSD`, `TUSD`, `DAI`, dll) pada loop Binance spot agar terminal tidak mengeluarkan trade plan artifisial pada koin berpatokan $1.00.\n- **Sanity Clamping R:R:** Membatasi rasio Risk/Reward antara 0.2x hingga 20.0x untuk mencegah anomali rasio ekstrem (seperti 1:642).\n- **Short-Order Lot Calculator:** Memperbaiki bug kalkulator lot di mana posisi Short (`SL > Entry`) sebelumnya menghasilkan 0 lot secara hening.\n- **On-Chain Whale Valuation:** Derivasi nilai transaksi paus on-chain langsung dari harga pasar live (`livePrices`), menghilangkan selisih kalkulasi fiat.\n\n#### ⚖️ 3. Kepatuhan Regulasi & Perlindungan Pengguna (Compliance Audit)\n- **Modal Pernyataan Kepatuhan:** Menambahkan first-run risk acknowledgment modal yang menegaskan terminal berfungsi murni sebagai riset algoritma kuantitatif independen (non-advisory).\n- **Transparansi Backtest:** Banner peringatan bahwa hasil pengujian strategi historis adalah simulasi matematis hipotetis dan bukan jaminan hasil di masa mendatang.\n- **Jam Bursa BEI Hari Jumat:** Koreksi jam penutupan resmi Jumat menjadi 15:49 WIB (`totalMin <= 949`).\n"
+  },
+  {
     "id": "pkg-24092026",
     "sprintLabel": "Sprint 5 (Dini Hari) — Compliance & QA/QC",
     "version": "Package 24092026",
     "semanticVersion": "v5.4.0",
     "date": "24 September 2026",
-    "status": "LATEST",
-    "statusColor": "var(--accent-green)",
-    "badgeLabel": "LATEST / COMPLIANCE & QA/QC",
+    "status": "STABLE",
+    "statusColor": "var(--text-muted)",
+    "badgeLabel": "STABLE / COMPLIANCE & QA/QC",
     "title": "Update v5.4.0: Compliance Audit, QA/QC Bugfixes, UI/UX Full-Width Canvas Restoration & GitHub Synchronization",
     "description": "Sertifikasi kepatuhan menyeluruh (Zero Simulation Policy & zero exposed credentials), debugging engine interaktif (FVG Sweep Playground Level 5, Supercycle Sine Wave Modul 3.3, OrderBook timer cleanup), dan audit UI/UX restorasi tata letak (.quant-academy-main-grid) yang mengembalikan lebar kanvas materi pembelajaran ke 100% full-width tanpa penyusutan.",
     "processFlow": [

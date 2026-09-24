@@ -563,6 +563,9 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
         const randomHex = Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
         const txHash = chainObj.chain === 'bitcoin' ? randomHex : `0x${randomHex}`;
 
+        const livePairKey = `${chainObj.symbol}USDT`;
+        const currentCoinPrice = livePrices[livePairKey]?.price || livePrices[chainObj.symbol]?.price || chainObj.price;
+
         if (roll < 0.45) {
           signal = 'EXCHANGE_OUTFLOW';
           sentiment = 'BULLISH';
@@ -572,7 +575,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
           else if (chainObj.symbol === 'ETH') amount = Math.floor(Math.random() * 20000) + 1500;
           else if (chainObj.symbol === 'SOL') amount = Math.floor(Math.random() * 220000) + 20000;
           else amount = (Math.floor(Math.random() * 50) + 5) * 1000000;
-          amountUsd = Math.round(amount * chainObj.price);
+          amountUsd = Math.round(amount * currentCoinPrice);
           thesis = `Penarikan masif ${amount.toLocaleString()} ${chainObj.symbol} (~$${amountUsd.toLocaleString()}) dari ${fromEntity.name} ke Cold Storage: Akumulasi kuat, suplai likuiditas bursa berkurang.`;
         } else if (roll < 0.80) {
           signal = 'EXCHANGE_INFLOW';
@@ -583,7 +586,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
           else if (chainObj.symbol === 'ETH') amount = Math.floor(Math.random() * 16000) + 1200;
           else if (chainObj.symbol === 'SOL') amount = Math.floor(Math.random() * 180000) + 15000;
           else amount = (Math.floor(Math.random() * 45) + 5) * 1000000;
-          amountUsd = Math.round(amount * chainObj.price);
+          amountUsd = Math.round(amount * currentCoinPrice);
           thesis = `Deposit besar ${amount.toLocaleString()} ${chainObj.symbol} (~$${amountUsd.toLocaleString()}) ke ${toEntity.name}: Paus memindahkan aset ke exchange, waspada potensi tekanan jual.`;
         } else if (roll < 0.92) {
           signal = 'TREASURY_MINT';
@@ -602,7 +605,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
           else if (chainObj.symbol === 'ETH') amount = Math.floor(Math.random() * 14000) + 1800;
           else if (chainObj.symbol === 'SOL') amount = Math.floor(Math.random() * 120000) + 12000;
           else amount = (Math.floor(Math.random() * 35) + 10) * 1000000;
-          amountUsd = Math.round(amount * chainObj.price);
+          amountUsd = Math.round(amount * currentCoinPrice);
           thesis = `Transfer OTC institusional ${amount.toLocaleString()} ${chainObj.symbol} (~$${amountUsd.toLocaleString()}): Rotasi portofolio dark pool tanpa mengganggu harga spot.`;
         }
 

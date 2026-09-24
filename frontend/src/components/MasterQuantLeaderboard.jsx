@@ -113,12 +113,13 @@ export default function MasterQuantLeaderboard({
     return map;
   }, [cryptoSpotList, conglomerates, dividendHunters, foreignFlow]);
 
-  // Dynamic R:R calculator
+  // Dynamic R:R calculator with sanity clamping (0.2x - 20.0x)
   const calcRR = (entry, sl, tp) => {
     const risk = Math.abs(Number(entry) - Number(sl));
     const reward = Math.abs(Number(tp) - Number(entry));
     if (risk <= 0) return 2.0;
-    return Number((reward / risk).toFixed(2));
+    const ratio = reward / risk;
+    return Number(Math.min(20.0, Math.max(0.2, ratio)).toFixed(2));
   };
 
   // Build unified items list
@@ -327,7 +328,11 @@ export default function MasterQuantLeaderboard({
     });
 
     // 6. Seluruh Alam Semesta Crypto Spot Binance (744+ Pasangan USDT)
+    const STABLECOINS = new Set(['USDC', 'FDUSD', 'TUSD', 'USDE', 'DAI', 'USDP', 'BUSD', 'EUR', 'AEUR', 'USD', 'USD1']);
     (allCryptoSpot || []).forEach(c => {
+      const base = (c.baseCoin || c.symbol || '').toUpperCase().replace('USDT', '');
+      if (STABLECOINS.has(base)) return; // Skip dollar-pegged stablecoins from trade setup emission
+
       const existing = items.find(i => i.ticker === c.pair || i.ticker === c.symbol || i.ticker === c.baseCoin);
       if (!existing && c.symbol) {
         const liveC = livePrices[c.symbol] || livePrices[c.pair];

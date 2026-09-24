@@ -372,11 +372,19 @@ class NewsMacroFetcher:
                     change_pct = round(((current - prev) / prev) * 100, 2)
                     
                     if key == "gold":
-                        indicators["gold_price"] = round(current, 2)
-                        indicators["gold_change_pct"] = change_pct
+                        # Sanity check: prevent anomalous contract roll quotes (e.g. 4381.8) from poisoning macro telemetry
+                        if 1800 <= current <= 3500:
+                            indicators["gold_price"] = round(current, 2)
+                            indicators["gold_change_pct"] = change_pct
+                        else:
+                            logger.warning(f"Anomalous gold price rejected by sanity guard: ${current}. Preserving fallback.")
                     elif key == "brent_oil":
-                        indicators["brent_oil_price"] = round(current, 2)
-                        indicators["brent_oil_change_pct"] = change_pct
+                        # Sanity check: Brent crude reasonable world bounds ($40 - $160)
+                        if 40 <= current <= 160:
+                            indicators["brent_oil_price"] = round(current, 2)
+                            indicators["brent_oil_change_pct"] = change_pct
+                        else:
+                            logger.warning(f"Anomalous brent price rejected by sanity guard: ${current}. Preserving fallback.")
                     elif key == "dxy":
                         indicators["dxy_index"] = round(current, 2)
                         indicators["dxy_change_pct"] = change_pct

@@ -71,8 +71,9 @@ export default function LotCalculatorModal({
   const entry = Number(entryPrice);
   const sl = Number(stopLossPrice);
 
-  if (entry > 0 && sl > 0 && entry > sl) {
-    riskPerUnit = entry - sl;
+  if (entry > 0 && sl > 0 && entry !== sl) {
+    const isShort = sl > entry;
+    riskPerUnit = Math.abs(entry - sl);
     
     if (riskPerUnit > 0) {
       if (!isCrypto) {
@@ -88,8 +89,8 @@ export default function LotCalculatorModal({
       }
 
       positionPercent = modalAmount > 0 ? (totalPositionValue / modalAmount) * 100 : 0;
-      targetPrice = entry + (2.2 * riskPerUnit);
-      rrRatioDisplay = '1 : 2.2';
+      targetPrice = isShort ? Math.max(0, entry - (2.2 * riskPerUnit)) : entry + (2.2 * riskPerUnit);
+      rrRatioDisplay = isShort ? '1 : 2.2 (SHORT)' : '1 : 2.2 (LONG)';
     }
   }
 

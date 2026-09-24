@@ -263,6 +263,30 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
   return (
     <div style={{ fontFamily: 'monospace', color: '#fff', backgroundColor: '#000', padding: '20px' }}>
       
+      {/* Regulatory & Risk Transparency Banner */}
+      <div style={{
+        background: 'rgba(239, 68, 68, 0.08)',
+        border: '1px solid rgba(239, 68, 68, 0.25)',
+        padding: '8px 14px',
+        borderRadius: '4px',
+        marginBottom: '16px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '8px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '14px' }}>⚠️</span>
+          <span style={{ fontSize: '11px', color: '#fca5a5', fontWeight: 'bold' }}>
+            HASIL PENGUJIAN HISTORIS HIPOTETIS (SIMULATED BACKTEST) — BUKAN REKAM JEJAK TRADING UANG ASLI.
+          </span>
+        </div>
+        <span style={{ fontSize: '10px', color: '#888', fontFamily: 'monospace' }}>
+          Validasi Metodologi Deflated Sharpe Ratio (DSR) & Triple-Barrier
+        </span>
+      </div>
+
       {/* 1. Top Overview Banner with OpenQuant Integration Controls */}
       <div style={{ borderBottom: '1px solid #333', paddingBottom: '14px', marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
