@@ -51,6 +51,29 @@ const DEFAULT_COMMODITY_TICKERS = [
   'TVC:GOLD', 'TVC:SILVER', 'FX:USOIL', 'FX:UKOIL', 'TVC:DXY'
 ];
 
+// Reverse proxy helper with graceful direct fallback (H-06)
+async function callTvScanner(market, payload) {
+  try {
+    const proxyRes = await fetch(`/api/scanner?market=${encodeURIComponent(market)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    if (proxyRes.ok) return await proxyRes.json();
+  } catch (e) {}
+
+  try {
+    const directRes = await fetch(`https://scanner.tradingview.com/${market}/scan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    if (directRes.ok) return await directRes.json();
+  } catch (e) {}
+
+  return null;
+}
+
 export function useLivePrices(bundleData) {
   const [livePrices, setLivePrices] = useState({});
   const [flashMap, setFlashMap] = useState({});
@@ -85,18 +108,12 @@ export function useLivePrices(bundleData) {
         ...planTickers.map(t => `IDX:${t}`)
       ]));
 
-      const priorityRes = await fetch('https://scanner.tradingview.com/indonesia/scan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          symbols: { tickers: priorityTickers },
-          columns: ['name', 'close', 'change', 'volume', 'Value.Traded', 'description', 'high', 'low']
-        })
+      const priorityData = await callTvScanner('indonesia', {
+        symbols: { tickers: priorityTickers },
+        columns: ['name', 'close', 'change', 'volume', 'Value.Traded', 'description', 'high', 'low']
       });
 
-      if (priorityRes.ok) {
-        const priorityData = await priorityRes.json();
-        if (Array.isArray(priorityData?.data)) {
+      if (Array.isArray(priorityData?.data)) {
           setLivePrices(prev => {
             const next = { ...prev };
             priorityData.data.forEach(item => {
@@ -140,29 +157,22 @@ export function useLivePrices(bundleData) {
             return next;
           });
         }
-      }
     } catch (err) {
       console.warn('Live IDX priority fetch error (will retry):', err);
     }
 
     // 1b. Broad universe scanner (850 emiten) for Watchlist, Heatmap, and Search
     try {
-      const broadRes = await fetch('https://scanner.tradingview.com/indonesia/scan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          filter: [{ left: 'active_symbol', operation: 'equal', right: true }],
-          options: { lang: 'en' },
-          symbols: { query: { types: [] }, tickers: [] },
-          columns: ['name', 'close', 'change', 'volume', 'Value.Traded', 'description', 'high', 'low', 'RSI', 'SMA20'],
-          sort: { sortBy: 'Value.Traded', sortOrder: 'desc' },
-          range: [0, 850]
-        })
+      const data = await callTvScanner('indonesia', {
+        filter: [{ left: 'active_symbol', operation: 'equal', right: true }],
+        options: { lang: 'en' },
+        symbols: { query: { types: [] }, tickers: [] },
+        columns: ['name', 'close', 'change', 'volume', 'Value.Traded', 'description', 'high', 'low', 'RSI', 'SMA20'],
+        sort: { sortBy: 'Value.Traded', sortOrder: 'desc' },
+        range: [0, 850]
       });
 
-      if (broadRes.ok) {
-        const data = await broadRes.json();
-        if (Array.isArray(data?.data)) {
+      if (Array.isArray(data?.data)) {
           const mappedList = data.data.map(item => {
             const rawSym = item.s || '';
             const clean = rawSym.replace('IDX:', '');
@@ -219,7 +229,6 @@ export function useLivePrices(bundleData) {
             return next;
           });
         }
-      }
       setLastUpdateTime(new Date());
     } catch (err) {
       console.warn('Live IDX broad fetch error (will retry):', err);
@@ -388,17 +397,11 @@ export function useLivePrices(bundleData) {
   // 3. Fetch Real-time Quotes dari TradingView America Scanner
   const fetchUsQuotes = useCallback(async () => {
     try {
-      const res = await fetch('https://scanner.tradingview.com/america/scan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          symbols: { tickers: DEFAULT_US_TICKERS },
-          columns: ['name', 'close', 'change', 'volume', 'high', 'low']
-        })
+      const data = await callTvScanner('america', {
+        symbols: { tickers: DEFAULT_US_TICKERS },
+        columns: ['name', 'close', 'change', 'volume', 'high', 'low']
       });
 
-      if (!res.ok) return;
-      const data = await res.json();
       if (!Array.isArray(data?.data)) return;
 
       setLivePrices(prev => {
@@ -439,17 +442,11 @@ export function useLivePrices(bundleData) {
   // 4. Fetch Real-time Quotes dari TradingView Forex Scanner
   const fetchForexQuotes = useCallback(async () => {
     try {
-      const res = await fetch('https://scanner.tradingview.com/forex/scan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          symbols: { tickers: DEFAULT_FOREX_TICKERS },
-          columns: ['name', 'close', 'change', 'high', 'low']
-        })
+      const data = await callTvScanner('forex', {
+        symbols: { tickers: DEFAULT_FOREX_TICKERS },
+        columns: ['name', 'close', 'change', 'high', 'low']
       });
 
-      if (!res.ok) return;
-      const data = await res.json();
       if (!Array.isArray(data?.data)) return;
 
       setLivePrices(prev => {
@@ -497,17 +494,11 @@ export function useLivePrices(bundleData) {
   // 5. Fetch Real-time Quotes Komoditas & Strategic Macro (Gold, Silver, WTI, Brent, DXY)
   const fetchCommodityQuotes = useCallback(async () => {
     try {
-      const res = await fetch('https://scanner.tradingview.com/cfd/scan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          symbols: { tickers: DEFAULT_COMMODITY_TICKERS },
-          columns: ['name', 'close', 'change', 'high', 'low', 'description']
-        })
+      const data = await callTvScanner('cfd', {
+        symbols: { tickers: DEFAULT_COMMODITY_TICKERS },
+        columns: ['name', 'close', 'change', 'high', 'low', 'description']
       });
 
-      if (!res.ok) return;
-      const data = await res.json();
       if (!Array.isArray(data?.data)) return;
 
       setLivePrices(prev => {

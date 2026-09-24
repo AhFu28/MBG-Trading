@@ -1159,7 +1159,7 @@ const ELEMENT_MC_ANALYSIS = {
 // Initial Seed Data for Markets across all major global and domestic asset classes (Semua Instrumen & Pasangan Pair)
 const DEFAULT_MARKET_FEEDS = {
   // 1. Commodities, Metals & Energies
-  'XAUUSD': { name: 'Gold / US Dollar', market: 'FUTURES', price: 2914.50, change: 0.85, high: 2928.00, low: 2898.10, atr: 18.5, regime: 'TRENDING_BULL' },
+  'XAUUSD': { name: 'Gold / US Dollar', market: 'FUTURES', price: 4262.00, change: 0.85, high: 4285.00, low: 4235.00, atr: 25.0, regime: 'TRENDING_BULL' },
   'XAGUSD': { name: 'Silver / US Dollar', market: 'FUTURES', price: 33.80, change: 1.20, high: 34.20, low: 33.10, atr: 0.65, regime: 'MOMENTUM_BREAKOUT' },
   'USOIL': { name: 'WTI Crude Oil', market: 'FUTURES', price: 71.20, change: -0.45, high: 72.30, low: 70.80, atr: 1.4, regime: 'RANGE_BOUND' },
   'UKOIL': { name: 'Brent Crude Oil', market: 'FUTURES', price: 75.40, change: -0.35, high: 76.50, low: 74.80, atr: 1.45, regime: 'RANGE_BOUND' },

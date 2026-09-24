@@ -285,8 +285,8 @@ body {
 }
 
 .sidebar-logo-sub {
-  font-size: 8px;
-  font-weight: 500;
+  font-size: 10px;
+  font-weight: 600;
   letter-spacing: 0.05em;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -306,7 +306,7 @@ body {
 }
 
 .sidebar-nav-section-label {
-  font-size: 8px;
+  font-size: 9.5px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -362,7 +362,7 @@ body {
 }
 
 .sidebar-nav-badge {
-  font-size: 8px;
+  font-size: 9.5px;
   font-weight: 700;
   font-family: var(--font-mono);
   background: var(--bg-panel-subtle);

@@ -923,11 +923,11 @@ export default function HomeDashboardTab({
             }}>
 
               {/* Sub-Panel 1: Foreign Flow (Intraday) */}
-              <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 0 }}>
+              <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <div className="telemetry-header" style={{ padding: '4px 8px', fontSize: '9.5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span>🌐</span>
-                    <span style={{ fontWeight: '800' }}>FOREIGN FLOW // ARUS ASING (INTRADAY)</span>
+                    <span style={{ fontWeight: '800' }}>FOREIGN FLOW (INTRADAY)</span>
                     <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.3)', borderRadius: '3px', padding: '1px', border: 'var(--border-hairline)' }}>
                       <button 
                         onClick={() => setFlowScope('ALL_100')}
@@ -969,11 +969,11 @@ export default function HomeDashboardTab({
                 </div>
 
                 {/* Dense Inflow vs Outflow List */}
-                <div style={{ padding: '4px 6px', flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '2px', minHeight: 0 }}>
-                  <div className="home-flow-columns" style={{ gap: '6px', height: '100%' }}>
+                <div style={{ padding: '4px 6px', flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  <div className="home-flow-columns" style={{ gap: '6px' }}>
                     
                     {/* Inflow Column */}
-                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '2px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                       <div style={{ fontSize: '8px', fontWeight: '800', color: 'var(--accent-green)', textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
                         <span>▲ TOP INFLOW</span>
                         <span style={{ color: 'var(--text-muted)', fontSize: '7.5px' }}>NET BUY</span>
@@ -1021,7 +1021,7 @@ export default function HomeDashboardTab({
                     </div>
 
                     {/* Outflow Column */}
-                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '2px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                       <div style={{ fontSize: '8px', fontWeight: '800', color: 'var(--accent-rust)', textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
                         <span>▼ TOP OUTFLOW</span>
                         <span style={{ color: 'var(--text-muted)', fontSize: '7.5px' }}>NET SELL</span>
@@ -1072,7 +1072,7 @@ export default function HomeDashboardTab({
                 </div>
 
                 {/* Telemetry Footer */}
-                <div style={{ padding: '4px 6px', borderTop: 'var(--border-muted)', fontSize: '8px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'var(--bg-panel-subtle)', flexShrink: 0 }}>
+                <div style={{ padding: '4px 6px', borderTop: 'var(--border-muted)', fontSize: '8px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'var(--bg-panel-subtle)', flexShrink: 0, marginTop: 'auto' }}>
                   <span>Scope: <strong style={{ color: 'var(--accent-blue)' }}>{flowScope === 'LQ45' ? 'LQ45' : 'IDX 100'}</strong></span>
                   <span>Participation: <strong style={{ color: '#34d399' }}>34.8%</strong></span>
                   <span>Flow Velocity: <strong style={{ color: '#60a5fa' }}>+0.8σ Acc</strong></span>
@@ -1080,13 +1080,13 @@ export default function HomeDashboardTab({
               </div>
 
               {/* Sub-Panel 2: Bandarmology (EOD) */}
-              <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 0 }}>
+              <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <div className="telemetry-header" style={{ padding: '4px 8px', fontSize: '9.5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span>📊</span>
                     <span style={{ fontWeight: '800' }}>SMART MONEY ACCUMULATION</span>
                     <span style={{ fontSize: '7px', background: 'rgba(56, 189, 248, 0.12)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.28)', padding: '1px 4px', borderRadius: '2px', fontWeight: '800' }} title="Estimasi pemodelan quant institutional flow (bukan feed berbayar IDX)">
-                      ESTIMATED FLOW (QUANT MODEL)
+                      EST. QUANT
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -1100,8 +1100,8 @@ export default function HomeDashboardTab({
                 </div>
 
                 {/* Dense Broker Accumulation Items */}
-                <div style={{ padding: '4px 6px', flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '2px', minHeight: 0 }}>
-                  {accumulatingBrokers.map((b, idx) => {
+                <div style={{ padding: '4px 6px', flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  {accumulatingBrokers.slice(0, 5).map((b, idx) => {
                     const topB = b.top_buyers?.[0];
                     const rawBroker = topB?.broker || 'CC';
                     const isSimulated = rawBroker.includes('[SIMULATED]');
@@ -1170,7 +1170,7 @@ export default function HomeDashboardTab({
                 </div>
 
                 {/* Telemetry Footer */}
-                <div style={{ padding: '4px 6px', borderTop: 'var(--border-muted)', fontSize: '8px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'var(--bg-panel-subtle)', flexShrink: 0 }}>
+                <div style={{ padding: '4px 6px', borderTop: 'var(--border-muted)', fontSize: '8px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'var(--bg-panel-subtle)', flexShrink: 0, marginTop: 'auto' }}>
                   <span>Total Accum: <strong style={{ color: 'var(--accent-green)' }}>{formatFlowIdr(totalBandarAccumValue || 83030000000000)}</strong></span>
                   <span>Model: <strong style={{ color: '#38bdf8' }}>ESTIMASI QUANT (EOD)</strong></span>
                   <span>Horizon: <strong style={{ color: '#fbbf24' }}>5D Swing</strong></span>
