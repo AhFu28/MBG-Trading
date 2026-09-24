@@ -361,6 +361,10 @@ class NewsMacroFetcher:
             }
         else:
             indicators["data_source"] = "cached"
+            if indicators.get("gold_price") and not (1800 <= indicators["gold_price"] <= 3500):
+                indicators["gold_price"] = 2650.0
+            if indicators.get("brent_oil_price") and not (40 <= indicators["brent_oil_price"] <= 160):
+                indicators["brent_oil_price"] = 74.20
 
         try:
             for key, symbol in self.tickers.items():
