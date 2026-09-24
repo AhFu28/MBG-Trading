@@ -1352,7 +1352,8 @@ th.sticky-col-num, th.sticky-col-ticker {
   width: 100%;
   box-sizing: border-box;
   align-items: stretch;
-  min-height: 460px;
+  height: 480px;
+  max-height: 480px;
 }
 
 .home-cockpit-left {
@@ -1360,14 +1361,20 @@ th.sticky-col-num, th.sticky-col-ticker {
   flex-direction: column;
   gap: 6px;
   min-width: 0;
+  height: 480px;
+  max-height: 480px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .home-cockpit-right {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  height: 480px;
+  max-height: 480px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .home-macro-compact-grid {
@@ -1386,10 +1393,12 @@ th.sticky-col-num, th.sticky-col-ticker {
   .home-cockpit-left {
     height: auto !important;
     max-height: none !important;
+    overflow: visible !important;
   }
   .home-cockpit-right {
-    height: 460px !important;
-    max-height: 460px !important;
+    height: 480px !important;
+    max-height: 480px !important;
+    overflow: hidden !important;
   }
   .home-macro-compact-grid {
     grid-template-columns: 1fr !important;

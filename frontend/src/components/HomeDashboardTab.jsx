@@ -286,12 +286,12 @@ export default function HomeDashboardTab({
     const inflows = scopedList
       .filter(f => (Number(f.foreign_net_val_idr) || 0) > 0)
       .sort((a, b) => Number(b.foreign_net_val_idr) - Number(a.foreign_net_val_idr))
-      .slice(0, 6);
+      .slice(0, 5);
 
     const outflows = scopedList
       .filter(f => (Number(f.foreign_net_val_idr) || 0) < 0)
       .sort((a, b) => Number(a.foreign_net_val_idr) - Number(b.foreign_net_val_idr))
-      .slice(0, 6);
+      .slice(0, 5);
 
     const netSum = inflows.reduce((a, c) => a + Number(c.foreign_net_val_idr), 0) +
                    outflows.reduce((a, c) => a + Number(c.foreign_net_val_idr), 0);
