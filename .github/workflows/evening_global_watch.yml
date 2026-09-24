@@ -36,4 +36,11 @@ jobs:
           INDEX_ALPHA_API_KEY: ${{ secrets.INDEX_ALPHA_API_KEY }}
         run: |
           python engine/run_pipeline.py --mode all
-
+      - name: Send Telegram Failure Alert
+        if: failure()
+        run: |
+          if [ -n "${{ secrets.TELEGRAM_BOT_TOKEN }}" ] && [ -n "${{ secrets.TELEGRAM_CHAT_ID }}" ]; then
+            curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+              -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+              -d "text=⚠️ [MBG Pipeline Alert] Workflow '${{ github.workflow }}' FAILED on ${{ github.ref_name }}. Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" || true
+          fi

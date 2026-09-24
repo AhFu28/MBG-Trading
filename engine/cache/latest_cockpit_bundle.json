@@ -122,7 +122,7 @@
       "generated_at": "2026-09-17T13:13:44.138517",
       "market_verdict": {
         "stance": "CONSOLIDATIVE",
-        "badge": "\u26aa KONSOLIDASI PASAR SEHAT",
+        "badge": "⚪ KONSOLIDASI PASAR SEHAT",
         "confidence": "HIGH",
         "narrative": "IHSG bergerak variatif dengan kecenderungan konsolidasi menjelang rilis data inflasi dan suku bunga acuan."
       },
@@ -172,7 +172,7 @@
     "live_news": [
       {
         "id": "daily-brief-202609180920",
-        "title": "\u2615 MBG Morning Brief: Proyeksi IHSG, Sentimen Wall Street & Dinamika Komoditas Global",
+        "title": "☕ MBG Morning Brief: Proyeksi IHSG, Sentimen Wall Street & Dinamika Komoditas Global",
         "source": "MBG RESEARCH DESK",
         "link": "#daily-brief",
         "pub_date": "Fri, 18 Sep 2026 02:20:11 GMT",
@@ -195,15 +195,15 @@
         "reading_time_sec": 65,
         "summary": "MBG Morning Brief Intelligence (18 Sep 2026 09:20 WIB): Tinjauan makro global, komoditas emas & minyak mentah, serta panduan alokasi portofolio harian.",
         "key_takeaways": [
-          "\ud83c\udf0d Kondisi Makro Semalam: Emas $4,409.5 (+0.5%), Minyak Brent $102.0 (-3.59%), DXY Index 100.08 pts, Yield US10Y 4.95%.",
-          "\ud83c\udfdb\ufe0f Katalis Pembukaan IHSG: Indeks diproyeksikan menguji level psikologis 6,462. Sektor komoditas logam dan energi dalam sorotan aktif merespons fluktuasi global.",
-          "\ud83d\udee1\ufe0f Actionable Guidance: Disarankan fokus pada saham berorientasi ekspor dan defensif dividen; pasang trailing stop disiplin 3% untuk mengamankan modal."
+          "🌍 Kondisi Makro Semalam: Emas $4,409.5 (+0.5%), Minyak Brent $102.0 (-3.59%), DXY Index 100.08 pts, Yield US10Y 4.95%.",
+          "🏛️ Katalis Pembukaan IHSG: Indeks diproyeksikan menguji level psikologis 6,462. Sektor komoditas logam dan energi dalam sorotan aktif merespons fluktuasi global.",
+          "🛡️ Actionable Guidance: Disarankan fokus pada saham berorientasi ekspor dan defensif dividen; pasang trailing stop disiplin 3% untuk mengamankan modal."
         ],
         "is_pinned": true
       },
       {
         "id": "research-note-202609180920",
-        "title": "\ud83d\udd2c MBG Sector Research Note: Analisis Rotasi Modal Perbankan vs Komoditas Energi & Logam",
+        "title": "🔬 MBG Sector Research Note: Analisis Rotasi Modal Perbankan vs Komoditas Energi & Logam",
         "source": "MBG RESEARCH INTELLIGENCE",
         "link": "#research-note",
         "pub_date": "Fri, 18 Sep 2026 02:20:11 GMT",
@@ -225,9 +225,9 @@
         "reading_time_sec": 95,
         "summary": "MBG Daily Research Desk (18 Sep 2026): Riset tematik mendalam mengenai rotasi likuiditas institusi pada klaster saham likuid BEI.",
         "key_takeaways": [
-          "\ud83c\udfe6 Sektor Perbankan BUMN (BBRI, BMRI, BBNI): Ketahanan marjin bunga bersih (NIM) dan stabilitas rasio kredit bermasalah (NPL) di tengah volatilitas suku bunga global.",
-          "\u26cf\ufe0f Sektor Tambang & Emas (ANTM, BRMS, MDKA): Sensitivitas harga jual rata-rata (ASP) terhadap momentum kenaikan spot emas dunia (+0.5%).",
-          "\ud83d\udca1 Rekomendasi Alokasi: Terapkan strategi 'Barbell Strategy'\u2014kombinasi saham defensif dividen tinggi dan komoditas dengan katalis reli harga jangka pendek."
+          "🏦 Sektor Perbankan BUMN (BBRI, BMRI, BBNI): Ketahanan marjin bunga bersih (NIM) dan stabilitas rasio kredit bermasalah (NPL) di tengah volatilitas suku bunga global.",
+          "⛏️ Sektor Tambang & Emas (ANTM, BRMS, MDKA): Sensitivitas harga jual rata-rata (ASP) terhadap momentum kenaikan spot emas dunia (+0.5%).",
+          "💡 Rekomendasi Alokasi: Terapkan strategi 'Barbell Strategy'—kombinasi saham defensif dividen tinggi dan komoditas dengan katalis reli harga jangka pendek."
         ],
         "is_pinned": true
       },
@@ -667,7 +667,7 @@
       },
       {
         "id": "news-21",
-        "title": "Ranking Member Maxine Waters On the CLARITY Act\u2019s Failure to Advance in the Senate Yesterday",
+        "title": "Ranking Member Maxine Waters On the CLARITY Act’s Failure to Advance in the Senate Yesterday",
         "source": "U.S. House Committee on Financial Services Democrats (.gov)",
         "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQeE1SRjhTaXFTWjBFbmVubm5nUTVteE9yRk5scGg5MUVRT2Q3eEQxTHQxQ1B4QlJJeVlwTFZ6VXd3Nm56d0hOdVZBTlY3TGVKVl9HQ29jaV82b2Z6Q1ZnZ3JXeTZJVlh0bzFoeDhYaHo5MllmVTNHSzhfbGRXVWZ2TnRlcGJCcExId004UEt2ejdLUQ?oc=5",
         "pub_date": "Thu, 17 Sep 2026 12:12:35 GMT",
@@ -792,7 +792,7 @@
       },
       {
         "id": "news-27",
-        "title": "AI Helps Hackers Open a New Front in Crypto\u2019s Cybercrime Wave",
+        "title": "AI Helps Hackers Open a New Front in Crypto’s Cybercrime Wave",
         "source": "Bloomberg.com",
         "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNaTBIVW5KNHVtZ1RpNVJFZ1VTa2xVbTVBb2p6ODZYZ0NhR0hLeU9OVjctdmNhV0lSdUEyVEVtdHptME1fbzdVUHNBVGlfRjNZRHNMVUlpYmJDZ18ybVJEM1V2WjkxTi16X0Zlb2c5OUs1T0NEdjB5QktkSUtjOTBDRktlSFdfbjF2WDlqOHoxWGJsdzJQQUJZcmZETHUzekYwX0hHUlB2MGVOZ19vdTFCYkxR?oc=5",
         "pub_date": "Thu, 17 Sep 2026 12:00:00 GMT",
@@ -812,7 +812,7 @@
       },
       {
         "id": "news-28",
-        "title": "With hopes for crypto legislation dimming, Trump\u2019s regulators step into the fray",
+        "title": "With hopes for crypto legislation dimming, Trump’s regulators step into the fray",
         "source": "Politico",
         "link": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNbXhwclNYSWJkX1ZQdEhjVURsbWFkVUpwVGJQMWQyalZfQTJPdlJjcTlmVmRjMFkzWTFlcDg5dkNhT0ZMQUI0eTUzR290YnBreFpIRnZDMi03R3Jqc3RzTDVfdUM0ZDhObklmRzBxUUVGTklvR1V6ODBZYkJNM0x1SUhWTlZHZ2pWRFdZQkNtbFZCOWdhMUk0NzVaZ1BrU3l6SFhPTTZWS1Y2Nlo2dFZvbTNPa0daUER5S0FwbzZ6M2R0T3JiTDkw?oc=5",
         "pub_date": "Wed, 16 Sep 2026 20:14:00 GMT",
@@ -859,7 +859,7 @@
       },
       {
         "id": "news-30",
-        "title": "Bitcoin\u2019s 40% decline echoes 2022 as Fed returns to rate hikes",
+        "title": "Bitcoin’s 40% decline echoes 2022 as Fed returns to rate hikes",
         "source": "CoinDesk",
         "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNSzVGUklHTVFjcUY0SEtha2VCM21tN3ZtVEJXYWpJbEhOQnJ0QlIya2VWX2lxMGdWNjB2elNRRE9MTW1kQjRCNTF5ZUR4TVh0d3M4WWtYSWdSYi1Fcm5EdzJENk9wRGl2RWZFNEp3TDZHeUpCTmFlTktxN2VlNnpsb1Y1WlE0ZFlkMk5KbnBNUFZMa1ZMeHZmdGpjV1NYazVGRDV0RWpXYnhxM3YyemxJ?oc=5",
         "pub_date": "Thu, 17 Sep 2026 09:52:00 GMT",
@@ -969,7 +969,7 @@
       },
       {
         "id": "news-35",
-        "title": "\u2018People are pissed\u2019: Crypto\u2019s political agenda hits a wall",
+        "title": "‘People are pissed’: Crypto’s political agenda hits a wall",
         "source": "Politico",
         "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOVUowMFplMTBnU0tqWWZ4NjBUYktXa0VHcERPQzZzM1VwYndtOVZEMTE3VmtpUXp4S2IxdXBjV2ZhMzhaT2R5WFBGYTFMOXZSMUtBV2c2LXg4Z2lCb2JkaUpMbjBpMEUtY0g0c25CWnphQ1BFQ2RnaXpva21Wd1IxeWxCLWdZYzF4bjA3UFlMRmJQR2NlSlI4eldFbmNENWR1SnZlMDV2Qi1QLTJzNVpuemplWQ?oc=5",
         "pub_date": "Wed, 16 Sep 2026 16:44:00 GMT",
@@ -1079,7 +1079,7 @@
       },
       {
         "id": "news-40",
-        "title": "Zcash jumps 23% as bitcoin and major tokens rise despite Fed\u2019s first hike since 2023",
+        "title": "Zcash jumps 23% as bitcoin and major tokens rise despite Fed’s first hike since 2023",
         "source": "CoinDesk",
         "link": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOS3htWG5TLXdBRmFmSGZ0X2ktSWJCaFRIdG9BVGVMeHdWQjM5UTlETVRNaVJUbDBSWXdzTjMyaUZxTzE5ZWhtSGZ6OGIyVzBoYXY0Y2kyYUN2N0hxaVExRGZLamVjeENLT2VYM292MmdOc3FOYW13U3JsV1NQQ29WSmNseF9JckQ5UEh5T0hnbVEtZ1VMcFpkMk9lUjVfdXVQNWluUEJtLUhQY3BMMzNNamZQbnRWS2ZnM3dpWG5XakpJQnpXQlE?oc=5",
         "pub_date": "Thu, 17 Sep 2026 04:47:27 GMT",
@@ -2055,7 +2055,7 @@
       },
       {
         "id": "news-89",
-        "title": "ECB\u2019s Rehn Sees No Second-Round Inflation Effects From War Shock",
+        "title": "ECB’s Rehn Sees No Second-Round Inflation Effects From War Shock",
         "source": "Bloomberg.com",
         "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNZXdOV2xYVUwxV3BHQXp4aWpUTGotOGRPVmZ1emNBZ1dLaVh0Mm5vTGR1TzIxaldKUnNaV25mNU45RHJ1TVFxSmxZc1lhaFVsOGYxSXlyV3loXzZuZU11VS03WExXOGJjcUczTDEta2YwZFVNMlpXOFZla3pJdmp5VGd0TnFCTDBya0NnTGxwNFI3aHlKR3dQc1R1bkh3LW5CdHV6aXhvNnd5dkJ1R1Y4ZVdYaXk5UQ?oc=5",
         "pub_date": "Thu, 17 Sep 2026 10:34:39 GMT",
@@ -2175,7 +2175,7 @@
       },
       {
         "id": "news-95",
-        "title": "What to know about US Federal Reserve\u2019s first interest rate hike in 3 years",
+        "title": "What to know about US Federal Reserve’s first interest rate hike in 3 years",
         "source": "Al Jazeera",
         "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNR2E0YlpfSnFQZldrNGdyd3FZNUxPVjU5OHZzTElVRjdUOUhLT3JzSFFVNHQ4VXd4WVhtMUZtdGhFTVNlZXl6YVpBdFhKc1B4WTY4ZDlXalJwb0ZleE1yQzNTLWw3UXNiYk9KaDNuVDJZRXZFQkNyOG5ySG4wNjNwelFWZUwyM2ZpbERyTjRsa19vYjh1SXo3cWxWTk92THRETV9JYkJ6aWd5QjVEWGR3VkoxdW15d9IBuwFBVV95cUxOLWhIRXBrWG1GNndPR1k2SEZYcS14bzhCMWdfV01Oak95OGlFNnp1eDhSVEE3VHdrTk1DR3VzbURjSC0xU00tRTA2a1pTVEJ3cTNoLTIwVFRHWWNHcXBvVVExdDVmbFpzY1U4ZHZYY3ZkSVJNaXRFRUVwUWQyemgxQTlIcnN2MXFZeWhDYmhjOWFzeW5QSy1KUjhHblBQR1VZRzA0eUxMdVFPbkNublFOVFVFR2NRZVBjTk9J?oc=5",
         "pub_date": "Wed, 16 Sep 2026 23:18:48 GMT",
@@ -2235,7 +2235,7 @@
       },
       {
         "id": "news-98",
-        "title": "ECB\u2019s Makhlouf Says Each Meeting Is \u2018Live\u2019 Including October",
+        "title": "ECB’s Makhlouf Says Each Meeting Is ‘Live’ Including October",
         "source": "Bloomberg.com",
         "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNZFlwT1VHLTVpUGR2ZEZqZGNTdnQ1aVhRRzdSUjl2MjdvZDNmZ0FSR3RIVi1fQlBJRzVVcW5HZndxcXJvRG9WbnhxZUFldmlKeE1QVWdaUndORWV2LTI1M0xoajc4VDBRQ0paU0VtS1EwYXAzdW92dXVHMjFyRnlQSXdDSXM4NDhPdVNBZVpXaDFVcGxVcFB3bEx5ZE1zUmNZS1ZfYzJWRUI0UVk2cnNF?oc=5",
         "pub_date": "Thu, 17 Sep 2026 09:30:40 GMT",
@@ -2338,7 +2338,7 @@
       {
         "id": "news-103",
         "title": "U.S. CFTC chief says he will push crypto regulation directly",
-        "source": "\ub514\uc9c0\ud138\ud22c\ub370\uc774",
+        "source": "디지털투데이",
         "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQdzBzYWtfckFEVWxGMjdET1dOcDVnNHAyOEtqbkFhNGl5SW5nUWRIM3pmU0lhNVNPUVhzMTVqRThTdlJ6WjNFblFSb0FiTEMzclBYeWRQSzZFeWNWZDhKSVBfa0g1VU91dHVTeHREN19pdmZCSk9RNlJEMlNBT1BrMXAwcWhFbHU4QjNYRlM1YmIyTXhPMjIwVDlISnVkWW95NUFLMVVGTQ?oc=5",
         "pub_date": "Wed, 16 Sep 2026 23:10:54 GMT",
         "tag": "REGULASI",
@@ -2348,7 +2348,7 @@
         "related_tickers": [],
         "metrics": [],
         "reading_time_sec": 34,
-        "summary": "Research Intelligence (\ub514\uc9c0\ud138\ud22c\ub370\uc774): Indikasi sentimen neutral mempengaruhi klaster REGULASI.",
+        "summary": "Research Intelligence (디지털투데이): Indikasi sentimen neutral mempengaruhi klaster REGULASI.",
         "key_takeaways": [
           "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
           "Pasar mempertahankan rentang konsolidasi wajar dengan selektivitas pada instrumen likuid.",
@@ -2358,7 +2358,7 @@
       {
         "id": "news-104",
         "title": "Ripple CLO reaffirms XRP is not a security after U.S. Senate stalls Clarity Act",
-        "source": "\ub514\uc9c0\ud138\ud22c\ub370\uc774",
+        "source": "디지털투데이",
         "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQQXQxdFNvQkd2c1V0NGhhVUQ3UGZTZFY5bWV6X1JWRGIwTFloX2h1bTlGMEpaZXVOOElmcEtvbmJjZkUzbXlTRXUzWVpULUJ1NXdyWURuVkxpZjFxeFY2RUp4STZBYlpadVdGSEY2cURBRmR4cGdFaE1CMGwyV0tWa0ZWblRrN2lwck5SeE1IZk1qN0xRWERWRnkzVUg1NHM4cW04YTJnVUN4czZwWVRPcmpvU2t4TmlVbnFnT09sSjA?oc=5",
         "pub_date": "Thu, 17 Sep 2026 01:41:18 GMT",
         "tag": "REGULASI",
@@ -2370,7 +2370,7 @@
         ],
         "metrics": [],
         "reading_time_sec": 36,
-        "summary": "Research Intelligence (\ub514\uc9c0\ud138\ud22c\ub370\uc774): Indikasi sentimen neutral pada $XRP mempengaruhi klaster REGULASI.",
+        "summary": "Research Intelligence (디지털투데이): Indikasi sentimen neutral pada $XRP mempengaruhi klaster REGULASI.",
         "key_takeaways": [
           "Sentimen pasar cenderung terkonsolidasi menguji level equilibrium menjelang rilis katalis baru.",
           "Volatilitas aset kripto $XRP merespons likuiditas global dan arus modal spot ETF.",
@@ -2419,7 +2419,7 @@
       },
       {
         "id": "news-107",
-        "title": "US House tax committee advances crypto tax overhaul in 38\u20135 vote",
+        "title": "US House tax committee advances crypto tax overhaul in 38–5 vote",
         "source": "TradingView",
         "link": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNSjlRNGFUWU5PQkgyQlE1Rjl2cDIxZ1hPZURUcVZoWlhaVGY1X3BSR3c4VW5WUFdaeHd5M1lDb1lFcXBicUxOajlScWxzRmZSQnRFSGVjMm1KSmZrTncyZlJMOGF5TFJsQk42ck5UN1V1RmZ2bG4wSk9JRFhSR1NtclVSWHp4Q0hZR2lBSGdHMWY3bWpxWlF2a211Nm9lUWxEODdFVlFpa0d2LW91NUlkUVJwalgxajU4VkZaVjN2TWNPbWhINUZR?oc=5",
         "pub_date": "Wed, 16 Sep 2026 18:01:55 GMT",
@@ -3298,7 +3298,7 @@
       },
       {
         "id": "news-154",
-        "title": "Forex trading Fed raises rates \u2013 Five reasons for lower Brent [Video]",
+        "title": "Forex trading Fed raises rates – Five reasons for lower Brent [Video]",
         "source": "FXStreet",
         "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNOFRDbXZPbVA5SHpOd3lmSFZnd0gyb3NaeHBkTU92bFZtanhjck5ZZXdpZVk0SFVkYkU0VExWcFFKU09SZktzVlBxWDRSdG54UnJWdE5mbWZ5d1M1bjFGY3F4Ny1pQlVMR1ZmQjM4eS16ckxoREs0ZnNRY2FLUVFFc21XdG91XzB4Sm9MZk9LdmxxUmpFOW93YXpxTHA4QlN4eGhPWDJad3R4d2o3a3U5VVJB?oc=5",
         "pub_date": "Thu, 17 Sep 2026 10:14:00 GMT",
@@ -3482,7 +3482,7 @@
       },
       {
         "id": "news-163",
-        "title": "3 of Wall Street\u2019s Favorite Stocks Walking a Fine Line",
+        "title": "3 of Wall Street’s Favorite Stocks Walking a Fine Line",
         "source": "finance.yahoo.com",
         "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQTlUySVlQZEJDTXBGVEdVX0RDM1NHSFZYNnB3bFBET3UzOC1ENEV4eldDcTRzM0N1bzQwTjJkcTdxZ3BobDlKa0t4bmNMWF94Y2NoMXIwUE9PSkdrZ3ptNXRIY0tBYXN0aENnTUwwSVV2Qkx4LXQxbTNHX01qUEljRDdYbDRNNjFVTnJLRlhwUndpcUxJNDg4RGtn?oc=5",
         "pub_date": "Thu, 17 Sep 2026 09:54:17 GMT",
@@ -3502,7 +3502,7 @@
       },
       {
         "id": "news-164",
-        "title": "The Startup That Built OpenAI\u2019s Biggest Data Center Is Now Making Tiny Ones",
+        "title": "The Startup That Built OpenAI’s Biggest Data Center Is Now Making Tiny Ones",
         "source": "WSJ",
         "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNT3hWLW1IUElCTmg4TGwzNXN4RkxMVjRlTXZ3Uk9NMnNFOWV3WjZFaDN1cm5XYkdBNDZXbThZeDVadWg0djZiUzc1UWZDQ21ucTVOdmhrc3RwUUhSdEI3c0cyLUM5VUE5ZE8tMm56a3dxc2VsZGxvN0ZTMkg5VjBoT1ZTdm9xRGVPbFFFZEVRdWNkVWNtclF4cE1hNjNmeEowOFBiVkZOZC0zaWNidjg5Tw?oc=5",
         "pub_date": "Thu, 17 Sep 2026 09:00:00 GMT",
@@ -3522,7 +3522,7 @@
       },
       {
         "id": "news-165",
-        "title": "S&P 500 Could Deliver Another 6% by Year-End as JPMorgan Calls Bears an \u2018Extinct Species\u2019 \u2014 Polymarket Bettors Price 35% Odds",
+        "title": "S&P 500 Could Deliver Another 6% by Year-End as JPMorgan Calls Bears an ‘Extinct Species’ — Polymarket Bettors Price 35% Odds",
         "source": "finance.yahoo.com",
         "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxORXlYUDFHU0NqRVd2N1pQWmx5ZEF0d2g4eHc1b3RxckxKSVZ3aVk3Q2dzNlVZZlNsYS0tejFsejJrZzhMenJkMHU2YUhqTVJyLUdveGhOSFlycHRrYTRRb09XdDNqTWZ0cmxMdWtYTTZPZFRlU3B6SDZCd1FZblNET3k5RExGT1lRX09OSFc5MjlJRTRPMHdj?oc=5",
         "pub_date": "Thu, 17 Sep 2026 11:20:35 GMT",
@@ -3544,7 +3544,7 @@
       },
       {
         "id": "news-166",
-        "title": "1 of Wall Street\u2019s Favorite Stocks with Exciting Potential and 2 Facing Headwinds",
+        "title": "1 of Wall Street’s Favorite Stocks with Exciting Potential and 2 Facing Headwinds",
         "source": "finance.yahoo.com",
         "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNSmYybmR0UG1WZWVXaG5zREZBTTlITHh1SEV4QUFPb0xOU0tZN014ZXVlbHhrUzRWaGtPNFNRX2xhQkNrUWRVMkg1YUJkMEZPcnJCcXRRSVMxZy1jdEhfdlNPMDhfd0haTGFQRG5oRFNMSm5LYTBKck5BcjJuUTRQQXp0Vl8xWFFNVmMxd2dRVVBUczFmWmlEOUZn?oc=5",
         "pub_date": "Thu, 17 Sep 2026 12:50:17 GMT",
@@ -3564,7 +3564,7 @@
       },
       {
         "id": "news-167",
-        "title": "Earnings Drag and Geopolitical Headwinds Weigh on Lockheed Martin\u2019s (LMT) Performance",
+        "title": "Earnings Drag and Geopolitical Headwinds Weigh on Lockheed Martin’s (LMT) Performance",
         "source": "finance.yahoo.com",
         "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQaFlzMi1YWm1BT0lQRFVLNk5TMVpLcTJTdkkzZFhsejhmOXY4OFB1anhWR2w1QV9HWjhTZTNJSk12SVlQak5TSWhpaktrTHpxWFN4SVoxQ3dTOG1OVzJlMng1QW9ZNW9tNV9nanNpWWJpcHdhLVNyS05HLVRPZGV3SGc1blZTanphZmpZMXF5NndYc3RzUDgtMDZPQl8wTUR5VmppdTJyTUdZdEU?oc=5",
         "pub_date": "Thu, 17 Sep 2026 11:55:55 GMT",
@@ -3584,7 +3584,7 @@
       },
       {
         "id": "news-168",
-        "title": "3 of Wall Street\u2019s Favorite Stocks We Approach with Caution",
+        "title": "3 of Wall Street’s Favorite Stocks We Approach with Caution",
         "source": "finance.yahoo.com",
         "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNTXo0Ukt6aG44c2VZWUt2bmJqc0o3dEgzMGRDVDhSQ0xOT0xHbDVpay0tSlA1d2hXYXdPZDZLYzZRSXZ3MGV5bEdzMFhxU08xMG5WSVFNSVRBVm9GQjg1NUlNVXBfa1kyRUtyNDRlQVNZSmZRTlZDb1JLWXFpTHNuTDFOSW5zX0VOQ183bzZTTlB4MGc3OTd4a0ZR?oc=5",
         "pub_date": "Thu, 17 Sep 2026 09:38:17 GMT",
@@ -3646,7 +3646,7 @@
       },
       {
         "id": "news-171",
-        "title": "1 of Wall Street\u2019s Favorite Stocks on Our Watchlist and 2 Facing Challenges",
+        "title": "1 of Wall Street’s Favorite Stocks on Our Watchlist and 2 Facing Challenges",
         "source": "finance.yahoo.com",
         "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPOUtkRVFGQUsxalpGMmN3N0xlcVlkTlhoY3BJTWpKOTl3Q19YOVpUbVJJeEJSQlM3QTVqcEk3a2dYVGV4NC1iR2MzUVZ6TERUSjliNW9VQmpUSWR2dk1nR21SS04wNmwxV3g3cmRvTEVCV0NsV0xQazN4WW0xX0dONFByQmg0b0ltdXFRd29DUUdOM1JSWmdqUHBn?oc=5",
         "pub_date": "Thu, 17 Sep 2026 09:22:17 GMT",
@@ -3706,7 +3706,7 @@
       },
       {
         "id": "news-174",
-        "title": "China Adds Currencies to Central Clearing in Yuan\u2019s Global Push",
+        "title": "China Adds Currencies to Central Clearing in Yuan’s Global Push",
         "source": "Bloomberg.com",
         "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPU3JSRGxaUHo3dUNyaFMzTmk5UUVoWWdhdWpTaFVFaGFZUzZLdDEzZGdHcVRPZFZTcXBHdUw5M2t4dDlwdmRSdEhzR25WRk01bGp5NHd3OHRqQW1YZ2lqWS1TY25NdGtlbWRJSm10QkRpOWRpLTliWFg1QjFTVGFVeGI0Zkg3cE4xV29waTdFaXZQeXBrcHVlOEJSMTZnemVNbnZ3QUtMT1F6Q3RqdERJelNZeDc?oc=5",
         "pub_date": "Thu, 17 Sep 2026 02:31:00 GMT",
@@ -3748,7 +3748,7 @@
       },
       {
         "id": "news-176",
-        "title": "Xi\u2019s industrial power play sees China bet big on AI, chips and smarter factories",
+        "title": "Xi’s industrial power play sees China bet big on AI, chips and smarter factories",
         "source": "South China Morning Post",
         "link": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPUng2aGxEMnR4cjJlaWtwWDNTak1qOEUzWDFkNWVmNWRUNTBvWkQ0NVlKS3UyWlRzc1NuN1ltMks4ZnhScGY0Qkg2X1MyOHQ3Sy1mZUN5VEZMZjhKNFhTZTFET0JFYXNtYlFrdnJ4a05kUDIzVXprdjlwdEFrUGo0MGVvbDQ2NkJpNm1ZMnQ1UU50RXFXYnF6ZFVSejhOclp5b3lHQ0h4RzBFUUNRMGhrdUYxazE1UVV1QjdFYk9WajY3X3pZUmJXemktbExjRUdoOWdBc0FWUGZhdzlT0gHcAUFVX3lxTE9CQmpnSzFQUHVZMGRtMjVUdWZiR3JxeDI3VTdGdjgzSVVHVWJkeUpVMGFvRjFHdHBRZEhzNkNSaV82Mm9UQ0l6WUtGZGF4c09MLXBuVGlvWnBuRVVfRzBXSDhWYTk5WkRGY3MxZlFHcHFTdW0yYTVjZ2RBVkV6bGt6TTNLeXhUZ2MtY2swUDk5Ni1WbU1aSFJodEtsempLcVIyMDd0bDlJaEZ0SUptaFEwQ3dpMG9ya3hmYUlka0szMHppN2tGWkxOQ19XRTZiVXFhWngzVGpCVkRrYmI?oc=5",
         "pub_date": "Thu, 17 Sep 2026 10:29:58 GMT",
@@ -3808,7 +3808,7 @@
       },
       {
         "id": "news-179",
-        "title": "PBOC says slower loan growth is China\u2019s new normal as financing shifts beyond banks",
+        "title": "PBOC says slower loan growth is China’s new normal as financing shifts beyond banks",
         "source": "The Asian Banker",
         "link": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQcFp3dzY1NjZwd3dYSVFRcG1tdTgtbV9LUGZvUmQxRnliSjl2QkU0ZWIybm5wRkxzcl9Ea28ybF9uSndIMXR6WGF5TUFoRnVROV9DZTlqa2M5WGJoeVppdXRPaFZqVlh3Q3F1eDhTYnl3cXRtVVdNSHROS2MxTDcxRTlJVHI2bE5RQkMwekl1Vy0xMU5GbXdYcU1lY0d0X29GZTRQbjk0SklNb2MzVDRaOFZlX0FvRGxoWDZkbXgzcWt0X1l1amxIRnl0d1l1S1ZL?oc=5",
         "pub_date": "Thu, 17 Sep 2026 10:46:50 GMT",
@@ -4148,7 +4148,7 @@
       },
       {
         "id": "news-196",
-        "title": "RANKED: The Top Crude Oil Producers in 2025 \u2013 Visual Capitalist \u2013 See How Countries Rank",
+        "title": "RANKED: The Top Crude Oil Producers in 2025 – Visual Capitalist – See How Countries Rank",
         "source": "EnergyNow.com",
         "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQc043cHk1ZjIxLWc2RVJUX2p1NnRHMmpRamNpNkVJNTBkNjliR1Z4amtCdkdVUzkzUnBRQ2ZpWFhHdGRUUWtybzFieTY2ek9qazdPaG5Ec0d3akx6a24wMlYzaDdnbjZrbmNVdTdZdXZSYlhGTVFUOHJoTGZhQ1RJR2tyaDNGckF0OWM0QW1ta2lVbnFoOFE?oc=5",
         "pub_date": "Wed, 16 Sep 2026 21:12:02 GMT",
@@ -4250,7 +4250,7 @@
       },
       {
         "id": "news-201",
-        "title": "\u2018Two Major\u2019 Natural Gas Leaks: Century To Spend Nearly $70K To Fix",
+        "title": "‘Two Major’ Natural Gas Leaks: Century To Spend Nearly $70K To Fix",
         "source": "NorthEscambia.com",
         "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNZkljV2ZiNkp2VkJJTHZxM285bjh4d3hnU2lFU1Y2NmJhbC10eU5SS19JUGNnWGk0Y0hjcXU5djgyc29vRHZTVURCU09TTWVfS0wwS2RvNHdUNmtvc1hSbzN1dEdfbjFmcmlpMWdsZk1LX21SZnFJOGFLM3pXcFNHeEpjX19GRGJIWWFBV3N1T01XOXpfSmxPN3FQeU9LdFlu?oc=5",
         "pub_date": "Thu, 17 Sep 2026 05:33:53 GMT",
@@ -4454,7 +4454,7 @@
       },
       {
         "id": "news-211",
-        "title": "Natural Gas Forecast: $2.80\u2013$3 Range Holds as Winter Nears",
+        "title": "Natural Gas Forecast: $2.80–$3 Range Holds as Winter Nears",
         "source": "FXEmpire",
         "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPMFpKcExVaXBJRVJlSzl6c1pmNFl2eWVtaXRZai03QWZWRjhyQXFYeDVzZDRnTnZYU2JIckg0dzhPYUlCaVI2dFk1RjRMNDhPN1pKenNqTFltZFEtTHVDUm5GVHlDQ1dfMUVpU29xb0dZYi0zUUtJemNFaHRla0JCem14WERLbkdzalFWMjYzVWYxMnhmcUpkLTBxMFRqdXhJa3lreHN2WUR1Zw?oc=5",
         "pub_date": "Thu, 17 Sep 2026 11:49:50 GMT",
@@ -4518,7 +4518,7 @@
       },
       {
         "id": "news-215",
-        "title": "Huawei\u2019s Plan to Become China\u2019s Nvidia",
+        "title": "Huawei’s Plan to Become China’s Nvidia",
         "source": "WSJ",
         "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9pOTh1aW5xZThBQVdPRmFtcDh5TUdPMFRFTnZmS0xpYjJFNV9WcEdUd3ZkSmRUTlBvSUhXRXQtQndSd01mOWpZUXFsUmNidUNIOXRVYU9MZVFDQ0Vidk9pSEJWNzdHUnkzVmJQZGYzaWppeC12SE1JZTBPdjRtUQ?oc=5",
         "pub_date": "Thu, 17 Sep 2026 10:29:00 GMT",
@@ -4558,7 +4558,7 @@
       },
       {
         "id": "news-217",
-        "title": "OpenAI Reveals 6 \u2018Concerning\u2019 Incidents. Why Marvell, Other Hot AI Stocks Are Rising.",
+        "title": "OpenAI Reveals 6 ‘Concerning’ Incidents. Why Marvell, Other Hot AI Stocks Are Rising.",
         "source": "Barron's",
         "link": "https://news.google.com/rss/articles/CBMidEFVX3lxTE5TZWFoOHRvRGZQR0czSk85Y1JvV0tRNzJHZV85dHZnd1EwSmRuS3p4aERmV1J6UFJ1azQ3V0t2cnBZbTlIT3hTS3QxejhUaVVrRnZBN29LSEdKRnhHUGtnZ2xmSWpLbWJFODZnYnd5NF95ZmZ1?oc=5",
         "pub_date": "Thu, 17 Sep 2026 11:42:00 GMT",
@@ -4578,7 +4578,7 @@
       },
       {
         "id": "news-218",
-        "title": "The Return-on-Capital Question Looming Over NVIDIA Corporation\u2019s (NVDA) AI Investments",
+        "title": "The Return-on-Capital Question Looming Over NVIDIA Corporation’s (NVDA) AI Investments",
         "source": "finance.yahoo.com",
         "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQTFNEeFk1eVhBNDNXTVNheC0yX2szQUdFeU5hNVdIcXRhVnRyRHhvY2U1RzZYSnlVQ3VkMktLYXo3a0t0Vm16dko2RTNmNXpSRDdBVE15a0NuUEo1QmtPMl8zUVBNMFFNNllmM0daX0VSNkxEUDNZdkFweHIwbjFkQlpGRjZKZ2RMbkdld1Z4Ylg2X0h3UjFtaVZrRU5hYnJP?oc=5",
         "pub_date": "Thu, 17 Sep 2026 11:48:08 GMT",
@@ -4658,7 +4658,7 @@
       },
       {
         "id": "news-222",
-        "title": "King Charles Wants AI Chiefs To Promise They\u2019ll Protect Mankind",
+        "title": "King Charles Wants AI Chiefs To Promise They’ll Protect Mankind",
         "source": "Bloomberg.com",
         "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNWXplMS1mRGRGYVY3ZVhpNWhkOEhWTU1UR05rU2lHTXVtbzhjVUNmRnJ2bEc1RlpqM0dtd1VNNUg5SzdPVVRYdE90UVRPWks2LWFGT3BmaEd3OXdma2Y3MlRqQ3hxS2FibUtWRUg1SkoyWmZCeUlyS0R2UFV6QllEU3ZTV3VEY28xbnFmX003clV0ajlTanphMEFUNmlvZGFqbldPZFZDOU5FOHpndkVhVnFEY0U?oc=5",
         "pub_date": "Thu, 17 Sep 2026 11:32:37 GMT",
@@ -6917,21 +6917,21 @@
     {
       "pair": "PEPE/USDT",
       "symbol": "PEPEUSDT",
-      "current_price": 3.51e-06,
+      "current_price": 0.00000351,
       "change_24h_pct": 2.93,
-      "high_24h": 3.53e-06,
-      "low_24h": 3.38e-06,
+      "high_24h": 0.00000353,
+      "low_24h": 0.00000338,
       "rsi_14": 52.9,
-      "sma20": 3.4934999999999997e-06,
+      "sma20": 0.0000034934999999999997,
       "volume_quote": 3081004026626.001,
       "market": "CRYPTO",
       "currency": "USDT",
       "setup_type": "TREND_CONTINUATION",
-      "entry_low": 3.48e-06,
-      "entry_high": 3.52e-06,
-      "take_profit_1": 3.78e-06,
-      "take_profit_2": 3.95e-06,
-      "stop_loss": 3.37e-06,
+      "entry_low": 0.00000348,
+      "entry_high": 0.00000352,
+      "take_profit_1": 0.00000378,
+      "take_profit_2": 0.00000395,
+      "stop_loss": 0.00000337,
       "risk_reward_ratio": 2,
       "conviction": "HIGH",
       "catalyst_thesis": "Trading above SMA20 ($3.49e-06) with positive 24h momentum (+2.93%).",
@@ -7076,7 +7076,7 @@
       "stop_loss": 907,
       "target_1": 1029,
       "target_2": 1082,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 945.0 - SL Rp 907.0 = Rp 38.0) = 263 Lot",
+      "position_size_math": "(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp 945.0 - SL Rp 907.0 = Rp 38.0) = 263 Lot",
       "risk_reward_ratio": 2.21,
       "technical_signal": "BREAKOUT",
       "facts_summary": "Harga Rp 945.0, Signal: BREAKOUT, RSI 14: 62.0, MA20: Rp 890.0, Sub-Kategori: BARITO_GROUP.",
@@ -7282,7 +7282,7 @@
       "stop_loss": 5112,
       "target_1": 5794,
       "target_2": 6092,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 5325.0 - SL Rp 5112.0 = Rp 213.0) = 46 Lot",
+      "position_size_math": "(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp 5325.0 - SL Rp 5112.0 = Rp 213.0) = 46 Lot",
       "risk_reward_ratio": 2.2,
       "technical_signal": "BREAKOUT",
       "facts_summary": "Harga Rp 5325.0, Signal: BREAKOUT, RSI 14: 55.0, MA20: Rp 5255.0, Sub-Kategori: BARITO_GROUP.",
@@ -7544,7 +7544,7 @@
       "stop_loss": 610,
       "target_1": 690,
       "target_2": 725,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 635.0 - SL Rp 610.0 = Rp 25.0) = 400 Lot",
+      "position_size_math": "(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp 635.0 - SL Rp 610.0 = Rp 25.0) = 400 Lot",
       "risk_reward_ratio": 2.2,
       "technical_signal": "BREAKOUT",
       "facts_summary": "Harga Rp 635.0, Signal: BREAKOUT, RSI 14: 58.2, MA20: Rp 623.2, Sub-Kategori: SALIM_GROUP.",
@@ -7621,7 +7621,7 @@
             "type": "BULLISH_FVG",
             "gap_high": 514.4727272727273,
             "gap_low": 514.472712151358,
-            "gap_size_pct": 2.9391975404027694e-06,
+            "gap_size_pct": 0.0000029391975404027694,
             "candle_date": "2026-07-02",
             "filled": false
           },
@@ -7774,7 +7774,7 @@
       "stop_loss": 2074,
       "target_1": 2349,
       "target_2": 2470,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 2160.0 - SL Rp 2074.0 = Rp 86.0) = 116 Lot",
+      "position_size_math": "(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp 2160.0 - SL Rp 2074.0 = Rp 86.0) = 116 Lot",
       "risk_reward_ratio": 2.2,
       "technical_signal": "BREAKOUT",
       "facts_summary": "Harga Rp 2160.0, Signal: BREAKOUT, RSI 14: 64.3, MA20: Rp 2088.5, Sub-Kategori: ASTRA_GROUP.",
@@ -8012,7 +8012,7 @@
       "stop_loss": 528,
       "target_1": 598,
       "target_2": 629,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 550.0 - SL Rp 528.0 = Rp 22.0) = 454 Lot",
+      "position_size_math": "(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp 550.0 - SL Rp 528.0 = Rp 22.0) = 454 Lot",
       "risk_reward_ratio": 2.18,
       "technical_signal": "BREAKOUT",
       "facts_summary": "Harga Rp 550.0, Signal: BREAKOUT, RSI 14: 57.3, MA20: Rp 537.8, Sub-Kategori: DJARUM_GROUP.",
@@ -8162,7 +8162,7 @@
       "stop_loss": 16128,
       "target_1": 18278,
       "target_2": 19219,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 16800.0 - SL Rp 16128.0 = Rp 672.0) = 14 Lot",
+      "position_size_math": "(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp 16800.0 - SL Rp 16128.0 = Rp 672.0) = 14 Lot",
       "risk_reward_ratio": 2.2,
       "technical_signal": "BREAKOUT",
       "facts_summary": "Harga Rp 16800.0, Signal: BREAKOUT, RSI 14: 77.6, MA20: Rp 11887.5, Sub-Kategori: HAPPY_HAPSORO.",
@@ -8592,7 +8592,7 @@
       "stop_loss": 4022,
       "target_1": 4560,
       "target_2": 4795,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 4190.0 - SL Rp 4022.0 = Rp 168.0) = 59 Lot",
+      "position_size_math": "(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp 4190.0 - SL Rp 4022.0 = Rp 168.0) = 59 Lot",
       "risk_reward_ratio": 2.2,
       "technical_signal": "BREAKOUT",
       "facts_summary": "Harga Rp 4190.0, Signal: BREAKOUT, RSI 14: 84.6, MA20: Rp 3340.0, Sub-Kategori: HAJI_ISAM.",
@@ -8878,7 +8878,7 @@
       "stop_loss": 9648,
       "target_1": 10934,
       "target_2": 11497,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 10050.0 - SL Rp 9648.0 = Rp 402.0) = 24 Lot",
+      "position_size_math": "(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp 10050.0 - SL Rp 9648.0 = Rp 402.0) = 24 Lot",
       "risk_reward_ratio": 2.2,
       "technical_signal": "BREAKOUT",
       "facts_summary": "Harga Rp 10050.0, Signal: BREAKOUT, RSI 14: 63.8, MA20: Rp 9731.2, Sub-Kategori: HAJI_ISAM.",
@@ -9108,7 +9108,7 @@
       "stop_loss": 1075,
       "target_1": 1219,
       "target_2": 1282,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 1120.0 - SL Rp 1075.0 = Rp 45.0) = 222 Lot",
+      "position_size_math": "(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp 1120.0 - SL Rp 1075.0 = Rp 45.0) = 222 Lot",
       "risk_reward_ratio": 2.2,
       "technical_signal": "BREAKOUT",
       "facts_summary": "Harga Rp 1120.0, Signal: BREAKOUT, RSI 14: 57.7, MA20: Rp 1116.0, Sub-Kategori: SINARMAS_GROUP.",
@@ -9314,7 +9314,7 @@
       "stop_loss": 188,
       "target_1": 214,
       "target_2": 225,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 196.0 - SL Rp 188.0 = Rp 8.0) = 1250 Lot",
+      "position_size_math": "(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp 196.0 - SL Rp 188.0 = Rp 8.0) = 1250 Lot",
       "risk_reward_ratio": 2.25,
       "technical_signal": "BREAKOUT",
       "facts_summary": "Harga Rp 196.0, Signal: BREAKOUT, RSI 14: 61.7, MA20: Rp 191.1, Sub-Kategori: SINARMAS_GROUP.",
@@ -9504,7 +9504,7 @@
       "stop_loss": 6144,
       "target_1": 6963,
       "target_2": 7322,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 6400.0 - SL Rp 6144.0 = Rp 256.0) = 39 Lot",
+      "position_size_math": "(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp 6400.0 - SL Rp 6144.0 = Rp 256.0) = 39 Lot",
       "risk_reward_ratio": 2.2,
       "technical_signal": "BREAKOUT",
       "facts_summary": "Harga Rp 6400.0, Signal: BREAKOUT, RSI 14: 56.6, MA20: Rp 6312.5, Sub-Kategori: SINARMAS_GROUP.",
@@ -9790,7 +9790,7 @@
       "stop_loss": 518,
       "target_1": 588,
       "target_2": 619,
-      "position_size_math": "(Porto Rp 100M \u00d7 1% Risk = Rp 1M) \u00f7 (Entry Rp 540.0 - SL Rp 518.0 = Rp 22.0) = 454 Lot",
+      "position_size_math": "(Porto Rp 100M × 1% Risk = Rp 1M) ÷ (Entry Rp 540.0 - SL Rp 518.0 = Rp 22.0) = 454 Lot",
       "risk_reward_ratio": 2.18,
       "technical_signal": "BREAKOUT",
       "facts_summary": "Harga Rp 540.0, Signal: BREAKOUT, RSI 14: 61.3, MA20: Rp 518.5, Sub-Kategori: LIPPO_GROUP.",
@@ -11334,7 +11334,7 @@
           "type": "BULLISH_FVG",
           "gap_high": 514.4727272727273,
           "gap_low": 514.472712151358,
-          "gap_size_pct": 2.9391975404027694e-06,
+          "gap_size_pct": 0.0000029391975404027694,
           "candle_date": "2026-07-02",
           "filled": false
         },
@@ -20535,7 +20535,7 @@
     "active_trades": 52,
     "win_count": 6,
     "loss_count": 24,
-    "win_rate_pct": 0.2,
+    "win_rate_pct": 20,
     "total_pnl": -19499704.8,
     "total_pnl_pct": -0.194997048,
     "best_trade": {
@@ -20576,7 +20576,9 @@
         "losses": 24,
         "pnl": -19499704.8
       }
-    }
+    },
+    "closed_trades": 30,
+    "pending_trades": 33
   },
   "strategy_rankings": [
     "BREAKOUT",
@@ -20804,7 +20806,7 @@
     ],
     "matrix": [
       [
-        1.0,
+        1,
         0.92,
         0.45,
         0.42,
@@ -20817,7 +20819,7 @@
       ],
       [
         0.92,
-        1.0,
+        1,
         0.55,
         0.5,
         0.3,
@@ -20830,7 +20832,7 @@
       [
         0.45,
         0.55,
-        1.0,
+        1,
         0.88,
         0.25,
         0.2,
@@ -20843,7 +20845,7 @@
         0.42,
         0.5,
         0.88,
-        1.0,
+        1,
         0.28,
         0.18,
         0.12,
@@ -20856,7 +20858,7 @@
         0.3,
         0.25,
         0.28,
-        1.0,
+        1,
         0.45,
         0.2,
         -0.25,
@@ -20869,7 +20871,7 @@
         0.2,
         0.18,
         0.45,
-        1.0,
+        1,
         0.25,
         -0.55,
         0.15,
@@ -20882,7 +20884,7 @@
         0.12,
         0.2,
         0.25,
-        1.0,
+        1,
         0.35,
         -0.1,
         -0.25
@@ -20895,7 +20897,7 @@
         -0.25,
         -0.55,
         0.35,
-        1.0,
+        1,
         0.45,
         0.55
       ],
@@ -20908,7 +20910,7 @@
         0.15,
         -0.1,
         0.45,
-        1.0,
+        1,
         0.35
       ],
       [
@@ -20921,7 +20923,7 @@
         -0.25,
         0.55,
         0.35,
-        1.0
+        1
       ]
     ],
     "data_source": "live_macro_benchmark",

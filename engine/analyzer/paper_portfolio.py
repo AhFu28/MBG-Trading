@@ -206,16 +206,21 @@ class PaperPortfolio:
         return {
             'initial_capital': self.initial_capital,
             'current_capital': self.initial_capital + total_pnl,
-            'total_pnl': total_pnl,
-            'total_pnl_pct': total_pnl / self.initial_capital,
+            'total_pnl': round(total_pnl, 2),
+            'total_pnl_pct': round(total_pnl / self.initial_capital, 4),
             'total_trades': total_trades,
             'closed_trades': len(closed_trades),
             'active_trades': len(active_trades),
             'pending_trades': len(pending_trades),
+            'win_count': len(wins),
+            'loss_count': len(losses),
             'win_rate': round(win_rate, 4),
+            'win_rate_pct': round(win_rate * 100, 1),
             'profit_factor': round(profit_factor, 2),
             'trades': self.trades[-20:]
         }
+
+    get_portfolio_summary = get_summary
 
     def save_state(self):
         if not self.state_file:

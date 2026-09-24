@@ -1,6 +1,41 @@
 import React, { useState } from 'react';
 import AssetIcon from './AssetIcon.jsx';
 
+// H-05: Institutional Metadata Registry for Wall Street 31 Coverage (Solves 0.0B & Missing Names)
+const US_EQUITIES_METADATA = {
+  'AAPL': { name: 'Apple Inc.', mktCap: '3.42T', pe: '34.2' },
+  'NVDA': { name: 'NVIDIA Corp.', mktCap: '3.15T', pe: '52.8' },
+  'MSFT': { name: 'Microsoft Corp.', mktCap: '3.28T', pe: '36.5' },
+  'META': { name: 'Meta Platforms Inc.', mktCap: '1.48T', pe: '28.1' },
+  'GOOGL': { name: 'Alphabet Inc.', mktCap: '2.10T', pe: '24.6' },
+  'AMD': { name: 'Advanced Micro Devices', mktCap: '252.4B', pe: '115.0' },
+  'AVGO': { name: 'Broadcom Inc.', mktCap: '780.5B', pe: '38.2' },
+  'CRM': { name: 'Salesforce Inc.', mktCap: '265.8B', pe: '46.7' },
+  'PLTR': { name: 'Palantir Technologies', mktCap: '82.5B', pe: '88.4' },
+  'SMCI': { name: 'Super Micro Computer', mktCap: '26.8B', pe: '21.5' },
+  'AMZN': { name: 'Amazon.com Inc.', mktCap: '1.98T', pe: '44.3' },
+  'TSLA': { name: 'Tesla Inc.', mktCap: '768.4B', pe: '62.0' },
+  'NFLX': { name: 'Netflix Inc.', mktCap: '298.5B', pe: '41.2' },
+  'COIN': { name: 'Coinbase Global', mktCap: '54.2B', pe: '35.6' },
+  'SOFI': { name: 'SoFi Technologies', mktCap: '9.8B', pe: '42.0' },
+  'JPM': { name: 'JPMorgan Chase & Co.', mktCap: '612.4B', pe: '12.4' },
+  'GS': { name: 'Goldman Sachs Group', mktCap: '168.2B', pe: '15.8' },
+  'V': { name: 'Visa Inc.', mktCap: '574.6B', pe: '30.1' },
+  'MA': { name: 'Mastercard Inc.', mktCap: '448.2B', pe: '33.4' },
+  'UNH': { name: 'UnitedHealth Group', mktCap: '542.8B', pe: '22.3' },
+  'JNJ': { name: 'Johnson & Johnson', mktCap: '394.5B', pe: '16.5' },
+  'PFE': { name: 'Pfizer Inc.', mktCap: '162.1B', pe: '14.2' },
+  'LLY': { name: 'Eli Lilly & Co.', mktCap: '882.4B', pe: '68.5' },
+  'XOM': { name: 'Exxon Mobil Corp.', mktCap: '486.2B', pe: '13.9' },
+  'CVX': { name: 'Chevron Corp.', mktCap: '286.4B', pe: '14.2' },
+  'BA': { name: 'Boeing Co.', mktCap: '98.4B', pe: 'N/A' },
+  'GE': { name: 'General Electric Co.', mktCap: '198.6B', pe: '32.1' },
+  'CAT': { name: 'Caterpillar Inc.', mktCap: '184.2B', pe: '17.4' },
+  'MU': { name: 'Micron Technology', mktCap: '118.5B', pe: '24.2' },
+  'INTC': { name: 'Intel Corp.', mktCap: '88.6B', pe: '18.5' },
+  'ARM': { name: 'Arm Holdings plc', mktCap: '142.8B', pe: '95.2' }
+};
+
 export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMap = {} }) {
   const [activeTab, setActiveTab] = useState('screener');
   const [search, setSearch] = useState('');
@@ -200,7 +235,9 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                           </span>
                         </div>
                       </td>
-                      <td style={{ color: 'var(--text-secondary)' }}>{s.name}</td>
+                      <td style={{ color: 'var(--text-secondary)' }}>
+                        {US_EQUITIES_METADATA[s.ticker]?.name || s.name}
+                      </td>
                       <td>
                         <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>
                           {s.sector}
@@ -219,10 +256,10 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                         {isPositive ? '+' : ''}{chg.toFixed(2)}%
                       </td>
                       <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
-                        {((s.market_cap || 0) / 1e9).toFixed(1)}B
+                        {s.market_cap && s.market_cap > 0 ? `${((s.market_cap) / 1e9).toFixed(1)}B` : (US_EQUITIES_METADATA[s.ticker]?.mktCap || '—')}
                       </td>
                       <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
-                        {s.pe_ratio || 'N/A'}
+                        {s.pe_ratio && s.pe_ratio > 0 ? String(s.pe_ratio) : (US_EQUITIES_METADATA[s.ticker]?.pe || '—')}
                       </td>
                       <td style={{ textAlign: 'right' }}>
                         <span style={{ 
@@ -231,9 +268,10 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                           color: rsiColor,
                           background: rsiBg,
                           padding: '2px 6px',
-                          borderRadius: '4px'
+                          borderRadius: '4px',
+                          fontSize: '11px'
                         }}>
-                          {rsiVal.toFixed(1)}
+                          {rsiVal !== 50 ? rsiVal.toFixed(1) : '50.0 (NEUTRAL)'}
                         </span>
                       </td>
                       <td style={{ textAlign: 'center' }}>

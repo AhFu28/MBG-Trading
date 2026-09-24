@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef, useId } from 'react';
 import { isIdxMarketOpen, getIdxSessionDetail, isForexCommodityOpen, isCryptoOpen, isUsMarketOpen } from '../utils/marketHours.js';
 
 // Central Strict Real-World Market Open Classifier (All asset classes)
@@ -604,7 +604,8 @@ function SparklineChart({ data = [], isPositive, color = '#10b981', height = 34,
   // Strict check: if isPositive is supplied, use it; otherwise check end vs start
   const positive = isPositive !== undefined ? isPositive : (pointsData[pointsData.length - 1] >= pointsData[0]);
   const strokeColor = positive ? '#10b981' : '#ef4444';
-  const fillGradientId = `grad_${positive ? 'pos' : 'neg'}_${Math.random().toString(36).substr(2, 6)}`;
+  const instanceId = useId().replace(/[^a-zA-Z0-9]/g, '');
+  const fillGradientId = `grad_${positive ? 'pos' : 'neg'}_${instanceId}`;
 
   return (
     <div style={{ width: '100%', height: `${height}px`, overflow: 'hidden' }}>

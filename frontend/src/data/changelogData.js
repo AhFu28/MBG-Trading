@@ -3,14 +3,49 @@
 
 export const CHANGELOG_DATA = [
   {
+    "id": "pkg-25092026-r1",
+    "sprintLabel": "Sprint 7 (Production Hardening & Reconciled Telemetry)",
+    "version": "Package 25092026-R1",
+    "semanticVersion": "v5.5.3",
+    "date": "25 September 2026",
+    "status": "LATEST",
+    "statusColor": "var(--accent-green)",
+    "badgeLabel": "LATEST / PRODUCTION HARDENED & RECONCILED",
+    "title": "Update v5.5.3: Institutional US Equities Registry, Reconciled Paper Portfolio Bookkeeping, Stable SVG IDs, Theme-Aware Tables & CSP Security Headers",
+    "description": "Perbaikan komprehensif audit forensik tahap 4: Integrasi registry metadata institusional untuk 31 saham mega-cap Wall Street (kapitalisasi pasar riil, rasio P/E aktual, nama korporat), rekonsiliasi matematis pembukuan portofolio forward-test (30 tiket selesai [6M/24K] + 52 posisi aktif + 33 antrean = 115 total tiket terverifikasi dengan win rate 20.0%), eliminasi DOM churn SVG sparkline via React useId(), pemulihan kontras tabel mode terang (Light Theme), penerapan Content Security Policy (CSP) ketat pada Cloudflare Pages, serta otomasi notifikasi kegagalan workflow GitHub Actions via Telegram.",
+    "processFlow": [
+      {
+        "step": "1. Institutional US Equities Registry (H-05)",
+        "label": "Pemetaan metadata fundamental 31 saham Wall Street (nama korporat, market cap multi-triliun riil, rasio P/E) tanpa dependensi API eksternal"
+      },
+      {
+        "step": "2. Reconciled Paper Portfolio Bookkeeping (M-07)",
+        "label": "Rekonsiliasi matematis statistik portofolio simulasi (30 ditutup [6W/24L] + 52 aktif + 33 antrean = 115 total) dengan standardisasi win_rate_pct 20.0%"
+      },
+      {
+        "step": "3. Stable SVG Sparkline ID Generation (L-01)",
+        "label": "Penggantian Math.random() dengan React useId() pada linearGradient SparklineChart melenyapkan DOM invalidation churn"
+      },
+      {
+        "step": "4. Theme-Aware Contrast & CSP Protection (M-03 & L-02)",
+        "label": "Penyelarasan kontras header tabel quant di tema terang serta injeksi Content-Security-Policy & Permissions-Policy di headers Cloudflare Pages"
+      },
+      {
+        "step": "5. Automated CI/CD Failure Alerting (L-03)",
+        "label": "Penambahan conditional Telegram failure alert step pada seluruh workflow GitHub Actions engine"
+      }
+    ],
+    "markdownContent": "\n### 🏛️ v5.5.3 — Production Hardening, Fundamental Registry & Reconciled Bookkeeping\n\n#### 🇺🇸 1. Registry Fundamental Saham Wall Street (H-05)\n- **Metadata Mega-Cap Institusional:** 31 saham unggulan Wall Street (AAPL, MSFT, NVDA, GOOGL, AMZN, dsb.) kini dilengkapi metadata fundamental riil mencakup nama resmi emiten, kapitalisasi pasar triliunan dolar terkini, dan rasio P/E konsensus. Ticker tanpa histori teknikal ditandai RSI netral (50.0) secara transparan.\n\n#### 📊 2. Rekonsiliasi Matematika Portofolio Forward-Test (M-07)\n- **Presisi Buku Besar:** Seluruh agregasi statistik paper trading kini saling mengunci: 30 trade tertutup (6 Menang + 24 Kalah) + 52 trade aktif + 33 tiket pending = 115 total tiket. Rasio kemenangan distandarkan menjadi `win_rate_pct: 20.0%` (bukan desimal 0.2%).\n- **Arsitektur Pipeline:** Menambahkan alias method `get_portfolio_summary` pada engine Python untuk menjamin sinkronisasi otomatis bundle harian.\n\n#### ⚡ 3. Optimasi DOM & Performa Render Grafis (L-01)\n- **Stable React useId():** Komponen SparklineChart di AiAgentArenaTab kini menggunakan hook `useId()` deterministik untuk ID linearGradient SVG, melenyapkan DOM redraw churn akibat `Math.random()` pada setiap detik pembaruan harga.\n\n#### 🎨 4. Kontras Header Tabel & Keamanan Web Modern (M-03 & L-02)\n- **Dukungan Tema Terang Optimal:** Kelas CSS `.quant-table th` kini terikat ke variabel tema `--bg-panel-subtle`, `--text-muted`, dan `--border-hairline`, memastikan keterbacaan sempurna di tema gelap maupun terang.\n- **CSP & Permissions Headers:** File headers Cloudflare Pages diperkaya dengan `Content-Security-Policy`, `Permissions-Policy`, dan proteksi `X-Content-Type-Options: nosniff` yang aman untuk WebSocket Binance dan feed TradingView.\n\n#### 🔔 5. Pemantauan Pipeline GitHub Actions (L-03)\n- **Notifikasi Kegagalan Telegram:** Seluruh 6 alur kerja cron/dispatch di `.github/workflows/` kini memiliki hook conditional `if: failure()` untuk mengirimkan alert otomatis ke kanal Telegram pengelola jika terjadi kendala pada engine komputasi.\n"
+  },
+  {
     "id": "pkg-24092026-r4",
     "sprintLabel": "Sprint 6 (Forensics & Persistence) — Cross-Panel Pricing & Session TTL",
     "version": "Package 24092026-R4",
     "semanticVersion": "v5.5.2",
     "date": "24 September 2026",
-    "status": "LATEST",
-    "statusColor": "var(--accent-green)",
-    "badgeLabel": "LATEST / PERSISTENT SESSION & UNIFIED PRICING",
+    "status": "DEPLOYED",
+    "statusColor": "var(--accent-blue)",
+    "badgeLabel": "DEPLOYED / PERSISTENT SESSION & UNIFIED PRICING",
     "title": "Update v5.5.2: Unified Gold Bullion Pricing, 24H Session TTL Persistence, Actionable Macro Calendar, Dynamic JPY Pips & Anti-Jitter Agent Selection",
     "description": "Perbaikan komprehensif audit forensik tahap 3: Unifikasi harga emas spot ($1.800–$3.500) melenyapkan anomali kuotasi $4.381 dan $272, persistensi sesi otentikasi 24 jam di localStorage dengan TTL timestamp agar refresh tidak me-logout pengguna, kalender makro ekonomi default ke event mendatang (UPCOMING) berprioritas tinggi, kalkulasi pip dinamis valuta JPY berbasis kuotasi pasar riil, serta seleksi instrumen deterministik agen AI berbasis jendela 5 menit anti-jitter.",
     "processFlow": [

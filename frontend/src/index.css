@@ -943,14 +943,14 @@ th.sticky-col-num, th.sticky-col-ticker {
 }
 
 .quant-table th {
-  background: rgba(16, 22, 32, 0.95);
+  background: var(--bg-panel-subtle);
   padding: 9px 12px;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #94a3b8;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  border-bottom: var(--border-hairline);
   white-space: nowrap;
 }
 
