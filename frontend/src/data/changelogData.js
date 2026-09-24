@@ -3,14 +3,49 @@
 
 export const CHANGELOG_DATA = [
   {
+    "id": "pkg-24092026-r4",
+    "sprintLabel": "Sprint 6 (Forensics & Persistence) — Cross-Panel Pricing & Session TTL",
+    "version": "Package 24092026-R4",
+    "semanticVersion": "v5.5.2",
+    "date": "24 September 2026",
+    "status": "LATEST",
+    "statusColor": "var(--accent-green)",
+    "badgeLabel": "LATEST / PERSISTENT SESSION & UNIFIED PRICING",
+    "title": "Update v5.5.2: Unified Gold Bullion Pricing, 24H Session TTL Persistence, Actionable Macro Calendar, Dynamic JPY Pips & Anti-Jitter Agent Selection",
+    "description": "Perbaikan komprehensif audit forensik tahap 3: Unifikasi harga emas spot ($1.800–$3.500) melenyapkan anomali kuotasi $4.381 dan $272, persistensi sesi otentikasi 24 jam di localStorage dengan TTL timestamp agar refresh tidak me-logout pengguna, kalender makro ekonomi default ke event mendatang (UPCOMING) berprioritas tinggi, kalkulasi pip dinamis valuta JPY berbasis kuotasi pasar riil, serta seleksi instrumen deterministik agen AI berbasis jendela 5 menit anti-jitter.",
+    "processFlow": [
+      {
+        "step": "1. Unified Gold Bullion Bounds (H-04)",
+        "label": "Penyelarasan kuotasi emas spot lintas panel dengan sanity check $1.800–$3.500 dan fallback terpadu $2.650"
+      },
+      {
+        "step": "2. 24H Session TTL Persistence (M-04)",
+        "label": "Penyimpanan token otentikasi di localStorage dengan validasi batas waktu 24 jam tanpa logout saat reload"
+      },
+      {
+        "step": "3. Actionable Macro Calendar (M-05)",
+        "label": "Default kalender makro ke status UPCOMING dengan pengurutan prioritas event mendatang di posisi teratas"
+      },
+      {
+        "step": "4. Dynamic JPY Pip Value Formula (M-10)",
+        "label": "Formula pip dinamis pasangan Yen Jepang (1.000 / Entry Price) menggantikan angka statis $7.00"
+      },
+      {
+        "step": "5. Anti-Jitter Deterministic Agent Selection (M-11)",
+        "label": "Seleksi instrumen agen AI menggunakan seed ID deterministik per blok 5 menit tanpa Date.now() modulo"
+      }
+    ],
+    "markdownContent": "\n### 🛡️ v5.5.2 — Cross-Panel Quote Alignment, Session Reliability & Quant Refinements\n\n#### 🥇 1. Unifikasi Harga Emas & Komoditas (H-04)\n- **Eliminasi Anomali Kontrak Roll:** Seluruh kartu komoditas dan dashboard benchmark kini menerapkan batas ketat kuotasi emas dunia ($1.800 – $3.500). Kuotasi anomali $4.381 atau fallback statis usang telah dibersihkan dan dialihkan ke kuotasi spot aktual ~$2.650.\n\n#### 🔐 2. Otentikasi & Reliabilitas Sesi 24 Jam (M-04)\n- **Sesi Tahan Reload:** Penyimpanan sesi pengguna dialihkan ke `localStorage` dengan penanda `expiresAt` berbasis 24 jam. Pengguna tidak lagi ter-logout secara tiba-tiba saat menyegarkan halaman browser (F5).\n\n#### 📅 3. Kalender Makro Fokus Rilis Mendatang (M-05)\n- **Prioritas Jadwal Terkini:** Kalender makro ekonomi kini secara default menyaring event ke status `UPCOMING` (Akan Rilis), menyajikan jadwal suku bunga The Fed/BI dan inflasi PCE terdekat tanpa tertutup oleh riwayat event lampau.\n\n#### 🧮 4. Presisi Matematika Pip JPY & Seleksi Agen Stabil (M-10 & M-11)\n- **Pip Dinamis JPY:** Perhitungan lot valuta pasangan JPY kini menggunakan rumus standar pasar interbank `(100.000 unit × 0.01) / Harga Entry`, menggantikan nilai kaku $7.00.\n- **Anti-Jitter Agent Selection:** Mengganti pemilihan instrumen `Date.now() % topN` dengan seed hash agen deterministik dalam jendela waktu 5 menit, menjaga konsistensi fokus strategi tiap bot.\n"
+  },
+  {
     "id": "pkg-24092026-r3",
     "sprintLabel": "Sprint 6 (Post-Audit Remediation) — Live Feeds & Telemetry Alignment",
     "version": "Package 24092026-R3",
     "semanticVersion": "v5.5.1",
     "date": "24 September 2026",
-    "status": "LATEST",
-    "statusColor": "var(--accent-green)",
-    "badgeLabel": "LATEST / FORENSIC REMEDIATION & TIMEZONE ALIGNMENT",
+    "status": "STABLE",
+    "statusColor": "var(--text-muted)",
+    "badgeLabel": "STABLE / FORENSIC REMEDIATION & TIMEZONE ALIGNMENT",
     "title": "Update v5.5.1: Live USD/IDR Sync, WebSocket-REST Gap Healing, Quant Model Broker Badge, Strict WIB Timezone & Sensational Alert Suppression",
     "description": "Penyelesaian temuan audit forensik lanjutan: Sinkronisasi kurs USD/IDR live dari Binance USDTIDR dan TradingView Forex dengan auto-sync ke AI Agent Arena, perbaikan hilangnya snapshot harga REST saat WebSocket reconnect, penegasan transparansi badge 'ESTIMATED FLOW (QUANT MODEL)' pada radar akumulasi broker, penegakan zona waktu resmi Asia/Jakarta (WIB), penghapusan prefix dollar pada emiten BEI, serta pengekangan banner peringatan pertahanan taktis agar terikat murni pada skor ancaman DEFCON bundle.",
     "processFlow": [

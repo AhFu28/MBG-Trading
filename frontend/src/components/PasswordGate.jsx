@@ -10,18 +10,41 @@ export default function PasswordGate({ children }) {
   const [attempts, setAttempts] = useState(0);
   const [locked, setLocked] = useState(false);
 
-  // Check existing session on mount
+  // M-04: Check existing 24-hour session on mount
   useEffect(() => {
     async function verifySession() {
       try {
+        const savedSession = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
+        if (savedSession) {
+          const parsed = JSON.parse(savedSession);
+          // If session is authenticated and within 24-hour TTL window, grant immediate access
+          if (parsed?.authenticated && parsed?.expiresAt && Date.now() < parsed.expiresAt) {
+            setAuthed(true);
+            setLoading(false);
+            return;
+          } else if (parsed?.authenticated && !parsed?.expiresAt) {
+            // Upgrade legacy sessions to 24h expiration
+            parsed.expiresAt = Date.now() + 24 * 3600 * 1000;
+            localStorage.setItem(SESSION_KEY, JSON.stringify(parsed));
+            setAuthed(true);
+            setLoading(false);
+            return;
+          } else {
+            localStorage.removeItem(SESSION_KEY);
+            sessionStorage.removeItem(SESSION_KEY);
+          }
+        }
+      } catch (_) {}
+
+      try {
         const res = await fetch('/api/auth');
         if (res.ok) {
+          const expiresAt = Date.now() + 24 * 3600 * 1000;
+          localStorage.setItem(SESSION_KEY, JSON.stringify({ authenticated: true, expiresAt }));
           setAuthed(true);
-        } else {
-          sessionStorage.removeItem(SESSION_KEY);
         }
       } catch (err) {
-        sessionStorage.removeItem(SESSION_KEY);
+        // Fallback for static host / local dev
       }
       setLoading(false);
     }
@@ -32,6 +55,8 @@ export default function PasswordGate({ children }) {
     e.preventDefault();
     if (locked || !input.trim()) return;
 
+    const expiresAt = Date.now() + 24 * 3600 * 1000; // 24-Hour Session TTL
+
     try {
       const res = await fetch('/api/auth', {
         method: 'POST',
@@ -41,7 +66,9 @@ export default function PasswordGate({ children }) {
 
       if (res.ok) {
         const data = await res.json();
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+        const sessionPayload = { ...data, authenticated: true, expiresAt };
+        localStorage.setItem(SESSION_KEY, JSON.stringify(sessionPayload));
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionPayload));
         setAuthed(true);
         setError('');
       } else if (res.status === 429) {
@@ -49,9 +76,11 @@ export default function PasswordGate({ children }) {
         setError('LOCKED. Too many failed attempts. Wait 15 minutes.');
         setTimeout(() => { setLocked(false); setAttempts(0); setError(''); }, 15 * 60 * 1000);
       } else {
-        // Test phase convenience fallback: allow 'mbg' immediately
+        // Test phase convenience fallback: allow 'mbg' immediately (C-02 Owner Directive)
         if (input.trim().toLowerCase() === 'mbg') {
-          sessionStorage.setItem(SESSION_KEY, JSON.stringify({ authenticated: true, testMode: true }));
+          const sessionPayload = { authenticated: true, testMode: true, expiresAt };
+          localStorage.setItem(SESSION_KEY, JSON.stringify(sessionPayload));
+          sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionPayload));
           setAuthed(true);
           setError('');
           return;
@@ -71,7 +100,9 @@ export default function PasswordGate({ children }) {
       }
     } catch (err) {
       if (input.trim().toLowerCase() === 'mbg') {
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify({ authenticated: true, testMode: true }));
+        const sessionPayload = { authenticated: true, testMode: true, expiresAt };
+        localStorage.setItem(SESSION_KEY, JSON.stringify(sessionPayload));
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionPayload));
         setAuthed(true);
         setError('');
         return;
@@ -81,6 +112,7 @@ export default function PasswordGate({ children }) {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem(SESSION_KEY);
     sessionStorage.removeItem(SESSION_KEY);
     // Ideally we'd hit a logout endpoint to clear the cookie as well
     setAuthed(false);

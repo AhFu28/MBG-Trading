@@ -714,8 +714,9 @@ export default function HomeDashboardTab({
               const liveGold = livePrices['GOLD'] || livePrices['XAUUSD'];
               const brentPrice = liveBrent?.price !== undefined ? Number(liveBrent.price) : 99.21;
               const brentChg = liveBrent?.changePct !== undefined ? Number(liveBrent.changePct) : -1.13;
-              const goldPrice = liveGold?.price !== undefined ? Number(liveGold.price) : 4381.8;
-              const goldChg = liveGold?.changePct !== undefined ? Number(liveGold.changePct) : -0.05;
+              const rawGold = liveGold?.price !== undefined ? Number(liveGold.price) : Number(data?.macro_indicators?.gold_price || 2650.0);
+              const goldPrice = (rawGold >= 1800 && rawGold <= 3500) ? rawGold : 2650.0;
+              const goldChg = liveGold?.changePct !== undefined ? Number(liveGold.changePct) : Number(data?.macro_indicators?.gold_change_pct || 0.85);
 
               return (
                 <div className="telemetry-panel" style={{

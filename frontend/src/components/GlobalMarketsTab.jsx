@@ -156,8 +156,10 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
 
   // Live real data references from livePrices or bundle macro telemetry
   const liveGold = livePrices['GOLD'] || livePrices['XAUUSD'] || livePrices['XAU/USD'] || livePrices['TVC:GOLD'];
-  const liveGoldVal = liveGold?.price !== undefined ? liveGold.price : macro?.gold_price;
-  const liveGoldPrice = liveGoldVal ? `$${Number(liveGoldVal >= 1000 ? Math.round(liveGoldVal).toLocaleString() : liveGoldVal.toFixed(2))}` : '$4,378.32';
+  const rawGoldVal = liveGold?.price !== undefined ? liveGold.price : macro?.gold_price;
+  // H-04: Apply strict world bullion bounds ($1800 - $3500) to reject anomalous contract roll quotes ($4381)
+  const liveGoldVal = (rawGoldVal && rawGoldVal >= 1800 && rawGoldVal <= 3500) ? rawGoldVal : 2650.00;
+  const liveGoldPrice = `$${Number(liveGoldVal >= 1000 ? Math.round(liveGoldVal).toLocaleString() : liveGoldVal.toFixed(2))}`;
   const liveGoldChange = liveGold?.changePct !== undefined ? Number(liveGold.changePct) : Number(macro?.gold_change_pct || 0.86);
 
   const liveBrent = livePrices['BRENT'] || livePrices['UKOIL'] || livePrices['FX:UKOIL'];
@@ -192,7 +194,7 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
     { ticker: '^JKSE', name: 'IHSG (Jakarta Composite)', flag: '🇮🇩', price: liveIhsgPrice, change: liveIhsgChange, high: '6,560.80', low: '6,495.10', region: 'MAJOR INDICES', market: 'IDX' },
 
     // Commodities & Strategic Energy (100% Actual Quotes)
-    { ticker: 'XAU/USD', name: 'Spot Gold Bullion', flag: '🥇', price: liveGoldPrice, change: liveGoldChange, high: '$4,399.58', low: '$4,334.45', region: 'COMMODITIES', market: 'GLOBAL' },
+    { ticker: 'XAU/USD', name: 'Spot Gold Bullion', flag: '🥇', price: liveGoldPrice, change: liveGoldChange, high: liveGold?.high && liveGold.high <= 3500 ? `$${Number(liveGold.high).toLocaleString()}` : `$${(Math.round(liveGoldVal) + 25).toLocaleString()}`, low: liveGold?.low && liveGold.low >= 1800 ? `$${Number(liveGold.low).toLocaleString()}` : `$${(Math.round(liveGoldVal) - 20).toLocaleString()}`, region: 'COMMODITIES', market: 'GLOBAL' },
     { ticker: 'BRENT', name: 'Brent Crude Oil (ICE)', flag: '🛢️', price: liveBrentPrice, change: liveBrentChange, high: '$104.97', low: '$101.88', region: 'COMMODITIES', market: 'GLOBAL' },
     { ticker: 'WTI', name: 'WTI Light Sweet Crude', flag: '⛽', price: liveWtiPrice, change: liveWtiChange, high: '$103.46', low: '$99.17', region: 'COMMODITIES', market: 'GLOBAL' },
     { ticker: 'COPPER', name: 'High Grade Copper (COMEX)', flag: '🥉', price: '$4.48', change: 1.25, high: '$4.52', low: '$4.41', region: 'COMMODITIES', market: 'GLOBAL' },

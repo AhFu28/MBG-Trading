@@ -766,7 +766,8 @@ const COMPREHENSIVE_MACRO_EVENTS = [
 export default function EconomicCalendarTab() {
   const [filterCountry, setFilterCountry] = useState('ALL');
   const [filterImpact, setFilterImpact] = useState('ALL');
-  const [filterTimeframe, setFilterTimeframe] = useState('ALL');
+  // M-05: Default filter to UPCOMING so calendar displays current and upcoming actionable releases first
+  const [filterTimeframe, setFilterTimeframe] = useState('UPCOMING');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedId, setExpandedId] = useState(null);
 
@@ -795,7 +796,13 @@ export default function EconomicCalendarTab() {
         (event.countryName || '').toLowerCase().includes(term);
 
       return matchCountry && matchImpact && matchTimeframe && matchSearch;
-    }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    }).sort((a, b) => {
+      // Prioritize UPCOMING status over past RELEASED events if viewing ALL
+      if (a.status !== b.status) {
+        return a.status === 'UPCOMING' ? -1 : 1;
+      }
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
   }, [events, filterCountry, filterImpact, filterTimeframe, searchQuery]);
 
   const toggleExpand = (id) => {

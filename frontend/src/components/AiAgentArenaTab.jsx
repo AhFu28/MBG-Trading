@@ -438,7 +438,10 @@ const selectBestInstrument = (candidateSymbols, marketFeeds, agentId) => {
   });
   scored.sort((a, b) => b.score - a.score);
   const topN = Math.min(3, scored.length);
-  const pickIdx = Date.now() % topN;
+  // M-11: Deterministic seed per agent in 5-minute time window to prevent re-render selection jitter
+  const timeBlock = Math.floor(Date.now() / 300000);
+  const agentSeed = (agentId || 'AGENT').split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  const pickIdx = (agentSeed + timeBlock) % topN;
   return scored[pickIdx].sym;
 };
 
@@ -523,7 +526,8 @@ export const calculateInstrumentLotSize = (
     // Lot = Risk Budget ($) / (SL Pips * Pip Value ($10 / standard lot for USD pairs, $7 for JPY pairs))
     const isJpy = symbol.includes('JPY');
     const slPips = isJpy ? (slDistance * 100) : (slDistance * 10000);
-    const pipValueStandard = isJpy ? 7.0 : 10.0;
+    // M-10: Dynamic JPY pip value = (100,000 units * 0.01 tick) / entryPrice USD
+    const pipValueStandard = isJpy ? (1000.0 / Math.max(50.0, Number(entryPrice) || 155.0)) : 10.0;
     const rawLot = riskBudgetUsd / (Math.max(8, slPips) * pipValueStandard);
     return Number(Math.max(0.01, Math.min(5.0, rawLot)).toFixed(2));
   }
