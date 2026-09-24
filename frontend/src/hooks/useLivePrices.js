@@ -42,7 +42,8 @@ const DEFAULT_FOREX_TICKERS = [
   'FX_IDC:EURCHF', 'FX_IDC:GBPAUD', 'FX_IDC:GBPCHF', 'FX_IDC:AUDNZD',
   'FX_IDC:NZDJPY', 'FX_IDC:CADJPY', 'FX_IDC:AUDCAD', 'FX_IDC:GBPCAD',
   'FX_IDC:EURNZD', 'FX_IDC:AUDCHF', 'FX_IDC:NZDCAD', 'FX_IDC:CHFJPY',
-  'FX_IDC:GBPNZD', 'FX_IDC:EURCAD', 'FX_IDC:NZDCHF', 'FX_IDC:CADCHF'
+  'FX_IDC:GBPNZD', 'FX_IDC:EURCAD', 'FX_IDC:NZDCHF', 'FX_IDC:CADCHF',
+  'FX_IDC:USDIDR'
 ];
 
 // Default list Commodities & Strategic Macro CFD
@@ -324,10 +325,42 @@ export function useLivePrices(bundleData) {
         setAllCryptoSpot(usdtPairs);
       }
 
+      // H-08: Check for live USDTIDR pair in Binance full ticker list
+      const usdtIdrItem = list.find(x => x.symbol === 'USDTIDR');
+      if (usdtIdrItem && parseFloat(usdtIdrItem.lastPrice) > 0) {
+        const idrRate = parseFloat(usdtIdrItem.lastPrice);
+        try {
+          localStorage.setItem('mbg_usd_idr_rate', String(idrRate));
+          localStorage.setItem('mbg_usd_idr_ts', String(Date.now()));
+        } catch (_) {}
+      }
+
+      const now = Date.now();
       setLivePrices(prev => {
         const next = { ...prev };
+
+        // H-08: Inject live USD/IDR quote into livePrices store
+        if (usdtIdrItem && parseFloat(usdtIdrItem.lastPrice) > 0) {
+          const idrQuote = {
+            symbol: 'USDIDR',
+            pair: 'USD/IDR',
+            baseCoin: 'USD',
+            price: parseFloat(usdtIdrItem.lastPrice),
+            changePct: Number(parseFloat(usdtIdrItem.priceChangePercent || 0).toFixed(2)),
+            high: parseFloat(usdtIdrItem.highPrice || 0),
+            low: parseFloat(usdtIdrItem.lowPrice || 0),
+            volume: parseFloat(usdtIdrItem.quoteVolume || 0),
+            market: 'FOREX',
+            updatedAt: now
+          };
+          next['USDIDR'] = idrQuote;
+          next['USDTIDR'] = idrQuote;
+        }
+
+        // H-09: Update quotes if key is absent OR existing quote is stale (> 3000ms old)
         usdtPairs.forEach(c => {
-          if (!next[c.symbol]) {
+          const existing = next[c.symbol];
+          if (!existing || (now - (existing.updatedAt || 0) > 3000)) {
             const quote = {
               symbol: c.symbol,
               pair: c.pair,
@@ -338,7 +371,7 @@ export function useLivePrices(bundleData) {
               low: c.low,
               volume: c.quoteVolume,
               market: 'CRYPTO',
-              updatedAt: Date.now()
+              updatedAt: now
             };
             next[c.symbol] = quote;
             next[c.pair] = quote;
@@ -444,6 +477,14 @@ export function useLivePrices(bundleData) {
             };
             next[clean] = quote;
             next[rawSym] = quote;
+
+            // H-08: If USDIDR is received from forex scanner, persist rate
+            if (clean === 'USDIDR' && numClose > 0) {
+              try {
+                localStorage.setItem('mbg_usd_idr_rate', String(numClose));
+                localStorage.setItem('mbg_usd_idr_ts', String(Date.now()));
+              } catch (_) {}
+            }
           }
         });
         return next;

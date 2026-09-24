@@ -92,7 +92,7 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
         </div>
 
         <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', padding: '6px 12px', borderRadius: '6px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', color: 'var(--text-secondary)' }}>
-          WAKTU SISTEM: <strong style={{ color: 'var(--text-primary)' }}>{currentTime.toLocaleTimeString('id-ID')} WIB</strong>
+          WAKTU SISTEM: <strong style={{ color: 'var(--text-primary)' }}>{currentTime.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB</strong>
         </div>
       </div>
 

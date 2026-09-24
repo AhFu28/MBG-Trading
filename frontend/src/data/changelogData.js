@@ -3,14 +3,49 @@
 
 export const CHANGELOG_DATA = [
   {
+    "id": "pkg-24092026-r3",
+    "sprintLabel": "Sprint 6 (Post-Audit Remediation) — Live Feeds & Telemetry Alignment",
+    "version": "Package 24092026-R3",
+    "semanticVersion": "v5.5.1",
+    "date": "24 September 2026",
+    "status": "LATEST",
+    "statusColor": "var(--accent-green)",
+    "badgeLabel": "LATEST / FORENSIC REMEDIATION & TIMEZONE ALIGNMENT",
+    "title": "Update v5.5.1: Live USD/IDR Sync, WebSocket-REST Gap Healing, Quant Model Broker Badge, Strict WIB Timezone & Sensational Alert Suppression",
+    "description": "Penyelesaian temuan audit forensik lanjutan: Sinkronisasi kurs USD/IDR live dari Binance USDTIDR dan TradingView Forex dengan auto-sync ke AI Agent Arena, perbaikan hilangnya snapshot harga REST saat WebSocket reconnect, penegasan transparansi badge 'ESTIMATED FLOW (QUANT MODEL)' pada radar akumulasi broker, penegakan zona waktu resmi Asia/Jakarta (WIB), penghapusan prefix dollar pada emiten BEI, serta pengekangan banner peringatan pertahanan taktis agar terikat murni pada skor ancaman DEFCON bundle.",
+    "processFlow": [
+      {
+        "step": "1. Live USD/IDR Dynamic Feed (H-08)",
+        "label": "Penyelarasan kurs USD/IDR live langsung dari Binance USDTIDR & TV Forex dengan propagasi ke AI Arena"
+      },
+      {
+        "step": "2. WebSocket-REST Reconnection Gap Healing (H-09)",
+        "label": "Pembaruan kuotasi REST yang diperbolehkan me-refresh instrumen eksis saat kuotasi kedaluwarsa >3 detik"
+      },
+      {
+        "step": "3. Transparent Broker Quant Model Badge (C-03)",
+        "label": "Penetapan badge 'ESTIMATED FLOW (QUANT MODEL)' dan penanda [EST] pada ringkasan broker"
+      },
+      {
+        "step": "4. Strict Asia/Jakarta Timezone (M-02)",
+        "label": "Penegakan timeZone: 'Asia/Jakarta' pada semua konversi jam berita, jam sistem, dan radar paus"
+      },
+      {
+        "step": "5. Defense Alert DEFCON Dynamic Binding (M-08)",
+        "label": "Pemberantasan alarm nuklir sensasional saat kondisi krisis normal; pengikatan ke bundle defcon level"
+      }
+    ],
+    "markdownContent": "\n### 🚀 v5.5.1 — Forensic Hardening, Real-time Forex Sync & Telemetry Transparency\n\n#### 💱 1. Kurs USD/IDR Dinamis & Penyembuhan Reconnect WebSocket (H-08 & H-09)\n- **Live USD/IDR Feed:** Menambahkan kuotasi live pasangan `USDTIDR` dari Binance Vision dan `FX_IDC:USDIDR` dari TradingView Scanner ke dalam penyimpanan terpusat `livePrices`, dengan sinkronisasi dinamis ke `AiAgentArenaTab` dan `localStorage`.\n- **Penyembuhan Drop REST:** Memperbaiki penjagaan `if (!next[c.symbol])` di `useLivePrices.js` sehingga pembaruan harga REST dapat memperbarui instrumen yang sudah ada jika usianya lebih dari 3 detik (mencegah kekosongan kuotasi saat WebSocket reconnect).\n\n#### 📊 2. Transparansi Broker Flow & Simbologi IDX (C-03 & M-06)\n- **Badge Estimasi Model:** Menyematkan badge mencolok `ESTIMATED FLOW (QUANT MODEL)` pada header tabel Smart Money Accumulation serta tag `[EST]` pada kode broker emulasi.\n- **Pembersihan Simbol Emiten:** Menghapus prefiks tanda dollar (`$`) pada emiten saham BEI (seperti `$CUAN` menjadi `CUAN`) untuk mencegah salah baca huruf atau glitched text.\n\n#### 🕒 3. Kepatuhan Zona Waktu & Integritas Alarm Geopolitik (M-02 & M-08)\n- **Penegakan Jam WIB:** Menambahkan opsi eksplisit `{ timeZone: 'Asia/Jakarta' }` pada seluruh parser tanggal (berita makro, header sistem forex, dan feed radar paus) agar waktu yang ditampilkan selalu akurat WIB di zona waktu mana pun browser dibuka.\n- **Pengekangan Alarm Taktis:** Banner peringatan pertahanan taktis kini terikat secara ketat pada skor level DEFCON (`<= 3`) dan tingkat keparahan krisis bundle, melenyapkan alarm sensasional palsu saat kondisi pasar berstatus normal.\n"
+  },
+  {
     "id": "pkg-24092026-audit",
     "sprintLabel": "Sprint 6 (Audit & Hardening) — Data Integrity & Compliance",
     "version": "Package 24092026-R2",
     "semanticVersion": "v5.5.0",
     "date": "24 September 2026",
-    "status": "LATEST",
-    "statusColor": "var(--accent-green)",
-    "badgeLabel": "LATEST / DATA INTEGRITY & AUDIT HARDENING",
+    "status": "STABLE",
+    "statusColor": "var(--text-muted)",
+    "badgeLabel": "STABLE / DATA INTEGRITY & AUDIT HARDENING",
     "title": "Update v5.5.0: Pre-Launch Forensics Hardening, Centralized Data Integrity Audit Modal, Stablecoin Filters, Short-Position Lot Calculator & Zero-Cost Compliance",
     "description": "Implementasi menyeluruh hasil audit forensik Antigravity & GLM: Peluncuran Modal Audit Integritas & Provenance Data 6-jalur (menggantikan status hardcoded), filter proteksi pasangan stablecoin (USDC, USDT, FDUSD), perbaikan kalkulasi posisi Short pada Lot Calculator Modal, banner pengungkapan risiko Backtest Hipotetis, sinkronisasi harga live pada on-chain Whale Tracker, serta modal kepatuhan regulasi non-advisory OJK.",
     "processFlow": [

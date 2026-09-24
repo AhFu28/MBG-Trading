@@ -2387,6 +2387,22 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
     });
   }, [livePrices]);
 
+  // H-08: Synchronize live USD/IDR rate dynamically from centralized livePrices store
+  useEffect(() => {
+    if (!livePrices) return;
+    const liveRate = livePrices['USDIDR']?.price || livePrices['USDTIDR']?.price || livePrices['FX_IDC:USDIDR']?.price;
+    if (liveRate && typeof liveRate === 'number' && liveRate > 10000 && liveRate < 25000) {
+      const rounded = Math.round(liveRate);
+      setUsdToIdrRate(rounded);
+      usdToIdrRef.current = rounded;
+      currentLiveUsdToIdr = rounded;
+      try {
+        localStorage.setItem('mbg_usd_idr_rate', String(rounded));
+        localStorage.setItem('mbg_usd_idr_ts', String(Date.now()));
+      } catch (e) {}
+    }
+  }, [livePrices]);
+
   // Closed Trades History Journal
   const [journal, setJournal] = useState(() => {
     try {

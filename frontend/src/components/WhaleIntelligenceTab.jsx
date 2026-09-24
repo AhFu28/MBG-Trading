@@ -1223,7 +1223,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                         <td style={{ padding: '10px 14px', fontFamily: 'var(--font-mono)' }}>
                           <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                             {w.isNew && <span className="pulse-dot-green" />}
-                            <span>{new Date(w.timestamp).toLocaleTimeString('id-ID', { hour12: false })} WIB</span>
+                            <span>{new Date(w.timestamp).toLocaleTimeString('id-ID', { hour12: false, timeZone: 'Asia/Jakarta' })} WIB</span>
                           </div>
                           <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
                             {new Date(w.timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
@@ -1458,7 +1458,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span className={latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'pulse-dot-amber' : 'pulse-dot-green'} />
                     <span style={{ fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', color: latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'var(--accent-rust)' : 'var(--accent-green)', letterSpacing: '0.05em' }}>
-                      ALERT PAUS TERBARU TERDETEKSI ({new Date(latestMegaWhaleAlert.timestamp).toLocaleTimeString('id-ID')} WIB)
+                      ALERT PAUS TERBARU TERDETEKSI ({new Date(latestMegaWhaleAlert.timestamp).toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB)
                     </span>
                     <span style={{
                       fontSize: '9px',
@@ -1668,7 +1668,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                           <td style={{ padding: '10px 14px', fontFamily: 'var(--font-mono)' }}>
                             <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                               {w.isNew && <span className="pulse-dot-green" />}
-                              <span>{new Date(w.timestamp).toLocaleTimeString('id-ID', { hour12: false })} WIB</span>
+                              <span>{new Date(w.timestamp).toLocaleTimeString('id-ID', { hour12: false, timeZone: 'Asia/Jakarta' })} WIB</span>
                             </div>
                             <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
                               {new Date(w.timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}

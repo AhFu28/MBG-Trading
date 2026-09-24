@@ -660,7 +660,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                   {/* Timestamp & Bookmark Star */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                      {news.published_str || (news.pub_date ? new Date(news.pub_date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : 'Hari ini')}
+                      {news.published_str || (news.pub_date ? new Date(news.pub_date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' }) + ' WIB' : 'Hari ini')}
                     </span>
                     <button
                       onClick={() => toggleBookmark(newsId)}

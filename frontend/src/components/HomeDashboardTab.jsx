@@ -138,7 +138,10 @@ export default function HomeDashboardTab({
     });
   }, [liveNewsRaw]);
 
-  const hasHighThreat = geoAlertItems.length > 0;
+  // M-08: Bind tactical alert strictly to bundle DEFCON threat level (suppress sensational alert when NORMAL/DEFCON 4)
+  const bundleDefconLevel = Number(data?.geopolitical_threat?.defcon_level || 4);
+  const isCrisisEscalated = bundleDefconLevel <= 3 && String(data?.macro_indicators?.crisis_severity || '').toUpperCase() !== 'NORMAL';
+  const hasHighThreat = isCrisisEscalated && geoAlertItems.length > 0;
   const primaryThreatNews = geoAlertItems[0];
 
   // News Filtering with ALL granular categories restored
@@ -841,7 +844,7 @@ export default function HomeDashboardTab({
                           style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', cursor: 'pointer' }}
                           onClick={() => onSelectTicker(topIdxTicker, 'IDX')}
                         >
-                          ${topIdxTicker}
+                          {topIdxTicker}
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
@@ -1080,7 +1083,10 @@ export default function HomeDashboardTab({
                 <div className="telemetry-header" style={{ padding: '4px 8px', fontSize: '9.5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span>📊</span>
-                    <span style={{ fontWeight: '800' }}>SMART MONEY ACCUMULATION (EOD)</span>
+                    <span style={{ fontWeight: '800' }}>SMART MONEY ACCUMULATION</span>
+                    <span style={{ fontSize: '7px', background: 'rgba(56, 189, 248, 0.12)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.28)', padding: '1px 4px', borderRadius: '2px', fontWeight: '800' }} title="Estimasi pemodelan quant institutional flow (bukan feed berbayar IDX)">
+                      ESTIMATED FLOW (QUANT MODEL)
+                    </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ fontSize: '7.5px', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', padding: '1px 4px', borderRadius: '2px', fontWeight: '800' }}>
@@ -1096,7 +1102,9 @@ export default function HomeDashboardTab({
                 <div style={{ padding: '4px 6px', flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '2px', minHeight: 0 }}>
                   {accumulatingBrokers.map((b, idx) => {
                     const topB = b.top_buyers?.[0];
-                    const cleanBroker = (topB?.broker || 'CC').replace('[SIMULATED] ', '').trim();
+                    const rawBroker = topB?.broker || 'CC';
+                    const isSimulated = rawBroker.includes('[SIMULATED]');
+                    const cleanBroker = rawBroker.replace('[SIMULATED] ', '').trim();
                     const brokerName = topB?.name ? topB.name.split(' ')[0] : 'Mandiri';
                     const lotsK = topB?.lots ? Math.round(topB.lots / 1000).toLocaleString() + 'k lot' : '38k lot';
                     const ticker = b.ticker || b.symbol || 'AMMN';
@@ -1127,7 +1135,7 @@ export default function HomeDashboardTab({
                             style={{ fontWeight: '800', color: 'var(--accent-blue)', cursor: 'pointer', fontSize: '9px' }}
                             onClick={() => onSelectTicker(ticker, 'IDX')}
                           >
-                            ${ticker}
+                            {ticker}
                           </span>
                           <span style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>
                             Avg: <strong style={{ color: 'var(--text-primary)' }}>{bandarAvg.toLocaleString()}</strong>
@@ -1147,7 +1155,9 @@ export default function HomeDashboardTab({
                         {/* Broker Details & Big Acc Badge */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <span style={{ fontSize: '7.5px', color: 'var(--text-secondary)', fontWeight: '700' }}>
-                            <strong style={{ color: '#60a5fa' }}>{cleanBroker}</strong> <span style={{ color: 'var(--text-muted)' }}>({brokerName} • {lotsK})</span>
+                            <strong style={{ color: '#60a5fa' }}>{cleanBroker}</strong>
+                            {isSimulated && <span style={{ fontSize: '7px', color: '#fbbf24', marginLeft: '2px' }} title="Estimasi pemodelan quant">[EST]</span>}
+                            <span style={{ color: 'var(--text-muted)' }}> ({brokerName} • {lotsK})</span>
                           </span>
                           <span className="badge badge-bull" style={{ fontSize: '7px', padding: '0 3px', fontWeight: '800' }}>
                             BIG ACC
@@ -1160,8 +1170,8 @@ export default function HomeDashboardTab({
 
                 {/* Telemetry Footer */}
                 <div style={{ padding: '4px 6px', borderTop: 'var(--border-muted)', fontSize: '8px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'var(--bg-panel-subtle)', flexShrink: 0 }}>
-                  <span>Total Accumulation: <strong style={{ color: 'var(--accent-green)' }}>{formatFlowIdr(totalBandarAccumValue || 83030000000000)}</strong></span>
-                  <span>Top: <strong style={{ color: '#60a5fa' }}>6 Tickers</strong></span>
+                  <span>Total Accum: <strong style={{ color: 'var(--accent-green)' }}>{formatFlowIdr(totalBandarAccumValue || 83030000000000)}</strong></span>
+                  <span>Model: <strong style={{ color: '#38bdf8' }}>ESTIMASI QUANT (EOD)</strong></span>
                   <span>Horizon: <strong style={{ color: '#fbbf24' }}>5D Swing</strong></span>
                 </div>
               </div>
@@ -1238,7 +1248,7 @@ export default function HomeDashboardTab({
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ fontSize: '7.5px', background: 'rgba(239, 68, 68, 0.4)', color: '#fca5a5', padding: '1px 4px', borderRadius: '2px', fontWeight: '800' }}>
-                      DEFCON 3 WATCH
+                      DEFCON {bundleDefconLevel} WATCH
                     </span>
                     <span
                       onClick={() => setDismissDefenseAlert(true)}
@@ -1420,7 +1430,7 @@ export default function HomeDashboardTab({
                       </div>
 
                       <span style={{ fontSize: '8px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                        {news.pub_date ? `${new Date(news.pub_date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB` : '11:45 WIB'}
+                        {news.pub_date ? `${new Date(news.pub_date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })} WIB` : '11:45 WIB'}
                       </span>
                     </div>
 

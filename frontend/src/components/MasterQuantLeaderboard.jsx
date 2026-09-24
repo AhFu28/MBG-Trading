@@ -1019,7 +1019,7 @@ export default function MasterQuantLeaderboard({
                             <td className="sticky-col-ticker" style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '13px' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <AssetIcon symbol={item.ticker} market={item.market === 'CRYPTO' ? 'CRYPTO' : 'IDX'} size={18} />
-                                <span>${item.ticker}</span>
+                                <span>{item.ticker}</span>
                               </div>
                             </td>
                             <td>
