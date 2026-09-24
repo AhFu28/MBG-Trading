@@ -3,6 +3,7 @@
 export const CHANGELOG_DATA = [
     {
     id: 'pkg-24092026-v54',
+    sprintLabel: 'Sprint 5 (Dini Hari) — Compliance & QA/QC',
     version: 'Package 24092026-A',
     semanticVersion: 'v5.4.0',
     date: '24 September 2026',
@@ -40,6 +41,7 @@ export const CHANGELOG_DATA = [
 
     {
     id: 'pkg-23092026-v53',
+    sprintLabel: 'Sprint 4 (Malam) — 6-Level Masterclass & Simulators',
     version: 'Package 23092026-D',
     semanticVersion: 'v5.3.0',
     date: '23 September 2026',
@@ -83,6 +85,7 @@ export const CHANGELOG_DATA = [
   },
 {
     id: 'pkg-23092026-v52',
+    sprintLabel: 'Sprint 3 (Sore) — 50/50 Cockpit & Defense HUD',
     version: 'Package 23092026-C',
     semanticVersion: 'v5.2.0',
     date: '23 September 2026',
@@ -139,6 +142,7 @@ export const CHANGELOG_DATA = [
   },
   {
     id: 'pkg-23092026-v51',
+    sprintLabel: 'Sprint 2 (Siang) — Quant Sprint & MCP Server',
     version: 'Package 23092026-B',
     semanticVersion: 'v5.1.0',
     date: '23 September 2026',
@@ -210,6 +214,7 @@ export const CHANGELOG_DATA = [
   },
   {
     id: 'pkg-23092026-v50',
+    sprintLabel: 'Sprint 1 (Pagi) — AI Sentinel & DEFCON Desk',
     version: 'Package 23092026-A',
     semanticVersion: 'v5.0.0',
     date: '23 September 2026',
@@ -262,6 +267,7 @@ export const CHANGELOG_DATA = [
   },
   {
     id: 'pkg-21092026-v48',
+    sprintLabel: 'Sprint C — Season 0.1 Calibration & Pair Recap',
     version: 'Package 21092026-B',
     semanticVersion: 'v4.8.0',
     date: '21 September 2026',
@@ -303,6 +309,7 @@ export const CHANGELOG_DATA = [
   {
 
     id: 'pkg-21092026-v47',
+    sprintLabel: 'Sprint B — AI Engine Integrity & USD/IDR Sync',
     version: 'Package 21092026',
     semanticVersion: 'v4.7.0',
     date: '21 September 2026',
@@ -346,6 +353,7 @@ export const CHANGELOG_DATA = [
   },
   {
     id: 'pkg-21092026-v46',
+    sprintLabel: 'Sprint A — Agent 16 CHAOS [Rogue Singularity]',
     version: 'Package 21092026',
     semanticVersion: 'v4.6.0',
     date: '21 September 2026',
@@ -741,3 +749,53 @@ export const CHANGELOG_DATA = [
     ]
   }
 ];
+
+
+// Helper: Mengelompokkan seluruh changelog paket berdasarkan tanggal kalender (Daily Grouping)
+export const getDailyGroupedChangelog = (data = CHANGELOG_DATA) => {
+  const dateMap = new Map();
+  data.forEach(pkg => {
+    const d = pkg.date;
+    if (!dateMap.has(d)) {
+      dateMap.set(d, []);
+    }
+    dateMap.get(d).push(pkg);
+  });
+
+  const dailyTitles = {
+    '24 September 2026': 'Compliance Audit, QA/QC Bugfixes, UI/UX Full-Width Canvas Restoration & GitHub Synchronization',
+    '23 September 2026': 'Institutional Cockpit Refinement, Tactical Defense, Symmetrical HUD & 6-Level Quant Academy Masterclass',
+    '21 September 2026': 'AI Multi-Agent Integrity, Live USD/IDR Sync, Agent 16 CHAOS & Season 0.1 Calibration',
+    '20 September 2026': 'AI Multi-Agent Arena Genesis, Locked 4-Column Deck & Independent Capital Ledger',
+    '19 September 2026': 'AI Agent Arena Genesis (4 Elements), Zero Simulation Policy & Session Timer',
+    '18 September 2026': 'Tri-Signal Matrix Cockpit, US Stock Signals, Authentic Logos & Laser-Aligned Geometry',
+    '17 September 2026': 'Dual-Speed Reactive Quant Engine, Live Trailing Stop & Cloudflare Pages',
+    '16 September 2026': 'Whale Intelligence Hub, Running Trade BEI, Crypto Futures & Forex Sync',
+    '12 September 2026': 'IHSG Real-Time Quote Feed & Macro Engine Synchronization',
+    '11 September 2026': 'SoSoValue Research Desk, Dual-Stream News Wire & Layout Cockpit V2',
+    '10 September 2026': 'Telegram Serverless, Command Center, Charting Desk & Changelog Engine',
+    '08 - 09 September 2026': 'Initial Platform Architecture, Multi-Market Terminal & Core Quant Intelligence'
+  };
+
+  const grouped = [];
+  for (const [date, pkgs] of dateMap.entries()) {
+    const isLatest = pkgs.some(p => p.status === 'LATEST');
+    const versions = pkgs.map(p => p.semanticVersion).filter(Boolean);
+    const versionRange = versions.length > 1
+      ? `${versions[versions.length - 1]} → ${versions[0]}`
+      : versions[0] || '';
+
+    grouped.push({
+      date,
+      count: pkgs.length,
+      isLatest,
+      versionRange,
+      status: isLatest ? 'LATEST' : 'STABLE',
+      statusColor: isLatest ? 'var(--accent-green)' : 'var(--text-muted)',
+      badgeLabel: isLatest ? 'LATEST' : `${pkgs.length} RILIS`,
+      title: dailyTitles[date] || pkgs[0].title,
+      packages: pkgs
+    });
+  }
+  return grouped;
+};

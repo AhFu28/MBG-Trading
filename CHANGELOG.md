@@ -30,6 +30,10 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
   - **Arsitektur Asimetris Lebar (.quant-academy-main-grid)**: Mengunci sidebar modul pada `280px` (sticky on scroll) dan mengalokasikan seluruh sisa ruang layar (`minmax(0, 1fr)`) untuk materi pembelajaran hingga lebar maksimal `1680px`.
   - **Penyempurnaan Tipografi**: Menyesuaikan skala teks (judul 22px, narasi analogi/mekanisme 13.5px line-height 1.75) agar seluruh grafik, tabel, dan simulator memiliki ruang nafas visual (*breathing room*) yang optimal.
   - Certified production bundle: 75 modules compiled with 0 errors/warnings.
+- **[CHANGELOG ENGINE & DAILY ROLL-UP ARCHITECTURE] Pengelompokan Berbasis Tanggal Kalender (Daily Grouping)**:
+  - **Arsitektur Harian Utuh**: Mengubah navigasi sidebar dari daftar paket terfragmentasi menjadi 12 tanggal kalender unik (24 Sep 2026, 23 Sep 2026, 21 Sep 2026, dst.) lengkap dengan indikator jumlah rilis dan rentang versi harian.
+  - **Daily Roll-Up Canvas**: Memilih satu tanggal langsung menyajikan seluruh sprint dan rilis pada hari tersebut (contoh: tanggal 23 September langsung memuat gabungan 4 sprint: v5.0.0 s/d v5.3.0) dalam satu halaman kronologis terpadu tanpa perlu klik terpisah.
+  - **Sub-Sprint Quick Filter**: Menyediakan bilah filter horizontal ('Tampilkan Semua Update Hari Ini' vs sub-sprint individual) untuk navigasi cepat antar-sprint dalam tanggal yang sama.
 
 ---
 
