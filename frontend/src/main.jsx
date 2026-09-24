@@ -73,7 +73,26 @@ class ErrorBoundary extends React.Component {
                 🔄 REFRESH TERMINAL
               </button>
               <button
-                onClick={() => { localStorage.clear(); window.location.reload(); }}
+                onClick={() => {
+                  try {
+                    const keysToPreserve = [
+                      'mbg_ai_arena_journal',
+                      'mbg_ai_arena_positions',
+                      'mbg_ai_arena_agents',
+                      'mbg_ai_arena_epoch_reports',
+                      'mbg_paper_portfolio',
+                      'mbg_auth_session'
+                    ];
+                    const backup = {};
+                    keysToPreserve.forEach(k => {
+                      const v = localStorage.getItem(k);
+                      if (v !== null) backup[k] = v;
+                    });
+                    localStorage.clear();
+                    Object.entries(backup).forEach(([k, v]) => localStorage.setItem(k, v));
+                  } catch (e) {}
+                  window.location.reload();
+                }}
                 style={{
                   background: '#21262d',
                   color: '#c9d1d9',
