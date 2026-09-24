@@ -1352,8 +1352,7 @@ th.sticky-col-num, th.sticky-col-ticker {
   width: 100%;
   box-sizing: border-box;
   align-items: stretch;
-  height: 460px;
-  max-height: 460px;
+  min-height: 460px;
 }
 
 .home-cockpit-left {
@@ -1361,18 +1360,13 @@ th.sticky-col-num, th.sticky-col-ticker {
   flex-direction: column;
   gap: 6px;
   min-width: 0;
-  height: 460px;
-  max-height: 460px;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 .home-cockpit-right {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  height: 460px;
-  max-height: 460px;
   box-sizing: border-box;
 }
 

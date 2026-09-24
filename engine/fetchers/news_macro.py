@@ -361,8 +361,8 @@ class NewsMacroFetcher:
             }
         else:
             indicators["data_source"] = "cached"
-            if indicators.get("gold_price") and not (1800 <= indicators["gold_price"] <= 3500):
-                indicators["gold_price"] = 2650.0
+            if indicators.get("gold_price") and not (1000 <= indicators["gold_price"] <= 10000):
+                indicators["gold_price"] = 4262.0
             if indicators.get("brent_oil_price") and not (40 <= indicators["brent_oil_price"] <= 160):
                 indicators["brent_oil_price"] = 74.20
 
@@ -376,8 +376,8 @@ class NewsMacroFetcher:
                     change_pct = round(((current - prev) / prev) * 100, 2)
                     
                     if key == "gold":
-                        # Sanity check: prevent anomalous contract roll quotes (e.g. 4381.8) from poisoning macro telemetry
-                        if 1800 <= current <= 3500:
+                        # Sanity check: prevent anomalous broken quotes (< $1000 or > $10000) from poisoning macro telemetry
+                        if 1000 <= current <= 10000:
                             indicators["gold_price"] = round(current, 2)
                             indicators["gold_change_pct"] = change_pct
                         else:
