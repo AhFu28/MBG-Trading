@@ -2316,7 +2316,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
   const journalRef = useRef(journal);
   journalRef.current = journal;
 
-  // Hydrate offline 24/7 background progress from Cloud / Master Data Bundle (Option 1)
+  // 1. Hydrate offline 24/7 background progress from Cloud / Master Data Bundle (Option 1)
   useEffect(() => {
     const cloudState = data?.arena_state;
     if (!cloudState) return;
@@ -2352,6 +2352,57 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
       });
     }
   }, [data?.arena_state]);
+
+  // 2. Direct Real-Time Synchronizer from Hugging Face Space (Opsi B Always-On Cloud Daemon)
+  useEffect(() => {
+    let isCancelled = false;
+    const syncFromCloudSpace = async () => {
+      const endpoints = [
+        'https://ahfu28-mbg-trading-arena.hf.space/api/arena/state',
+        `/data/latest_arena_state.json?v=${Date.now()}`
+      ];
+      for (const ep of endpoints) {
+        try {
+          const res = await fetch(ep, { cache: 'no-cache' });
+          if (res.ok) {
+            const cloudState = await res.json();
+            if (isCancelled || !cloudState) return;
+
+            const resetTs = Number(localStorage.getItem('mbg_ai_arena_reset_ts') || 0);
+            const cloudEvaluatedTs = cloudState.last_evaluated ? new Date(cloudState.last_evaluated).getTime() : 0;
+            if (resetTs > 0 && cloudEvaluatedTs > 0 && cloudEvaluatedTs <= resetTs) return;
+
+            if (Array.isArray(cloudState.journal) && cloudState.journal.length > 0) {
+              setJournal(prev => {
+                const existingIds = new Set(prev.map(j => j.id));
+                const newFromCloud = cloudState.journal.filter(j => !existingIds.has(j.id));
+                if (newFromCloud.length === 0) return prev;
+                const merged = [...prev, ...newFromCloud];
+                try { localStorage.setItem('mbg_ai_arena_journal', JSON.stringify(merged)); } catch (e) {}
+                return merged;
+              });
+            }
+
+            if (Array.isArray(cloudState.positions) && cloudState.positions.length > 0) {
+              setPositions(prev => {
+                if (prev.length === 0) {
+                  try { localStorage.setItem('mbg_ai_arena_positions', JSON.stringify(cloudState.positions)); } catch (e) {}
+                  return cloudState.positions;
+                }
+                return prev;
+              });
+            }
+            break; // Stop after successful endpoint
+          }
+        } catch (e) {
+          // Fallback to next endpoint
+        }
+      }
+    };
+
+    syncFromCloudSpace();
+    return () => { isCancelled = true; };
+  }, []);
 
   // Modal Dialog States
   const [journalModal, setJournalModal] = useState({ isOpen: false, agentId: 'ALL', agentName: 'Semua Elemen' });

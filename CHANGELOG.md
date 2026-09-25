@@ -100,6 +100,17 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
   - Frontend Build: Vite production build 80 modules compiled clean dalam 1.61s dengan 0 errors/warnings.
   - Zero Secret Leak: 0 credentials/keys exposed.
 
+### Sprint 12 (Tengah Malam) — Hugging Face Spaces 24/7 Cloud Daemon Package & Real-Time Sync
+- **[ALWAYS-ON CLOUD ARENA DAEMON] Arsitektur Eksekusi 24/7 di Hugging Face Spaces**:
+  - **Standalone FastAPI Trading Daemon (`deploy/huggingface/app.py`)**: Membangun microservice trading independen yang berjalan di container Docker Hugging Face Spaces. Daemon ini memindai streaming live ticker Binance secara non-stop, mengevaluasi 16 bot secara serempak (konkuren), dan mengelola ratchet trailing stop serta penutupan order dengan fee bursa Bitget 0.12%.
+  - **Auto-Keepalive & Telemetry HUD**: Menyediakan endpoint `/health` (untuk ping gratis UptimeRobot per 5 menit agar container tidak tidur), `/api/arena/state` (sinkronisasi state real-time), dan dashboard HTML status live 16 bot pada port 7860.
+  - **Client Hydration Direct Fallback (`AiAgentArenaTab.jsx`)**: Menambahkan mekanisme sinkronisasi langsung ke `https://ahfu28-mbg-trading-arena.hf.space/api/arena/state` saat frontend web dibuka di laptop/smartphone.
+  - **1-Click Deploy Automator (`deploy.ps1` & `deploy.sh`)**: Script otomatisasi inisialisasi dan push git ke repositori remote Hugging Face Space `https://huggingface.co/spaces/AhFu28/mbg-trading-arena`.
+- **[QA/QC & CERTIFICATION]**:
+  - Python Verification: `app.py` lulus uji kompilasi sintaksis tanpa error.
+  - Frontend Build: Vite production build 80 modules compiled clean dalam 1.75s dengan 0 errors/warnings.
+  - Zero Secret Leak: 0 credentials/keys exposed.
+
 ---
 
 ## [2026-09-24] — Compliance Audit, UI/UX Full-Width Canvas & QA/QC Certification
