@@ -928,6 +928,38 @@ export default function SecurityHubDrawer({
           </button>
 
           <button
+            onClick={() => {
+              if (onOpenExecution) {
+                onOpenExecution({
+                  symbol: clean,
+                  market: resolvedMarket,
+                  entryPrice: entry || curPrice,
+                  stopLoss: sl,
+                  target1: tp1,
+                  target2: tp2
+                });
+              }
+            }}
+            style={{
+              flex: 1,
+              background: 'rgba(59, 130, 246, 0.25)',
+              border: '1px solid rgba(59, 130, 246, 0.5)',
+              borderRadius: '6px',
+              color: 'var(--accent-blue)',
+              padding: '8px 10px',
+              fontSize: '11px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px'
+            }}
+          >
+            ⚡ Eksekusi
+          </button>
+
+          <button
             onClick={() => setActiveSubTab('SIZING')}
             style={{
               flex: 1,

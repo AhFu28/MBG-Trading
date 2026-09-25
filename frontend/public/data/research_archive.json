@@ -1,16 +1,16 @@
 [
   {
-    "id": "research-note-202609250023",
-    "title": "🔬 MBG Sector Research Note (25 Sep 2026): Rotasi Likuiditas Perbankan vs Komoditas Emas",
+    "id": "research-note-202609251452",
+    "title": "MBG Sector Research Note: Alokasi Barbell Sektor Perbankan vs Komoditas di Tengah Gejolak Makro",
     "source": "MBG RESEARCH INTELLIGENCE",
     "link": "#research-note",
-    "pub_date": "Thu, 24 Sep 2026 17:23:55 GMT",
+    "pub_date": "Fri, 25 Sep 2026 07:52:21 GMT",
     "date_iso": "2026-09-25",
     "scope": "DAILY",
     "tag": "RESEARCH",
     "stream": "RESEARCH",
     "sentiment": "BULLISH",
-    "sentiment_score": 0.48,
+    "sentiment_score": 0.5,
     "related_tickers": [
       "BBCA",
       "BBRI",
@@ -21,14 +21,14 @@
     "primary_ticker": "BBCA",
     "chart_symbol": "IDX:BBCA",
     "metrics": [
-      "Alokasi Barbell: 60% Bank : 40% Emas",
+      "Alokasi Barbell: 60% Bank : 40% Komoditas",
       "BBCA Pivot: Rp 6,200",
       "ANTM Pivot: Rp 1,650",
-      "R:R Target: >= 2.2"
+      "R:R Target: >= 2.0"
     ],
     "reading_time_sec": 120,
-    "summary": "Panduan Analisis Sederhana: Mengapa saham bank dan tambang bergerak berlawanan arah? Ketika ekspektasi suku bunga dunia tinggi, bank menikmati margin bunga (NIM) yang sehat. Sebaliknya saat risiko tensi perang meningkat, institusi memindahkan dana ke aset lindung nilai seperti emas (ANTM). Strategi terbaik bagi investor adalah membagi portofolio secara berimbang ('Barbell Strategy').",
-    "full_narrative": "Panduan Analisis Sederhana: Mengapa saham bank dan tambang bergerak berlawanan arah? Ketika ekspektasi suku bunga dunia tinggi, bank menikmati margin bunga (NIM) yang sehat. Sebaliknya saat risiko tensi perang meningkat, institusi memindahkan dana ke aset lindung nilai seperti emas (ANTM). Strategi terbaik bagi investor adalah membagi portofolio secara berimbang ('Barbell Strategy').\n\nLevel Teknikal BBCA: Pivot Rp 6,200, S1 Rp 6,150, R1 Rp 6,250. Level Teknikal ANTM: Pivot Rp 1,650, S1 Rp 1,637, R1 Rp 1,663.",
+    "summary": "Strategi 'Barbell' adalah seperti mengangkat beban dengan dua sisi seimbang: satu sisi berinvestasi pada saham bank besar yang stabil saat suku bunga tinggi, dan sisi lainnya pada saham komoditas/energi sebagai pelindung inflasi.",
+    "full_narrative": "Kluster Perbankan Big-Cap (BBCA, BMRI, BBNI): Mengalami tekanan teknikal akibat outflow asing, namun menawarkan valuasi menarik dengan rasio dividen kokoh untuk akumulasi bertahap.\n\nKluster Komoditas & Energi (MEDC, ANTM, MDKA): Penurunan harga minyak dunia menjadi penyeimbang modal, namun harga emas yang bertahan tinggi mendukung fundamental emiten logam mulia.\n\nAlokasi Portofolio Barbell: Direkomendasikan proporsi 60% Perbankan Defensif / Big Cap dan 40% Komoditas / Energi Lindung Nilai untuk menjaga kestabilan imbal hasil.\n\nBatas Risiko & Invalidation: Lakukan pengurangan posisi jika IHSG secara konsisten ditutup di bawah level psikologis 6.180 dengan volume penjualan tinggi.\n\n📊 Pivot BBCA di Rp 6,200 (S1: Rp 6,150, R1: Rp 6,250). Pivot ANTM di Rp 1,650.\n\n🛡️ Batas Invalidation: BBCA < Rp 6,072, ANTM < Rp 1,616.",
     "technical_levels": {
       "pivot": 6200.0,
       "s1": 6150.0,
@@ -50,18 +50,22 @@
       "invalidation_thesis": "Penutupan candle harian di bawah 1,620 membatalkan skenario akumulasi dan mewajibkan cut-loss defensif."
     },
     "key_takeaways": [
-      "🏦 Klaster Perbankan (BBCA, BBRI, BMRI): Valuasi historis menarik dengan konsistensi deviden yield 4-6%. Pivot BBCA berada di Rp 6,200, Support S1 Rp 6,150, Target R1 Rp 6,250.",
-      "⛏️ Klaster Tambang Emas (ANTM, BRMS, MDKA): Sensitivitas tinggi terhadap harga emas spot dunia ($4,381.8). Pivot ANTM di Rp 1,650, Support S1 Rp 1,637, Target R1 Rp 1,663.",
-      "💡 Rekomendasi Alokasi Portofolio: Terapkan 'Barbell Strategy' institusional: 60% saham defensif dividen tinggi (BBCA/BBRI/BMRI) + 40% saham momentum komoditas energi/emas (ANTM/MEDC).",
-      "🛡️ Invalidation Level & Manajemen Risiko: Cut-loss disiplin jika emiten menembus level batas bawah (BBCA < Rp 6,072 / ANTM < Rp 1,616)."
+      "Kluster Perbankan Big-Cap (BBCA, BMRI, BBNI): Mengalami tekanan teknikal akibat outflow asing, namun menawarkan valuasi menarik dengan rasio dividen kokoh untuk akumulasi bertahap.",
+      "Kluster Komoditas & Energi (MEDC, ANTM, MDKA): Penurunan harga minyak dunia menjadi penyeimbang modal, namun harga emas yang bertahan tinggi mendukung fundamental emiten logam mulia.",
+      "Alokasi Portofolio Barbell: Direkomendasikan proporsi 60% Perbankan Defensif / Big Cap dan 40% Komoditas / Energi Lindung Nilai untuk menjaga kestabilan imbal hasil.",
+      "Batas Risiko & Invalidation: Lakukan pengurangan posisi jika IHSG secara konsisten ditutup di bawah level psikologis 6.180 dengan volume penjualan tinggi.",
+      "📊 Pivot BBCA di Rp 6,200 (S1: Rp 6,150, R1: Rp 6,250). Pivot ANTM di Rp 1,650.",
+      "🛡️ Batas Invalidation: BBCA < Rp 6,072, ANTM < Rp 1,616."
     ],
     "actionable_playbook": {
-      "bull_scenario": "Akumulasi bertahap BBCA di area Rp 6,150 - 6,200 dengan target profit Rp 6,250 s/d Rp 6,312.",
-      "bear_scenario": "Jika terjadi capital outflow asing > Rp 500 Milyar per sesi, kurangi eksposur saham beta tinggi dan perbesar porsi cash.",
-      "invalidation_rule": "Batal jika BBCA breakdown penutupan harian di bawah Rp 6,072."
+      "bull_scenario": "Jika IHSG rebound di atas 6.315 dan Rupiah menguat, lakukan buy on dip pada BBNI dan BMRI serta akumulasi MEDC jika Brent bertahan di atas $95.",
+      "bear_scenario": "Jika IHSG menembus ke bawah 6.200, tingkatkan alokasi kas hingga 35%, kurangi bobot saham perbankan ber-beta tinggi, dan tahan posisi pada emas (ANTM/MDKA).",
+      "invalidation_rule": "Tesis alokasi ini batal jika Yield US 10Y melonjak melampaui 5,30% secara bertahan yang dapat memicu sell-off masif di seluruh aset berisiko pasar berkembang."
     },
     "is_pinned": true,
-    "edition_type": "RESEARCH_NOTE"
+    "edition_type": "RESEARCH_NOTE",
+    "ai_generated": true,
+    "model_used": "gemini-3.6-flash"
   },
   {
     "id": "daily-brief-202609250023",

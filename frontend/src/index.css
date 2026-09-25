@@ -1344,16 +1344,18 @@ th.sticky-col-num, th.sticky-col-ticker {
 /* ============================================================
    REFINED INSTITUTIONAL COCKPIT: NEWS ON THE RIGHT
    Spans vertically from Bento (Quant IDX Alpha) to Bandarmology
+   Fixed 480px locked flush layout (Zero internal cockpit scrolling)
    ============================================================ */
 .home-middle-cockpit-split {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr) 350px;
   gap: 6px;
   width: 100%;
   box-sizing: border-box;
   align-items: stretch;
   height: 480px;
   max-height: 480px;
+  min-height: 0;
 }
 
 .home-cockpit-left {
@@ -1361,6 +1363,7 @@ th.sticky-col-num, th.sticky-col-ticker {
   flex-direction: column;
   gap: 6px;
   min-width: 0;
+  min-height: 0;
   height: 480px;
   max-height: 480px;
   box-sizing: border-box;
@@ -1371,6 +1374,7 @@ th.sticky-col-num, th.sticky-col-ticker {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
   height: 480px;
   max-height: 480px;
   box-sizing: border-box;
@@ -1384,9 +1388,10 @@ th.sticky-col-num, th.sticky-col-ticker {
   flex-shrink: 0;
 }
 
-@media (max-width: 1150px) {
+@media (max-width: 820px) {
   .home-middle-cockpit-split {
     grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
     height: auto !important;
     max-height: none !important;
   }
@@ -1396,8 +1401,9 @@ th.sticky-col-num, th.sticky-col-ticker {
     overflow: visible !important;
   }
   .home-cockpit-right {
-    height: 480px !important;
-    max-height: 480px !important;
+    height: 460px !important;
+    max-height: 460px !important;
+    min-height: 0 !important;
     overflow: hidden !important;
   }
   .home-macro-compact-grid {

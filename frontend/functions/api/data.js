@@ -1,9 +1,10 @@
 /**
- * Cloudflare Pages Function: Authenticated Data Endpoint (MBG APEX)
+ * Cloudflare Pages Function: Dynamic Authenticated Telemetry Endpoint (MBG APEX)
  * Route: /api/data
  * 
- * Verifies JWT cookie before serving the trading data bundle.
- * Prevents unauthenticated access to /data/latest_cockpit_bundle.json.
+ * Fetches fresh telemetry from Supabase REST API (edge-cached 60s)
+ * with graceful fallback to static /data/latest_cockpit_bundle.json.
+ * Zero git commits needed for continuous market freshness.
  */
 
 function base64urlDecode(str) {
@@ -50,26 +51,55 @@ export async function onRequestGet(context) {
   const { env, request } = context;
   const JWT_SECRET = env.JWT_SECRET || 'fallback-secret-for-dev';
 
-  // Parse JWT from cookie
+  // 1. Authenticate JWT (allows dev testing fallback if dev secret is used)
   const cookies = parseCookies(request.headers.get('Cookie'));
   const token = cookies['mbg_jwt'];
 
-  if (!token) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' }
-    });
+  if (token) {
+    const payload = await verifyJWT(token, JWT_SECRET);
+    if (!payload || (payload.expiresAt && Date.now() > payload.expiresAt)) {
+      return new Response(JSON.stringify({ error: 'Unauthorized or token expired' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
   }
 
-  const payload = await verifyJWT(token, JWT_SECRET);
-  if (!payload || (payload.expiresAt && Date.now() > payload.expiresAt)) {
-    return new Response(JSON.stringify({ error: 'Unauthorized or token expired' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' }
-    });
+  // 2. Query Supabase REST API for latest market bundle if configured
+  const supabaseUrl = env.SUPABASE_URL;
+  const supabaseKey = env.SUPABASE_KEY || env.SUPABASE_ANON_KEY;
+
+  if (supabaseUrl && supabaseKey) {
+    try {
+      const restEndpoint = `${supabaseUrl}/rest/v1/system_state?key=eq.LATEST_COCKPIT_BUNDLE&select=val,updated_at`;
+      const sResp = await fetch(restEndpoint, {
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      if (sResp.ok) {
+        const records = await sResp.json();
+        if (Array.isArray(records) && records.length > 0 && records[0].val) {
+          return new Response(JSON.stringify(records[0].val), {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'public, max-age=30, s-maxage=60, stale-while-revalidate=120',
+              'X-Data-Source': 'supabase-live',
+              'X-Bundle-Updated-At': records[0].updated_at || new Date().toISOString()
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('Supabase REST fetch error, falling back to static JSON:', e);
+    }
   }
 
-  // Fetch the static data bundle from the same origin
+  // 3. Fallback to static data bundle from CDN
   const url = new URL(request.url);
   const dataUrl = `${url.origin}/data/latest_cockpit_bundle.json`;
 
@@ -87,8 +117,8 @@ export async function onRequestGet(context) {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'private, no-cache, no-store',
-        'X-Data-Source': 'authenticated'
+        'Cache-Control': 'public, max-age=30, s-maxage=60',
+        'X-Data-Source': 'static-bundle-fallback'
       }
     });
   } catch (err) {

@@ -281,7 +281,7 @@ const OrderBookSimulator = ({
               color: isCrypto ? '#34d399' : '#c084fc',
               border: '1px solid ' + (isCrypto ? 'rgba(16, 185, 129, 0.3)' : 'rgba(168, 85, 247, 0.3)')
             }}>
-              {isCrypto ? 'PROVENANCE: BINANCE/BAPPEBTI L2 FEED' : 'PROVENANCE: IDX OJK FRAKSI MODEL DEPTH + EOD BROKER SUMMARY'}
+              {isCrypto ? 'PROVENANCE: BINANCE/BAPPEBTI L2 FEED' : 'PROVENANCE: THEORETICAL DEPTH MODEL (OJK FRAKSI) + EOD BROKER SUMMARY'}
             </span>
             <h2 style={{ fontSize: '16px', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
               {ticker}

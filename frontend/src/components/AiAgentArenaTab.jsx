@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef, useId } from 'react';
+import { institutionalPaperBroker } from '../services/brokerGateway.js';
 import { isIdxMarketOpen, getIdxSessionDetail, isForexCommodityOpen, isCryptoOpen, isUsMarketOpen } from '../utils/marketHours.js';
 
 // Central Strict Real-World Market Open Classifier (All asset classes)
@@ -2135,8 +2136,39 @@ const DEFAULT_EPOCH_REPORTS = [
   }
 ];
 
-export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) {
+export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, onOpenExecution }) {
   // Master Autonomous System State (PAUSED by default: user configures settings before starting)
+  // Institutional Paper Broker & Emergency Kill Switch Gateway State
+  const [isKillSwitchActive, setIsKillSwitchActive] = useState(() => {
+    try {
+      return institutionalPaperBroker.isKillSwitchActive();
+    } catch {
+      return false;
+    }
+  });
+  const [paperPortfolio, setPaperPortfolio] = useState(() => {
+    try {
+      return institutionalPaperBroker.getSummary();
+    } catch {
+      return { cashIdr: 100000000, cashUsdt: 10000, positions: [], tradeHistory: [] };
+    }
+  });
+  const [showBrokerDesk, setShowBrokerDesk] = useState(false);
+
+  // Sync Paper Broker Desk with live engine & tick state
+  useEffect(() => {
+    const updateDesk = () => {
+      try {
+        setPaperPortfolio(institutionalPaperBroker.getSummary());
+        setIsKillSwitchActive(institutionalPaperBroker.isKillSwitchActive());
+      } catch (e) {
+        console.warn(e);
+      }
+    };
+    const t = setInterval(updateDesk, 1500);
+    return () => clearInterval(t);
+  }, []);
+
   const [isRunning, setIsRunning] = useState(() => {
     try {
       const saved = localStorage.getItem('mbg_ai_arena_running');
@@ -4127,36 +4159,45 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
       {/* ========================================================================= */}
       {/* 1. TOP COCKPIT: BATTLEGROUND (LEFT) & PENGATURAN PORTOFOLIO (RIGHT)       */}
       {/* ========================================================================= */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))',
-        gap: '10px',
-        alignItems: 'stretch'
-      }}>
-        {/* --- PANEL KIRI: AGENT BATTLEGROUND ARENA --- */}
-        <div className="telemetry-panel" style={{ padding: '10px 14px', background: 'var(--bg-panel)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '8px' }}>
-          {/* Header Row: Title & Market Badges */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px', borderBottom: 'var(--border-hairline)', paddingBottom: '6px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '15px' }}>⚔️</span>
-              <span style={{ fontSize: '12.5px', fontWeight: '900', letterSpacing: '0.02em', textTransform: 'uppercase', color: 'var(--text-primary)' }}>
+      {/* ========================================================================= */}
+      {/* UNIFIED COMMAND HEADER: STRICTLY 2 COMPACT ROWS                           */}
+      {/* ========================================================================= */}
+      <div
+        className="telemetry-panel"
+        style={{
+          padding: '6px 12px',
+          background: 'var(--bg-panel)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '5px',
+          borderRadius: 'var(--radius-sm)',
+          border: 'var(--border-hairline)',
+          marginBottom: '4px'
+        }}
+      >
+        {/* --- BARIS 1: TITLE, MARKET STATUS, LIVE RATES & INTEL MODALS --- */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', borderBottom: 'var(--border-hairline)', paddingBottom: '4px' }}>
+          {/* Sisi Kiri: Identity + Status Pasar */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <span style={{ fontSize: '12px' }}>⚔️</span>
+              <span style={{ fontSize: '11px', fontWeight: '900', letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-primary)' }}>
                 AI Multi-Agent Arena
-              </span>
-              <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
-                (16 BOTS SYNDICATE &bull; 4 BASE, 6 DUO, 4 TRIO, 1 MASTER, 1 ANOMALY)
               </span>
             </div>
 
-            {/* Real-World Market Hours Status Badges (Green = Buka, Red = Tutup) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
+            <div style={{ width: '1px', height: '12px', background: 'rgba(255,255,255,0.12)' }} />
+
+            {/* Badges Pasar Real-time */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
               <span
                 className="badge"
                 style={{
-                  fontSize: '9px',
-                  padding: '2px 6px',
+                  fontSize: '8px',
+                  padding: '1px 5px',
                   background: isIdxMarketOpen() ? 'rgba(22, 163, 74, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                   color: isIdxMarketOpen() ? 'var(--accent-green)' : 'var(--accent-rust)',
-                  border: `1px solid ${isIdxMarketOpen() ? 'rgba(22, 163, 74, 0.5)' : 'rgba(239, 68, 68, 0.5)'}`
+                  border: `1px solid ${isIdxMarketOpen() ? 'rgba(22, 163, 74, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`
                 }}
                 title={isIdxMarketOpen() ? 'Bursa Saham BEI (IDX) BUKA (09:00 - 16:00 WIB)' : 'Bursa Saham BEI (IDX) TUTUP'}
               >
@@ -4166,11 +4207,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               <span
                 className="badge"
                 style={{
-                  fontSize: '9px',
-                  padding: '2px 6px',
+                  fontSize: '8px',
+                  padding: '1px 5px',
                   background: isForexCommodityOpen() ? 'rgba(22, 163, 74, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                   color: isForexCommodityOpen() ? 'var(--accent-green)' : 'var(--accent-rust)',
-                  border: `1px solid ${isForexCommodityOpen() ? 'rgba(22, 163, 74, 0.5)' : 'rgba(239, 68, 68, 0.5)'}`
+                  border: `1px solid ${isForexCommodityOpen() ? 'rgba(22, 163, 74, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`
                 }}
                 title={isForexCommodityOpen() ? 'Forex, Gold & Komoditas 24/5 BUKA' : 'Forex & Gold TUTUP'}
               >
@@ -4180,11 +4221,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               <span
                 className="badge"
                 style={{
-                  fontSize: '9px',
-                  padding: '2px 6px',
+                  fontSize: '8px',
+                  padding: '1px 5px',
                   background: isUsMarketOpen() ? 'rgba(22, 163, 74, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                   color: isUsMarketOpen() ? 'var(--accent-green)' : 'var(--accent-rust)',
-                  border: `1px solid ${isUsMarketOpen() ? 'rgba(22, 163, 74, 0.5)' : 'rgba(239, 68, 68, 0.5)'}`
+                  border: `1px solid ${isUsMarketOpen() ? 'rgba(22, 163, 74, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`
                 }}
                 title={isUsMarketOpen() ? 'Bursa US Stocks (NYSE/NASDAQ) BUKA' : 'Bursa US Stocks TUTUP'}
               >
@@ -4194,404 +4235,634 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
               <span
                 className="badge"
                 style={{
-                  fontSize: '9px',
-                  padding: '2px 6px',
+                  fontSize: '8px',
+                  padding: '1px 5px',
                   background: 'rgba(59, 130, 246, 0.15)',
                   color: 'var(--accent-blue)',
-                  border: '1px solid rgba(59, 130, 246, 0.5)'
+                  border: '1px solid rgba(59, 130, 246, 0.4)'
                 }}
                 title="Pasar Crypto Perpetual 24/7/365 Non-stop"
               >
                 CRYPTO: ● 24/7
               </span>
             </div>
+
+            <div style={{ width: '1px', height: '12px', background: 'rgba(255,255,255,0.12)' }} />
+
+            {/* Urutan Bot (Pindah ke Baris 1) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9px' }}>
+              <label htmlFor="select-agent-sort" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Urutan:</label>
+              <select
+                id="select-agent-sort"
+                value={agentSortBy}
+                onChange={e => setAgentSortBy(e.target.value)}
+                style={{
+                  padding: '1px 5px',
+                  fontSize: '8.5px',
+                  minHeight: '20px',
+                  fontFamily: 'var(--font-mono)',
+                  borderRadius: '3px',
+                  background: 'var(--bg-panel-subtle)',
+                  border: 'var(--border-hairline)',
+                  color: 'var(--text-primary)',
+                  cursor: 'pointer',
+                  fontWeight: '700'
+                }}
+              >
+                <option value="DEFAULT">DNA Elemen</option>
+                <option value="ROI_DESC">Top ROI %</option>
+                <option value="WINRATE_DESC">Win Rate</option>
+                <option value="POSITIONS_DESC">Posisi Aktif</option>
+              </select>
+            </div>
           </div>
 
-          {/* Controls Row: Timeframe Chips + Action Buttons */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
-            {/* Timeframe Chips Selector */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', background: 'var(--bg-panel-subtle)', padding: '2px 4px', borderRadius: '3px', border: 'var(--border-hairline)' }}>
-              <span style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginRight: '4px', fontWeight: '700' }}>Grafik:</span>
-              {['3D', '7D', '1M', '3M', '1Y'].map(tf => (
-                <button
-                  key={tf}
-                  onClick={() => {
-                    setChartTimeframe(tf);
-                    showToast(`Rentang grafik aset diubah ke ${tf}`);
-                  }}
-                  className="arena-interactive-chip"
-                  style={{
-                    padding: '4px 8px',
-                    minHeight: '26px',
-                    fontSize: '9px',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: chartTimeframe === tf ? '800' : '600',
-                    borderRadius: '2px',
-                    cursor: 'pointer',
-                    border: 'none',
-                    background: chartTimeframe === tf ? 'var(--accent-blue)' : 'transparent',
-                    color: chartTimeframe === tf ? '#ffffff' : 'var(--text-muted)',
-                    transition: 'all 0.15s'
-                  }}
-                >
-                  {tf}
-                </button>
-              ))}
-            </div>
-
-            {/* Quick Action Buttons */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
-              <button
-                id="btn-profil-filosofi"
-                onClick={() => setPhilosophyModalOpen(true)}
-                className="telemetry-btn"
-                style={{ fontSize: '9.5px', padding: '4px 8px', minHeight: '26px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-blue)' }}
-                title="Pelajari Profil, Filosofi & Strategi 4 Elemen"
-              >
-                <span>🧠</span>
-                <span>Filosofi</span>
-              </button>
-              <button
-                id="btn-panduan-aturan-status"
-                onClick={() => {
-                  setRulesActiveSubTab('RULES');
-                  setRulesModalOpen(true);
-                }}
-                className="telemetry-btn"
-                style={{ fontSize: '9.5px', padding: '4px 8px', minHeight: '26px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-gold)' }}
-                title="Panduan Terpadu: Aturan Trading & Status Siklus Hidup Bot"
-              >
-                <span>📋</span>
-                <span>Aturan & Status</span>
-              </button>
-              <button
-                id="btn-agent-review"
-                onClick={() => setAgentReviewModalOpen(true)}
-                className="telemetry-btn"
-                style={{ fontSize: '9.5px', padding: '4px 8px', minHeight: '26px', display: 'flex', alignItems: 'center', gap: '3px', color: '#60a5fa' }}
-                title="Buka Analisis Kinerja & Review Sinyal"
-              >
-                <span>📊</span>
-                <span>Review</span>
-              </button>
-              <button
-                id="btn-session-recap"
-                onClick={() => {
-                  setSelectedRecapSessionKey('LIVE');
-                  setSessionRecapModalOpen(true);
-                }}
-                className="telemetry-btn"
-                style={{
-                  fontSize: '9.5px',
-                  padding: '4px 9px',
-                  minHeight: '26px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  color: '#e879f9',
-                  border: '1px solid rgba(217, 70, 239, 0.45)',
-                  background: 'rgba(217, 70, 239, 0.12)',
-                  fontWeight: '700',
-                  cursor: 'pointer'
-                }}
-                title="Buka Session Recap & Institutional Quant Post-Mortem Debrief"
-              >
-                <span>📜</span>
-                <span>Session Recap</span>
-              </button>
-            </div>
+          {/* Sisi Kanan: Quick Intel Modals (Sejajar Kanan Atas) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+            <button
+              id="btn-profil-filosofi"
+              onClick={() => setPhilosophyModalOpen(true)}
+              className="telemetry-btn"
+              style={{ fontSize: '8.5px', padding: '2px 6px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-blue)' }}
+              title="Pelajari Profil, Filosofi & Strategi 4 Elemen"
+            >
+              <span>🧠</span>
+              <span>Filosofi</span>
+            </button>
+            <button
+              id="btn-panduan-aturan-status"
+              onClick={() => {
+                setRulesActiveSubTab('RULES');
+                setRulesModalOpen(true);
+              }}
+              className="telemetry-btn"
+              style={{ fontSize: '8.5px', padding: '2px 6px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-gold)' }}
+              title="Panduan Terpadu: Aturan Trading & Status Siklus Hidup Bot"
+            >
+              <span>📋</span>
+              <span>Aturan & Status</span>
+            </button>
+            <button
+              id="btn-agent-review"
+              onClick={() => setAgentReviewModalOpen(true)}
+              className="telemetry-btn"
+              style={{ fontSize: '8.5px', padding: '2px 6px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: '#60a5fa' }}
+              title="Buka Analisis Kinerja & Review Sinyal"
+            >
+              <span>📊</span>
+              <span>Review</span>
+            </button>
+            <button
+              id="btn-session-recap"
+              onClick={() => setSessionRecapModalOpen(true)}
+              className="telemetry-btn"
+              style={{
+                fontSize: '8.5px',
+                padding: '2px 6px',
+                minHeight: '22px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3px',
+                color: '#e879f9',
+                border: '1px solid rgba(217, 70, 239, 0.4)',
+                background: 'rgba(217, 70, 239, 0.1)',
+                fontWeight: '700',
+                cursor: 'pointer'
+              }}
+              title="Buka Session Recap & Institutional Quant Post-Mortem Debrief"
+            >
+              <span>📜</span>
+              <span>Session Recap</span>
+            </button>
           </div>
         </div>
 
-        {/* --- PANEL KANAN: ⚙️ PENGATURAN MULTI-AGENT & PORTOFOLIO --- */}
-        <div className="telemetry-panel" style={{ padding: '10px 14px', background: 'var(--bg-panel)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '8px' }}>
-          {/* Header Row: Title, Realtime Rate & Sesi + Uptime */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px', borderBottom: 'var(--border-hairline)', paddingBottom: '6px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '14px' }}>⚙️</span>
-              <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--text-primary)' }}>
-                Pengaturan Portofolio
-              </span>
-              <span className="badge" style={{ fontSize: '8px', background: 'rgba(22, 163, 74, 0.15)', color: 'var(--accent-green)', padding: '1px 5px', border: '1px solid rgba(22, 163, 74, 0.3)' }} title="Kurs Realtime USD/IDR Live API">
-                $1 = Rp {usdToIdrRate.toLocaleString('id-ID')}
-              </span>
+        {/* --- BARIS 2: KONTROL, PARAMETER & MASTER ACTION SWITCHES --- */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
+          {/* Parameter Trading & Filter Group */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+            {/* Modal / Bot */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9px' }}>
+              <label htmlFor="select-capital-per-bot" style={{ color: 'var(--text-secondary)', fontWeight: '700', cursor: 'pointer' }}>Modal/Bot:</label>
+              <select
+                id="select-capital-per-bot"
+                className="arena-input"
+                value={capitalPerBotIdr}
+                onChange={e => handleApplyPresetCapital(Number(e.target.value))}
+                style={{
+                  padding: '2px 5px',
+                  fontSize: '8.5px',
+                  minHeight: '22px',
+                  fontFamily: 'var(--font-mono)',
+                  borderRadius: '3px',
+                  background: 'var(--bg-panel-subtle)',
+                  border: 'var(--border-hairline)',
+                  color: 'var(--text-primary)',
+                  cursor: 'pointer',
+                  fontWeight: '700'
+                }}
+                title="Pilih nominal modal per bot"
+              >
+                <option value={1000000}>Rp 1Jt</option>
+                <option value={5000000}>Rp 5Jt</option>
+                <option value={10000000}>Rp 10Jt</option>
+                <option value={25000000}>Rp 25Jt</option>
+                <option value={50000000}>Rp 50Jt</option>
+              </select>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span className="badge" style={{ fontSize: '8.5px', background: 'rgba(168, 85, 247, 0.18)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.4)', padding: '1px 5px' }}>
-                🎮 ARENA SESSION #{epochReports.length}
-              </span>
-              <span style={{ fontSize: '8.5px', color: 'var(--accent-blue)', fontFamily: 'var(--font-mono)', fontWeight: '700' }} title="Durasi Sesi Arena berjalan (dihitung saat simulasi aktif)">
-                ⏱️ {sessionUptimeStr}
-              </span>
-            </div>
-          </div>
-
-          {/* Row 2: Modal Input + Quick Chips & Controls */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-            {/* Modal Per Bot Input & Preset */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-              <label htmlFor="input-capital-per-bot" style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-secondary)', cursor: 'pointer' }}>
-                Modal/Bot:
-              </label>
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                <span style={{ position: 'absolute', left: '6px', fontSize: '10px', fontWeight: '800', color: 'var(--text-muted)' }}>Rp</span>
-                <input
-                  id="input-capital-per-bot"
-                  className="arena-input"
-                  type="text"
-                  value={Number(capitalInputText || 0).toLocaleString('id-ID')}
-                  onChange={handleCapitalInputChange}
-                  style={{
-                    padding: '4px 6px 4px 24px',
-                    fontSize: '10px',
-                    fontWeight: '800',
-                    fontFamily: 'var(--font-mono)',
-                    borderRadius: '3px',
-                    border: 'var(--border-hairline)',
-                    background: 'var(--bg-panel-subtle)',
-                    color: 'var(--text-primary)',
-                    width: '95px'
-                  }}
-                  title="Ketik nominal modal tiap bot (minimal Rp 1.000.000)"
-                />
-              </div>
-
-              {/* Chips */}
-              <div style={{ display: 'flex', gap: '3px' }}>
-                {[1000000, 5000000, 10000000, 25000000, 50000000].map(amt => (
-                  <button
-                    key={amt}
-                    onClick={() => handleApplyPresetCapital(amt)}
-                    className="arena-interactive-chip"
-                    style={{
-                      padding: '3px 7px',
-                      minHeight: '26px',
-                      fontSize: '9px',
-                      fontFamily: 'var(--font-mono)',
-                      fontWeight: capitalPerBotIdr === amt ? '800' : '600',
-                      borderRadius: '2px',
-                      cursor: 'pointer',
-                      border: capitalPerBotIdr === amt ? '1px solid var(--accent-blue)' : 'var(--border-hairline)',
-                      background: capitalPerBotIdr === amt ? 'rgba(37, 99, 235, 0.15)' : 'var(--bg-panel-subtle)',
-                      color: capitalPerBotIdr === amt ? 'var(--accent-blue)' : 'var(--text-muted)'
-                    }}
-                  >
-                    {amt >= 1000000000 ? `${amt / 1000000000}M` : `${amt / 1000000}Jt`}
-                  </button>
-                ))}
-              </div>
-
-              {/* Total AUM Portfolio Badge */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(59, 130, 246, 0.08)', border: '1px solid rgba(59, 130, 246, 0.25)', padding: '3px 7px', borderRadius: '3px', fontSize: '9px', fontFamily: 'var(--font-mono)' }} title="Total Modal Portofolio = Modal/Bot x Jumlah Bot Aktif">
-                <span style={{ color: 'var(--text-muted)' }}>Total AUM:</span>
-                <strong style={{ color: 'var(--accent-blue)' }}>{formatIdr(capitalPerBotIdr * agents.length)}</strong>
-                <span style={{ color: 'var(--text-muted)', fontSize: '8.5px' }}>({agents.length} Bot)</span>
-              </div>
-            </div>
-
-            {/* Manual Max Posisi, Risk, & Buttons */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <label htmlFor="input-max-positions" style={{ fontSize: '9.5px', color: 'var(--text-secondary)', fontWeight: '700', cursor: 'pointer' }}>Max Pos:</label>
-                <input
-                  id="input-max-positions"
-                  className="arena-input"
-                  type="text"
-                  inputMode="numeric"
-                  disabled={isUnlimitedPositions}
-                  value={isUnlimitedPositions ? '' : maxPosInputText}
-                  placeholder={isUnlimitedPositions ? '∞' : '10'}
-                  onChange={e => {
-                    const raw = e.target.value;
-                    if (raw === '') {
-                      setMaxPosInputText('');
-                      return;
-                    }
-                    if (/^\d+$/.test(raw)) {
-                      setMaxPosInputText(raw);
-                      const num = parseInt(raw, 10);
-                      if (!isNaN(num) && num >= 1 && num <= 100) {
-                        setSliderMaxPositions(num);
-                      }
-                    }
-                  }}
-                  onBlur={() => {
-                    const num = parseInt(maxPosInputText, 10);
-                    if (isNaN(num) || num < 1) {
-                      setMaxPosInputText(String(sliderMaxPositions >= 999 ? 10 : sliderMaxPositions));
-                    } else {
-                      const clamped = Math.min(100, Math.max(1, num));
-                      setMaxPosInputText(String(clamped));
-                      setSliderMaxPositions(clamped);
-                    }
-                  }}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter') {
-                      e.target.blur();
-                    }
-                  }}
-                  style={{
-                    width: '44px',
-                    padding: '3px 4px',
-                    fontSize: '9.5px',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: '800',
-                    textAlign: 'center',
-                    borderRadius: '3px',
-                    border: 'var(--border-hairline)',
-                    background: isUnlimitedPositions ? 'rgba(255,255,255,0.03)' : 'var(--bg-panel-subtle)',
-                    color: isUnlimitedPositions ? 'var(--text-muted)' : 'var(--accent-blue)'
-                  }}
-                  title="Ketik manual batas maksimum posisi aktif per bot (1 - 100)"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const nextVal = isUnlimitedPositions ? 10 : 999;
-                    setSliderMaxPositions(nextVal);
-                    setMaxPosInputText(nextVal >= 999 ? '' : String(nextVal));
-                    showToast(nextVal >= 999 ? 'Batas posisi diatur ke Tak Terbatas (∞ Unlimited).' : 'Batas posisi diatur ke 10 posisi / bot.');
-                  }}
-                  className="arena-interactive-chip"
-                  style={{
-                    padding: '3px 7px',
-                    minHeight: '26px',
-                    fontSize: '9px',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: '900',
-                    borderRadius: '3px',
-                    cursor: 'pointer',
-                    border: isUnlimitedPositions ? '1px solid var(--accent-orange)' : 'var(--border-hairline)',
-                    background: isUnlimitedPositions ? 'rgba(245, 158, 11, 0.18)' : 'var(--bg-panel-subtle)',
-                    color: isUnlimitedPositions ? 'var(--accent-orange)' : 'var(--text-muted)'
-                  }}
-                  title="Klik untuk beralih antara batas manual vs Tak Terbatas (∞ Unlimited)"
-                >
-                  {isUnlimitedPositions ? '∞ Unlim' : 'Set ∞'}
-                </button>
-              </div>
-
-              {/* Risk % */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9.5px' }}>
-                <label htmlFor="select-risk-pct" style={{ color: 'var(--text-muted)', cursor: 'pointer' }}>Risk:</label>
-                <select
-                  id="select-risk-pct"
-                  className="arena-input"
-                  value={riskPerTradePct}
-                  onChange={e => setRiskPerTradePct(Number(e.target.value))}
-                  style={{ padding: '3px 5px', fontSize: '9px', minHeight: '26px', borderRadius: '3px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontWeight: '700' }}
-                >
-                  <option value={1}>1%</option>
-                  <option value={2}>2%</option>
-                  <option value={3}>3%</option>
-                </select>
-              </div>
-
-              {/* Mode Eksekusi: HYBRID / SPOT / FUTURES */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9.5px' }}>
-                <label htmlFor="select-execution-mode" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Mode:</label>
-                <select
-                  id="select-execution-mode"
-                  className="arena-input"
-                  value={arenaExecutionMode}
-                  onChange={e => {
-                    const newMode = e.target.value;
-                    setArenaExecutionMode(newMode);
-                    showToast(`Mode eksekusi: ${newMode === 'SPOT_ONLY' ? '🟢 SPOT ONLY (100% Cash Long, 0 Likuidasi)' : (newMode === 'FUTURES_ONLY' ? '🟣 FUTURES ONLY (2 Arah Long & Short + Leverage)' : '⚡ HYBRID (Spot & Futures Otomatis)')}`);
-                  }}
-                  style={{
-                    padding: '3px 6px',
-                    fontSize: '9px',
-                    minHeight: '26px',
-                    borderRadius: '3px',
-                    background: arenaExecutionMode === 'SPOT_ONLY' ? 'rgba(34, 197, 94, 0.15)' : (arenaExecutionMode === 'FUTURES_ONLY' ? 'rgba(168, 85, 247, 0.15)' : 'var(--bg-panel-subtle)'),
-                    border: arenaExecutionMode === 'SPOT_ONLY' ? '1px solid var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '1px solid #a855f7' : 'var(--border-hairline)'),
-                    color: arenaExecutionMode === 'SPOT_ONLY' ? 'var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '#c084fc' : 'var(--text-primary)'),
-                    fontWeight: '800',
-                    cursor: 'pointer'
-                  }}
-                  title="Pilih mode eksekusi: Hybrid (Bot memilih Spot/Futures), Spot Only (100% Cash, 0 likuidasi), atau Futures Only (2 arah)"
-                >
-                  <option value="HYBRID">⚡ HYBRID</option>
-                  <option value="SPOT_ONLY">🟢 SPOT ONLY</option>
-                  <option value="FUTURES_ONLY">🟣 FUTURES</option>
-                </select>
-              </div>
-
-              {/* Dynamic Scanner Filter: RADAR / FULL */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9.5px' }}>
-                <span style={{ color: 'var(--text-muted)', fontWeight: '700' }}>Scanner:</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const nextMode = scannerMode === 'DYNAMIC_RADAR' ? 'FULL_WATCHLIST' : 'DYNAMIC_RADAR';
-                    setScannerMode(nextMode);
-                    showToast(nextMode === 'DYNAMIC_RADAR' ? `Scanner diatur ke DYNAMIC RADAR (${activeRadarSymbols.length} aset terpilih lolos momentum & likuiditas).` : `Scanner diatur ke FULL WATCHLIST (${ALL_INSTRUMENTS.length} instrumen).`);
-                  }}
-                  className="arena-interactive-chip"
-                  style={{
-                    padding: '3px 7px',
-                    minHeight: '26px',
-                    fontSize: '9px',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: '800',
-                    borderRadius: '3px',
-                    cursor: 'pointer',
-                    border: scannerMode === 'DYNAMIC_RADAR' ? '1px solid rgba(59, 130, 246, 0.4)' : 'var(--border-hairline)',
-                    background: scannerMode === 'DYNAMIC_RADAR' ? 'rgba(59, 130, 246, 0.15)' : 'var(--bg-panel-subtle)',
-                    color: scannerMode === 'DYNAMIC_RADAR' ? 'var(--accent-blue)' : 'var(--text-muted)'
-                  }}
-                  title="Klik untuk beralih antara Dynamic Screener Radar (Aset likuid & volatil) vs Full Watchlist (Semua pair)"
-                >
-                  {scannerMode === 'DYNAMIC_RADAR' ? `🛰️ Radar (${activeRadarSymbols.length})` : `🌐 Full (${ALL_INSTRUMENTS.length})`}
-                </button>
-              </div>
-
-              {/* Master Switch: JALANKAN ARENA / JEDA ARENA */}
-              <button
-                id="btn-master-run-pause"
-                onClick={() => {
-                  setIsRunning(prev => !prev);
-                  showToast(!isRunning ? 'AI Agents aktif berjalan memindai pasar.' : 'AI Agents dijeda (PAUSED).');
+            {/* Grafik Timeframe */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9px' }}>
+              <label htmlFor="select-chart-timeframe" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Grafik:</label>
+              <select
+                id="select-chart-timeframe"
+                className="arena-input"
+                value={chartTimeframe}
+                onChange={e => {
+                  setChartTimeframe(e.target.value);
+                  showToast(`Rentang grafik diubah ke ${e.target.value}`);
                 }}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  padding: '4px 9px',
-                  borderRadius: 'var(--radius-sm)',
-                  fontSize: '9.5px',
-                  fontWeight: '800',
+                  padding: '2px 4px',
+                  fontSize: '8.5px',
+                  minHeight: '22px',
                   fontFamily: 'var(--font-mono)',
-                  cursor: 'pointer',
-                  border: isRunning ? '1px solid rgba(239, 68, 68, 0.4)' : 'none',
-                  background: isRunning ? 'rgba(239, 68, 68, 0.15)' : 'var(--accent-green)',
-                  color: isRunning ? 'var(--accent-rust)' : '#ffffff',
-                  boxShadow: !isRunning ? '0 0 12px rgba(22, 163, 74, 0.35)' : 'none'
+                  borderRadius: '3px',
+                  background: 'var(--bg-panel-subtle)',
+                  border: 'var(--border-hairline)',
+                  color: 'var(--text-primary)',
+                  fontWeight: '700',
+                  cursor: 'pointer'
                 }}
-                title={isRunning ? 'Jeda seluruh eksekusi arena bot' : 'Jalankan arena multi-agent'}
               >
-                <span style={{ width: 5, height: 5, borderRadius: '50%', background: isRunning ? 'var(--accent-rust)' : '#ffffff', display: 'inline-block' }} />
-                <span>{isRunning ? '⏸ JEDA ARENA' : '▶ JALANKAN ARENA'}</span>
-              </button>
+                <option value="3D">3D</option>
+                <option value="7D">7D</option>
+                <option value="1M">1M</option>
+                <option value="3M">3M</option>
+                <option value="1Y">1Y</option>
+              </select>
+            </div>
 
-              {/* Reset Sesi Semua */}
+            {/* Max Pos */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+              <label htmlFor="input-max-positions" style={{ fontSize: '8.5px', color: 'var(--text-secondary)', fontWeight: '700', cursor: 'pointer' }}>Max Pos:</label>
+              <input
+                id="input-max-positions"
+                className="arena-input"
+                type="text"
+                inputMode="numeric"
+                disabled={isUnlimitedPositions}
+                value={isUnlimitedPositions ? '' : maxPosInputText}
+                placeholder={isUnlimitedPositions ? '∞' : '10'}
+                onChange={e => {
+                  const raw = e.target.value;
+                  if (raw === '') {
+                    setMaxPosInputText('');
+                    return;
+                  }
+                  if (/^\d+$/.test(raw)) {
+                    setMaxPosInputText(raw);
+                    const num = parseInt(raw, 10);
+                    if (!isNaN(num) && num >= 1 && num <= 100) {
+                      setSliderMaxPositions(num);
+                    }
+                  }
+                }}
+                onBlur={() => {
+                  const num = parseInt(maxPosInputText, 10);
+                  if (isNaN(num) || num < 1) {
+                    setMaxPosInputText(String(sliderMaxPositions >= 999 ? 10 : sliderMaxPositions));
+                  } else {
+                    const clamped = Math.min(100, Math.max(1, num));
+                    setMaxPosInputText(String(clamped));
+                    setSliderMaxPositions(clamped);
+                  }
+                }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    e.target.blur();
+                  }
+                }}
+                style={{
+                  width: '28px',
+                  padding: '1px 3px',
+                  fontSize: '8.5px',
+                  minHeight: '22px',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: '800',
+                  textAlign: 'center',
+                  borderRadius: '3px',
+                  border: 'var(--border-hairline)',
+                  background: isUnlimitedPositions ? 'rgba(255,255,255,0.03)' : 'var(--bg-panel-subtle)',
+                  color: isUnlimitedPositions ? 'var(--text-muted)' : 'var(--accent-blue)'
+                }}
+                title="Batas posisi per bot (1-100)"
+              />
               <button
-                id="btn-reset-semua-sesi"
-                onClick={() => setResetConfirmModal({ isOpen: true, agentId: null, agentName: 'Seluruh Portofolio Sesi' })}
-                className="telemetry-btn"
-                style={{ padding: '4px 8px', fontSize: '9.5px', fontWeight: '700', color: 'var(--accent-rust)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
-                title="Reset sesi saat ini, simpan laporan evaluasi sesi, dan jeda trading"
+                type="button"
+                onClick={() => {
+                  const nextVal = isUnlimitedPositions ? 10 : 999;
+                  setSliderMaxPositions(nextVal);
+                  setMaxPosInputText(nextVal >= 999 ? '' : String(nextVal));
+                  showToast(nextVal >= 999 ? 'Batas posisi: Tak Terbatas (∞ Unlimited).' : 'Batas posisi: 10 posisi / bot.');
+                }}
+                className="arena-interactive-chip"
+                style={{
+                  padding: '1px 4px',
+                  minHeight: '22px',
+                  fontSize: '8px',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: '800',
+                  borderRadius: '3px',
+                  cursor: 'pointer',
+                  border: isUnlimitedPositions ? '1px solid var(--accent-orange)' : 'var(--border-hairline)',
+                  background: isUnlimitedPositions ? 'rgba(245, 158, 11, 0.18)' : 'var(--bg-panel-subtle)',
+                  color: isUnlimitedPositions ? 'var(--accent-orange)' : 'var(--text-muted)'
+                }}
+                title="Beralih batas manual vs Tak Terbatas (∞)"
               >
-                🔄 Reset Semua
+                {isUnlimitedPositions ? '∞ Unlim' : 'Set ∞'}
               </button>
             </div>
+
+            {/* Risk % */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+              <label htmlFor="select-risk-pct" style={{ color: 'var(--text-muted)', cursor: 'pointer' }}>Risk:</label>
+              <select
+                id="select-risk-pct"
+                className="arena-input"
+                value={riskPerTradePct}
+                onChange={e => setRiskPerTradePct(Number(e.target.value))}
+                style={{ padding: '1px 3px', fontSize: '8.5px', minHeight: '22px', borderRadius: '3px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontWeight: '700' }}
+              >
+                <option value={1}>1%</option>
+                <option value={2}>2%</option>
+                <option value={3}>3%</option>
+              </select>
+            </div>
+
+            {/* Mode Eksekusi */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+              <label htmlFor="select-execution-mode" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Mode:</label>
+              <select
+                id="select-execution-mode"
+                className="arena-input"
+                value={arenaExecutionMode}
+                onChange={e => {
+                  const newMode = e.target.value;
+                  setArenaExecutionMode(newMode);
+                  showToast(`Mode: ${newMode === 'SPOT_ONLY' ? '🟢 SPOT' : (newMode === 'FUTURES_ONLY' ? '🟣 FUTURES' : '⚡ HYBRID')}`);
+                }}
+                style={{
+                  padding: '1px 3px',
+                  fontSize: '8.5px',
+                  minHeight: '22px',
+                  borderRadius: '3px',
+                  background: arenaExecutionMode === 'SPOT_ONLY' ? 'rgba(34, 197, 94, 0.15)' : (arenaExecutionMode === 'FUTURES_ONLY' ? 'rgba(168, 85, 247, 0.15)' : 'var(--bg-panel-subtle)'),
+                  border: arenaExecutionMode === 'SPOT_ONLY' ? '1px solid var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '1px solid #a855f7' : 'var(--border-hairline)'),
+                  color: arenaExecutionMode === 'SPOT_ONLY' ? 'var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '#c084fc' : 'var(--text-primary)'),
+                  fontWeight: '800',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="HYBRID">⚡ HYBRID</option>
+                <option value="SPOT_ONLY">🟢 SPOT</option>
+                <option value="FUTURES_ONLY">🟣 FUTURES</option>
+              </select>
+            </div>
+
+            {/* Screener Radar */}
+            <button
+              type="button"
+              onClick={() => {
+                const nextMode = scannerMode === 'DYNAMIC_RADAR' ? 'FULL_WATCHLIST' : 'DYNAMIC_RADAR';
+                setScannerMode(nextMode);
+                showToast(nextMode === 'DYNAMIC_RADAR' ? `Scanner: DYNAMIC RADAR (${activeRadarSymbols.length} aset).` : `Scanner: FULL WATCHLIST (${ALL_INSTRUMENTS.length} pair).`);
+              }}
+              className="arena-interactive-chip"
+              style={{
+                padding: '1px 5px',
+                minHeight: '22px',
+                fontSize: '8.5px',
+                fontFamily: 'var(--font-mono)',
+                fontWeight: '800',
+                borderRadius: '3px',
+                cursor: 'pointer',
+                border: scannerMode === 'DYNAMIC_RADAR' ? '1px solid rgba(59, 130, 246, 0.4)' : 'var(--border-hairline)',
+                background: scannerMode === 'DYNAMIC_RADAR' ? 'rgba(59, 130, 246, 0.15)' : 'var(--bg-panel-subtle)',
+                color: scannerMode === 'DYNAMIC_RADAR' ? 'var(--accent-blue)' : 'var(--text-muted)'
+              }}
+              title="Beralih Screener Radar vs Full Watchlist"
+            >
+              {scannerMode === 'DYNAMIC_RADAR' ? `🛰️ Radar (${activeRadarSymbols.length})` : `🌐 Full (${ALL_INSTRUMENTS.length})`}
+            </button>
+          </div>
+
+          {/* Telemetri Kurs/Sesi & Master Actions Buttons (Sejajar Kanan Bawah) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+            <span className="badge" style={{ fontSize: '8px', background: 'rgba(22, 163, 74, 0.12)', color: 'var(--accent-green)', padding: '1px 5px', border: '1px solid rgba(22, 163, 74, 0.25)' }} title="Kurs Realtime USD/IDR Live API">
+              $1 = Rp {usdToIdrRate.toLocaleString('id-ID')}
+            </span>
+            <span className="badge" style={{ fontSize: '8px', background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.35)', padding: '1px 5px' }}>
+              🎮 SESI #{epochReports.length}
+            </span>
+            <span style={{ fontSize: '8.5px', color: 'var(--accent-blue)', fontFamily: 'var(--font-mono)', fontWeight: '700' }} title="Durasi Sesi Arena berjalan">
+              ⏱️ {sessionUptimeStr}
+            </span>
+
+            <div style={{ width: '1px', height: '12px', background: 'rgba(255,255,255,0.12)', margin: '0 2px' }} />
+
+            <button
+              id="btn-master-run-pause"
+              onClick={() => {
+                setIsRunning(prev => !prev);
+                showToast(!isRunning ? 'AI Agents aktif berjalan memindai pasar.' : 'AI Agents dijeda (PAUSED).');
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '2px 7px',
+                minHeight: '22px',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '8.5px',
+                fontWeight: '800',
+                fontFamily: 'var(--font-mono)',
+                cursor: 'pointer',
+                border: isRunning ? '1px solid rgba(239, 68, 68, 0.4)' : 'none',
+                background: isRunning ? 'rgba(239, 68, 68, 0.15)' : 'var(--accent-green)',
+                color: isRunning ? 'var(--accent-rust)' : '#ffffff',
+                boxShadow: !isRunning ? '0 0 8px rgba(22, 163, 74, 0.35)' : 'none'
+              }}
+              title={isRunning ? 'Jeda seluruh eksekusi arena bot' : 'Jalankan arena multi-agent'}
+            >
+              <span style={{ width: 4, height: 4, borderRadius: '50%', background: isRunning ? 'var(--accent-rust)' : '#ffffff', display: 'inline-block' }} />
+              <span>{isRunning ? '⏸ JEDA' : '▶ RUN'}</span>
+            </button>
+
+            <button
+              id="btn-emergency-kill-switch"
+              onClick={() => {
+                const next = !isKillSwitchActive;
+                institutionalPaperBroker.setKillSwitch(next);
+                setIsKillSwitchActive(next);
+                showToast(next ? '🚨 EMERGENCY KILL SWITCH AKTIF: Order baru diblokir!' : '✅ Kill Switch dinonaktifkan.');
+              }}
+              className="telemetry-btn"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3px',
+                padding: '2px 5px',
+                minHeight: '22px',
+                fontSize: '8.5px',
+                fontWeight: '800',
+                color: isKillSwitchActive ? '#ffffff' : 'var(--accent-rust)',
+                background: isKillSwitchActive ? '#ef4444' : 'rgba(239, 68, 68, 0.1)',
+                borderColor: isKillSwitchActive ? '#ef4444' : 'rgba(239, 68, 68, 0.35)',
+                boxShadow: isKillSwitchActive ? '0 0 8px rgba(239, 68, 68, 0.5)' : 'none'
+              }}
+              title="Emergency Kill Switch: Blokir seluruh order baru secara instan"
+            >
+              <span>{isKillSwitchActive ? '🚨 KILL ON' : '🛡️ KILL'}</span>
+            </button>
+
+            <button
+              id="btn-toggle-broker-desk"
+              onClick={() => setShowBrokerDesk(prev => !prev)}
+              className="telemetry-btn"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3px',
+                padding: '2px 6px',
+                minHeight: '22px',
+                fontSize: '8.5px',
+                fontWeight: '800',
+                color: showBrokerDesk ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                background: showBrokerDesk ? 'rgba(245, 158, 11, 0.15)' : 'var(--bg-panel-subtle)',
+                borderColor: showBrokerDesk ? 'rgba(245, 158, 11, 0.4)' : 'var(--border-hairline)'
+              }}
+              title="Buka / tutup Institutional Paper Execution Desk"
+            >
+              <span>💼 DESK ({paperPortfolio.positions?.length || 0})</span>
+            </button>
+
+            <button
+              id="btn-reset-semua-sesi"
+              onClick={() => setResetConfirmModal({ isOpen: true, agentId: null, agentName: 'Seluruh Portofolio Sesi' })}
+              className="telemetry-btn"
+              style={{ padding: '2px 5px', minHeight: '22px', fontSize: '8.5px', fontWeight: '700', color: 'var(--accent-rust)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+              title="Reset sesi saat ini, simpan laporan evaluasi sesi, dan jeda trading"
+            >
+              🔄 Reset
+            </button>
           </div>
         </div>
       </div>
 
       {/* ========================================================================= */}
+      {/* ========================================================================= */}
+      {/* INSTITUTIONAL BROKER DESK & REAL-TIME SANDBOX                            */}
+      {/* ========================================================================= */}
+      {showBrokerDesk && (
+        <div
+          id="institutional-paper-desk"
+          style={{
+            margin: '0 0 12px 0',
+            padding: '12px 14px',
+            background: 'var(--bg-panel)',
+            border: '1px solid rgba(245, 158, 11, 0.35)',
+            borderRadius: 'var(--radius-sm)',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.25)'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '8px', borderBottom: 'var(--border-hairline)', paddingBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '13px', fontWeight: '900', color: 'var(--accent-gold)', letterSpacing: '0.04em' }}>
+                💼 INSTITUTIONAL EXECUTION & PAPER BROKER DESK
+              </span>
+              <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-green)', fontSize: '8.5px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                VERIFIED GATEWAY
+              </span>
+              {isKillSwitchActive && (
+                <span className="badge" style={{ background: '#ef4444', color: '#fff', fontSize: '8.5px', fontWeight: '900' }}>
+                  🚨 KILL SWITCH ENGAGED
+                </span>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <button
+                id="btn-open-order-ticket"
+                onClick={() => onOpenExecution && onOpenExecution()}
+                style={{
+                  padding: '4px 10px',
+                  fontSize: '9.5px',
+                  fontWeight: '800',
+                  fontFamily: 'var(--font-mono)',
+                  background: 'var(--accent-blue)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '3px',
+                  cursor: 'pointer'
+                }}
+              >
+                + Buka Tiket Order
+              </button>
+              <button
+                onClick={() => {
+                  if (window.confirm('Reset portofolio paper ke Rp 100.000.000 dan $10.000 USDT?')) {
+                    institutionalPaperBroker.reset();
+                    setPaperPortfolio(institutionalPaperBroker.getSummary());
+                    showToast('Portofolio Paper Broker telah direset ke nilai awal.');
+                  }
+                }}
+                style={{
+                  padding: '4px 8px',
+                  fontSize: '9px',
+                  fontFamily: 'var(--font-mono)',
+                  background: 'transparent',
+                  border: 'var(--border-hairline)',
+                  color: 'var(--text-muted)',
+                  borderRadius: '3px',
+                  cursor: 'pointer'
+                }}
+              >
+                Reset Saldo
+              </button>
+            </div>
+          </div>
+
+          {/* Metric Bar */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px', marginBottom: '12px' }}>
+            <div style={{ background: 'var(--bg-panel-subtle)', padding: '6px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
+              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>SALDO KAS IDR</div>
+              <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                {formatIdr(paperPortfolio.cashIdr)}
+              </div>
+            </div>
+            <div style={{ background: 'var(--bg-panel-subtle)', padding: '6px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
+              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>SALDO KAS USDT</div>
+              <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                {formatUsd(paperPortfolio.cashUsdt)}
+              </div>
+            </div>
+            <div style={{ background: 'var(--bg-panel-subtle)', padding: '6px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
+              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>POSISI AKTIF</div>
+              <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-blue)', fontFamily: 'var(--font-mono)' }}>
+                {paperPortfolio.positions?.length || 0} Terbuka
+              </div>
+            </div>
+            <div style={{ background: 'var(--bg-panel-subtle)', padding: '6px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
+              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>TOTAL TRADES DIRESOLUSI</div>
+              <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                {paperPortfolio.tradeHistory?.length || 0} Closed
+              </div>
+            </div>
+          </div>
+
+          {/* Active Positions Table */}
+          {(!paperPortfolio.positions || paperPortfolio.positions.length === 0) ? (
+            <div style={{ padding: '16px', textAlign: 'center', background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', color: 'var(--text-muted)', fontSize: '11px' }}>
+              Belum ada posisi paper/live aktif yang dieksekusi. Tekan tombol <strong>[+ Buka Tiket Order]</strong> untuk membuka tiket trading manual ke sandbox.
+            </div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
+                <thead>
+                  <tr style={{ borderBottom: 'var(--border-hairline)', color: 'var(--text-muted)', textAlign: 'left', background: 'rgba(255,255,255,0.02)' }}>
+                    <th style={{ padding: '5px 8px' }}>TICKER / PASAR</th>
+                    <th style={{ padding: '5px 8px' }}>SISI / ORDER</th>
+                    <th style={{ padding: '5px 8px', textAlign: 'right' }}>ENTRY</th>
+                    <th style={{ padding: '5px 8px', textAlign: 'right' }}>HARGA KINI</th>
+                    <th style={{ padding: '5px 8px', textAlign: 'right' }}>SL / TP1</th>
+                    <th style={{ padding: '5px 8px', textAlign: 'center' }}>TRAILING RATIO</th>
+                    <th style={{ padding: '5px 8px', textAlign: 'right' }}>UNREALIZED PnL</th>
+                    <th style={{ padding: '5px 8px', textAlign: 'center' }}>AKSI</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paperPortfolio.positions.map(p => {
+                    const isProfit = (p.floatingPnL || 0) >= 0;
+                    const pnlColor = isProfit ? 'var(--accent-green)' : 'var(--accent-rust)';
+                    const posLotText = p.market === 'IDX' ? (p.lots + ' Lot') : String(p.quantity);
+                    return (
+                      <tr key={p.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                        <td style={{ padding: '6px 8px' }}>
+                          <strong style={{ color: 'var(--text-primary)' }}>{p.symbol}</strong>
+                          <span style={{ marginLeft: '4px', fontSize: '8px', color: 'var(--text-muted)' }}>({p.market})</span>
+                        </td>
+                        <td style={{ padding: '6px 8px' }}>
+                          <span style={{
+                            padding: '1px 4px',
+                            borderRadius: '2px',
+                            background: p.side === 'BUY' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                            color: p.side === 'BUY' ? 'var(--accent-green)' : 'var(--accent-rust)',
+                            fontWeight: '800',
+                            fontSize: '8.5px'
+                          }}>
+                            {p.side} {posLotText}
+                          </span>
+                        </td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right' }}>
+                          {formatInstrumentPrice(p.entryPrice, p.market, p.symbol)}
+                        </td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: '700' }}>
+                          {formatInstrumentPrice(p.currentPrice || p.entryPrice, p.market, p.symbol)}
+                        </td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', fontSize: '9px' }}>
+                          <span style={{ color: 'var(--accent-rust)' }}>SL: {formatInstrumentPrice(p.effectiveSl || p.stopLoss, p.market, p.symbol)}</span>
+                          <span style={{ color: 'var(--accent-green)', marginLeft: '6px' }}>TP: {formatInstrumentPrice(p.target1, p.market, p.symbol)}</span>
+                        </td>
+                        <td style={{ padding: '6px 8px', textAlign: 'center' }}>
+                          {p.hasHitTp1 ? (
+                            <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-green)', fontSize: '8px' }}>
+                              🔒 BE LOCKED
+                            </span>
+                          ) : (
+                            <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>STANDARD SL</span>
+                          )}
+                        </td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: '800', color: pnlColor }}>
+                          {p.market === 'IDX' ? formatIdr(p.floatingPnL || 0) : formatUsd(p.floatingPnL || 0)}
+                          <div style={{ fontSize: '8px' }}>({p.floatingPnLPct || 0}%)</div>
+                        </td>
+                        <td style={{ padding: '6px 8px', textAlign: 'center' }}>
+                          <button
+                            onClick={() => {
+                              try {
+                                institutionalPaperBroker.closePosition(p.id, p.currentPrice, 'MANUAL_CLOSE');
+                                setPaperPortfolio(institutionalPaperBroker.getSummary());
+                                showToast('Posisi ' + p.symbol + ' berhasil ditutup.');
+                              } catch (e) {
+                                showToast('Gagal menutup: ' + e.message);
+                              }
+                            }}
+                            style={{
+                              padding: '2px 6px',
+                              fontSize: '8.5px',
+                              background: 'rgba(239, 68, 68, 0.15)',
+                              border: '1px solid rgba(239, 68, 68, 0.3)',
+                              color: 'var(--accent-rust)',
+                              borderRadius: '2px',
+                              cursor: 'pointer',
+                              fontWeight: '700'
+                            }}
+                          >
+                            ✕ Tutup
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* 2. LOCKED 4-COLUMN KANBAN DECK WITH DOWNWARD GENERATION                   */}
       {/* ========================================================================= */}
       <div>
@@ -4633,67 +4904,6 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart }) 
             animation: toastSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
           }
         `}</style>
-
-        {/* Tier Filter Bar & Deck Summary */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
-          <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-            <span style={{ fontSize: '9.5px', fontWeight: '800', color: 'var(--text-secondary)', textTransform: 'uppercase', marginRight: '4px' }}>
-              Deck View:
-            </span>
-            {[
-              { id: 'ALL', label: `Semua Bot (${agents.length})` },
-              { id: 'BASE', label: '4 Elemen Dasar' },
-              { id: 'DUO', label: '6 Kombo Duo' },
-              { id: 'TRIO', label: '5 Sindikat (Trio & Master)' },
-              { id: 'ANOMALY', label: '1 Anomali (CHAOS)' }
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setAgentFilterTab(tab.id)}
-                style={{
-                  padding: '3px 8px',
-                  fontSize: '9px',
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: agentFilterTab === tab.id ? '800' : '600',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                  minHeight: '26px',
-                  border: agentFilterTab === tab.id ? '1px solid var(--accent-blue)' : 'var(--border-hairline)',
-                  background: agentFilterTab === tab.id ? 'rgba(37, 99, 235, 0.18)' : 'var(--bg-panel-subtle)',
-                  color: agentFilterTab === tab.id ? 'var(--accent-blue)' : 'var(--text-muted)',
-                  transition: 'all 0.15s'
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Urutan:</span>
-            <select
-              value={agentSortBy}
-              onChange={e => setAgentSortBy(e.target.value)}
-              style={{
-                padding: '2px 5px',
-                fontSize: '8.5px',
-                fontFamily: 'var(--font-mono)',
-                borderRadius: '3px',
-                background: 'var(--bg-panel-subtle)',
-                border: 'var(--border-hairline)',
-                color: 'var(--text-primary)',
-                cursor: 'pointer'
-              }}
-            >
-              <option value="DEFAULT">DNA Elemen</option>
-              <option value="ROI_DESC">Top ROI %</option>
-              <option value="WINRATE_DESC">Win Rate</option>
-              <option value="POSITIONS_DESC">Posisi Aktif</option>
-            </select>
-            <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              &bull; {filteredAgents.length} Bot Aktif
-            </div>
-          </div>
-        </div>
 
         {/* 4-Column Grid Matrix (Locked 4 columns per row on desktop, auto-wrapping downward) */}
         <div className="arena-locked-4col-grid">

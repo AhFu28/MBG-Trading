@@ -217,7 +217,7 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false, l
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '14px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
-                RUNNING TRADE LIVE BEI
+                RUNNING TRADE SIMULATOR (MICROSTRUCTURE MODEL)
               </span>
               <span style={{
                 fontSize: '9px',
@@ -236,7 +236,7 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false, l
                 fontWeight: '800',
                 fontFamily: 'var(--font-mono)'
               }}>
-                {!marketStatus.isOpen ? `BURSA TUTUP · ${marketStatus.status}` : isPaused ? 'STREAM PAUSED' : 'LIVE STREAM'}
+                {!marketStatus.isOpen ? `BURSA TUTUP · ${marketStatus.status}` : isPaused ? 'STREAM PAUSED' : 'PAPER TICK STREAM'}
               </span>
             </div>
             <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>

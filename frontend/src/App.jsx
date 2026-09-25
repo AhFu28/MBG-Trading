@@ -13,6 +13,8 @@ import ComplianceRiskModal from './components/ComplianceRiskModal.jsx';
 // Code Splitting for heavy secondary modules
 const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'));
 const LotCalculatorModal = lazy(() => import('./components/LotCalculatorModal.jsx'));
+const OrderExecutionModal = lazy(() => import('./components/OrderExecutionModal.jsx'));
+import { institutionalPaperBroker } from './services/brokerGateway.js';
 const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
 const ChartingDeskTab = lazy(() => import('./components/ChartingDeskTab.jsx'));
 const WhaleIntelligenceTab = lazy(() => import('./components/WhaleIntelligenceTab.jsx'));
@@ -194,6 +196,34 @@ export default function App() {
     setLotCalcModal(prev => ({ ...prev, isOpen: false }));
   }, []);
 
+  // Institutional Order Execution Modal State (Paper & Live)
+  const [executionModal, setExecutionModal] = useState({
+    isOpen: false,
+    prefill: null
+  });
+
+  const handleOpenExecution = useCallback((prefill = null) => {
+    setExecutionModal({
+      isOpen: true,
+      prefill
+    });
+  }, []);
+
+  const handleCloseExecution = useCallback(() => {
+    setExecutionModal(prev => ({ ...prev, isOpen: false }));
+  }, []);
+
+  // Live Position Ratchet & Trailing Stop Updates on Live Price Engine Ticks
+  useEffect(() => {
+    if (livePrices && Object.keys(livePrices).length > 0) {
+      try {
+        institutionalPaperBroker.updatePositionsOnTick(livePrices);
+      } catch (e) {
+        console.warn('Failed to update paper positions on tick:', e);
+      }
+    }
+  }, [livePrices]);
+
   // News Detail Modal State
   const [newsModal, setNewsModal] = useState({
     isOpen: false,
@@ -246,9 +276,35 @@ export default function App() {
       try {
         if (!silent) setLoading(true);
         const cacheBuster = `?v=${Date.now()}`;
-        const res = await fetch(`/data/latest_cockpit_bundle.json${cacheBuster}`, { cache: 'no-cache' });
-        if (res.ok) {
-          const json = await res.json();
+        let json = null;
+
+        // 1. Attempt to fetch from authenticated/cached Cloudflare Pages Function endpoint
+        try {
+          const apiRes = await fetch(`/api/data${cacheBuster}`, { cache: 'no-cache' });
+          const contentType = apiRes.headers.get('content-type') || '';
+          if (apiRes.ok && contentType.includes('application/json')) {
+            const parsed = await apiRes.json();
+            if (parsed && (parsed.last_updated || parsed.daily_trade_plans)) {
+              json = parsed;
+            }
+          }
+        } catch (e) {
+          json = null;
+        }
+
+        // 2. Fallback to static cockpit bundle (guarantees data loads in local preview, dev, or static CDN)
+        if (!json) {
+          try {
+            const staticRes = await fetch(`/data/latest_cockpit_bundle.json${cacheBuster}`, { cache: 'no-cache' });
+            if (staticRes.ok) {
+              json = await staticRes.json();
+            }
+          } catch (e) {
+            console.error('Failed to fetch static cockpit bundle:', e);
+          }
+        }
+
+        if (json) {
           // Fallback if bundle is partial
           if (!json.daily_trade_plans || !json.daily_trade_plans.length) {
             try {
@@ -272,7 +328,7 @@ export default function App() {
           }
           setData(json);
         } else {
-          console.error('Failed to load local bundle:', res.status);
+          console.error('Failed to load cockpit bundle from any source');
         }
       } catch (err) {
         console.error('Error fetching latest bundle:', err);
@@ -567,6 +623,7 @@ export default function App() {
                   onSelectTicker={handleOpenSecurityHub}
                   onOpenChart={handleOpenSecurityHub}
                   onOpenLotCalc={handleOpenLotCalc}
+                  onOpenExecution={handleOpenExecution}
                   onNavigateTab={setActiveTab}
                 />
               </main>
@@ -577,6 +634,7 @@ export default function App() {
                   data={data}
                   livePrices={livePrices}
                   onOpenChart={handleOpenSecurityHub}
+                  onOpenExecution={handleOpenExecution}
                 />
               </main>
             ) : activeTab === 'HOME' ? (
@@ -588,6 +646,7 @@ export default function App() {
                 flashMap={flashMap}
                 onSelectTicker={handleOpenSecurityHub}
                 onOpenLotCalc={handleOpenLotCalc}
+                onOpenExecution={handleOpenExecution}
                 onNavigateTab={setActiveTab}
                 onSelectNews={handleOpenNews}
               />
@@ -685,6 +744,19 @@ export default function App() {
               initialMarket={lotCalcModal.market}
               initialSymbol={lotCalcModal.symbol}
             />
+
+            {/* 4b. Institutional Order Execution Modal (Paper Sandbox & Live Broker) */}
+            {executionModal.isOpen && (
+              <OrderExecutionModal
+                isOpen={executionModal.isOpen}
+                onClose={handleCloseExecution}
+                prefill={executionModal.prefill}
+                livePrices={livePrices}
+                onOrderSuccess={(order) => {
+                  console.log('Order successfully executed:', order);
+                }}
+              />
+            )}
 
             {/* 5. News Detail Modal */}
             {newsModal.isOpen && (

@@ -1,9 +1,19 @@
 {
   "is_crisis": false,
   "severity": "NORMAL",
-  "headline": "",
-  "summary": "Situasi pasar global dalam parameter normal tanpa anomali krisis perang baru.",
-  "affected_tickers": [],
-  "recommended_action": "Jalankan strategi akumulasi dan diversifikasi normal.",
-  "evaluated_at": "2026-09-24T17:23:42.149756+00:00"
+  "headline": "IHSG terancam jebol 6.200 imbas yield US Treasury dan rupiah",
+  "summary": "Pasar saham domestik mengalami tekanan moderat yang dipicu oleh kenaikan yield US Treasury dan pelemahan nilai tukar Rupiah. Tidak terdeteksi adanya peristiwa krisis makro sistemik atau eskalasi perang mendadak.",
+  "affected_tickers": [
+    "IHSG",
+    "USD/IDR",
+    "BBNI",
+    "INDF",
+    "JSMR",
+    "TLKM",
+    "MEDC",
+    "DCII"
+  ],
+  "recommended_action": "Pertahankan posisi alokasi portofolio sesuai parameter risiko standar, serta pantau secara ketat pergerakan nilai tukar Rupiah dan yield obligasi AS.",
+  "evaluated_at": "2026-09-25T07:52:11.700526+00:00",
+  "model_used": "gemini-3.6-flash"
 }

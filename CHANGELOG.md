@@ -14,6 +14,31 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+## [2026-09-25] — Multi-Agent Arena Layout Refactor, Home Cockpit Lock, Gold Telemetry Alignment & Automated Cron Pipeline
+
+### Sprint 6 — Cockpit Ergonomics, Real-Market Pricing & Continuous Ingestion Automation
+- **[COCKPIT UI/UX & ARENA REFACTOR] Multi-Agent Arena Header Streamlining**:
+  - **Dua Baris Simetris**: Menggabungkan header 'AI Multi-Agent Arena' dan 'Pengaturan Portofolio' menjadi 2 baris terpadu yang seimbang tanpa ada ruang kosong (*empty gap*) di sisi kanan.
+  - **Pembersihan Deskripsi Berlebih**: Menghilangkan teks redundant (deskripsi 16 bots syndicate, tag elemen/kombo duo/trio/master/chaos, serta teks repetitif 'bot aktif').
+  - **Komposisi Kontrol Terintegrasi**: Mengubah pilihan timeframe grafik (3D, 7D, 1M, 3M, 1Y) dan modal/bot menjadi dropdown ringkas, serta memindahkan urutan DNA Elemen ke baris atas.
+  - **Distribusi Telemetry & Master Switch**: Baris 1 menampung navigasi pasar & intel modal; Baris 2 menampung parameter eksekusi, live exchange rate ($1 = Rp), telemetry sesi, dan switch darurat (JEDA/RUN, KILL, DESK, Reset).
+- **[COCKPIT UI/UX & STABILITY] Home Dashboard Layout Lock & Anti-Collapse**:
+  - **Pencegahan Scroll Mode & Dropped News Wire**: Mengunci tinggi panel kiri cockpit pada `480px` (`overflow: hidden` pada `.home-cockpit-left`), mengeliminasi scroll ganda internal, dan menurunkan breakpoint responsif dari `1150px` ke `820px`.
+  - **Sintesis Berita Sejajar**: Memastikan kolom News Wire tetap berdiri tegak berdampingan dengan cockpit utama di semua resolusi desktop & laptop tanpa terdorong ke bawah.
+- **[MACRO & DATA INTEGRITY] Normalisasi Harga Spot Emas Dunia (XAU/USD)**:
+  - **Penghapusan Ambiguity Nilai $270**: Memperbaiki fallback harga emas pada `HomeDashboardTab.jsx` dari sebelumnya membaca kuotasi ETF (GLD ~0.1 oz) menjadi harga spot emas riil dunia ($4,262 - $4,310/oz).
+  - **Format Ribuan Terstandarisasi**: Mengaplikasikan format angka ribuan dengan pemisah koma terverifikasi ($4,310) pada ticker dan telemetri makro.
+- **[QUANT & AGENTIC ENGINES] Otomasi Pipeline Cron & Verifikasi Bundle Lokal**:
+  - **Trigger Otomatis GitHub Actions**: Menambahkan jadwal cron per jam (`0 * * * *`) pada `.github/workflows/hourly_crypto_macro.yml` untuk memastikan data bundle Cloudflare Pages diperbarui otomatis secara berkala tanpa intervensi manual.
+  - **Eksekusi Pipeline Mandiri**: Berhasil menjalankan `engine/run_pipeline.py --mode hourly_crypto_macro` secara lokal (86.7s), memperbarui `latest_cockpit_bundle.json` dengan status feed 100% FRESH (0m old).
+  - **Broker Gateway & Order Modal**: Mengintegrasikan `brokerGateway.js` (paper trading matching engine, slippage/fee model, HMAC Binance adapter) dan `OrderExecutionModal.jsx` dengan validasi zero-secret.
+- **[COMPLIANCE & QA/QC CERTIFICATION]**:
+  - Zero Secret Leak: Terverifikasi 0 credential, token, atau API key terekspos ke repositori git.
+  - Python Test Suite: 13 unit tests passed (0.030s).
+  - Frontend Build: 79 modules compiled clean dalam 1.83s tanpa warning.
+
+---
+
 ## [2026-09-24] — Compliance Audit, UI/UX Full-Width Canvas & QA/QC Certification
 
 ### Sprint 5 (Dini Hari / Pagi) — Full Compliance Audit, UI/UX Canvas Restoration & QA/QC Certification

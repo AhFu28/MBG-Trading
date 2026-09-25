@@ -710,13 +710,16 @@ export default function HomeDashboardTab({
 
             {/* Card 2: Commodities & DXY */}
             {(() => {
-              const liveBrent = livePrices['BRENT'] || livePrices['UKOIL'];
-              const liveGold = livePrices['GOLD'] || livePrices['XAUUSD'];
-              const brentPrice = liveBrent?.price !== undefined ? Number(liveBrent.price) : 99.21;
-              const brentChg = liveBrent?.changePct !== undefined ? Number(liveBrent.changePct) : -1.13;
-              const rawGold = liveGold?.price !== undefined ? Number(liveGold.price) : Number(data?.macro_indicators?.gold_price || 4262.0);
-              const goldPrice = (rawGold >= 1000 && rawGold <= 10000) ? rawGold : (rawGold || 4262.0);
-              const goldChg = liveGold?.changePct !== undefined ? Number(liveGold.changePct) : Number(data?.macro_indicators?.gold_change_pct || 0.85);
+              const liveBrent = livePrices['BRENT'] || livePrices['UKOIL'] || livePrices['FX:UKOIL'];
+              const liveGold = livePrices['GOLD'] || livePrices['XAUUSD'] || livePrices['XAU/USD'] || livePrices['TVC:GOLD'];
+              const brentPrice = liveBrent?.price !== undefined ? Number(liveBrent.price) : (Number(macro?.brent_oil_price) || 99.21);
+              const brentChg = liveBrent?.changePct !== undefined ? Number(liveBrent.changePct) : (Number(macro?.brent_oil_change_pct) || -1.13);
+              const rawGold = liveGold?.price !== undefined ? Number(liveGold.price) : Number(macro?.gold_price || data?.macro_telemetry?.gold_price || 4262.4);
+              // Sanity guard: Emas acuan live (TradingView TVC:GOLD/XAUUSD) & macro bundle adalah $4K+ ($4,262 - $4,275)
+              const goldPrice = (rawGold >= 1000 && rawGold <= 10000)
+                ? rawGold
+                : Number(macro?.gold_price || data?.macro_telemetry?.gold_price || 4262.4);
+              const goldChg = liveGold?.changePct !== undefined ? Number(liveGold.changePct) : Number(macro?.gold_change_pct || data?.macro_telemetry?.gold_change_pct || -0.05);
 
               return (
                 <div className="telemetry-panel" style={{
@@ -740,7 +743,7 @@ export default function HomeDashboardTab({
                         OIL ${brentPrice.toFixed(1)} <span style={{ fontSize: '7.5px', color: brentChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{brentChg >= 0 ? '+' : ''}{brentChg.toFixed(1)}%</span>
                       </div>
                       <div style={{ fontSize: '10.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#eab308' }}>
-                        GOLD ${goldPrice.toFixed(0)} <span style={{ fontSize: '7.5px', color: goldChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{goldChg >= 0 ? '+' : ''}{goldChg.toFixed(1)}%</span>
+                        GOLD ${Math.round(goldPrice).toLocaleString('en-US')} <span style={{ fontSize: '7.5px', color: goldChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{goldChg >= 0 ? '+' : ''}{goldChg.toFixed(1)}%</span>
                       </div>
                     </div>
                     <div style={{ fontSize: '7.5px', color: 'var(--text-muted)', marginTop: '1px' }}>
@@ -883,7 +886,8 @@ export default function HomeDashboardTab({
             flexDirection: 'column',
             gap: '4px',
             minWidth: 0,
-            flexGrow: 1,
+            flex: '1 1 0',
+            minHeight: 0,
             boxSizing: 'border-box'
           }}>
 
@@ -918,7 +922,7 @@ export default function HomeDashboardTab({
               display: 'grid',
               gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
               gap: '6px',
-              flexGrow: 1,
+              flex: '1 1 0',
               minHeight: 0
             }}>
 
@@ -1194,6 +1198,7 @@ export default function HomeDashboardTab({
             boxSizing: 'border-box',
             background: 'linear-gradient(180deg, var(--bg-panel) 0%, rgba(15, 23, 42, 0.6) 100%)',
             height: '100%',
+            minHeight: 0,
             overflow: 'hidden'
           }}>
             {/* Header */}
@@ -1357,15 +1362,18 @@ export default function HomeDashboardTab({
             </div>
 
             {/* Scrollable News Cards List */}
-            <div style={{
-              padding: '4px 6px',
-              flexGrow: 1,
-              overflowY: 'auto',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '4px',
-              minHeight: 0
-            }}>
+            <div
+              className="news-scroll-container"
+              style={{
+                padding: '4px 6px',
+                flex: '1 1 0',
+                overflowY: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px',
+                minHeight: 0
+              }}
+            >
               {displayNews.map((news, idx) => {
                 const isBear = (news.sentiment || '').toUpperCase() === 'BEARISH';
                 const isBull = (news.sentiment || '').toUpperCase() === 'BULLISH';
@@ -1655,7 +1663,20 @@ export default function HomeDashboardTab({
                       </td>
                       <td style={{ padding: '4px 6px', textAlign: 'center' }}>
                         <button
-                          onClick={() => onOpenLotCalc && onOpenLotCalc(ticker, plan.entry_price, plan.stop_loss, plan.target_1 || plan.take_profit_1)}
+                          onClick={() => {
+                          if (onOpenExecution) {
+                            onOpenExecution({
+                              symbol: ticker,
+                              market: 'IDX',
+                              entryPrice: plan.entry_price,
+                              stopLoss: plan.stop_loss,
+                              target1: plan.target_1 || plan.take_profit_1,
+                              target2: plan.target_2 || plan.take_profit_2
+                            });
+                          } else if (onOpenLotCalc) {
+                            onOpenLotCalc(ticker, plan.entry_price, plan.stop_loss, plan.target_1 || plan.take_profit_1);
+                          }
+                        }}
                           style={{
                             padding: '2px 5px',
                             fontSize: '8px',
@@ -1724,7 +1745,20 @@ export default function HomeDashboardTab({
                       </td>
                       <td style={{ padding: '4px 6px', textAlign: 'center' }}>
                         <button
-                          onClick={() => onOpenLotCalc && onOpenLotCalc(c.pair, c.current_price, c.stop_loss, c.take_profit_1)}
+                          onClick={() => {
+                          if (onOpenExecution) {
+                            onOpenExecution({
+                              symbol: c.pair,
+                              market: 'CRYPTO',
+                              entryPrice: c.current_price,
+                              stopLoss: c.stop_loss,
+                              target1: c.take_profit_1,
+                              target2: c.take_profit_2
+                            });
+                          } else if (onOpenLotCalc) {
+                            onOpenLotCalc(c.pair, c.current_price, c.stop_loss, c.take_profit_1);
+                          }
+                        }}
                           style={{
                             padding: '2px 5px',
                             fontSize: '8px',
@@ -1793,7 +1827,19 @@ export default function HomeDashboardTab({
                       </td>
                       <td style={{ padding: '4px 6px', textAlign: 'center' }}>
                         <button
-                          onClick={() => onOpenLotCalc && onOpenLotCalc(s.ticker, s.entry_price, s.stop_loss, calculatedTp)}
+                          onClick={() => {
+                          if (onOpenExecution) {
+                            onOpenExecution({
+                              symbol: s.ticker,
+                              market: 'US',
+                              entryPrice: s.entry_price,
+                              stopLoss: s.stop_loss,
+                              target1: calculatedTp
+                            });
+                          } else if (onOpenLotCalc) {
+                            onOpenLotCalc(s.ticker, s.entry_price, s.stop_loss, calculatedTp);
+                          }
+                        }}
                           style={{
                             padding: '2px 5px',
                             fontSize: '8px',

@@ -1,7 +1,9 @@
-name: 24/7 Hourly Crypto & US Macro Radar (Manual On-Demand)
+name: 24/7 Hourly Crypto & US Macro Radar
 
 on:
-  workflow_dispatch: # Allows manual trigger from GitHub UI (Cron scheduled runs disabled)
+  schedule:
+    - cron: '0 * * * *' # Otomatis dieksekusi GitHub Actions setiap jam (24/7)
+  workflow_dispatch: # Allows manual trigger from GitHub UI
 
 permissions:
   contents: read

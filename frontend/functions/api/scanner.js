@@ -1,10 +1,23 @@
 /**
- * Cloudflare Pages Function: TradingView Scanner Reverse Proxy (H-06)
+ * Cloudflare Pages Function: TradingView Scanner Reverse Proxy (Hardened)
  * Route: /api/scanner
  * 
  * Proxies scanner requests to TradingView with edge caching (10s)
- * shields client browsers from rate limits, CORS issues, and hides direct IP.
+ * Strict CORS origin protection prevents unauthorized third-party relay abuse.
  */
+
+function getAllowedOrigin(request) {
+  const origin = request.headers.get('Origin') || '';
+  if (
+    origin.includes('mbg-trading.pages.dev') ||
+    origin.includes('localhost') ||
+    origin.includes('127.0.0.1')
+  ) {
+    return origin;
+  }
+  return 'https://mbg-trading.pages.dev';
+}
+
 export async function onRequestPost({ request }) {
   try {
     const url = new URL(request.url);
@@ -29,12 +42,16 @@ export async function onRequestPost({ request }) {
     }
 
     const data = await tvResponse.text();
+    const allowedOrigin = getAllowedOrigin(request);
+
     return new Response(data, {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'public, max-age=10, s-maxage=15',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': allowedOrigin,
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
       }
     });
   } catch (err) {
@@ -45,13 +62,15 @@ export async function onRequestPost({ request }) {
   }
 }
 
-export async function onRequestOptions() {
+export async function onRequestOptions({ request }) {
+  const allowedOrigin = getAllowedOrigin(request);
   return new Response(null, {
     status: 204,
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': allowedOrigin,
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400'
     }
   });
 }

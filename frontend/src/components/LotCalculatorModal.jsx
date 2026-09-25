@@ -67,29 +67,42 @@ export default function LotCalculatorModal({
   let positionPercent = 0;
   let rrRatioDisplay = '-';
   let targetPrice = 0;
+  let isCashCapped = false;
+  let feeImpactTotal = 0;
 
   const entry = Number(entryPrice);
   const sl = Number(stopLossPrice);
 
   if (entry > 0 && sl > 0 && entry !== sl) {
     const isShort = sl > entry;
-    riskPerUnit = Math.abs(entry - sl);
+    // Friction fee modeling: IDX round-trip 0.40% (0.15% buy + 0.25% sell), Crypto 0.20% (0.10% x 2)
+    const feeRate = isCrypto ? 0.002 : 0.004;
+    const feePerUnit = entry * feeRate;
+    riskPerUnit = Math.abs(entry - sl) + feePerUnit;
     
     if (riskPerUnit > 0) {
       if (!isCrypto) {
         // IDX: 1 lot = 100 lembar
-        maxLots = Math.floor(riskAmount / (riskPerUnit * 100));
-        if (maxLots < 0) maxLots = 0;
+        const riskLots = Math.floor(riskAmount / (riskPerUnit * 100));
+        const maxAffordableLots = Math.floor(Number(modalAmount) / (entry * 100));
+        // Bound by cash portfolio capacity (cannot buy more than 100% of cash in non-margin account)
+        maxLots = Math.max(0, Math.min(riskLots, maxAffordableLots));
+        isCashCapped = riskLots > maxAffordableLots && maxAffordableLots > 0;
         totalPositionValue = maxLots * 100 * entry;
+        feeImpactTotal = totalPositionValue * feeRate;
       } else {
         // Crypto Spot: exact token units (fractional)
-        const units = riskAmount / riskPerUnit;
-        maxTokens = units > 0 ? units : 0;
+        const riskUnits = riskAmount / riskPerUnit;
+        const maxAffordableUnits = Number(modalAmount) / entry;
+        maxTokens = Math.max(0, Math.min(riskUnits, maxAffordableUnits));
+        isCashCapped = riskUnits > maxAffordableUnits && maxAffordableUnits > 0;
         totalPositionValue = maxTokens * entry;
+        feeImpactTotal = totalPositionValue * feeRate;
       }
 
       positionPercent = modalAmount > 0 ? (totalPositionValue / modalAmount) * 100 : 0;
-      targetPrice = isShort ? Math.max(0, entry - (2.2 * riskPerUnit)) : entry + (2.2 * riskPerUnit);
+      const pureStructuralRisk = Math.abs(entry - sl);
+      targetPrice = isShort ? Math.max(0, entry - (2.2 * pureStructuralRisk)) : entry + (2.2 * pureStructuralRisk);
       rrRatioDisplay = isShort ? '1 : 2.2 (SHORT)' : '1 : 2.2 (LONG)';
     }
   }
@@ -459,6 +472,21 @@ export default function LotCalculatorModal({
             </div>
 
             {/* Warning & Error Messages */}
+            {isCashCapped && (
+              <div style={{ 
+                marginTop: '10px', 
+                padding: '6px 10px', 
+                background: 'rgba(56, 189, 248, 0.1)', 
+                border: '1px solid rgba(56, 189, 248, 0.4)',
+                borderRadius: '4px',
+                color: '#38bdf8',
+                fontWeight: '600',
+                fontSize: '10.5px',
+                textAlign: 'center'
+              }}>
+                ℹ️ Ukuran posisi dibatasi 100% saldo kas tunai portofolio (Batas akun cash reguler).
+              </div>
+            )}
             {isWarning && (
               <div style={{ 
                 marginTop: '12px', 
