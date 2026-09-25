@@ -17,7 +17,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -37,7 +37,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -57,7 +57,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -77,7 +77,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -97,7 +97,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -117,7 +117,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -137,7 +137,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -157,7 +157,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -177,7 +177,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -197,7 +197,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -217,7 +217,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -237,7 +237,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -257,7 +257,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -277,7 +277,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -297,7 +297,7 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     },
     {
@@ -317,12 +317,12 @@
       },
       "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0.0,
+      "totalRoiPct": 0,
       "activePositionsCount": 0
     }
   ],
   "positions": [],
   "journal": [],
   "session_id": 1790333216,
-  "last_evaluated": "2026-09-25T10:46:56.375308+00:00"
+  "last_evaluated": "2026-09-25T14:24:43.248126+00:00"
 }
