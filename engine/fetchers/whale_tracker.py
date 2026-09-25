@@ -1,7 +1,6 @@
 import os
 import logging
 import requests
-import random
 from datetime import datetime, timezone, timedelta
 
 logger = logging.getLogger(__name__)
@@ -23,6 +22,15 @@ class WhaleTracker:
         self.whale_alert_api_key = os.getenv("WHALE_ALERT_API_KEY", "")
         self.whale_alert_url = "https://api.whale-alert.io/v1/transactions"
         self.mempool_api_url = "https://mempool.space/api"
+
+    def _get_btc_price(self):
+        try:
+            r = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT", timeout=4)
+            if r.status_code == 200:
+                return float(r.json().get('price', 65000))
+        except Exception:
+            pass
+        return 65000.0
 
     def execute(self):
         wib = timezone(timedelta(hours=7))
@@ -104,7 +112,8 @@ class WhaleTracker:
                     total_btc = total_sats / 1e8
                     
                     if total_btc >= 3.0:
-                        amount_usd = round(total_btc * 65000, 2)
+                        btc_px = self._get_btc_price()
+                        amount_usd = round(total_btc * btc_px, 2)
                         is_likely_exchange = len(vouts) > 2
                         signal = "EXCHANGE_INFLOW" if is_likely_exchange else "EXCHANGE_OUTFLOW"
                         sentiment = "BEARISH" if signal == "EXCHANGE_INFLOW" else "BULLISH"

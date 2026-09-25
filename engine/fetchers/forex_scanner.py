@@ -1,6 +1,5 @@
 import logging
 import requests
-import random
 from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)

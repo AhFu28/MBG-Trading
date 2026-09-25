@@ -500,6 +500,73 @@ stateDiagram-v2
 
 ---
 
+## 🏗️ Arsitektur Sistem, Flow Process & Integrasi Bitget MT5
+
+Proyek ini dibangun menggunakan arsitektur kuantitatif modular bertingkat (*multi-stage pipeline*) yang memisahkan secara tegas antara ingestion data, sintesis analitik AI, penyimpanan terpusat, visualisasi terminal reaktif, dan eksekusi otomatis:
+
+```mermaid
+flowchart TD
+    subgraph S1["1. Data Ingestion Layer"]
+        F1["TradingView Scanners\n(Crypto, IDX, Forex, US, CFD)"]
+        F2["Mempool.space API\n(Real Bitcoin On-Chain Whales)"]
+        F3["Yahoo Finance & RSS Feeds\n(Macro Yields, Oil, Gold, News)"]
+    end
+
+    subgraph S2["2. Quantitative Engine & AI Brain (Python)"]
+        A1["run_pipeline.py\n(Hourly Cron & Daily Ingestion)"]
+        A2["LLMBrain / Gemini 3.6 Flash\n(Sintesis Riset & Daily Trade Plans)"]
+        A3["BacktestEngine & SMC Detector\n(Smart Money Order Blocks & Risk Brackets)"]
+        A4["16-Variant Headless Runner\n(Tournament Evaluator 24/7)"]
+    end
+
+    subgraph S3["3. Central State Storage"]
+        D1[("latest_cockpit_bundle.json\n(Master Atomic State Bundle)")]
+        D2[("Supabase Cloud DB & Cache")]
+    end
+
+    subgraph S4["4. Reactive Terminal Frontend (React + Vite)"]
+        UI1["Home Dashboard Command Center"]
+        UI2["16-Bot AI Multi-Agent Arena"]
+        UI3["Flow Process & Architecture Desk"]
+        UI4["TradingView Institutional Charting Desk"]
+    end
+
+    subgraph S5["5. Execution & Bitget MT5 Bridge"]
+        E1["OrderExecutionModal.jsx\n(Interactive Execution Ticket)"]
+        E2["brokerGateway.js\n(Institutional Paper Broker & Binance API)"]
+        E3["MBG_Institutional_Apex_EA.mq5\n(Native Bitget MT5 Expert Advisor)"]
+    end
+
+    F1 & F2 & F3 --> A1
+    A1 --> A2 & A3 & A4
+    A2 & A3 & A4 --> D1 & D2
+    D1 --> UI1 & UI2 & UI3 & UI4
+    UI1 & UI2 --> E1
+    E1 --> E2
+    UI3 -->|Direct Download| E3
+```
+
+### 1. Metodologi Turnamen 16 Bot (Champion-Challenger Kaizen)
+- **Tujuan Pengujian 1 Bulan**: Menguji 16 varian algoritma kuantitatif (4 Dasar: WATER SMC, FIRE Momentum, AIR Donchian, EARTH Mean Reversion, serta kombo Duo/Trio/Master/Chaos) secara simultan di pasar riil.
+- **Kriteria Kelulusan Champion EA**:
+  1. *Profit Factor* (Total Gross Profit / Total Gross Loss) $\ge 1.6$.
+  2. *Maximum Drawdown* (MDD) $\le 10\%$.
+  3. *Mathematical Expectancy* $(\text{WinRate} \times \text{AvgWin}) - (\text{LossRate} \times \text{AvgLoss}) > 0$.
+  4. Ukuran sampel minimal 40 transaksi teruji dalam 30 hari perdagangan.
+- **Continuous Improvement (Kaizen)**: Varian yang belum terpilih dievaluasi matriks kelemahannya, parameter volatilitasnya dikalibrasi ulang (Challenger), dan kembali dimasukkan ke siklus pengujian berikutnya.
+
+### 2. Integrasi Bitget MT5 EA (`MBG_Institutional_Apex_EA.mq5`)
+Varian strategi yang terpilih dapat langsung diekspor menjadi Expert Advisor native untuk **Bitget MetaTrader 5 (MT5)**:
+- **Dukungan Pasar**: Tidak hanya instrumen konvensional (Gold `XAUUSD`, Minyak `USOIL`, Forex), tetapi juga kontrak **Crypto USDT-M Futures** di Bitget MT5, khususnya **AI Narrative Tokens** (`FETUSDT`, `RENDERUSDT`, `NEARUSDT`, `TAOUSDT`).
+- **Fitur Bawaan EA**:
+  - Pilihan varian strategi modular (WATER SMC, FIRE Momentum, AIR Donchian, EARTH Reversion).
+  - Manajemen risiko dinamis berbasis persentase ekuitas akun (standar 1-2% risk cap Citadel).
+  - *Dynamic Volatility Stop Loss* berbasis Average True Range (ATR).
+  - *Automatic Breakeven Trailing*: Ketika target profit pertama (TP1) tercapai, Stop Loss otomatis digeser ke level Entry (bebas risiko rugi modal).
+  - *Max Daily Drawdown Circuit Breaker* (Kill Switch darurat harian).
+
+---
+
 ## 📁 Struktur Direktori Repository
 
 ```text

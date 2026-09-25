@@ -26,6 +26,7 @@ const SECONDARY_TOOLS = [
   { id: 'TESTING',             icon: '🧪', label: 'Testing Lab' },
   { id: 'PEARSON_CORRELATION', icon: '🔗', label: 'Korelasi Pearson' },
   { id: 'ACADEMY',             icon: '🎓', label: 'Quant Academy' },
+  { id: 'FLOW_PROCESS',        icon: '⚡', label: 'Flow Process' },
   { id: 'CHANGELOG',           icon: '📜', label: 'Changelog Update' }
 ];
 

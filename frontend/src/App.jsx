@@ -15,6 +15,7 @@ const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'))
 const LotCalculatorModal = lazy(() => import('./components/LotCalculatorModal.jsx'));
 const OrderExecutionModal = lazy(() => import('./components/OrderExecutionModal.jsx'));
 import { institutionalPaperBroker } from './services/brokerGateway.js';
+const FlowProcessTab = lazy(() => import('./components/FlowProcessTab.jsx'));
 const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
 const ChartingDeskTab = lazy(() => import('./components/ChartingDeskTab.jsx'));
 const WhaleIntelligenceTab = lazy(() => import('./components/WhaleIntelligenceTab.jsx'));
@@ -365,6 +366,7 @@ export default function App() {
       case 'FUTURES': return '🔥 Crypto Futures Intelligence';
       case 'FOREX': return '💱 Forex Command Center';
       case 'US_STOCKS': return '🇺🇸 US Stock Intelligence';
+      case 'FLOW_PROCESS': return '⚡ Flow Process & System Architecture';
       case 'CHANGELOG': return '📜 Changelog Update & Catatan Rilis';
       case 'AI_AGENTS': return '🤖 AI Multi-Agent Arena';
       case 'AI_SENTINEL':
@@ -660,6 +662,11 @@ export default function App() {
                   onOpenLotCalc={handleOpenLotCalc}
                   initialSymbol={chartModal.symbol || 'BBCA'}
                 />
+              </main>
+            ) : activeTab === 'FLOW_PROCESS' ? (
+              /* SYSTEM FLOW PROCESS & ARCHITECTURE BLUEPRINT */
+              <main>
+                <FlowProcessTab />
               </main>
             ) : activeTab === 'CHANGELOG' ? (
               /* SYSTEM CHANGELOG & VERSION RELEASES */

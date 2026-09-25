@@ -1,5 +1,4 @@
 import logging
-import random
 from datetime import datetime, timezone, timedelta
 
 try:
@@ -31,58 +30,63 @@ class USMarketFetcher:
         earnings_cal = []
         
         try:
-            data = yf.download(self.tickers, period='3mo', interval='1d', group_by='ticker')
-            
-            sector_changes = {s: [] for s in self.universe.keys()}
-            
-            for sector, t_list in self.universe.items():
-                for t in t_list:
-                    if t in data.columns.levels[0] if isinstance(data.columns, pd.MultiIndex) else data:
-                        df = data[t] if isinstance(data.columns, pd.MultiIndex) else data
-                        df = df.dropna()
-                        if df.empty:
-                            continue
+            if yf:
+                data = yf.download(self.tickers, period='3mo', interval='1d', group_by='ticker', progress=False)
+                sector_changes = {s: [] for s in self.universe.keys()}
+                
+                for sector, t_list in self.universe.items():
+                    for t in t_list:
+                        if t in (data.columns.levels[0] if isinstance(data.columns, pd.MultiIndex) else data):
+                            df = data[t] if isinstance(data.columns, pd.MultiIndex) else data
+                            df = df.dropna()
+                            if df.empty:
+                                continue
+                                
+                            history_dfs[t] = df
                             
-                        history_dfs[t] = df
+                            close = float(df['Close'].iloc[-1])
+                            prev_close = float(df['Close'].iloc[-2]) if len(df) > 1 else close
+                            change_pct = round(((close - prev_close) / prev_close) * 100, 2)
+                            sector_changes[sector].append(change_pct)
+                            
+                            high_52w = round(float(df['Close'].max()), 2)
+                            dist_52w = round(float((close - high_52w) / high_52w * 100), 2)
+                            
+                            stocks.append({
+                                'ticker': t,
+                                'name': t,
+                                'sector': sector,
+                                'price': round(close, 2),
+                                'change_pct': float(change_pct),
+                                'market_cap': 0,
+                                'pe_ratio': 0,
+                                'eps': 0,
+                                'volume': float(df['Volume'].iloc[-1]),
+                                'avg_volume_10d': float(df['Volume'].tail(10).mean()),
+                                'high_52w': high_52w,
+                                'low_52w': round(float(df['Close'].min()), 2),
+                                'distance_from_52w_high_pct': dist_52w,
+                                'rsi_14': 50,
+                                'sma20': round(float(df['Close'].tail(20).mean()), 2) if len(df) >= 20 else 0,
+                                'sma50': round(float(df['Close'].tail(50).mean()), 2) if len(df) >= 50 else 0,
+                                'sma200': round(float(df['Close'].tail(200).mean()), 2) if len(df) >= 200 else 0,
+                                'setup_type': 'PULLBACK_SUPPORT' if change_pct < -0.5 else 'BREAKOUT' if change_pct > 1.5 else 'CONSOLIDATION',
+                                'entry_price': round(close, 2),
+                                'stop_loss': round(close * 0.96, 2),
+                                'take_profit_1': round(close * 1.08, 2),
+                                'risk_reward_ratio': 2.0,
+                                'data_source': 'yfinance_live',
+                                'updated_at': datetime.now(timezone.utc).isoformat()
+                            })
+                
+                for s, changes in sector_changes.items():
+                    if changes:
+                        sector_perf[s] = round(sum(changes) / len(changes), 2)
                         
-                        close = df['Close'].iloc[-1]
-                        prev_close = df['Close'].iloc[-2] if len(df) > 1 else close
-                        change_pct = round(((close - prev_close) / prev_close) * 100, 2)
-                        sector_changes[sector].append(change_pct)
-                        
-                        stocks.append({
-                            'ticker': t,
-                            'name': t,
-                            'sector': sector,
-                            'price': round(float(close), 2),
-                            'change_pct': float(change_pct),
-                            'market_cap': 0,
-                            'pe_ratio': 0,
-                            'eps': 0,
-                            'volume': float(df['Volume'].iloc[-1]),
-                            'avg_volume_10d': float(df['Volume'].tail(10).mean()),
-                            'high_52w': round(float(df['Close'].max()), 2),
-                            'low_52w': round(float(df['Close'].min()), 2),
-                            'distance_from_52w_high_pct': round(float((close - df['Close'].max()) / df['Close'].max() * 100), 2),
-                            'rsi_14': 50,
-                            'sma20': round(float(df['Close'].tail(20).mean()), 2) if len(df) >= 20 else 0,
-                            'sma50': round(float(df['Close'].tail(50).mean()), 2) if len(df) >= 50 else 0,
-                            'sma200': round(float(df['Close'].tail(200).mean()), 2) if len(df) >= 200 else 0,
-                            'setup_type': 'NEUTRAL',
-                            'entry_price': round(float(close), 2),
-                            'stop_loss': round(float(close * 0.95), 2),
-                            'take_profit_1': round(float(close * 1.1), 2),
-                            'risk_reward_ratio': 2.0,
-                            'updated_at': datetime.now(timezone.utc).isoformat()
-                        })
-            
-            for s, changes in sector_changes.items():
-                if changes:
-                    sector_perf[s] = round(sum(changes) / len(changes), 2)
-                    
         except Exception as e:
-            logger.warning(f"Error fetching US market data: {e}")
+            logger.warning(f"Error fetching US market data via yfinance: {e}")
 
+        # Deterministic benchmark fallback when yfinance is completely unreachable
         if not stocks:
             sample_prices = {
                 'AAPL': 228.5, 'NVDA': 128.2, 'MSFT': 442.0, 'META': 515.0, 'GOOGL': 168.0,
@@ -97,49 +101,37 @@ class USMarketFetcher:
             sector_changes = {s: [] for s in self.universe.keys()}
             for sector, t_list in self.universe.items():
                 for t in t_list:
-                    px = sample_prices.get(t, round(random.uniform(50, 500), 2))
-                    chg = round(random.uniform(-3.5, 4.0), 2)
+                    px = sample_prices.get(t, 100.0)
+                    chg = 0.0
                     sector_changes[sector].append(chg)
                     sl = round(px * 0.96, 2)
                     tp = round(px * 1.08, 2)
-                    rr = round((tp - px) / max(px - sl, 0.01), 2)
                     stocks.append({
                         'ticker': t,
                         'name': t,
                         'sector': sector,
                         'price': px,
                         'change_pct': chg,
-                        'market_cap': round(px * random.uniform(1e8, 1e10), 0),
-                        'pe_ratio': round(random.uniform(15, 65), 1),
-                        'eps': round(random.uniform(1.5, 12.0), 2),
-                        'volume': int(random.uniform(5e6, 8e7)),
-                        'avg_volume_10d': int(random.uniform(5e6, 8e7)),
+                        'market_cap': 0,
+                        'pe_ratio': 0,
+                        'eps': 0,
+                        'volume': 0,
+                        'avg_volume_10d': 0,
                         'high_52w': round(px * 1.15, 2),
                         'low_52w': round(px * 0.75, 2),
-                        'distance_from_52w_high_pct': round(random.uniform(-15.0, -1.0), 2),
-                        'rsi_14': round(random.uniform(32, 68), 1),
+                        'distance_from_52w_high_pct': -10.0,
+                        'rsi_14': 50.0,
                         'sma20': round(px * 0.98, 2),
                         'sma50': round(px * 0.95, 2),
                         'sma200': round(px * 0.90, 2),
-                        'setup_type': random.choice(['BREAKOUT', 'PULLBACK_SUPPORT', 'CONSOLIDATION', 'OVERSOLD_REBOUND']),
+                        'setup_type': 'CONSOLIDATION',
                         'entry_price': px,
                         'stop_loss': sl,
                         'take_profit_1': tp,
-                        'risk_reward_ratio': rr,
+                        'risk_reward_ratio': 2.0,
+                        'data_source': 'offline_benchmark',
                         'updated_at': datetime.now(timezone.utc).isoformat()
                     })
-            for s, changes in sector_changes.items():
-                if changes:
-                    sector_perf[s] = round(sum(changes) / len(changes), 2)
-
-            for t in ['NVDA', 'TSLA', 'AAPL', 'MSFT', 'PLTR', 'AMD']:
-                days = random.randint(2, 28)
-                earnings_cal.append({
-                    'ticker': t,
-                    'name': t,
-                    'earnings_date': (datetime.now(timezone.utc) + timedelta(days=days)).strftime('%Y-%m-%d'),
-                    'days_until': days
-                })
 
         return {
             'stocks': stocks,
