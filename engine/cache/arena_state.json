@@ -161,12 +161,12 @@
       "activePositionsCount": 0
     },
     {
-      "id": "MAGMA",
-      "name": "MAGMA",
+      "id": "LAVA",
+      "name": "LAVA",
       "role": "Violent Dip Momentum [F+E]",
       "strategy": "CAPITULATION_BOUNCE",
-      "avatar": "\ud83c\udf0b",
-      "color": "#f97316",
+      "avatar": "\ud83d\udd25",
+      "color": "#f43f5e",
       "tier": "DUO",
       "generation": 0,
       "resetCount": 0,
@@ -181,11 +181,11 @@
       "activePositionsCount": 0
     },
     {
-      "id": "SAND",
-      "name": "SAND",
+      "id": "SANDSTORM",
+      "name": "SANDSTORM",
       "role": "Breakout Reversion Hybrid [A+E]",
       "strategy": "FALSE_BREAKOUT_FADE",
-      "avatar": "\u23f3",
+      "avatar": "\ud83c\udfdc\ufe0f",
       "color": "#d97706",
       "tier": "DUO",
       "generation": 0,
@@ -201,12 +201,12 @@
       "activePositionsCount": 0
     },
     {
-      "id": "TYPHOON",
-      "name": "TYPHOON",
+      "id": "TEMPEST",
+      "name": "TEMPEST",
       "role": "Macro Cyclone Trend Apex [W+F+A]",
       "strategy": "TRIPLE_CONFLUENCE",
       "avatar": "\ud83c\udf00",
-      "color": "#6366f1",
+      "color": "#8b5cf6",
       "tier": "TRIO",
       "generation": 0,
       "resetCount": 0,
@@ -221,11 +221,11 @@
       "activePositionsCount": 0
     },
     {
-      "id": "GEYSER",
-      "name": "GEYSER",
+      "id": "GEOTHERMAL",
+      "name": "GEOTHERMAL",
       "role": "Liquidity Expansion Burst [W+F+E]",
       "strategy": "VOLATILITY_EXPANSION",
-      "avatar": "\u26f2",
+      "avatar": "\ud83c\udf0b",
       "color": "#ec4899",
       "tier": "TRIO",
       "generation": 0,
@@ -241,12 +241,12 @@
       "activePositionsCount": 0
     },
     {
-      "id": "BLIZZARD",
-      "name": "BLIZZARD",
+      "id": "OCEANIC",
+      "name": "OCEANIC",
       "role": "Trend Range Freeze [W+A+E]",
       "strategy": "TREND_CHANNEL_REVERSION",
-      "avatar": "\u2744\ufe0f",
-      "color": "#3b82f6",
+      "avatar": "\ud83c\udf0a",
+      "color": "#0284c7",
       "tier": "TRIO",
       "generation": 0,
       "resetCount": 0,
@@ -261,12 +261,12 @@
       "activePositionsCount": 0
     },
     {
-      "id": "VOLCANO",
-      "name": "VOLCANO",
+      "id": "CYCLONE",
+      "name": "CYCLONE",
       "role": "Violent Reversal Eruption [F+A+E]",
       "strategy": "ASYMMETRIC_REVERSAL",
-      "avatar": "\ud83d\udca5",
-      "color": "#dc2626",
+      "avatar": "\ud83c\udf2a\ufe0f",
+      "color": "#14b8a6",
       "tier": "TRIO",
       "generation": 0,
       "resetCount": 0,
@@ -323,6 +323,6 @@
   ],
   "positions": [],
   "journal": [],
-  "session_id": 1790333216,
-  "last_evaluated": "2026-09-25T10:46:56.375308+00:00"
+  "session_id": 1790346473,
+  "last_evaluated": "2026-09-25T14:27:53.813389+00:00"
 }

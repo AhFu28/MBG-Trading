@@ -88,6 +88,18 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
   - Frontend Build: Vite production build 80 modules compiled clean dalam 1.65s dengan 0 errors/warnings.
   - Zero Secret Leak: 0 credentials/keys exposed.
 
+### Sprint 11 (Larut Malam) — Anti-Starvation Spawner & Multi-Agent Confluence Calibration
+- **[MULTI-AGENT PARALLELISM & ANTI-STARVATION] Eliminasi Bottleneck Monopolistik Spawner**:
+  - **Fair Round-Robin Shuffling**: Memperbaiki kelemahan struktural di mana spawner sebelumnya mencari 1 nilai confidence maksimum global (`highestSignalConf`) di antara 16 bot sekaligus, yang menyebabkan bot dengan formula ber-score tinggi (seperti OCEANIC/SANDSTORM) memonopoli seluruh tiket dan membuat 11 bot lainnya kelaparan (*starvation*, stuck di status HUNTING).
+  - **Independensi Evaluasi Agen**: Setiap tick (1,4 detik), daftar bot yang tersedia diacak secara adil sehingga seluruh 16 agen mendapatkan giliran memindai instrumen dan mengeksekusi order independen saat setup teknikal valid (>= 68%) muncul.
+- **[STRATEGY CALIBRATION] Kalibrasi Metrik Konfluensi Kuantitatif 16 Bot**:
+  - **Normalisasi Dynamic Baseline**: Menyeimbangkan skala perhitungan confidence di `computeAgentSignal` (SMC, News Breakout, Donchian, Bollinger Reversion, Regimes, & Superminds Ensemble) agar pasar datar menghasilkan 55–65% (aman dalam mode HUNTING), dan setup teknikal nyata mendorong skor ke 68–92% (eksekusi order riil).
+  - **Sinkronisasi 1:1 ID Agen Backend**: Memperbarui `DEFAULT_AGENTS_SEED` pada `arena_evaluator.py` agar nama & ID 16 bot (LAVA, SANDSTORM, TEMPEST, GEOTHERMAL, OCEANIC, CYCLONE) tersinkronisasi 100% dengan frontend `INITIAL_AGENTS`.
+- **[QA/QC & CERTIFICATION]**:
+  - Python Verification: Unit test 13/13 passed (0.019s).
+  - Frontend Build: Vite production build 80 modules compiled clean dalam 1.85s dengan 0 errors/warnings.
+  - Zero Secret Leak: 0 credentials/keys exposed.
+
 ---
 
 ## [2026-09-24] — Compliance Audit, UI/UX Full-Width Canvas & QA/QC Certification

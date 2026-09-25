@@ -264,45 +264,45 @@ const computeAgentSignal = (agentId, targetKey, feed, dnaTraits = {}) => {
   switch (agentId) {
     case 'WATER': {
       // Tsinaslanidis (2016) SMC Extremum + Maurice Levi Foreign Flow Gating
-      const isSweepLow = rangePos < 0.28 && rsi < 42;
-      const isSweepHigh = rangePos > 0.72 && rsi > 58;
-      isLong = isSweepLow || (!isSweepHigh && change < -0.25);
-      confidence = Math.min(95, 66 + Math.abs(bollinger) * 20 + confBoost);
+      const isSweepLow = rangePos < 0.35 && rsi < 45;
+      const isSweepHigh = rangePos > 0.65 && rsi > 55;
+      isLong = isSweepLow || (!isSweepHigh && change < -0.2);
+      confidence = Math.min(95, 62 + Math.abs(bollinger) * 22 + (isSweepLow || isSweepHigh ? 10 : 0) + confBoost);
       const side = isLong ? 'Sell-Side Discount' : 'Buy-Side Premium';
       rationale = 'WATER [SMC Tsinaslanidis/Levi]: Liquidity sweep ' + side + ' terkonfirmasi (RSI: ' + rsi.toFixed(0) + ', Range: ' + (rangePos * 100).toFixed(0) + '%). Mitigasi Order Block institusi pada ' + targetKey + '.';
       break;
     }
     case 'FIRE': {
       // Kathy Lien (2015) News Breakout + Mankiw Economic Surprise
-      const isHighVol = Math.abs(momentum) > 0.9;
-      isLong = isHighVol ? (momentum > 0) : (change > 0.2);
-      confidence = Math.min(95, 58 + Math.abs(momentum) * 16 + confBoost);
+      const isHighVol = Math.abs(momentum) > 0.6;
+      isLong = isHighVol ? (momentum > 0) : (change > 0.15);
+      confidence = Math.min(95, 60 + Math.abs(momentum) * 18 + (isHighVol ? 10 : 0) + confBoost);
       const dir = isLong ? 'Bullish Expansion' : 'Bearish Flush';
       rationale = 'FIRE [Macro Shock Mankiw/Lien]: Katalis makro ' + dir + ' (Surge: ' + momentum.toFixed(2) + 'x ATR). Event-driven volatility breakout pada ' + targetKey + '.';
       break;
     }
     case 'AIR': {
       // Steven Achelis (2000) Donchian 20 + William ONeil CAN SLIM Growth
-      isLong = donchian > 0.12;
-      confidence = Math.min(95, 62 + Math.abs(donchian) * 26 + confBoost);
+      isLong = donchian > 0.08;
+      confidence = Math.min(95, 60 + Math.abs(donchian) * 28 + (Math.abs(donchian) > 0.2 ? 10 : 0) + confBoost);
       const band = isLong ? 'Upper Channel (+HH20)' : 'Lower Channel (-LL20)';
       rationale = 'AIR [Donchian Achelis/ONeil]: Breakout ' + band + ' (Proximity: ' + (donchian * 100).toFixed(0) + '%). Trend-following ekspansi volatilitas pada ' + targetKey + '.';
       break;
     }
     case 'EARTH': {
       // Thomas Bulkowski (2013) Value S/R + Achelis Bollinger 2.5σ (Zero Value Trap)
-      const isOversold = bollinger < -0.45 && rsi < 36;
-      const isOverbought = bollinger > 0.45 && rsi > 64;
-      isLong = isOversold || (!isOverbought && change < -0.4);
-      confidence = Math.min(95, 62 + Math.abs(bollinger) * 20 + confBoost);
+      const isOversold = bollinger < -0.3 && rsi < 42;
+      const isOverbought = bollinger > 0.3 && rsi > 58;
+      isLong = isOversold || (!isOverbought && change < -0.2);
+      confidence = Math.min(95, 60 + Math.abs(bollinger) * 24 + (isOversold || isOverbought ? 10 : 0) + confBoost);
       rationale = 'EARTH [Value S/R Bulkowski/Achelis]: Statistical mean reversion ' + (isLong ? 'support bounce' : 'resistance fade') + ' (BB: ' + bollinger.toFixed(2) + 'σ, RSI: ' + rsi.toFixed(0) + '). Diskon valuasi pada ' + targetKey + '.';
       break;
     }
     case 'STEAM': {
       // W+F: Ponsi (2016) Sweep Fakeout + Mankiw Central Bank Surprise
-      const sweepDetected = rangePos < 0.3 || rangePos > 0.7;
+      const sweepDetected = rangePos < 0.35 || rangePos > 0.65;
       isLong = sweepDetected ? (rangePos < 0.5) : (momentum > 0);
-      confidence = Math.min(95, 64 + (sweepDetected ? 15 : 0) + (Math.abs(momentum) > 0.8 ? 10 : 0) + confBoost);
+      confidence = Math.min(95, 60 + (sweepDetected ? 14 : 0) + (Math.abs(momentum) > 0.5 ? 10 : 0) + confBoost);
       rationale = 'STEAM [W+F Ponsi/Mankiw]: Liquidity sweep ' + (sweepDetected ? 'terkonfirmasi' : 'approaching') + ' + news surge momentum ' + momentum.toFixed(2) + 'x ATR pada ' + targetKey + '.';
       break;
     }
@@ -310,29 +310,29 @@ const computeAgentSignal = (agentId, targetKey, feed, dnaTraits = {}) => {
       // W+A: Tsinaslanidis (2016) BOS + ONeil Sales Acceleration
       const bosSignal = regime === 'TRENDING_BULL' || regime === 'TRENDING_BEAR';
       isLong = bosSignal ? (regime === 'TRENDING_BULL') : (donchian > 0);
-      confidence = Math.min(95, 64 + (bosSignal ? 15 : 0) + (Math.abs(donchian) > 0.2 ? 10 : 0) + confBoost);
+      confidence = Math.min(95, 60 + (bosSignal ? 14 : 0) + (Math.abs(donchian) > 0.12 ? 10 : 0) + confBoost);
       rationale = 'STORM [W+A Tsinaslanidis/ONeil]: Structural BOS ' + regime + ' + Donchian breakout (' + (donchian * 100).toFixed(0) + '%) pada ' + targetKey + '.';
       break;
     }
     case 'MUD': {
       // W+E: Tsinaslanidis FVG Imbalance + Bulkowski FCF Cushion
-      isLong = bollinger < -0.3 && rangePos < 0.42;
-      confidence = Math.min(95, 65 + Math.abs(bollinger) * 18 + confBoost);
+      isLong = bollinger < -0.25 && rangePos < 0.45;
+      confidence = Math.min(95, 61 + Math.abs(bollinger) * 22 + confBoost);
       rationale = 'MUD [W+E Tsinaslanidis/Bulkowski]: Support floor buffer + FVG mitigation (Bollinger: ' + bollinger.toFixed(2) + 'σ) pada ' + targetKey + '.';
       break;
     }
     case 'LIGHTNING': {
       // F+A: Ed Ponsi Fast Momentum + Mankiw Rate Shift
-      isLong = momentum > 0.45 && donchian > 0;
-      confidence = Math.min(95, 60 + Math.abs(momentum) * 12 + Math.abs(donchian) * 12 + confBoost);
+      isLong = momentum > 0.35 && donchian > 0;
+      confidence = Math.min(95, 59 + Math.abs(momentum) * 14 + Math.abs(donchian) * 14 + confBoost);
       rationale = 'LIGHTNING [F+A Ponsi/Mankiw]: Flash momentum velocity (' + momentum.toFixed(2) + 'x ATR) + Donchian expansion pada ' + targetKey + '.';
       break;
     }
     case 'LAVA': {
       // F+E: Achelis 3.0σ Extreme Reversal + Mankiw Overreaction Fade
-      const isOverextended = Math.abs(bollinger) > 0.75 && Math.abs(momentum) > 1.1;
-      isLong = isOverextended ? (bollinger < 0) : (rsi < 35);
-      confidence = Math.min(95, 62 + (isOverextended ? 20 : 5) + confBoost);
+      const isOverextended = Math.abs(bollinger) > 0.5 && Math.abs(momentum) > 0.7;
+      isLong = isOverextended ? (bollinger < 0) : (rsi < 38);
+      confidence = Math.min(95, 58 + (isOverextended ? 22 : 6) + Math.abs(bollinger) * 10 + confBoost);
       rationale = 'LAVA [F+E Achelis/Mankiw]: Post-news exhaustion ' + (isOverextended ? 'spike' : 'drift') + ' fade (BB: ' + bollinger.toFixed(2) + 'σ, Mom: ' + momentum.toFixed(2) + 'x) pada ' + targetKey + '.';
       break;
     }
@@ -340,36 +340,36 @@ const computeAgentSignal = (agentId, targetKey, feed, dnaTraits = {}) => {
       // A+E: Mario Singh Trend Retracement + Bulkowski Dividend Yield Floor
       const isPullbackBuy = donchian > -0.35 && bollinger < 0 && rangePos < 0.45;
       isLong = isPullbackBuy || (regime === 'TRENDING_BULL' && rangePos < 0.4);
-      confidence = Math.min(95, 63 + (isPullbackBuy ? 18 : 5) + confBoost);
+      confidence = Math.min(95, 59 + (isPullbackBuy ? 18 : 6) + Math.abs(donchian) * 10 + confBoost);
       rationale = 'SANDSTORM [A+E Mario Singh/Bulkowski]: Macro trend pullback buy pada support kunci (Range: ' + (rangePos * 100).toFixed(0) + '%, Donchian: ' + (donchian * 100).toFixed(0) + '%) pada ' + targetKey + '.';
       break;
     }
     case 'TEMPEST': {
       // W+F+A: Mark Andrew Lim (2016) Triple-System Alpha
       const smcSig = rangePos < 0.35 || rangePos > 0.65;
-      const momSig = Math.abs(momentum) > 0.55;
-      const trendSig = Math.abs(donchian) > 0.12;
+      const momSig = Math.abs(momentum) > 0.45;
+      const trendSig = Math.abs(donchian) > 0.1;
       const bullVotes = (smcSig && rangePos < 0.5 ? 1 : 0) + (momSig && momentum > 0 ? 1 : 0) + (trendSig && donchian > 0 ? 1 : 0);
       isLong = bullVotes >= 2;
-      confidence = Math.min(95, 62 + bullVotes * 10 + confBoost);
+      confidence = Math.min(95, 60 + bullVotes * 9 + confBoost);
       rationale = 'TEMPEST [W+F+A Mark Andrew Lim]: Triple-engine consensus (' + bullVotes + '/3 bullish). Liquidity + News Momentum + Trend pada ' + targetKey + '.';
       break;
     }
     case 'OCEANIC': {
       // W+A+E: Ray Dalio / Mankiw All-Weather Macro Quadrants
       const liquidityOk = rangePos > 0.25 && rangePos < 0.75;
-      const trendOk = regime === 'TRENDING_BULL' || (regime === 'RANGING' && bollinger < 0);
+      const trendOk = regime === 'TRENDING_BULL' || (regime === 'RANGING' && bollinger < -0.15);
       isLong = liquidityOk && (trendOk || rsi < 45);
-      confidence = Math.min(95, 66 + (liquidityOk ? 10 : 0) + (trendOk ? 10 : 0) + confBoost);
+      confidence = Math.min(95, 58 + (liquidityOk ? 8 : 0) + (trendOk ? 12 : 0) + confBoost);
       rationale = 'OCEANIC [W+A+E Dalio/Mankiw]: All-weather institutional (' + regime + ', RSI: ' + rsi.toFixed(0) + ', BB: ' + bollinger.toFixed(2) + 'σ) pada ' + targetKey + '.';
       break;
     }
     case 'GEOTHERMAL': {
       // W+F+E: Bulkowski F-Score + Tsinaslanidis Order Block
       const atSupport = bollinger < -0.2 && rangePos < 0.4;
-      const newsReactive = Math.abs(momentum) > 0.5;
-      isLong = atSupport || (newsReactive && momentum < 0 && rsi < 40);
-      confidence = Math.min(95, 63 + (atSupport ? 15 : 0) + (newsReactive ? 10 : 0) + confBoost);
+      const newsReactive = Math.abs(momentum) > 0.4;
+      isLong = atSupport || (newsReactive && momentum < 0 && rsi < 42);
+      confidence = Math.min(95, 59 + (atSupport ? 16 : 0) + (newsReactive ? 10 : 0) + confBoost);
       rationale = 'GEOTHERMAL [W+F+E Bulkowski/Tsinaslanidis]: Fundamental Order Block + ' + (newsReactive ? 'news reaction' : 'valuation discount') + ' (BB: ' + bollinger.toFixed(2) + 'σ) pada ' + targetKey + '.';
       break;
     }
@@ -377,33 +377,33 @@ const computeAgentSignal = (agentId, targetKey, feed, dnaTraits = {}) => {
       // F+A+E: Abdulkader Aljandali (2016) GARCH Regime Switcher
       const isTrending = regime === 'TRENDING_BULL' || regime === 'TRENDING_BEAR';
       if (isTrending) { isLong = regime === 'TRENDING_BULL'; }
-      else { isLong = bollinger < -0.3 && rsi < 40; }
-      confidence = Math.min(95, 64 + (isTrending ? 15 : 8) + confBoost);
+      else { isLong = bollinger < -0.25 && rsi < 42; }
+      confidence = Math.min(95, 59 + (isTrending ? 16 : 8) + confBoost);
       const modeLabel = isTrending ? 'Trend Ignition' : 'Mean Reversion';
       rationale = 'CYCLONE [F+A+E Aljandali/Mankiw]: Dynamic regime transition > ' + modeLabel + ' (' + regime + ', Mom: ' + momentum.toFixed(2) + 'x) pada ' + targetKey + '.';
       break;
     }
     case 'AVATAR': {
       // W+F+A+E: Thomas Malone (2018) Superminds + Fama-French 4-Factor
-      const waterVote = (rangePos < 0.3 && rsi < 40) ? 1 : (rangePos > 0.7 && rsi > 60 ? -1 : 0);
-      const fireVote = momentum > 0.5 ? 1 : (momentum < -0.5 ? -1 : 0);
-      const airVote = donchian > 0.15 ? 1 : (donchian < -0.15 ? -1 : 0);
-      const earthVote = bollinger < -0.3 ? 1 : (bollinger > 0.3 ? -1 : 0);
+      const waterVote = (rangePos < 0.35 && rsi < 45) ? 1 : (rangePos > 0.65 && rsi > 55 ? -1 : 0);
+      const fireVote = momentum > 0.35 ? 1 : (momentum < -0.35 ? -1 : 0);
+      const airVote = donchian > 0.1 ? 1 : (donchian < -0.1 ? -1 : 0);
+      const earthVote = bollinger < -0.2 ? 1 : (bollinger > 0.2 ? -1 : 0);
       const totalScore = waterVote + fireVote + airVote + earthVote;
       isLong = totalScore >= 0;
       const votesLong = [waterVote, fireVote, airVote, earthVote].filter(v => v > 0).length;
-      confidence = Math.min(95, 58 + Math.abs(totalScore) * 8 + confBoost);
+      confidence = Math.min(95, 60 + Math.abs(totalScore) * 8 + confBoost);
       rationale = 'AVATAR [4-Factor Malone/Fama-French]: Konsensus 4 elemen (' + votesLong + '/4 bullish, Score: ' + (totalScore > 0 ? '+' : '') + totalScore + '). ' + (isLong ? 'Bullish' : 'Bearish') + ' dominance pada ' + targetKey + '.';
       break;
     }
     case 'CHAOS': {
       // Kevin Dowd (2005) Fat-Tail Extremes & Noise Trader Risk
-      const isImpulsive = Math.abs(momentum) > 1.1;
-      const isOverext = Math.abs(bollinger) > 0.85;
+      const isImpulsive = Math.abs(momentum) > 0.6;
+      const isOverext = Math.abs(bollinger) > 0.45;
       if (isImpulsive) { isLong = momentum > 0; }
       else if (isOverext) { isLong = bollinger < 0; }
       else { isLong = change > 0; }
-      confidence = Math.min(95, 54 + Math.abs(momentum) * 10 + confBoost);
+      confidence = Math.min(95, 60 + Math.abs(momentum) * 14 + confBoost);
       rationale = 'CHAOS [Fat-Tail Dowd/Shleifer]: ' + (isImpulsive ? 'Impulse follow' : (isOverext ? 'Contrarian fade' : 'Momentum drift')) + ' (' + (isLong ? 'Long' : 'Short') + ') pada ' + targetKey + '. BB: ' + bollinger.toFixed(2) + 'σ.';
       break;
     }
@@ -3312,11 +3312,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               ? activeRadarPool
               : ALL_INSTRUMENTS.filter(i => isMarketOpenNow(i.market)).map(i => i.symbol);
 
-            // Scan across available agents to find genuine high-conviction technical setups
+            // Fair Multi-Agent Opportunity: Shuffle available agents so each bot gets equal scan priority per tick
+            const shuffledAgents = [...availableAgents].sort(() => Math.random() - 0.5);
             let bestSetup = null;
-            let highestSignalConf = 0;
 
-            for (const ag of availableAgents) {
+            for (const ag of shuffledAgents) {
               const agentRules = AGENT_MULTI_POS_RULES[ag.id] || { maxPerPair: 1, mode: 'SINGLE_BULLET', minCooldownSec: 25 };
               const agentPositions = updated.filter(p => p.agentId === ag.id);
               const toxicPairsToAvoid = [
@@ -3328,25 +3328,37 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               const unheldSymbols = openMarketSymbols.filter(s => !agentPositions.some(p => p.symbol === s) && !toxicPairsToAvoid.includes(s));
 
               // Check multi-market symbols against agent's strategy profile
-              for (const sym of unheldSymbols.slice(0, 15)) {
+              let agentBestSig = null;
+              let agentHighestConf = 0;
+              let agentTargetKey = null;
+              let agentTargetFeed = null;
+
+              for (const sym of unheldSymbols.slice(0, 20)) {
                 const targetFeed = currentFeeds[sym];
                 if (targetFeed && isMarketOpenNow(targetFeed.market)) {
                   const sig = computeAgentSignal(ag.id, sym, targetFeed, ag.dnaTraits || {});
                   const reqConf = 68 + (ag.dnaTraits?.confidenceBoost || 0);
 
-                  if (sig.confidence >= reqConf && sig.confidence > highestSignalConf) {
-                    highestSignalConf = sig.confidence;
-                    bestSetup = {
-                      chosenAgent: ag,
-                      targetKey: sym,
-                      targetFeed,
-                      agentRules,
-                      agentPositions,
-                      signal: sig,
-                      isScalingLayer: false
-                    };
+                  if (sig.confidence >= reqConf && sig.confidence > agentHighestConf) {
+                    agentHighestConf = sig.confidence;
+                    agentBestSig = sig;
+                    agentTargetKey = sym;
+                    agentTargetFeed = targetFeed;
                   }
                 }
+              }
+
+              if (agentBestSig && agentTargetKey && agentTargetFeed) {
+                bestSetup = {
+                  chosenAgent: ag,
+                  targetKey: agentTargetKey,
+                  targetFeed: agentTargetFeed,
+                  agentRules,
+                  agentPositions,
+                  signal: agentBestSig,
+                  isScalingLayer: false
+                };
+                break; // Fair execution: this bot gets its order executed in this tick!
               }
             }
 
