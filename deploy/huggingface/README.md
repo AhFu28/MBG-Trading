@@ -1,6 +1,6 @@
 ---
-title: MBG Trading Arena 24/7 Engine
-emoji: ⚡
+title: MBG Trading Arena
+emoji: 🚀
 colorFrom: blue
 colorTo: indigo
 sdk: docker
