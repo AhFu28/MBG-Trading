@@ -50,9 +50,18 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
   - **File Produksi Siap Pakai**: Menghasilkan `MBG_Institutional_Apex_EA.mq5` di `engine/mt5/` dan `frontend/public/ea/` yang dapat langsung diunduh dan dipasang di MetaTrader 5 Bitget.
   - **Dukungan Aset Kripto AI & Multi-Market**: Terverifikasi kompatibel dengan kontrak Crypto Futures USDT-M Bitget (khususnya AI tokens: `FETUSDT`, `RENDERUSDT`, `NEARUSDT`, `TAOUSDT`), pair mayor, serta Emas (`XAUUSD`) dan Forex.
   - **Fitur Kuantitatif Terpadu**: 4 varian strategi (WATER SMC, FIRE Momentum, AIR Donchian, EARTH Reversion), sizing lot berbasis 1.5% risiko ekuitas, ATR trailing stop ke breakeven (bebas risiko rugi), dan circuit breaker batas rugi harian 4%.
+### Sprint 8 (Petang) — AI Agent Arena Ergonomic UX Re-organization & Operational Flow Optimization
+- **[COCKPIT UI/UX & ARENA ERGONOMICS] Dekonstruksi & Rekonstruksi Header Arena**:
+  - **Pemisahan Zona Peran (Zoning Architecture)**: Mengubah tata letak menu header yang sebelumnya campur-aduk menjadi 2 baris fungsional terstruktur dengan zonasi yang intuitif.
+  - **Row 1 (Command & Telemetry Zone)**: Menempatkan Identitas Brand + Badge 16 BOTS, status pasar (IDX, FOREX/GOLD, US, CRYPTO), telemetri live ($1 = Rp, SESI #, Uptime), dan tombol eksekusi primer (RUN/JEDA, KILL Switch, DESK portofolio, RESET) di sisi kanan dengan visibilitas dan kontras tinggi.
+  - **Row 2 (Trader Control & View Zone - 3 Kapsul Modular)**:
+    1. **Kapsul ⚙️ PARAM:**: Pengelompokan visual modal bot (1Jt-50Jt), risiko per trade (1-3%), batas posisi aktif (input angka + tombol toggle ∞ Unlimited), dan mode eksekusi (⚡ HYBRID, 🟢 SPOT, 🟣 FUTURES).
+    2. **Kapsul 👁️ VIEW:**: Pengelompokan visual urutan bot (DNA, ROI %, Winrate, Posisi), timeframe grafik (3D, 7D, 1M, 3M, 1Y), dan tombol toggle radar screener (🛰️ Radar / 🌐 Full).
+    3. **Kapsul 📚 INTEL:**: Pengelompokan akses cepat modal informasi edukasi & laporan (Filosofi 4 Elemen, Aturan & Status, Review Sinyal, Session Recap).
+  - **Penyelarasan Tinggi & Tipografi (Baseline Uniformity)**: Seluruh input, selector, dan tombol distandarisasi pada `minHeight: 22px` dengan font mono tebal berukuran `8.5px`, mengeliminasi kesan tata letak berantakan dan glitch visual pada resolusi sempit.
 - **[QA/QC & CERTIFICATION]**:
-  - Python Test Suite: 13 unit tests passed (0.010s).
-  - Production Build: 80 modules compiled clean dalam 1.76s tanpa error/warning.
+  - Frontend Production Build: 80 modules compiled clean dalam 1.93s dengan 0 errors/warnings.
+  - Zero Secret Leak: 0 credentials/keys exposed.
 
 ---
 

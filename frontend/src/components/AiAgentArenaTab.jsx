@@ -4175,20 +4175,34 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
           marginBottom: '4px'
         }}
       >
-        {/* --- BARIS 1: TITLE, MARKET STATUS, LIVE RATES & INTEL MODALS --- */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', borderBottom: 'var(--border-hairline)', paddingBottom: '4px' }}>
-          {/* Sisi Kiri: Identity + Status Pasar */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        {/* --- BARIS 1: OPERATIONAL IDENTITY, MARKET STATUS, TELEMETRY & MASTER CONTROLS --- */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', borderBottom: 'var(--border-hairline)', paddingBottom: '5px' }}>
+          {/* Sisi Kiri: Identity, Status Pasar & Telemetri Real-time */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+            {/* Brand Title + Badge */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <span style={{ fontSize: '12px' }}>⚔️</span>
+              <span style={{ fontSize: '13px' }}>⚔️</span>
               <span style={{ fontSize: '11px', fontWeight: '900', letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-primary)' }}>
                 AI Multi-Agent Arena
               </span>
+              <span
+                style={{
+                  fontSize: '8px',
+                  padding: '1px 5px',
+                  borderRadius: '3px',
+                  background: 'rgba(59, 130, 246, 0.15)',
+                  color: 'var(--accent-blue)',
+                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  fontWeight: '800'
+                }}
+              >
+                16 BOTS
+              </span>
             </div>
 
-            <div style={{ width: '1px', height: '12px', background: 'rgba(255,255,255,0.12)' }} />
+            <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.12)' }} />
 
-            {/* Badges Pasar Real-time */}
+            {/* Badges Status Pasar */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
               <span
                 className="badge"
@@ -4247,331 +4261,54 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               </span>
             </div>
 
-            <div style={{ width: '1px', height: '12px', background: 'rgba(255,255,255,0.12)' }} />
+            <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.12)' }} />
 
-            {/* Urutan Bot (Pindah ke Baris 1) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9px' }}>
-              <label htmlFor="select-agent-sort" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Urutan:</label>
-              <select
-                id="select-agent-sort"
-                value={agentSortBy}
-                onChange={e => setAgentSortBy(e.target.value)}
+            {/* Telemetri Kurs & Sesi Live */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+              <span
+                className="badge"
                 style={{
-                  padding: '1px 5px',
-                  fontSize: '8.5px',
-                  minHeight: '20px',
-                  fontFamily: 'var(--font-mono)',
-                  borderRadius: '3px',
-                  background: 'var(--bg-panel-subtle)',
-                  border: 'var(--border-hairline)',
-                  color: 'var(--text-primary)',
-                  cursor: 'pointer',
-                  fontWeight: '700'
-                }}
-              >
-                <option value="DEFAULT">DNA Elemen</option>
-                <option value="ROI_DESC">Top ROI %</option>
-                <option value="WINRATE_DESC">Win Rate</option>
-                <option value="POSITIONS_DESC">Posisi Aktif</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Sisi Kanan: Quick Intel Modals (Sejajar Kanan Atas) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
-            <button
-              id="btn-profil-filosofi"
-              onClick={() => setPhilosophyModalOpen(true)}
-              className="telemetry-btn"
-              style={{ fontSize: '8.5px', padding: '2px 6px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-blue)' }}
-              title="Pelajari Profil, Filosofi & Strategi 4 Elemen"
-            >
-              <span>🧠</span>
-              <span>Filosofi</span>
-            </button>
-            <button
-              id="btn-panduan-aturan-status"
-              onClick={() => {
-                setRulesActiveSubTab('RULES');
-                setRulesModalOpen(true);
-              }}
-              className="telemetry-btn"
-              style={{ fontSize: '8.5px', padding: '2px 6px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-gold)' }}
-              title="Panduan Terpadu: Aturan Trading & Status Siklus Hidup Bot"
-            >
-              <span>📋</span>
-              <span>Aturan & Status</span>
-            </button>
-            <button
-              id="btn-agent-review"
-              onClick={() => setAgentReviewModalOpen(true)}
-              className="telemetry-btn"
-              style={{ fontSize: '8.5px', padding: '2px 6px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: '#60a5fa' }}
-              title="Buka Analisis Kinerja & Review Sinyal"
-            >
-              <span>📊</span>
-              <span>Review</span>
-            </button>
-            <button
-              id="btn-session-recap"
-              onClick={() => setSessionRecapModalOpen(true)}
-              className="telemetry-btn"
-              style={{
-                fontSize: '8.5px',
-                padding: '2px 6px',
-                minHeight: '22px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '3px',
-                color: '#e879f9',
-                border: '1px solid rgba(217, 70, 239, 0.4)',
-                background: 'rgba(217, 70, 239, 0.1)',
-                fontWeight: '700',
-                cursor: 'pointer'
-              }}
-              title="Buka Session Recap & Institutional Quant Post-Mortem Debrief"
-            >
-              <span>📜</span>
-              <span>Session Recap</span>
-            </button>
-          </div>
-        </div>
-
-        {/* --- BARIS 2: KONTROL, PARAMETER & MASTER ACTION SWITCHES --- */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
-          {/* Parameter Trading & Filter Group */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-            {/* Modal / Bot */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9px' }}>
-              <label htmlFor="select-capital-per-bot" style={{ color: 'var(--text-secondary)', fontWeight: '700', cursor: 'pointer' }}>Modal/Bot:</label>
-              <select
-                id="select-capital-per-bot"
-                className="arena-input"
-                value={capitalPerBotIdr}
-                onChange={e => handleApplyPresetCapital(Number(e.target.value))}
-                style={{
-                  padding: '2px 5px',
-                  fontSize: '8.5px',
-                  minHeight: '22px',
-                  fontFamily: 'var(--font-mono)',
-                  borderRadius: '3px',
-                  background: 'var(--bg-panel-subtle)',
-                  border: 'var(--border-hairline)',
-                  color: 'var(--text-primary)',
-                  cursor: 'pointer',
-                  fontWeight: '700'
-                }}
-                title="Pilih nominal modal per bot"
-              >
-                <option value={1000000}>Rp 1Jt</option>
-                <option value={5000000}>Rp 5Jt</option>
-                <option value={10000000}>Rp 10Jt</option>
-                <option value={25000000}>Rp 25Jt</option>
-                <option value={50000000}>Rp 50Jt</option>
-              </select>
-            </div>
-
-            {/* Grafik Timeframe */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9px' }}>
-              <label htmlFor="select-chart-timeframe" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Grafik:</label>
-              <select
-                id="select-chart-timeframe"
-                className="arena-input"
-                value={chartTimeframe}
-                onChange={e => {
-                  setChartTimeframe(e.target.value);
-                  showToast(`Rentang grafik diubah ke ${e.target.value}`);
-                }}
-                style={{
-                  padding: '2px 4px',
-                  fontSize: '8.5px',
-                  minHeight: '22px',
-                  fontFamily: 'var(--font-mono)',
-                  borderRadius: '3px',
-                  background: 'var(--bg-panel-subtle)',
-                  border: 'var(--border-hairline)',
-                  color: 'var(--text-primary)',
-                  fontWeight: '700',
-                  cursor: 'pointer'
-                }}
-              >
-                <option value="3D">3D</option>
-                <option value="7D">7D</option>
-                <option value="1M">1M</option>
-                <option value="3M">3M</option>
-                <option value="1Y">1Y</option>
-              </select>
-            </div>
-
-            {/* Max Pos */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
-              <label htmlFor="input-max-positions" style={{ fontSize: '8.5px', color: 'var(--text-secondary)', fontWeight: '700', cursor: 'pointer' }}>Max Pos:</label>
-              <input
-                id="input-max-positions"
-                className="arena-input"
-                type="text"
-                inputMode="numeric"
-                disabled={isUnlimitedPositions}
-                value={isUnlimitedPositions ? '' : maxPosInputText}
-                placeholder={isUnlimitedPositions ? '∞' : '10'}
-                onChange={e => {
-                  const raw = e.target.value;
-                  if (raw === '') {
-                    setMaxPosInputText('');
-                    return;
-                  }
-                  if (/^\d+$/.test(raw)) {
-                    setMaxPosInputText(raw);
-                    const num = parseInt(raw, 10);
-                    if (!isNaN(num) && num >= 1 && num <= 100) {
-                      setSliderMaxPositions(num);
-                    }
-                  }
-                }}
-                onBlur={() => {
-                  const num = parseInt(maxPosInputText, 10);
-                  if (isNaN(num) || num < 1) {
-                    setMaxPosInputText(String(sliderMaxPositions >= 999 ? 10 : sliderMaxPositions));
-                  } else {
-                    const clamped = Math.min(100, Math.max(1, num));
-                    setMaxPosInputText(String(clamped));
-                    setSliderMaxPositions(clamped);
-                  }
-                }}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    e.target.blur();
-                  }
-                }}
-                style={{
-                  width: '28px',
-                  padding: '1px 3px',
-                  fontSize: '8.5px',
-                  minHeight: '22px',
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: '800',
-                  textAlign: 'center',
-                  borderRadius: '3px',
-                  border: 'var(--border-hairline)',
-                  background: isUnlimitedPositions ? 'rgba(255,255,255,0.03)' : 'var(--bg-panel-subtle)',
-                  color: isUnlimitedPositions ? 'var(--text-muted)' : 'var(--accent-blue)'
-                }}
-                title="Batas posisi per bot (1-100)"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  const nextVal = isUnlimitedPositions ? 10 : 999;
-                  setSliderMaxPositions(nextVal);
-                  setMaxPosInputText(nextVal >= 999 ? '' : String(nextVal));
-                  showToast(nextVal >= 999 ? 'Batas posisi: Tak Terbatas (∞ Unlimited).' : 'Batas posisi: 10 posisi / bot.');
-                }}
-                className="arena-interactive-chip"
-                style={{
-                  padding: '1px 4px',
-                  minHeight: '22px',
                   fontSize: '8px',
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: '800',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                  border: isUnlimitedPositions ? '1px solid var(--accent-orange)' : 'var(--border-hairline)',
-                  background: isUnlimitedPositions ? 'rgba(245, 158, 11, 0.18)' : 'var(--bg-panel-subtle)',
-                  color: isUnlimitedPositions ? 'var(--accent-orange)' : 'var(--text-muted)'
+                  background: 'rgba(22, 163, 74, 0.12)',
+                  color: 'var(--accent-green)',
+                  padding: '1px 5px',
+                  border: '1px solid rgba(22, 163, 74, 0.25)'
                 }}
-                title="Beralih batas manual vs Tak Terbatas (∞)"
+                title="Kurs Realtime USD/IDR Live API"
               >
-                {isUnlimitedPositions ? '∞ Unlim' : 'Set ∞'}
-              </button>
-            </div>
+                $1 = Rp {usdToIdrRate.toLocaleString('id-ID')}
+              </span>
 
-            {/* Risk % */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
-              <label htmlFor="select-risk-pct" style={{ color: 'var(--text-muted)', cursor: 'pointer' }}>Risk:</label>
-              <select
-                id="select-risk-pct"
-                className="arena-input"
-                value={riskPerTradePct}
-                onChange={e => setRiskPerTradePct(Number(e.target.value))}
-                style={{ padding: '1px 3px', fontSize: '8.5px', minHeight: '22px', borderRadius: '3px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontWeight: '700' }}
-              >
-                <option value={1}>1%</option>
-                <option value={2}>2%</option>
-                <option value={3}>3%</option>
-              </select>
-            </div>
-
-            {/* Mode Eksekusi */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
-              <label htmlFor="select-execution-mode" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Mode:</label>
-              <select
-                id="select-execution-mode"
-                className="arena-input"
-                value={arenaExecutionMode}
-                onChange={e => {
-                  const newMode = e.target.value;
-                  setArenaExecutionMode(newMode);
-                  showToast(`Mode: ${newMode === 'SPOT_ONLY' ? '🟢 SPOT' : (newMode === 'FUTURES_ONLY' ? '🟣 FUTURES' : '⚡ HYBRID')}`);
-                }}
+              <span
+                className="badge"
                 style={{
-                  padding: '1px 3px',
-                  fontSize: '8.5px',
-                  minHeight: '22px',
-                  borderRadius: '3px',
-                  background: arenaExecutionMode === 'SPOT_ONLY' ? 'rgba(34, 197, 94, 0.15)' : (arenaExecutionMode === 'FUTURES_ONLY' ? 'rgba(168, 85, 247, 0.15)' : 'var(--bg-panel-subtle)'),
-                  border: arenaExecutionMode === 'SPOT_ONLY' ? '1px solid var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '1px solid #a855f7' : 'var(--border-hairline)'),
-                  color: arenaExecutionMode === 'SPOT_ONLY' ? 'var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '#c084fc' : 'var(--text-primary)'),
-                  fontWeight: '800',
-                  cursor: 'pointer'
+                  fontSize: '8px',
+                  background: 'rgba(168, 85, 247, 0.15)',
+                  color: '#c084fc',
+                  border: '1px solid rgba(168, 85, 247, 0.35)',
+                  padding: '1px 5px'
                 }}
               >
-                <option value="HYBRID">⚡ HYBRID</option>
-                <option value="SPOT_ONLY">🟢 SPOT</option>
-                <option value="FUTURES_ONLY">🟣 FUTURES</option>
-              </select>
-            </div>
+                🎮 SESI #{epochReports.length}
+              </span>
 
-            {/* Screener Radar */}
-            <button
-              type="button"
-              onClick={() => {
-                const nextMode = scannerMode === 'DYNAMIC_RADAR' ? 'FULL_WATCHLIST' : 'DYNAMIC_RADAR';
-                setScannerMode(nextMode);
-                showToast(nextMode === 'DYNAMIC_RADAR' ? `Scanner: DYNAMIC RADAR (${activeRadarSymbols.length} aset).` : `Scanner: FULL WATCHLIST (${ALL_INSTRUMENTS.length} pair).`);
-              }}
-              className="arena-interactive-chip"
-              style={{
-                padding: '1px 5px',
-                minHeight: '22px',
-                fontSize: '8.5px',
-                fontFamily: 'var(--font-mono)',
-                fontWeight: '800',
-                borderRadius: '3px',
-                cursor: 'pointer',
-                border: scannerMode === 'DYNAMIC_RADAR' ? '1px solid rgba(59, 130, 246, 0.4)' : 'var(--border-hairline)',
-                background: scannerMode === 'DYNAMIC_RADAR' ? 'rgba(59, 130, 246, 0.15)' : 'var(--bg-panel-subtle)',
-                color: scannerMode === 'DYNAMIC_RADAR' ? 'var(--accent-blue)' : 'var(--text-muted)'
-              }}
-              title="Beralih Screener Radar vs Full Watchlist"
-            >
-              {scannerMode === 'DYNAMIC_RADAR' ? `🛰️ Radar (${activeRadarSymbols.length})` : `🌐 Full (${ALL_INSTRUMENTS.length})`}
-            </button>
+              <span
+                style={{
+                  fontSize: '8.5px',
+                  color: 'var(--accent-blue)',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: '700'
+                }}
+                title="Durasi Sesi Arena berjalan"
+              >
+                ⏱️ {sessionUptimeStr}
+              </span>
+            </div>
           </div>
 
-          {/* Telemetri Kurs/Sesi & Master Actions Buttons (Sejajar Kanan Bawah) */}
+          {/* Sisi Kanan: Operational Master Switches */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
-            <span className="badge" style={{ fontSize: '8px', background: 'rgba(22, 163, 74, 0.12)', color: 'var(--accent-green)', padding: '1px 5px', border: '1px solid rgba(22, 163, 74, 0.25)' }} title="Kurs Realtime USD/IDR Live API">
-              $1 = Rp {usdToIdrRate.toLocaleString('id-ID')}
-            </span>
-            <span className="badge" style={{ fontSize: '8px', background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.35)', padding: '1px 5px' }}>
-              🎮 SESI #{epochReports.length}
-            </span>
-            <span style={{ fontSize: '8.5px', color: 'var(--accent-blue)', fontFamily: 'var(--font-mono)', fontWeight: '700' }} title="Durasi Sesi Arena berjalan">
-              ⏱️ {sessionUptimeStr}
-            </span>
-
-            <div style={{ width: '1px', height: '12px', background: 'rgba(255,255,255,0.12)', margin: '0 2px' }} />
-
+            {/* Master Run / Pause */}
             <button
               id="btn-master-run-pause"
               onClick={() => {
@@ -4582,7 +4319,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px',
-                padding: '2px 7px',
+                padding: '2px 8px',
                 minHeight: '22px',
                 borderRadius: 'var(--radius-sm)',
                 fontSize: '8.5px',
@@ -4596,10 +4333,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               }}
               title={isRunning ? 'Jeda seluruh eksekusi arena bot' : 'Jalankan arena multi-agent'}
             >
-              <span style={{ width: 4, height: 4, borderRadius: '50%', background: isRunning ? 'var(--accent-rust)' : '#ffffff', display: 'inline-block' }} />
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: isRunning ? 'var(--accent-rust)' : '#ffffff', display: 'inline-block' }} />
               <span>{isRunning ? '⏸ JEDA' : '▶ RUN'}</span>
             </button>
 
+            {/* Emergency Kill Switch */}
             <button
               id="btn-emergency-kill-switch"
               onClick={() => {
@@ -4613,7 +4351,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 display: 'flex',
                 alignItems: 'center',
                 gap: '3px',
-                padding: '2px 5px',
+                padding: '2px 6px',
                 minHeight: '22px',
                 fontSize: '8.5px',
                 fontWeight: '800',
@@ -4627,6 +4365,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <span>{isKillSwitchActive ? '🚨 KILL ON' : '🛡️ KILL'}</span>
             </button>
 
+            {/* Broker Execution Desk Toggle */}
             <button
               id="btn-toggle-broker-desk"
               onClick={() => setShowBrokerDesk(prev => !prev)}
@@ -4635,7 +4374,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 display: 'flex',
                 alignItems: 'center',
                 gap: '3px',
-                padding: '2px 6px',
+                padding: '2px 7px',
                 minHeight: '22px',
                 fontSize: '8.5px',
                 fontWeight: '800',
@@ -4648,14 +4387,391 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <span>💼 DESK ({paperPortfolio.positions?.length || 0})</span>
             </button>
 
+            {/* Reset Sesi */}
             <button
               id="btn-reset-semua-sesi"
               onClick={() => setResetConfirmModal({ isOpen: true, agentId: null, agentName: 'Seluruh Portofolio Sesi' })}
               className="telemetry-btn"
-              style={{ padding: '2px 5px', minHeight: '22px', fontSize: '8.5px', fontWeight: '700', color: 'var(--accent-rust)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+              style={{
+                padding: '2px 6px',
+                minHeight: '22px',
+                fontSize: '8.5px',
+                fontWeight: '700',
+                color: 'var(--accent-rust)',
+                borderColor: 'rgba(239, 68, 68, 0.3)'
+              }}
               title="Reset sesi saat ini, simpan laporan evaluasi sesi, dan jeda trading"
             >
               🔄 Reset
+            </button>
+          </div>
+        </div>
+
+        {/* --- BARIS 2: PARAMETER TRADING, VIEW CONTROLS & INTEL MODALS --- */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px', paddingTop: '2px' }}>
+          {/* Sisi Kiri: Kluster Parameter Trading & Filter Tampilan */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+            {/* KAPSUL 1: PARAMETER TRADING */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '2px 7px',
+                background: 'rgba(255, 255, 255, 0.02)',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid rgba(255, 255, 255, 0.07)'
+              }}
+            >
+              <span style={{ fontSize: '8px', fontWeight: '900', color: 'var(--accent-gold)', letterSpacing: '0.04em' }}>
+                ⚙️ PARAM:
+              </span>
+
+              {/* Modal / Bot */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+                <label htmlFor="select-capital-per-bot" style={{ color: 'var(--text-secondary)', fontWeight: '700', cursor: 'pointer' }}>Modal:</label>
+                <select
+                  id="select-capital-per-bot"
+                  className="arena-input"
+                  value={capitalPerBotIdr}
+                  onChange={e => handleApplyPresetCapital(Number(e.target.value))}
+                  style={{
+                    padding: '1px 4px',
+                    fontSize: '8.5px',
+                    minHeight: '22px',
+                    fontFamily: 'var(--font-mono)',
+                    borderRadius: '3px',
+                    background: 'var(--bg-panel-subtle)',
+                    border: 'var(--border-hairline)',
+                    color: 'var(--text-primary)',
+                    cursor: 'pointer',
+                    fontWeight: '700'
+                  }}
+                  title="Pilih nominal modal per bot"
+                >
+                  <option value={1000000}>Rp 1Jt</option>
+                  <option value={5000000}>Rp 5Jt</option>
+                  <option value={10000000}>Rp 10Jt</option>
+                  <option value={25000000}>Rp 25Jt</option>
+                  <option value={50000000}>Rp 50Jt</option>
+                </select>
+              </div>
+
+              {/* Risk % */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+                <label htmlFor="select-risk-pct" style={{ color: 'var(--text-muted)', cursor: 'pointer' }}>Risk:</label>
+                <select
+                  id="select-risk-pct"
+                  className="arena-input"
+                  value={riskPerTradePct}
+                  onChange={e => setRiskPerTradePct(Number(e.target.value))}
+                  style={{
+                    padding: '1px 3px',
+                    fontSize: '8.5px',
+                    minHeight: '22px',
+                    borderRadius: '3px',
+                    background: 'var(--bg-panel-subtle)',
+                    border: 'var(--border-hairline)',
+                    color: 'var(--text-primary)',
+                    fontWeight: '700'
+                  }}
+                >
+                  <option value={1}>1%</option>
+                  <option value={2}>2%</option>
+                  <option value={3}>3%</option>
+                </select>
+              </div>
+
+              {/* Max Pos */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+                <label htmlFor="input-max-positions" style={{ fontSize: '8.5px', color: 'var(--text-secondary)', fontWeight: '700', cursor: 'pointer' }}>Max Pos:</label>
+                <input
+                  id="input-max-positions"
+                  className="arena-input"
+                  type="text"
+                  inputMode="numeric"
+                  disabled={isUnlimitedPositions}
+                  value={isUnlimitedPositions ? '' : maxPosInputText}
+                  placeholder={isUnlimitedPositions ? '∞' : '10'}
+                  onChange={e => {
+                    const raw = e.target.value;
+                    if (raw === '') {
+                      setMaxPosInputText('');
+                      return;
+                    }
+                    if (/^\d+$/.test(raw)) {
+                      setMaxPosInputText(raw);
+                      const num = parseInt(raw, 10);
+                      if (!isNaN(num) && num >= 1 && num <= 100) {
+                        setSliderMaxPositions(num);
+                      }
+                    }
+                  }}
+                  onBlur={() => {
+                    const num = parseInt(maxPosInputText, 10);
+                    if (isNaN(num) || num < 1) {
+                      setMaxPosInputText(String(sliderMaxPositions >= 999 ? 10 : sliderMaxPositions));
+                    } else {
+                      const clamped = Math.min(100, Math.max(1, num));
+                      setMaxPosInputText(String(clamped));
+                      setSliderMaxPositions(clamped);
+                    }
+                  }}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      e.target.blur();
+                    }
+                  }}
+                  style={{
+                    width: '28px',
+                    padding: '1px 3px',
+                    fontSize: '8.5px',
+                    minHeight: '22px',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: '800',
+                    textAlign: 'center',
+                    borderRadius: '3px',
+                    border: 'var(--border-hairline)',
+                    background: isUnlimitedPositions ? 'rgba(255,255,255,0.03)' : 'var(--bg-panel-subtle)',
+                    color: isUnlimitedPositions ? 'var(--text-muted)' : 'var(--accent-blue)'
+                  }}
+                  title="Batas posisi per bot (1-100)"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const nextVal = isUnlimitedPositions ? 10 : 999;
+                    setSliderMaxPositions(nextVal);
+                    setMaxPosInputText(nextVal >= 999 ? '' : String(nextVal));
+                    showToast(nextVal >= 999 ? 'Batas posisi: Tak Terbatas (∞ Unlimited).' : 'Batas posisi: 10 posisi / bot.');
+                  }}
+                  className="arena-interactive-chip"
+                  style={{
+                    padding: '1px 4px',
+                    minHeight: '22px',
+                    fontSize: '8px',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: '800',
+                    borderRadius: '3px',
+                    cursor: 'pointer',
+                    border: isUnlimitedPositions ? '1px solid var(--accent-orange)' : 'var(--border-hairline)',
+                    background: isUnlimitedPositions ? 'rgba(245, 158, 11, 0.18)' : 'var(--bg-panel-subtle)',
+                    color: isUnlimitedPositions ? 'var(--accent-orange)' : 'var(--text-muted)'
+                  }}
+                  title="Beralih batas manual vs Tak Terbatas (∞)"
+                >
+                  {isUnlimitedPositions ? '∞ Unlim' : 'Set ∞'}
+                </button>
+              </div>
+
+              {/* Mode Eksekusi */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+                <label htmlFor="select-execution-mode" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Mode:</label>
+                <select
+                  id="select-execution-mode"
+                  className="arena-input"
+                  value={arenaExecutionMode}
+                  onChange={e => {
+                    const newMode = e.target.value;
+                    setArenaExecutionMode(newMode);
+                    showToast(`Mode: ${newMode === 'SPOT_ONLY' ? '🟢 SPOT' : (newMode === 'FUTURES_ONLY' ? '🟣 FUTURES' : '⚡ HYBRID')}`);
+                  }}
+                  style={{
+                    padding: '1px 3px',
+                    fontSize: '8.5px',
+                    minHeight: '22px',
+                    borderRadius: '3px',
+                    background: arenaExecutionMode === 'SPOT_ONLY' ? 'rgba(34, 197, 94, 0.15)' : (arenaExecutionMode === 'FUTURES_ONLY' ? 'rgba(168, 85, 247, 0.15)' : 'var(--bg-panel-subtle)'),
+                    border: arenaExecutionMode === 'SPOT_ONLY' ? '1px solid var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '1px solid #a855f7' : 'var(--border-hairline)'),
+                    color: arenaExecutionMode === 'SPOT_ONLY' ? 'var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '#c084fc' : 'var(--text-primary)'),
+                    fontWeight: '800',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="HYBRID">⚡ HYBRID</option>
+                  <option value="SPOT_ONLY">🟢 SPOT</option>
+                  <option value="FUTURES_ONLY">🟣 FUTURES</option>
+                </select>
+              </div>
+            </div>
+
+            {/* KAPSUL 2: TAMPILAN & FILTER */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '2px 7px',
+                background: 'rgba(255, 255, 255, 0.02)',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid rgba(255, 255, 255, 0.07)'
+              }}
+            >
+              <span style={{ fontSize: '8px', fontWeight: '900', color: 'var(--accent-blue)', letterSpacing: '0.04em' }}>
+                👁️ VIEW:
+              </span>
+
+              {/* Urutan Bot */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+                <label htmlFor="select-agent-sort" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Urut:</label>
+                <select
+                  id="select-agent-sort"
+                  value={agentSortBy}
+                  onChange={e => setAgentSortBy(e.target.value)}
+                  style={{
+                    padding: '1px 4px',
+                    fontSize: '8.5px',
+                    minHeight: '22px',
+                    fontFamily: 'var(--font-mono)',
+                    borderRadius: '3px',
+                    background: 'var(--bg-panel-subtle)',
+                    border: 'var(--border-hairline)',
+                    color: 'var(--text-primary)',
+                    cursor: 'pointer',
+                    fontWeight: '700'
+                  }}
+                >
+                  <option value="DEFAULT">DNA Elemen</option>
+                  <option value="ROI_DESC">Top ROI %</option>
+                  <option value="WINRATE_DESC">Win Rate</option>
+                  <option value="POSITIONS_DESC">Posisi Aktif</option>
+                </select>
+              </div>
+
+              {/* Grafik Timeframe */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+                <label htmlFor="select-chart-timeframe" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Grafik:</label>
+                <select
+                  id="select-chart-timeframe"
+                  className="arena-input"
+                  value={chartTimeframe}
+                  onChange={e => {
+                    setChartTimeframe(e.target.value);
+                    showToast(`Rentang grafik diubah ke ${e.target.value}`);
+                  }}
+                  style={{
+                    padding: '1px 4px',
+                    fontSize: '8.5px',
+                    minHeight: '22px',
+                    fontFamily: 'var(--font-mono)',
+                    borderRadius: '3px',
+                    background: 'var(--bg-panel-subtle)',
+                    border: 'var(--border-hairline)',
+                    color: 'var(--text-primary)',
+                    fontWeight: '700',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="3D">3D</option>
+                  <option value="7D">7D</option>
+                  <option value="1M">1M</option>
+                  <option value="3M">3M</option>
+                  <option value="1Y">1Y</option>
+                </select>
+              </div>
+
+              {/* Screener Radar */}
+              <button
+                type="button"
+                onClick={() => {
+                  const nextMode = scannerMode === 'DYNAMIC_RADAR' ? 'FULL_WATCHLIST' : 'DYNAMIC_RADAR';
+                  setScannerMode(nextMode);
+                  showToast(nextMode === 'DYNAMIC_RADAR' ? `Scanner: DYNAMIC RADAR (${activeRadarSymbols.length} aset).` : `Scanner: FULL WATCHLIST (${ALL_INSTRUMENTS.length} pair).`);
+                }}
+                className="arena-interactive-chip"
+                style={{
+                  padding: '1px 5px',
+                  minHeight: '22px',
+                  fontSize: '8.5px',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: '800',
+                  borderRadius: '3px',
+                  cursor: 'pointer',
+                  border: scannerMode === 'DYNAMIC_RADAR' ? '1px solid rgba(59, 130, 246, 0.4)' : 'var(--border-hairline)',
+                  background: scannerMode === 'DYNAMIC_RADAR' ? 'rgba(59, 130, 246, 0.15)' : 'var(--bg-panel-subtle)',
+                  color: scannerMode === 'DYNAMIC_RADAR' ? 'var(--accent-blue)' : 'var(--text-muted)'
+                }}
+                title="Beralih Screener Radar vs Full Watchlist"
+              >
+                {scannerMode === 'DYNAMIC_RADAR' ? `🛰️ Radar (${activeRadarSymbols.length})` : `🌐 Full (${ALL_INSTRUMENTS.length})`}
+              </button>
+            </div>
+          </div>
+
+          {/* Sisi Kanan: KAPSUL 3: INTEL & LAPORAN */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '2px 6px',
+              background: 'rgba(255, 255, 255, 0.02)',
+              borderRadius: 'var(--radius-sm)',
+              border: '1px solid rgba(255, 255, 255, 0.07)',
+              flexWrap: 'wrap'
+            }}
+          >
+            <span style={{ fontSize: '8px', fontWeight: '900', color: '#c084fc', letterSpacing: '0.04em', marginRight: '2px' }}>
+              INTEL:
+            </span>
+
+            <button
+              id="btn-profil-filosofi"
+              onClick={() => setPhilosophyModalOpen(true)}
+              className="telemetry-btn"
+              style={{ fontSize: '8.5px', padding: '2px 5px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-blue)' }}
+              title="Pelajari Profil, Filosofi & Strategi 4 Elemen"
+            >
+              <span>🧠</span>
+              <span>Filosofi</span>
+            </button>
+
+            <button
+              id="btn-panduan-aturan-status"
+              onClick={() => {
+                setRulesActiveSubTab('RULES');
+                setRulesModalOpen(true);
+              }}
+              className="telemetry-btn"
+              style={{ fontSize: '8.5px', padding: '2px 5px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-gold)' }}
+              title="Panduan Terpadu: Aturan Trading & Status Siklus Hidup Bot"
+            >
+              <span>📋</span>
+              <span>Aturan</span>
+            </button>
+
+            <button
+              id="btn-agent-review"
+              onClick={() => setAgentReviewModalOpen(true)}
+              className="telemetry-btn"
+              style={{ fontSize: '8.5px', padding: '2px 5px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: '#60a5fa' }}
+              title="Buka Analisis Kinerja & Review Sinyal"
+            >
+              <span>📊</span>
+              <span>Review</span>
+            </button>
+
+            <button
+              id="btn-session-recap"
+              onClick={() => setSessionRecapModalOpen(true)}
+              className="telemetry-btn"
+              style={{
+                fontSize: '8.5px',
+                padding: '2px 5px',
+                minHeight: '22px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3px',
+                color: '#e879f9',
+                border: '1px solid rgba(217, 70, 239, 0.4)',
+                background: 'rgba(217, 70, 239, 0.1)',
+                fontWeight: '700',
+                cursor: 'pointer'
+              }}
+              title="Buka Session Recap & Institutional Quant Post-Mortem Debrief"
+            >
+              <span>📜</span>
+              <span>Recap</span>
             </button>
           </div>
         </div>
