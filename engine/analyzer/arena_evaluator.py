@@ -166,8 +166,14 @@ class ArenaEvaluator:
 
             if should_close:
                 final_delta = (exit_price - entry_price) if direction == "LONG" else (entry_price - exit_price)
-                final_roi = (final_delta / entry_price * 100) if entry_price > 0 else 0
-                is_win = final_roi > 0
+                raw_roi = (final_delta / entry_price * 100) if entry_price > 0 else 0
+                
+                # Institutional Real Exchange Friction Model:
+                # 0.10% round-trip trading fee (Bitget taker 0.05% open + 0.05% close)
+                # + 0.02% spread & slippage = 0.12% total friction
+                friction_pct = 0.12
+                net_roi = raw_roi - friction_pct
+                is_win = net_roi > 0
 
                 closed_trade = {
                     "id": f"TRD-{pos.get('id', uuid.uuid4().hex[:8])}",
@@ -179,7 +185,9 @@ class ArenaEvaluator:
                     "exitPrice": exit_price,
                     "slPrice": sl_price,
                     "tp1Price": tp1_price,
-                    "roiPct": round(final_roi, 2),
+                    "grossRoiPct": round(raw_roi, 2),
+                    "feePct": round(friction_pct, 2),
+                    "roiPct": round(net_roi, 2),
                     "exitReason": exit_reason,
                     "isWin": is_win,
                     "closedAt": datetime.now(timezone.utc).isoformat()

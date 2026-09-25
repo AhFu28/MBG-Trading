@@ -68,6 +68,19 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 - **[QA/QC & CERTIFICATION]**:
   - Python Verification: Unit test `ArenaEvaluator` lulus dengan evaluasi 16 bot & 10 posisi aktif awal.
   - Frontend Production Build: 80 modules compiled clean dalam 1.68s dengan 0 errors/warnings.
+### Sprint 10 (Malam) — Forensic Execution Overhaul: Real Exchange Fee Model, Pure Confluence Signals & Zero-Mock Genesis
+- **[EXCHANGE FRICTION & SLIPPAGE ARCHITECTURE] Model Potongan Fee Bursa Institusional**:
+  - **Bitget Taker Fee & Spread Slippage**: Menerapkan deduksi biaya transaksi riil 0.12% round-trip (0.05% entry + 0.05% exit taker fee Bitget + 0.02% spread slippage) pada setiap penutupan posisi (TP1, TP2, SL, dan Trailing Stop), baik di frontend client (`AiAgentArenaTab.jsx`) maupun backend evaluation engine (`arena_evaluator.py`).
+  - **Transparansi Jurnal Keuangan**: Jurnal trade kini mencatat metrik `grossPnlUsd/grossPnlIdr`, `feeUsd/feeIdr`, dan `netPnlUsd/netPnlIdr`, mengeliminasi ilusi keuntungan semu dan mencerminkan hasil bersih akun riil.
+- **[SIGNAL ENGINE DETERMINISM] Eliminasi Total Pemicu Acak (Zero-Random Confluence)**:
+  - **Penghapusan `Math.random() < spawnChance`**: Membuang generator pemicu acak pada pemindaian pembukaan posisi baru.
+  - **Filter Confluence Kuantitatif Murni**: Posisi baru hanya dieksekusi apabila scanner teknikal (`computeAgentSignal`) mendeteksi setup valid dengan tingkat keyakinan (confidence) >= 68% sesuai DNA strategi masing-masing bot (SMC Order Block, Donchian Breakout, Mean Reversion, atau Volatility Breakout).
+- **[CLEAN AUDIT GENESIS] Purge Mock History & Fresh Organic Season**:
+  - **Pembersihan Log Dummy**: Menghapus `DEFAULT_EPOCH_REPORTS` sintetis (12.450 fake trades) dan menyaring data dummy lawas dari `localStorage`.
+  - **Turnamen Organik 1 Bulan**: Seluruh 16 bot kini memulai kompetisi pembuktian performa dari titik nol (0 trade riil), memastikan data evaluasi sebelum ekspor ke EA MT5 100% murni dan teruji secara objektif.
+- **[QA/QC & CERTIFICATION]**:
+  - Python Verification: Unit test `ArenaEvaluator` backend cycle lulus verifikasi 16 bot dengan deduksi friction bursa riil.
+  - Frontend Build: Vite production build 80 modules compiled clean dalam 2.22s dengan 0 errors/warnings.
   - Zero Secret Leak: 0 credentials/keys exposed.
 
 ---

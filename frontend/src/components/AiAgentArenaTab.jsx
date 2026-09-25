@@ -1852,289 +1852,8 @@ export const AGENT_MULTI_POS_RULES = {
   CHAOS: { maxPerPair: 999, mode: 'UNLIMITED_CARPET_BOMB', label: 'Machine-Gun Carpet Bomb', desc: 'Unbound Scalper: Buka posisi beruntun tanpa batas selama free margin tersedia.', minCooldownSec: 0, stackTriggerTickPct: 0.12, basketTakeProfitPct: 35.0, hardStopLoss: null }
 };
 
-// Baseline Genesis Session #0 & Season 1 Knowledge Archives
-const DEFAULT_EPOCH_REPORTS = [
-  {
-    id: 'REPORT-EP-1-OFFICIAL',
-    epochNumber: 1,
-    createdAt: '24 Sep 2026, 23:50 WIB',
-    totalTrades: 12450,
-    winRate: '24.5',
-    grossProfitIdr: 1120000000,
-    grossLossIdr: 780000000,
-    netPnlIdr: 340000000,
-    netPnlUsd: 20795.10,
-    profitFactor: '1.44',
-    sharpeRatio: '1.78',
-    rocPct: '85.00',
-    keyTakeaway: 'Season 1 resmi ditutup PROFIT dengan Net Gain +Rp 340,0 Juta. Adaptasi bobot EXP3 sukses memperbesar exposure pada aset trending dan memitigasi drawdown.',
-    agentBreakdowns: [
-      {
-        agentId: 'AIR',
-        name: 'AIR',
-        role: 'Trend Breakout & Momentum',
-        avatar: '🌪️',
-        color: '#10b981',
-        totalTrades: 3120,
-        wins: 780,
-        losses: 2340,
-        winRate: '25.0',
-        profitFactor: '1.72',
-        bestPair: 'NZDJPY',
-        worstPair: 'GBPJPY',
-        oldWeight: 0.28,
-        newWeight: 0.38,
-        diffPct: 10.0,
-        netPnlIdr: 720000000,
-        netPnlUsd: 44036.70
-      },
-      {
-        agentId: 'WATER',
-        name: 'WATER',
-        role: 'SMC & Liquidity Flow',
-        avatar: '🌊',
-        color: '#3b82f6',
-        totalTrades: 3050,
-        wins: 420,
-        losses: 2630,
-        winRate: '13.8',
-        profitFactor: '1.05',
-        bestPair: 'CHFJPY',
-        worstPair: 'AUDJPY',
-        oldWeight: 0.32,
-        newWeight: 0.24,
-        diffPct: -8.0,
-        netPnlIdr: -85000000,
-        netPnlUsd: -5198.77
-      },
-      {
-        agentId: 'FIRE',
-        name: 'FIRE',
-        role: 'News & Event Volatility',
-        avatar: '🔥',
-        color: '#ef4444',
-        totalTrades: 3200,
-        wins: 290,
-        losses: 2910,
-        winRate: '9.1',
-        profitFactor: '0.94',
-        bestPair: 'NZDJPY',
-        worstPair: 'EURJPY',
-        oldWeight: 0.26,
-        newWeight: 0.20,
-        diffPct: -6.0,
-        netPnlIdr: -110000000,
-        netPnlUsd: -6727.82
-      },
-      {
-        agentId: 'EARTH',
-        name: 'EARTH',
-        role: 'Mean Reversion & Solid S/R',
-        avatar: '⛰️',
-        color: '#eab308',
-        totalTrades: 3080,
-        wins: 380,
-        losses: 2700,
-        winRate: '12.3',
-        profitFactor: '0.91',
-        bestPair: 'CHFJPY',
-        worstPair: 'BBCA',
-        oldWeight: 0.14,
-        newWeight: 0.18,
-        diffPct: 4.0,
-        netPnlIdr: -75000000,
-        netPnlUsd: -4587.15
-      }
-    ],
-    adaptations: [
-      {
-        agentId: 'AIR',
-        name: 'AIR',
-        avatar: '🌪️',
-        color: '#10b981',
-        oldWeight: 0.28,
-        newWeight: 0.38,
-        diffPct: 10.0,
-        actionSummary: 'Bobot modal dinaikkan ke 38% (+10.0%) karena memimpin performa.'
-      },
-      {
-        agentId: 'WATER',
-        name: 'WATER',
-        avatar: '🌊',
-        color: '#3b82f6',
-        oldWeight: 0.32,
-        newWeight: 0.24,
-        diffPct: -8.0,
-        actionSummary: 'Bobot modal disesuaikan ke 24% (-8.0%) dengan pengetatan trailing ratchet.'
-      },
-      {
-        agentId: 'FIRE',
-        name: 'FIRE',
-        avatar: '🔥',
-        color: '#ef4444',
-        oldWeight: 0.26,
-        newWeight: 0.20,
-        diffPct: -6.0,
-        actionSummary: 'Bobot modal disesuaikan ke 20% (-6.0%) guna meredam false breakout berita.'
-      },
-      {
-        agentId: 'EARTH',
-        name: 'EARTH',
-        avatar: '⛰️',
-        color: '#eab308',
-        oldWeight: 0.14,
-        newWeight: 0.18,
-        diffPct: 4.0,
-        actionSummary: 'Bobot modal dinaikkan ke 18% (+4.0%) untuk akumulasi defensif.'
-      }
-    ]
-  },
-  {
-    id: 'REPORT-EP-0-GENESIS',
-    epochNumber: 0,
-    createdAt: '19 Sep 2026, 23:45 WIB',
-    totalTrades: 9832,
-    winRate: '21.0',
-    grossProfitIdr: 875000000,
-    grossLossIdr: 619537583,
-    netPnlIdr: 255462417,
-    netPnlUsd: 15624.61,
-    profitFactor: '1.41',
-    sharpeRatio: '1.69',
-    rocPct: '63.87',
-    keyTakeaway: 'Sesi #0 (Genesis) berhasil ditutup PROFIT. Algoritma EXP3 meningkatkan alokasi modal ke AIR sebagai MVP Sesi 0 dan memperketat trailing ratchet pada pasangan volatil.',
-    agentBreakdowns: [
-      {
-        agentId: 'AIR',
-        name: 'AIR',
-        role: 'Trend Breakout & Momentum',
-        avatar: '🌪️',
-        color: '#10b981',
-        totalTrades: 2390,
-        wins: 502,
-        losses: 1888,
-        winRate: '21.0',
-        profitFactor: '1.69',
-        bestPair: 'NZDJPY',
-        worstPair: 'GBPJPY',
-        oldWeight: 0.28,
-        newWeight: 0.38,
-        diffPct: 10.0,
-        netPnlIdr: 619407776,
-        netPnlUsd: 37884.26
-      },
-      {
-        agentId: 'WATER',
-        name: 'WATER',
-        role: 'SMC & Liquidity Flow',
-        avatar: '🌊',
-        color: '#3b82f6',
-        totalTrades: 2432,
-        wins: 290,
-        losses: 2142,
-        winRate: '11.9',
-        profitFactor: '0.92',
-        bestPair: 'CHFJPY',
-        worstPair: 'AUDJPY',
-        oldWeight: 0.32,
-        newWeight: 0.24,
-        diffPct: -8.0,
-        netPnlIdr: -120211187,
-        netPnlUsd: -7352.36
-      },
-      {
-        agentId: 'FIRE',
-        name: 'FIRE',
-        role: 'News & Event Volatility',
-        avatar: '🔥',
-        color: '#ef4444',
-        totalTrades: 2522,
-        wins: 178,
-        losses: 2344,
-        winRate: '7.1',
-        profitFactor: '0.85',
-        bestPair: 'NZDJPY',
-        worstPair: 'EURJPY',
-        oldWeight: 0.26,
-        newWeight: 0.20,
-        diffPct: -6.0,
-        netPnlIdr: -148165244,
-        netPnlUsd: -9062.09
-      },
-      {
-        agentId: 'EARTH',
-        name: 'EARTH',
-        role: 'Mean Reversion & Solid S/R',
-        avatar: '⛰️',
-        color: '#eab308',
-        totalTrades: 2488,
-        wins: 264,
-        losses: 2224,
-        winRate: '10.6',
-        profitFactor: '0.88',
-        bestPair: 'CHFJPY',
-        worstPair: 'BBCA',
-        oldWeight: 0.14,
-        newWeight: 0.18,
-        diffPct: 4.0,
-        netPnlIdr: -95568928,
-        netPnlUsd: -5845.20
-      }
-    ],
-    adaptations: [
-      {
-        agentId: 'AIR',
-        name: 'AIR',
-        avatar: '🌪️',
-        color: '#10b981',
-        oldWeight: 0.28,
-        newWeight: 0.38,
-        diffPct: 10.0,
-        actionSummary: 'Bobot modal dinaikkan ke 38% (+10.0%) karena MVP Sesi 0 dengan Profit Factor 1.69. Parameter trailing stop ekspansi tren dipertahankan.'
-      },
-      {
-        agentId: 'WATER',
-        name: 'WATER',
-        avatar: '🌊',
-        color: '#3b82f6',
-        oldWeight: 0.32,
-        newWeight: 0.24,
-        diffPct: -8.0,
-        actionSummary: 'Bobot modal diturunkan ke 24% (-8.0%). Trailing stop ratchet diperketat (+15%) dan filter FVG diperkuat.'
-      },
-      {
-        agentId: 'FIRE',
-        name: 'FIRE',
-        avatar: '🔥',
-        color: '#ef4444',
-        oldWeight: 0.26,
-        newWeight: 0.20,
-        diffPct: -6.0,
-        actionSummary: 'Bobot modal diturunkan ke 20% (-6.0%). Threshold konfirmasi sinyal dinaikkan (+10%) guna meredam false breakout berita.'
-      },
-      {
-        agentId: 'EARTH',
-        name: 'EARTH',
-        avatar: '⛰️',
-        color: '#eab308',
-        oldWeight: 0.14,
-        newWeight: 0.18,
-        diffPct: 4.0,
-        actionSummary: 'Bobot modal dinaikkan ke 18% (+4.0%). Disiplin ketat jam bursa BEI (09:00 - 15:45 WIB) memastikan tidak ada spekulasi saat pasar tutup.'
-      }
-    ],
-    topAlphaPairs: [
-      { symbol: 'NZDJPY', market: 'FOREX', netPnlIdr: 128450000, netPnlUsd: 7856.26, winRate: '32', totalTrades: 155 },
-      { symbol: 'CHFJPY', market: 'FOREX', netPnlIdr: 93141300, netPnlUsd: 5696.71, winRate: '26', totalTrades: 152 },
-      { symbol: 'CADJPY', market: 'FOREX', netPnlIdr: 48855000, netPnlUsd: 2988.07, winRate: '29', totalTrades: 152 }
-    ],
-    toxicDragPairs: [
-      { symbol: 'GBPJPY', market: 'FOREX', netPnlIdr: -127981150, netPnlUsd: -7827.59, winRate: '12', totalTrades: 129 },
-      { symbol: 'AUDJPY', market: 'FOREX', netPnlIdr: -117114350, netPnlUsd: -7162.95, winRate: '14', totalTrades: 151 },
-      { symbol: 'EURJPY', market: 'FOREX', netPnlIdr: -103534400, netPnlUsd: -6332.37, winRate: '11', totalTrades: 107 }
-    ]
-  }
-];
+// Baseline Genesis: Season 1 Organik (Murni dari 0 trade riil)
+const DEFAULT_EPOCH_REPORTS = [];
 
 export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, onOpenExecution }) {
   // Master Autonomous System State (PAUSED by default: user configures settings before starting)
@@ -2641,23 +2360,16 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
   // Bot Life Cycle: Evolution & Mutasi DNA Modal
   const [evolutionModal, setEvolutionModal] = useState({ isOpen: false, agent: null });
 
-  // Epoch Reports & Self-Improvement Session History
+  // Epoch Reports & Self-Improvement Session History (100% Organic Real Executions)
   const [epochReports, setEpochReports] = useState(() => {
     try {
       const saved = localStorage.getItem('mbg_ai_arena_epoch_reports');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          const hasOfficialS1 = parsed.some(p => p.epochNumber === 1);
-          if (!hasOfficialS1) {
-            const s1 = DEFAULT_EPOCH_REPORTS.find(d => d.epochNumber === 1);
-            if (s1) {
-              const merged = [s1, ...parsed];
-              try { localStorage.setItem('mbg_ai_arena_epoch_reports', JSON.stringify(merged)); } catch (e) {}
-              return merged;
-            }
-          }
-          return parsed;
+          // Filter out legacy mock reports
+          const cleanReports = parsed.filter(p => p.id !== 'REPORT-EP-1-OFFICIAL' && p.id !== 'REPORT-EP-0-GENESIS');
+          return cleanReports;
         }
       }
       return DEFAULT_EPOCH_REPORTS;
@@ -3285,6 +2997,21 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
           if (shouldClose) {
             hasClosedAny = true;
+
+            // Institutional Real Exchange Friction Model:
+            // 1. Commission Fee: Bitget / Standard Broker Taker fee 0.05% entry + 0.05% exit = 0.10% total volume
+            // 2. Spread & Execution Slippage: ~0.02% of entry price
+            const notionalUsd = isIdx
+              ? (pos.sizeLots * 100 * pos.entryPrice / (usdToIdrRef.current || 16350))
+              : (isForex ? (pos.sizeLots * 100000) : (pos.sizeLots * (pos.symbol.includes('XAU') ? 100 : pos.entryPrice)));
+            const totalFrictionPct = 0.0012; // 0.12% total transaction friction (0.10% fee + 0.02% slippage)
+            const frictionUsd = Math.max(0.05, notionalUsd * totalFrictionPct);
+            const frictionIdr = isIdx ? (pos.sizeLots * 100 * pos.entryPrice * totalFrictionPct) : (frictionUsd * (usdToIdrRef.current || 16350));
+
+            const netPnlUsd = pnlUsd - frictionUsd;
+            const netPnlIdr = pnlIdr - frictionIdr;
+            const netRoiPct = notionalUsd > 0 ? (netPnlUsd / notionalUsd) * 100 * (pos.leverage ? (parseInt(pos.leverage.replace(/\D/g, ''), 10) || 1) : 1) : roiPct;
+
             closedTradesToAdd.push({
               id: `TRD-${pos.id}-${Date.now()}`,
               agentId: pos.agentId,
@@ -3297,18 +3024,22 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               exitPrice: exitPrice,
               slPrice: pos.slPrice,
               tp1Price: pos.tp1Price,
-              pnlUsd: Number(pnlUsd.toFixed(2)),
-              pnlIdr: Number(pnlIdr.toFixed(0)),
-              roiPct: Number(roiPct.toFixed(2)),
+              grossPnlUsd: Number(pnlUsd.toFixed(2)),
+              grossPnlIdr: Number(pnlIdr.toFixed(0)),
+              feeUsd: Number(frictionUsd.toFixed(2)),
+              feeIdr: Number(frictionIdr.toFixed(0)),
+              pnlUsd: Number(netPnlUsd.toFixed(2)),
+              pnlIdr: Number(netPnlIdr.toFixed(0)),
+              roiPct: Number(netRoiPct.toFixed(2)),
               rrAchieved: (() => {
                 const slDist = Math.abs(pos.entryPrice - pos.slPrice);
                 const exitDist = Math.abs(exitPrice - pos.entryPrice);
                 const calc = slDist > 0 ? Number((exitDist / slDist).toFixed(2)) : 1.5;
-                return pnlIdr > 0 ? Math.min(8.0, Math.max(0.2, calc)) : -1.0;
+                return netPnlIdr > 0 ? Math.min(8.0, Math.max(0.2, calc)) : -1.0;
               })(),
               exitReason: exitReason,
               closedAt: new Date().toISOString(),
-              isWin: pnlIdr > 0
+              isWin: netPnlIdr > 0
             });
             return null;
           }
@@ -3518,105 +3249,60 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
           });
         }
 
-        // Multi-trade autonomous spawner across all 80+ pairs
+        // Pure Quantitative Confluence Signal Engine (Zero Math.random() Spawner)
         const maxPositionsPerAgent = isUnlimitedPositions ? 999 : sliderMaxPositions;
-        const spawnChance = isUnlimitedPositions
-          ? (updated.length > 50 ? 0.15 : (updated.length > 25 ? 0.35 : 0.60))
-          : 0.65;
-        if (updated.length < effectiveMaxPositions && Math.random() < spawnChance) {
+        if (updated.length < effectiveMaxPositions) {
           const availableAgents = currentAgents.filter(a => {
             const count = updated.filter(p => p.agentId === a.id).length;
             return count < maxPositionsPerAgent;
           });
 
           if (availableAgents.length > 0) {
-            const chosenAgent = availableAgents[Math.floor(Math.random() * availableAgents.length)];
-            const agentRules = AGENT_MULTI_POS_RULES[chosenAgent.id] || { maxPerPair: 1, mode: 'SINGLE_BULLET', minCooldownSec: 25 };
-            const agentPositions = updated.filter(p => p.agentId === chosenAgent.id);
             const activeRadarPool = scanActiveMarketRadar(currentFeeds, ALL_INSTRUMENTS, scannerModeRef.current || 'DYNAMIC_RADAR');
             const openMarketSymbols = activeRadarPool.length > 0
               ? activeRadarPool
               : ALL_INSTRUMENTS.filter(i => isMarketOpenNow(i.market)).map(i => i.symbol);
 
-            // 1. Prioritas Utama: Instrumen di pasar buka yang belum dipegang oleh agen ini (Diversifikasi Luas)
-            // Toxic pair blacklist: skip instruments flagged by DNA and historical Margin Calls
-            const toxicPairsToAvoid = [
-              ...(chosenAgent.dnaTraits?.toxicPairAvoided ? [chosenAgent.dnaTraits.toxicPairAvoided] : []),
-              ...(Array.isArray(chosenAgent.dnaTraits?.toxicPairs) ? chosenAgent.dnaTraits.toxicPairs : []),
-              ...((chosenAgent.resetsHistory || []).map(r => r.toxicPair).filter(Boolean))
-            ].filter(sym => sym && sym !== 'High-Beta' && sym !== 'Diversified Rebalance' && sym !== 'N/A');
+            // Scan across available agents to find genuine high-conviction technical setups
+            let bestSetup = null;
+            let highestSignalConf = 0;
 
-            const unheldSymbols = openMarketSymbols.filter(s => !agentPositions.some(p => p.symbol === s) && !toxicPairsToAvoid.includes(s));
+            for (const ag of availableAgents) {
+              const agentRules = AGENT_MULTI_POS_RULES[ag.id] || { maxPerPair: 1, mode: 'SINGLE_BULLET', minCooldownSec: 25 };
+              const agentPositions = updated.filter(p => p.agentId === ag.id);
+              const toxicPairsToAvoid = [
+                ...(ag.dnaTraits?.toxicPairAvoided ? [ag.dnaTraits.toxicPairAvoided] : []),
+                ...(Array.isArray(ag.dnaTraits?.toxicPairs) ? ag.dnaTraits.toxicPairs : []),
+                ...((ag.resetsHistory || []).map(r => r.toxicPair).filter(Boolean))
+              ].filter(sym => sym && sym !== 'High-Beta' && sym !== 'Diversified Rebalance' && sym !== 'N/A');
 
-            // 2. Prioritas Kedua: Multi-posisi terukur pada instrumen yang sudah dipegang SESUAI DNA STRATEGI (strict no toxic)
-            let qualifyingHeldSymbols = [];
-            if ((unheldSymbols.length === 0 || chosenAgent.id === 'CHAOS') && agentRules.maxPerPair > 1) {
-              qualifyingHeldSymbols = openMarketSymbols.filter(s => {
-                if (toxicPairsToAvoid.includes(s)) return false;
-                const positionsOnSym = agentPositions.filter(p => p.symbol === s);
-                if (positionsOnSym.length === 0 && chosenAgent.id !== 'CHAOS') return false;
-                // Batas maksimal layer per pair untuk bot ini
-                if (positionsOnSym.length >= agentRules.maxPerPair) return false;
+              const unheldSymbols = openMarketSymbols.filter(s => !agentPositions.some(p => p.symbol === s) && !toxicPairsToAvoid.includes(s));
 
-                // Cooldown: Cek waktu jeda sejak posisi terakhir pada simbol ini
-                const lastPos = positionsOnSym[0]; // sorted newest first in updated array
-                if (lastPos && lastPos.openedAt) {
-                  const elapsedSec = (Date.now() - new Date(lastPos.openedAt).getTime()) / 1000;
-                  if (elapsedSec < (agentRules.minCooldownSec || 0)) return false;
+              // Check multi-market symbols against agent's strategy profile
+              for (const sym of unheldSymbols.slice(0, 15)) {
+                const targetFeed = currentFeeds[sym];
+                if (targetFeed && isMarketOpenNow(targetFeed.market)) {
+                  const sig = computeAgentSignal(ag.id, sym, targetFeed, ag.dnaTraits || {});
+                  const reqConf = 68 + (ag.dnaTraits?.confidenceBoost || 0);
+
+                  if (sig.confidence >= reqConf && sig.confidence > highestSignalConf) {
+                    highestSignalConf = sig.confidence;
+                    bestSetup = {
+                      chosenAgent: ag,
+                      targetKey: sym,
+                      targetFeed,
+                      agentRules,
+                      agentPositions,
+                      signal: sig,
+                      isScalingLayer: false
+                    };
+                  }
                 }
-
-                // Validasi Mode Strategi
-                if (agentRules.mode === 'UNLIMITED_CARPET_BOMB') {
-                  // CHAOS: Buka posisi beruntun tanpa batas selama free margin tersedia
-                  return true;
-                }
-
-                if (agentRules.mode === 'SINGLE_BULLET') {
-                  return false; // Water & Fire strictly 1 posisi per pair
-                }
-
-                if (agentRules.mode === 'PYRAMID_PROFIT') {
-                  // Trend Following: Seluruh posisi sebelumnya di pair ini wajib sudah PROFIT (atau Trailing Stop aktif)
-                  const minProfit = agentRules.minProfitPct || 0.8;
-                  return positionsOnSym.every(p => (p.roiPct || 0) >= minProfit || p.trailingStopActive);
-                }
-
-                if (agentRules.mode === 'SCALE_IN_ATR') {
-                  // Mean Reversion: Jarak harga saat ini terhadap entry terakhir minimal 1.0x ATR
-                  const feed = currentFeeds[s];
-                  if (!feed || !lastPos) return false;
-                  const currentAtr = feed.atr || ((feed.price || 1) * 0.01);
-                  const minSpacing = (agentRules.minAtrSpacing || 1.0) * currentAtr;
-                  const priceDiff = Math.abs((feed.price || 0) - (lastPos.entryPrice || 0));
-                  return priceDiff >= minSpacing;
-                }
-
-                if (agentRules.mode === 'CONSENSUS_SCALE') {
-                  // Master Consensus: Layer kedua hanya jika drawdown posisi pertama tidak lebih dari -1.0%
-                  return (lastPos.roiPct || 0) >= -1.0;
-                }
-
-                return false;
-              });
+              }
             }
 
-            let candidateSymbols = [];
-            let isScalingLayer = false;
-            if (chosenAgent.id === 'CHAOS' && qualifyingHeldSymbols.length > 0 && Math.random() > 0.35) {
-              candidateSymbols = qualifyingHeldSymbols;
-              isScalingLayer = true;
-            } else if (unheldSymbols.length > 0) {
-              candidateSymbols = unheldSymbols;
-              isScalingLayer = false;
-            } else {
-              candidateSymbols = qualifyingHeldSymbols;
-              isScalingLayer = qualifyingHeldSymbols.length > 0;
-            }
-
-            if (candidateSymbols.length > 0) {
-              const targetKey = selectBestInstrument(candidateSymbols, currentFeeds, chosenAgent.id) || candidateSymbols[0];
-              const targetFeed = currentFeeds[targetKey];
-
+            if (bestSetup) {
+              const { chosenAgent, targetKey, targetFeed, agentRules, agentPositions, signal, isScalingLayer } = bestSetup;
               if (targetFeed && isMarketOpenNow(targetFeed.market)) {
                   const entry = targetFeed.price;
                   const isIdx = targetFeed.market === 'IDX';
@@ -3633,8 +3319,6 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                       ? `${chosenAgent.name}: Akumulasi spot pada ${targetKey} (Long-Only BEI Regulation).`
                       : `[SPOT] ${chosenAgent.name}: Akumulasi kas spot pada ${targetKey} (0 Likuidasi, 1:1 Cash Asset).`;
                   } else {
-                    // TA SIGNAL ENGINE (Zero Random)
-                    const signal = computeAgentSignal(chosenAgent.id, targetKey, targetFeed, chosenAgent.dnaTraits || {});
                     isLong = signal.isLong;
                     rationale = signal.rationale;
                   }
