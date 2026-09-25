@@ -3312,13 +3312,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               ? activeRadarPool
               : ALL_INSTRUMENTS.filter(i => isMarketOpenNow(i.market)).map(i => i.symbol);
 
-            // Fair Multi-Agent Opportunity: Shuffle available agents so each bot gets equal scan priority per tick
-            const shuffledAgents = [...availableAgents].sort(() => Math.random() - 0.5);
-            let bestSetup = null;
+            // Pure Quantitative Multi-Agent Execution: All 16 bots evaluate and trade 100% INDEPENDENTLY
+            for (const ag of availableAgents) {
+              if (updated.length >= effectiveMaxPositions) break;
 
-            for (const ag of shuffledAgents) {
-              const agentRules = AGENT_MULTI_POS_RULES[ag.id] || { maxPerPair: 1, mode: 'SINGLE_BULLET', minCooldownSec: 25 };
               const agentPositions = updated.filter(p => p.agentId === ag.id);
+              if (agentPositions.length >= maxPositionsPerAgent) continue;
+
+              const agentRules = AGENT_MULTI_POS_RULES[ag.id] || { maxPerPair: 1, mode: 'SINGLE_BULLET', minCooldownSec: 25 };
               const toxicPairsToAvoid = [
                 ...(ag.dnaTraits?.toxicPairAvoided ? [ag.dnaTraits.toxicPairAvoided] : []),
                 ...(Array.isArray(ag.dnaTraits?.toxicPairs) ? ag.dnaTraits.toxicPairs : []),
@@ -3327,139 +3328,105 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
               const unheldSymbols = openMarketSymbols.filter(s => !agentPositions.some(p => p.symbol === s) && !toxicPairsToAvoid.includes(s));
 
-              // Check multi-market symbols against agent's strategy profile
+              // Each bot independently scans candidate instruments to find its best setup
               let agentBestSig = null;
               let agentHighestConf = 0;
-              let agentTargetKey = null;
-              let agentTargetFeed = null;
+              let targetKey = null;
+              let targetFeed = null;
 
-              for (const sym of unheldSymbols.slice(0, 20)) {
-                const targetFeed = currentFeeds[sym];
-                if (targetFeed && isMarketOpenNow(targetFeed.market)) {
-                  const sig = computeAgentSignal(ag.id, sym, targetFeed, ag.dnaTraits || {});
+              for (const sym of unheldSymbols.slice(0, 25)) {
+                const feed = currentFeeds[sym];
+                if (feed && isMarketOpenNow(feed.market)) {
+                  const sig = computeAgentSignal(ag.id, sym, feed, ag.dnaTraits || {});
                   const reqConf = 68 + (ag.dnaTraits?.confidenceBoost || 0);
 
                   if (sig.confidence >= reqConf && sig.confidence > agentHighestConf) {
                     agentHighestConf = sig.confidence;
                     agentBestSig = sig;
-                    agentTargetKey = sym;
-                    agentTargetFeed = targetFeed;
+                    targetKey = sym;
+                    targetFeed = feed;
                   }
                 }
               }
 
-              if (agentBestSig && agentTargetKey && agentTargetFeed) {
-                bestSetup = {
-                  chosenAgent: ag,
-                  targetKey: agentTargetKey,
-                  targetFeed: agentTargetFeed,
-                  agentRules,
-                  agentPositions,
-                  signal: agentBestSig,
-                  isScalingLayer: false
+              // If THIS bot finds a valid confluence setup (>= 68%), it immediately opens a position!
+              if (agentBestSig && targetKey && targetFeed && isMarketOpenNow(targetFeed.market)) {
+                const entry = targetFeed.price;
+                const isIdx = targetFeed.market === 'IDX';
+                const isForex = targetFeed.market === 'FOREX';
+                const isCrypto = targetFeed.market === 'CRYPTO';
+                const targetExecutionMode = resolveExecutionMode(arenaExecutionModeRef.current || 'HYBRID', ag.id, targetFeed.market);
+                const isSpot = targetExecutionMode === 'SPOT' || isIdx;
+                let isLong = isSpot ? true : agentBestSig.isLong;
+                let rationale = isSpot
+                  ? (isIdx
+                    ? `${ag.name}: Akumulasi spot pada ${targetKey} (Long-Only BEI Regulation).`
+                    : `[SPOT] ${ag.name}: Akumulasi kas spot pada ${targetKey} (0 Likuidasi, 1:1 Cash Asset).`)
+                  : agentBestSig.rationale;
+
+                let atrPct = isCrypto ? 0.012 : (isForex ? 0.0035 : (isIdx ? 0.010 : 0.006));
+                if (targetFeed.atr && targetFeed.price > 0) {
+                  const ratio = targetFeed.atr / targetFeed.price;
+                  if (!isNaN(ratio) && ratio >= 0.003 && ratio <= 0.025) {
+                    atrPct = ratio;
+                  }
+                }
+                const atr = entry * atrPct;
+                const slMultiplier = ag.id === 'CHAOS' ? 2.5 : (['STEAM', 'MUD'].includes(ag.id) ? 0.85 : (['LAVA', 'GEOTHERMAL'].includes(ag.id) ? 0.90 : 1.0));
+                const tpMultiplier = ag.id === 'CHAOS' ? 5.0 : (['STORM', 'LIGHTNING', 'TEMPEST'].includes(ag.id) ? 2.2 : (['STEAM', 'CYCLONE'].includes(ag.id) ? 1.8 : 1.5));
+                const sl = isLong ? (entry - (atr * slMultiplier)) : (entry + (atr * slMultiplier));
+                const tp1 = isLong ? (entry + (atr * tpMultiplier)) : (entry - (atr * tpMultiplier));
+                const tp2 = isLong ? (entry + (atr * (tpMultiplier + 1.0))) : (entry - (atr * (tpMultiplier + 1.0)));
+
+                const sizeLots = calculateInstrumentLotSize(
+                  targetFeed.market,
+                  targetKey,
+                  entry,
+                  capitalPerBotIdr,
+                  riskPerTradePct,
+                  targetExecutionMode,
+                  sl,
+                  ag,
+                  atr
+                );
+
+                let decimals = 2;
+                if (isIdx) decimals = 0;
+                else if (isForex) decimals = targetKey.includes('JPY') ? 3 : 5;
+                else if (targetFeed.market === 'CRYPTO' && entry < 0.001) decimals = 7;
+                else if (targetFeed.market === 'CRYPTO' && entry < 1) decimals = 4;
+                else decimals = 2;
+
+                const newPos = {
+                  id: `POS-${ag.id}-${targetKey}-${Date.now().toString().slice(-4)}-${Math.floor(Math.random() * 1000)}`,
+                  agentId: ag.id,
+                  symbol: targetKey,
+                  market: targetFeed.market,
+                  executionMode: targetExecutionMode,
+                  direction: isLong ? 'LONG' : 'SHORT',
+                  entryPrice: entry,
+                  currentPrice: entry,
+                  slPrice: Number(sl.toFixed(decimals)),
+                  tp1Price: Number(tp1.toFixed(decimals)),
+                  tp2Price: Number(tp2.toFixed(decimals)),
+                  sizeLots: sizeLots,
+                  leverage: getLeverage(targetFeed.market, targetKey, targetExecutionMode, targetFeed.atr && targetFeed.price ? ((targetFeed.atr / targetFeed.price) * 100) : 1.0),
+                  trailingStopActive: false,
+                  floatingPnlIdr: 0,
+                  floatingPnlUsd: 0,
+                  roiPct: 0,
+                  openedAt: new Date().toISOString(),
+                  rationale: rationale
                 };
-                break; // Fair execution: this bot gets its order executed in this tick!
-              }
-            }
 
-            if (bestSetup) {
-              const { chosenAgent, targetKey, targetFeed, agentRules, agentPositions, signal, isScalingLayer } = bestSetup;
-              if (targetFeed && isMarketOpenNow(targetFeed.market)) {
-                  const entry = targetFeed.price;
-                  const isIdx = targetFeed.market === 'IDX';
-                  const isForex = targetFeed.market === 'FOREX';
-                  const isCrypto = targetFeed.market === 'CRYPTO';
-                  const targetExecutionMode = resolveExecutionMode(arenaExecutionModeRef.current || 'HYBRID', chosenAgent.id, targetFeed.market);
-                  const isSpot = targetExecutionMode === 'SPOT' || isIdx;
-                  let isLong = true;
-                  let rationale = `${chosenAgent.role}: Multi-market opportunity setup on ${targetKey}.`;
-
-                  if (isSpot) {
-                    isLong = true; // Spot mode is strictly LONG ONLY (Cash Accumulation, 0 Liquidation Risk)
-                    rationale = isIdx
-                      ? `${chosenAgent.name}: Akumulasi spot pada ${targetKey} (Long-Only BEI Regulation).`
-                      : `[SPOT] ${chosenAgent.name}: Akumulasi kas spot pada ${targetKey} (0 Likuidasi, 1:1 Cash Asset).`;
-                  } else {
-                    isLong = signal.isLong;
-                    rationale = signal.rationale;
-                  }
-
-                  // Direction Alignment & Rationale for Multi-Position Scaling
-                  if (isScalingLayer) {
-                    const existingPos = agentPositions.find(p => p.symbol === targetKey);
-                    if (existingPos) {
-                      isLong = existingPos.direction === 'LONG';
-                    }
-                    const layerNum = agentPositions.filter(p => p.symbol === targetKey).length + 1;
-                    rationale = `[Layer #${layerNum} - ${agentRules.label}] ${rationale}`;
-                  }
-                  
-                  // Proportional dynamic ATR based on actual entry price
-                  let atrPct = isCrypto ? 0.012 : (isForex ? 0.0035 : (isIdx ? 0.010 : 0.006));
-                  if (targetFeed.atr && targetFeed.price > 0) {
-                    const ratio = targetFeed.atr / targetFeed.price;
-                    if (!isNaN(ratio) && ratio >= 0.003 && ratio <= 0.025) {
-                      atrPct = ratio;
-                    }
-                  }
-                  const atr = entry * atrPct;
-                  const slMultiplier = chosenAgent.id === 'CHAOS' ? 2.5 : (['STEAM', 'MUD'].includes(chosenAgent.id) ? 0.85 : (['LAVA', 'GEOTHERMAL'].includes(chosenAgent.id) ? 0.90 : 1.0));
-                  const tpMultiplier = chosenAgent.id === 'CHAOS' ? 5.0 : (['STORM', 'LIGHTNING', 'TEMPEST'].includes(chosenAgent.id) ? 2.2 : (['STEAM', 'CYCLONE'].includes(chosenAgent.id) ? 1.8 : 1.5));
-                  const sl = isLong ? (entry - (atr * slMultiplier)) : (entry + (atr * slMultiplier));
-                  const tp1 = isLong ? (entry + (atr * tpMultiplier)) : (entry - (atr * tpMultiplier));
-                  const tp2 = isLong ? (entry + (atr * (tpMultiplier + 1.0))) : (entry - (atr * (tpMultiplier + 1.0)));
-
-                  const sizeLots = calculateInstrumentLotSize(
-                    targetFeed.market,
-                    targetKey,
-                    entry,
-                    capitalPerBotIdr,
-                    riskPerTradePct,
-                    targetExecutionMode,
-                    sl,
-                    chosenAgent,
-                    atr
-                  );
-
-                  let decimals = 2;
-                  if (isIdx) decimals = 0;
-                  else if (isForex) decimals = targetKey.includes('JPY') ? 3 : 5;
-                  else if (targetFeed.market === 'CRYPTO' && entry < 0.001) decimals = 7;
-                  else if (targetFeed.market === 'CRYPTO' && entry < 1) decimals = 4;
-                  else decimals = 2;
-
-                  const newPos = {
-                    id: `POS-${chosenAgent.id}-${targetKey}-${Date.now().toString().slice(-4)}-${Math.floor(Math.random() * 1000)}`,
-                    agentId: chosenAgent.id,
-                    symbol: targetKey,
-                    market: targetFeed.market,
-                    executionMode: targetExecutionMode,
-                    direction: isLong ? 'LONG' : 'SHORT',
-                    entryPrice: entry,
-                    currentPrice: entry,
-                    slPrice: Number(sl.toFixed(decimals)),
-                    tp1Price: Number(tp1.toFixed(decimals)),
-                    tp2Price: Number(tp2.toFixed(decimals)),
-                    sizeLots: sizeLots,
-                    leverage: getLeverage(targetFeed.market, targetKey, targetExecutionMode, targetFeed.atr && targetFeed.price ? ((targetFeed.atr / targetFeed.price) * 100) : 1.0),
-                    trailingStopActive: false,
-                    floatingPnlIdr: 0,
-                    floatingPnlUsd: 0,
-                    roiPct: 0,
-                    openedAt: new Date().toISOString(),
-                    rationale: rationale
-                  };
-
-                  updated = [newPos, ...updated];
-                  const lotLabel = targetFeed.market === 'CRYPTO' ? `${sizeLots} ${targetKey.replace('USDT', '')}` : `${sizeLots}L`;
-                  const layerNum = isScalingLayer ? agentPositions.filter(p => p.symbol === targetKey).length + 1 : 1;
-                  const layerSuffix = layerNum > 1 ? ` (Layer #${layerNum} ${agentRules.mode === 'PYRAMID_PROFIT' ? 'Pyramid' : 'Scale-In'})` : '';
-                  const modeBadge = targetExecutionMode === 'SPOT' ? '🟢 SPOT' : '🟣 FUT';
-                  toastsToShow.push(`🚀 ${chosenAgent.avatar || '🤖'} ${chosenAgent.name} buka order ${targetKey}${layerSuffix} (${modeBadge} ${isLong ? 'LONG' : 'SHORT'} ${lotLabel}, Lev ${newPos.leverage})`);
-                }
+                updated = [newPos, ...updated];
+                const lotLabel = targetFeed.market === 'CRYPTO' ? `${sizeLots} ${targetKey.replace('USDT', '')}` : `${sizeLots}L`;
+                const modeBadge = targetExecutionMode === 'SPOT' ? '🟢 SPOT' : '🟣 FUT';
+                toastsToShow.push(`🚀 ${ag.avatar || '🤖'} ${ag.name} buka order ${targetKey} (${modeBadge} ${isLong ? 'LONG' : 'SHORT'} ${lotLabel}, Lev ${newPos.leverage})`);
               }
             }
           }
+        }
 
       // 4. Batch Dispatch State Updates sequentially and purely outside updater
       positionsRef.current = updated;
