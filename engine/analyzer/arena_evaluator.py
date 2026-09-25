@@ -283,7 +283,7 @@ class ArenaEvaluator:
             ag_trades = [t for t in journal if t.get("agentId") == ag_id]
             wins = sum(1 for t in ag_trades if t.get("isWin"))
             total = len(ag_trades)
-            win_rate = (wins / total * 100) if total > 0 else 50.0
+            win_rate = (wins / total * 100) if total > 0 else 0.0
             total_roi = sum(t.get("roiPct", 0) for t in ag_trades)
 
             ag["winRate"] = round(win_rate, 1)
@@ -297,4 +297,28 @@ class ArenaEvaluator:
 
         self._save_state()
         logger.info(f"Arena cycle complete: {len(remaining_positions)} active positions, {len(closed_this_cycle)} closed this cycle.")
+        return self.state
+
+    def reset_state(self) -> dict:
+        """
+        Hard resets the arena to an authentic clean slate (0 positions, 0 trades, 0.0 win rate).
+        """
+        agents_clean = []
+        for a in DEFAULT_AGENTS_SEED:
+            bot = dict(a)
+            bot["winRate"] = 0.0
+            bot["totalTrades"] = 0
+            bot["totalRoiPct"] = 0.0
+            bot["activePositionsCount"] = 0
+            agents_clean.append(bot)
+
+        self.state = {
+            "agents": agents_clean,
+            "positions": [],
+            "journal": [],
+            "session_id": int(datetime.now(timezone.utc).timestamp()),
+            "last_evaluated": datetime.now(timezone.utc).isoformat()
+        }
+        self._save_state()
+        logger.info("ArenaEvaluator: State successfully reset to 0.")
         return self.state

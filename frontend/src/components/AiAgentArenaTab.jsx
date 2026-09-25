@@ -2321,6 +2321,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
     const cloudState = data?.arena_state;
     if (!cloudState) return;
 
+    const resetTs = Number(localStorage.getItem('mbg_ai_arena_reset_ts') || 0);
+    const cloudEvaluatedTs = cloudState.last_evaluated ? new Date(cloudState.last_evaluated).getTime() : 0;
+
+    // Guard: Do not hydrate stale cloud state generated before user's explicit local reset
+    if (resetTs > 0 && cloudEvaluatedTs > 0 && cloudEvaluatedTs <= resetTs) {
+      return;
+    }
+
     // 1. Merge new journal trades closed by the 24/7 cloud runner while offline
     if (Array.isArray(cloudState.journal) && cloudState.journal.length > 0) {
       setJournal(prev => {
@@ -3008,8 +3016,33 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
             const frictionUsd = Math.max(0.05, notionalUsd * totalFrictionPct);
             const frictionIdr = isIdx ? (pos.sizeLots * 100 * pos.entryPrice * totalFrictionPct) : (frictionUsd * (usdToIdrRef.current || 16350));
 
-            const netPnlUsd = pnlUsd - frictionUsd;
-            const netPnlIdr = pnlIdr - frictionIdr;
+            // Accurate fill delta based on final exitPrice (not raw overshoot tick)
+            const closeDelta = pos.direction === 'LONG' ? (exitPrice - pos.entryPrice) : (pos.entryPrice - exitPrice);
+            let finalGrossPnlIdr = 0;
+            let finalGrossPnlUsd = 0;
+
+            if (isIdx) {
+              finalGrossPnlIdr = closeDelta * pos.sizeLots * 100;
+              finalGrossPnlUsd = finalGrossPnlIdr / (usdToIdrRef.current || 16350);
+            } else if (pos.market === 'US') {
+              finalGrossPnlUsd = closeDelta * pos.sizeLots;
+              finalGrossPnlIdr = finalGrossPnlUsd * (usdToIdrRef.current || 16350);
+            } else if (['US30', 'US500', 'NAS100', 'DAX40', 'NIKKEI', 'HSI'].includes(pos.symbol)) {
+              finalGrossPnlUsd = closeDelta * pos.sizeLots * 1;
+              finalGrossPnlIdr = finalGrossPnlUsd * (usdToIdrRef.current || 16350);
+            } else if (pos.symbol.includes('XAU') || pos.symbol.includes('XAG') || pos.market === 'FUTURES') {
+              finalGrossPnlUsd = closeDelta * pos.sizeLots * 100;
+              finalGrossPnlIdr = finalGrossPnlUsd * (usdToIdrRef.current || 16350);
+            } else if (isForex) {
+              finalGrossPnlUsd = closeDelta * pos.sizeLots * 100000;
+              finalGrossPnlIdr = finalGrossPnlUsd * (usdToIdrRef.current || 16350);
+            } else {
+              finalGrossPnlUsd = closeDelta * pos.sizeLots;
+              finalGrossPnlIdr = finalGrossPnlUsd * (usdToIdrRef.current || 16350);
+            }
+
+            const netPnlUsd = finalGrossPnlUsd - frictionUsd;
+            const netPnlIdr = finalGrossPnlIdr - frictionIdr;
             const netRoiPct = notionalUsd > 0 ? (netPnlUsd / notionalUsd) * 100 * (pos.leverage ? (parseInt(pos.leverage.replace(/\D/g, ''), 10) || 1) : 1) : roiPct;
 
             closedTradesToAdd.push({
@@ -3024,8 +3057,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               exitPrice: exitPrice,
               slPrice: pos.slPrice,
               tp1Price: pos.tp1Price,
-              grossPnlUsd: Number(pnlUsd.toFixed(2)),
-              grossPnlIdr: Number(pnlIdr.toFixed(0)),
+              grossPnlUsd: Number(finalGrossPnlUsd.toFixed(2)),
+              grossPnlIdr: Number(finalGrossPnlIdr.toFixed(0)),
               feeUsd: Number(frictionUsd.toFixed(2)),
               feeIdr: Number(frictionIdr.toFixed(0)),
               pnlUsd: Number(netPnlUsd.toFixed(2)),
@@ -3093,26 +3126,42 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
             const botOpenPositions = updated.filter(p => p.agentId === ag.id);
             updated = updated.filter(p => p.agentId !== ag.id);
 
-            const liquidationTrades = botOpenPositions.map(pos => ({
-              id: `LIQ-${pos.id}-${Date.now()}`,
-              agentId: ag.id,
-              symbol: pos.symbol,
-              market: pos.market,
-              direction: pos.direction,
-              executionMode: pos.executionMode || (pos.market === 'IDX' ? 'SPOT' : 'FUTURES'),
-              leverage: pos.leverage,
-              entryPrice: pos.entryPrice,
-              exitPrice: pos.currentPrice,
-              slPrice: pos.slPrice,
-              tp1Price: pos.tp1Price,
-              pnlUsd: pos.floatingPnlUsd || 0,
-              pnlIdr: pos.floatingPnlIdr || 0,
-              roiPct: pos.roiPct || -100,
-              rrAchieved: -1.0,
-              exitReason: 'MARGIN_CALL_LIQUIDATION',
-              closedAt: new Date().toISOString(),
-              isWin: false
-            }));
+            const liquidationTrades = botOpenPositions.map(pos => {
+              const notionalUsd = pos.market === 'IDX'
+                ? (pos.sizeLots * 100 * pos.entryPrice / (usdToIdrRef.current || 16350))
+                : (pos.market === 'FOREX' ? (pos.sizeLots * 100000) : (pos.sizeLots * (pos.symbol.includes('XAU') ? 100 : pos.entryPrice)));
+              const frictionUsd = Math.max(0.05, notionalUsd * 0.0012);
+              const frictionIdr = pos.market === 'IDX' ? (pos.sizeLots * 100 * pos.entryPrice * 0.0012) : (frictionUsd * (usdToIdrRef.current || 16350));
+              const rawPnlUsd = pos.floatingPnlUsd || 0;
+              const rawPnlIdr = pos.floatingPnlIdr || 0;
+              const netPnlUsd = rawPnlUsd - frictionUsd;
+              const netPnlIdr = rawPnlIdr - frictionIdr;
+
+              return {
+                id: `LIQ-${pos.id}-${Date.now()}`,
+                agentId: ag.id,
+                symbol: pos.symbol,
+                market: pos.market,
+                direction: pos.direction,
+                executionMode: pos.executionMode || (pos.market === 'IDX' ? 'SPOT' : 'FUTURES'),
+                leverage: pos.leverage,
+                entryPrice: pos.entryPrice,
+                exitPrice: pos.currentPrice,
+                slPrice: pos.slPrice,
+                tp1Price: pos.tp1Price,
+                grossPnlUsd: Number(rawPnlUsd.toFixed(2)),
+                grossPnlIdr: Number(rawPnlIdr.toFixed(0)),
+                feeUsd: Number(frictionUsd.toFixed(2)),
+                feeIdr: Number(frictionIdr.toFixed(0)),
+                pnlUsd: Number(netPnlUsd.toFixed(2)),
+                pnlIdr: Number(netPnlIdr.toFixed(0)),
+                roiPct: pos.roiPct || -100,
+                rrAchieved: -1.0,
+                exitReason: 'MARGIN_CALL_LIQUIDATION',
+                closedAt: new Date().toISOString(),
+                isWin: false
+              };
+            });
 
             if (liquidationTrades.length > 0) {
               closedTradesToAdd.push(...liquidationTrades);
@@ -3423,8 +3472,19 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
     const target = positionsRef.current.find(p => p.id === posId);
     if (!target) return;
 
+    const isIdx = target.market === 'IDX';
+    const isForex = target.market === 'FOREX';
+    const notionalUsd = isIdx
+      ? (target.sizeLots * 100 * target.entryPrice / (usdToIdrRef.current || 16350))
+      : (isForex ? (target.sizeLots * 100000) : (target.sizeLots * (target.symbol.includes('XAU') ? 100 : target.entryPrice)));
+    const totalFrictionPct = 0.0012;
+    const frictionUsd = Math.max(0.05, notionalUsd * totalFrictionPct);
+    const frictionIdr = isIdx ? (target.sizeLots * 100 * target.entryPrice * totalFrictionPct) : (frictionUsd * (usdToIdrRef.current || 16350));
+
     const pnlUsd = target.market === 'IDX' ? (target.floatingPnlIdr / (usdToIdrRef.current || 16350)) : target.floatingPnlUsd;
     const pnlIdr = target.market === 'IDX' ? target.floatingPnlIdr : (target.floatingPnlUsd * (usdToIdrRef.current || 16350));
+    const netPnlUsd = pnlUsd - frictionUsd;
+    const netPnlIdr = pnlIdr - frictionIdr;
 
     const closedEntry = {
       id: `TRD-MANUAL-${posId}-${Date.now()}`,
@@ -3438,20 +3498,24 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
       exitPrice: target.currentPrice,
       slPrice: target.slPrice,
       tp1Price: target.tp1Price,
-      pnlUsd: Number(pnlUsd.toFixed(2)),
-      pnlIdr: Number(pnlIdr.toFixed(0)),
+      grossPnlUsd: Number(pnlUsd.toFixed(2)),
+      grossPnlIdr: Number(pnlIdr.toFixed(0)),
+      feeUsd: Number(frictionUsd.toFixed(2)),
+      feeIdr: Number(frictionIdr.toFixed(0)),
+      pnlUsd: Number(netPnlUsd.toFixed(2)),
+      pnlIdr: Number(netPnlIdr.toFixed(0)),
       roiPct: target.roiPct,
       rrAchieved: Number(((target.roiPct || 0) / 1.5).toFixed(2)),
       exitReason: 'MANUAL_CLOSE',
       closedAt: new Date().toISOString(),
-      isWin: pnlIdr > 0
+      isWin: netPnlIdr > 0
     };
 
     const nextPositions = positionsRef.current.filter(p => p.id !== posId);
     positionsRef.current = nextPositions;
     setPositions(nextPositions);
     setJournal(j => [closedEntry, ...j]);
-    showToast(`Posisi ${target.symbol} ditutup manual. PnL: ${formatIdr(pnlIdr)}`);
+    showToast(`Posisi ${target.symbol} ditutup manual. Net PnL: ${formatIdr(netPnlIdr)}`);
   }, [showToast]);
 
   // Generate Comprehensive Epoch Performance Report & Compute Self-Improvement Parameter Adaptations
@@ -3762,6 +3826,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
       try {
         localStorage.setItem('mbg_ai_arena_session_active_seconds', '0');
         localStorage.removeItem('mbg_ai_arena_session_start');
+        localStorage.setItem('mbg_ai_arena_positions', '[]');
+        localStorage.setItem('mbg_ai_arena_journal', '[]');
+        localStorage.setItem('mbg_ai_arena_running', 'false');
+        localStorage.setItem('mbg_ai_arena_reset_ts', String(Date.now()));
       } catch (e) {}
 
       // 5. Tutup modal konfirmasi dan buka modal laporan sesi untuk evaluasi user

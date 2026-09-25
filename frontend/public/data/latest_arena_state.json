@@ -15,10 +15,10 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "totalRoiPct": 0.0,
+      "activePositionsCount": 0
     },
     {
       "id": "FIRE",
@@ -35,9 +35,9 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
+      "totalRoiPct": 0.0,
       "activePositionsCount": 0
     },
     {
@@ -55,9 +55,9 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
+      "totalRoiPct": 0.0,
       "activePositionsCount": 0
     },
     {
@@ -75,9 +75,9 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
+      "totalRoiPct": 0.0,
       "activePositionsCount": 0
     },
     {
@@ -95,10 +95,10 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "totalRoiPct": 0.0,
+      "activePositionsCount": 0
     },
     {
       "id": "STORM",
@@ -115,9 +115,9 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
+      "totalRoiPct": 0.0,
       "activePositionsCount": 0
     },
     {
@@ -135,9 +135,9 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
+      "totalRoiPct": 0.0,
       "activePositionsCount": 0
     },
     {
@@ -155,9 +155,9 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
+      "totalRoiPct": 0.0,
       "activePositionsCount": 0
     },
     {
@@ -175,10 +175,10 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "totalRoiPct": 0.0,
+      "activePositionsCount": 0
     },
     {
       "id": "SAND",
@@ -195,10 +195,10 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "totalRoiPct": 0.0,
+      "activePositionsCount": 0
     },
     {
       "id": "TYPHOON",
@@ -215,10 +215,10 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "totalRoiPct": 0.0,
+      "activePositionsCount": 0
     },
     {
       "id": "GEYSER",
@@ -235,10 +235,10 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "totalRoiPct": 0.0,
+      "activePositionsCount": 0
     },
     {
       "id": "BLIZZARD",
@@ -255,10 +255,10 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "totalRoiPct": 0.0,
+      "activePositionsCount": 0
     },
     {
       "id": "VOLCANO",
@@ -275,10 +275,10 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "totalRoiPct": 0.0,
+      "activePositionsCount": 0
     },
     {
       "id": "AVATAR",
@@ -295,10 +295,10 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "totalRoiPct": 0.0,
+      "activePositionsCount": 0
     },
     {
       "id": "CHAOS",
@@ -315,165 +315,14 @@
         "confidenceBoost": 0,
         "trailingTightness": 1.0
       },
-      "winRate": 50.0,
+      "winRate": 0.0,
       "totalTrades": 0,
-      "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "totalRoiPct": 0.0,
+      "activePositionsCount": 0
     }
   ],
-  "positions": [
-    {
-      "id": "POS-17C868AB",
-      "agentId": "WATER",
-      "symbol": "BTCUSDT",
-      "market": "CRYPTO",
-      "direction": "LONG",
-      "entryPrice": 63500.0,
-      "currentPrice": 63500.0,
-      "slPrice": 62547.5,
-      "tp1Price": 65405.0,
-      "tp2Price": 66675.0,
-      "roiPct": 0.0,
-      "trailingStopActive": false,
-      "openedAt": "2026-09-25T10:26:31.143513+00:00"
-    },
-    {
-      "id": "POS-26ACE2C7",
-      "agentId": "STEAM",
-      "symbol": "BTCUSDT",
-      "market": "CRYPTO",
-      "direction": "LONG",
-      "entryPrice": 63500.0,
-      "currentPrice": 63500.0,
-      "slPrice": 62547.5,
-      "tp1Price": 65405.0,
-      "tp2Price": 66675.0,
-      "roiPct": 0.0,
-      "trailingStopActive": false,
-      "openedAt": "2026-09-25T10:26:31.143568+00:00"
-    },
-    {
-      "id": "POS-63D7EAD8",
-      "agentId": "MAGMA",
-      "symbol": "BTCUSDT",
-      "market": "CRYPTO",
-      "direction": "LONG",
-      "entryPrice": 63500.0,
-      "currentPrice": 63500.0,
-      "slPrice": 62547.5,
-      "tp1Price": 65405.0,
-      "tp2Price": 66675.0,
-      "roiPct": 0.0,
-      "trailingStopActive": false,
-      "openedAt": "2026-09-25T10:26:31.143600+00:00"
-    },
-    {
-      "id": "POS-C77FDEF7",
-      "agentId": "SAND",
-      "symbol": "BTCUSDT",
-      "market": "CRYPTO",
-      "direction": "LONG",
-      "entryPrice": 63500.0,
-      "currentPrice": 63500.0,
-      "slPrice": 62547.5,
-      "tp1Price": 65405.0,
-      "tp2Price": 66675.0,
-      "roiPct": 0.0,
-      "trailingStopActive": false,
-      "openedAt": "2026-09-25T10:26:31.143610+00:00"
-    },
-    {
-      "id": "POS-FB068D4A",
-      "agentId": "TYPHOON",
-      "symbol": "BTCUSDT",
-      "market": "CRYPTO",
-      "direction": "LONG",
-      "entryPrice": 63500.0,
-      "currentPrice": 63500.0,
-      "slPrice": 62547.5,
-      "tp1Price": 65405.0,
-      "tp2Price": 66675.0,
-      "roiPct": 0.0,
-      "trailingStopActive": false,
-      "openedAt": "2026-09-25T10:26:31.143619+00:00"
-    },
-    {
-      "id": "POS-4CAC4B9F",
-      "agentId": "GEYSER",
-      "symbol": "BTCUSDT",
-      "market": "CRYPTO",
-      "direction": "LONG",
-      "entryPrice": 63500.0,
-      "currentPrice": 63500.0,
-      "slPrice": 62547.5,
-      "tp1Price": 65405.0,
-      "tp2Price": 66675.0,
-      "roiPct": 0.0,
-      "trailingStopActive": false,
-      "openedAt": "2026-09-25T10:26:31.143627+00:00"
-    },
-    {
-      "id": "POS-D3A94FB0",
-      "agentId": "BLIZZARD",
-      "symbol": "BTCUSDT",
-      "market": "CRYPTO",
-      "direction": "LONG",
-      "entryPrice": 63500.0,
-      "currentPrice": 63500.0,
-      "slPrice": 62547.5,
-      "tp1Price": 65405.0,
-      "tp2Price": 66675.0,
-      "roiPct": 0.0,
-      "trailingStopActive": false,
-      "openedAt": "2026-09-25T10:26:31.143635+00:00"
-    },
-    {
-      "id": "POS-F6353414",
-      "agentId": "VOLCANO",
-      "symbol": "BTCUSDT",
-      "market": "CRYPTO",
-      "direction": "LONG",
-      "entryPrice": 63500.0,
-      "currentPrice": 63500.0,
-      "slPrice": 62547.5,
-      "tp1Price": 65405.0,
-      "tp2Price": 66675.0,
-      "roiPct": 0.0,
-      "trailingStopActive": false,
-      "openedAt": "2026-09-25T10:26:31.143643+00:00"
-    },
-    {
-      "id": "POS-EDBF3D24",
-      "agentId": "AVATAR",
-      "symbol": "BTCUSDT",
-      "market": "CRYPTO",
-      "direction": "LONG",
-      "entryPrice": 63500.0,
-      "currentPrice": 63500.0,
-      "slPrice": 62547.5,
-      "tp1Price": 65405.0,
-      "tp2Price": 66675.0,
-      "roiPct": 0.0,
-      "trailingStopActive": false,
-      "openedAt": "2026-09-25T10:26:31.143653+00:00"
-    },
-    {
-      "id": "POS-D4A04A52",
-      "agentId": "CHAOS",
-      "symbol": "BTCUSDT",
-      "market": "CRYPTO",
-      "direction": "LONG",
-      "entryPrice": 63500.0,
-      "currentPrice": 63500.0,
-      "slPrice": 62547.5,
-      "tp1Price": 65405.0,
-      "tp2Price": 66675.0,
-      "roiPct": 0.0,
-      "trailingStopActive": false,
-      "openedAt": "2026-09-25T10:26:31.143662+00:00"
-    }
-  ],
+  "positions": [],
   "journal": [],
-  "session_id": 1,
-  "last_evaluated": "2026-09-25T10:39:50.712246+00:00"
+  "session_id": 1790333216,
+  "last_evaluated": "2026-09-25T10:46:56.375308+00:00"
 }

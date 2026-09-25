@@ -78,9 +78,14 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 - **[CLEAN AUDIT GENESIS] Purge Mock History & Fresh Organic Season**:
   - **Pembersihan Log Dummy**: Menghapus `DEFAULT_EPOCH_REPORTS` sintetis (12.450 fake trades) dan menyaring data dummy lawas dari `localStorage`.
   - **Turnamen Organik 1 Bulan**: Seluruh 16 bot kini memulai kompetisi pembuktian performa dari titik nol (0 trade riil), memastikan data evaluasi sebelum ekspor ke EA MT5 100% murni dan teruji secara objektif.
+-**[POST-RESET SANITIZATION & MATHEMATICAL RECONCILIATION] Audit Hardening Pasca-Reset**:
+  - **Sinkronisasi Anti-Resurrection Cloud**: Menambahkan guard timestamp `mbg_ai_arena_reset_ts` pada client hydration agar file JSON cloud lawas tidak membangkitkan kembali posisi yang sudah di-reset oleh user.
+  - **Rekonsiliasi Harga Eksekusi Riil**: Menghitung `grossPnlUsd/grossPnlIdr` tepat dari harga penutupan final (`exitPrice`), bukan harga overshoot tick pasar saat sinyal terpicu, menjamin kesesuaian matematika 1:1 antara selisih harga entry/exit dengan saldo akun.
+  - **Friction Universal**: Menambahkan potongan komisi & slippage 0.12% ke penutupan posisi manual (`handleManualClose`) dan likuidasi margin call (`LIQ-`), menjamin integritas skema jurnal seragam di seluruh jalur eksekusi.
+  - **Baseline Win Rate Logis**: Menormalisasi default win rate agen saat 0 trade menjadi 0.0% (bukan 50.0%).
 - **[QA/QC & CERTIFICATION]**:
-  - Python Verification: Unit test `ArenaEvaluator` backend cycle lulus verifikasi 16 bot dengan deduksi friction bursa riil.
-  - Frontend Build: Vite production build 80 modules compiled clean dalam 2.22s dengan 0 errors/warnings.
+  - Python Verification: Unit test `ArenaEvaluator` backend cycle & `test_mcp_server`/`test_smoke` lulus 13/13 (0.011s).
+  - Frontend Build: Vite production build 80 modules compiled clean dalam 1.65s dengan 0 errors/warnings.
   - Zero Secret Leak: 0 credentials/keys exposed.
 
 ---
