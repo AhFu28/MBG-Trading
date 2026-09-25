@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   hourly-radar:
@@ -38,6 +38,13 @@ jobs:
           INDEX_ALPHA_API_KEY: ${{ secrets.INDEX_ALPHA_API_KEY }}
         run: |
           python engine/run_pipeline.py --mode hourly_crypto_macro
+
+      - name: Commit & Push Updated Cockpit Data Bundle & Arena State
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add frontend/public/data/latest_cockpit_bundle.json frontend/public/data/latest_arena_state.json || true
+          git diff --staged --quiet || (git commit -m "chore(data): automated 24/7 arena & market bundle refresh [skip ci]" && git push) || true
       - name: Send Telegram Failure Alert
         if: failure()
         run: |

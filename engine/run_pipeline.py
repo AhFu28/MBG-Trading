@@ -338,6 +338,33 @@ def main():
     except Exception as e:
         logger.error(f"Advanced integration pipeline error: {e}")
 
+    # 3.5 AI Multi-Agent Arena Autonomous 24/7 Evaluator Cycle
+    arena_state = {}
+    try:
+        from analyzer.arena_evaluator import ArenaEvaluator
+        evaluator = ArenaEvaluator()
+
+        arena_live_prices = {}
+        for c in (crypto_spot_10 or []):
+            sym = c.get("symbol") or c.get("ticker")
+            if sym:
+                arena_live_prices[sym] = {"price": c.get("price", 0), "changePct": c.get("change_24h", 0)}
+        if crypto_futures_data and "funding_rates" in crypto_futures_data:
+            for fr in crypto_futures_data["funding_rates"]:
+                sym = fr.get("symbol")
+                if sym and fr.get("mark_price"):
+                    arena_live_prices[sym] = {"price": fr.get("mark_price", 0), "changePct": 0.0}
+        if forex_data and "pairs" in forex_data:
+            for p in forex_data["pairs"]:
+                sym = p.get("symbol")
+                if sym:
+                    arena_live_prices[sym] = {"price": p.get("price", 0), "changePct": p.get("change_pct", 0)}
+
+        arena_state = evaluator.evaluate_cycle(arena_live_prices)
+        logger.info(f"Arena Evaluator cycle finished: {len(arena_state.get('positions', []))} active positions.")
+    except Exception as e:
+        logger.warning(f"ArenaEvaluator cycle failed: {e}")
+
     # 4. Consolidate Master Cockpit Bundle (Preserve existing data if running hourly)
     existing_bundle = {}
     bundle_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "public", "data", "latest_cockpit_bundle.json")
@@ -384,6 +411,7 @@ def main():
         "crypto_futures": crypto_futures_data or existing_bundle.get("crypto_futures", {}),
         "forex_intelligence": forex_data or existing_bundle.get("forex_intelligence", {}),
         "us_stocks": us_data or existing_bundle.get("us_stocks", {}),
+        "arena_state": arena_state or existing_bundle.get("arena_state", {}),
         "mode": args.mode,
         "section_timestamps": {
             "idx": datetime.now(timezone.utc).isoformat() if idx_data else existing_bundle.get("section_timestamps", {}).get("idx"),

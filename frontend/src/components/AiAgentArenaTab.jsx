@@ -2597,6 +2597,35 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
   const journalRef = useRef(journal);
   journalRef.current = journal;
 
+  // Hydrate offline 24/7 background progress from Cloud / Master Data Bundle (Option 1)
+  useEffect(() => {
+    const cloudState = data?.arena_state;
+    if (!cloudState) return;
+
+    // 1. Merge new journal trades closed by the 24/7 cloud runner while offline
+    if (Array.isArray(cloudState.journal) && cloudState.journal.length > 0) {
+      setJournal(prev => {
+        const existingIds = new Set(prev.map(j => j.id));
+        const newFromCloud = cloudState.journal.filter(j => !existingIds.has(j.id));
+        if (newFromCloud.length === 0) return prev;
+        const merged = [...prev, ...newFromCloud];
+        try { localStorage.setItem('mbg_ai_arena_journal', JSON.stringify(merged)); } catch (e) {}
+        return merged;
+      });
+    }
+
+    // 2. Synchronize active positions if local is empty or cloud has newer positions
+    if (Array.isArray(cloudState.positions) && cloudState.positions.length > 0) {
+      setPositions(prev => {
+        if (prev.length === 0) {
+          try { localStorage.setItem('mbg_ai_arena_positions', JSON.stringify(cloudState.positions)); } catch (e) {}
+          return cloudState.positions;
+        }
+        return prev;
+      });
+    }
+  }, [data?.arena_state]);
+
   // Modal Dialog States
   const [journalModal, setJournalModal] = useState({ isOpen: false, agentId: 'ALL', agentName: 'Semua Elemen' });
   const [rulesModalOpen, setRulesModalOpen] = useState(false);
