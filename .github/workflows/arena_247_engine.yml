@@ -2,7 +2,7 @@ name: 24/7 AI Multi-Agent Arena Continuous Trading Engine
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Continuous high-frequency execution every 5 minutes (24/7 Unlimited)
+    - cron: '2,7,12,17,22,27,32,37,42,47,52,57 * * * *' # Off-peak minutes to avoid GitHub Actions scheduler queue delays
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
 concurrency:
@@ -35,7 +35,12 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add frontend/public/data/latest_arena_state.json || true
-          git diff --staged --quiet || (git commit -m "chore(arena): 24/7 multi-tick state update [skip ci]" && git push) || true
+          if ! git diff --staged --quiet; then
+            git commit -m "chore(arena): 24/7 multi-tick state update [skip ci]"
+            for i in 1 2 3; do
+              git pull --rebase -X theirs origin main && git push && break || sleep 2
+            done
+          fi
 
       - name: Send Telegram Failure Alert
         if: failure()

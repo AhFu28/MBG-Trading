@@ -25,7 +25,8 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
   - **Continuous Multi-Tick Micro-Loop**: Menjalankan evaluasi berulang setiap 30 detik dalam window 4 menit per job runner untuk 16 AI Trading Agents tanpa jeda round-robin.
   - **Friction & Ratchet Parity**: Menjaga integritas deduksi fee bursa Bitget 0.12% dan dynamic ratchet trailing stop (40% distance ke TP1 mengunci 30% profit).
 - **[CI/CD AUTOMATION] Dedicated High-Frequency Workflow (`arena_247_engine.yml`)**:
-  - **5-Minute Cron Schedule**: Mengaktifkan jadwal cron per 5 menit (`*/5 * * * *`) dengan auto-commit langsung ke `frontend/public/data/latest_arena_state.json`.
+  - **Off-Peak Cron Schedule**: Mengaktifkan jadwal cron per 5 menit pada menit ganjil/off-peak (`2,7,12,17,22,27,32,37,42,47,52,57 * * * *`) untuk menghindari antrian delay antarmuka server GitHub Actions pada jam-jam sibuk.
+  - **Resilient Git Rebase Retry Loop**: Menambahkan proteksi `git pull --rebase -X theirs origin main && git push` dengan loop 3x retry untuk mencegah kegagalan commit non-fast-forward akibat benturan *concurrent push* antar-workflow.
   - **Client Hydration Instant Sync**: Frontend web secara otomatis membaca state cloud terbaru dan menggabungkan posisi serta riwayat trade yang terjadi selama pengguna offline.
 - **[QA/QC & CERTIFICATION]**:
   - Unit Test Suite: 16/16 tests passed in 0.038s (`test_arena_runner_247.py` + full test suite).
