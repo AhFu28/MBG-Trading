@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 /**
  * DataIntegrityModal - Institutional Data Provenance & Source Health Verification
@@ -24,15 +24,47 @@ export default function DataIntegrityModal({
   const bundleStatus = isBundleFresh ? 'HEALTHY' : (isBundleWarning ? 'DEGRADED' : 'STALE');
   const bundleColor = isBundleFresh ? '#10b981' : (isBundleWarning ? '#f59e0b' : '#ef4444');
 
-  // 2. IDX Feed Status
+  // 2. AI Multi-Agent Arena 24/7 State & Telemetry
+  const [arenaData, setArenaData] = useState(null);
+  const [isArenaLoading, setIsArenaLoading] = useState(false);
+
+  const fetchArena = useCallback(async () => {
+    setIsArenaLoading(true);
+    try {
+      const res = await fetch(`/data/latest_arena_state.json?t=${Date.now()}`, { cache: 'no-cache' });
+      if (res.ok) {
+        const json = await res.json();
+        setArenaData(json);
+      }
+    } catch (e) {
+      console.warn('Failed to load arena state in provenance modal:', e);
+    } finally {
+      setIsArenaLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchArena();
+    }
+  }, [isOpen, fetchArena]);
+
+  const arenaDate = arenaData?.last_evaluated ? new Date(arenaData.last_evaluated) : null;
+  const arenaAgeMin = arenaDate ? Math.max(0, Math.round((Date.now() - arenaDate.getTime()) / 60000)) : 999;
+  const isArenaFresh = arenaAgeMin <= 15;
+  const isArenaWarning = arenaAgeMin > 15 && arenaAgeMin <= 60;
+  const arenaStatus = isArenaFresh ? '24/7 ACTIVE' : (isArenaWarning ? 'DELAYED' : 'OFFLINE');
+  const arenaColor = isArenaFresh ? '#10b981' : (isArenaWarning ? '#f59e0b' : '#ef4444');
+
+  // 3. IDX Feed Status
   const idxStatus = 'ACTIVE';
   const idxColor = '#10b981';
 
-  // 3. Binance Crypto WS
+  // 4. Binance Crypto WS
   const wsColor = isWsConnected ? '#10b981' : '#f59e0b';
   const wsStatusText = isWsConnected ? 'CONNECTED (REALTIME)' : 'FALLBACK POLLING (45S)';
 
-  // 4. Gemini Model Info
+  // 5. Gemini Model Info
   const geminiModel = data?.model_used || data?.daily_snips?.model_used || 'gemini-3.8-flash (Auto-Discovered)';
 
   // Format WIB time
@@ -58,6 +90,15 @@ export default function DataIntegrityModal({
       status: bundleStatus,
       statusColor: bundleColor,
       details: `222 Berita Terverifikasi, Klaster Konglomerasi, & Trade Plans. ${bundleAgeMin > 360 ? '⚠️ Data > 6 jam — harap jalankan pipeline EOD.' : 'Pipeline sinkron.'}`
+    },
+    {
+      name: 'AI Multi-Agent Arena 24/7 Engine',
+      endpoint: '/data/latest_arena_state.json',
+      provider: 'GitHub Actions Continuous Micro-Loop (30s Ticks)',
+      lastUpdate: isArenaLoading ? 'Menyinkronkan...' : (arenaDate ? `${formatWib(arenaDate)} (${arenaAgeMin} mnt lalu)` : 'Menunggu sync...'),
+      status: arenaStatus,
+      statusColor: arenaColor,
+      details: `${arenaData?.agents?.length || 16} AI Agents Syndicate, ${arenaData?.positions?.length || 0} Posisi Terbuka. Evaluasi micro-tick 30s per siklus 5 mnt.`
     },
     {
       name: 'Bursa Efek Indonesia (IDX BEI)',
@@ -182,15 +223,16 @@ export default function DataIntegrityModal({
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              background: bundleColor,
-              boxShadow: `0 0 8px ${bundleColor}`
+              background: (!isBundleFresh || !isArenaFresh) ? '#f59e0b' : '#10b981',
+              boxShadow: `0 0 8px ${(!isBundleFresh || !isArenaFresh) ? '#f59e0b' : '#10b981'}`
             }} />
-            <span style={{ fontSize: '11px', fontWeight: '700', color: bundleColor }}>
-              {isBundleFresh ? 'STATUS KESELURUHAN: DATA SEHAT & TERVERIFIKASI' : 'STATUS KESELURUHAN: PERLU PERIKSA KEDALUWARSAN'}
+            <span style={{ fontSize: '11px', fontWeight: '700', color: (!isBundleFresh || !isArenaFresh) ? '#f59e0b' : '#10b981' }}>
+              {(isBundleFresh && isArenaFresh) ? 'STATUS KESELURUHAN: DATA SEHAT & TERVERIFIKASI' : 'STATUS KESELURUHAN: PERLU PERIKSA KEDALUWARSAN'}
             </span>
           </div>
           <button
             onClick={() => {
+              fetchArena();
               if (onRefetchAll) onRefetchAll();
             }}
             style={{
