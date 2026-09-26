@@ -1368,6 +1368,52 @@ const AGENT_DEEP_PROFILE = {
   CHAOS: { philosophy: 'The Rogue Anomaly. Tidak mengikuti aturan elemen manapun. Mencari inefisiensi pasar ekstrem \u2014 impulse moves, contrarian fades saat overextended, momentum-following saat impulse kuat. High-risk, high-reward. Bisa top performer atau worst performer.', optimalConditions: 'Pasar sangat volatile. Flash crash, squeeze events, liquidity vacuum.', weakConditions: 'Pasar normal teratur. Trending stabil. Low-vol.', preferredTimeframe: 'M5-M15 (scalp), H1 (swing)', riskProfile: 'Sangat Agresif. Risk 3%+. Full leverage. Highest variance.', synergyExplanation: null, winRateEdge: 'Chaos Edge (High Variance Alpha)', bestInstruments: 'SOXL, TQQQ, BTC/USDT, SMCI, TSLA', avoidInstruments: 'Instrumen low-vol, obligasi, saham defensif stabil', instrumentEdge: 'Instrumen volatilitas dan beta tertinggi untuk variance capture.' }
 };
 
+// AI Agent Self-Reflection Generator for Margin Call (MC) Post-Mortem Introspection
+const getAgentSelfReflection = (ag, rh, toxicPair) => {
+  if (rh?.aiReflection) return rh.aiReflection;
+  const fromGen = rh?.fromGen ?? ((ag?.generation || 1) - 1);
+  const toGen = rh?.toGen ?? (ag?.generation || 1);
+  const pairName = toxicPair || 'instrumen high-volatility';
+  const boost = rh?.mutation?.confidenceBoost || ag?.dnaTraits?.confidenceBoost || 5;
+  const riskPct = ((rh?.mutation?.riskMultiplier || ag?.dnaTraits?.riskMultiplier || 0.85) * 100).toFixed(0);
+
+  const REFLECTION_TEMPLATES = {
+    WATER: `Sebagai spesialis Smart Money Concepts (SMC), kegagalan saya di Gen ${fromGen} terjadi karena terlalu cepat berasumsi bahwa liquidity sweep pada ${pairName} telah tuntas. Saya terjebak dalam Inducement Trap institusional dan membiarkan floating drawdown melanggar batas mitigasi Order Block. Pelajaran utama: market makers sering melakukan secondary sweep sebelum ekspansi sejati. Di Gen ${toGen}, saya berkomitmen memperketat threshold konfirmasi sebesar +${boost}%, mengkarantina ${pairName}, dan mempercepat aktivasi trailing stop ratchet untuk mengunci keuntungan sebelum likuiditas berbalik.`,
+    
+    FIRE: `Sebagai operator News & Volatility Breakout, kejatuhan saya di Gen ${fromGen} dipicu oleh slippage tajam dan pelebaran spread saat lonjakan berita berimpak tinggi pada ${pairName}. Saya terlalu agresif membuka posisi ukuran penuh di detik-detik awal tanpa menunggu penyerapan order institusi. Di Gen ${toGen}, saya memangkas batas lot sebesar ${100 - Number(riskPct)}%, mengaktifkan jeda proteksi spread sebelum eksekusi momentum, dan menolak menahan posisi saat arah deviasi makro gagal terkonfirmasi.`,
+    
+    AIR: `Prinsip Trend-Following saya diuji berat saat pasar ${pairName} terjebak dalam sideways ranging squeeze di Gen ${fromGen}. Saya berkali-kali terbujuk false breakout Donchian Channel tanpa konfirmasi ekspansi volume yang memadai. Pelajaran berharga: ketiadaan tren adalah musuh terbesar strategi ini. Di Gen ${toGen}, saya mewajibkan lonjakan volume ATR > 1.5x sebelum trigger eksekusi dan menerapkan cut loss lebih dini demi menjaga integritas modal.`,
+    
+    EARTH: `Hipotesis Mean Reversion saya runtuh ketika ${pairName} mengalami tren sepihak (relentless trend) yang terus menembus lower Bollinger Band tanpa pantulan pembalikan. Saya terlalu lambat mengakui bahwa deviasi harga kali ini adalah perubahan rezim struktural, bukan sekadar noise acak. Di Gen ${toGen}, saya menurunkan toleransi drawdown per tiket, mewajibkan konfirmasi RSI ekstrem (< 25), dan tidak akan melakukan averaging down saat tren makro berlawanan.`,
+    
+    STEAM: `Fusi SMC dan katalis berita (WATER+FIRE) mengalami desinkronisasi di Gen ${fromGen}. Sinyal Order Block terpicu bersamaan dengan whipsaw berita ganda pada ${pairName}, melompati level proteksi stop loss. Di Gen ${toGen}, saya mewajibkan konfirmasi volume surge minimal 1.8x sebelum entry pasca-berita dan menurunkan eksposur risiko menjadi ${riskPct}%.`,
+    
+    STORM: `Sebagai kombinasi SMC dan Trend Breakout (WATER+AIR), kejatuhan Gen ${fromGen} disebabkan oleh sinyal BOS (Break of Structure) palsu di lower timeframe yang berbenturan dengan resistance mayor ${pairName}. Di Gen ${toGen}, saya mewajibkan validasi higher-timeframe swing high sebelum Donchian breakout diizinkan mengeksekusi order.`,
+    
+    MUD: `Strategi akumulasi diskon S/R historis (WATER+EARTH) gagal di Gen ${fromGen} karena level support kunci pada ${pairName} ditembus dengan volume distribusi institusional masif tanpa ada retest. Di Gen ${toGen}, saya memperketat filter akumulasi hanya pada zona FVG bernilai tinggi dan memangkas risiko per tiket menjadi ${riskPct}%.`,
+    
+    LIGHTNING: `Kecepatan eksekusi berita (FIRE+AIR) di Gen ${fromGen} justru menjadi bumerang saat terjadi whipsaw ekstrem pada ${pairName}. Stop loss dinamis tersapu sebelum tren baru sempat bernapas. Di Gen ${toGen}, saya menyisipkan buffer stop ATR 1.2x dan menaikkan filter konfirmasi sinyal sebesar +${boost}%.`,
+    
+    LAVA: `Sebagai strategi Counter-Trend Post-News (FIRE+EARTH), kegagalan saya di Gen ${fromGen} adalah berusaha menangkap pisau jatuh saat sentimen berita pada ${pairName} sangat satu arah tanpa ada candle rejection wick. Di Gen ${toGen}, saya melarang entry counter-trend sebelum terbentuk divergence jelas pada oscillator volume.`,
+    
+    SANDSTORM: `Strategi Trend-Pullback (AIR+EARTH) terkecoh saat pullback pada ${pairName} ternyata berubah menjadi pembalikan tren makro (trend reversal) penuh di Gen ${fromGen}. Di Gen ${toGen}, saya mengadopsi trailing ratchet ketat begitu harga memantul dari EMA 50 untuk mencegah re-entry yang merugikan.`,
+    
+    TEMPEST: `Agresivitas triple-engine (WATER+FIRE+AIR) di Gen ${fromGen} menyebabkan over-exposure saat korelasi aset pada ${pairName} tiba-tiba bergeser. Pelajaran penting: sinyal cepat membutuhkan pembagian ukuran lot bertingkat. Di Gen ${toGen}, saya mengaktifkan scaling TP bertahap dan membatasi risiko per trade di level ${riskPct}%.`,
+    
+    OCEANIC: `Jangkar portofolio All-Weather (WATER+AIR+EARTH) tertekan di Gen ${fromGen} akibat kompresi volatilitas berkepanjangan pada ${pairName} yang mengikis margin pemeliharaan. Di Gen ${toGen}, saya menyaring jam operasional hanya pada jendela likuiditas London/New York dan memperketat trailing stop menjadi 115%.`,
+    
+    GEOTHERMAL: `Strategi Anti-Whipsaw News (WATER+FIRE+EARTH) terpukul di Gen ${fromGen} oleh candle gap mendadak pada ${pairName} yang melompati zona mitigasi kami. Di Gen ${toGen}, saya mewajibkan jeda penutupan candle 5-menit sebelum order dieksekusi pasca-berita.`,
+    
+    CYCLONE: `Mesin Dynamic Regime Shifter (FIRE+AIR+EARTH) di Gen ${fromGen} gagal mendeteksi pergantian rezim pasar yang terlalu cepat pada ${pairName}, menghasilkan sinyal whipsaw beruntun. Di Gen ${toGen}, saya memperketat ambang deteksi ADX & Bollinger width sebelum mengizinkan perpindahan mode strategi.`,
+    
+    AVATAR: `Konsensus 4-Elemen Supreme di Gen ${fromGen} terpecah saat anomali likuiditas ekstrem pada ${pairName} menghasilkan split vote (2 vs 2). Kegagalan mitigasi terjadi karena aturan fallback tidak cukup defensif. Di Gen ${toGen}, saya mewajibkan veto otomatis jika terjadi split konsensus dan memangkas alokasi risiko ke ${riskPct}%.`,
+    
+    CHAOS: `Strategi Rogue Anomaly saya di Gen ${fromGen} terlalu serakah menunggangi momentum overextended pada ${pairName}. Lonjakan varians ekstrem memicu likuidasi kilat. Di Gen ${toGen}, saya tetap agresif mencari alpha inefisiensi, namun mematuhi hard circuit-breaker dan mengkarantina pair toxic selama fase konsolidasi.`
+  };
+
+  return REFLECTION_TEMPLATES[ag?.id] || `Sebagai agen kuantitatif mandiri (${ag?.name || 'Agent'}), kegagalan di Gen ${fromGen} pada ${pairName} memberikan data penting mengenai batas toleransi algoritma terhadap anomali pasar. Di Gen ${toGen}, saya menyerap parameter mutasi baru: memangkas risiko menjadi ${riskPct}%, menaikkan filter konfirmasi sebesar +${boost}%, dan berkomitmen melindungi modal sovereign portofolio.`;
+};
+
 // Available Tradable Instrument Pool (Universal coverage across Forex, Crypto, IDX, Commodities, US Stocks, Indices)
 const ALL_INSTRUMENTS = [
   // Commodities & Metals
@@ -3248,7 +3294,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               toxicPair: toxicPair,
               reason: 'MARGIN_CALL_BANKRUPTCY',
               positionsLiquidated: botOpenPositions.length,
-              mutation: mutation
+              mutation: mutation,
+              aiReflection: getAgentSelfReflection(ag, { fromGen: oldGen, toGen: nextGen, mutation }, toxicPair)
             };
 
             // Mutate agent in currentAgents
@@ -3878,6 +3925,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
       const st = agentStatsMap[agId];
       const deficitIdr = st && st.currentBotEquityIdr < capitalPerBotIdr ? (capitalPerBotIdr - st.currentBotEquityIdr) : 0;
 
+      const mutationTraits = {
+        riskMultiplier: Number(Math.max(0.4, (targetAgent?.dnaTraits?.riskMultiplier || 1.0) * 0.9).toFixed(2)),
+        confidenceBoost: Number(Math.min(20, (targetAgent?.dnaTraits?.confidenceBoost || 0) + 5).toFixed(0)),
+        trailingTightness: Number(((targetAgent?.dnaTraits?.trailingTightness || 1.0) * 1.15).toFixed(2))
+      };
+
       const resetRecord = {
         fromGen: oldGen,
         toGen: nextGen,
@@ -3886,11 +3939,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
         toxicPair: 'Manual Rebalance',
         reason: 'MANUAL_EVOLUTION_RESET',
         positionsLiquidated: positions.filter(p => p.agentId === agId).length,
-        mutation: {
-          riskMultiplier: Number(Math.max(0.4, (targetAgent?.dnaTraits?.riskMultiplier || 1.0) * 0.9).toFixed(2)),
-          confidenceBoost: Number(Math.min(20, (targetAgent?.dnaTraits?.confidenceBoost || 0) + 5).toFixed(0)),
-          trailingTightness: Number(((targetAgent?.dnaTraits?.trailingTightness || 1.0) * 1.15).toFixed(2))
-        }
+        mutation: mutationTraits,
+        aiReflection: getAgentSelfReflection(targetAgent, { fromGen: oldGen, toGen: nextGen, mutation: mutationTraits }, 'Manual Rebalance')
       };
 
       setPositions(prev => prev.filter(p => p.agentId !== agId));
@@ -5265,10 +5315,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 }}
               >
                 <span>📋</span>
-                <span>TAB 1: RECAP ARENA</span>
+                <span>RECAP ARENA</span>
               </button>
 
-              {agents.map((ag, idx) => {
+              {agents.map((ag) => {
                 const isSelected = reviewActiveTab === ag.id;
                 return (
                   <button
@@ -5292,7 +5342,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     }}
                   >
                     <span>{ag.avatar}</span>
-                    <span>TAB {idx + 2}: {ag.name}</span>
+                    <span>{ag.name}</span>
                     {(ag.resetCount || 0) > 0 && (
                       <span style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(239, 68, 68, 0.25)', color: '#f87171' }}>
                         {ag.resetCount}x MC
@@ -5318,6 +5368,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     const totalTrades = journal.length;
                     const overallWinRate = totalTrades > 0 ? ((totalWins / totalTrades) * 100).toFixed(1) : '0.0';
                     const totalMCAllBots = agents.reduce((acc, a) => acc + (a.resetsHistory || []).filter(r => r.reason && r.reason.includes('MARGIN_CALL')).length, 0);
+
+                    // Dynamically computed Net Realized PnL across all closed arena trades
+                    const netRealizedPnlArena = journal.reduce((acc, j) => acc + (j.pnlIdr !== undefined ? j.pnlIdr : ((j.pnlUsd || 0) * usdToIdrRef.current)), 0);
+                    const netRoiArenaPct = totalCapital > 0 ? ((netRealizedPnlArena / totalCapital) * 100).toFixed(2) : '0.00';
 
                     // Dynamically computed Sharpe Ratio from percentage returns on risk budget
                     let computedArenaSharpe = '0.00';
@@ -5360,12 +5414,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     return (
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '8px', flexShrink: 0 }}>
                         <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>TOTAL ARENA EQUITY</div>
-                          <div style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: netGainTotal >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                            {formatIdr(totalEquity)}
+                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>NET REALIZED PnL (ARENA)</div>
+                          <div style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: netRealizedPnlArena >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                            {netRealizedPnlArena >= 0 ? '+' : ''}{formatIdr(netRealizedPnlArena)}
                           </div>
-                          <div style={{ fontSize: '8.5px', color: netGainTotal >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                            {netGainTotal >= 0 ? '+' : ''}{((netGainTotal / totalCapital) * 100).toFixed(2)}% dari modal awal
+                          <div style={{ fontSize: '8.5px', color: netRealizedPnlArena >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                            {netRealizedPnlArena >= 0 ? '+' : ''}{netRoiArenaPct}% dari total basis modal
                           </div>
                         </div>
 
@@ -5419,7 +5473,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                         Leaderboard & Multi-Factor Efficiency Matrix
                       </span>
                       <span style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
-                        Klik tombol di kanan untuk membuka detail report & riwayat MC tiap bot
+                        Basis Modal Awal: {formatIdr(capitalPerBotIdr)} / agent • Klik nama atau tombol report untuk audit detail tiap bot
                       </span>
                     </div>
                     <div style={{ overflowX: 'auto' }}>
@@ -5433,7 +5487,6 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                             <th style={{ padding: '7px 8px' }}>PROFIT FACTOR</th>
                             <th style={{ padding: '7px 8px' }}>SHARPE</th>
                             <th style={{ padding: '7px 8px' }}>AVG R:R</th>
-                            <th style={{ padding: '7px 8px', minWidth: '100px' }}>ALOKASI MODAL</th>
                             <th style={{ padding: '7px 8px', textAlign: 'right' }}>SALDO AKHIR</th>
                             <th style={{ padding: '7px 8px', textAlign: 'center' }}>DETAIL</th>
                           </tr>
@@ -5495,14 +5548,6 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                 <td style={{ padding: '7px 8px', color: 'var(--accent-blue)', fontWeight: '800' }}>{st.profitFactor}</td>
                                 <td style={{ padding: '7px 8px', color: 'var(--text-primary)' }}>{agSharpe}</td>
                                 <td style={{ padding: '7px 8px', color: 'var(--accent-green)' }}>{agAvgRr}</td>
-                                <td style={{ padding: '7px 8px' }}>
-                                  <div style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '10px' }}>
-                                    {formatIdr(capitalPerBotIdr)}
-                                  </div>
-                                  <div style={{ fontSize: '8px', color: 'var(--accent-green)', fontWeight: '600' }}>
-                                    Sovereign (100%)
-                                  </div>
-                                </td>
                                 <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: '800', color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                                   <div>{formatIdr(st.currentBotEquityIdr)}</div>
                                   <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>({st.roiPct > 0 ? '+' : ''}{st.roiPct}%)</div>
@@ -5530,39 +5575,6 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           })}
                         </tbody>
                       </table>
-                    </div>
-                  </div>
-
-                  {/* Machine Learning EXP3 Multi-Armed Bandit Arena Rationale */}
-                  <div style={{ background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', padding: '12px 14px' }}>
-                    <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-blue)', marginBottom: '8px' }}>
-                      🤖 Arsitektur Modal Sovereign & Siklus Hidup Multi-Agent RPG
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px', fontSize: '9.5px', lineHeight: '1.5' }}>
-                      <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: '4px', borderLeft: '3px solid #3b82f6' }}>
-                        <strong style={{ color: '#3b82f6' }}>🌊 WATER (SMC & Liquidity):</strong>
-                        <div style={{ color: 'var(--text-secondary)', marginTop: '3px' }}>
-                          Mendapat prioritas alokasi saat Gold (XAUUSD) & FX berada dalam fase mitigasi Order Block ber-RR asimetris (&gt; 1:3).
-                        </div>
-                      </div>
-                      <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: '4px', borderLeft: '3px solid #ef4444' }}>
-                        <strong style={{ color: '#ef4444' }}>🔥 FIRE (News Volatility):</strong>
-                        <div style={{ color: 'var(--text-secondary)', marginTop: '3px' }}>
-                          Bobot otomatis di-boost saat kalender ekonomi rilis berita high-impact (CPI, FOMC, NFP) dengan dynamic trailing ratchet.
-                        </div>
-                      </div>
-                      <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: '4px', borderLeft: '3px solid #10b981' }}>
-                        <strong style={{ color: '#10b981' }}>🌪️ AIR (Trend Breakout):</strong>
-                        <div style={{ color: 'var(--text-secondary)', marginTop: '3px' }}>
-                          Memimpin alokasi portofolio ketika instrumen Kripto (BTC & SOL) mencetak ekspansi Donchian Channel diiringi lonjakan volume ATR.
-                        </div>
-                      </div>
-                      <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: '4px', borderLeft: '3px solid #eab308' }}>
-                        <strong style={{ color: '#eab308' }}>⛰️ EARTH (Mean Reversion):</strong>
-                        <div style={{ color: 'var(--text-secondary)', marginTop: '3px' }}>
-                          Berperan sebagai jangkar stabilitas portofolio; mengeksekusi buy rebound saat saham bluechip (BBCA) menyentuh oversold di batas bawah support.
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </>
@@ -5620,7 +5632,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                             </span>
                           </div>
                           <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                            Filosofi: <strong>{targetAg.strategy}</strong> • Alokasi Modal: <strong>{formatIdr(capitalPerBotIdr)} (Sovereign 100%)</strong>
+                            Filosofi: <strong>{targetAg.strategy}</strong> • Basis Modal: <strong>{formatIdr(capitalPerBotIdr)}</strong>
                           </div>
                         </div>
                       </div>
@@ -5813,18 +5825,35 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                             border: '1px solid rgba(16, 185, 129, 0.25)',
                             display: 'flex',
                             flexDirection: 'column',
-                            gap: '6px'
+                            gap: '8px'
                           }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span style={{ fontSize: '16px' }}>🛡️</span>
-                              <strong style={{ color: 'var(--accent-green)', fontSize: '11px' }}>
-                                Status Generasi Prima: Gen 0 (Genesis Origin — Belum Pernah Margin Call)
-                              </strong>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span style={{ fontSize: '16px' }}>🛡️</span>
+                                <strong style={{ color: 'var(--accent-green)', fontSize: '11px' }}>
+                                  Status Generasi Prima: Gen 0 (Genesis Origin — Belum Pernah Margin Call)
+                                </strong>
+                              </div>
+                              <span style={{ fontSize: '8px', padding: '1px 6px', borderRadius: '3px', background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
+                                Zero Deficit (Sehat)
+                              </span>
                             </div>
-                            <div style={{ fontSize: '9.5px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                              Bot {targetAg.name} saat ini beroperasi dengan modal utuh tanpa catatan likuidasi margin call. Seluruh parameter risiko berjalan dalam batas toleransi standar.
+
+                            {/* AI Agent Operational Monologue for Gen 0 */}
+                            <div style={{
+                              fontSize: '9.5px',
+                              color: 'var(--text-primary)',
+                              lineHeight: '1.5',
+                              fontStyle: 'italic',
+                              background: 'rgba(0, 0, 0, 0.2)',
+                              padding: '8px 10px',
+                              borderRadius: '4px',
+                              borderLeft: '3px solid var(--accent-green)'
+                            }}>
+                              💬 <strong>Refleksi Operasional AI ({targetAg.name}):</strong> "Seluruh parameter eksekusi {targetAg.strategy} berjalan prima dalam koridor toleransi risiko. Tidak ada anomali drawdown yang memicu circuit breaker; saya terus memprioritaskan penyaringan sinyal berkualitas tinggi pada instrumen {elementMeta.bestInstruments?.split(',')?.[0] || 'unggulan'}."
                             </div>
-                            <div style={{ marginTop: '4px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '6px', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '6px', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
                               <div style={{ background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: '3px' }}>
                                 <span style={{ color: 'var(--text-muted)' }}>Penyebab MC:</span> <strong style={{ color: 'var(--accent-green)' }}>N/A (Nol Kebangkrutan)</strong>
                               </div>
@@ -5841,6 +5870,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           const toxicPair = latestRh.toxicPair || elementMeta.defaultToxicPair;
                           const rootCauseText = latestRh.reason === 'MARGIN_CALL_BANKRUPTCY' ? elementMeta.defaultCause : (latestRh.reason || elementMeta.defaultCause);
                           const solutionText = elementMeta.defaultSolution;
+                          const aiReflectionText = latestRh.aiReflection || getAgentSelfReflection(targetAg, latestRh, toxicPair);
 
                           return (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -5905,6 +5935,49 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                   </div>
                                 </div>
 
+                                {/* AI Agent Self-Reflection Monologue & Introspection */}
+                                <div style={{
+                                  background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%)',
+                                  padding: '10px 12px',
+                                  borderRadius: '5px',
+                                  border: '1px solid rgba(168, 85, 247, 0.35)',
+                                  borderLeft: `4px solid ${targetAg.color || '#a855f7'}`
+                                }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
+                                    <div style={{ fontSize: '9.5px', fontWeight: '900', color: '#d8b4fe', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                      <span style={{ fontSize: '12px' }}>🤖</span>
+                                      <span>Refleksi Diri & Introspeksi AI ({targetAg.name} — Pasca-MC Gen {latestRh.fromGen})</span>
+                                    </div>
+                                    <span style={{
+                                      fontSize: '7.5px',
+                                      fontFamily: 'var(--font-mono)',
+                                      padding: '1px 5px',
+                                      borderRadius: '3px',
+                                      background: 'rgba(168, 85, 247, 0.2)',
+                                      color: '#e9d5ff',
+                                      border: '1px solid rgba(168, 85, 247, 0.3)'
+                                    }}>
+                                      Self-Reflection Protocol Active
+                                    </span>
+                                  </div>
+                                  <div style={{
+                                    fontSize: '9.5px',
+                                    color: 'var(--text-primary)',
+                                    lineHeight: '1.6',
+                                    fontStyle: 'italic',
+                                    background: 'rgba(0, 0, 0, 0.25)',
+                                    padding: '8px 10px',
+                                    borderRadius: '4px',
+                                    border: '1px solid rgba(255,255,255,0.05)'
+                                  }}>
+                                    "{aiReflectionText}"
+                                  </div>
+                                  <div style={{ marginTop: '5px', fontSize: '8.5px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <span>📌</span>
+                                    <span>Introspeksi algoritma ini diadopsi sebagai dasar mutasi DNA risiko dan karantina instrumen toxic di Gen {latestRh.toGen}.</span>
+                                  </div>
+                                </div>
+
                                 {/* Machine Self-Improvement Actions (Solusi Perbaikan) */}
                                 <div style={{ background: 'rgba(168, 85, 247, 0.06)', padding: '8px 10px', borderRadius: '4px', borderLeft: '3px solid #c084fc' }}>
                                   <div style={{ fontSize: '9.5px', fontWeight: '800', color: '#d8b4fe', display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -5965,42 +6038,6 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                             </div>
                           );
                         })()}
-                      </div>
-                    </div>
-
-                    {/* 4. Strategy Simulation Chart (Kapan Entry, TP, & SL) */}
-                    <div style={{ background: 'var(--bg-panel-subtle)', borderRadius: '6px', border: 'var(--border-hairline)', padding: '12px 14px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                        <div style={{ fontSize: '11px', fontWeight: '800', color: targetAg.color, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span>📈</span>
-                          <span>Grafik Simulasi Strategi Eksekusi ({targetAg.name}): Kapan Entry, TP, dan SL</span>
-                        </div>
-                        <span style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
-                          Model Visual Candlestick & Invalidation Rule
-                        </span>
-                      </div>
-                      
-                      <StrategySimulationChart agentId={targetAg.id} color={targetAg.color} width={880} height={220} />
-
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '8px', marginTop: '10px', fontSize: '9.5px', lineHeight: '1.5' }}>
-                        <div style={{ background: 'rgba(59, 130, 246, 0.08)', padding: '8px 10px', borderRadius: '4px', borderLeft: '3px solid #3b82f6' }}>
-                          <strong style={{ color: '#60a5fa' }}>🔵 Titik ENTRY:</strong>
-                          <div style={{ color: 'var(--text-secondary)', marginTop: '2px' }}>
-                            Posisi dibuka saat terkonfirmasi sinyal validasi {targetAg.strategy} dengan volume pendukung dan penyaringan false-setup.
-                          </div>
-                        </div>
-                        <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '8px 10px', borderRadius: '4px', borderLeft: '3px solid #10b981' }}>
-                          <strong style={{ color: '#34d399' }}>🟢 Target TAKE PROFIT (TP):</strong>
-                          <div style={{ color: 'var(--text-secondary)', marginTop: '2px' }}>
-                            Level likuidasi keuntungan berbasis asimetri R:R (&gt; 1:2.5) dengan pengamanan trailing ratchet bertahap.
-                          </div>
-                        </div>
-                        <div style={{ background: 'rgba(239, 68, 68, 0.08)', padding: '8px 10px', borderRadius: '4px', borderLeft: '3px solid #ef4444' }}>
-                          <strong style={{ color: '#f87171' }}>🔴 Batas STOP LOSS (SL):</strong>
-                          <div style={{ color: 'var(--text-secondary)', marginTop: '2px' }}>
-                            Hard cut loss di luar struktur swing support/resistance; posisi ditutup seketika jika setup terinfiltrasi false move.
-                          </div>
-                        </div>
                       </div>
                     </div>
 

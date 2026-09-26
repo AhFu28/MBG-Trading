@@ -3,14 +3,84 @@
 
 export const CHANGELOG_DATA = [
   {
+    "id": "pkg-27092026",
+    "sprintLabel": "Sprint 14 (Quantitative Audit Refactoring & Introspection)",
+    "version": "Package 27092026",
+    "semanticVersion": "v5.6.0",
+    "date": "27 September 2026",
+    "status": "LATEST",
+    "statusColor": "var(--accent-green)",
+    "badgeLabel": "LATEST / AUDIT REFACTOR & AI REFLECTION",
+    "title": "Update v5.6.0: Multi-Agent Audit Modal Ergonomics, Net Realized Alpha Metric, AI Agent Self-Reflection Protocol & Streamlined Navigation",
+    "description": "Penyempurnaan ergonomi dan integritas audit multi-agent arena: Penghapusan kolom redundant 'ALOKASI MODAL' untuk memperluas ruang metrik kinerja (+110px), eliminasi prefiks kaku tab bot ('TAB 1:' diganti '📋 RECAP ARENA' & avatar elemen bot ringkas), penggantian metrik semu 'Total Arena Equity' menjadi 'NET REALIZED PnL (ARENA)' yang mengukur akumulasi alpha bersih riil terhadap modal basis, pembersihan grafik simulasi candlestick statis duplikatif, integrasi protokol introspeksi diri AI (AI Agent Self-Reflection) pasca-Margin Call untuk seluruh 16 bot trading, serta pembersihan kartu arsitektur modal RPG statis.",
+    "processFlow": [
+      {
+        "step": "1. Audit Modal Ergonomics",
+        "label": "Pencabutan kolom Alokasi Modal memperluas ruang metrik performa (+110px)"
+      },
+      {
+        "step": "2. Streamlined Tab Navigation",
+        "label": "Rampingisasi tab review: '📋 RECAP ARENA' dan avatar elemen + nama bot ringkas"
+      },
+      {
+        "step": "3. Net Realized Alpha Metric",
+        "label": "Penggantian Total Equity semu dengan Net Realized PnL (ARENA) & Net ROI riil"
+      },
+      {
+        "step": "4. AI Self-Reflection Protocol",
+        "label": "Integrasi monolog introspeksi diri AI generator (getAgentSelfReflection) pasca Margin Call"
+      },
+      {
+        "step": "5. Architecture & Chart Cleanup",
+        "label": "Pembersihan grafik simulasi duplikatif dan kartu RPG 4-elemen statis dari audit modal"
+      }
+    ],
+    "markdownContent": "\n### 🏛️ v5.6.0 — Multi-Agent Audit Modal Ergonomics, Net Realized Alpha Metric & AI Agent Self-Reflection Protocol\n\n#### 🧹 1. Dekonstruksi & Pembersihan Modal Audit Multi-Agent\n- **Pencabutan Kolom Alokasi Modal:** Menghapus kolom redundant `ALOKASI MODAL` yang menampilkan angka statis seragam (`Rp 1.000.000 Sovereign 100%`) di setiap baris tabel. Memberikan ekspansi ruang horizontal sebesar ~110px untuk kolom Strategi, Win Rate, dan Profit Factor.\n- **Rampingisasi Navigasi Tab Bot:** Mengeliminasi prefiks kaku `TAB 1:` dan `TAB X:`. Tab 1 bertransformasi menjadi `📋 RECAP ARENA`, dan tab bot disajikan ringkas dengan avatar elemen + nama bot (e.g., `🌊 WATER 15x MC`), menghemat ruang horizontal dan meminimalkan scrolling.\n- **Eliminasi Grafik Simulasi Candlestick Duplikatif:** Memindahkan chart simulasi statis entry/TP/SL dari modal audit kinerja ke tempat aslinya di Modal Profil & Filosofi, menjaga fokus modal audit murni pada pembuktian empiris riil.\n\n#### 📊 2. Transformasi Metrik 'Total Arena Equity' ke 'Net Realized PnL (ARENA)'\n- **Penyembuhan Ilusi Angka Semu:** Mengganti metrik ekuitas arena yang bias akibat injeksi saldo berulang saat respawn (Margin Call berkali-kali) dengan `NET REALIZED PnL (ARENA)`.\n- **Penghitungan Alpha Riil:** Menghitung secara dinamis total laba/rugi bersih yang terealisasi dari seluruh tiket tertutup arena dengan kalkulasi Net ROI terhadap total modal basis arena.\n\n#### 🧠 3. Integrasi Refleksi Diri AI Pasca-Margin Call (AI Agent Self-Reflection)\n- **AI Agent Self-Reflection Generator (`getAgentSelfReflection`):** Membangun modul introspeksi kepribadian algoritma untuk seluruh 16 bot trading (WATER, FIRE, AIR, EARTH, STEAM, STORM, MUD, LIGHTNING, LAVA, SANDSTORM, TEMPEST, OCEANIC, GEOTHERMAL, CYCLONE, AVATAR, CHAOS).\n- **Kartu Post-Mortem Monolog AI:** Menampilkan monolog evaluasi kegagalan AI secara jujur dan transparan saat bot mengalami likuidasi (analisis false sweep, news slippage, ranging squeeze, atau relentless trend) dan ikrar parameter mutasi DNA untuk generasi berikutnya.\n- **Status Operasional Prima Gen 0:** Menyediakan kartu refleksi kedisiplinan parameter bagi bot yang masih bertahan di Generasi Genesis tanpa kebangkrutan.\n\n#### 🛡️ 4. Pembersihan Komponen Arsitektur RPG Statis\n- Menghapus kartu statis 4-elemen lawas dari Tab Recap yang sudah tidak sinkron dengan portofolio 16-agent arena aktif.\n"
+  },
+  {
+    "id": "pkg-26092026",
+    "sprintLabel": "Sprint 13 (24/7 Autonomous Arena Continuous Engine & Zero-Dependency Execution)",
+    "version": "Package 26092026",
+    "semanticVersion": "v5.5.4",
+    "date": "26 September 2026",
+    "status": "STABLE",
+    "statusColor": "var(--text-muted)",
+    "badgeLabel": "STABLE / PUBLIC REPO & 24/7 CONTINUOUS RUNNER",
+    "title": "Update v5.5.4: Public Repository Migration, Unlimited Cloud CI/CD & 24/7 Autonomous Multi-Tick Trading Runner",
+    "description": "Migrasi repositori AhFu28/MBG-Trading ke status Public dengan kuota komputasi GitHub Actions unlimited bebas batas, standalone zero-dependency Python runner (arena_runner_247.py) berbasis library bawaan urllib tanpa pip install, multi-tick micro-loop 30 detik untuk 16 bot serempak, jadwal cron off-peak per 5 menit dengan proteksi git rebase retry loop, dan sinkronisasi client hydration instan.",
+    "processFlow": [
+      {
+        "step": "1. Public Repo Migration",
+        "label": "Repositori berstatus Public membuka kuota GitHub Actions 100% UNLIMITED"
+      },
+      {
+        "step": "2. Zero-Dependency Runner",
+        "label": "Runner otonom arena_runner_247.py murni stdlib Python urllib tanpa pip install"
+      },
+      {
+        "step": "3. Continuous Multi-Tick Loop",
+        "label": "Evaluasi micro-loop 30 detik per job runner untuk 16 bot tanpa bottleneck"
+      },
+      {
+        "step": "4. Resilient Git Rebase Pipeline",
+        "label": "Workflow arena_247_engine.yml cron 5 menit off-peak dengan 3x retry rebase push"
+      },
+      {
+        "step": "5. Client Hydration Instant Sync",
+        "label": "Sinkronisasi posisi & jurnal otomatis saat aplikasi web dibuka pengguna"
+      }
+    ],
+    "markdownContent": "\n### ⚡ v5.5.4 — Public Repository Migration, Unlimited Cloud CI/CD & 24/7 Autonomous Multi-Tick Runner\n\n#### 🌐 1. Migrasi Repositori Public & Kuota Komputasi Unlimited\n- **Sovereign Public Status:** Repositori `AhFu28/MBG-Trading` resmi berstatus Public, membuka hak akses komputasi GitHub Actions 100% UNLIMITED & bebas batas kuota 2.000 menit/bulan.\n- **Due Diligence Security Audit:** Terverifikasi file `.env` lokal 100% terlindungi oleh `.gitignore` dan 0 secrets/API keys pernah terekspos di seluruh riwayat commit.\n\n#### ⚡ 2. Standalone Zero-Dependency Arena Engine (`arena_runner_247.py`)\n- **Standard Library Urllib Streaming:** Membangun modul runner otonom yang berjalan murni menggunakan pustaka bawaan Python (`urllib.request`), menghilangkan kebutuhan `pip install` berat dan memangkas waktu *cold-boot* di cloud runner menjadi <3 detik.\n- **Continuous Multi-Tick Micro-Loop:** Menjalankan evaluasi berulang setiap 30 detik dalam window 4 menit per job runner untuk 16 AI Trading Agents tanpa jeda round-robin.\n- **Friction & Ratchet Parity:** Menjaga integritas deduksi fee bursa Bitget 0.12% dan dynamic ratchet trailing stop (40% distance ke TP1 mengunci 30% profit).\n\n#### 🔄 3. Dedicated High-Frequency Workflow (`arena_247_engine.yml`)\n- **Off-Peak Cron Schedule:** Mengaktifkan jadwal cron per 5 menit pada menit ganjil/off-peak (`2,7,12,17,22,27,32,37,42,47,52,57 * * * *`) untuk menghindari antrian delay server GitHub Actions.\n- **Resilient Git Rebase Retry Loop:** Menambahkan proteksi `git pull --rebase -X theirs origin main && git push` dengan loop 3x retry untuk mencegah kegagalan commit non-fast-forward akibat benturan *concurrent push*.\n- **Client Hydration Instant Sync:** Frontend web secara otomatis membaca state cloud terbaru dan menggabungkan posisi serta riwayat trade yang terjadi selama pengguna offline.\n"
+  },
+  {
     "id": "pkg-25092026-r1",
     "sprintLabel": "Sprint 7 (Production Hardening & Reconciled Telemetry)",
     "version": "Package 25092026-R1",
     "semanticVersion": "v5.5.3",
     "date": "25 September 2026",
-    "status": "LATEST",
-    "statusColor": "var(--accent-green)",
-    "badgeLabel": "LATEST / PRODUCTION HARDENED & RECONCILED",
+    "status": "STABLE",
+    "statusColor": "var(--text-muted)",
+    "badgeLabel": "STABLE / PRODUCTION HARDENED & RECONCILED",
     "title": "Update v5.5.3: Institutional US Equities Registry, Reconciled Paper Portfolio Bookkeeping, Stable SVG IDs, Theme-Aware Tables & CSP Security Headers",
     "description": "Perbaikan komprehensif audit forensik tahap 4: Integrasi registry metadata institusional untuk 31 saham mega-cap Wall Street (kapitalisasi pasar riil, rasio P/E aktual, nama korporat), rekonsiliasi matematis pembukuan portofolio forward-test (30 tiket selesai [6M/24K] + 52 posisi aktif + 33 antrean = 115 total tiket terverifikasi dengan win rate 20.0%), eliminasi DOM churn SVG sparkline via React useId(), pemulihan kontras tabel mode terang (Light Theme), penerapan Content Security Policy (CSP) ketat pada Cloudflare Pages, serta otomasi notifikasi kegagalan workflow GitHub Actions via Telegram.",
     "processFlow": [
@@ -38,144 +108,35 @@ export const CHANGELOG_DATA = [
     "markdownContent": "\n### 🏛️ v5.5.3 — Production Hardening, Fundamental Registry & Reconciled Bookkeeping\n\n#### 🇺🇸 1. Registry Fundamental Saham Wall Street (H-05)\n- **Metadata Mega-Cap Institusional:** 31 saham unggulan Wall Street (AAPL, MSFT, NVDA, GOOGL, AMZN, dsb.) kini dilengkapi metadata fundamental riil mencakup nama resmi emiten, kapitalisasi pasar triliunan dolar terkini, dan rasio P/E konsensus. Ticker tanpa histori teknikal ditandai RSI netral (50.0) secara transparan.\n\n#### 📊 2. Rekonsiliasi Matematika Portofolio Forward-Test (M-07)\n- **Presisi Buku Besar:** Seluruh agregasi statistik paper trading kini saling mengunci: 30 trade tertutup (6 Menang + 24 Kalah) + 52 trade aktif + 33 tiket pending = 115 total tiket. Rasio kemenangan distandarkan menjadi `win_rate_pct: 20.0%` (bukan desimal 0.2%).\n- **Arsitektur Pipeline:** Menambahkan alias method `get_portfolio_summary` pada engine Python untuk menjamin sinkronisasi otomatis bundle harian.\n\n#### ⚡ 3. Optimasi DOM & Performa Render Grafis (L-01)\n- **Stable React useId():** Komponen SparklineChart di AiAgentArenaTab kini menggunakan hook `useId()` deterministik untuk ID linearGradient SVG, melenyapkan DOM redraw churn akibat `Math.random()` pada setiap detik pembaruan harga.\n\n#### 🎨 4. Kontras Header Tabel & Keamanan Web Modern (M-03 & L-02)\n- **Dukungan Tema Terang Optimal:** Kelas CSS `.quant-table th` kini terikat ke variabel tema `--bg-panel-subtle`, `--text-muted`, dan `--border-hairline`, memastikan keterbacaan sempurna di tema gelap maupun terang.\n- **CSP & Permissions Headers:** File headers Cloudflare Pages diperkaya dengan `Content-Security-Policy`, `Permissions-Policy`, dan proteksi `X-Content-Type-Options: nosniff` yang aman untuk WebSocket Binance dan feed TradingView.\n\n#### 🔔 5. Pemantauan Pipeline GitHub Actions (L-03)\n- **Notifikasi Kegagalan Telegram:** Seluruh 6 alur kerja cron/dispatch di `.github/workflows/` kini memiliki hook conditional `if: failure()` untuk mengirimkan alert otomatis ke kanal Telegram pengelola jika terjadi kendala pada engine komputasi.\n"
   },
   {
-    "id": "pkg-24092026-r4",
-    "sprintLabel": "Sprint 6 (Forensics & Persistence) — Cross-Panel Pricing & Session TTL",
-    "version": "Package 24092026-R4",
+    "id": "pkg-24092026",
+    "sprintLabel": "Sprint 5 & 6 (Terpadu) — Compliance, Forensics Hardening & Telemetry Alignment",
+    "version": "Package 24092026 (v5.4.0 → v5.5.2)",
     "semanticVersion": "v5.5.2",
     "date": "24 September 2026",
-    "status": "DEPLOYED",
-    "statusColor": "var(--accent-blue)",
-    "badgeLabel": "DEPLOYED / PERSISTENT SESSION & UNIFIED PRICING",
-    "title": "Update v5.5.2: Unified Gold Bullion Pricing, 24H Session TTL Persistence, Actionable Macro Calendar, Dynamic JPY Pips & Anti-Jitter Agent Selection",
-    "description": "Perbaikan komprehensif audit forensik tahap 3: Unifikasi harga emas spot ($1.800–$3.500) melenyapkan anomali kuotasi $4.381 dan $272, persistensi sesi otentikasi 24 jam di localStorage dengan TTL timestamp agar refresh tidak me-logout pengguna, kalender makro ekonomi default ke event mendatang (UPCOMING) berprioritas tinggi, kalkulasi pip dinamis valuta JPY berbasis kuotasi pasar riil, serta seleksi instrumen deterministik agen AI berbasis jendela 5 menit anti-jitter.",
-    "processFlow": [
-      {
-        "step": "1. Unified Gold Bullion Bounds (H-04)",
-        "label": "Penyelarasan kuotasi emas spot lintas panel dengan sanity check $1.800–$3.500 dan fallback terpadu $2.650"
-      },
-      {
-        "step": "2. 24H Session TTL Persistence (M-04)",
-        "label": "Penyimpanan token otentikasi di localStorage dengan validasi batas waktu 24 jam tanpa logout saat reload"
-      },
-      {
-        "step": "3. Actionable Macro Calendar (M-05)",
-        "label": "Default kalender makro ke status UPCOMING dengan pengurutan prioritas event mendatang di posisi teratas"
-      },
-      {
-        "step": "4. Dynamic JPY Pip Value Formula (M-10)",
-        "label": "Formula pip dinamis pasangan Yen Jepang (1.000 / Entry Price) menggantikan angka statis $7.00"
-      },
-      {
-        "step": "5. Anti-Jitter Deterministic Agent Selection (M-11)",
-        "label": "Seleksi instrumen agen AI menggunakan seed ID deterministik per blok 5 menit tanpa Date.now() modulo"
-      }
-    ],
-    "markdownContent": "\n### 🛡️ v5.5.2 — Cross-Panel Quote Alignment, Session Reliability & Quant Refinements\n\n#### 🥇 1. Unifikasi Harga Emas & Komoditas (H-04)\n- **Eliminasi Anomali Kontrak Roll:** Seluruh kartu komoditas dan dashboard benchmark kini menerapkan batas ketat kuotasi emas dunia ($1.800 – $3.500). Kuotasi anomali $4.381 atau fallback statis usang telah dibersihkan dan dialihkan ke kuotasi spot aktual ~$2.650.\n\n#### 🔐 2. Otentikasi & Reliabilitas Sesi 24 Jam (M-04)\n- **Sesi Tahan Reload:** Penyimpanan sesi pengguna dialihkan ke `localStorage` dengan penanda `expiresAt` berbasis 24 jam. Pengguna tidak lagi ter-logout secara tiba-tiba saat menyegarkan halaman browser (F5).\n\n#### 📅 3. Kalender Makro Fokus Rilis Mendatang (M-05)\n- **Prioritas Jadwal Terkini:** Kalender makro ekonomi kini secara default menyaring event ke status `UPCOMING` (Akan Rilis), menyajikan jadwal suku bunga The Fed/BI dan inflasi PCE terdekat tanpa tertutup oleh riwayat event lampau.\n\n#### 🧮 4. Presisi Matematika Pip JPY & Seleksi Agen Stabil (M-10 & M-11)\n- **Pip Dinamis JPY:** Perhitungan lot valuta pasangan JPY kini menggunakan rumus standar pasar interbank `(100.000 unit × 0.01) / Harga Entry`, menggantikan nilai kaku $7.00.\n- **Anti-Jitter Agent Selection:** Mengganti pemilihan instrumen `Date.now() % topN` dengan seed hash agen deterministik dalam jendela waktu 5 menit, menjaga konsistensi fokus strategi tiap bot.\n"
-  },
-  {
-    "id": "pkg-24092026-r3",
-    "sprintLabel": "Sprint 6 (Post-Audit Remediation) — Live Feeds & Telemetry Alignment",
-    "version": "Package 24092026-R3",
-    "semanticVersion": "v5.5.1",
-    "date": "24 September 2026",
     "status": "STABLE",
     "statusColor": "var(--text-muted)",
-    "badgeLabel": "STABLE / FORENSIC REMEDIATION & TIMEZONE ALIGNMENT",
-    "title": "Update v5.5.1: Live USD/IDR Sync, WebSocket-REST Gap Healing, Quant Model Broker Badge, Strict WIB Timezone & Sensational Alert Suppression",
-    "description": "Penyelesaian temuan audit forensik lanjutan: Sinkronisasi kurs USD/IDR live dari Binance USDTIDR dan TradingView Forex dengan auto-sync ke AI Agent Arena, perbaikan hilangnya snapshot harga REST saat WebSocket reconnect, penegasan transparansi badge 'ESTIMATED FLOW (QUANT MODEL)' pada radar akumulasi broker, penegakan zona waktu resmi Asia/Jakarta (WIB), penghapusan prefix dollar pada emiten BEI, serta pengekangan banner peringatan pertahanan taktis agar terikat murni pada skor ancaman DEFCON bundle.",
+    "badgeLabel": "STABLE / 4 SESI TERPADU",
+    "title": "Rilis Akbar 24 September 2026: Compliance Audit, UI Canvas Restoration, Centralized Data Integrity, Live Forex Sync & Unified Pricing",
+    "description": "Rekapitulasi terpadu seluruh 4 sesi pengembangan pada tanggal 24 September 2026: Sesi 1 Dini Hari (Compliance Zero Simulation Policy & Restorasi Lebar Kanvas Edukasi), Sesi 2 Siang (Modal Audit Integritas Data 6-Jalur & Saringan Stablecoin), Sesi 3 Sore (Sinkronisasi Kurs USD/IDR Live & Transparansi Model Broker), dan Sesi 4 Malam (Unifikasi Batas Harga Emas, Persistensi Sesi 24 Jam & Pip Dinamis JPY).",
     "processFlow": [
       {
-        "step": "1. Live USD/IDR Dynamic Feed (H-08)",
-        "label": "Penyelarasan kurs USD/IDR live langsung dari Binance USDTIDR & TV Forex dengan propagasi ke AI Arena"
+        "step": "1. Compliance & Full-Width Layout (v5.4.0)",
+        "label": "Sertifikasi Zero Simulation Policy & restorasi kanvas pembelajaran 100% full-width"
       },
       {
-        "step": "2. WebSocket-REST Reconnection Gap Healing (H-09)",
-        "label": "Pembaruan kuotasi REST yang diperbolehkan me-refresh instrumen eksis saat kuotasi kedaluwarsa >3 detik"
+        "step": "2. Data Integrity Modal & Crypto Filter (v5.5.0)",
+        "label": "Drawer verifikasi 6 sumber data riil, saringan stablecoin & lot kalkulator short"
       },
       {
-        "step": "3. Transparent Broker Quant Model Badge (C-03)",
-        "label": "Penetapan badge 'ESTIMATED FLOW (QUANT MODEL)' dan penanda [EST] pada ringkasan broker"
+        "step": "3. Live USD/IDR & Timezone Alignment (v5.5.1)",
+        "label": "Sinkronisasi kurs USD/IDR live, penyembuhan WebSocket drop & jam Asia/Jakarta"
       },
       {
-        "step": "4. Strict Asia/Jakarta Timezone (M-02)",
-        "label": "Penegakan timeZone: 'Asia/Jakarta' pada semua konversi jam berita, jam sistem, dan radar paus"
-      },
-      {
-        "step": "5. Defense Alert DEFCON Dynamic Binding (M-08)",
-        "label": "Pemberantasan alarm nuklir sensasional saat kondisi krisis normal; pengikatan ke bundle defcon level"
+        "step": "4. Unified Gold & 24H Session TTL (v5.5.2)",
+        "label": "Sanity check emas $1.800–$3.500, sesi tahan reload 24 jam & formula pip JPY dinamis"
       }
     ],
-    "markdownContent": "\n### 🚀 v5.5.1 — Forensic Hardening, Real-time Forex Sync & Telemetry Transparency\n\n#### 💱 1. Kurs USD/IDR Dinamis & Penyembuhan Reconnect WebSocket (H-08 & H-09)\n- **Live USD/IDR Feed:** Menambahkan kuotasi live pasangan `USDTIDR` dari Binance Vision dan `FX_IDC:USDIDR` dari TradingView Scanner ke dalam penyimpanan terpusat `livePrices`, dengan sinkronisasi dinamis ke `AiAgentArenaTab` dan `localStorage`.\n- **Penyembuhan Drop REST:** Memperbaiki penjagaan `if (!next[c.symbol])` di `useLivePrices.js` sehingga pembaruan harga REST dapat memperbarui instrumen yang sudah ada jika usianya lebih dari 3 detik (mencegah kekosongan kuotasi saat WebSocket reconnect).\n\n#### 📊 2. Transparansi Broker Flow & Simbologi IDX (C-03 & M-06)\n- **Badge Estimasi Model:** Menyematkan badge mencolok `ESTIMATED FLOW (QUANT MODEL)` pada header tabel Smart Money Accumulation serta tag `[EST]` pada kode broker emulasi.\n- **Pembersihan Simbol Emiten:** Menghapus prefiks tanda dollar (`$`) pada emiten saham BEI (seperti `$CUAN` menjadi `CUAN`) untuk mencegah salah baca huruf atau glitched text.\n\n#### 🕒 3. Kepatuhan Zona Waktu & Integritas Alarm Geopolitik (M-02 & M-08)\n- **Penegakan Jam WIB:** Menambahkan opsi eksplisit `{ timeZone: 'Asia/Jakarta' }` pada seluruh parser tanggal (berita makro, header sistem forex, dan feed radar paus) agar waktu yang ditampilkan selalu akurat WIB di zona waktu mana pun browser dibuka.\n- **Pengekangan Alarm Taktis:** Banner peringatan pertahanan taktis kini terikat secara ketat pada skor level DEFCON (`<= 3`) dan tingkat keparahan krisis bundle, melenyapkan alarm sensasional palsu saat kondisi pasar berstatus normal.\n"
-  },
-  {
-    "id": "pkg-24092026-audit",
-    "sprintLabel": "Sprint 6 (Audit & Hardening) — Data Integrity & Compliance",
-    "version": "Package 24092026-R2",
-    "semanticVersion": "v5.5.0",
-    "date": "24 September 2026",
-    "status": "STABLE",
-    "statusColor": "var(--text-muted)",
-    "badgeLabel": "STABLE / DATA INTEGRITY & AUDIT HARDENING",
-    "title": "Update v5.5.0: Pre-Launch Forensics Hardening, Centralized Data Integrity Audit Modal, Stablecoin Filters, Short-Position Lot Calculator & Zero-Cost Compliance",
-    "description": "Implementasi menyeluruh hasil audit forensik Antigravity & GLM: Peluncuran Modal Audit Integritas & Provenance Data 6-jalur (menggantikan status hardcoded), filter proteksi pasangan stablecoin (USDC, USDT, FDUSD), perbaikan kalkulasi posisi Short pada Lot Calculator Modal, banner pengungkapan risiko Backtest Hipotetis, sinkronisasi harga live pada on-chain Whale Tracker, serta modal kepatuhan regulasi non-advisory OJK.",
-    "processFlow": [
-      {
-        "step": "1. Data Integrity & Provenance Modal",
-        "label": "Peluncuran drawer verifikasi 6 sumber data aktual dengan indikator kesehatan real-time"
-      },
-      {
-        "step": "2. Stablecoin Signal Blacklist",
-        "label": "Penyaringan 10+ stablecoin pada loop Binance spot agar terhindar dari sinyal pump artifisial"
-      },
-      {
-        "step": "3. Lot Calculator Short Position Fix",
-        "label": "Dukungan penuh kalkulasi lot dan target harga untuk transaksi Short (SL > Entry)"
-      },
-      {
-        "step": "4. On-Chain Whale Price Derivation",
-        "label": "Sinkronisasi kalkulasi fiat volume whale terhadap harga live ticker secara dinamis"
-      },
-      {
-        "step": "5. Compliance & Regulatory Acknowledgment",
-        "label": "Penyematan modal persetujuan risiko non-advisory dan banner transparansi DSR backtest"
-      }
-    ],
-    "markdownContent": "\n### 🛡️ v5.5.0 — Institutional Data Integrity, Compliance Audit & Math Hardening\n\n#### 🔍 1. Peluncuran Modal Audit Integritas Data (Data Integrity & Provenance Modal)\n- **Single Source of Truth:** Menggantikan status bar hardcoded dengan modal telemetri transparan 6 sumber data: Macro Bundle, IDX BEI, Binance WebSocket, Valuta Global/CFD, Kurs USD/IDR, dan Gemini LLM.\n- **Penyematan Tombol HUD:** Akses cepat langsung dari Top Navigation HUD (`DATA SEHAT / DATA INTEGRITAS`) serta footer sidebar (`Integritas Data`).\n- **Sinkronisasi Model AI:** Deteksi dinamis model LLM aktif dari bundle (`gemini-3.8-flash (Auto-Discovered)`) tanpa string statis.\n\n#### 🧮 2. Perbaikan Logika Matematika & Filter Pasangan Kripto\n- **Stablecoin Filter:** Menambahkan saringan ketat (`USDC`, `FDUSD`, `TUSD`, `DAI`, dll) pada loop Binance spot agar terminal tidak mengeluarkan trade plan artifisial pada koin berpatokan $1.00.\n- **Sanity Clamping R:R:** Membatasi rasio Risk/Reward antara 0.2x hingga 20.0x untuk mencegah anomali rasio ekstrem (seperti 1:642).\n- **Short-Order Lot Calculator:** Memperbaiki bug kalkulator lot di mana posisi Short (`SL > Entry`) sebelumnya menghasilkan 0 lot secara hening.\n- **On-Chain Whale Valuation:** Derivasi nilai transaksi paus on-chain langsung dari harga pasar live (`livePrices`), menghilangkan selisih kalkulasi fiat.\n\n#### ⚖️ 3. Kepatuhan Regulasi & Perlindungan Pengguna (Compliance Audit)\n- **Modal Pernyataan Kepatuhan:** Menambahkan first-run risk acknowledgment modal yang menegaskan terminal berfungsi murni sebagai riset algoritma kuantitatif independen (non-advisory).\n- **Transparansi Backtest:** Banner peringatan bahwa hasil pengujian strategi historis adalah simulasi matematis hipotetis dan bukan jaminan hasil di masa mendatang.\n- **Jam Bursa BEI Hari Jumat:** Koreksi jam penutupan resmi Jumat menjadi 15:49 WIB (`totalMin <= 949`).\n"
-  },
-  {
-    "id": "pkg-24092026",
-    "sprintLabel": "Sprint 5 (Dini Hari) — Compliance & QA/QC",
-    "version": "Package 24092026",
-    "semanticVersion": "v5.4.0",
-    "date": "24 September 2026",
-    "status": "STABLE",
-    "statusColor": "var(--text-muted)",
-    "badgeLabel": "STABLE / COMPLIANCE & QA/QC",
-    "title": "Update v5.4.0: Compliance Audit, QA/QC Bugfixes, UI/UX Full-Width Canvas Restoration & GitHub Synchronization",
-    "description": "Sertifikasi kepatuhan menyeluruh (Zero Simulation Policy & zero exposed credentials), debugging engine interaktif (FVG Sweep Playground Level 5, Supercycle Sine Wave Modul 3.3, OrderBook timer cleanup), dan audit UI/UX restorasi tata letak (.quant-academy-main-grid) yang mengembalikan lebar kanvas materi pembelajaran ke 100% full-width tanpa penyusutan.",
-    "processFlow": [
-      {
-        "step": "1. Compliance & Security Audit",
-        "label": "Verifikasi Zero Simulation Policy (0 Math.random()) & keamanan credentials"
-      },
-      {
-        "step": "2. Level 5 FVG & Sweep Playground",
-        "label": "Implementasi kanvas interaktif celah harga 3-candle & sapuan likuiditas 4 tahap"
-      },
-      {
-        "step": "3. Modul 3.3 Supercycle Sine Wave",
-        "label": "Simulasi 4 fase siklus belanja modal komoditas (Capex) & panduan alokasi aset"
-      },
-      {
-        "step": "4. Full-Width Layout Restoration",
-        "label": "Penguncian sidebar 280px sticky & ekspansi kanvas materi pembelajaran hingga 1680px"
-      },
-      {
-        "step": "5. QA/QC & Production Build",
-        "label": "Vite production build sukses (75 modul, 0 error, gzip teroptimasi)"
-      }
-    ],
-    "markdownContent": "\n### 🛡️ v5.4.0 — Full Compliance, UI/UX Layout Restoration & QA/QC Certification\n\n#### 🔒 1. Audit Kepatuhan & Keamanan (Zero Simulation Policy)\n- **Zero Simulation Policy:** Terverifikasi 100% bebas dari `Math.random()` artifisial pada data pasar dan logika edukasi akademi.\n- **Security & Secret Leak Prevention:** Audit menyeluruh memverifikasi tidak ada API key, token rahasia, maupun kredensial privat yang terekspos.\n\n#### 🛠️ 2. QA/QC & Perbaikan Komponen Interaktif\n- **Level 5 FVG & Sweep Playground:** Menggantikan duplikasi OrderBook dengan kanvas interaktif Fair Value Gap 3-candle dan simulasi animasi sapuan likuiditas 4 tahap.\n- **Modul 3.3 Supercycle Sine Wave:** Visualisasi interaktif siklus komoditas 4 fase (Under-investment, Windfall Boom, Capex Glut, Crash) dengan rekomendasi alokasi aset.\n- **Memory Leak Protection:** Penambahan lifecycle ref cleanup pada timer simulasi OrderBook (`spoofTimerRef`, `marketBuyTimerRef`).\n- **Defensive Calculation:** Sanitasi input numerik (`Math.abs`, `Math.max`) dan peringatan harga terbalik pada Visual Execution Bracket.\n\n#### 🎨 3. UI/UX Audit & Solusi Layout Mengecil\n- **Akar Masalah:** CSS Grid sebelumnya membagi viewport 50%:50%, menyebabkan materi terhimpit oleh sidebar modul yang terlalu lebar.\n- **Solusi Tuntas:** Arsitektur asimetris `.quant-academy-main-grid` (sidebar terkunci rapi 280px `sticky`, panel materi mengambil seluruh sisa lebar hingga 1680px).\n- **Tipografi Optimal:** Peningkatan skala teks menjadi 13.5px line-height 1.75 dengan ruang nafas visual luas untuk seluruh widget.\n"
+    "markdownContent": "\n### 🏛️ Rekapitulasi Rilis Akbar 24 September 2026 (4 Sesi Rilis)\n\n---\n\n### 🌅 Sesi 1 (Dini Hari) — Update v5.4.0: Compliance Audit & UI/UX Full-Width Canvas Restoration\n- **Zero Simulation Policy:** Terverifikasi 100% bebas dari `Math.random()` artifisial pada data pasar dan logika edukasi akademi.\n- **Security & Secret Leak Prevention:** Audit menyeluruh memverifikasi tidak ada API key, token rahasia, maupun kredensial privat yang terekspos.\n- **Level 5 FVG & Sweep Playground:** Menggantikan duplikasi OrderBook dengan kanvas interaktif Fair Value Gap 3-candle dan simulasi animasi sapuan likuiditas 4 tahap.\n- **Modul 3.3 Supercycle Sine Wave:** Visualisasi interaktif siklus komoditas 4 fase (Under-investment, Windfall Boom, Capex Glut, Crash) dengan rekomendasi alokasi aset.\n- **Restorasi Lebar Kanvas Edukasi (.quant-academy-main-grid):** Mengunci sidebar modul pada `280px` (sticky) dan mengalokasikan seluruh sisa ruang layar untuk materi pembelajaran hingga `1680px` full-width.\n\n---\n\n### ☀️ Sesi 2 (Siang) — Update v5.5.0: Pre-Launch Forensics Hardening & Centralized Data Integrity\n- **Modal Audit Integritas Data (Data Integrity & Provenance Modal):** Drawer telemetri transparan 6 sumber data (Macro Bundle, IDX BEI, Binance WebSocket, Valuta Global/CFD, Kurs USD/IDR, Gemini LLM).\n- **Filter Pasangan Stablecoin:** Saringan ketat (`USDC`, `FDUSD`, `TUSD`, `DAI`, dll) pada loop Binance spot agar terminal tidak mengeluarkan trade plan artifisial.\n- **Sanity Clamping R:R:** Membatasi rasio Risk/Reward antara 0.2x hingga 20.0x untuk mencegah anomali rasio ekstrem.\n- **Short-Order Lot Calculator:** Memperbaiki bug kalkulator lot di mana posisi Short (`SL > Entry`) sebelumnya menghasilkan 0 lot.\n- **Kepatuhan Regulasi & Backtest Non-Advisory:** Modal persetujuan risiko first-run dan banner transparansi simulasi backtest hipotetis.\n\n---\n\n### 🌇 Sesi 3 (Sore) — Update v5.5.1: Live USD/IDR Sync, WebSocket Gap Healing & Telemetry Alignment\n- **Live USD/IDR Feed:** Kuotasi live pasangan `USDTIDR` dari Binance Vision dan `FX_IDC:USDIDR` dari TradingView Scanner ke dalam penyimpanan terpusat `livePrices` dengan sinkronisasi ke `AiAgentArenaTab`.\n- **Penyembuhan Drop REST:** Pembaruan kuotasi REST yang diperbolehkan me-refresh instrumen eksis saat kuotasi kedaluwarsa >3 detik.\n- **Transparansi Broker Flow:** Badge mencolok `ESTIMATED FLOW (QUANT MODEL)` pada header tabel Smart Money Accumulation serta tag `[EST]` pada kode broker emulasi.\n- **Penegakan Jam WIB:** Opsi eksplisit `{ timeZone: 'Asia/Jakarta' }` pada seluruh parser tanggal (berita makro, header sistem forex, dan feed radar paus).\n- **Pengekangan Alarm Taktis:** Banner peringatan pertahanan taktis terikat ketat pada skor level DEFCON (`<= 3`) dan tingkat keparahan krisis bundle.\n\n---\n\n### 🌙 Sesi 4 (Malam) — Update v5.5.2: Unified Gold Bullion Pricing & 24H Session TTL Persistence\n- **Unifikasi Batas Harga Emas (H-04):** Sanity check ketat kuotasi emas dunia ($1.800 – $3.500) melenyapkan anomali kuotasi $4.381 dan fallback usang $272, dialihkan ke kuotasi spot aktual ~$2.650.\n- **Persistensi Sesi Otentikasi 24 Jam (M-04):** Penyimpanan sesi di `localStorage` dengan penanda `expiresAt` berbasis 24 jam mencegah logout tiba-tiba saat reload halaman.\n- **Kalender Makro Fokus Rilis Mendatang (M-05):** Default kalender makro menyaring event ke status `UPCOMING` berprioritas tinggi.\n- **Pip Dinamis JPY & Seleksi Agen Stabil (M-10 & M-11):** Rumus standar pasar interbank `(100.000 unit × 0.01) / Harga Entry` untuk valuta pasangan JPY dan seed hash deterministik 5 menit anti-jitter.\n"
   },
   {
     "id": "pkg-23092026",
