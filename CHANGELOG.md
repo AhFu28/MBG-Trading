@@ -14,9 +14,14 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
-## [2026-09-27] — Multi-Agent Audit Modal Ergonomics, Net Realized Alpha Metric & AI Agent Self-Reflection Protocol
+## [2026-09-27] — Multi-Agent Audit Modal Ergonomics, Net Realized Alpha Metric, AI Self-Reflection & Global News Wire
 
-### Sprint 14 — Quantitative Audit Refactoring, True PnL Alpha & Agentic Introspection
+### Sprint 14 — Quantitative Audit Refactoring, True PnL Alpha, Agentic Introspection & Global News Engine
+- **[RESEARCH & NEWS] Global Multi-Stream Wire Pipeline, Verifiable Source Timestamps & Chronological Alpha**:
+  - **18 Global RSS Streams**: Perluasan pipeline ingest dari 12 stream lokal ke 18 stream makro dunia (US Market, Europe, Asia-Pasifik, China, Emerging Markets, Small/Mid-Caps, Crypto, IDX, Perbankan, Komoditas, Energi, Valas, Bank Sentral, Geopolitik, Regulasi, Tech & AI) yang menangkap 580+ berita aktif terkini tanpa memotong berita valid berkapitalisasi kecil/menengah.
+  - **Concurrent ThreadPool Ingestion**: Mengganti iterasi sekuensial lambat dengan `ThreadPoolExecutor(max_workers=8)` berbasis pure standard library Python, memangkas durasi agregasi 18 stream menjadi ~1.2 detik.
+  - **Source Timestamp Parsing & UI Precision**: Parser RFC 822 & ISO 8601 presisi mengekstrak tanggal, jam lokal (WIB), dan jam rilis asli publisher dalam UTC (`source_time_utc`), diintegrasikan ke kartu berita `NewsTab`, modal detail `NewsDetailModal`, live ticker `HomeDashboardTab`, dan drawer `SecurityHubDrawer`.
+  - **Strict Chronological Sorting**: Pengurutan mutlak berdasarkan `timestamp_ms` descending (newest first) dengan proteksi prioritas *pinned research notes* di posisi teratas.
 - **[COCKPIT UI/UX & AUDIT ERGONOMICS] Dekonstruksi & Pembersihan Modal Audit Multi-Agent**:
   - **Pencabutan Kolom Alokasi Modal**: Menghapus kolom redundant `ALOKASI MODAL` yang menampilkan angka statis seragam (`Rp 1.000.000 Sovereign 100%`) di setiap baris tabel. Memberikan ekspansi ruang horizontal sebesar ~110px untuk kolom Strategi, Win Rate, dan Profit Factor.
   - **Rampingisasi Navigasi Tab Bot**: Mengeliminasi prefiks kaku `TAB 1:` dan `TAB X:`. Tab 1 bertransformasi menjadi `📋 RECAP ARENA`, dan tab bot disajikan ringkas dengan avatar elemen + nama bot (e.g., `🌊 WATER 15x MC`), menghemat ruang horizontal dan meminimalkan scrolling.

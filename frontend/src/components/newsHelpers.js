@@ -216,3 +216,48 @@ export function stopTTS() {
     window.speechSynthesis.cancel();
   }
 }
+
+export function formatNewsDateTime(newsItem = {}) {
+  if (newsItem.published_date && newsItem.published_time) {
+    return {
+      dateStr: newsItem.published_date,
+      timeStr: newsItem.published_time,
+      fullStr: newsItem.published_str || `${newsItem.published_date} • ${newsItem.published_time}`,
+      sourceTime: newsItem.source_time_utc || (newsItem.pub_date ? `${newsItem.pub_date}` : '')
+    };
+  }
+
+  if (newsItem.pub_date) {
+    try {
+      const d = new Date(newsItem.pub_date);
+      if (!isNaN(d.getTime())) {
+        const dateStr = d.toLocaleDateString('id-ID', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          timeZone: 'Asia/Jakarta'
+        });
+        const timeStr = d.toLocaleTimeString('id-ID', {
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'Asia/Jakarta'
+        }) + ' WIB';
+        return {
+          dateStr,
+          timeStr,
+          fullStr: `${dateStr} • ${timeStr}`,
+          sourceTime: newsItem.source_time_utc || newsItem.pub_date
+        };
+      }
+    } catch {
+      // fallback
+    }
+  }
+
+  return {
+    dateStr: newsItem.published_date || 'Hari ini',
+    timeStr: newsItem.published_time || 'Baru saja',
+    fullStr: newsItem.published_str || 'Hari ini',
+    sourceTime: newsItem.source_time_utc || newsItem.pub_date || ''
+  };
+}

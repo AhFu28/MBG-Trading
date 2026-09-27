@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { generateSmartBulletPoints, getIntelligenceArtifact, playTTS, stopTTS } from './newsHelpers.js';
+import { generateSmartBulletPoints, getIntelligenceArtifact, playTTS, stopTTS, formatNewsDateTime } from './newsHelpers.js';
 
 export default function NewsDetailModal({
   news,
@@ -81,16 +81,10 @@ export default function NewsDetailModal({
   const source = (currentNews.source || 'Market Wire').toUpperCase();
   const sentiment = (currentNews.sentiment || 'NEUTRAL').toUpperCase();
   const tag = currentNews.tag || 'MARKET';
-  const pubDate = currentNews.pub_date
-    ? new Date(currentNews.pub_date).toLocaleString('id-ID', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'Asia/Jakarta'
-      }) + ' WIB'
-    : 'Hari ini';
+
+  const dtInfo = formatNewsDateTime(currentNews);
+  const pubDate = dtInfo.fullStr;
+  const originalSourceTime = currentNews.source_time_utc || currentNews.source_published_at || currentNews.pub_date || '';
 
   const isBull = sentiment === 'BULLISH';
   const isBear = sentiment === 'BEARISH';
@@ -322,8 +316,18 @@ export default function NewsDetailModal({
             paddingBottom: '6px',
             borderBottom: 'var(--border-hairline)'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>📅 {pubDate}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>
+                🗓️ {dtInfo.dateStr}
+              </span>
+              <span style={{ color: 'var(--accent-blue, #60a5fa)', fontWeight: '600' }}>
+                ⏰ {dtInfo.timeStr}
+              </span>
+              {originalSourceTime && (
+                <span style={{ color: 'var(--text-muted)', fontSize: '10px' }} title={`Waktu asli rilis dari sumber: ${originalSourceTime}`}>
+                  (Sumber: {originalSourceTime})
+                </span>
+              )}
               <span>•</span>
               <span>{readingTimeStr}</span>
               {currentNews.metrics && currentNews.metrics.length > 0 && (

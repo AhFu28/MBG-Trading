@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import AssetIcon from './AssetIcon.jsx';
 import { cleanSymbolStr } from '../data/tv-helpers.js';
+import { formatNewsDateTime } from './newsHelpers.js';
 
 /**
  * Ultra-fast native HTML5 Canvas Mini Candlestick Chart
@@ -880,7 +881,14 @@ export default function SecurityHubDrawer({
                     </a>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '9px', color: 'var(--text-muted)' }}>
                       <span>{n.source || 'Bloomberg News'}</span>
-                      <span>{n.pub_date ? new Date(n.pub_date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 'Baru saja'}</span>
+                      {(() => {
+                        const dt = formatNewsDateTime(n);
+                        return (
+                          <span title={`Waktu rilis sumber: ${n.source_time_utc || n.pub_date || ''}`}>
+                            {dt.dateStr} • {dt.timeStr}
+                          </span>
+                        );
+                      })()}
                     </div>
                   </div>
                 ))

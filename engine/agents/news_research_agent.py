@@ -16,10 +16,11 @@ import os
 import re
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Any, Tuple, Optional
 
 logger = logging.getLogger("NewsResearchAgent")
+WIB_TZ = timezone(timedelta(hours=7))
 
 ARCHIVE_FILE_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "cache", "research_archive.json"
@@ -43,7 +44,8 @@ class NewsResearchAgent:
         "valorant", "geforce", "esports", "e-sports", "gameplay", "game pass",
         "driver update", "cookware", "cooking", "pans", "panci", "stolen",
         "theft", "pencurian", "maling", "recipe", "resep", "review game",
-        "gaming monitor", "rtx 40", "rtx 50", "gpu driver", "steamos", "critters"
+        "gaming monitor", "rtx 40", "rtx 50", "gpu driver", "steamos", "critters",
+        "watchlive", "live stream", "live on tv", "tv channel", "cricket"
     ]
 
     DISALLOWED_SOURCES = [
@@ -193,12 +195,25 @@ class NewsResearchAgent:
                 f"🛡️ Actionable Playbook: Kunci profit sebagian pada saham yang menyentuh R1 ({tech_levels['r1']:,.0f}). Evaluasi posisi portofolio untuk sesi esok."
             ]
 
+        month_id = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+        dt_wib = now.astimezone(WIB_TZ)
+        date_id_str = f"{dt_wib.day:02d} {month_id[dt_wib.month - 1]} {dt_wib.year}"
+        time_id_str = f"{dt_wib.strftime('%H:%M')} WIB"
+        pub_str = f"{date_id_str} • {time_id_str}"
+        ts_ms = int(now.astimezone(timezone.utc).timestamp() * 1000)
+
         brief_data = {
             "id": f"daily-brief-{now.strftime('%Y%m%d%H%M')}",
             "title": title,
             "source": "MBG RESEARCH DESK",
             "link": "#daily-brief",
             "pub_date": now.astimezone(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT"),
+            "timestamp_ms": ts_ms,
+            "source_published_at": now.astimezone(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT"),
+            "source_time_utc": now.astimezone(timezone.utc).strftime("%H:%M:%S GMT"),
+            "published_str": pub_str,
+            "published_date": date_id_str,
+            "published_time": time_id_str,
             "date_iso": now.strftime("%Y-%m-%d"),
             "session": session,
             "tag": "DAILY_BRIEF",
@@ -263,12 +278,25 @@ class NewsResearchAgent:
             f"🛡️ Invalidation Level & Manajemen Risiko: Cut-loss disiplin jika emiten menembus level batas bawah (BBCA < Rp {bbca_levels['invalidation']:,.0f} / ANTM < Rp {antm_levels['invalidation']:,.0f})."
         ]
 
+        month_id = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+        dt_wib = now.astimezone(WIB_TZ)
+        date_id_str = f"{dt_wib.day:02d} {month_id[dt_wib.month - 1]} {dt_wib.year}"
+        time_id_str = f"{dt_wib.strftime('%H:%M')} WIB"
+        pub_str = f"{date_id_str} • {time_id_str}"
+        ts_ms = int(now.astimezone(timezone.utc).timestamp() * 1000)
+
         note_data = {
             "id": f"research-note-{now.strftime('%Y%m%d%H%M')}",
             "title": title,
             "source": "MBG RESEARCH INTELLIGENCE",
             "link": "#research-note",
             "pub_date": now.astimezone(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT"),
+            "timestamp_ms": ts_ms,
+            "source_published_at": now.astimezone(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT"),
+            "source_time_utc": now.astimezone(timezone.utc).strftime("%H:%M:%S GMT"),
+            "published_str": pub_str,
+            "published_date": date_id_str,
+            "published_time": time_id_str,
             "date_iso": now.strftime("%Y-%m-%d"),
             "scope": scope,
             "tag": "RESEARCH",
@@ -412,6 +440,13 @@ class NewsResearchAgent:
             if ai_research and "daily_brief" in ai_research and "research_note" in ai_research:
                 now = datetime.now()
                 now_str = now.strftime("%d %b %Y")
+                month_id = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+                dt_wib = now.astimezone(WIB_TZ)
+                date_id_str = f"{dt_wib.day:02d} {month_id[dt_wib.month - 1]} {dt_wib.year}"
+                time_id_str = f"{dt_wib.strftime('%H:%M')} WIB"
+                pub_str = f"{date_id_str} • {time_id_str}"
+                ts_ms = int(now.astimezone(timezone.utc).timestamp() * 1000)
+
                 gold_p = float(macro.get("gold_price", 2650.0) or 2650.0)
                 brent_p = float(macro.get("brent_oil_price", 74.5) or 74.5)
                 ihsg_p = float(macro.get("ihsg_price", 7250.0) or 7250.0)
@@ -429,6 +464,12 @@ class NewsResearchAgent:
                     "source": "MBG RESEARCH INTELLIGENCE",
                     "link": "#daily-brief",
                     "pub_date": now.astimezone(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT"),
+                    "timestamp_ms": ts_ms,
+                    "source_published_at": now.astimezone(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT"),
+                    "source_time_utc": now.astimezone(timezone.utc).strftime("%H:%M:%S GMT"),
+                    "published_str": pub_str,
+                    "published_date": date_id_str,
+                    "published_time": time_id_str,
                     "date_iso": now.strftime("%Y-%m-%d"),
                     "scope": "DAILY",
                     "tag": "DAILY_BRIEF",
@@ -470,6 +511,12 @@ class NewsResearchAgent:
                     "source": "MBG RESEARCH INTELLIGENCE",
                     "link": "#research-note",
                     "pub_date": now.astimezone(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT"),
+                    "timestamp_ms": ts_ms,
+                    "source_published_at": now.astimezone(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT"),
+                    "source_time_utc": now.astimezone(timezone.utc).strftime("%H:%M:%S GMT"),
+                    "published_str": pub_str,
+                    "published_date": date_id_str,
+                    "published_time": time_id_str,
                     "date_iso": now.strftime("%Y-%m-%d"),
                     "scope": "DAILY",
                     "tag": "RESEARCH",
@@ -523,5 +570,10 @@ class NewsResearchAgent:
                 json.dump(cls.latest_crisis_alert, cf, indent=2, ensure_ascii=False)
         except Exception as ce:
             logger.debug(f"Failed to sync crisis file: {ce}")
+
+        # Sort all curated live news strictly by newest (descending timestamp_ms)
+        filtered_news.sort(key=lambda x: x.get("timestamp_ms", 0), reverse=True)
+        for idx, item in enumerate(filtered_news, 1):
+            item["id"] = f"news-{idx}"
 
         return [daily_brief, research_note] + filtered_news

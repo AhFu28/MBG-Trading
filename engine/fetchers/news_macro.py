@@ -1,12 +1,54 @@
 import logging
 import re
 import urllib.request
+import email.utils
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Dict, Any, Tuple
-import yfinance as yf
+try:
+    import yfinance as yf
+except Exception:
+    yf = None
 
 logger = logging.getLogger("NewsMacroFetcher")
+
+WIB_TZ = timezone(timedelta(hours=7))
+
+def parse_pubdate_metadata(raw_pubdate: str) -> dict:
+    """Parses RSS pubDate RFC 822 or ISO format into structured date/time fields."""
+    dt = None
+    if raw_pubdate:
+        try:
+            dt = email.utils.parsedate_to_datetime(raw_pubdate)
+        except Exception:
+            try:
+                dt = datetime.fromisoformat(raw_pubdate.replace("Z", "+00:00"))
+            except Exception:
+                pass
+    if dt is None:
+        dt = datetime.now(timezone.utc)
+
+    dt_utc = dt.astimezone(timezone.utc)
+    dt_wib = dt.astimezone(WIB_TZ)
+
+    ts_ms = int(dt_utc.timestamp() * 1000)
+    month_id = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+    m_name = month_id[dt_wib.month - 1]
+
+    date_id_str = f"{dt_wib.day:02d} {m_name} {dt_wib.year}"
+    time_id_str = f"{dt_wib.strftime('%H:%M')} WIB"
+    full_published_str = f"{date_id_str} • {time_id_str}"
+
+    return {
+        "timestamp_ms": ts_ms,
+        "pub_date": dt_utc.strftime("%a, %d %b %Y %H:%M:%S GMT"),
+        "source_published_at": raw_pubdate or dt_utc.strftime("%a, %d %b %Y %H:%M:%S GMT"),
+        "source_time_utc": dt_utc.strftime("%H:%M:%S GMT"),
+        "published_str": full_published_str,
+        "published_date": date_id_str,
+        "published_time": time_id_str
+    }
 
 class NewsProcessor:
     """Smart Heuristic Micro-NLP & Rule-based Takeaway Generator for Indonesian Equities."""
@@ -468,116 +510,141 @@ class NewsMacroFetcher:
 
         return sentiment
 
-    def fetch_live_financial_news(self, limit: int = 20) -> list:
-        """Fetch real-time multi-stream financial news (12 streams: IDX, Crypto, Politics, Geopolitics, Central Bank, Regulation, Commodities, Forex, US Market, China, Energy/OPEC, Tech/AI) via RSS feeds."""
+    def fetch_live_financial_news(self, limit: int = 35) -> list:
+        """Fetch real-time multi-stream financial news across 17 global streams via RSS feeds concurrently."""
         articles = []
         seen_titles = set()
 
         rss_feeds = [
-            # Core Markets
-            ("IDX", "https://news.google.com/rss/search?q=IHSG+OR+saham+Indonesia+OR+%22Bank+Indonesia%22+when:1d&hl=id&gl=ID&ceid=ID:id"),
-            ("CRYPTO", "https://news.google.com/rss/search?q=crypto+OR+bitcoin+OR+ethereum+OR+%22crypto+ETF%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            # Politics & Fiscal (Indonesia)
-            ("POLITIK", "https://news.google.com/rss/search?q=%22kebijakan+ekonomi%22+OR+%22fiskal%22+OR+%22APBN%22+OR+%22pajak%22+OR+%22presiden%22+ekonomi+when:1d&hl=id&gl=ID&ceid=ID:id"),
-            # Geopolitics & Trade War
-            ("GEOPOLITIK", "https://news.google.com/rss/search?q=geopolitics+OR+%22trade+war%22+OR+sanctions+OR+tariff+OR+%22middle+east%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            # Central Banks (Fed, ECB, BOJ, PBOC)
-            ("CENTRAL_BANK", "https://news.google.com/rss/search?q=%22Federal+Reserve%22+OR+%22ECB%22+OR+%22Bank+of+Japan%22+OR+%22interest+rate+decision%22+OR+%22rate+cut%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            # Financial Regulation (SEC, OJK)
-            ("REGULASI", "https://news.google.com/rss/search?q=%22SEC%22+%22crypto+regulation%22+OR+%22OJK%22+OR+%22financial+regulation%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            # Commodities (Gold, Oil, Copper)
-            ("COMMODITIES", "https://news.google.com/rss/search?q=%22gold+price%22+OR+%22oil+price%22+OR+%22copper+price%22+OR+%22copper+futures%22+OR+%22commodities+market%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            # Forex & Currency
-            ("FOREX_NEWS", "https://news.google.com/rss/search?q=%22dollar+index%22+OR+%22EURUSD%22+OR+%22forex%22+OR+%22currency%22+OR+%22rupiah%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            # US Equities & Earnings
-            ("US_MARKET", "https://news.google.com/rss/search?q=%22S%26P+500%22+OR+%22Nasdaq%22+OR+%22Wall+Street%22+OR+%22earnings%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            # China Economy & PBOC
-            ("CHINA", "https://news.google.com/rss/search?q=%22China+economy%22+OR+%22PBOC%22+OR+%22China+stimulus%22+OR+%22yuan%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            # OPEC & Energy Geopolitics
-            ("ENERGY_GEO", "https://news.google.com/rss/search?q=%22OPEC%22+OR+%22crude+oil%22+OR+%22natural+gas%22+OR+%22energy+crisis%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
-            # Tech & AI Momentum
-            ("TECH_AI", "https://news.google.com/rss/search?q=%22AI+stocks%22+OR+%22semiconductor+stocks%22+OR+(%22NVIDIA%22+(stock+OR+shares+OR+earnings+OR+revenue+OR+datacenter+OR+%22market+cap%22))+OR+%22tech+earnings%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            # Core Markets (Indonesia & Domestic Equities)
+            ("IDX", "https://news.google.com/rss/search?q=IHSG+OR+saham+Indonesia+OR+%22Bursa+Efek+Indonesia%22+when:1d&hl=id&gl=ID&ceid=ID:id"),
+            ("BANKING", "https://news.google.com/rss/search?q=%22perbankan+Indonesia%22+OR+BBCA+OR+BBRI+OR+BMRI+OR+BBNI+OR+%22kredit+perbankan%22+when:1d&hl=id&gl=ID&ceid=ID:id"),
+            ("POLITIK", "https://news.google.com/rss/search?q=%22kebijakan+ekonomi%22+OR+fiskal+OR+APBN+OR+pajak+OR+%22kementerian+keuangan%22+when:1d&hl=id&gl=ID&ceid=ID:id"),
+
+            # Global Equities (US, Europe, Asia-Pacific, China, Emerging Markets, Small Caps)
+            ("US_MARKET", "https://news.google.com/rss/search?q=%22Wall+Street%22+OR+%22S%26P+500%22+OR+%22Nasdaq%22+OR+%22Dow+Jones%22+OR+%22US+stocks%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("EUROPE", "https://news.google.com/rss/search?q=%22European+Central+Bank%22+OR+%22Bank+of+England%22+OR+FTSE+OR+DAX+OR+CAC40+OR+Eurozone+when:1d&hl=en-GB&gl=GB&ceid=GB:en"),
+            ("ASIA_MARKETS", "https://news.google.com/rss/search?q=Nikkei+OR+%22Hang+Seng%22+OR+Sensex+OR+Nifty+OR+ASX200+OR+Kospi+OR+%22Asian+markets%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("CHINA", "https://news.google.com/rss/search?q=%22China+economy%22+OR+PBOC+OR+%22China+stimulus%22+OR+%22yuan%22+OR+%22Chinese+stocks%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("EMERGING", "https://news.google.com/rss/search?q=%22emerging+markets%22+OR+ASEAN+OR+%22developing+economies%22+OR+%22emerging+market+currency%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("SMALL_CAPS", "https://news.google.com/rss/search?q=%22small-cap%22+OR+%22penny+stock%22+OR+%22IPO%22+OR+%22earnings+report%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+
+            # Crypto & Web3 Assets
+            ("CRYPTO", "https://news.google.com/rss/search?q=crypto+OR+bitcoin+OR+ethereum+OR+altcoin+OR+blockchain+OR+%22crypto+ETF%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+
+            # Commodities, Energy & Forex
+            ("COMMODITIES", "https://news.google.com/rss/search?q=%22gold+price%22+OR+%22silver+price%22+OR+%22copper+futures%22+OR+%22nickel%22+OR+%22commodities+market%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("ENERGY_GEO", "https://news.google.com/rss/search?q=OPEC+OR+%22crude+oil%22+OR+%22Brent+oil%22+OR+%22natural+gas%22+OR+%22energy+crisis%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("FOREX_NEWS", "https://news.google.com/rss/search?q=%22dollar+index%22+OR+EURUSD+OR+USDJPY+OR+forex+OR+%22currency+market%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+
+            # Macro, Central Banks, Geopolitics, Regulation & Tech
+            ("GLOBAL_MACRO", "https://news.google.com/rss/search?q=%22global+economy%22+OR+inflation+OR+%22interest+rates%22+OR+%22World+Bank%22+OR+IMF+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("CENTRAL_BANK", "https://news.google.com/rss/search?q=%22Federal+Reserve%22+OR+%22ECB%22+OR+%22interest+rate+decision%22+OR+%22rate+cut%22+OR+%22rate+hike%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("GEOPOLITIK", "https://news.google.com/rss/search?q=geopolitics+OR+%22trade+war%22+OR+sanctions+OR+tariff+OR+%22Middle+East%22+conflict+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("REGULASI", "https://news.google.com/rss/search?q=%22SEC%22+OR+%22CFTC%22+OR+%22OJK%22+OR+%22financial+regulation%22+OR+%22crypto+regulation%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
+            ("TECH_AI", "https://news.google.com/rss/search?q=%22AI+stocks%22+OR+%22semiconductor+stocks%22+OR+%22NVIDIA%22+OR+%22tech+earnings%22+when:1d&hl=en-US&gl=US&ceid=US:en"),
         ]
 
-        for stream_type, feed_url in rss_feeds:
+        def _fetch_single_feed(stream_info):
+            s_type, f_url = stream_info
+            feed_items = []
             try:
-                req = urllib.request.Request(feed_url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+                req = urllib.request.Request(f_url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
                 with urllib.request.urlopen(req, timeout=8) as resp:
                     xml_data = resp.read()
                     root = ET.fromstring(xml_data)
-                    items = root.findall("./channel/item")
-
-                    for item in items[:limit]:
+                    for item in root.findall("./channel/item")[:limit]:
                         raw_title = item.find("title").text if item.find("title") is not None else "Financial News Update"
                         link = item.find("link").text if item.find("link") is not None else "#"
                         pub_date = item.find("pubDate").text if item.find("pubDate") is not None else ""
-
-                        # Split publisher from title
-                        parts = raw_title.rsplit(" - ", 1)
-                        title = parts[0].strip()
-                        source = parts[1].strip() if len(parts) > 1 else "Market Wire"
-
-                        # Title deduplication
-                        norm_title = re.sub(r'[^a-zA-Z0-9]', '', title).lower()
-                        if norm_title in seen_titles:
-                            continue
-                        seen_titles.add(norm_title)
-
-                        # Infer market tag from stream + title keywords
-                        upper_t = title.upper()
-                        if stream_type == "CRYPTO":
-                            if any(k in upper_t for k in ["ETF", "INFLOW", "OUTFLOW", "BLACKROCK", "FIDELITY"]):
-                                tag = "CRYPTO_ETF"
-                            elif any(k in upper_t for k in ["SOL", "SOLANA", "ETH", "ETHEREUM", "LAYER 1", "L1"]):
-                                tag = "CRYPTO_L1"
-                            elif any(k in upper_t for k in ["DEFI", "AI", "RENDER", "FET", "NEAR", "SUI"]):
-                                tag = "DEFI_AI"
-                            else:
-                                tag = "CRYPTO"
-                        elif stream_type == "IDX":
-                            if any(k in upper_t for k in ["EMAS", "ANTM", "BRMS", "MDKA", "GOLD"]):
-                                tag = "METALS"
-                            elif any(k in upper_t for k in ["MINYAK", "OIL", "MEDC", "ENRG", "BRENT"]):
-                                tag = "ENERGY"
-                            elif any(k in upper_t for k in ["BBCA", "BBRI", "BMRI", "BBNI", "BANK"]):
-                                tag = "BANKING"
-                            elif any(k in upper_t for k in ["ASING", "FOREIGN", "NET BUY", "NET SELL"]):
-                                tag = "FOREIGN_FLOW"
-                            elif any(k in upper_t for k in ["FED", "SUKU BUNGA", "INFLASI", "TRUMP", "DOLLAR", "DXY", "POWELL"]):
-                                tag = "MACRO"
-                            else:
-                                tag = "IHSG"
-                        elif stream_type in ("POLITIK", "GEOPOLITIK", "CENTRAL_BANK", "REGULASI",
-                                             "COMMODITIES", "FOREX_NEWS", "US_MARKET", "CHINA",
-                                             "ENERGY_GEO", "TECH_AI"):
-                            tag = stream_type
-
-                        summary, key_takeaways, sentiment, sentiment_score, tickers, metrics, intel_blocks, snr_val = NewsProcessor.generate_intelligence_artifact(title, source, tag)
-
-                        # Dynamic reading time based on 180 words per minute
-                        word_count = len(title.split()) + sum(len(t.split()) for t in key_takeaways)
-                        reading_time = max(30, min(120, int((word_count / 180) * 60) + 20))
-
-                        articles.append({
-                            "id": f"news-{len(articles)+1}",
-                            "title": title,
-                            "source": source,
-                            "link": link,
-                            "pub_date": pub_date,
-                            "tag": tag,
-                            "stream": stream_type,
-                            "sentiment": sentiment,
-                            "sentiment_score": sentiment_score,
-                            "related_tickers": tickers,
-                            "metrics": metrics,
-                            "reading_time_sec": reading_time,
-                            "summary": summary,
-                            "key_takeaways": key_takeaways,
-                            "intelligence_blocks": intel_blocks,
-                            "snr_score": snr_val
-                        })
+                        feed_items.append((s_type, raw_title, link, pub_date))
             except Exception as e:
-                logger.warning(f"Failed to fetch {stream_type} RSS feed: {e}")
+                logger.warning(f"Failed to fetch {s_type} RSS feed: {e}")
+            return feed_items
+
+        raw_feed_items = []
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            future_to_stream = {executor.submit(_fetch_single_feed, s): s for s in rss_feeds}
+            for future in as_completed(future_to_stream):
+                try:
+                    res = future.result()
+                    if res:
+                        raw_feed_items.extend(res)
+                except Exception as e:
+                    logger.warning(f"Feed worker exception: {e}")
+
+        for stream_type, raw_title, link, raw_pubdate in raw_feed_items:
+            # Split publisher from title
+            parts = raw_title.rsplit(" - ", 1)
+            title = parts[0].strip()
+            source = parts[1].strip() if len(parts) > 1 else "Market Wire"
+
+            # Title deduplication
+            norm_title = re.sub(r'[^a-zA-Z0-9]', '', title).lower()
+            if not norm_title or norm_title in seen_titles:
+                continue
+            seen_titles.add(norm_title)
+
+            # Infer market tag from stream + title keywords
+            upper_t = title.upper()
+            if stream_type == "CRYPTO":
+                if any(k in upper_t for k in ["ETF", "INFLOW", "OUTFLOW", "BLACKROCK", "FIDELITY"]):
+                    tag = "CRYPTO_ETF"
+                elif any(k in upper_t for k in ["SOL", "SOLANA", "ETH", "ETHEREUM", "LAYER 1", "L1"]):
+                    tag = "CRYPTO_L1"
+                elif any(k in upper_t for k in ["DEFI", "AI", "RENDER", "FET", "NEAR", "SUI"]):
+                    tag = "DEFI_AI"
+                else:
+                    tag = "CRYPTO"
+            elif stream_type == "IDX":
+                if any(k in upper_t for k in ["EMAS", "ANTM", "BRMS", "MDKA", "GOLD"]):
+                    tag = "METALS"
+                elif any(k in upper_t for k in ["MINYAK", "OIL", "MEDC", "ENRG", "BRENT"]):
+                    tag = "ENERGY"
+                elif any(k in upper_t for k in ["BBCA", "BBRI", "BMRI", "BBNI", "BANK"]):
+                    tag = "BANKING"
+                elif any(k in upper_t for k in ["ASING", "FOREIGN", "NET BUY", "NET SELL"]):
+                    tag = "FOREIGN_FLOW"
+                elif any(k in upper_t for k in ["FED", "SUKU BUNGA", "INFLASI", "TRUMP", "DOLLAR", "DXY", "POWELL"]):
+                    tag = "MACRO"
+                else:
+                    tag = "IHSG"
+            else:
+                tag = stream_type
+
+            summary, key_takeaways, sentiment, sentiment_score, tickers, metrics, intel_blocks, snr_val = NewsProcessor.generate_intelligence_artifact(title, source, tag)
+
+            # Accurate parsed date & release time metadata from source
+            date_meta = parse_pubdate_metadata(raw_pubdate)
+
+            # Dynamic reading time based on 180 words per minute
+            word_count = len(title.split()) + sum(len(t.split()) for t in key_takeaways)
+            reading_time = max(30, min(120, int((word_count / 180) * 60) + 20))
+
+            articles.append({
+                "id": f"news-{len(articles)+1}",
+                "title": title,
+                "source": source,
+                "link": link,
+                "pub_date": date_meta["pub_date"],
+                "timestamp_ms": date_meta["timestamp_ms"],
+                "source_published_at": date_meta["source_published_at"],
+                "source_time_utc": date_meta["source_time_utc"],
+                "published_str": date_meta["published_str"],
+                "published_date": date_meta["published_date"],
+                "published_time": date_meta["published_time"],
+                "tag": tag,
+                "stream": stream_type,
+                "sentiment": sentiment,
+                "sentiment_score": sentiment_score,
+                "related_tickers": tickers,
+                "metrics": metrics,
+                "reading_time_sec": reading_time,
+                "summary": summary,
+                "key_takeaways": key_takeaways,
+                "intelligence_blocks": intel_blocks,
+                "snr_score": snr_val
+            })
 
         if not articles:
             fallback_seeds = [
@@ -607,6 +674,7 @@ class NewsMacroFetcher:
                 }
             ]
             articles = []
+            now_meta = parse_pubdate_metadata("")
             for idx, s in enumerate(fallback_seeds, 1):
                 summary, key_takeaways, sentiment, sentiment_score, tickers, metrics = NewsProcessor.generate_key_takeaways(s["title"], s["source"], s["tag"])
                 articles.append({
@@ -614,8 +682,15 @@ class NewsMacroFetcher:
                     "title": s["title"],
                     "source": s["source"],
                     "link": s["link"],
-                    "pub_date": datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT"),
+                    "pub_date": now_meta["pub_date"],
+                    "timestamp_ms": now_meta["timestamp_ms"],
+                    "source_published_at": now_meta["source_published_at"],
+                    "source_time_utc": now_meta["source_time_utc"],
+                    "published_str": now_meta["published_str"],
+                    "published_date": now_meta["published_date"],
+                    "published_time": now_meta["published_time"],
                     "tag": s["tag"],
+                    "stream": s["tag"],
                     "sentiment": sentiment,
                     "sentiment_score": sentiment_score,
                     "related_tickers": tickers,
@@ -624,6 +699,13 @@ class NewsMacroFetcher:
                     "summary": summary,
                     "key_takeaways": key_takeaways
                 })
+
+        # Sort all articles strictly by newest first (descending timestamp_ms)
+        articles.sort(key=lambda x: x.get("timestamp_ms", 0), reverse=True)
+        for idx, a in enumerate(articles, 1):
+            a["id"] = f"news-{idx}"
+
+        return articles
 
         return articles
 

@@ -5,7 +5,8 @@ import {
   getIntelligenceArtifact,
   inferSentiment,
   playTTS,
-  stopTTS
+  stopTTS,
+  formatNewsDateTime
 } from './newsHelpers.js';
 
 export default function NewsTab({
@@ -100,20 +101,24 @@ export default function NewsTab({
   const items = Array.isArray(liveNews) ? liveNews : [];
 
   const categories = [
-    { id: 'ALL', label: '📰 ALL RESEARCH' },
+    { id: 'ALL', label: '📰 SEMUA BERITA DUNIA' },
     { id: 'ARCHIVE', label: `🏛️ ARSIP RISET (14 HARI)` },
     { id: 'DAILY_BRIEF', label: '☕ DAILY BRIEF' },
     { id: 'RESEARCH', label: '📑 RESEARCH NOTES' },
     { id: 'CRYPTO', label: '⚡ CRYPTO & ETFS' },
     { id: 'IDX', label: '📈 SAHAM IDX' },
+    { id: 'US_MARKET', label: '🇺🇸 US MARKET' },
+    { id: 'EUROPE', label: '🇪🇺 EROPA' },
+    { id: 'ASIA_MARKETS', label: '🌏 ASIA-PASIFIK' },
+    { id: 'CHINA', label: '🇨🇳 CHINA' },
+    { id: 'EMERGING', label: '🌐 PASAR BERKEMBANG' },
+    { id: 'SMALL_CAPS', label: '🚀 SMALL & MID CAPS' },
     { id: 'BANKING', label: '🏦 PERBANKAN' },
     { id: 'COMMODITY', label: '🪙 LOGAM & ENERGI' },
     { id: 'MACRO', label: '🌐 FED & MAKRO' },
     { id: 'POLITIK', label: '🏛️ POLITIK' },
     { id: 'GEOPOLITIK', label: '🛡️ GEOPOLITIK' },
     { id: 'CENTRAL_BANK', label: '🏦 CENTRAL BANK' },
-    { id: 'US_MARKET', label: '🇺🇸 US MARKET' },
-    { id: 'CHINA', label: '🇨🇳 CHINA' },
     { id: 'ENERGY_GEO', label: '🛢️ OPEC & ENERGY' },
     { id: 'TECH_AI', label: '🤖 TECH & AI' },
     { id: 'SNIPS', label: '📋 DAILY RECAP' },
@@ -178,7 +183,7 @@ export default function NewsTab({
     }
   };
 
-  // Filter and Search logic
+  // Filter and Search logic (Sort strictly by newest first)
   const filteredNews = useMemo(() => {
     if (newsFilter === 'ARCHIVE') {
       const pool = researchArchive.length > 0 ? researchArchive : items.filter(it => it.tag === 'DAILY_BRIEF' || it.tag === 'RESEARCH');
@@ -194,7 +199,11 @@ export default function NewsTab({
           (it.related_tickers && it.related_tickers.some(t => t.toLowerCase().includes(q)))
         );
       }
-      return res;
+      return res.slice().sort((a, b) => {
+        const timeA = a.timestamp_ms || (a.pub_date ? new Date(a.pub_date).getTime() : 0) || 0;
+        const timeB = b.timestamp_ms || (b.pub_date ? new Date(b.pub_date).getTime() : 0) || 0;
+        return timeB - timeA;
+      });
     }
 
     return items.filter((item, idx) => {
@@ -225,10 +234,26 @@ export default function NewsTab({
         if (!tag.includes('BANK')) return false;
       } else if (newsFilter === 'COMMODITY') {
         const tag = (item.tag || '').toUpperCase();
-        if (!tag.includes('METALS') && !tag.includes('ENERGY') && !tag.includes('COMMODITIES')) return false;
+        if (!tag.includes('METALS') && !tag.includes('ENERGY') && !tag.includes('COMMODITIES') && !tag.includes('COMMODITY')) return false;
       } else if (newsFilter === 'MACRO') {
         const tag = (item.tag || '').toUpperCase();
         if (!tag.includes('MACRO') && !tag.includes('FED') && !tag.includes('CENTRAL_BANK')) return false;
+      } else if (newsFilter === 'EUROPE') {
+        const stream = (item.stream || '').toUpperCase();
+        const tag = (item.tag || '').toUpperCase();
+        if (stream !== 'EUROPE' && tag !== 'EUROPE') return false;
+      } else if (newsFilter === 'ASIA_MARKETS') {
+        const stream = (item.stream || '').toUpperCase();
+        const tag = (item.tag || '').toUpperCase();
+        if (!['ASIA_MARKETS', 'ASIA'].includes(stream) && !['ASIA_MARKETS', 'ASIA'].includes(tag)) return false;
+      } else if (newsFilter === 'EMERGING') {
+        const stream = (item.stream || '').toUpperCase();
+        const tag = (item.tag || '').toUpperCase();
+        if (stream !== 'EMERGING' && tag !== 'EMERGING') return false;
+      } else if (newsFilter === 'SMALL_CAPS') {
+        const stream = (item.stream || '').toUpperCase();
+        const tag = (item.tag || '').toUpperCase();
+        if (stream !== 'SMALL_CAPS' && tag !== 'SMALL_CAPS') return false;
       } else if (['POLITIK', 'GEOPOLITIK', 'CENTRAL_BANK', 'REGULASI', 'FOREX_NEWS',
                    'US_MARKET', 'CHINA', 'ENERGY_GEO', 'TECH_AI', 'COMMODITIES'].includes(newsFilter)) {
         const tag = (item.tag || '').toUpperCase();
@@ -245,7 +270,13 @@ export default function NewsTab({
         (item.tag && item.tag.toLowerCase().includes(q)) ||
         (item.related_tickers && item.related_tickers.some(t => t.toLowerCase().includes(q)))
       );
-    }).sort((a, b) => new Date(b.pub_date || 0) - new Date(a.pub_date || 0));
+    }).sort((a, b) => {
+      if (a.is_pinned && !b.is_pinned) return -1;
+      if (!a.is_pinned && b.is_pinned) return 1;
+      const timeA = a.timestamp_ms || (a.pub_date ? new Date(a.pub_date).getTime() : 0) || 0;
+      const timeB = b.timestamp_ms || (b.pub_date ? new Date(b.pub_date).getTime() : 0) || 0;
+      return timeB - timeA;
+    });
   }, [items, newsFilter, newsSearch, bookmarks, researchArchive, archiveDateFilter]);
 
   // Daily Snips summary text for WA / Telegram export
@@ -659,9 +690,33 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
 
                   {/* Timestamp & Bookmark Star */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                      {news.published_str || (news.pub_date ? new Date(news.pub_date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' }) + ' WIB' : 'Hari ini')}
-                    </span>
+                    {(() => {
+                      const dt = formatNewsDateTime(news);
+                      const originalTooltip = news.source_time_utc
+                        ? `Waktu Rilis Sumber Asli: ${news.source_time_utc} (${news.source || 'Sumber'})`
+                        : (news.source_published_at || news.pub_date || '');
+                      return (
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            background: 'rgba(255, 255, 255, 0.04)',
+                            padding: '2px 7px',
+                            borderRadius: '4px',
+                            border: '1px solid rgba(255, 255, 255, 0.08)'
+                          }}
+                          title={originalTooltip}
+                        >
+                          <span style={{ fontSize: '10px', color: 'var(--text-primary)', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
+                            🗓️ {dt.dateStr}
+                          </span>
+                          <span style={{ fontSize: '10px', color: 'var(--accent-blue, #60a5fa)', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
+                            ⏰ {dt.timeStr}
+                          </span>
+                        </div>
+                      );
+                    })()}
                     <button
                       onClick={() => toggleBookmark(newsId)}
                       style={{

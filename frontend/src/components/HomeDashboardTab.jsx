@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import BloombergNewsWire from './BloombergNewsWire.jsx';
 import AssetIcon from './AssetIcon.jsx';
 import CryptoIcon from './CryptoIcon.jsx';
+import { formatNewsDateTime } from './newsHelpers.js';
 
 const LQ45_TICKERS = new Set([
   'BBCA', 'BBRI', 'BMRI', 'BBNI', 'ASII', 'TLKM', 'AMMN', 'BREN', 'CUAN', 'ADRO',
@@ -120,7 +121,13 @@ export default function HomeDashboardTab({
   const macro = data?.macro_telemetry || {};
   const foreignFlow = data?.foreign_flow || {};
   const brokerSummary = data?.broker_summary || {};
-  const liveNewsRaw = (macro?.live_news || []).slice().sort((a, b) => new Date(b.pub_date || 0) - new Date(a.pub_date || 0));
+  const liveNewsRaw = (macro?.live_news || []).slice().sort((a, b) => {
+    if (a.is_pinned && !b.is_pinned) return -1;
+    if (!a.is_pinned && b.is_pinned) return 1;
+    const timeA = a.timestamp_ms || (a.pub_date ? new Date(a.pub_date).getTime() : 0) || 0;
+    const timeB = b.timestamp_ms || (b.pub_date ? new Date(b.pub_date).getTime() : 0) || 0;
+    return timeB - timeA;
+  });
 
   // Geopolitical & Military Threat Detection
   const geoAlertItems = useMemo(() => {
@@ -1438,9 +1445,17 @@ export default function HomeDashboardTab({
                         </span>
                       </div>
 
-                      <span style={{ fontSize: '8px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                        {news.pub_date ? `${new Date(news.pub_date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })} WIB` : '11:45 WIB'}
-                      </span>
+                      {(() => {
+                        const dt = formatNewsDateTime(news);
+                        return (
+                          <span
+                            style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
+                            title={`Waktu rilis sumber: ${news.source_time_utc || news.pub_date || ''}`}
+                          >
+                            {dt.dateStr} • {dt.timeStr}
+                          </span>
+                        );
+                      })()}
                     </div>
 
                     {/* Headline Title */}
