@@ -249,6 +249,24 @@ def main():
             if t in bandarmology_iifs: plan["iifs"] = bandarmology_iifs[t]
             if t in forecasts: plan["forecast"] = forecasts[t]
             
+            # Bandarmology IIFS Confluence Filter
+            if t in bandarmology_iifs:
+                iifs_data = bandarmology_iifs[t]
+                i_score = iifs_data.get('iifs_score', 0.0)
+                flow_class = iifs_data.get('flow_classification', 'NEUTRAL')
+                if i_score >= 0.6 or 'ACCUMULATION' in flow_class:
+                    plan['bandar_confluence'] = 'CONFIRMED_ACCUMULATION'
+                    plan['bandar_badge'] = '🛡️ BANDAR ACCUM'
+                elif i_score <= -0.6 or 'DISTRIBUTION' in flow_class:
+                    plan['bandar_confluence'] = 'DISTRIBUTION_ALERT'
+                    plan['bandar_badge'] = '⚠️ BANDAR DISTRIBUSI'
+                    # Downgrade status if severe distribution
+                    if i_score <= -1.2 and plan.get('status') == 'ACTIVE':
+                        plan['status'] = 'CAUTION_BANDAR_SELLING'
+                else:
+                    plan['bandar_confluence'] = 'NEUTRAL_FLOW'
+                    plan['bandar_badge'] = '⚖️ NETRAL'
+
             if brain:
                 debate_result = brain.run_bull_bear_debate(
                     ticker=t,

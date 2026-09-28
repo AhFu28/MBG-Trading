@@ -161,6 +161,40 @@ export default function App() {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   }, []);
 
+  // Display Mode: 'SIMPLE' (Mode Santai / New User) vs 'PRO' (Full Quant Terminal)
+  const [displayMode, setDisplayMode] = useState(() => {
+    try {
+      return localStorage.getItem('mbg_display_mode') || 'PRO';
+    } catch (e) {
+      return 'PRO';
+    }
+  });
+
+  const toggleDisplayMode = useCallback(() => {
+    setDisplayMode(prev => {
+      const next = prev === 'PRO' ? 'SIMPLE' : 'PRO';
+      try { localStorage.setItem('mbg_display_mode', next); } catch (e) {}
+      return next;
+    });
+  }, []);
+
+  // User Tier: 'NEW' (Tamu), 'FREE' (Terdaftar), 'PRO' (VIP Member)
+  const [userTier, setUserTier] = useState(() => {
+    try {
+      return localStorage.getItem('mbg_user_tier') || 'NEW';
+    } catch (e) {
+      return 'NEW';
+    }
+  });
+
+  const cycleUserTier = useCallback(() => {
+    setUserTier(prev => {
+      const next = prev === 'NEW' ? 'FREE' : (prev === 'FREE' ? 'PRO' : 'NEW');
+      try { localStorage.setItem('mbg_user_tier', next); } catch (e) {}
+      return next;
+    });
+  }, []);
+
   // TradingView Chart Modal State
   const [chartModal, setChartModal] = useState({
     isOpen: false,
@@ -439,6 +473,51 @@ export default function App() {
               <div style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '0.04em', color: 'var(--text-primary)', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
                 {getTabLabel(activeTab)}
               </div>
+
+              {/* Mode Santai / Mode Pro Switcher (New User Friendly) */}
+              <button
+                onClick={toggleDisplayMode}
+                style={{
+                  fontSize: '9px',
+                  fontWeight: '800',
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  border: displayMode === 'SIMPLE' ? '1px solid #10b981' : '1px solid #6366f1',
+                  background: displayMode === 'SIMPLE' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(99, 102, 241, 0.15)',
+                  color: displayMode === 'SIMPLE' ? '#10b981' : '#818cf8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  marginLeft: '8px'
+                }}
+                title={displayMode === 'SIMPLE' ? 'Klik untuk beralih ke Mode Pro (Kuantitatif Lengkap)' : 'Klik untuk beralih ke Mode Santai (Ramah Pemula)'}
+              >
+                <span>{displayMode === 'SIMPLE' ? '🍃' : '⚡'}</span>
+                <span>{displayMode === 'SIMPLE' ? 'MODE SANTAI' : 'MODE PRO'}</span>
+              </button>
+
+              {/* User Tier Status Badge (New, Free, Pro) */}
+              <button
+                onClick={cycleUserTier}
+                style={{
+                  fontSize: '8.5px',
+                  fontWeight: '700',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  border: userTier === 'PRO' ? '1px solid rgba(245, 158, 11, 0.4)' : (userTier === 'FREE' ? '1px solid rgba(59, 130, 246, 0.4)' : '1px solid rgba(255, 255, 255, 0.2)'),
+                  background: userTier === 'PRO' ? 'rgba(245, 158, 11, 0.15)' : (userTier === 'FREE' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(255, 255, 255, 0.05)'),
+                  color: userTier === 'PRO' ? '#f59e0b' : (userTier === 'FREE' ? '#60a5fa' : 'var(--text-muted)'),
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3px'
+                }}
+                title="Status Hak Akses (Klik untuk simulasi ganti tier: TAMU → FREE → VIP PRO)"
+              >
+                <span>{userTier === 'PRO' ? '👑' : (userTier === 'FREE' ? '⭐' : '👤')}</span>
+                <span>{userTier === 'PRO' ? 'VIP PRO' : (userTier === 'FREE' ? 'FREE MEMBER' : 'TAMU')}</span>
+              </button>
             </div>
 
             {/* Right: Quick Launch Tools, Theme Switcher, Sync & Live Clock (Single Line) */}
@@ -591,6 +670,66 @@ export default function App() {
               </button>
             </div>
           </header>
+
+          {/* Mode Santai (New User Guidance Ribbon) */}
+          {displayMode === 'SIMPLE' && (
+            <div style={{
+              background: 'linear-gradient(90deg, rgba(16, 185, 129, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              borderRadius: 'var(--radius-xs)',
+              padding: '6px 12px',
+              marginBottom: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '8px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '14px' }}>🍃</span>
+                <div>
+                  <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)' }}>
+                    Mode Santai Aktif (Ramah Pemula):
+                  </span>
+                  <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginLeft: '6px' }}>
+                    Fokus pada Top 3 Sinyal Hari Ini, Ringkasan Berita Dunia, dan Kalkulator Lot Aman tanpa grafik rumit.
+                  </span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <button
+                  onClick={() => handleOpenLotCalc()}
+                  style={{
+                    fontSize: '9.5px',
+                    fontWeight: '700',
+                    background: 'var(--accent-gold)',
+                    color: '#000',
+                    border: 'none',
+                    borderRadius: '4px',
+                    padding: '3px 8px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Hitung Lot Aman
+                </button>
+                <button
+                  onClick={toggleDisplayMode}
+                  style={{
+                    fontSize: '9.5px',
+                    fontWeight: '600',
+                    background: 'transparent',
+                    color: 'var(--text-muted)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '4px',
+                    padding: '3px 8px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Beralih ke Mode Pro ⚡
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* 2. Main Content View Routing with Suspense fallback */}
           <Suspense fallback={

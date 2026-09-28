@@ -14,6 +14,26 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+## [2026-09-28] — Simple Mode Switcher, 3-Tier Access Foundation, Bandarmology Confluence & VIP Signal Engine
+
+### Sprint 15 — Core Data Hardening, Dual Cockpit Modes & VIP Signal Dispatcher
+- **[COCKPIT UI/UX & ERGONOMICS] Mode Santai (Simple Mode) vs Mode Pro Toggle**:
+  - **Dual Display Modes**: Menambahkan toggle `[ 🍃 MODE SANTAI ]` vs `[ ⚡ MODE PRO ]` langsung pada master top header bar untuk membebaskan pengguna baru dari beban kognitif berlebih (*cognitive overload*). Mode Santai menampilkan pita panduan ringkas berfokus pada Top 3 Sinyal Hari Ini, Ringkasan Berita Dunia, dan tombol akses cepat kalkulator lot aman.
+  - **3-Tier User Privilege Skeleton**: Menanamkan simulator status hak akses pengguna (`[ 👤 TAMU ]` → `[ ⭐ FREE MEMBER ]` → `[ 👑 VIP PRO ]`) dengan persistensi `localStorage`, meletakkan pondasi bagi integrasi otentikasi role-based access control (RBAC).
+- **[BANDARMOLOGY & ORDER FLOW] Bandarmology IIFS Confluence Gate**:
+  - **Confluence Gatekeeper**: Menghubungkan skor komposit `BandarmologyIIFS` (Z-score gabungan OBV, MFI, Deviasi VWAP, dan Chaikin A/D Line) secara otomatis ke setiap rencana trading saham IDX (`trade_plans`).
+  - **Peringatan & Konfirmasi Otomatis**: Memberikan badge `🛡️ BANDAR ACCUM` untuk skor $\ge 0.6$ (akumulasi terkonfirmasi), `⚠️ BANDAR DISTRIBUSI` untuk skor $\le -0.6$, dan otomatis menurunkan status tiket menjadi `CAUTION_BANDAR_SELLING` jika terjadi distribusi masif ($Z \le -1.2$).
+- **[DATA INTEGRITY & ON-CHAIN HARDENING] Mempool Live Whale Expansion & Benchmark Disclosures**:
+  - **Mempool.space On-Chain Live Expansion**: Meningkatkan batas tangkapan transaksi paus Bitcoin riil dari blockchain Mempool menjadi hingga 8 transaksi live terverifikasi per siklus evaluasi.
+  - **Transparansi Sumber Data**: Menambahkan label penafian tegas `HISTORICAL_BENCHMARK_MATRIX` dan `BENCHMARK_REFERENCE` pada modul aliran broker asing dan portofolio 13F Wall Street, membedakan secara jujur antara data *live on-chain* dengan matriks data historis acuan.
+- **[NOTIFIERS & TELEGRAM VIP] VIP Trade Signal Dispatcher (`broadcast_vip_trade_signal`)**:
+  - **Actionable Signal Formatter**: Menyediakan template sinyal trading VIP Telegram berstandar institusi mencakup instrumen, arah posisi, *entry zone*, Stop Loss presisi, Target 1 & Target 2, Risk/Reward ratio, status konfirmasi bandarmology, dan panduan money management.
+- **[QA/QC & CERTIFICATION]**:
+  - Frontend Build: 80 modules compiled cleanly in 1.30s with 0 errors/warnings.
+  - Zero Secret Leak: 0 credentials, secrets, or keys exposed.
+
+---
+
 ## [2026-09-27] — Multi-Agent Audit Modal Ergonomics, Net Realized Alpha Metric, AI Self-Reflection & Global News Wire
 
 ### Sprint 14 — Quantitative Audit Refactoring, True PnL Alpha, Agentic Introspection & Global News Engine

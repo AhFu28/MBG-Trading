@@ -296,3 +296,47 @@ class TelegramNotifier:
 
         return self.send_html_message("\n".join(lines))
 
+    def broadcast_vip_trade_signal(self, plan: Dict[str, Any], agent_name: str = "MBG CHAMPION BOT") -> bool:
+        """Pushes actionable high-probability VIP Trade Signal to Telegram."""
+        if not self.enabled or not plan:
+            return False
+
+        sym = plan.get("clean_ticker") or plan.get("ticker") or plan.get("symbol", "ASSET")
+        market = plan.get("market", "MARKET")
+        action = (plan.get("direction") or plan.get("action") or "BUY").upper()
+        action_emoji = "🟢" if action in ["BUY", "LONG"] else "🔴"
+        
+        entry = plan.get("entry_price", 0)
+        sl = plan.get("stop_loss", 0)
+        tp1 = plan.get("target_1") or plan.get("take_profit_1", 0)
+        tp2 = plan.get("target_2") or plan.get("take_profit_2", 0)
+        rr = plan.get("risk_reward_ratio") or plan.get("rr", "1:2.5")
+        
+        bandar_badge = plan.get("bandar_badge", "")
+        strat = plan.get("strategy") or plan.get("strategy_type", "Multi-Regime Quant")
+        thesis = plan.get("thesis") or plan.get("reason", "Konfirmasi breakout momentum & likuiditas institusi.")
+
+        lines = [
+            f"👑 <b>MBG VIP SIGNAL // {market.upper()}</b>",
+            f"Bot: <b>{html.escape(agent_name)}</b>\n",
+            f"🎯 <b>INSTRUMEN:</b> <code>${html.escape(sym)}</code>",
+            f"⚡ <b>AKSI:</b> {action_emoji} <b>{action}</b>\n",
+            "━━━━━━━━━━━━━━━━━━━━━",
+            f"📍 <b>ENTRY ZONE :</b> <code>{entry:,.2f}</code>" if isinstance(entry, float) else f"📍 <b>ENTRY ZONE :</b> <code>{entry}</code>",
+            f"🛡️ <b>STOP LOSS  :</b> <code>{sl:,.2f}</code>" if isinstance(sl, float) else f"🛡️ <b>STOP LOSS  :</b> <code>{sl}</code>",
+            f"🎯 <b>TARGET 1   :</b> <code>{tp1:,.2f}</code>" if isinstance(tp1, float) else f"🎯 <b>TARGET 1   :</b> <code>{tp1}</code>",
+            f"🚀 <b>TARGET 2   :</b> <code>{tp2:,.2f}</code>" if isinstance(tp2, float) else f"🚀 <b>TARGET 2   :</b> <code>{tp2}</code>",
+            f"⚖️ <b>RISK/REWARD:</b> <b>{rr}</b>",
+            "━━━━━━━━━━━━━━━━━━━━━",
+            f"💡 <b>LOGIKA & ALASAN:</b>",
+            f"  • {html.escape(thesis)}",
+            f"  • Strategi: <i>{html.escape(strat)}</i>"
+        ]
+        if bandar_badge:
+            lines.append(f"  • Status Aliran Dana: <b>{html.escape(bandar_badge)}</b>")
+
+        lines.append("\n⚠️ <i>Disiplin Money Management: Risiko maksimal 1-2% per tiket.</i>")
+        lines.append("⚡ <i>Ketik /plan untuk daftar sinyal aktif hari ini.</i>")
+
+        return self.send_html_message("\n".join(lines))
+

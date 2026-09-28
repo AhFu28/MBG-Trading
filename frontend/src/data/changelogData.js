@@ -3,14 +3,49 @@
 
 export const CHANGELOG_DATA = [
   {
+    "id": "pkg-28092026",
+    "sprintLabel": "Sprint 15 (Simple Mode, 3-Tier Access & Bandarmology Confluence)",
+    "version": "Package 28092026",
+    "semanticVersion": "v5.7.0",
+    "date": "28 September 2026",
+    "status": "LATEST",
+    "statusColor": "var(--accent-green)",
+    "badgeLabel": "LATEST / DUAL MODES & VIP SIGNALS",
+    "title": "Update v5.7.0: Mode Santai (Simple Mode) vs Pro Switcher, 3-Tier Access Foundation, Bandarmology IIFS Confluence Gate & VIP Signal Engine",
+    "description": "Penyediaan toggle Mode Santai vs Mode Pro langsung di master header bar untuk mereduksi beban kognitif pengguna pemula, pondasi hak akses 3-tier (Tamu, Free Member, VIP Pro), integrasi otomatis skor Bandarmology IIFS sebagai filter konfirmasi sinyal saham IDX dengan badge akumulasi/distribusi cerdas, perluasan tangkapan paus on-chain Mempool.space hingga 8 transaksi live, penafian tegas benchmark historis vs live data, dan pembuatan modul dispatcher sinyal trading VIP Telegram.",
+    "processFlow": [
+      {
+        "step": "1. Simple Mode Switcher",
+        "label": "Toggle Mode Santai vs Mode Pro di header bar untuk pengalaman ramah pemula"
+      },
+      {
+        "step": "2. 3-Tier Access Foundation",
+        "label": "Status hak akses interaktif (Tamu → Free Member → VIP Pro) dengan persistensi lokal"
+      },
+      {
+        "step": "3. Bandarmology IIFS Confluence",
+        "label": "Filter konfirmasi akumulasi/distribusi bandar otomatis pada rencana trading saham IDX"
+      },
+      {
+        "step": "4. On-Chain Data Expansion",
+        "label": "Peningkatan kapasitas tangkapan paus Mempool live dan penafian transparan data historis"
+      },
+      {
+        "step": "5. Telegram VIP Dispatcher",
+        "label": "Format pesan sinyal trading VIP Telegram berstandar institusi siap eksekusi"
+      }
+    ],
+    "markdownContent": "\n### 🚀 v5.7.0 — Mode Santai (Simple Mode) vs Pro Switcher, 3-Tier Access Foundation, Bandarmology Confluence & VIP Signal Engine\n\n#### 🍃 1. Mode Santai vs Mode Pro Switcher\n- **Dual Display Modes:** Menambahkan toggle `[ 🍃 MODE SANTAI ]` vs `[ ⚡ MODE PRO ]` langsung pada master top header bar untuk membebaskan pengguna baru dari beban kognitif berlebih (*cognitive overload*).\n- **Guidance Ribbon:** Mode Santai menampilkan pita panduan ringkas berfokus pada Top 3 Sinyal Hari Ini, Ringkasan Berita Dunia, dan tombol akses cepat kalkulator lot aman.\n\n#### 👤 2. 3-Tier User Privilege Skeleton\n- **Role-Based Access Foundation:** Menanamkan simulator status hak akses pengguna (`[ 👤 TAMU ]` → `[ ⭐ FREE MEMBER ]` → `[ 👑 VIP PRO ]`) dengan persistensi `localStorage`, meletakkan pondasi bagi integrasi otentikasi role-based access control (RBAC).\n\n#### 🛡️ 3. Bandarmology IIFS Confluence Gate\n- **Confluence Gatekeeper:** Menghubungkan skor komposit `BandarmologyIIFS` (Z-score gabungan OBV, MFI, Deviasi VWAP, dan Chaikin A/D Line) secara otomatis ke setiap rencana trading saham IDX (`trade_plans`).\n- **Peringatan & Konfirmasi Otomatis:** Memberikan badge `🛡️ BANDAR ACCUM` untuk skor $\ge 0.6$, `⚠️ BANDAR DISTRIBUSI` untuk skor $\le -0.6$, dan otomatis menurunkan status tiket jika terdeteksi distribusi berat.\n\n#### 🐳 4. Mempool Live Whale Expansion & Benchmark Disclosures\n- **Mempool.space On-Chain Live Expansion:** Meningkatkan batas tangkapan transaksi paus Bitcoin riil dari blockchain Mempool menjadi hingga 8 transaksi live terverifikasi per siklus evaluasi.\n- **Transparansi Sumber Data:** Menambahkan label penafian tegas `HISTORICAL_BENCHMARK_MATRIX` dan `BENCHMARK_REFERENCE` pada modul aliran broker asing dan portofolio 13F Wall Street.\n\n#### 👑 5. VIP Trade Signal Dispatcher (`broadcast_vip_trade_signal`)\n- **Actionable Signal Formatter:** Menyediakan template sinyal trading VIP Telegram berstandar institusi mencakup instrumen, arah posisi, entry zone, Stop Loss presisi, Target 1 & Target 2, Risk/Reward ratio, dan status konfirmasi bandarmology.\n"
+  },
+  {
     "id": "pkg-27092026",
     "sprintLabel": "Sprint 14 (Quantitative Audit Refactoring & Introspection)",
     "version": "Package 27092026",
     "semanticVersion": "v5.6.0",
     "date": "27 September 2026",
-    "status": "LATEST",
-    "statusColor": "var(--accent-green)",
-    "badgeLabel": "LATEST / AUDIT REFACTOR & AI REFLECTION",
+    "status": "STABLE",
+    "statusColor": "var(--text-muted)",
+    "badgeLabel": "STABLE / AUDIT REFACTOR & AI REFLECTION",
     "title": "Update v5.6.0: Multi-Agent Audit Modal Ergonomics, Net Realized Alpha Metric, AI Agent Self-Reflection Protocol & Streamlined Navigation",
     "description": "Penyempurnaan ergonomi dan integritas audit multi-agent arena: Penghapusan kolom redundant 'ALOKASI MODAL' untuk memperluas ruang metrik kinerja (+110px), eliminasi prefiks kaku tab bot ('TAB 1:' diganti '📋 RECAP ARENA' & avatar elemen bot ringkas), penggantian metrik semu 'Total Arena Equity' menjadi 'NET REALIZED PnL (ARENA)' yang mengukur akumulasi alpha bersih riil terhadap modal basis, pembersihan grafik simulasi candlestick statis duplikatif, integrasi protokol introspeksi diri AI (AI Agent Self-Reflection) pasca-Margin Call untuk seluruh 16 bot trading, serta pembersihan kartu arsitektur modal RPG statis.",
     "processFlow": [

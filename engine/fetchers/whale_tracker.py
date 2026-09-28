@@ -148,9 +148,10 @@ class WhaleTracker:
                             'sentiment': sentiment,
                             'explorer_url': f"https://mempool.space/tx/{txid}",
                             'impact_thesis': thesis,
-                            'data_source': 'mempool_onchain_live'
+                            'data_source': 'mempool_onchain_live',
+                            'verification': 'VERIFIED_ONCHAIN'
                         })
-                        if len(real_whales) >= 3:
+                        if len(real_whales) >= 8:
                             break
         except Exception as e:
             logger.warning(f"Mempool live on-chain fetch failed: {e}")
@@ -323,6 +324,8 @@ class WhaleTracker:
                 'action': 'NET_BUY',
                 'volume_lot': 185400,
                 'avg_price': 10000,
+                'data_source': 'HISTORICAL_BENCHMARK_MATRIX',
+                'data_quality': 'BENCHMARK_REFERENCE',
                 'flow_thesis': 'Asing UBS (AK) memborong saham dari investor ritel domestik (YP): Akumulasi solid di saham perbankan big-cap.'
             },
             {
@@ -340,6 +343,8 @@ class WhaleTracker:
                 'action': 'NET_BUY',
                 'volume_lot': 297500,
                 'avg_price': 4800,
+                'data_source': 'HISTORICAL_BENCHMARK_MATRIX',
+                'data_quality': 'BENCHMARK_REFERENCE',
                 'flow_thesis': 'J.P. Morgan (BK) menyerap tekanan jual ritel di area support MA50: Institutional Rebound defense.'
             },
             {
