@@ -103,27 +103,27 @@ export default function Sidebar({
   return (
     <aside className={`sidebar ${isMobileOpen ? 'open' : ''}`}>
 
-      {/* === 1. LOGO / BRAND (Sleek Compact 40px Header) === */}
-      <div className="sidebar-logo" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px' }}>
-        <MbgLogo size={28} />
+      {/* === 1. LOGO / BRAND (Modern Dribbble Sleek Header) === */}
+      <div className="sidebar-logo" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', borderBottom: 'var(--border-hairline)' }}>
+        <MbgLogo size={30} />
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span style={{ fontSize: '12px', fontWeight: '900', letterSpacing: '0.06em', color: 'var(--text-primary)', lineHeight: 1 }}>
-                MBG
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <span style={{ fontSize: '13px', fontWeight: '900', letterSpacing: '-0.02em', color: 'var(--text-primary)', lineHeight: 1 }}>
+                MBG QUANT
               </span>
-              <span style={{ fontSize: '7.5px', padding: '1px 3px', borderRadius: '3px', background: 'rgba(0, 208, 132, 0.15)', color: 'var(--accent-green)', fontWeight: '800', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>
+              <span style={{ fontSize: '8px', padding: '2px 5px', borderRadius: '4px', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.15) 100%)', color: '#818cf8', fontWeight: '800', fontFamily: 'var(--font-mono)', border: '1px solid rgba(99, 102, 241, 0.3)' }}>
                 PRO
               </span>
             </div>
             {/* Live Streaming pulse indicator */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }} title="WebSocket Real-Time Feed Active">
-              <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 5px var(--accent-green)', display: 'inline-block' }} />
-              <span style={{ fontSize: '7.5px', color: 'var(--accent-green)', fontWeight: '800', letterSpacing: '0.04em' }}>LIVE</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }} title="WebSocket Real-Time Feed Active">
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px #10b981', display: 'inline-block' }} />
+              <span style={{ fontSize: '8px', color: '#10b981', fontWeight: '800', letterSpacing: '0.04em' }}>LIVE</span>
             </div>
           </div>
-          <div style={{ fontSize: '7.5px', fontWeight: '700', letterSpacing: '0.04em', color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '2px', lineHeight: 1 }}>
-            Tactical Quant Terminal
+          <div style={{ fontSize: '8.5px', fontWeight: '600', letterSpacing: '0.04em', color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '3px', lineHeight: 1 }}>
+            Terminal & Web3 Desk
           </div>
         </div>
       </div>
@@ -163,22 +163,22 @@ export default function Sidebar({
 
               {/* Tampilkan DUAL-COLUMN BENTO TICKER RADAR persis di bawah section MARKETS */}
               {section === 'MARKETS' && (
-                <div style={{ margin: '4px 8px 2px', padding: '6px 7px', background: 'var(--bg-panel-subtle)', borderRadius: '5px', border: 'var(--border-hairline)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', paddingBottom: '3px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <div style={{ fontSize: '7.5px', fontWeight: '800', letterSpacing: '0.07em', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '3.5px' }}>
-                      <span style={{ width: '4.5px', height: '4.5px', borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 4px var(--accent-green)' }} />
-                      <span>RADAR LIVE</span>
+                <div style={{ margin: '6px 8px 4px', padding: '8px 10px', background: 'var(--bg-panel-subtle)', borderRadius: '10px', border: 'var(--border-hairline)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', paddingBottom: '4px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{ fontSize: '8.5px', fontWeight: '800', letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }} />
+                      <span>RADAR WATCHLIST</span>
                     </div>
-                    <span style={{ fontSize: '7px', color: 'var(--accent-blue)', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>KLIK CHART ↗</span>
+                    <span style={{ fontSize: '7.5px', color: '#818cf8', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>CHART ↗</span>
                   </div>
 
                   {/* Dual-Column Grid Matrix */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px', fontFamily: 'var(--font-mono)' }}>
                     
                     {/* Kolom 1: IDX Core Blue Chips */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: '3px' }}>
-                      <div style={{ fontSize: '6.5px', fontWeight: '800', color: 'var(--accent-blue)', letterSpacing: '0.05em', marginBottom: '1px' }}>
-                        IDX PILLARS
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: '4px' }}>
+                      <div style={{ fontSize: '7px', fontWeight: '800', color: '#38bdf8', letterSpacing: '0.05em', marginBottom: '1px' }}>
+                        SAHAM IDX
                       </div>
                       {DEFAULT_RADAR_TICKERS.filter(t => t.market === 'IDX').map(t => {
                         const quote = livePrices[t.symbol] || livePrices[`IDX:${t.symbol}`];
@@ -197,15 +197,15 @@ export default function Sidebar({
                             style={{
                               display: 'flex',
                               flexDirection: 'column',
-                              gap: '1.5px',
-                              padding: '2.5px 4px',
-                              borderRadius: '3px',
+                              gap: '1px',
+                              padding: '3px 5px',
+                              borderRadius: '6px',
                               cursor: 'pointer',
-                              background: isFlashing === 'up' ? 'rgba(0, 208, 132, 0.22)' : isFlashing === 'down' ? 'rgba(239, 68, 68, 0.22)' : 'rgba(255, 255, 255, 0.02)',
-                              transition: 'all 0.2s ease',
+                              background: isFlashing === 'up' ? 'rgba(16, 185, 129, 0.22)' : isFlashing === 'down' ? 'rgba(244, 63, 94, 0.22)' : 'rgba(255, 255, 255, 0.03)',
+                              transition: 'all 0.15s ease',
                               border: '1px solid transparent'
                             }}
-                            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)'}
                             onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
                             title={`Buka Chart ${t.symbol} (${t.name}) - ${formatTickerPrice(t.symbol, t.market, t.defaultPrice)}`}
                           >
@@ -232,8 +232,8 @@ export default function Sidebar({
                     </div>
 
                     {/* Kolom 2: Crypto, US, & Global Forex */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', paddingLeft: '1px' }}>
-                      <div style={{ fontSize: '6.5px', fontWeight: '800', color: 'var(--accent-gold-text, var(--accent-gold))', letterSpacing: '0.05em', marginBottom: '1px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', paddingLeft: '2px' }}>
+                      <div style={{ fontSize: '7px', fontWeight: '800', color: '#f59e0b', letterSpacing: '0.05em', marginBottom: '1px' }}>
                         GLOBAL & CRYPTO
                       </div>
                       {DEFAULT_RADAR_TICKERS.filter(t => t.market !== 'IDX').map(t => {
@@ -253,15 +253,15 @@ export default function Sidebar({
                             style={{
                               display: 'flex',
                               flexDirection: 'column',
-                              gap: '1.5px',
-                              padding: '2.5px 4px',
-                              borderRadius: '3px',
+                              gap: '1px',
+                              padding: '3px 5px',
+                              borderRadius: '6px',
                               cursor: 'pointer',
-                              background: isFlashing === 'up' ? 'rgba(0, 208, 132, 0.22)' : isFlashing === 'down' ? 'rgba(239, 68, 68, 0.22)' : 'rgba(255, 255, 255, 0.02)',
-                              transition: 'all 0.2s ease',
+                              background: isFlashing === 'up' ? 'rgba(16, 185, 129, 0.22)' : isFlashing === 'down' ? 'rgba(244, 63, 94, 0.22)' : 'rgba(255, 255, 255, 0.03)',
+                              transition: 'all 0.15s ease',
                               border: '1px solid transparent'
                             }}
-                            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)'}
                             onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
                             title={`Buka Chart ${t.symbol} (${t.name}) - ${formatTickerPrice(t.symbol, t.market, t.defaultPrice)}`}
                           >
@@ -354,11 +354,11 @@ export default function Sidebar({
       </nav>
 
       {/* === 4. SYSTEM FOOTER === */}
-      <div className="sidebar-footer">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 10px' }}>
+      <div className="sidebar-footer" style={{ borderTop: 'var(--border-hairline)', background: 'var(--bg-panel-subtle)', padding: '6px 8px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <button
             onClick={() => onOpenDataIntegrity ? onOpenDataIntegrity() : setActiveTab('CHANGELOG')}
-            style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: '700' }}
+            style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', fontSize: '10.5px', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: '700', padding: '4px 6px', borderRadius: '4px' }}
             title="Periksa Integritas & Provenance Data Terminal"
           >
             <span>🛡️</span>
@@ -366,7 +366,7 @@ export default function Sidebar({
           </button>
           <button
             onClick={() => setActiveTab('CHANGELOG')}
-            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '3px', fontWeight: '600' }}
+            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '10.5px', display: 'flex', alignItems: 'center', gap: '3px', fontWeight: '600', padding: '4px 6px', borderRadius: '4px' }}
             title="Catatan Rilis Terminal"
           >
             <span>📜</span>
@@ -374,7 +374,7 @@ export default function Sidebar({
           </button>
           <button
             onClick={handleLogout}
-            style={{ background: 'none', border: 'none', color: 'var(--accent-rust)', cursor: 'pointer', fontSize: '10px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '4px' }}
+            style={{ background: 'none', border: 'none', color: 'var(--accent-rust)', cursor: 'pointer', fontSize: '10.5px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 6px', borderRadius: '4px' }}
             title="Keluar dari sesi ini"
           >
             <span>🚪</span>

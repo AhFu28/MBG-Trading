@@ -104,6 +104,7 @@ export default function HomeDashboardTab({
   const [matrixViewMode, setMatrixViewMode] = useState('3col');
   const [showLaymanGuide, setShowLaymanGuide] = useState(false);
   const [dismissDefenseAlert, setDismissDefenseAlert] = useState(false);
+  const [portfolioCurrency, setPortfolioCurrency] = useState('USD'); // 'USD' | 'IDR'
 
   useEffect(() => {
     if (data?.data_sources && Object.values(data.data_sources).some(s => s === 'fallback')) {
@@ -338,6 +339,273 @@ export default function HomeDashboardTab({
 
       {/* TOP STRIP: STREAMLINED MARKET BENCHMARK WIRE */}
       <BloombergNewsWire macro={macro} bundle={data} livePrices={livePrices} onSelectTicker={onSelectTicker} onSelectNews={onSelectNews} />
+
+      {/* =========================================================================
+          DRIBBBLE-STYLE CRYPTO & MULTI-ASSET PORTFOLIO ANALYTICS HERO
+          Sleek Glassmorphic Bento HUD: Net Valuation, 24h Alpha, Quick Actions & Macro Stats
+          ========================================================================= */}
+      <div className="telemetry-panel" style={{
+        background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.88) 0%, rgba(24, 33, 53, 0.72) 100%)',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        borderRadius: '16px',
+        padding: '16px 20px',
+        boxShadow: 'var(--shadow-md)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        display: 'grid',
+        gridTemplateColumns: 'minmax(320px, 1.2fr) minmax(360px, 1.8fr)',
+        gap: '20px',
+        alignItems: 'center',
+        boxSizing: 'border-box'
+      }}>
+        {/* Left: Portfolio Valuation & Quick Trade Actions */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '13px' }}>💼</span>
+              <span style={{ fontSize: '10px', fontWeight: '800', letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                Portfolio Net Valuation
+              </span>
+              <span style={{
+                fontSize: '8px',
+                fontWeight: '700',
+                padding: '1px 5px',
+                borderRadius: '4px',
+                background: 'rgba(56, 189, 248, 0.15)',
+                color: '#38bdf8',
+                border: '1px solid rgba(56, 189, 248, 0.3)'
+              }}>
+                SIMULATOR
+              </span>
+            </div>
+
+            {/* Currency Switcher */}
+            <div style={{
+              display: 'flex',
+              background: 'rgba(0, 0, 0, 0.25)',
+              padding: '2px',
+              borderRadius: '9999px',
+              border: '1px solid rgba(255, 255, 255, 0.08)'
+            }}>
+              {['USD', 'IDR'].map(curr => (
+                <button
+                  key={curr}
+                  onClick={() => setPortfolioCurrency(curr)}
+                  style={{
+                    border: 'none',
+                    background: portfolioCurrency === curr ? 'rgba(99, 102, 241, 0.3)' : 'transparent',
+                    color: portfolioCurrency === curr ? '#fff' : 'var(--text-muted)',
+                    fontSize: '9px',
+                    fontWeight: '800',
+                    padding: '2px 8px',
+                    borderRadius: '9999px',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  {curr}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Big Balance & 24h PnL Pill */}
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
+            <div style={{
+              fontSize: '26px',
+              fontWeight: '900',
+              letterSpacing: '-0.03em',
+              color: 'var(--text-primary)',
+              fontFamily: 'var(--font-sans)',
+              lineHeight: 1
+            }}>
+              {portfolioCurrency === 'USD' ? '$128,450.80' : 'Rp 2.054.200.000'}
+            </div>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '3px 8px',
+              borderRadius: '9999px',
+              background: 'rgba(16, 185, 129, 0.15)',
+              border: '1px solid rgba(16, 185, 129, 0.35)',
+              color: '#10b981',
+              fontSize: '11px',
+              fontWeight: '800',
+              fontFamily: 'var(--font-mono)'
+            }}>
+              <span>↗</span>
+              <span>{portfolioCurrency === 'USD' ? '+$4,210.50' : '+Rp 67.360.000'} (+3.38%)</span>
+            </div>
+          </div>
+
+          {/* Quick Action Button Pills (Dribbble Style) */}
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '2px' }}>
+            <button
+              onClick={() => onOpenLotCalc && onOpenLotCalc()}
+              style={{
+                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '6px 12px',
+                fontSize: '10.5px',
+                fontWeight: '800',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                boxShadow: '0 4px 12px rgba(99, 102, 241, 0.35)'
+              }}
+            >
+              <span>⚡</span>
+              <span>Eksekusi Trade</span>
+            </button>
+
+            <button
+              onClick={() => onNavigateTab && onNavigateTab('AI_AGENTS')}
+              style={{
+                background: 'rgba(255, 255, 255, 0.05)',
+                color: 'var(--text-primary)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '8px',
+                padding: '6px 12px',
+                fontSize: '10.5px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.4)'}
+              onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
+            >
+              <span>🤖</span>
+              <span>16 Bot Arena Alpha</span>
+            </button>
+
+            <button
+              onClick={() => onNavigateTab && onNavigateTab('FUTURES')}
+              style={{
+                background: 'rgba(255, 255, 255, 0.05)',
+                color: 'var(--text-primary)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '8px',
+                padding: '6px 12px',
+                fontSize: '10.5px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(245, 158, 11, 0.4)'}
+              onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
+            >
+              <span>🔥</span>
+              <span>Crypto Futures & Degen</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Right: Market Intelligence Metrics & Asset Breakdown */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '8px'
+          }}>
+            {/* Metric 1: Market Regime */}
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.25)',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              borderRadius: '10px',
+              padding: '8px 10px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2px'
+            }}>
+              <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>REGIME MAKRO</span>
+              <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+                Risk-On
+              </span>
+              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>DEFCON 4 · Stabil</span>
+            </div>
+
+            {/* Metric 2: 24h Volume */}
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.25)',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              borderRadius: '10px',
+              padding: '8px 10px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2px'
+            }}>
+              <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>24H GLOBAL VOL</span>
+              <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#38bdf8', fontFamily: 'var(--font-mono)' }}>$42.85B</span>
+              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Spot & Futures</span>
+            </div>
+
+            {/* Metric 3: Bandarmology Net Flow */}
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.25)',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              borderRadius: '10px',
+              padding: '8px 10px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2px'
+            }}>
+              <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>ARUS BANDAR IDX</span>
+              <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#10b981', fontFamily: 'var(--font-mono)' }}>+Rp 480 M</span>
+              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Net Foreign Buy</span>
+            </div>
+
+            {/* Metric 4: AI Arena Win Rate */}
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.25)',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              borderRadius: '10px',
+              padding: '8px 10px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2px'
+            }}>
+              <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>ARENA ALPHA</span>
+              <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#f59e0b', fontFamily: 'var(--font-mono)' }}>+18.4% ROI</span>
+              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Win Rate 76.4%</span>
+            </div>
+          </div>
+
+          {/* Asset Allocation Breakdown Bar */}
+          <div style={{
+            background: 'rgba(0, 0, 0, 0.2)',
+            borderRadius: '8px',
+            padding: '6px 10px',
+            border: '1px solid rgba(255, 255, 255, 0.05)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+              <span>ALOKASI RADAR PORTOFOLIO</span>
+              <span>100% TERMONITOR AKTIF</span>
+            </div>
+            {/* Progress Segment */}
+            <div style={{ display: 'flex', height: '6px', borderRadius: '3px', overflow: 'hidden', gap: '2px' }}>
+              <div style={{ width: '45%', background: '#38bdf8', borderRadius: '2px' }} title="Saham IDX: 45%" />
+              <div style={{ width: '35%', background: '#f59e0b', borderRadius: '2px' }} title="Crypto Spot & Memecoin: 35%" />
+              <div style={{ width: '20%', background: '#10b981', borderRadius: '2px' }} title="Forex & Gold (XAUUSD): 20%" />
+            </div>
+            <div style={{ display: 'flex', gap: '12px', marginTop: '4px', fontSize: '8.5px', fontWeight: '600' }}>
+              <span style={{ color: '#38bdf8' }}>● Saham IDX (45%)</span>
+              <span style={{ color: '#f59e0b' }}>● Crypto Spot & Memecoins (35%)</span>
+              <span style={{ color: '#10b981' }}>● Forex / XAUUSD (20%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* =========================================================================
           UNIFIED SPLIT: COCKPIT STACK (LEFT) & LIVE INTELLIGENCE WIRE (RIGHT)

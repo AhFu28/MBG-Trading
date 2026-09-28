@@ -17,6 +17,16 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 ## [2026-09-28] — Simple Mode Switcher, 3-Tier Access Foundation, Bandarmology Confluence & VIP Signal Engine
 
 ### Sprint 15 — Core Data Hardening, Dual Cockpit Modes & VIP Signal Dispatcher
+- **[COCKPIT UI/UX & ERGONOMICS] Dribbble-Grade Crypto Dashboard, Portfolio Analytics Hero & Clean Glassmorphism**:
+  - **Sleek Glassmorphic Dark Aesthetic**: Overhaul styling global `index.css` mengadopsi estetika dark obsidian (`#090d16`) dengan ambient light bloom gradients, panel glass ber-blur tinggi (`backdrop-filter: blur(20px)`), sudut melengkung modern (`border-radius: 12px` - `16px`), dan bayangan bertingkat halus.
+  - **Floating Glass Navigation HUD**: Transformasi top header bar menjadi dock mengambang modern berukuran 44px dengan search bar pill global (`Ctrl + K`), tombol mode santai/pro yang bersih, indikator tier pengguna, Web3 Phantom wallet pill bersinar hijau, status integritas data, dan jam bursa.
+  - **Sleek Rounded Navigation Sidebar (`Sidebar.jsx`)**: Rampingisasi navigasi kiri dengan icon-pill modern yang memiliki glow gradient aktif (`rgba(99, 102, 241, 0.2)`), header brand ber-avatar modern dengan live pulse, serta kartu bento radar saham IDX dan kripto global yang lebih lapang.
+  - **Portfolio & Market Intelligence Analytics Hero Card (`HomeDashboardTab.jsx`)**: Menambahkan hero card premium di dashboard utama:
+    - *Net Alpha Valuation* dengan toggle mata uang instan (`USD` vs `IDR`).
+    - *24h PnL Growth Badge* hijau menyala (`+$4,210.50 (+3.38%) ↗`).
+    - *Quick Action Buttons*: Eksekusi Trade cepat, Arena Alpha 16 Bot, dan Crypto Futures & Degen Swap.
+    - *Bento Telemetry Metrics*: Macro Regime (Risk-On), 24h Global Volume ($42.85B), Arus Bandar IDX (+Rp 480 M), dan Arena Alpha (+18.4% ROI).
+    - *Asset Allocation Breakdown Bar*: Visualisasi distribusi radar aset multi-market (IDX 45%, Crypto 35%, Forex/Gold 20%).
 - **[COCKPIT UI/UX & ERGONOMICS] Mode Santai (Simple Mode) vs Mode Pro Toggle**:
   - **Dual Display Modes**: Menambahkan toggle `[ 🍃 MODE SANTAI ]` vs `[ ⚡ MODE PRO ]` langsung pada master top header bar untuk membebaskan pengguna baru dari beban kognitif berlebih (*cognitive overload*). Mode Santai menampilkan pita panduan ringkas berfokus pada Top 3 Sinyal Hari Ini, Ringkasan Berita Dunia, dan tombol akses cepat kalkulator lot aman.
   - **3-Tier User Privilege Skeleton**: Menanamkan simulator status hak akses pengguna (`[ 👤 TAMU ]` → `[ ⭐ FREE MEMBER ]` → `[ 👑 VIP PRO ]`) dengan persistensi `localStorage`, meletakkan pondasi bagi integrasi otentikasi role-based access control (RBAC).

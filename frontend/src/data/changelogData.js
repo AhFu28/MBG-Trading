@@ -10,29 +10,29 @@ export const CHANGELOG_DATA = [
     "date": "28 September 2026",
     "status": "LATEST",
     "statusColor": "var(--accent-green)",
-    "badgeLabel": "LATEST / DUAL MODES & WEB3 SWAP",
-    "title": "Update v5.7.0: Mode Santai Switcher, Phantom Wallet Web3 Connect, Solana Memecoin Swap & VIP Signal Engine",
-    "description": "Penyediaan toggle Mode Santai vs Mode Pro langsung di master header bar untuk mereduksi beban kognitif pengguna pemula, pondasi hak akses 3-tier (Tamu, Free Member, VIP Pro), integrasi dompet Web3 Phantom native zero-dependency, modul Solana Memecoin Radar & Fast Jupiter Swap dengan monetisasi komisi 0.8%, integrasi otomatis skor Bandarmology IIFS, dan modul dispatcher sinyal trading VIP Telegram.",
+    "badgeLabel": "LATEST / DRIBBBLE UI & WEB3 SWAP",
+    "title": "Update v5.7.0: Dribbble-Grade UI/UX Overhaul, Portfolio Analytics Hero, Phantom Web3 Connect & VIP Signals",
+    "description": "Perombakan total desain antarmuka (UI/UX) mengadopsi estetika Dribbble modern dan clean: ambient dark obsidian bloom, floating glass header dock, sleek rounded pill navigation di sidebar, hero analytics card portofolio multi-aset dengan toggle USD/IDR, integrasi dompet Phantom native, modul Solana memecoin fast swap via Jupiter DEX 0.8% fee, Bandarmology IIFS confluence gate, dan dispatcher sinyal VIP Telegram.",
     "processFlow": [
       {
-        "step": "1. Simple Mode Switcher",
+        "step": "1. Dribbble Clean UI/UX",
+        "label": "Overhaul antarmuka glassmorphic, floating header dock, dan hero analytics portofolio"
+      },
+      {
+        "step": "2. Simple & Pro Modes",
         "label": "Toggle Mode Santai vs Mode Pro di header bar untuk pengalaman ramah pemula"
       },
       {
-        "step": "2. Web3 Phantom Connect",
+        "step": "3. Web3 Phantom Connect",
         "label": "Koneksi dompet Phantom native tanpa dependensi eksternal berat (0 kB bundle bloat)"
       },
       {
-        "step": "3. Solana Memecoin Swap",
+        "step": "4. Solana Memecoin Swap",
         "label": "Radar memecoin viral & eksekusi swap 1-2 detik via Jupiter DEX dengan komisi platform 0.8%"
       },
       {
-        "step": "4. Bandarmology IIFS Confluence",
+        "step": "5. Bandarmology Confluence",
         "label": "Filter konfirmasi akumulasi/distribusi bandar otomatis pada rencana trading saham IDX"
-      },
-      {
-        "step": "5. Telegram VIP Dispatcher",
-        "label": "Format pesan sinyal trading VIP Telegram berstandar institusi siap eksekusi"
       }
     ],
     "markdownContent": "\n### 🚀 v5.7.0 — Mode Santai (Simple Mode) vs Pro Switcher, 3-Tier Access Foundation, Bandarmology Confluence & VIP Signal Engine\n\n#### 🍃 1. Mode Santai vs Mode Pro Switcher\n- **Dual Display Modes:** Menambahkan toggle `[ 🍃 MODE SANTAI ]` vs `[ ⚡ MODE PRO ]` langsung pada master top header bar untuk membebaskan pengguna baru dari beban kognitif berlebih (*cognitive overload*).\n- **Guidance Ribbon:** Mode Santai menampilkan pita panduan ringkas berfokus pada Top 3 Sinyal Hari Ini, Ringkasan Berita Dunia, dan tombol akses cepat kalkulator lot aman.\n\n#### 👤 2. 3-Tier User Privilege Skeleton\n- **Role-Based Access Foundation:** Menanamkan simulator status hak akses pengguna (`[ 👤 TAMU ]` → `[ ⭐ FREE MEMBER ]` → `[ 👑 VIP PRO ]`) dengan persistensi `localStorage`, meletakkan pondasi bagi integrasi otentikasi role-based access control (RBAC).\n\n#### 🛡️ 3. Bandarmology IIFS Confluence Gate\n- **Confluence Gatekeeper:** Menghubungkan skor komposit `BandarmologyIIFS` (Z-score gabungan OBV, MFI, Deviasi VWAP, dan Chaikin A/D Line) secara otomatis ke setiap rencana trading saham IDX (`trade_plans`).\n- **Peringatan & Konfirmasi Otomatis:** Memberikan badge `🛡️ BANDAR ACCUM` untuk skor $\ge 0.6$, `⚠️ BANDAR DISTRIBUSI` untuk skor $\le -0.6$, dan otomatis menurunkan status tiket jika terdeteksi distribusi berat.\n\n#### 🐳 4. Mempool Live Whale Expansion & Benchmark Disclosures\n- **Mempool.space On-Chain Live Expansion:** Meningkatkan batas tangkapan transaksi paus Bitcoin riil dari blockchain Mempool menjadi hingga 8 transaksi live terverifikasi per siklus evaluasi.\n- **Transparansi Sumber Data:** Menambahkan label penafian tegas `HISTORICAL_BENCHMARK_MATRIX` dan `BENCHMARK_REFERENCE` pada modul aliran broker asing dan portofolio 13F Wall Street.\n\n#### 👑 5. VIP Trade Signal Dispatcher (`broadcast_vip_trade_signal`)\n- **Actionable Signal Formatter:** Menyediakan template sinyal trading VIP Telegram berstandar institusi mencakup instrumen, arah posisi, entry zone, Stop Loss presisi, Target 1 & Target 2, Risk/Reward ratio, dan status konfirmasi bandarmology.\n"

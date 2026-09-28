@@ -480,21 +480,26 @@ export default function App() {
         {/* ===== MAIN CONTENT AREA ===== */}
         <div className="main-content">
 
-          {/* 1. Master Top Header Bar (Tightly Compacted HUD) */}
+          {/* 1. Master Top Header Bar (Modern Dribbble Floating Glass HUD) */}
           <header className="telemetry-panel" style={{
-            marginBottom: '6px',
-            padding: '3px 10px',
+            marginBottom: '10px',
+            padding: '7px 14px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'nowrap',
-            gap: '8px',
-            minHeight: '28px',
+            gap: '10px',
+            minHeight: '44px',
+            borderRadius: '12px',
+            background: 'var(--bg-panel)',
+            boxShadow: 'var(--shadow-md)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
             overflowX: 'auto',
             boxSizing: 'border-box'
           }}>
-            {/* Left: Active Module Title (Clean & Modern) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+            {/* Left: Active Module Title & Tier Pills */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
               <button
                 className="mobile-header-hamburger"
                 onClick={() => setMobileOpen(prev => !prev)}
@@ -503,27 +508,36 @@ export default function App() {
               >
                 ☰
               </button>
-              <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 5px var(--accent-green)' }} />
-              <div style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '0.04em', color: 'var(--text-primary)', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
-                {getTabLabel(activeTab)}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '4px 8px',
+                borderRadius: '8px',
+                background: 'var(--bg-panel-subtle)',
+                border: '1px solid rgba(255, 255, 255, 0.05)'
+              }}>
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }} />
+                <div style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '0.04em', color: 'var(--text-primary)', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                  {getTabLabel(activeTab)}
+                </div>
               </div>
 
-              {/* Mode Santai / Mode Pro Switcher (New User Friendly) */}
+              {/* Mode Santai / Mode Pro Switcher */}
               <button
                 onClick={toggleDisplayMode}
                 style={{
-                  fontSize: '9px',
+                  fontSize: '9.5px',
                   fontWeight: '800',
-                  padding: '2px 8px',
-                  borderRadius: '12px',
+                  padding: '3px 9px',
+                  borderRadius: '9999px',
                   cursor: 'pointer',
-                  border: displayMode === 'SIMPLE' ? '1px solid #10b981' : '1px solid #6366f1',
+                  border: displayMode === 'SIMPLE' ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(99, 102, 241, 0.4)',
                   background: displayMode === 'SIMPLE' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(99, 102, 241, 0.15)',
                   color: displayMode === 'SIMPLE' ? '#10b981' : '#818cf8',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '4px',
-                  marginLeft: '8px'
+                  gap: '4px'
                 }}
                 title={displayMode === 'SIMPLE' ? 'Klik untuk beralih ke Mode Pro (Kuantitatif Lengkap)' : 'Klik untuk beralih ke Mode Santai (Ramah Pemula)'}
               >
@@ -535,47 +549,73 @@ export default function App() {
               <button
                 onClick={cycleUserTier}
                 style={{
-                  fontSize: '8.5px',
+                  fontSize: '9px',
                   fontWeight: '700',
-                  padding: '2px 6px',
-                  borderRadius: '4px',
+                  padding: '3px 8px',
+                  borderRadius: '9999px',
                   cursor: 'pointer',
-                  border: userTier === 'PRO' ? '1px solid rgba(245, 158, 11, 0.4)' : (userTier === 'FREE' ? '1px solid rgba(59, 130, 246, 0.4)' : '1px solid rgba(255, 255, 255, 0.2)'),
-                  background: userTier === 'PRO' ? 'rgba(245, 158, 11, 0.15)' : (userTier === 'FREE' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(255, 255, 255, 0.05)'),
-                  color: userTier === 'PRO' ? '#f59e0b' : (userTier === 'FREE' ? '#60a5fa' : 'var(--text-muted)'),
+                  border: userTier === 'PRO' ? '1px solid rgba(245, 158, 11, 0.4)' : (userTier === 'FREE' ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid rgba(255, 255, 255, 0.15)'),
+                  background: userTier === 'PRO' ? 'rgba(245, 158, 11, 0.15)' : (userTier === 'FREE' ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.05)'),
+                  color: userTier === 'PRO' ? '#f59e0b' : (userTier === 'FREE' ? '#38bdf8' : 'var(--text-muted)'),
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '3px'
+                  gap: '4px'
                 }}
-                title="Status Hak Akses (Klik untuk simulasi ganti tier: TAMU → FREE → VIP PRO)"
+                title="Status Hak Akses (Klik untuk ganti tier: TAMU → FREE → VIP PRO)"
               >
                 <span>{userTier === 'PRO' ? '👑' : (userTier === 'FREE' ? '⭐' : '👤')}</span>
                 <span>{userTier === 'PRO' ? 'VIP PRO' : (userTier === 'FREE' ? 'FREE MEMBER' : 'TAMU')}</span>
               </button>
             </div>
 
-            {/* Right: Quick Launch Tools, Theme Switcher, Sync & Live Clock (Single Line) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'nowrap', flexShrink: 0 }}>
+            {/* Center: Dribbble-style Command Search Bar */}
+            <div
+              onClick={() => setIsPaletteOpen(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'var(--bg-panel-subtle)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '9999px',
+                padding: '5px 12px',
+                cursor: 'pointer',
+                fontSize: '11px',
+                color: 'var(--text-muted)',
+                minWidth: '160px',
+                maxWidth: '240px',
+                flexShrink: 1,
+                transition: 'all 0.2s ease'
+              }}
+              title="Buka Global Command Palette (Tekan Ctrl + K)"
+            >
+              <span>🔍</span>
+              <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Cari saham, crypto...</span>
+              <span style={{ fontSize: '9px', padding: '1px 5px', borderRadius: '4px', background: 'rgba(255, 255, 255, 0.1)', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>Ctrl K</span>
+            </div>
 
+            {/* Right: Quick Launch Tools, Web3 Wallet, Theme Switcher & Clock */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', flexShrink: 0 }}>
               {/* Bursa Luar Negeri (Global Market Sessions Ticker) */}
               <GlobalMarketTicker onNavigateGlobal={() => setActiveTab('GLOBAL_MARKETS')} />
 
-              {/* Web3 Phantom Solana Wallet & Memecoin Swap Quick Button */}
+              {/* Web3 Phantom Solana Wallet & Memecoin Swap Pill */}
               <button
-                className="telemetry-btn"
                 onClick={() => setIsSwapModalOpen(true)}
                 style={{
-                  fontSize: '9px',
-                  padding: '2px 8px',
+                  fontSize: '10px',
+                  padding: '4px 10px',
                   color: walletState.connected ? '#10b981' : '#c084fc',
-                  borderColor: walletState.connected ? 'rgba(16, 185, 129, 0.4)' : 'rgba(147, 51, 234, 0.4)',
-                  background: walletState.connected ? 'rgba(16, 185, 129, 0.12)' : 'rgba(147, 51, 234, 0.15)',
+                  border: walletState.connected ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(147, 51, 234, 0.4)',
+                  background: walletState.connected ? 'rgba(16, 185, 129, 0.14)' : 'rgba(147, 51, 234, 0.15)',
+                  borderRadius: '9999px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '4px',
+                  gap: '5px',
                   cursor: 'pointer',
                   fontWeight: 800,
-                  whiteSpace: 'nowrap'
+                  whiteSpace: 'nowrap',
+                  boxShadow: walletState.connected ? '0 0 10px rgba(16, 185, 129, 0.15)' : 'none'
                 }}
                 title={walletState.connected ? `Phantom Terhubung: ${walletState.address} (${walletState.balance.toFixed(3)} SOL)` : 'Sambungkan Phantom Wallet & Degen Memecoin Swap'}
               >
@@ -585,34 +625,12 @@ export default function App() {
                     ? `${shortenAddress(walletState.address)} (${walletState.balance.toFixed(2)} SOL)`
                     : 'CONNECT PHANTOM'}
                 </span>
-                <span style={{ fontSize: '7.5px', background: 'rgba(255,255,255,0.15)', padding: '0 3px', borderRadius: '2px' }}>
+                <span style={{ fontSize: '8px', background: 'rgba(255,255,255,0.18)', padding: '1px 5px', borderRadius: '4px', color: '#fff' }}>
                   SWAP
                 </span>
               </button>
 
-              {/* OpenTerminalUI Command Palette Quick Button */}
-              <button
-                className="telemetry-btn"
-                onClick={() => setIsPaletteOpen(true)}
-                style={{
-                  fontSize: '9px',
-                  padding: '2px 6px',
-                  color: '#60a5fa',
-                  borderColor: 'rgba(59, 130, 246, 0.4)',
-                  background: 'rgba(59, 130, 246, 0.12)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '3px',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap'
-                }}
-                title="Buka Global Command Palette (Tekan Ctrl + K)"
-              >
-                <span>🔍</span>
-                <span style={{ fontWeight: 800 }}>Ctrl + K</span>
-              </button>
-
-              {/* OpenTerminalUI Data Provenance Badge */}
+              {/* Data Provenance Badge */}
               <div
                 style={{
                   display: 'flex',
@@ -621,8 +639,8 @@ export default function App() {
                   fontSize: '8.5px',
                   fontFamily: 'var(--font-mono)',
                   fontWeight: 700,
-                  padding: '2px 5px',
-                  borderRadius: 'var(--radius-xs)',
+                  padding: '3px 6px',
+                  borderRadius: '6px',
                   background: isWsConnected ? 'rgba(16, 185, 129, 0.12)' : 'rgba(245, 158, 11, 0.12)',
                   color: isWsConnected ? '#10b981' : '#f59e0b',
                   border: isWsConnected ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(245, 158, 11, 0.3)',
@@ -631,31 +649,8 @@ export default function App() {
                 title="Data Provenance Envelope: Status jalur data aktual pasar vs polling"
               >
                 <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isWsConnected ? '#10b981' : '#f59e0b', display: 'inline-block' }} />
-                <span>{isWsConnected ? 'LIVE FEED WS' : 'REST (5S)'}</span>
+                <span>{isWsConnected ? 'WS LIVE' : 'REST (5S)'}</span>
               </div>
-
-              {/* Data Integrity Drawer Quick Launch */}
-              <button
-                className="telemetry-btn"
-                onClick={() => setIsIntegrityOpen(true)}
-                style={{
-                  fontSize: '9px',
-                  padding: '2px 6px',
-                  color: bundleColor,
-                  borderColor: `${bundleColor}40`,
-                  background: `${bundleColor}14`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  cursor: 'pointer',
-                  fontWeight: 800,
-                  whiteSpace: 'nowrap'
-                }}
-                title="Periksa Integritas, Provenance & Freshness Semua Data"
-              >
-                <span>🛡️</span>
-                <span>{isBundleFresh ? 'DATA SEHAT' : 'INTEGRITAS DATA'}</span>
-              </button>
 
               {/* Master Terminal Time */}
               <HeaderClock />
@@ -665,11 +660,12 @@ export default function App() {
                 className="telemetry-btn"
                 onClick={() => setIsAiDrawerOpen(true)}
                 style={{
-                  fontSize: '9px',
-                  padding: '2px 6px',
-                  color: '#3b82f6',
-                  borderColor: 'rgba(59, 130, 246, 0.4)',
-                  background: 'rgba(59, 130, 246, 0.12)',
+                  fontSize: '9.5px',
+                  padding: '3px 8px',
+                  color: '#38bdf8',
+                  borderColor: 'rgba(56, 189, 248, 0.3)',
+                  background: 'rgba(56, 189, 248, 0.1)',
+                  borderRadius: '8px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '3px',
@@ -679,7 +675,7 @@ export default function App() {
                 title="Buka AI Sentinel Desk"
               >
                 <span>🛡️</span>
-                <span style={{ fontWeight: 700 }}>DEFCON {data?.geopolitical_threat?.defcon_level || 4} // AI DESK</span>
+                <span style={{ fontWeight: 700 }}>DEFCON {data?.geopolitical_threat?.defcon_level || 4}</span>
               </button>
 
               {/* Quick Launch Lot Calculator Modal */}
@@ -687,10 +683,12 @@ export default function App() {
                 className="telemetry-btn"
                 onClick={() => handleOpenLotCalc()}
                 style={{
-                  fontSize: '9px',
-                  padding: '2px 6px',
-                  color: 'var(--accent-gold)',
-                  borderColor: 'var(--accent-gold)',
+                  fontSize: '9.5px',
+                  padding: '3px 8px',
+                  color: '#f59e0b',
+                  borderColor: 'rgba(245, 158, 11, 0.3)',
+                  background: 'rgba(245, 158, 11, 0.1)',
+                  borderRadius: '8px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '3px',
@@ -709,7 +707,7 @@ export default function App() {
                   refetchAll();
                   setSyncTrigger(prev => prev + 1);
                 }}
-                style={{ fontSize: '9px', padding: '2px 5px', whiteSpace: 'nowrap' }}
+                style={{ fontSize: '10px', padding: '3px 7px', borderRadius: '8px', whiteSpace: 'nowrap' }}
                 title="Sinkronisasi Ulang Seluruh Data Ticker"
               >
                 🔄
@@ -720,8 +718,9 @@ export default function App() {
                 className="telemetry-btn"
                 onClick={toggleTheme}
                 style={{
-                  fontSize: '9px',
-                  padding: '2px 6px',
+                  fontSize: '9.5px',
+                  padding: '3px 8px',
+                  borderRadius: '8px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '3px',
