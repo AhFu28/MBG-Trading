@@ -9,11 +9,13 @@ import PersonalWatchlistTab from './components/PersonalWatchlistTab.jsx';
 import CommandPaletteModal from './components/CommandPaletteModal.jsx';
 import DataIntegrityModal from './components/DataIntegrityModal.jsx';
 import ComplianceRiskModal from './components/ComplianceRiskModal.jsx';
+import { getPhantomProvider, connectPhantom, getSolBalance, shortenAddress } from './services/phantomWallet.js';
 
 // Code Splitting for heavy secondary modules
 const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'));
 const LotCalculatorModal = lazy(() => import('./components/LotCalculatorModal.jsx'));
 const OrderExecutionModal = lazy(() => import('./components/OrderExecutionModal.jsx'));
+const SolanaSwapModal = lazy(() => import('./components/SolanaSwapModal.jsx'));
 import { institutionalPaperBroker } from './services/brokerGateway.js';
 const FlowProcessTab = lazy(() => import('./components/FlowProcessTab.jsx'));
 const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
@@ -193,6 +195,38 @@ export default function App() {
       try { localStorage.setItem('mbg_user_tier', next); } catch (e) {}
       return next;
     });
+  }, []);
+
+  // Web3 Solana Phantom Wallet State
+  const [walletState, setWalletState] = useState({
+    connected: false,
+    address: '',
+    balance: 0,
+    provider: null
+  });
+  const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);
+
+  // Auto-connect to Phantom if user previously authorized
+  useEffect(() => {
+    async function checkExistingPhantom() {
+      const provider = getPhantomProvider();
+      if (provider && provider.isPhantom) {
+        try {
+          const res = await provider.connect({ onlyIfTrusted: true });
+          if (res?.publicKey) {
+            const addr = res.publicKey.toString();
+            const bal = await getSolBalance(addr);
+            setWalletState({
+              connected: true,
+              address: addr,
+              balance: bal,
+              provider
+            });
+          }
+        } catch (_) {}
+      }
+    }
+    checkExistingPhantom();
   }, []);
 
   // TradingView Chart Modal State
@@ -526,6 +560,36 @@ export default function App() {
               {/* Bursa Luar Negeri (Global Market Sessions Ticker) */}
               <GlobalMarketTicker onNavigateGlobal={() => setActiveTab('GLOBAL_MARKETS')} />
 
+              {/* Web3 Phantom Solana Wallet & Memecoin Swap Quick Button */}
+              <button
+                className="telemetry-btn"
+                onClick={() => setIsSwapModalOpen(true)}
+                style={{
+                  fontSize: '9px',
+                  padding: '2px 8px',
+                  color: walletState.connected ? '#10b981' : '#c084fc',
+                  borderColor: walletState.connected ? 'rgba(16, 185, 129, 0.4)' : 'rgba(147, 51, 234, 0.4)',
+                  background: walletState.connected ? 'rgba(16, 185, 129, 0.12)' : 'rgba(147, 51, 234, 0.15)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  cursor: 'pointer',
+                  fontWeight: 800,
+                  whiteSpace: 'nowrap'
+                }}
+                title={walletState.connected ? `Phantom Terhubung: ${walletState.address} (${walletState.balance.toFixed(3)} SOL)` : 'Sambungkan Phantom Wallet & Degen Memecoin Swap'}
+              >
+                <span>👻</span>
+                <span>
+                  {walletState.connected
+                    ? `${shortenAddress(walletState.address)} (${walletState.balance.toFixed(2)} SOL)`
+                    : 'CONNECT PHANTOM'}
+                </span>
+                <span style={{ fontSize: '7.5px', background: 'rgba(255,255,255,0.15)', padding: '0 3px', borderRadius: '2px' }}>
+                  SWAP
+                </span>
+              </button>
+
               {/* OpenTerminalUI Command Palette Quick Button */}
               <button
                 className="telemetry-btn"
@@ -826,6 +890,7 @@ export default function App() {
                   livePrices={livePrices} 
                   flashMap={flashMap}
                   allCryptoSpot={allCryptoSpot}
+                  onOpenSwap={() => setIsSwapModalOpen(true)}
                 />
               </main>
             ) : activeTab === 'FOREX' ? (
@@ -1063,6 +1128,16 @@ export default function App() {
 
       {/* Compliance & Risk Disclosure Modal (First-Run Acknowledgment) */}
       <ComplianceRiskModal />
+
+      {/* Web3 Solana Degen Memecoin Radar & Jupiter Swap Modal */}
+      <Suspense fallback={null}>
+        <SolanaSwapModal
+          isOpen={isSwapModalOpen}
+          onClose={() => setIsSwapModalOpen(false)}
+          walletState={walletState}
+          setWalletState={setWalletState}
+        />
+      </Suspense>
     </PasswordGate>
   );
 }

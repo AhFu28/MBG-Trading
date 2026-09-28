@@ -10,25 +10,25 @@ export const CHANGELOG_DATA = [
     "date": "28 September 2026",
     "status": "LATEST",
     "statusColor": "var(--accent-green)",
-    "badgeLabel": "LATEST / DUAL MODES & VIP SIGNALS",
-    "title": "Update v5.7.0: Mode Santai (Simple Mode) vs Pro Switcher, 3-Tier Access Foundation, Bandarmology IIFS Confluence Gate & VIP Signal Engine",
-    "description": "Penyediaan toggle Mode Santai vs Mode Pro langsung di master header bar untuk mereduksi beban kognitif pengguna pemula, pondasi hak akses 3-tier (Tamu, Free Member, VIP Pro), integrasi otomatis skor Bandarmology IIFS sebagai filter konfirmasi sinyal saham IDX dengan badge akumulasi/distribusi cerdas, perluasan tangkapan paus on-chain Mempool.space hingga 8 transaksi live, penafian tegas benchmark historis vs live data, dan pembuatan modul dispatcher sinyal trading VIP Telegram.",
+    "badgeLabel": "LATEST / DUAL MODES & WEB3 SWAP",
+    "title": "Update v5.7.0: Mode Santai Switcher, Phantom Wallet Web3 Connect, Solana Memecoin Swap & VIP Signal Engine",
+    "description": "Penyediaan toggle Mode Santai vs Mode Pro langsung di master header bar untuk mereduksi beban kognitif pengguna pemula, pondasi hak akses 3-tier (Tamu, Free Member, VIP Pro), integrasi dompet Web3 Phantom native zero-dependency, modul Solana Memecoin Radar & Fast Jupiter Swap dengan monetisasi komisi 0.8%, integrasi otomatis skor Bandarmology IIFS, dan modul dispatcher sinyal trading VIP Telegram.",
     "processFlow": [
       {
         "step": "1. Simple Mode Switcher",
         "label": "Toggle Mode Santai vs Mode Pro di header bar untuk pengalaman ramah pemula"
       },
       {
-        "step": "2. 3-Tier Access Foundation",
-        "label": "Status hak akses interaktif (Tamu → Free Member → VIP Pro) dengan persistensi lokal"
+        "step": "2. Web3 Phantom Connect",
+        "label": "Koneksi dompet Phantom native tanpa dependensi eksternal berat (0 kB bundle bloat)"
       },
       {
-        "step": "3. Bandarmology IIFS Confluence",
+        "step": "3. Solana Memecoin Swap",
+        "label": "Radar memecoin viral & eksekusi swap 1-2 detik via Jupiter DEX dengan komisi platform 0.8%"
+      },
+      {
+        "step": "4. Bandarmology IIFS Confluence",
         "label": "Filter konfirmasi akumulasi/distribusi bandar otomatis pada rencana trading saham IDX"
-      },
-      {
-        "step": "4. On-Chain Data Expansion",
-        "label": "Peningkatan kapasitas tangkapan paus Mempool live dan penafian transparan data historis"
       },
       {
         "step": "5. Telegram VIP Dispatcher",

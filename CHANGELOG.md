@@ -26,6 +26,11 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 - **[DATA INTEGRITY & ON-CHAIN HARDENING] Mempool Live Whale Expansion & Benchmark Disclosures**:
   - **Mempool.space On-Chain Live Expansion**: Meningkatkan batas tangkapan transaksi paus Bitcoin riil dari blockchain Mempool menjadi hingga 8 transaksi live terverifikasi per siklus evaluasi.
   - **Transparansi Sumber Data**: Menambahkan label penafian tegas `HISTORICAL_BENCHMARK_MATRIX` dan `BENCHMARK_REFERENCE` pada modul aliran broker asing dan portofolio 13F Wall Street, membedakan secara jujur antara data *live on-chain* dengan matriks data historis acuan.
+- **[WEB3 INTEGRATION & DEGEN SWAP] Native Phantom Wallet & Solana Memecoin Fast Swap Desk**:
+  - **Zero-Dependency Native Phantom Connector (`phantomWallet.js`)**: Integrasi murni menggunakan objek native browser `window.phantom.solana` dan RPC publik Solana tanpa pustaka pihak ketiga berbobot berat (0 kB bundle bloat). Mendukung deteksi dompet, koneksi aman, pembacaan saldo SOL real-time, dan pemutusan sesi.
+  - **Header Bar Wallet Status & Launch Action**: Menambahkan tombol `[ 👻 CONNECT PHANTOM / 7xKX...2CW8 (X.XX SOL) ]` di master top header dengan indikator status koneksi hijau dan akses cepat ke modal swap.
+  - **Solana Degen Radar Modal (`SolanaSwapModal.jsx`)**: Radar memecoin Solana trending ($WIF, $BONK, $POPCAT, $MOODENG, $PNUT, $GOAT, $MEW) dengan feed harga real-time via DexScreener API dan estimasi output swap otomatis.
+  - **Non-Custodial Jupiter Swap Engine & Monetisasi Fee**: Mengadopsi arsitektur swap berkecepatan 1-2 detik berbasis Jupiter Aggregator dengan konfigurasi **Platform Integrator Fee 0.8%** yang otomatis mengalirkan komisi ke kas pengembang (*developer treasury*) tanpa menyentuh saldo kustodi pengguna.
 - **[NOTIFIERS & TELEGRAM VIP] VIP Trade Signal Dispatcher (`broadcast_vip_trade_signal`)**:
   - **Actionable Signal Formatter**: Menyediakan template sinyal trading VIP Telegram berstandar institusi mencakup instrumen, arah posisi, *entry zone*, Stop Loss presisi, Target 1 & Target 2, Risk/Reward ratio, status konfirmasi bandarmology, dan panduan money management.
 - **[QA/QC & CERTIFICATION]**:
