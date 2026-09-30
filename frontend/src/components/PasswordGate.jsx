@@ -76,16 +76,7 @@ export default function PasswordGate({ children }) {
         setError('LOCKED. Too many failed attempts. Wait 15 minutes.');
         setTimeout(() => { setLocked(false); setAttempts(0); setError(''); }, 15 * 60 * 1000);
       } else {
-        // Test phase convenience fallback: allow 'mbg' immediately (C-02 Owner Directive)
-        if (input.trim().toLowerCase() === 'mbg') {
-          const sessionPayload = { authenticated: true, testMode: true, expiresAt };
-          localStorage.setItem(SESSION_KEY, JSON.stringify(sessionPayload));
-          sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionPayload));
-          setAuthed(true);
-          setError('');
-          return;
-        }
-
+        // SECURITY: no client-side credential bypass — the server is the single source of truth.
         const newAttempts = attempts + 1;
         setAttempts(newAttempts);
         setError(`ACCESS DENIED. Invalid credentials. (${newAttempts}/5)`);
@@ -99,14 +90,6 @@ export default function PasswordGate({ children }) {
         }
       }
     } catch (err) {
-      if (input.trim().toLowerCase() === 'mbg') {
-        const sessionPayload = { authenticated: true, testMode: true, expiresAt };
-        localStorage.setItem(SESSION_KEY, JSON.stringify(sessionPayload));
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionPayload));
-        setAuthed(true);
-        setError('');
-        return;
-      }
       setError('Network error during authentication.');
     }
   };

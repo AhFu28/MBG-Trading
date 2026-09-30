@@ -3,14 +3,49 @@
 
 export const CHANGELOG_DATA = [
   {
+    "id": "pkg-30092026",
+    "sprintLabel": "Sprint 16 (Security Hardening, Data Integrity & Broker Engine v2)",
+    "version": "Package 30092026",
+    "semanticVersion": "v5.8.0",
+    "date": "30 September 2026",
+    "status": "LATEST",
+    "statusColor": "var(--accent-green)",
+    "badgeLabel": "LATEST / SECURITY & DATA INTEGRITY",
+    "title": "Update v5.8.0: Security Hardening, Honest Data Labeling & Institutional Paper Broker v2 (Side-Aware)",
+    "description": "Audit keamanan menyeluruh dan perbaikan integritas data: otentikasi edge tanpa kredensial legacy dengan sesi JWT HttpOnly + rate limit, label jujur pada feed paus simulasi & metrik semu homepage, Paper Broker v2 dengan akuntansi dua arah (LONG/SHORT) yang benar, guard bracket order real-time, serta CI secret guard dan 27 unit test hijau.",
+    "processFlow": [
+      {
+        "step": "1. Authentication Hardening",
+        "label": "Penghapusan hash legacy & bypass klien; JWT HttpOnly + constant-time compare + rate limit"
+      },
+      {
+        "step": "2. Honest Data Labeling",
+        "label": "Whale feed & swap Solana diberi label SIMULASI/DEMO; KPI homepage dihitung dari data riil"
+      },
+      {
+        "step": "3. Broker Engine v2",
+        "label": "Akuntansi side-aware LONG/SHORT, ratchet breakeven cermin, dan IDX long-only"
+      },
+      {
+        "step": "4. Bracket Order Guard",
+        "label": "Validasi geometri SL/TP live di modal eksekusi; submit terkunci saat invalid"
+      },
+      {
+        "step": "5. CI Secret Guard & Tests",
+        "label": "Workflow anti-kebocoran kredensial + 27 unit test (broker & jam bursa) hijau"
+      }
+    ],
+    "markdownContent": "\n### 🛡️ v5.8.0 — Security Hardening, Honest Data Labeling & Institutional Paper Broker v2 (Side-Aware)\n\n#### 🔐 1. Hardening Otentikasi & Sesi JWT\n- **Penghapusan Kredensial Legacy:** Hash cadangan dan pemeriksaan password plaintext (`mbg`, `MBG::...`) dihapus dari fungsi edge `/api/auth`. Validasi kini memakai HMAC dan perbandingan constant-time terhadap `PASSWORD_HASH`.\n- **Gate Password Sisi Server:** `PasswordGate` tidak lagi memiliki bypass sisi klien. Seluruh sesi diverifikasi via JWT HttpOnly 24 jam dengan rate limit 5 percobaan / 15 menit per IP.\n- **Password Gerbang Live Tetap `MBG`:** Sesuai direktif owner, fallback produksi memakai sha256(`MBG`) (`baab58…dc30`) sehingga login live tetap berfungsi tanpa konfigurasi tambahan. Rotasi password dapat dilakukan kapan saja via env `PASSWORD_HASH` + `JWT_SECRET` di dashboard Cloudflare tanpa deploy ulang.\n- **/api/data & /api/scanner Wajib Sesi:** Endpoint telemetri dan proxy scanner menolak request tanpa cookie JWT valid (401), dengan allowlist pasar ketat, limit 30 scan/menit per IP, dan batas payload 64 KB.\n\n#### 🐳 2. Transparansi Sumber Data & Penghapusan Metrik Semu\n- **Whale Feed Jujur:** Badge `STREAM ON-CHAIN (0s DELAY)` diganti `SIMULATED WHALE FEED (DEMO)` disertai peringatan header. Baris simulasi tidak lagi menampilkan tautan explorer palsu (hash:null, `SIM-<SYM>-<USD>`); transaksi mempool Bitcoin riil tetap tertaut ke explorer.\n- **KPI Homepage Riil:** Valuasi portofolio dihitung dari kas + posisi riil (mark-to-market live), volume 24 jam dijumlahkan dari quoteVolume Binance, statistik Arena Alpha diambil dari state engine riil dengan tag `(engine)`, dan aliran asing tampil `—` saat data tidak tersedia.\n- **Heatmap NO DATA:** Nilai acak ±5% dihapus. Petak tanpa data tampil abu-abu netral `NO DATA` dan statistik agregat mengecualikannya.\n- **News Wire Live-First:** Marquee memakai harga live (XAU/UKOIL/DXY/USDIDR) dengan fallback EOD berlabel; USD/IDR live menggantikan angka statis 15.680; US10Y diberi label EOD.\n- **Solana Swap Mode Demo:** Sukses swap palsu + tautan Solscan diganti pemberitahuan jujur `MODE DEMO — TIDAK ADA TRANSAKSI TERKIRIM`.\n\n#### 📊 3. Institutional Paper Broker v2 (Side-Aware Accounting)\n- **Perbaikan Bug Kritis SELL-as-BUY:** Order SELL kini membuka posisi SHORT dengan margin hold — sebelumnya salah tercatat sebagai pembelian. PnL, fee exit, dan cash release dihitung per arah posisi (LONG & SHORT) dengan benar.\n- **Ratchet Breakeven Cermin:** Ratchet SL ke breakeven berlaku benar untuk LONG dan SHORT; geometri bracket divalidasi (SL/TP wajib berada di sisi yang benar) dan order bracket invalid ditolak.\n- **IDX Long-Only:** Order SELL instrumen IDX ditolak eksplisit sesuai aturan bursa.\n- **Migrasi Skema v2:** Posisi legacy dinormalisasi ke LONG saat load; orderId memakai `crypto.randomUUID`; emergency liquidate memakai quote lookup penuh.\n\n#### 🧪 4. Bracket Guard UI & QA\n- **Guard Bracket Real-Time:** Modal Eksekusi Trade menghitung `bracketError` live, menampilkan peringatan amber, dan menonaktifkan tombol submit saat bracket invalid.\n- **UUID Arena:** ID toast & posisi AI Agent Arena beralih dari `Math.random` ke `crypto.randomUUID`.\n- **CI Secret Guard:** Workflow GitHub Actions baru gagal-build jika kredensial lama (email, hash legacy, JWT fallback) muncul kembali di repo.\n- **Creds Engine Env-Only:** `cryptowave_fetcher.py` memakai `CRYPTOWAVE_EMAIL`/`CRYPTOWAVE_PASSWORD` dari environment; password ter-redaksi dari PRD.\n- **27 Unit Tests Hijau:** 14 test brokerGateway (akuntansi LONG/SHORT, fee, ratchet, IDX, cash conservation) + 13 test marketHours (sesi WIB) via vitest + jsdom (`npm test`).\n"
+  },
+  {
     "id": "pkg-28092026",
     "sprintLabel": "Sprint 15 (Simple Mode, 3-Tier Access & Bandarmology Confluence)",
     "version": "Package 28092026",
     "semanticVersion": "v5.7.0",
     "date": "28 September 2026",
-    "status": "LATEST",
-    "statusColor": "var(--accent-green)",
-    "badgeLabel": "LATEST / DRIBBBLE UI & WEB3 SWAP",
+    "status": "STABLE",
+    "statusColor": "var(--text-muted)",
+    "badgeLabel": "STABLE / DRIBBBLE UI & WEB3 SWAP",
     "title": "Update v5.7.0: Dribbble-Grade UI/UX Overhaul, Portfolio Analytics Hero, Phantom Web3 Connect & VIP Signals",
     "description": "Perombakan total desain antarmuka (UI/UX) mengadopsi estetika Dribbble modern dan clean: ambient dark obsidian bloom, floating glass header dock, sleek rounded pill navigation di sidebar, hero analytics card portofolio multi-aset dengan toggle USD/IDR, integrasi dompet Phantom native, modul Solana memecoin fast swap via Jupiter DEX 0.8% fee, Bandarmology IIFS confluence gate, dan dispatcher sinyal VIP Telegram.",
     "processFlow": [

@@ -65,7 +65,7 @@ export default function Sidebar({
     if (id === 'AI_AGENTS') return 'PRO';
     if (id === 'AI_SENTINEL') return 'DEFCON';
     if (id === 'CHARTING') return 'PRO';
-    if (id === 'WHALES') return 'LIVE';
+    if (id === 'WHALES') return 'SIM'; // simulated microstructure feed — honest label
     if (id === 'FUTURES') return 'LIVE';
     if (id === 'FOREX') return 'LIVE';
     if (id === 'US_STOCKS') return 'LIVE';

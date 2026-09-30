@@ -14,6 +14,35 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+## [2026-09-30] — Security Hardening, Honest Data Labeling & Institutional Paper Broker v2 (Side-Aware)
+
+### Sprint 16 — Authentication Hardening, Data Integrity Disclosures, Broker Engine v2 & QA Certification
+- **[DEFENSE & GEOPOLITICAL HUD → SECURITY] Authentication & Session Hardening**:
+  - **Penghapusan Kredensial Legacy**: Hash cadangan dan pemeriksaan password plaintext (`mbg`, `MBG::...`) dihapus dari fungsi edge `/api/auth`. Validasi kini memakai HMAC dan perbandingan constant-time terhadap `PASSWORD_HASH`.
+  - **Gate Password Sisi Server**: `PasswordGate` tidak lagi memiliki bypass sisi klien. Seluruh sesi diverifikasi via JWT HttpOnly 24 jam (SameSite=Strict) dengan rate limit 5 percobaan / 15 menit per IP.
+  - **Password Gerbang Live Tetap `MBG`**: Sesuai direktif owner, fallback produksi memakai sha256(`MBG`) (`baab58…dc30`) sehingga login live tetap berfungsi tanpa konfigurasi tambahan. Rotasi password dapat dilakukan kapan saja via env `PASSWORD_HASH` + `JWT_SECRET` di dashboard Cloudflare tanpa deploy ulang.
+  - **/api/data & /api/scanner Wajib Sesi**: Endpoint telemetri dan proxy scanner menolak request tanpa cookie JWT valid (401), dengan allowlist pasar ketat (`indonesia`, `america`, `forex`, `cfd`), rate limit 30 scan/menit per IP, dan batas payload 64 KB.
+- **[DATA INTEGRITY & ON-CHAIN HARDENING] Transparansi Sumber Data & Penghapusan Metrik Semu**:
+  - **Whale Feed Jujur**: Badge `STREAM ON-CHAIN (0s DELAY)` diganti `SIMULATED WHALE FEED (DEMO)` disertai peringatan header. Baris simulasi tidak lagi menampilkan tautan explorer palsu (hash:null, `SIM-<SYM>-<USD>`); transaksi mempool Bitcoin riil tetap tertaut ke explorer.
+  - **KPI Homepage Riil**: Valuasi portofolio dihitung dari kas + posisi riil (mark-to-market live), volume 24 jam dijumlahkan dari quoteVolume Binance, statistik Arena Alpha diambil dari state engine riil dengan tag `(engine)`, dan aliran asing tampil `—` saat data tidak tersedia.
+  - **Heatmap NO DATA**: Nilai acak ±5% dihapus. Petak tanpa data tampil abu-abu netral `NO DATA` dan statistik agregat mengecualikannya.
+  - **News Wire Live-First**: Marquee memakai harga live (XAU/UKOIL/DXY/USDIDR) dengan fallback EOD berlabel; USD/IDR live menggantikan angka statis 15.680; US10Y diberi label EOD.
+  - **Solana Swap Mode Demo**: Sukses swap palsu + tautan Solscan diganti pemberitahuan jujur `MODE DEMO — TIDAK ADA TRANSAKSI TERKIRIM`.
+- **[QUANT & AGENTIC ENGINES] Institutional Paper Broker v2 (Side-Aware Accounting, schemaVersion 2)**:
+  - **Perbaikan Bug Kritis SELL-as-BUY**: Order SELL kini membuka posisi SHORT dengan margin hold — sebelumnya salah tercatat sebagai pembelian. PnL, fee exit, dan cash release dihitung per arah posisi (LONG & SHORT) dengan benar.
+  - **Ratchet Breakeven Cermin**: Ratchet SL ke breakeven berlaku benar untuk LONG dan SHORT; geometri bracket divalidasi (SL/TP wajib berada di sisi yang benar) dan order bracket invalid ditolak.
+  - **IDX Long-Only**: Order SELL instrumen IDX ditolak eksplisit sesuai aturan bursa.
+  - **Migrasi Skema v2**: Posisi legacy dinormalisasi ke LONG saat load; orderId memakai `crypto.randomUUID`; emergency liquidate memakai quote lookup penuh.
+  - **Guard Bracket Real-Time**: Modal Eksekusi Trade menghitung `bracketError` live, menampilkan peringatan amber, dan menonaktifkan tombol submit saat bracket invalid.
+  - **UUID Arena**: ID toast & posisi AI Agent Arena beralih dari `Math.random` ke `crypto.randomUUID`.
+- **[VERIFICATION & QA/QC & CERTIFICATION]**:
+  - **CI Secret Guard**: Workflow GitHub Actions baru (`.github/workflows/secret-guard.yml`) gagal-build jika kredensial lama (email, hash legacy, JWT fallback) muncul kembali di repo.
+  - **Creds Engine Env-Only**: `cryptowave_fetcher.py` memakai `CRYPTOWAVE_EMAIL`/`CRYPTOWAVE_PASSWORD` dari environment; password ter-redaksi dari PRD.
+  - **27 Unit Tests Hijau**: 14 test brokerGateway (akuntansi LONG/SHORT, fee, ratchet, IDX, cash conservation) + 13 test marketHours (sesi WIB) via vitest + jsdom (`npm test`).
+  - **Frontend Build**: Compiles cleanly with 0 errors/warnings.
+
+---
+
 ## [2026-09-28] — Simple Mode Switcher, 3-Tier Access Foundation, Bandarmology Confluence & VIP Signal Engine
 
 ### Sprint 15 — Core Data Hardening, Dual Cockpit Modes & VIP Signal Dispatcher

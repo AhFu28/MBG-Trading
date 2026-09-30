@@ -60,6 +60,31 @@ async function verifyJWT(token, secret) {
   }
 }
 
+// --- Deployment Fallback (Owner Directive, 2026-09-30) ---
+// The live gate password must remain "MBG" (owner instruction). This constant is
+// sha256("MBG") and is used ONLY when the PASSWORD_HASH env var is not yet set in
+// Cloudflare Pages, so login keeps working out of the box. Setting PASSWORD_HASH
+// in the dashboard immediately overrides it (password rotation without redeploy).
+const DEFAULT_PASSWORD_HASH = 'baab581258781b80bf4b0764a95fae1a9f08934bbd101053d0f4b70626d5dc30';
+
+// When JWT_SECRET env is absent, derive the signing key deterministically from the
+// active password hash so sessions auto-invalidate whenever the password rotates.
+async function deriveJwtSecret(passwordHash) {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw', encoder.encode('MBG-APEX-JWT-PEPPER-V1'),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(passwordHash));
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function resolveAuthConfig(env) {
+  const passwordHash = env.PASSWORD_HASH || DEFAULT_PASSWORD_HASH;
+  const jwtSecret = env.JWT_SECRET || (await deriveJwtSecret(passwordHash));
+  return { passwordHash, jwtSecret };
+}
+
 // --- Rate Limiting (in-memory, resets on cold start — acceptable for edge) ---
 const rateLimitMap = new Map();
 
@@ -101,7 +126,7 @@ async function hashPassword(password) {
 // --- GET: Verify existing JWT session ---
 export async function onRequestGet(context) {
   const { env, request } = context;
-  const JWT_SECRET = env.JWT_SECRET || 'fallback-secret-for-dev';
+  const { jwtSecret: JWT_SECRET } = await resolveAuthConfig(env);
 
   const cookies = parseCookies(request.headers.get('Cookie'));
   const token = cookies['mbg_jwt'];
@@ -131,8 +156,7 @@ export async function onRequestGet(context) {
 export async function onRequestPost(context) {
   const { env, request } = context;
   const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
-  const PASSWORD_HASH = env.PASSWORD_HASH;
-  const JWT_SECRET = env.JWT_SECRET || 'fallback-secret-for-dev';
+  const { passwordHash: PASSWORD_HASH, jwtSecret: JWT_SECRET } = await resolveAuthConfig(env);
 
   if (!checkRateLimit(ip)) {
     return new Response(JSON.stringify({ error: 'Too many attempts. Try again in 15 minutes.' }), {
@@ -159,18 +183,23 @@ export async function onRequestPost(context) {
     });
   }
 
+  // Constant-time hash comparison (avoid string equality timing signal)
   const inputHash = await hashPassword(password);
-
-  // Default test-phase password: 'mbg' (sha256: d35bdd04ef763e558fec2f040990482f9375e9027e10f277786422c7dd8d182b)
-  // Also supports legacy password and custom PASSWORD_HASH env var
-  const DEFAULT_HASH = 'd35bdd04ef763e558fec2f040990482f9375e9027e10f277786422c7dd8d182b';
-  const OLD_HASH = '286713785e8fbca141922642c96747842acd886f6da2f7598d0bc8554b8c3e18';
-
-  const isMatch = (PASSWORD_HASH && inputHash === PASSWORD_HASH) ||
-                  inputHash === DEFAULT_HASH ||
-                  inputHash === OLD_HASH ||
-                  password === 'mbg' ||
-                  password === 'MBG::Xk9#Tr4d3!C0ckp1t_Zw&Qr7';
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', encoder.encode(JWT_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
+  const refSig = await crypto.subtle.sign('HMAC', key, encoder.encode(inputHash));
+  const cmpSig = await crypto.subtle.sign('HMAC', key, encoder.encode(PASSWORD_HASH));
+  const isMatch =
+    refSig.byteLength === cmpSig.byteLength &&
+    crypto.subtle.timingSafeEqual
+      ? crypto.subtle.timingSafeEqual(refSig, cmpSig)
+      : (() => {
+          // Fallback constant-time compare on bytes
+          const a = new Uint8Array(refSig), b = new Uint8Array(cmpSig);
+          let diff = 0;
+          for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+          return diff === 0;
+        })();
 
   if (isMatch) {
     // Clear rate limit on success

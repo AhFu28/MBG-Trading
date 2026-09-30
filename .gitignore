@@ -31,6 +31,7 @@ ENV/
 node_modules/
 dist/
 .vite/
+.wrangler/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

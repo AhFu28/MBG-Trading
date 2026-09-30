@@ -3,6 +3,7 @@ import BloombergNewsWire from './BloombergNewsWire.jsx';
 import AssetIcon from './AssetIcon.jsx';
 import CryptoIcon from './CryptoIcon.jsx';
 import { formatNewsDateTime } from './newsHelpers.js';
+import { institutionalPaperBroker } from '../services/brokerGateway.js';
 
 const LQ45_TICKERS = new Set([
   'BBCA', 'BBRI', 'BMRI', 'BBNI', 'ASII', 'TLKM', 'AMMN', 'BREN', 'CUAN', 'ADRO',
@@ -106,13 +107,57 @@ export default function HomeDashboardTab({
   const [dismissDefenseAlert, setDismissDefenseAlert] = useState(false);
   const [portfolioCurrency, setPortfolioCurrency] = useState('USD'); // 'USD' | 'IDR'
 
+  // ── REAL STORE BINDINGS (replaces hardcoded fiction) ─────────────────────
+  // 1. Paper portfolio: live equity = cash + open positions marked to livePrices.
+  const paperSummary = institutionalPaperBroker.getSummary();
+  const paperPositions = paperSummary.positions || [];
+  const openPositionsValue = useMemo(() => {
+    let usd = 0, idr = 0;
+    paperPositions.forEach(p => {
+      const q = livePrices[p.symbol] || livePrices[`IDX:${p.symbol}`] || livePrices[`${p.symbol}.JK`];
+      const px = q?.price || p.currentPrice || p.entryPrice || 0;
+      const val = (p.quantity || 0) * px;
+      if (p.market === 'IDX') idr += val; else usd += val;
+    });
+    return { usd, idr };
+  }, [paperPositions, livePrices]);
+  const portfolioUsd = (paperSummary.cashUsdt || 0) + openPositionsValue.usd;
+  const portfolioIdr = (paperSummary.cashIdr || 0) + openPositionsValue.idr;
+  const initialUsd = paperSummary.initialCashUsdt || 10000;
+  const initialIdr = paperSummary.initialCashIdr || 100000000;
+  const pnlUsd = portfolioUsd - initialUsd;
+  const pnlIdr = portfolioIdr - initialIdr;
+  const pnlPctUsd = initialUsd > 0 ? (pnlUsd / initialUsd) * 100 : 0;
+  const pnlPctIdr = initialIdr > 0 ? (pnlIdr / initialIdr) * 100 : 0;
+
+  // 2. 24h crypto volume: real sum of Binance 24h quoteVolume across tracked pairs.
+  const crypto24hVolumeUsd = useMemo(() => {
+    let sum = 0;
+    Object.values(livePrices).forEach(q => {
+      if (q?.market === 'CRYPTO' && q?.volume) sum += Number(q.volume) || 0;
+    });
+    return sum;
+  }, [livePrices]);
+
+  // 3. Arena stats from the real engine state (fallback: em-dash, never invented).
+  const [arenaStats, setArenaStats] = useState(null);
   useEffect(() => {
-    if (data?.data_sources && Object.values(data.data_sources).some(s => s === 'fallback')) {
-      setDataStatus('fallback');
-    } else {
-      setDataStatus('live');
-    }
-  }, [data]);
+    let cancelled = false;
+    fetch('/data/latest_arena_state.json?t=' + Date.now(), { cache: 'no-cache' })
+      .then(r => (r.ok ? r.json() : null))
+      .then(s => {
+        if (cancelled || !s || !Array.isArray(s.agents)) return;
+        const journal = s.journal || [];
+        const wins = journal.filter(t => t.isWin).length;
+        const totalRoi = s.agents.reduce((acc, a) => acc + (Number(a.totalRoiPct) || 0), 0);
+        setArenaStats({
+          roiPct: totalRoi,
+          winRate: journal.length > 0 ? (wins / journal.length) * 100 : null
+        });
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   const topIdxPlans = (data?.daily_trade_plans || []).filter(p => p.market === 'IDX');
   const topCryptoPicks = data?.crypto_spot_10 || [];
@@ -122,6 +167,22 @@ export default function HomeDashboardTab({
   const macro = data?.macro_telemetry || {};
   const foreignFlow = data?.foreign_flow || {};
   const brokerSummary = data?.broker_summary || {};
+
+  // 4. IDX foreign flow: engine bundle when present, otherwise honest em-dash.
+  const netForeignFlowIdr = useMemo(() => {
+    if (foreignFlow && typeof foreignFlow.total_net === 'number') return foreignFlow.total_net;
+    if (foreignFlow && typeof foreignFlow.net_buy_idr === 'number') return foreignFlow.net_buy_idr;
+    return null; // unknown — display em-dash
+  }, [foreignFlow]);
+
+  useEffect(() => {
+    if (data?.data_sources && Object.values(data.data_sources).some(s => s === 'fallback')) {
+      setDataStatus('fallback');
+    } else {
+      setDataStatus('live');
+    }
+  }, [data]);
+
   const liveNewsRaw = (macro?.live_news || []).slice().sort((a, b) => {
     if (a.is_pinned && !b.is_pinned) return -1;
     if (!a.is_pinned && b.is_pinned) return 1;
@@ -419,7 +480,9 @@ export default function HomeDashboardTab({
               fontFamily: 'var(--font-sans)',
               lineHeight: 1
             }}>
-              {portfolioCurrency === 'USD' ? '$128,450.80' : 'Rp 2.054.200.000'}
+              {portfolioCurrency === 'USD'
+                ? `$${portfolioUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                : `Rp ${Math.round(portfolioIdr).toLocaleString('id-ID')}`}
             </div>
             <div style={{
               display: 'inline-flex',
@@ -434,8 +497,12 @@ export default function HomeDashboardTab({
               fontWeight: '800',
               fontFamily: 'var(--font-mono)'
             }}>
-              <span>↗</span>
-              <span>{portfolioCurrency === 'USD' ? '+$4,210.50' : '+Rp 67.360.000'} (+3.38%)</span>
+              <span>{(portfolioCurrency === 'USD' ? pnlUsd : pnlIdr) >= 0 ? '↗' : '↘'}</span>
+              <span>
+                {portfolioCurrency === 'USD'
+                  ? `${pnlUsd >= 0 ? '+' : '-'}$${Math.abs(pnlUsd).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${pnlPctUsd >= 0 ? '+' : ''}${pnlPctUsd.toFixed(2)}%)`
+                  : `${pnlIdr >= 0 ? '+' : '-'}Rp ${Math.abs(Math.round(pnlIdr)).toLocaleString('id-ID')} (${pnlPctIdr >= 0 ? '+' : ''}${pnlPctIdr.toFixed(2)}%)`}
+              </span>
             </div>
           </div>
 
@@ -546,8 +613,12 @@ export default function HomeDashboardTab({
               gap: '2px'
             }}>
               <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>24H GLOBAL VOL</span>
-              <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#38bdf8', fontFamily: 'var(--font-mono)' }}>$42.85B</span>
-              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Spot & Futures</span>
+              <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#38bdf8', fontFamily: 'var(--font-mono)' }}>
+                {crypto24hVolumeUsd > 0
+                  ? `$${(crypto24hVolumeUsd / 1e9).toFixed(2)}B`
+                  : '—'}
+              </span>
+              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Spot 24h (tracked pairs)</span>
             </div>
 
             {/* Metric 3: Bandarmology Net Flow */}
@@ -561,8 +632,10 @@ export default function HomeDashboardTab({
               gap: '2px'
             }}>
               <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>ARUS BANDAR IDX</span>
-              <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#10b981', fontFamily: 'var(--font-mono)' }}>+Rp 480 M</span>
-              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Net Foreign Buy</span>
+              <span style={{ fontSize: '11.5px', fontWeight: '800', color: netForeignFlowIdr === null ? 'var(--text-muted)' : (netForeignFlowIdr >= 0 ? '#10b981' : '#ef4444'), fontFamily: 'var(--font-mono)' }}>
+                {netForeignFlowIdr === null ? '—' : formatFlowIdr(netForeignFlowIdr)}
+              </span>
+              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Net Foreign {netForeignFlowIdr === null ? '(no data)' : (netForeignFlowIdr >= 0 ? 'Buy' : 'Sell')}</span>
             </div>
 
             {/* Metric 4: AI Arena Win Rate */}
@@ -576,8 +649,12 @@ export default function HomeDashboardTab({
               gap: '2px'
             }}>
               <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>ARENA ALPHA</span>
-              <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#f59e0b', fontFamily: 'var(--font-mono)' }}>+18.4% ROI</span>
-              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Win Rate 76.4%</span>
+              <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#f59e0b', fontFamily: 'var(--font-mono)' }}>
+                {arenaStats ? `${arenaStats.roiPct >= 0 ? '+' : ''}${arenaStats.roiPct.toFixed(1)}% ROI` : '—'}
+              </span>
+              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                {arenaStats?.winRate != null ? `Win Rate ${arenaStats.winRate.toFixed(1)}% (engine)` : 'Arena engine stats — awaiting sync'}
+              </span>
             </div>
           </div>
 

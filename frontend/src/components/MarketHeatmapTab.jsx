@@ -94,13 +94,15 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
       const sym = item.symbol;
       // Try multiple key formats for livePrices
       const lp = livePrices[sym] || livePrices[`${sym}USDT`] || livePrices[`${sym}/USDT`]
-        || livePrices[`IDX:${sym}`] || livePrices[`${sym}.JK`] || {};
-      const changePct = lp.changePct !== undefined ? Number(lp.changePct) : (Math.random() * 10 - 5);
-      const price = lp.price !== undefined ? lp.price : null;
+        || livePrices[`IDX:${sym}`] || livePrices[`${sym}.JK`] || null;
+      const hasData = lp && lp.changePct !== undefined;
+      const changePct = hasData ? Number(lp.changePct) : 0;
+      const price = lp?.price !== undefined ? lp.price : null;
       return {
         ...item,
         changePct: Math.round(changePct * 100) / 100,
         price,
+        hasData,
         flash: flashMap[sym] || flashMap[`${sym}USDT`] || null,
         flexGrow: item.weight / totalWeight,
       };
@@ -109,13 +111,14 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
 
   // Summary stats
   const stats = useMemo(() => {
-    let gainers = 0, losers = 0, totalChange = 0;
-    tiles.forEach(t => {
-      if (t.changePct > 0) gainers++;
-      else if (t.changePct < 0) losers++;
-      totalChange += t.changePct;
-    });
-    return { gainers, losers, avgChange: Math.round((totalChange / tiles.length) * 100) / 100 };
+    let gainers = 0, losers = 0, totalChange = 0;        tiles.forEach(t => {
+          if (!t.hasData) return; // no-data tiles excluded from stats
+          if (t.changePct > 0) gainers++;
+          else if (t.changePct < 0) losers++;
+          totalChange += t.changePct;
+        });
+        const covered = tiles.filter(t => t.hasData).length;
+        return { gainers, losers, avgChange: covered > 0 ? Math.round((totalChange / covered) * 100) / 100 : 0 };
   }, [tiles]);
 
   const formatPrice = (price, market) => {
@@ -190,7 +193,7 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
         minHeight: '400px'
       }}>
         {tiles.map(tile => {
-          const bgColor = getChangeColor(tile.changePct);
+          const bgColor = tile.hasData ? getChangeColor(tile.changePct) : 'rgba(255,255,255,0.06)'; // neutral gray for no-data
           const areaPercent = tile.flexGrow * 100;
           // Calculate min dimensions based on weight
           const isLarge = tile.weight > 5;
@@ -230,7 +233,7 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
                 e.currentTarget.style.zIndex = '1';
                 e.currentTarget.style.transform = 'scale(1)';
               }}
-              title={`${tile.name} (${tile.symbol})\n${tile.changePct >= 0 ? '+' : ''}${tile.changePct}%\n${tile.price ? formatPrice(tile.price, activeMarket) : 'Memuat...'}`}
+              title={`${tile.name} (${tile.symbol})\n${tile.hasData ? `${tile.changePct >= 0 ? '+' : ''}${tile.changePct}%` : 'Menunggu data live...'}\n${tile.price ? formatPrice(tile.price, activeMarket) : '—'}`}
             >
               {/* Asset logo for tiles */}
               {(isLarge || isMedium) && (
@@ -248,15 +251,15 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
                 {tile.symbol}
               </span>
 
-              {/* Change % */}
+              {/* Change % (or honest no-data state) */}
               <span style={{
                 fontSize: isLarge ? '13px' : isMedium ? '10px' : '8px',
                 fontWeight: '700',
-                color: 'rgba(255,255,255,0.9)',
+                color: tile.hasData ? 'rgba(255,255,255,0.9)' : 'var(--text-muted, #94a3b8)',
                 fontFamily: 'var(--font-mono)',
                 textShadow: '0 1px 2px rgba(0,0,0,0.4)'
               }}>
-                {tile.changePct >= 0 ? '+' : ''}{tile.changePct}%
+                {tile.hasData ? `${tile.changePct >= 0 ? '+' : ''}${tile.changePct}%` : 'NO DATA'}
               </span>
 
               {/* Price for large tiles */}

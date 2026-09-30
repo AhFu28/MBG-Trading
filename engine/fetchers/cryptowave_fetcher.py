@@ -17,9 +17,12 @@ class CryptoWaveFetcher:
 
     BASE_URL = "https://cryptowave.co.id"
 
-    def __init__(self, email: str = "naufalarib60@gmail.com", password: str = "Arib1411892"):
-        self.email = email
-        self.password = password
+    def __init__(self, email: str = None, password: str = None):
+        # Credentials are read from environment variables only (never hardcode).
+        self.email = email or os.getenv("CRYPTOWAVE_EMAIL", "")
+        self.password = password or os.getenv("CRYPTOWAVE_PASSWORD", "")
+        if not self.email or not self.password:
+            logger.warning("CryptoWave credentials not configured (set CRYPTOWAVE_EMAIL / CRYPTOWAVE_PASSWORD). Fetcher disabled.")
         self.session = requests.Session()
         self.session.headers.update({
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",

@@ -409,8 +409,7 @@ function generateInitialCryptoWhales(count = 35) {
     const roll = Math.random();
 
     let signal, sentiment, fromEntity, toEntity, amount, amountUsd, thesis;
-    const randomHex = Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
-    const txHash = chainObj.chain === 'bitcoin' ? randomHex : `0x${randomHex}`;
+    // No fabricated tx hashes: simulated rows are explicitly labeled SIM, never linked to explorers.
 
     if (roll < 0.44) {
       signal = 'EXCHANGE_OUTFLOW';
@@ -472,8 +471,8 @@ function generateInitialCryptoWhales(count = 35) {
     }
 
     list.unshift({
-      hash: txHash,
-      hash_short: `${txHash.slice(0, 8)}...${txHash.slice(-6)}`,
+      hash: null, // simulated row — no fabricated txid
+      hash_short: `SIM-${chainObj.symbol}-${Math.abs(Math.round(amountUsd)).toLocaleString('en-US')} USD`,
       blockchain: chainObj.chain,
       blockchain_name: chainObj.name,
       symbol: chainObj.symbol,
@@ -486,9 +485,9 @@ function generateInitialCryptoWhales(count = 35) {
       timestamp: txTime.toISOString(),
       signal: signal,
       sentiment: sentiment,
-      explorer_url: `${chainObj.explorer}${txHash}`,
+      explorer_url: null, // simulated row — no real txid, never link to an explorer
       impact_thesis: thesis,
-      data_source: 'live_onchain_stream',
+      data_source: 'simulated_microstructure',
       isNew: false,
       isMegaWhale: isMegaWhale,
       quickAction: quickAction
@@ -560,8 +559,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
         const roll = Math.random();
 
         let signal, sentiment, fromEntity, toEntity, amount, amountUsd, thesis;
-        const randomHex = Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
-        const txHash = chainObj.chain === 'bitcoin' ? randomHex : `0x${randomHex}`;
+        // No fabricated tx hashes: simulated rows are explicitly labeled SIM, never linked to explorers.
 
         const livePairKey = `${chainObj.symbol}USDT`;
         const currentCoinPrice = livePrices[livePairKey]?.price || livePrices[chainObj.symbol]?.price || chainObj.price;
@@ -622,8 +620,8 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
         }
 
         const newWhaleTx = {
-          hash: txHash,
-          hash_short: `${txHash.slice(0, 8)}...${txHash.slice(-6)}`,
+          hash: null, // simulated row — no fabricated txid
+          hash_short: `SIM-${chainObj.symbol}-${Math.abs(Math.round(amountUsd)).toLocaleString('en-US')} USD`,
           blockchain: chainObj.chain,
           blockchain_name: chainObj.name,
           symbol: chainObj.symbol,
@@ -636,9 +634,9 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
           timestamp: new Date().toISOString(),
           signal: signal,
           sentiment: sentiment,
-          explorer_url: `${chainObj.explorer}${txHash}`,
+          explorer_url: null, // simulated row — no real txid, never link to an explorer
           impact_thesis: thesis,
-          data_source: 'live_onchain_stream',
+          data_source: 'simulated_microstructure',
           isNew: true,
           isMegaWhale: isMegaWhale,
           quickAction: quickAction
@@ -869,7 +867,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
             </span>
           </div>
           <p style={{ margin: '5px 0 0 0', color: 'var(--text-secondary)', fontSize: '12px' }}>
-            Pelacakan Paus Kripto On-Chain Real-Time &bull; Broker Summary & Rekap Saham BEI &bull; Running Trade Live &bull; Portofolio 13F Wall Street
+            <strong style={{ color: '#fbbf24' }}>⚠ Feed paus kripto = SIMULASI (demo mikrostruktur, bukan transaksi blockchain nyata)</strong> &bull; Broker Summary & Rekap Saham BEI (EOD) &bull; Running Trade Live &bull; Portofolio 13F Wall Street
           </p>
         </div>
 
@@ -926,7 +924,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
             gap: '8px'
           }}>
             <span className={wsStatus === 'LIVE' ? 'pulse-dot-green' : 'pulse-dot-amber'} />
-            <span>{wsStatus === 'LIVE' ? 'STREAM ON-CHAIN (0s DELAY)' : 'CONNECTING WS...'}</span>
+            <span>{wsStatus === 'LIVE' ? 'SIMULATED WHALE FEED (DEMO)' : 'CONNECTING WS...'}</span>
           </div>
         </div>
       </div>
