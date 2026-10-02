@@ -14,10 +14,33 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
----
+## [2026-10-02] — Perbaikan Kritis: pump.fun Terblokir 403 di Produksi (Edge Proxy)
+
+### Sprint 21 — Diagnosa Origin-Lock & Solusi Cloudflare Edge Proxy
+- **[BUG PRODUKSI] "Gagal memuat pump.fun: Failed to fetch" Hanya di Web Asli**:
+  - **Gejala**: Radar berjalan normal di `localhost:3000`, tetapi **gagal total** di `https://mbg-trading.pages.dev` dengan pesan `Failed to fetch`.
+  - **Diagnosa**: Diuji dengan header `Origin` yang berbeda terhadap endpoint pump.fun:
+    - `Origin: http://localhost:3000` → **200 OK** (diizinkan)
+    - `Origin: https://mbg-trading.pages.dev` → **403 Forbidden** (diblokir WAF Cloudflare pump.fun)
+  - **Akar masalah**: Cloudflare WAF milik pump.fun menerapkan **origin-lock** — hanya mengizinkan origin yang di-whitelist. Ini tidak terdeteksi di dev karena localhost kebetulan diizinkan. Error `Failed to fetch` muncul karena browser memblokir response 403 tanpa header CORS.
+  - **Bukan masalah CORS biasa**: DexScreener (`Access-Control-Allow-Origin: *`) dan Jupiter (mengizinkan origin produksi) terverifikasi **aman** — hanya pump.fun yang terblokir.
+- **[SOLUSI] Cloudflare Pages Edge Function Reverse Proxy (`/api/pumpfun/[[path]].js`)**:
+  - Request diteruskan **server-side** dari edge Cloudflare, sehingga tidak ada header `Origin` browser yang dikirim ke pump.fun — melewati origin-lock sepenuhnya.
+  - Ditambahkan `User-Agent` browser standar untuk kompatibilitas.
+  - **Caching edge** (`max-age=10, s-maxage=20`) melindungi dari rate-limit dan mempercepat response.
+  - CORS bersih dikembalikan ke client (`Access-Control-Allow-Origin` sesuai origin pemanggil yang sah).
+  - Error handling: kegagalan upstream mengembalikan **502** dengan pesan jelas, bukan crash.
+- **[RESILIENSI] Fallback Otomatis di `memecoinDesk.js`**:
+  - Fungsi baru `fetchPumpFunEndpoint()` mencoba **proxy edge lebih dulu**, dan otomatis jatuh ke endpoint langsung jika proxy tidak tersedia (mis. saat dev tanpa fungsi Pages).
+  - Kedua pemanggil (`fetchPumpFunLaunches` dan `fetchPumpFunActive`) kini melalui jalur tunggal ini, sehingga perbaikan berlaku untuk **semua** konsumen pump.fun sekaligus.
+  - Vite dev server diberi proxy `/api/pumpfun` agar perilaku dev dan produksi **identik** — mencegah bug "jalan di lokal, rusak di produksi" terulang.
+- **[VERIFIKASI] Diuji Tuntas di Kedua Lingkungan**:
+  - Dev: `http://localhost:3000/api/pumpfun/coins?...` → **200 OK** (2 token terverifikasi).
+  - Produksi: `https://mbg-trading.pages.dev/api/pumpfun/coins?...` → **200 OK**, mengembalikan data live (GSMG, BRR, SULY).
+  - Audit origin menyeluruh: DexScreener tokens ✅, DexScreener boosts ✅, Jupiter lite-api ✅, pump.fun langsung ❌ 403, **pump.fun via proxy ✅ 200**.
+  - Test suite: **86/86 lulus**. Build produksi bersih 1.41s.
 
 ---
-
 ---
 
 ## [2026-10-02] — Launch Window Filter: Koreksi Berbasis Data atas Saran Filter Medsos
