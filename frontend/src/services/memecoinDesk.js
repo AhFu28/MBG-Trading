@@ -3,7 +3,13 @@
  *
  * Sources, all keyless and verified live:
  *   - pump.fun frontend-api-v3 : new Solana launches + bonding-curve progress
- *   - DexScreener               : prices/volume for solana, robinhood, bsc (Aster), hyperevm
+ *   - DexScreener               : prices/volume/txns for solana, robinhood, bsc (Aster), hyperevm
+ *   - Jupiter lite-api          : holderCount, holder growth, organic score, token audit
+ *
+ * The Jupiter layer is what makes holder/insider analysis possible: DexScreener
+ * exposes no holder field at all, but Jupiter's free lite-api returns holderCount,
+ * stats*.holderChange, audit.topHoldersPercentage, audit.devBalancePercentage and
+ * mint/freeze authority status — with NO API key required.
  *
  * ponytail: DexScreener is rate-limited (~300 req/min). Poll at 20s and let the
  * browser cache; switch to a server route with a shared cache if throughput matters.
@@ -16,6 +22,7 @@ const PUMPFUN_NEW = 'https://frontend-api-v3.pump.fun/coins?offset=0&limit=40&so
 const PUMPFUN_ACTIVE = 'https://frontend-api-v3.pump.fun/coins?offset=0&limit=60&sort=last_trade_timestamp&order=DESC&includeNsfw=false';
 const DEXSCREENER_TOKENS = 'https://api.dexscreener.com/latest/dex/tokens/';
 const DEXSCREENER_BOOSTS = 'https://api.dexscreener.com/token-boosts/top/v1';
+const JUPITER_SEARCH = 'https://lite-api.jup.ag/tokens/v2/search?query=';
 
 /** Chains we track. DexScreener chainId values are authoritative. */
 export const TRACKED_CHAINS = {
@@ -90,6 +97,51 @@ export async function fetchPumpFunLaunches() {
 }
 
 /**
+ * Fetch holder + audit data for Solana tokens from Jupiter's free lite-api.
+ *
+ * This is the layer DexScreener lacks entirely. Returns a Map keyed by mint so
+ * callers can enrich each row without caring about ordering.
+ *
+ * Verified live fields: holderCount, organicScore, organicScoreLabel, isVerified,
+ * tags, dev, audit{mintAuthorityDisabled, freezeAuthorityDisabled,
+ * topHoldersPercentage, devBalancePercentage, devMigrations, devMints},
+ * stats5m/1h/6h/24h{holderChange, numTraders, numNetBuyers, numOrganicBuyers,
+ * buyOrganicVolume, sellOrganicVolume, volumeChange, priceChange}.
+ */
+export async function fetchJupiterTokenData(mints) {
+  const map = new Map();
+  if (!mints?.length) return map;
+
+  // Jupiter accepts comma-separated mints; keep batches modest to stay polite.
+  const BATCH = 25;
+  const chunks = [];
+  for (let i = 0; i < mints.length; i += BATCH) {
+    chunks.push(mints.slice(i, i + BATCH));
+  }
+
+  const results = await Promise.all(
+    chunks.map(async chunk => {
+      try {
+        const res = await fetch(`${JUPITER_SEARCH}${chunk.join(',')}`, {
+          headers: { accept: 'application/json' },
+        });
+        if (!res.ok) return [];
+        const json = await res.json();
+        return Array.isArray(json) ? json : [];
+      } catch {
+        // A Jupiter outage must not break the scan; rows simply stay unenriched.
+        return [];
+      }
+    })
+  );
+
+  for (const token of results.flat()) {
+    if (token?.id) map.set(token.id, token);
+  }
+  return map;
+}
+
+/**
  * Fetch live pair data for tokens on any tracked chain via DexScreener.
  * Batches up to 30 addresses per call (DexScreener's documented limit).
  */
@@ -155,7 +207,12 @@ export async function fetchPumpFunActive() {
 export async function buildScanUniverse() {
   const active = await fetchPumpFunActive();
 
-  const pairs = await fetchDexPairs(active.map(t => t.mint));
+  // DexScreener (market mechanics) and Jupiter (holders/audit) in parallel —
+  // they are independent sources, so there is no reason to serialise them.
+  const [pairs, jupiterMap] = await Promise.all([
+    fetchDexPairs(active.map(t => t.mint)),
+    fetchJupiterTokenData(active.map(t => t.mint)),
+  ]);
 
   // A mint can have multiple pairs; keep the deepest-liquidity one per mint.
   const byMint = new Map();
@@ -174,14 +231,20 @@ export async function buildScanUniverse() {
 
   for (const token of active) {
     const pair = byMint.get(token.mint);
+    const jup = jupiterMap.get(token.mint) || null;
     if (pair) {
-      scannable.push({ token, pair });
+      scannable.push({ token, pair, jupiter: jup });
     } else {
       noPair.push(token);
     }
   }
 
-  return { scannable, noPair, totalActive: active.length };
+  return {
+    scannable,
+    noPair,
+    totalActive: active.length,
+    jupiterHits: scannable.filter(r => r.jupiter).length,
+  };
 }
 
 /** Boosted = paid promotion. Useful as a "what's being shilled right now" board. */

@@ -16,6 +16,38 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+---
+
+## [2026-10-02] — Jupiter Enrichment: Holder Growth, Organic Demand & Token Audit
+
+### Sprint 19 — Dari Radar Bukti Menjadi Radar Lengkap (Tetap Tanpa API Key)
+- **[TEMUAN KUNCI] DexScreener Tidak Punya Data Holder — Jupiter Punya, dan Gratis**:
+  - Diuji langsung: DexScreener **tidak punya** field `holders`, `holderCount`, `topHolders`, `traders`, atau `devWallet` sama sekali.
+  - **Jupiter `lite-api` (gratis, TANPA API key)** menyediakan persis yang kurang: `holderCount`, `stats1h.holderChange`, `audit.topHoldersPercentage`, `audit.devBalancePercentage`, `mintAuthorityDisabled`, `freezeAuthorityDisabled`, `numNetBuyers`, `numTraders`, volume organik, dan `organicScore`.
+  - **Tidak perlu API berbayar.** Radar sekarang menggabungkan 3 sumber gratis: pump.fun (curve) + DexScreener (harga/volume/txns) + Jupiter (holder/audit).
+  - Verifikasi live: **30 token aktif → 30 pair DexScreener → 25 token ter-enrich Jupiter** dalam satu siklus pemindaian.
+- **[ENRICHMENT — `fetchJupiterTokenData()`] Layer Data Holder & Audit**:
+  - Batch hingga 25 mint per request, dijalankan **paralel** dengan DexScreener (sumber independen, tidak ada alasan diserialisasi).
+  - Kegagalan Jupiter **tidak merusak pemindaian** — baris hanya tetap tanpa data enrichment, bukan error total.
+- **[SCORING BARU — 6 Faktor Jupiter] Sinyal yang Sebelumnya Mustahil**:
+  - **Pertumbuhan holder**: +2% dalam 1 jam → **+20 poin**; holder menyusut ≤ −1% → **−20 poin** dan naik jadi flag risiko. Ini proksi paling jujur untuk "uang baru sedang masuk".
+  - **Net buyer**: mayoritas wallet akumulasi → **+15 poin**; net seller → **−15 poin**.
+  - **Volume organik**: membedakan permintaan asli dari wash/bot trading. Beli organik dominan → **+15 poin**; jual organik dominan → **−15 poin**. Volume debu (< $1.000) diabaikan agar tidak menyesatkan.
+  - **Audit authority**: `mintAuthority` masih aktif → **−25 poin** (dev bisa cetak supply tanpa batas); `freezeAuthority` aktif → **−20 poin** (dompet bisa dibekukan).
+  - **Konsentrasi holder**: top holder ≥ 50% → **−25 poin**; ≥ 35% → **−10 poin**; distribusi sehat → **+10 poin**.
+  - **Saldo dev**: masih pegang ≥ 5% supply → **−25 poin** (risiko dump).
+- **[UI — `MemecoinRadar.jsx`] Kolom Baru & Transparansi Sumber**:
+  - Kolom tabel baru: **Holder**, **Δ Holder 1j**, **Top 10 (%)**, dan **badge Audit** (`MINT!` / `FREEZE!` / `SAFE`).
+  - Panel detail menampilkan 18 metrik termasuk holder, net buyer, volume organik, skor organik, saldo dev, dan riwayat mint dev.
+  - Header menampilkan **cakupan sumber data** secara eksplisit (DexScreener / Jupiter / pump.fun) beserta jumlah token yang berhasil di-enrich.
+  - Catatan keterbatasan diperbarui: Jupiter **tidak** menyediakan identitas pemilik wallet top holder — hanya persentase agregat. Identitas wallet tetap tidak ditampilkan karena tidak tersedia, bukan dikarang.
+- **[QA/QC & CERTIFICATION]**:
+  - Test Suite: **75/75 tes lulus** (earlySignal 42, brokerGateway 14, marketHours 13, memecoinDesk 6).
+  - 15 tes baru khusus faktor Jupiter: pertumbuhan holder, net buyer, dominasi organik, mint/freeze authority, konsentrasi holder, saldo dev.
+  - Kasus batas diuji: token tanpa entri Jupiter tetap menghasilkan skor valid tanpa faktor holder; volume organik debu diabaikan; skor tetap dibatasi 0–100.
+  - Skenario bentuk-rug penuh (mint+freeze aktif, top holder 70%, dev 15%, holder menyusut) terbukti menghasilkan **skor 0 dengan verdict HIGH_RISK**.
+  - Build produksi bersih 1.55s.
+
 ## [2026-10-02] — Early Signal Radar: Evidence-Based Memecoin Scanner & Simulated Entry Planner
 
 ### Sprint 18 — Deteksi Dini Berbasis Bukti, Bukan Prediksi

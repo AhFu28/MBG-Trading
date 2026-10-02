@@ -49,18 +49,21 @@ export default function MemecoinRadar() {
   const [capital, setCapital] = useState(1000);
   const [minScore, setMinScore] = useState(0);
   const [showHighRisk, setShowHighRisk] = useState(false);
+  const [jupiterHits, setJupiterHits] = useState(0);
 
   const scan = useCallback(async () => {
     setError('');
     try {
-      const { scannable: rows, noPair: unpairable, totalActive } = await buildScanUniverse();
-      const analyzed = rows.map(({ token, pair }) => ({
+      const { scannable: rows, noPair: unpairable, totalActive, jupiterHits } = await buildScanUniverse();
+      const analyzed = rows.map(({ token, pair, jupiter }) => ({
         token,
         pair,
-        analysis: analyzeToken(pair, token.curve),
+        jupiter,
+        analysis: analyzeToken(pair, token.curve, jupiter),
       }));
       setScannable(rankCandidates(analyzed));
       setNoPair(unpairable);
+      setJupiterHits(jupiterHits ?? 0);
       setLastUpdate(new Date());
       if (totalActive === 0) setError('pump.fun tidak mengembalikan token aktif saat ini.');
     } catch (e) {
@@ -105,8 +108,23 @@ export default function MemecoinRadar() {
         </div>
         <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px' }}>
           Memindai token Solana yang sedang aktif diperdagangkan · {scannable.length} teranalisis
+          {jupiterHits > 0 && ` · ${jupiterHits} dengan data holder & audit`}
           {noPair.length > 0 && ` · ${noPair.length} belum punya pair DEX`}
           {lastUpdate && ` · update ${lastUpdate.toLocaleTimeString('id-ID')}`}
+        </div>
+        <div style={{ display: 'flex', gap: '6px', marginTop: '8px', flexWrap: 'wrap' }}>
+          {[
+            ['DexScreener', 'harga · volume · beli/jual', '#38bdf8'],
+            ['Jupiter', 'holder · organik · audit', '#c084fc'],
+            ['pump.fun', 'bonding curve', '#f59e0b'],
+          ].map(([name, desc, color]) => (
+            <span key={name} style={{
+              fontSize: '9.5px', padding: '3px 8px', borderRadius: '6px',
+              background: 'rgba(255,255,255,0.04)', border: `1px solid ${color}40`, color
+            }}>
+              <strong>{name}</strong> <span style={{ color: 'var(--text-muted)' }}>· {desc}</span>
+            </span>
+          ))}
         </div>
       </div>
 
@@ -117,9 +135,9 @@ export default function MemecoinRadar() {
         <strong>⚠️ BACA INI SEBELUM MEMAKAI ANGKA APA PUN DI HALAMAN INI:</strong>
         <div style={{ marginTop: '4px' }}>
           Tidak ada sistem mana pun — termasuk ini — yang bisa memprediksi memecoin akan naik puluhan ribu persen.
-          Yang diukur di sini hanyalah <strong>bukti aktivitas nyata saat ini</strong>: tekanan beli, akselerasi volume,
-          kedalaman likuiditas, dan progres bonding curve. Skor tinggi berarti
-          <em> "ada aktivitas beli terukur"</em>, <strong>BUKAN</strong> <em>"harga akan naik"</em>.
+          Yang diukur di sini adalah <strong>bukti aktivitas nyata saat ini</strong>: tekanan beli, pertumbuhan holder,
+          volume organik, kedalaman likuiditas, dan <strong>audit keamanan token</strong> (mint/freeze authority, konsentrasi holder, saldo dev).
+          Skor tinggi berarti <em>"ada bukti akumulasi terukur"</em>, <strong>BUKAN</strong> <em>"harga akan naik"</em>.
           Mayoritas token yang menunjukkan sinyal ini tetap berakhir nol.
           Semua rencana entry di bawah adalah <strong>SIMULASI</strong> — tidak ada order yang dikirim dan tidak ada dompet yang disentuh.
         </div>
@@ -169,12 +187,13 @@ export default function MemecoinRadar() {
               <thead>
                 <tr>
                   <th>Token</th>
-                  <th style={{ textAlign: 'center' }}>Skor Bukti</th>
-                  <th style={{ textAlign: 'right' }}>Beli/Jual 1j</th>
-                  <th style={{ textAlign: 'right' }}>Aksel. Volume</th>
+                  <th style={{ textAlign: 'center' }}>Skor</th>
+                  <th style={{ textAlign: 'right' }}>Holder</th>
+                  <th style={{ textAlign: 'right' }}>Δ Holder 1j</th>
+                  <th style={{ textAlign: 'right' }}>Beli/Jual</th>
                   <th style={{ textAlign: 'right' }}>Likuiditas</th>
-                  <th style={{ textAlign: 'right' }}>Curve</th>
-                  <th style={{ textAlign: 'right' }}>Umur</th>
+                  <th style={{ textAlign: 'right' }}>Top 10</th>
+                  <th>Audit</th>
                   <th>Penilaian</th>
                 </tr>
               </thead>
@@ -211,20 +230,47 @@ export default function MemecoinRadar() {
                           {a.score}
                         </span>
                       </td>
+                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11.5px' }}>
+                        {a.metrics.holderCount === null ? '—' : a.metrics.holderCount.toLocaleString('en-US')}
+                      </td>
+                      <td style={{
+                        textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11.5px', fontWeight: '700',
+                        color: a.metrics.holderChange1h === null ? 'var(--text-muted)'
+                          : a.metrics.holderChange1h > 0 ? '#34d399'
+                          : a.metrics.holderChange1h < 0 ? '#fb7185' : 'var(--text-muted)'
+                      }}>
+                        {a.metrics.holderChange1h === null ? '—'
+                          : `${a.metrics.holderChange1h > 0 ? '+' : ''}${a.metrics.holderChange1h}%`}
+                      </td>
                       <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11.5px', fontWeight: '700', color: a.metrics.ratio1h >= 1.5 ? '#34d399' : a.metrics.ratio1h !== null && a.metrics.ratio1h < 0.7 ? '#fb7185' : undefined }}>
                         {a.metrics.ratio1h === null ? '∞' : `${a.metrics.ratio1h}x`}
-                      </td>
-                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11.5px' }}>
-                        {a.metrics.volumeAccel}x
                       </td>
                       <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11.5px', color: a.metrics.liquidityUsd < 10000 ? '#fb7185' : undefined }}>
                         {fmtUsd(a.metrics.liquidityUsd)}
                       </td>
-                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11.5px' }}>
-                        {a.metrics.curveProgress === null ? '-' : `${a.metrics.curveProgress}%`}
+                      <td style={{
+                        textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11.5px',
+                        color: a.metrics.topHoldersPct === null ? 'var(--text-muted)'
+                          : a.metrics.topHoldersPct >= 50 ? '#fb7185'
+                          : a.metrics.topHoldersPct >= 35 ? '#fbbf24' : '#34d399'
+                      }}>
+                        {a.metrics.topHoldersPct === null ? '—' : `${a.metrics.topHoldersPct.toFixed(1)}%`}
                       </td>
-                      <td style={{ textAlign: 'right', fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                        {fmtAge(a.metrics.ageMinutes)}
+                      <td>
+                        <div style={{ display: 'flex', gap: '3px', flexWrap: 'wrap' }}>
+                          {a.metrics.mintAuthDisabled === false && (
+                            <span title="Mint authority aktif — dev bisa cetak token tanpa batas" style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(244,63,94,0.2)', color: '#fb7185', fontWeight: '800' }}>MINT!</span>
+                          )}
+                          {a.metrics.freezeAuthDisabled === false && (
+                            <span title="Freeze authority aktif — dompet bisa dibekukan" style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(244,63,94,0.2)', color: '#fb7185', fontWeight: '800' }}>FREEZE!</span>
+                          )}
+                          {a.metrics.mintAuthDisabled === true && a.metrics.freezeAuthDisabled === true && (
+                            <span title="Mint & freeze authority sudah dimatikan" style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(16,185,129,0.18)', color: '#34d399', fontWeight: '800' }}>SAFE</span>
+                          )}
+                          {a.metrics.mintAuthDisabled === null && (
+                            <span style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>—</span>
+                          )}
+                        </div>
                       </td>
                       <td>
                         <span className="badge" style={{ background: v.bg, color: v.color, borderColor: v.border, fontSize: '9px' }}>
@@ -236,7 +282,7 @@ export default function MemecoinRadar() {
                 })}
                 {!loading && visible.length === 0 && (
                   <tr>
-                    <td colSpan={8} style={{ textAlign: 'center', padding: '26px', color: 'var(--text-muted)', fontSize: '11.5px' }}>
+                    <td colSpan={9} style={{ textAlign: 'center', padding: '26px', color: 'var(--text-muted)', fontSize: '11.5px' }}>
                       Tidak ada token yang lolos filter. Pindai ulang, atau turunkan skor minimum.
                       <div style={{ marginTop: '6px', fontSize: '10.5px' }}>
                         Ini normal — mayoritas token baru memang tidak punya bukti akumulasi apa pun.
@@ -311,9 +357,19 @@ export default function MemecoinRadar() {
                 <tbody>
                   {[
                     ['Harga sekarang', fmtPrice(parseFloat(selected.pair.priceUsd || 0))],
+                    ['Jumlah holder', selected.analysis.metrics.holderCount === null ? 'data Jupiter tidak tersedia' : selected.analysis.metrics.holderCount.toLocaleString('en-US')],
+                    ['Δ Holder 1 jam', selected.analysis.metrics.holderChange1h === null ? '—' : `${selected.analysis.metrics.holderChange1h > 0 ? '+' : ''}${selected.analysis.metrics.holderChange1h}%`],
+                    ['Net buyer 1j', selected.analysis.metrics.netBuyers1h === null ? '—' : `${selected.analysis.metrics.netBuyers1h > 0 ? '+' : ''}${selected.analysis.metrics.netBuyers1h} dari ${selected.analysis.metrics.numTraders1h} trader`],
                     ['Beli / Jual (1 jam)', `${selected.analysis.metrics.buys1h} / ${selected.analysis.metrics.sells1h}`],
                     ['Volume 1j / 24j', `${fmtUsd(selected.analysis.metrics.volume1h)} / ${fmtUsd(selected.analysis.metrics.volume24h)}`],
+                    ['Volume organik (beli/jual)', selected.analysis.metrics.organicBuyVolume === null ? '—' : `${fmtUsd(selected.analysis.metrics.organicBuyVolume)} / ${fmtUsd(selected.analysis.metrics.organicSellVolume)}`],
+                    ['Skor organik Jupiter', selected.analysis.metrics.organicScore === null ? '—' : `${Math.round(selected.analysis.metrics.organicScore)}/100`],
                     ['Likuiditas', fmtUsd(selected.analysis.metrics.liquidityUsd)],
+                    ['Top holder pegang', selected.analysis.metrics.topHoldersPct === null ? '—' : `${selected.analysis.metrics.topHoldersPct.toFixed(1)}% supply`],
+                    ['Dev masih pegang', selected.analysis.metrics.devBalancePct === null ? '—' : `${selected.analysis.metrics.devBalancePct.toFixed(4)}% supply`],
+                    ['Mint authority', selected.analysis.metrics.mintAuthDisabled === null ? '—' : selected.analysis.metrics.mintAuthDisabled ? '✅ dimatikan' : '🚨 MASIH AKTIF'],
+                    ['Freeze authority', selected.analysis.metrics.freezeAuthDisabled === null ? '—' : selected.analysis.metrics.freezeAuthDisabled ? '✅ dimatikan' : '🚨 MASIH AKTIF'],
+                    ['Dev riwayat mint', selected.analysis.metrics.devMints === null ? '—' : `${selected.analysis.metrics.devMints}x mint`],
                     ['Perubahan 1j / 24j', `${selected.analysis.metrics.change1h ?? '-'}% / ${selected.analysis.metrics.change24h ?? '-'}%`],
                     ['Turnover', `${selected.analysis.metrics.turnover}x`],
                     ['Progres curve', selected.analysis.metrics.curveProgress === null ? 'tidak tersedia' : `${selected.analysis.metrics.curveProgress}%`],
@@ -326,6 +382,11 @@ export default function MemecoinRadar() {
                   ))}
                 </tbody>
               </table>
+
+              <div style={{ marginTop: '8px', fontSize: '9.5px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                Sumber: DexScreener (harga/volume/txns) + Jupiter lite-api (holder, organik, audit).
+                Jupiter tidak menyediakan identitas pemilik wallet top holder — hanya persentase agregatnya.
+              </div>
 
               <a
                 href={selected.pair.url} target="_blank" rel="noopener noreferrer"

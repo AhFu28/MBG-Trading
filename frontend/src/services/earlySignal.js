@@ -3,26 +3,25 @@
  *
  * HONEST SCOPE (read before trusting any number this file produces):
  * This engine CANNOT predict which token will go up 10,000%. Nobody can, and any
- * product claiming so is lying to you. What it actually does is measure momentum
- * and risk from real, checkable on-chain/venue data, then rank tokens by how much
- * *evidence of early accumulation* exists right now.
+ * product claiming so is lying to you. What it actually does is measure momentum,
+ * holder behaviour and risk from real, checkable data, then rank tokens by how
+ * much *evidence of early accumulation* exists right now.
  *
- * A high score means "there is measurable buying pressure and locked liquidity".
- * It does NOT mean "this will go up". Most tokens that show these signals still
- * go to zero. Position sizing below assumes you can lose 100% of the position.
+ * A high score means "there is measurable buying pressure, holder growth and
+ * locked liquidity". It does NOT mean "this will go up". Most tokens showing
+ * these signals still go to zero. Position sizing below assumes 100% loss.
  *
- * DATA ACTUALLY AVAILABLE (verified against live endpoints):
- *   - DexScreener: txns.buys/sells per interval, volume per interval, priceChange
- *     per interval, liquidity.usd, fdv, marketCap, pairCreatedAt
- *   - pump.fun: real_sol_reserves (curve progress), usd_market_cap, reply_count,
- *     complete flag, last_trade_timestamp
+ * DATA SOURCES (each verified live during development):
+ *   - DexScreener: txns.buys/sells, volume, priceChange, liquidity, pairCreatedAt
+ *   - pump.fun: real_sol_reserves (curve progress), usd_market_cap, reply_count
+ *   - Jupiter lite-api (free, no key): holderCount, holderChange, organicScore,
+ *     numNetBuyers, numTraders, organic buy/sell volume, audit.topHoldersPercentage,
+ *     audit.devBalancePercentage, devMints/devMigrations, mint/freeze authority
  *
- * DATA EXPLICITLY NOT AVAILABLE (do not pretend otherwise):
- *   - holder count, holder concentration, insider/dev wallet share
- *   - dev sell history, sniper wallet detection
- * pump.fun exposes no holder field, and Solana public RPC rejected
- * getTokenLargestAccounts during development. Any "holder analysis" UI would be
- * fabricated, so this engine does not produce one.
+ * Data still NOT available even after adding Jupiter:
+ *   - the identity of individual top holders (only the aggregate % is exposed)
+ *   - historical wallet-level accumulation sequences without an indexer subscription
+ * Anything requiring those is deliberately not shown rather than fabricated.
  */
 
 /** A buy/sell ratio above this in the 1h window indicates one-sided demand. */
@@ -39,6 +38,13 @@ const HEALTHY_LIQUIDITY_USD = 50000;
 /** Turnover = h24 volume / liquidity. Very high means churn, not conviction. */
 const OVERHEATED_TURNOVER = 15;
 
+/** Holder concentration above this means a few wallets can dump on you. */
+const DANGEROUS_TOP_HOLDERS_PCT = 50;
+const WATCH_TOP_HOLDERS_PCT = 35;
+
+/** Dev still holding more than this of supply is a standing dump risk. */
+const DANGEROUS_DEV_BALANCE_PCT = 5;
+
 /** pump.fun bonding curve completes around 85 SOL raised. */
 export const PUMPFUN_GRADUATION_SOL = 85;
 
@@ -47,7 +53,7 @@ export const PUMPFUN_GRADUATION_SOL = 85;
  * curve data. Every component returns the raw numbers behind it so the UI can
  * show its work instead of presenting a black-box score.
  */
-export function analyzeToken(pair, curve = null) {
+export function analyzeToken(pair, curve = null, jupiter = null) {
   const txns = pair.txns || {};
   const vol = pair.volume || {};
   const chg = pair.priceChange || {};
@@ -111,6 +117,63 @@ export function analyzeToken(pair, curve = null) {
 
   if (overheated) factors.push({ key: 'turnover', points: -15, label: `Turnover ${turnover.toFixed(1)}x — churn tinggi, bukan akumulasi` });
 
+  // ===== Jupiter-derived factors: holders, organic demand and token audit =====
+  // These are the signals DexScreener cannot provide at all.
+  const holderCount = jupiter?.holderCount ?? null;
+  const holderChange1h = jupiter?.stats1h?.holderChange ?? null;   // fraction, e.g. 0.02 = +2%
+  const organicScore = jupiter?.organicScore ?? null;
+  const netBuyers1h = jupiter?.stats1h?.numNetBuyers ?? null;
+  const numTraders1h = jupiter?.stats1h?.numTraders ?? null;
+  const buyOrganic = jupiter?.stats1h?.buyOrganicVolume ?? null;
+  const sellOrganic = jupiter?.stats1h?.sellOrganicVolume ?? null;
+  const topHoldersPct = jupiter?.audit?.topHoldersPercentage ?? null;
+  const devBalancePct = jupiter?.audit?.devBalancePercentage ?? null;
+  const devMints = jupiter?.audit?.devMints ?? null;
+  const mintAuthDisabled = jupiter?.audit?.mintAuthorityDisabled ?? null;
+  const freezeAuthDisabled = jupiter?.audit?.freezeAuthorityDisabled ?? null;
+
+  // Holder growth is the closest honest proxy for "new money arriving".
+  if (holderChange1h !== null) {
+    const pct = holderChange1h * 100;
+    if (pct >= 2) factors.push({ key: 'holder_growth', points: 20, label: `Holder tumbuh +${pct.toFixed(1)}% dalam 1 jam (${holderCount ?? '?'} holder)` });
+    else if (pct >= 0.5) factors.push({ key: 'holder_growth', points: 10, label: `Holder tumbuh +${pct.toFixed(1)}% dalam 1 jam` });
+    else if (pct <= -1) factors.push({ key: 'holder_growth', points: -20, label: `Holder MENYUSUT ${pct.toFixed(1)}% — orang keluar` });
+  }
+
+  // Net buyers: are more wallets accumulating than distributing?
+  if (netBuyers1h !== null && numTraders1h) {
+    const netRatio = numTraders1h > 0 ? netBuyers1h / numTraders1h : 0;
+    if (netBuyers1h > 0 && netRatio >= 0.25) factors.push({ key: 'net_buyers', points: 15, label: `Net buyer kuat: ${netBuyers1h} dari ${numTraders1h} trader` });
+    else if (netBuyers1h > 0) factors.push({ key: 'net_buyers', points: 8, label: `Net buyer positif: +${netBuyers1h} wallet` });
+    else if (netBuyers1h < 0) factors.push({ key: 'net_buyers', points: -15, label: `Net seller: ${netBuyers1h} wallet lebih banyak jual` });
+  }
+
+  // Organic volume separates real demand from wash/bot trading.
+  if (buyOrganic !== null && sellOrganic !== null && (buyOrganic + sellOrganic) > 0) {
+    const organicTotal = buyOrganic + sellOrganic;
+    const organicBuyShare = buyOrganic / organicTotal;
+    if (organicBuyShare >= 0.7 && organicTotal > 1000) factors.push({ key: 'organic', points: 15, label: `Permintaan organik dominan (${(organicBuyShare * 100).toFixed(0)}% beli organik)` });
+    else if (organicBuyShare <= 0.3 && organicTotal > 1000) factors.push({ key: 'organic', points: -15, label: `Volume organik didominasi jual (${((1 - organicBuyShare) * 100).toFixed(0)}% jual)` });
+  }
+
+  if (organicScore !== null && organicScore >= 60) {
+    factors.push({ key: 'organic_score', points: 10, label: `Skor organik Jupiter tinggi (${Math.round(organicScore)}/100)` });
+  }
+
+  // Audit: authority still enabled means the dev can mint or freeze at will.
+  if (mintAuthDisabled === false) factors.push({ key: 'audit', points: -25, label: 'BAHAYA: mint authority MASIH AKTIF — dev bisa cetak token tanpa batas' });
+  if (freezeAuthDisabled === false) factors.push({ key: 'audit', points: -20, label: 'BAHAYA: freeze authority MASIH AKTIF — dompet kamu bisa dibekukan' });
+
+  if (topHoldersPct !== null) {
+    if (topHoldersPct >= DANGEROUS_TOP_HOLDERS_PCT) factors.push({ key: 'concentration', points: -25, label: `Konsentrasi ekstrem: top holder pegang ${topHoldersPct.toFixed(1)}% supply` });
+    else if (topHoldersPct >= WATCH_TOP_HOLDERS_PCT) factors.push({ key: 'concentration', points: -10, label: `Konsentrasi tinggi: top holder pegang ${topHoldersPct.toFixed(1)}% supply` });
+    else if (topHoldersPct > 0) factors.push({ key: 'concentration', points: 10, label: `Distribusi holder sehat (top holder ${topHoldersPct.toFixed(1)}%)` });
+  }
+
+  if (devBalancePct !== null && devBalancePct >= DANGEROUS_DEV_BALANCE_PCT) {
+    factors.push({ key: 'dev_balance', points: -25, label: `Dev masih pegang ${devBalancePct.toFixed(2)}% supply — risiko dump` });
+  }
+
   const rawScore = factors.reduce((sum, f) => sum + f.points, 0);
   const score = Math.max(0, Math.min(100, rawScore));
 
@@ -122,6 +185,11 @@ export function analyzeToken(pair, curve = null) {
   if (ageMinutes !== null && ageMinutes < 5) riskFlags.push('Token berumur < 5 menit — sangat spekulatif');
   if (curveProgress !== null && curveProgress < 10) riskFlags.push('Bonding curve hampir kosong — bisa gagal total');
   if (liq === 0) riskFlags.push('Likuiditas tidak terdeteksi — tidak bisa diverifikasi');
+  if (mintAuthDisabled === false) riskFlags.push('Mint authority aktif — supply bisa ditambah kapan saja');
+  if (freezeAuthDisabled === false) riskFlags.push('Freeze authority aktif — token kamu bisa dibekukan dev');
+  if (topHoldersPct !== null && topHoldersPct >= DANGEROUS_TOP_HOLDERS_PCT) riskFlags.push(`Top holder pegang ${topHoldersPct.toFixed(1)}% — beberapa wallet bisa menjatuhkan harga`);
+  if (devBalancePct !== null && devBalancePct >= DANGEROUS_DEV_BALANCE_PCT) riskFlags.push(`Dev pegang ${devBalancePct.toFixed(2)}% supply`);
+  if (holderChange1h !== null && holderChange1h * 100 <= -1) riskFlags.push(`Holder menyusut ${(holderChange1h * 100).toFixed(1)}% — distribusi sedang terjadi`);
 
   const verdict = riskFlags.length >= 3 ? 'HIGH_RISK'
     : riskFlags.length >= 1 ? 'CAUTION'
@@ -149,6 +217,21 @@ export function analyzeToken(pair, curve = null) {
       solRaised,
       ageMinutes,
       accumulationBeforeMove,
+      // Jupiter-derived (null when the token has no Jupiter entry)
+      holderCount,
+      holderChange1h: holderChange1h === null ? null : Number((holderChange1h * 100).toFixed(3)),
+      organicScore,
+      netBuyers1h,
+      numTraders1h,
+      organicBuyVolume: buyOrganic,
+      organicSellVolume: sellOrganic,
+      topHoldersPct,
+      devBalancePct,
+      devMints,
+      mintAuthDisabled,
+      freezeAuthDisabled,
+      isVerified: jupiter?.isVerified ?? null,
+      tags: jupiter?.tags ?? [],
     },
   };
 }

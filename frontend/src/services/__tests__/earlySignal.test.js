@@ -244,3 +244,143 @@ describe('rankCandidates', () => {
     expect(rows.map(r => r.symbol)).toEqual(before);
   });
 });
+
+// ============================================================================
+// Jupiter-derived factors: holders, organic demand, token audit
+// ============================================================================
+function makeJupiter(overrides = {}) {
+  return {
+    id: 'mint1',
+    holderCount: 5000,
+    organicScore: 70,
+    isVerified: true,
+    tags: ['verified'],
+    audit: {
+      mintAuthorityDisabled: true,
+      freezeAuthorityDisabled: true,
+      topHoldersPercentage: 20,
+      devBalancePercentage: 0,
+      devMints: 1,
+      devMigrations: 1,
+    },
+    stats1h: {
+      holderChange: 0,
+      numTraders: 100,
+      numNetBuyers: 0,
+      buyOrganicVolume: 5000,
+      sellOrganicVolume: 5000,
+    },
+    ...overrides,
+  };
+}
+
+describe('analyzeToken — holder growth (Jupiter)', () => {
+  it('rewards strong holder growth', () => {
+    const r = analyzeToken(makePair(), null, makeJupiter({ stats1h: { ...makeJupiter().stats1h, holderChange: 0.03 } }));
+    const f = r.factors.find(x => x.key === 'holder_growth');
+    expect(f.points).toBe(20);
+    expect(r.metrics.holderChange1h).toBe(3);
+    expect(r.metrics.holderCount).toBe(5000);
+  });
+
+  it('penalises shrinking holders and raises a risk flag', () => {
+    const r = analyzeToken(makePair(), null, makeJupiter({ stats1h: { ...makeJupiter().stats1h, holderChange: -0.02 } }));
+    expect(r.factors.find(x => x.key === 'holder_growth').points).toBe(-20);
+    expect(r.riskFlags.some(f => /Holder menyusut/.test(f))).toBe(true);
+  });
+
+  it('produces no holder factor when Jupiter data is absent', () => {
+    const r = analyzeToken(makePair(), null, null);
+    expect(r.factors.some(f => f.key === 'holder_growth')).toBe(false);
+    expect(r.metrics.holderCount).toBeNull();
+    expect(r.metrics.topHoldersPct).toBeNull();
+  });
+});
+
+describe('analyzeToken — net buyers (Jupiter)', () => {
+  it('rewards a strong net-buyer majority', () => {
+    const r = analyzeToken(makePair(), null, makeJupiter({ stats1h: { ...makeJupiter().stats1h, numTraders: 100, numNetBuyers: 30 } }));
+    expect(r.factors.find(x => x.key === 'net_buyers').points).toBe(15);
+  });
+
+  it('penalises net selling', () => {
+    const r = analyzeToken(makePair(), null, makeJupiter({ stats1h: { ...makeJupiter().stats1h, numNetBuyers: -25 } }));
+    expect(r.factors.find(x => x.key === 'net_buyers').points).toBe(-15);
+  });
+});
+
+describe('analyzeToken — organic volume (Jupiter)', () => {
+  it('rewards organic buy dominance when volume is meaningful', () => {
+    const r = analyzeToken(makePair(), null, makeJupiter({ stats1h: { ...makeJupiter().stats1h, buyOrganicVolume: 8000, sellOrganicVolume: 1000 } }));
+    expect(r.factors.find(x => x.key === 'organic').points).toBe(15);
+  });
+
+  it('penalises organic sell dominance', () => {
+    const r = analyzeToken(makePair(), null, makeJupiter({ stats1h: { ...makeJupiter().stats1h, buyOrganicVolume: 500, sellOrganicVolume: 9000 } }));
+    expect(r.factors.find(x => x.key === 'organic').points).toBe(-15);
+  });
+
+  it('ignores organic share when total organic volume is dust', () => {
+    const r = analyzeToken(makePair(), null, makeJupiter({ stats1h: { ...makeJupiter().stats1h, buyOrganicVolume: 10, sellOrganicVolume: 1 } }));
+    expect(r.factors.some(f => f.key === 'organic')).toBe(false);
+  });
+});
+
+describe('analyzeToken — token audit safety (Jupiter)', () => {
+  it('treats active mint authority as a severe danger', () => {
+    const r = analyzeToken(makePair(), null, makeJupiter({ audit: { ...makeJupiter().audit, mintAuthorityDisabled: false } }));
+    expect(r.factors.find(x => x.key === 'audit').points).toBe(-25);
+    expect(r.riskFlags.some(f => /Mint authority aktif/.test(f))).toBe(true);
+  });
+
+  it('treats active freeze authority as a danger', () => {
+    const r = analyzeToken(makePair(), null, makeJupiter({ audit: { ...makeJupiter().audit, freezeAuthorityDisabled: false } }));
+    expect(r.riskFlags.some(f => /Freeze authority aktif/.test(f))).toBe(true);
+  });
+
+  it('penalises extreme holder concentration', () => {
+    const r = analyzeToken(makePair(), null, makeJupiter({ audit: { ...makeJupiter().audit, topHoldersPercentage: 62 } }));
+    expect(r.factors.find(x => x.key === 'concentration').points).toBe(-25);
+    expect(r.riskFlags.some(f => /Top holder pegang/.test(f))).toBe(true);
+  });
+
+  it('rewards healthy holder distribution', () => {
+    const r = analyzeToken(makePair(), null, makeJupiter({ audit: { ...makeJupiter().audit, topHoldersPercentage: 18 } }));
+    expect(r.factors.find(x => x.key === 'concentration').points).toBe(10);
+  });
+
+  it('penalises a dev still holding meaningful supply', () => {
+    const r = analyzeToken(makePair(), null, makeJupiter({ audit: { ...makeJupiter().audit, devBalancePercentage: 8 } }));
+    expect(r.factors.find(x => x.key === 'dev_balance').points).toBe(-25);
+    expect(r.riskFlags.some(f => /Dev pegang/.test(f))).toBe(true);
+  });
+
+  it('scores a fully-rug-shaped token at 0 with HIGH_RISK', () => {
+    const r = analyzeToken(
+      makePair({ liquidity: { usd: 1500 }, txns: { m5: { buys: 0, sells: 20 }, h1: { buys: 5, sells: 100 }, h24: { buys: 50, sells: 900 } } }),
+      { real_sol_reserves: 1e9 },
+      makeJupiter({
+        audit: { mintAuthorityDisabled: false, freezeAuthorityDisabled: false, topHoldersPercentage: 70, devBalancePercentage: 15, devMints: 9, devMigrations: 9 },
+        stats1h: { ...makeJupiter().stats1h, holderChange: -0.05, numNetBuyers: -40 },
+      })
+    );
+    expect(r.score).toBe(0);
+    expect(r.verdict).toBe('HIGH_RISK');
+    expect(r.riskFlags.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it('caps the score at 100 even when every factor including Jupiter is positive', () => {
+    const r = analyzeToken(
+      makePair({
+        txns: { m5: { buys: 50, sells: 1 }, h1: { buys: 900, sells: 50 }, h24: { buys: 2400, sells: 2400 } },
+        volume: { h24: 240000, h1: 90000 },
+        priceChange: { m5: 1, h1: 1, h24: 20 },
+        liquidity: { usd: 500000 },
+      }),
+      { real_sol_reserves: 100e9 },
+      makeJupiter({ organicScore: 90, stats1h: { holderChange: 0.05, numTraders: 200, numNetBuyers: 100, buyOrganicVolume: 50000, sellOrganicVolume: 1000 } })
+    );
+    expect(r.score).toBeLessThanOrEqual(100);
+    expect(r.verdict).toBe('CLEAN');
+  });
+});
