@@ -14,6 +14,39 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+---
+
+## [2026-10-02] — Perluasan Cakupan Pemindaian: Pagination Multi-Halaman (Tetap Gratis)
+
+### Sprint 22 — Menjawab "Kenapa Cuma Sedikit?" dengan Data
+- **[DIAGNOSA] Kenapa Hasil Pemindaian Terlihat Sedikit**:
+  - Dilakukan analisis funnel terhadap data live untuk menemukan penyebab sebenarnya:
+    - pump.fun diambil: **70 token** (batas keras upstream)
+    - Punya pair DexScreener: **~53%** (16 dari 30 dalam sample) — sisanya masih di bonding curve
+    - Lolos filter 9 kriteria: **7 token** — karena **14 token gagal di LP < $15K**
+  - **Kesimpulan**: hasil sedikit **bukan karena API berbayar**, melainkan karena (a) batas 70 token per request, dan (b) mayoritas memecoin memang tidak punya likuiditas layak.
+- **[TEMUAN] pump.fun Membatasi 70 Token per Request — Bukan per Hari**:
+  - Diuji langsung: `limit=40/60` dihormati, tetapi `limit=100/200/500` **semuanya mengembalikan tepat 70**.
+  - **Pagination `offset` terbukti bekerja** dan **100% gratis**: offset 0/70/140/210 mengembalikan set token yang berbeda.
+  - Verifikasi 8 halaman: **456 token unik** terkumpul (70+70+70+70+70+70+70+70, terdeduplikasi).
+- **[APLIKASI] Pemindaian Multi-Halaman (`fetchPumpFunPages`)**:
+  - Halaman diambil **secara paralel** dengan `Promise.all`; halaman yang gagal dilewati, tidak menggagalkan seluruh pemindaian.
+  - **Deduplikasi berbasis mint** karena jendela pagination dapat tumpang tindih saat token baru terus lahir.
+  - `buildScanUniverse(pageCount)` kini menerima jumlah halaman; `fetchPumpFunActive()` juga.
+  - Batch DexScreener dinaikkan dari 30 → **40 alamat/request** (diuji: 100 alamat pun diterima 200 OK).
+  - Kegagalan satu batch DexScreener tidak lagi membatalkan seluruh hasil.
+- **[UI] Kontrol Ukuran Pool Pemindaian**:
+  - Dropdown baru **"Jumlah token dipindai"**: 70 (cepat) / 140 / 280 / **560 token (maksimal)**.
+  - Header tabel menampilkan **"menampilkan X dari Y token"** secara transparan, bukan hanya jumlah yang terpotong.
+  - Batas tampilan baris dinaikkan **30 → 200 baris**; filter dan tombol pindai ulang menampilkan status loading.
+- **[BIAYA] Konfirmasi: Semua Sumber Gratis**:
+  - 456 token hanya memerlukan **12 request DexScreener + 19 request Jupiter** (batch 40 dan 25).
+  - Tidak ada API berbayar yang dibutuhkan untuk cakupan ini. Biaya hanya muncul bila nanti butuh **identitas wallet insider** (Helius/Birdeye), yang memang tidak tersedia gratis.
+- **[QA/QC & CERTIFICATION]**:
+  - Test Suite: **86/86 lulus**. Build produksi bersih 1.41s.
+  - Verifikasi live: pagination 8 halaman mengembalikan 456 token unik melalui proxy produksi.
+  - Verifikasi dev: `fetchPumpFunPages` dan `PUMPFUN_PAGE_SIZE` tersaji benar di `localhost:3000`.
+
 ## [2026-10-02] — Perbaikan Kritis: pump.fun Terblokir 403 di Produksi (Edge Proxy)
 
 ### Sprint 21 — Diagnosa Origin-Lock & Solusi Cloudflare Edge Proxy

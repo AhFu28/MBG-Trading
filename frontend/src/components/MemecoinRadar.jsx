@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { buildScanUniverse } from '../services/memecoinDesk.js';
+import { buildScanUniverse, PUMPFUN_PAGE_SIZE } from '../services/memecoinDesk.js';
 import { analyzeToken, buildDummyPlan, rankCandidates, checkLaunchWindow, LAUNCH_WINDOW } from '../services/earlySignal.js';
 
 function fmtUsd(v) {
@@ -52,11 +52,15 @@ export default function MemecoinRadar() {
   const [jupiterHits, setJupiterHits] = useState(0);
   const [boostedCount, setBoostedCount] = useState(0);
   const [onlyQualified, setOnlyQualified] = useState(false);
+  // Scan pool size in pump.fun pages (70 tokens each). All sources are free —
+  // a larger pool costs more requests, not more money.
+  const [scanPages, setScanPages] = useState(2);
 
   const scan = useCallback(async () => {
     setError('');
+    setLoading(true);
     try {
-      const { scannable: rows, noPair: unpairable, totalActive, jupiterHits, boostedCount } = await buildScanUniverse();
+      const { scannable: rows, noPair: unpairable, totalActive, jupiterHits, boostedCount } = await buildScanUniverse(scanPages);
       const analyzed = rows.map(({ token, pair, jupiter, boostAmount }) => {
         const analysis = analyzeToken(pair, token.curve, jupiter);
         return {
@@ -72,6 +76,9 @@ export default function MemecoinRadar() {
       setNoPair(unpairable);
       setJupiterHits(jupiterHits ?? 0);
       setBoostedCount(boostedCount ?? 0);
+      setNoPair(unpairable);
+      setJupiterHits(jupiterHits ?? 0);
+      setBoostedCount(boostedCount ?? 0);
       setLastUpdate(new Date());
       if (totalActive === 0) setError('pump.fun tidak mengembalikan token aktif saat ini.');
     } catch (e) {
@@ -79,7 +86,7 @@ export default function MemecoinRadar() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [scanPages]);
 
   useEffect(() => {
     scan();
@@ -193,6 +200,19 @@ export default function MemecoinRadar() {
 
       {/* ===== CONTROLS ===== */}
       <div className="telemetry-panel" style={{ padding: '10px 16px', borderRadius: '12px', display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '800', color: '#38bdf8' }}>
+          📊 Jumlah token dipindai
+          <select
+            value={scanPages}
+            onChange={e => setScanPages(Number(e.target.value))}
+            style={{ padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: '700' }}
+          >
+            <option value={1}>70 token (1 halaman) — cepat</option>
+            <option value={2}>140 token (2 halaman)</option>
+            <option value={4}>280 token (4 halaman)</option>
+            <option value={8}>560 token (8 halaman) — maksimal</option>
+          </select>
+        </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '700', color: 'var(--text-secondary)' }}>
           Skor minimum
           <select value={minScore} onChange={e => setMinScore(Number(e.target.value))} style={{ padding: '4px 8px', borderRadius: '6px', fontSize: '11px' }}>
@@ -218,8 +238,8 @@ export default function MemecoinRadar() {
             style={{ width: '90px', padding: '4px 8px', borderRadius: '6px', fontSize: '11px' }}
           />
         </label>
-        <button className="telemetry-btn" onClick={scan} style={{ fontSize: '11px', padding: '5px 12px', marginLeft: 'auto' }}>
-          🔄 Pindai Ulang
+        <button className="telemetry-btn" onClick={scan} disabled={loading} style={{ fontSize: '11px', padding: '5px 12px', marginLeft: 'auto', opacity: loading ? 0.6 : 1 }}>
+          {loading ? '⏳ Memindai…' : '🔄 Pindai Ulang'}
         </button>
       </div>
 
@@ -228,8 +248,11 @@ export default function MemecoinRadar() {
         {/* ===== SCAN RESULTS ===== */}
         <div className="telemetry-panel" style={{ borderRadius: '14px', overflow: 'hidden' }}>
           <div className="telemetry-header">
-            <span>📡 HASIL PEMINDAIAN — {visible.length} token</span>
-            {loading && <span style={{ color: '#38bdf8', fontSize: '10px' }}>memindai… (butuh ~5 detik)</span>}
+            <span>
+              📡 HASIL PEMINDAIAN — menampilkan {Math.min(visible.length, 200)} dari {visible.length} token
+              {noPair.length > 0 && ` (+${noPair.length} tanpa pair DEX)`}
+            </span>
+            {loading && <span style={{ color: '#38bdf8', fontSize: '10px' }}>memindai {scanPages}×{PUMPFUN_PAGE_SIZE} token…</span>}
           </div>
           <div style={{ overflowX: 'auto' }}>
             <table className="telemetry-table" style={{ minWidth: '820px' }}>
@@ -249,7 +272,7 @@ export default function MemecoinRadar() {
                 </tr>
               </thead>
               <tbody>
-                {visible.slice(0, 30).map(row => {
+                {visible.slice(0, 200).map(row => {
                   const a = row.analysis;
                   const v = VERDICT[a.verdict];
                   const isSel = selected?.token?.mint === row.token.mint;

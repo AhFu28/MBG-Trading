@@ -17,9 +17,17 @@
 
 // Verified against the live API: `sort` accepts only
 // created_timestamp | market_cap | ath_market_cap | reply_count | last_reply | last_trade_timestamp
-const PUMPFUN_NEW_QUERY = 'coins?offset=0&limit=40&sort=created_timestamp&order=DESC&includeNsfw=false';
+const PUMPFUN_NEW_QUERY = 'coins?offset=0&limit=70&sort=created_timestamp&order=DESC&includeNsfw=false';
 // "Currently being traded" — the pool where early accumulation actually shows up.
-const PUMPFUN_ACTIVE_QUERY = 'coins?offset=0&limit=60&sort=last_trade_timestamp&order=DESC&includeNsfw=false';
+const PUMPFUN_ACTIVE_QUERY = 'coins?offset=0&limit=70&sort=last_trade_timestamp&order=DESC&includeNsfw=false';
+
+/**
+ * pump.fun hard-caps a single response at 70 tokens regardless of `limit`
+ * (verified live: limit=100/200/500 all return exactly 70).
+ * More tokens are reached through `offset` pagination, which is free and works.
+ */
+export const PUMPFUN_PAGE_SIZE = 70;
+
 const DEXSCREENER_TOKENS = 'https://api.dexscreener.com/latest/dex/tokens/';
 const DEXSCREENER_BOOSTS = 'https://api.dexscreener.com/token-boosts/top/v1';
 const JUPITER_SEARCH = 'https://lite-api.jup.ag/tokens/v2/search?query=';
@@ -44,6 +52,37 @@ async function fetchPumpFunEndpoint(queryPath) {
   const resDirect = await fetch(directUrl, { headers: { accept: 'application/json' } });
   if (!resDirect.ok) throw new Error(`pump.fun HTTP ${resDirect.status}`);
   return await resDirect.json();
+}
+
+/**
+ * Fetch MANY pages of pump.fun tokens by offset pagination.
+ *
+ * Each page is capped at PUMPFUN_PAGE_SIZE by the upstream API, so a larger
+ * scan pool is assembled from several concurrent page requests. Pages that fail
+ * are skipped rather than failing the whole scan.
+ *
+ * ponytail: pages fetched concurrently; cap pageCount at the UI level to avoid
+ * hammering a free endpoint.
+ */
+export async function fetchPumpFunPages(queryBase, pageCount = 1) {
+  const pages = Array.from({ length: Math.max(1, pageCount) }, (_, i) => i * PUMPFUN_PAGE_SIZE);
+
+  const results = await Promise.all(
+    pages.map(offset => {
+      const q = queryBase.replace(/offset=\d+/, `offset=${offset}`);
+      return fetchPumpFunEndpoint(q).catch(() => []);
+    })
+  );
+
+  // Deduplicate by mint: pagination windows can overlap as new tokens launch.
+  const seen = new Map();
+  for (const page of results) {
+    if (!Array.isArray(page)) continue;
+    for (const t of page) {
+      if (t?.mint && !seen.has(t.mint)) seen.set(t.mint, t);
+    }
+  }
+  return [...seen.values()];
 }
 
 /** Chains we track. DexScreener chainId values are authoritative. */
@@ -163,20 +202,28 @@ export async function fetchJupiterTokenData(mints) {
 
 /**
  * Fetch live pair data for tokens on any tracked chain via DexScreener.
- * Batches up to 30 addresses per call (DexScreener's documented limit).
+ *
+ * Verified live: DexScreener accepted 100 addresses in a single call. Batches are
+ * kept at 40 to stay well inside the documented limit and avoid oversized URLs.
  */
 export async function fetchDexPairs(addresses) {
   if (!addresses?.length) return [];
+  const BATCH = 40;
   const chunks = [];
-  for (let i = 0; i < addresses.length; i += 30) {
-    chunks.push(addresses.slice(i, i + 30).join(','));
+  for (let i = 0; i < addresses.length; i += BATCH) {
+    chunks.push(addresses.slice(i, i + BATCH).join(','));
   }
   const results = await Promise.all(
     chunks.map(async chunk => {
-      const res = await fetch(`${DEXSCREENER_TOKENS}${chunk}`);
-      if (!res.ok) return [];
-      const json = await res.json();
-      return json?.pairs || [];
+      try {
+        const res = await fetch(`${DEXSCREENER_TOKENS}${chunk}`);
+        if (!res.ok) return [];
+        const json = await res.json();
+        return json?.pairs || [];
+      } catch {
+        // One failed batch must not void the whole scan.
+        return [];
+      }
     })
   );
   return results.flat();
@@ -188,9 +235,11 @@ export async function fetchDexPairs(addresses) {
  * This is the input pool for early-signal scanning: filtering on new launches
  * alone finds mostly dead tokens (40+ launch per minute, almost all empty),
  * whereas active ones already have trades to measure.
+ *
+ * @param {number} pageCount Number of 70-token pages to pull.
  */
-export async function fetchPumpFunActive() {
-  const raw = await fetchPumpFunEndpoint(PUMPFUN_ACTIVE_QUERY);
+export async function fetchPumpFunActive(pageCount = 1) {
+  const raw = await fetchPumpFunPages(PUMPFUN_ACTIVE_QUERY, pageCount);
   return (Array.isArray(raw) ? raw : []).map(t => ({
     chain: 'solana',
     mint: t.mint,
@@ -221,9 +270,13 @@ export async function fetchPumpFunActive() {
  * pump.fun alone exposes no buy/sell or volume data. Tokens still on the bonding
  * curve with no DEX pair yet are returned separately so the UI can be honest
  * about why they are unscannable.
+ *
+ * @param {number} pageCount How many 70-token pump.fun pages to pull (1 = 70
+ *   tokens, 3 = ~210, 8 = ~560). All sources are free, so a bigger pool is
+ *   simply more requests — not more money.
  */
-export async function buildScanUniverse() {
-  const active = await fetchPumpFunActive();
+export async function buildScanUniverse(pageCount = 1) {
+  const active = await fetchPumpFunPages(PUMPFUN_ACTIVE_QUERY, pageCount);
 
   // All three sources are independent, so fetch them concurrently.
   const [pairs, jupiterMap, boostMap] = await Promise.all([
