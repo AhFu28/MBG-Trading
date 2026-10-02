@@ -12,6 +12,8 @@
 // Verified against the live API: `sort` accepts only
 // created_timestamp | market_cap | ath_market_cap | reply_count | last_reply | last_trade_timestamp
 const PUMPFUN_NEW = 'https://frontend-api-v3.pump.fun/coins?offset=0&limit=40&sort=created_timestamp&order=DESC&includeNsfw=false';
+// "Currently being traded" — the pool where early accumulation actually shows up.
+const PUMPFUN_ACTIVE = 'https://frontend-api-v3.pump.fun/coins?offset=0&limit=60&sort=last_trade_timestamp&order=DESC&includeNsfw=false';
 const DEXSCREENER_TOKENS = 'https://api.dexscreener.com/latest/dex/tokens/';
 const DEXSCREENER_BOOSTS = 'https://api.dexscreener.com/token-boosts/top/v1';
 
@@ -106,6 +108,80 @@ export async function fetchDexPairs(addresses) {
     })
   );
   return results.flat();
+}
+
+/**
+ * Fetch tokens that are CURRENTLY being traded on pump.fun.
+ *
+ * This is the input pool for early-signal scanning: filtering on new launches
+ * alone finds mostly dead tokens (40+ launch per minute, almost all empty),
+ * whereas active ones already have trades to measure.
+ */
+export async function fetchPumpFunActive() {
+  const res = await fetch(PUMPFUN_ACTIVE, { headers: { accept: 'application/json' } });
+  if (!res.ok) throw new Error(`pump.fun active HTTP ${res.status}`);
+  const raw = await res.json();
+  return (Array.isArray(raw) ? raw : []).map(t => ({
+    chain: 'solana',
+    mint: t.mint,
+    symbol: (t.symbol || '?').toUpperCase(),
+    name: t.name || '?',
+    icon: t.image_uri || '',
+    mcapUsd: t.usd_market_cap || t.market_cap_usd || 0,
+    replyCount: t.reply_count || 0,
+    complete: !!t.complete,
+    createdTimestamp: t.created_timestamp || 0,
+    lastTradeTimestamp: t.last_trade_timestamp || 0,
+    // Passed straight into earlySignal.analyzeToken() as curve data.
+    curve: {
+      real_sol_reserves: t.real_sol_reserves || 0,
+      complete: !!t.complete,
+      reply_count: t.reply_count || 0,
+    },
+    twitter: t.twitter || '',
+    website: t.website || '',
+    pumpUrl: `https://pump.fun/coin/${t.mint}`,
+  }));
+}
+
+/**
+ * Build the scan universe: pump.fun active tokens resolved to DexScreener pairs.
+ *
+ * Only tokens that actually have a DexScreener pair can be analysed, because
+ * pump.fun alone exposes no buy/sell or volume data. Tokens still on the bonding
+ * curve with no DEX pair yet are returned separately so the UI can be honest
+ * about why they are unscannable.
+ */
+export async function buildScanUniverse() {
+  const active = await fetchPumpFunActive();
+
+  const pairs = await fetchDexPairs(active.map(t => t.mint));
+
+  // A mint can have multiple pairs; keep the deepest-liquidity one per mint.
+  const byMint = new Map();
+  for (const p of pairs) {
+    const addr = p.baseToken?.address;
+    if (!addr) continue;
+    const liq = p.liquidity?.usd || 0;
+    const existing = byMint.get(addr);
+    if (!existing || liq > (existing.liquidity?.usd || 0)) {
+      byMint.set(addr, p);
+    }
+  }
+
+  const scannable = [];
+  const noPair = [];
+
+  for (const token of active) {
+    const pair = byMint.get(token.mint);
+    if (pair) {
+      scannable.push({ token, pair });
+    } else {
+      noPair.push(token);
+    }
+  }
+
+  return { scannable, noPair, totalActive: active.length };
 }
 
 /** Boosted = paid promotion. Useful as a "what's being shilled right now" board. */

@@ -14,6 +14,34 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+---
+
+## [2026-10-02] — Early Signal Radar: Evidence-Based Memecoin Scanner & Simulated Entry Planner
+
+### Sprint 18 — Deteksi Dini Berbasis Bukti, Bukan Prediksi
+- **[NEW TAB — EARLY SIGNAL RADAR] Pemindai Sinyal Dini Memecoin Solana**:
+  - **Tab baru `MemecoinRadar.jsx`** di bagian MARKETS, memindai token Solana yang **sedang aktif diperdagangkan** (bukan sekadar peluncuran baru).
+  - **Alur Data Nyata**: `pump.fun (sort=last_trade_timestamp, 60 token)` → resolve ke `DexScreener` (batch 30) → hitung bukti akumulasi. Diuji live: **60 token aktif → 30 pair ter-resolve → semua field analyzer tersedia**.
+  - **Fokus pada token yang BISA dianalisis**: pump.fun sendiri tidak menyediakan data beli/jual/volume, jadi token tanpa pair DEX dipisahkan dan diberi penjelasan eksplisit — bukan ditampilkan dengan angka karangan.
+- **[ENGINE — `earlySignal.js`] Skor Berbasis Bukti dengan Setiap Poin Bisa Ditelusuri**:
+  - **6 Faktor Terukur**: tekanan beli/jual per interval (1j & 5m), akselerasi volume terhadap baseline 24 jam, keamanan likuiditas, turnover, deteksi **akumulasi sebelum harga bergerak** (beli kuat + harga masih flat), dan progres bonding curve.
+  - **Penalti Nyata**: likuiditas < $10.000 (−30 poin), tekanan jual dominan (−20), turnover berlebih/churn (−15), bonding curve hampir kosong (−10).
+  - **Skor Dibatasi 0–100** dan setiap faktor mengembalikan label penjelas — UI menampilkan rincian poin, bukan kotak hitam.
+  - **Risiko Dihitung Terpisah**: token bisa "early" DAN scam sekaligus. Verdict `HIGH_RISK` / `CAUTION` / `CLEAN` berasal dari flag risiko konkret (likuiditas tipis, umur < 5 menit, curve kosong, churn tinggi).
+- **[DUMMY ENTRY PLANNER] Rencana Trading Simulasi dari Volatilitas Nyata**:
+  - **Semua Angka Diturunkan dari Data**: entry = harga saat ini, stop loss = jarak berbasis volatilitas terukur (dikunci 12%–60%), target TP1 = 1.5R dan TP2 = 3R dengan R:R dihitung sungguhan.
+  - **Manajemen Risiko Benar**: ukuran posisi dari anggaran risiko 1% modal, dibatasi maksimal 10% modal per posisi, stop loss tidak pernah nol/negatif.
+  - **Konsistensi Matematis Diverifikasi Tes**: kerugian maksimal tidak pernah melebihi ukuran posisi, dan setiap angka cuan/rugi konsisten dengan unit × selisih harga.
+  - Ditandai `simulated: true` dan diberi label **DUMMY / BUKAN ORDER NYATA** agar tidak pernah disalahartikan sebagai order sungguhan.
+- **[KEJUJURAN PRODUK — KEPUTUSAN DESAIN] Label Eksplisit yang Tidak Dapat Dimatikan**:
+  - Banner merah permanen menyatakan: **tidak ada sistem yang bisa memprediksi memecoin naik puluhan ribu persen**; skor tinggi berarti "ada aktivitas beli terukur", BUKAN "harga akan naik"; mayoritas token bersinyal tetap berakhir nol.
+  - **Keterbatasan Didokumentasikan di Kode**: API pump.fun tidak punya field holder, dan Solana RPC publik menolak `getTokenLargestAccounts` saat pengembangan. Karena itu **tidak ada UI analisis holder** — fitur tersebut sengaja tidak dibuat daripada menampilkan data fabrikasi.
+  - Setiap token menyediakan tautan **verifikasi mandiri ke DexScreener**.
+- **[QA/QC & CERTIFICATION]**:
+  - Test Suite: **60/60 tes lulus** (earlySignal 27, brokerGateway 14, marketHours 13, memecoinDesk 6).
+  - Kasus batas diuji khusus: token tanpa penjualan (`Infinity` tidak bocor ke data tampilan), token mati total, skor tidak pernah melebihi 100 atau di bawah 0, posisi tidak pernah melebihi batas modal, stop loss tidak pernah nol.
+  - Verifikasi live: pipeline pemindaian terbukti jalan terhadap API sesungguhnya; build produksi bersih 1.38s.
+
 ## [2026-10-02] — VIP Signal Dispatch, Multi-Chain Degen Desk & Public Payload Leak Closure
 
 ### Sprint 17 — Revenue Path Wiring, Memecoin Radar & Attack-Surface Reduction

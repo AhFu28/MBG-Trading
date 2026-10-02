@@ -17,6 +17,7 @@ const LotCalculatorModal = lazy(() => import('./components/LotCalculatorModal.js
 const OrderExecutionModal = lazy(() => import('./components/OrderExecutionModal.jsx'));
 const SolanaSwapModal = lazy(() => import('./components/SolanaSwapModal.jsx'));
 const DegenDesk = lazy(() => import('./components/DegenDesk.jsx'));
+const MemecoinRadar = lazy(() => import('./components/MemecoinRadar.jsx'));
 import { institutionalPaperBroker } from './services/brokerGateway.js';
 const FlowProcessTab = lazy(() => import('./components/FlowProcessTab.jsx'));
 const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
@@ -415,6 +416,7 @@ export default function App() {
       case 'WHALES': return '🐋 Whale Intelligence Hub';
       case 'FUTURES': return '🔥 Crypto Futures Intelligence';
       case 'DEGEN': return '🎰 Degen Desk — Memecoin Radar';
+      case 'RADAR': return '🎯 Early Signal Radar — Deteksi Dini';
       case 'FOREX': return '💱 Forex Command Center';
       case 'US_STOCKS': return '🇺🇸 US Stock Intelligence';
       case 'FLOW_PROCESS': return '⚡ Flow Process & System Architecture';
@@ -874,6 +876,11 @@ export default function App() {
                   allCryptoSpot={allCryptoSpot}
                   onOpenSwap={() => setIsSwapModalOpen(true)}
                 />
+              </main>
+            ) : activeTab === 'RADAR' ? (
+              /* EARLY SIGNAL RADAR — EVIDENCE-BASED MEMECOIN SCANNER */
+              <main>
+                <MemecoinRadar />
               </main>
             ) : activeTab === 'DEGEN' ? (
               /* MULTI-CHAIN MEMECOIN RADAR & RUG-CHECK DESK */
