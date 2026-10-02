@@ -143,13 +143,17 @@ export default function HomeDashboardTab({
   const [arenaStats, setArenaStats] = useState(null);
   useEffect(() => {
     let cancelled = false;
-    fetch('/data/latest_arena_state.json?t=' + Date.now(), { cache: 'no-cache' })
+    fetch(
+      import.meta.env.DEV ? '/api/dev-bundle?t=' + Date.now() : '/api/arena-state?t=' + Date.now(),
+      { cache: 'no-cache' }
+    )
       .then(r => (r.ok ? r.json() : null))
       .then(s => {
-        if (cancelled || !s || !Array.isArray(s.agents)) return;
-        const journal = s.journal || [];
+        const state = s && !Array.isArray(s) && !s.agents && s.arena_state ? s.arena_state : s;
+        if (cancelled || !state || !Array.isArray(state.agents)) return;
+        const journal = state.journal || [];
         const wins = journal.filter(t => t.isWin).length;
-        const totalRoi = s.agents.reduce((acc, a) => acc + (Number(a.totalRoiPct) || 0), 0);
+        const totalRoi = state.agents.reduce((acc, a) => acc + (Number(a.totalRoiPct) || 0), 0);
         setArenaStats({
           roiPct: totalRoi,
           winRate: journal.length > 0 ? (wins / journal.length) * 100 : null

@@ -14,6 +14,37 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+## [2026-10-02] — VIP Signal Dispatch, Multi-Chain Degen Desk & Public Payload Leak Closure
+
+### Sprint 17 — Revenue Path Wiring, Memecoin Radar & Attack-Surface Reduction
+- **[REVENUE CRITICAL] VIP Signal Dispatcher Now Actually Fires**:
+  - **Dead Code Resolution**: `broadcast_vip_trade_signal()` di `telegram_notifier.py` sebelumnya punya **0 pemanggil** — produk yang akan dijual (sinyal VIP) secara teknis belum pernah mengirim satu sinyal pun. Kini dipanggil nyata dari `run_pipeline.py` melalui `dispatch_vip_signals()`.
+  - **Specialist Bot Routing**: Memilih maksimal satu tiket per instrumen spesialis (IDX pilih skor bandarmology tertinggi, Crypto pilih momentum 24 jam tertinggi) alih-alih membanjiri grup dengan 16 sinyal arena.
+  - **Dedupe Ledger**: `engine/cache/vip_signal_ledger.json` mencegah satu tiket terkirim dua kali saat pipeline re-run. Entry price berubah = tiket baru; identik = dibungkam.
+  - **Zero-Entry Guard**: Tiket tanpa harga entry dibuang sebelum dikirim, mencegah sinyal sampah masuk grup berbayar.
+- **[MULTI-CHAIN DEGE] Degen Desk — Memecoin Radar & Rug-Check (Solana / Robinhood Chain / BSC-Aster / HyperEVM)**:
+  - **`memecoinDesk.js`**: Layer data baru berbasis endpoint keyless terverifikasi live — `frontend-api-v3.pump.fun` (peluncuran baru + progres bonding curve) dan DexScreener (harga/volume/boost multi-chain, termasuk `robinhood` dan `bsc`/Aster).
+  - **`computeRugChecks()`**: Pemeriksaan faktual dari data on-chain mentah (likuiditas SOL, progres curve, keberadaan sosial media, transfer fee, status banned) dengan verdict `HIGH_RISK` / `CAUTION` / `CLEAN`. Tanpa skor teatrikal — setiap tanda adalah fakta yang bisa diperiksa.
+  - **`DegenDesk.jsx`**: Radar peluncuran baru + papan token yang sedang di-boost, dengan filter "sembunyikan risiko tinggi" dan ambang minimum bonding curve.
+  - **Kejujuran Eksekusi**: Tabel rute eksekusi menyatakan status sebenarnya per chain — Solana masih DEMO (belum menandatangani transaksi), Robinhood Chain & Aster masih radar data saja. Tidak ada klaim swap yang tidak benar.
+- **[SECURITY — P0] Penutupan Kebocoran Payload VIP ke Publik**:
+  - **Akar Masalah**: `DatabaseClient._save_local_fallback()` menulis setiap payload VIP (trade plans, arena state, macro telemetry, research archive) ke `frontend/public/data/`, yang merupakan folder statis publik. Siapa pun bisa mengunduh seluruh sinyal berbayar tanpa login.
+  - **Perbaikan Hulu**: Seluruh penulisan diarahkan ke `engine/cache/` saja. Memperbaiki satu fungsi ini menutup semua pemanggil sekaligus.
+  - **Perbaikan Hilir**: Delapan file JSON VIP dihapus dari `frontend/public/data/`, serta **EA MT5 (`MBG_Institutional_Apex_EA.mq5`) dipindahkan ke `engine/mt5/`** karena sebelumnya juga dapat diunduh gratis.
+  - **Rute API Terproteksi Sesi**: Ditambahkan `functions/api/_session.js` (verifikasi JWT bersama), `/api/arena-state`, `/api/research-archive`, dan `/api/ea` — semuanya wajib sesi valid.
+  - **Dev Fallback Terpisah**: Vite middleware `/api/dev-bundle` melayani data lokal hanya saat development; rute ini tidak ada di build produksi.
+  - **CI Diperbaiki**: Workflow `arena_247_engine.yml` dan `hourly_crypto_macro.yml` tidak lagi meng-commit ke `frontend/public/data/`.
+  - **Verifikasi**: Seluruh delapan endpoint lama kini mengembalikan SPA shell (bukan data), dan build produksi terbukti bersih dari JSON VIP maupun sumber EA.
+- **[DEAD CODE PURGE] Penghapusan 1.560 Baris Kode Mati & 609 KB Artefak Yatim**:
+  - Dihapus: `us_analyzer.py`, `top_down_macro_engine.py` (1.251 baris), `forex_analyzer.py`, `cryptowave_fetcher.py` — keempatnya terbukti 0 referensi di seluruh repo, CI, dan konfigurasi.
+  - Dihapus: `subagent_materials.json`, `test_img.pdf`, `glossary_66_clean.json`, `glossary_66_full.json` (glosarium sudah hardcoded di `QuantAcademyTab.jsx`).
+  - Dihapus: empat file mockup HTML/JPG yatim di `public/` yang masih ter-deploy ke publik.
+- **[QA/QC & CERTIFICATION]**:
+  - Test Suite: **33/33 tes lulus** (marketHours 13, brokerGateway 14, memecoinDesk 6).
+  - Bug ditemukan & diperbaiki saat pengujian: parameter `sort=created` pada pump.fun API tidak valid — diganti ke `created_timestamp` setelah verifikasi terhadap API live.
+  - Build produksi Vite bersih dalam 1.22s tanpa error/warning.
+  - Verifikasi live: seluruh endpoint publik lama tertutup, rute terproteksi berfungsi.
+
 ## [2026-09-30] — Security Hardening, Honest Data Labeling & Institutional Paper Broker v2 (Side-Aware)
 
 ### Sprint 16 — Authentication Hardening, Data Integrity Disclosures, Broker Engine v2 & QA Certification

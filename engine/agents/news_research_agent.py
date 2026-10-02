@@ -25,10 +25,9 @@ WIB_TZ = timezone(timedelta(hours=7))
 ARCHIVE_FILE_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "cache", "research_archive.json"
 )
-PUBLIC_ARCHIVE_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-    "frontend", "public", "data", "research_archive.json"
-)
+# SECURITY: research archive used to be mirrored into frontend/public/data, making
+# the VIP research payload a publicly downloadable static file. It now stays in cache.
+PUBLIC_ARCHIVE_PATH = ARCHIVE_FILE_PATH
 
 
 class NewsResearchAgent:
@@ -559,10 +558,10 @@ class NewsResearchAgent:
         if not research_note:
             research_note = cls.generate_research_note(macro, scope="DAILY")
 
-        # Sync crisis alert to public JSON
+        # Sync crisis alert to the private cache (not a public static path)
         crisis_file = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-            "frontend", "public", "data", "latest_crisis_alert.json"
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "cache", "latest_crisis_alert.json"
         )
         try:
             os.makedirs(os.path.dirname(crisis_file), exist_ok=True)

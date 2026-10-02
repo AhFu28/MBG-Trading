@@ -31,10 +31,16 @@ export default function DataIntegrityModal({
   const fetchArena = useCallback(async () => {
     setIsArenaLoading(true);
     try {
-      const res = await fetch(`/data/latest_arena_state.json?t=${Date.now()}`, { cache: 'no-cache' });
+      const res = await fetch(
+        import.meta.env.DEV
+          ? `/api/dev-bundle?t=${Date.now()}`
+          : `/api/arena-state?t=${Date.now()}`,
+        { cache: 'no-cache' }
+      );
       if (res.ok) {
         const json = await res.json();
-        setArenaData(json);
+        // Dev bundle carries the arena under `arena_state`; the API returns it directly.
+        setArenaData(json?.arena_state || json);
       }
     } catch (e) {
       console.warn('Failed to load arena state in provenance modal:', e);
@@ -127,7 +133,7 @@ export default function DataIntegrityModal({
   const feeds = [
     {
       name: 'Macro Intelligence Bundle',
-      endpoint: '/data/latest_cockpit_bundle.json',
+      endpoint: '/api/data (session-gated)',
       provider: 'GitHub Actions Automated Python Engine',
       lastUpdate: bundleDate ? `${formatWib(bundleDate)} (${bundleAgeMin} mnt lalu)` : 'Menunggu sync...',
       status: bundleStatus,
@@ -136,7 +142,7 @@ export default function DataIntegrityModal({
     },
     {
       name: 'AI Multi-Agent Arena 24/7 Engine',
-      endpoint: '/data/latest_arena_state.json',
+      endpoint: '/api/arena-state (session-gated)',
       provider: 'GitHub Actions Continuous Micro-Loop (30s Ticks)',
       lastUpdate: isArenaLoading ? 'Menyinkronkan...' : (arenaDate ? `${formatWib(arenaDate)} (${arenaAgeMin} mnt lalu)` : 'Menunggu sync...'),
       status: arenaStatus,

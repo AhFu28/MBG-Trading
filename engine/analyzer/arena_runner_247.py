@@ -7,7 +7,7 @@ Zero-dependency, high-frequency autonomous trading runner for 16 AI Agents.
 - Ingests real-time Binance & macro market ticks via urllib.
 - Ratchets trailing stops & deducts institutional 0.12% Bitget fees.
 - Supports continuous multi-tick micro-loops for GitHub Actions & local runners.
-- Persists state directly to frontend/public/data/latest_arena_state.json.
+- Persists state directly to engine/cache/latest_arena_state.json.
 =============================================================================
 """
 
@@ -56,7 +56,9 @@ class ArenaRunner247:
             self.state_file = state_file_path
         else:
             base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            self.state_file = os.path.join(base_dir, "frontend", "public", "data", "latest_arena_state.json")
+            # Written to engine/cache, NOT frontend/public: the arena state is a
+            # paid payload and must never be a publicly downloadable static file.
+            self.state_file = os.path.join(base_dir, "engine", "cache", "latest_arena_state.json")
         
         self.state = self._load_state()
 

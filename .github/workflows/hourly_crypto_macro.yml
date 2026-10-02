@@ -43,7 +43,9 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/public/data/latest_cockpit_bundle.json frontend/public/data/latest_arena_state.json || true
+          # SECURITY: written to engine/cache, never frontend/public — a public
+          # static bundle would leak VIP trade plans to unauthenticated visitors.
+          git add engine/cache/latest_cockpit_bundle.json engine/cache/latest_arena_state.json || true
           if ! git diff --staged --quiet; then
             git commit -m "chore(data): automated 24/7 arena & market bundle refresh [skip ci]"
             for i in 1 2 3; do

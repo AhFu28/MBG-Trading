@@ -2405,7 +2405,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
     const syncFromCloudSpace = async () => {
       const endpoints = [
         'https://ahfu28-mbg-trading-arena.hf.space/api/arena/state',
-        `/data/latest_arena_state.json?v=${Date.now()}`
+        import.meta.env.DEV
+          ? `/api/dev-bundle?v=${Date.now()}`
+          : `/api/arena-state?v=${Date.now()}`
       ];
       for (const ep of endpoints) {
         try {

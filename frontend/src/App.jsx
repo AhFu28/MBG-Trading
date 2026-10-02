@@ -16,6 +16,7 @@ const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'))
 const LotCalculatorModal = lazy(() => import('./components/LotCalculatorModal.jsx'));
 const OrderExecutionModal = lazy(() => import('./components/OrderExecutionModal.jsx'));
 const SolanaSwapModal = lazy(() => import('./components/SolanaSwapModal.jsx'));
+const DegenDesk = lazy(() => import('./components/DegenDesk.jsx'));
 import { institutionalPaperBroker } from './services/brokerGateway.js';
 const FlowProcessTab = lazy(() => import('./components/FlowProcessTab.jsx'));
 const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
@@ -361,40 +362,21 @@ export default function App() {
           json = null;
         }
 
-        // 2. Fallback to static cockpit bundle (guarantees data loads in local preview, dev, or static CDN)
-        if (!json) {
+        // 2. Dev/local fallback: served through the dev-only Vite middleware.
+        //    In production this route does not exist, so VIP payloads are never
+        //    exposed as a downloadable static file. See vite.config.js.
+        if (!json && import.meta.env.DEV) {
           try {
-            const staticRes = await fetch(`/data/latest_cockpit_bundle.json${cacheBuster}`, { cache: 'no-cache' });
-            if (staticRes.ok) {
-              json = await staticRes.json();
+            const devRes = await fetch(`/api/dev-bundle${cacheBuster}`, { cache: 'no-cache' });
+            if (devRes.ok) {
+              json = await devRes.json();
             }
           } catch (e) {
-            console.error('Failed to fetch static cockpit bundle:', e);
+            console.warn('Dev bundle unavailable:', e);
           }
         }
 
         if (json) {
-          // Fallback if bundle is partial
-          if (!json.daily_trade_plans || !json.daily_trade_plans.length) {
-            try {
-              const fallbackPlans = await fetch(`/data/daily_trade_plans.json${cacheBuster}`, { cache: 'no-cache' });
-              if (fallbackPlans.ok) {
-                json.daily_trade_plans = await fallbackPlans.json();
-              }
-            } catch (e) {
-              console.warn('Fallback daily_trade_plans fetch failed:', e);
-            }
-          }
-          if (!json.crypto_spot_10 || !json.crypto_spot_10.length) {
-            try {
-              const fallbackCrypto = await fetch(`/data/crypto_spot_10.json${cacheBuster}`, { cache: 'no-cache' });
-              if (fallbackCrypto.ok) {
-                json.crypto_spot_10 = await fallbackCrypto.json();
-              }
-            } catch (e) {
-              console.warn('Fallback crypto_spot_10 fetch failed:', e);
-            }
-          }
           setData(json);
         } else {
           console.error('Failed to load cockpit bundle from any source');
@@ -432,6 +414,7 @@ export default function App() {
       case 'ACADEMY': return '🎓 Quant Academy';
       case 'WHALES': return '🐋 Whale Intelligence Hub';
       case 'FUTURES': return '🔥 Crypto Futures Intelligence';
+      case 'DEGEN': return '🎰 Degen Desk — Memecoin Radar';
       case 'FOREX': return '💱 Forex Command Center';
       case 'US_STOCKS': return '🇺🇸 US Stock Intelligence';
       case 'FLOW_PROCESS': return '⚡ Flow Process & System Architecture';
@@ -891,6 +874,11 @@ export default function App() {
                   allCryptoSpot={allCryptoSpot}
                   onOpenSwap={() => setIsSwapModalOpen(true)}
                 />
+              </main>
+            ) : activeTab === 'DEGEN' ? (
+              /* MULTI-CHAIN MEMECOIN RADAR & RUG-CHECK DESK */
+              <main>
+                <DegenDesk onOpenSwap={() => setIsSwapModalOpen(true)} />
               </main>
             ) : activeTab === 'FOREX' ? (
               /* v3.0 FOREX COMMAND CENTER */
