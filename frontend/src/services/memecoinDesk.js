@@ -207,11 +207,11 @@ export async function fetchPumpFunActive() {
 export async function buildScanUniverse() {
   const active = await fetchPumpFunActive();
 
-  // DexScreener (market mechanics) and Jupiter (holders/audit) in parallel —
-  // they are independent sources, so there is no reason to serialise them.
-  const [pairs, jupiterMap] = await Promise.all([
+  // All three sources are independent, so fetch them concurrently.
+  const [pairs, jupiterMap, boostMap] = await Promise.all([
     fetchDexPairs(active.map(t => t.mint)),
     fetchJupiterTokenData(active.map(t => t.mint)),
+    fetchBoostedAddressSet(),
   ]);
 
   // A mint can have multiple pairs; keep the deepest-liquidity one per mint.
@@ -232,8 +232,9 @@ export async function buildScanUniverse() {
   for (const token of active) {
     const pair = byMint.get(token.mint);
     const jup = jupiterMap.get(token.mint) || null;
+    const boostAmount = boostMap.get(token.mint.toLowerCase()) || 0;
     if (pair) {
-      scannable.push({ token, pair, jupiter: jup });
+      scannable.push({ token, pair, jupiter: jup, boostAmount });
     } else {
       noPair.push(token);
     }
@@ -244,6 +245,7 @@ export async function buildScanUniverse() {
     noPair,
     totalActive: active.length,
     jupiterHits: scannable.filter(r => r.jupiter).length,
+    boostedCount: scannable.filter(r => r.boostAmount > 0).length,
   };
 }
 
@@ -264,6 +266,35 @@ export async function fetchBoostedTokens() {
       url: t.url,
       links: t.links || [],
     }));
+}
+
+/**
+ * Build a Set of token addresses that are running a PAID promotion right now.
+ *
+ * This is the closest verifiable thing to a "KOL call". DexScreener exposes no
+ * caller/influencer field at all (verified: no kol, caller, or influencer keys),
+ * so the honest proxy is the boost amount a project actually paid to be promoted.
+ * A boosted token is being marketed; that is a fact, not a rumour.
+ *
+ * ponytail: membership only, no ranking by boost size. Add scoring once we can
+ * measure whether boosts actually precede moves.
+ */
+export async function fetchBoostedAddressSet() {
+  try {
+    const res = await fetch(DEXSCREENER_BOOSTS);
+    if (!res.ok) return new Map();
+    const raw = await res.json();
+    const map = new Map();
+    for (const t of (Array.isArray(raw) ? raw : [])) {
+      if (t.tokenAddress) {
+        map.set(t.tokenAddress.toLowerCase(), t.totalAmount || 0);
+      }
+    }
+    return map;
+  } catch {
+    // Boost data is enrichment only — never let it break a scan.
+    return new Map();
+  }
 }
 
 /** Normalize a DexScreener pair into a row the desk can render. */

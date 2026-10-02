@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { analyzeToken, buildDummyPlan, rankCandidates, PUMPFUN_GRADUATION_SOL } from '../earlySignal.js';
+import { analyzeToken, buildDummyPlan, rankCandidates, checkLaunchWindow, PUMPFUN_GRADUATION_SOL, LAUNCH_WINDOW } from '../earlySignal.js';
 
 /** Build a DexScreener-shaped pair fixture. */
 function makePair(overrides = {}) {
@@ -8,6 +8,7 @@ function makePair(overrides = {}) {
     dexId: 'raydium',
     baseToken: { symbol: 'TEST', name: 'Test Token', address: 'mint1' },
     priceUsd: '1.00',
+    marketCap: 120000,
     txns: {
       m5: { buys: 10, sells: 10 },
       h1: { buys: 100, sells: 100 },
@@ -382,5 +383,139 @@ describe('analyzeToken — token audit safety (Jupiter)', () => {
     );
     expect(r.score).toBeLessThanOrEqual(100);
     expect(r.verdict).toBe('CLEAN');
+  });
+});
+
+// ============================================================================
+// Launch-window filter
+// ============================================================================
+describe('checkLaunchWindow', () => {
+  /** A token that should pass every criterion. */
+  function qualifiedAnalysis() {
+    return analyzeToken(
+      makePair({
+        marketCap: 120000,
+        liquidity: { usd: 40000 },
+        volume: { h24: 240000, h1: 20000 },
+      }),
+      null,
+      makeJupiter({ holderCount: 800 })
+    );
+  }
+
+  it('passes a young, liquid, audited token with spread holders', () => {
+    const w = checkLaunchWindow(qualifiedAnalysis());
+    expect(w.qualified).toBe(true);
+    expect(w.failed).toHaveLength(0);
+    expect(w.qualificationPct).toBe(100);
+  });
+
+  it('rejects a token with zero liquidity — the unsellable trap', () => {
+    // This mirrors the 7-of-11 real small caps measured with LP = $0.
+    const a = analyzeToken(
+      makePair({ marketCap: 24000, liquidity: { usd: 0 }, volume: { h24: 30000, h1: 5000 } }),
+      null,
+      makeJupiter({ holderCount: 400 })
+    );
+    const w = checkLaunchWindow(a);
+    expect(w.qualified).toBe(false);
+    expect(w.failed.some(c => c.key === 'liquidity')).toBe(true);
+  });
+
+  it('rejects an active mint authority even if everything else is perfect', () => {
+    const a = analyzeToken(
+      makePair({ marketCap: 120000, liquidity: { usd: 40000 }, volume: { h24: 240000, h1: 20000 } }),
+      null,
+      makeJupiter({ holderCount: 800, audit: { ...makeJupiter().audit, mintAuthorityDisabled: false } })
+    );
+    const w = checkLaunchWindow(a);
+    expect(w.qualified).toBe(false);
+    expect(w.authorityCompromised).toBe(true);
+    expect(w.failed.some(c => c.key === 'mint_authority')).toBe(true);
+  });
+
+  it('rejects an active freeze authority', () => {
+    const a = analyzeToken(
+      makePair({ marketCap: 120000, liquidity: { usd: 40000 }, volume: { h24: 240000, h1: 20000 } }),
+      null,
+      makeJupiter({ holderCount: 800, audit: { ...makeJupiter().audit, freezeAuthorityDisabled: false } })
+    );
+    const w = checkLaunchWindow(a);
+    expect(w.qualified).toBe(false);
+    expect(w.authorityCompromised).toBe(true);
+  });
+
+  it('rejects a token with extreme holder concentration', () => {
+    const a = analyzeToken(
+      makePair({ marketCap: 120000, liquidity: { usd: 40000 }, volume: { h24: 240000, h1: 20000 } }),
+      null,
+      makeJupiter({ holderCount: 800, audit: { ...makeJupiter().audit, topHoldersPercentage: 68 } })
+    );
+    expect(checkLaunchWindow(a).qualified).toBe(false);
+  });
+
+  it('rejects a token whose holders are shrinking', () => {
+    const a = analyzeToken(
+      makePair({ marketCap: 120000, liquidity: { usd: 40000 }, volume: { h24: 240000, h1: 20000 } }),
+      null,
+      makeJupiter({ holderCount: 800, stats1h: { ...makeJupiter().stats1h, holderChange: -0.03 } })
+    );
+    const w = checkLaunchWindow(a);
+    expect(w.qualified).toBe(false);
+    expect(w.failed.some(c => c.key === 'holder_trend')).toBe(true);
+  });
+
+  it('fails security checks when Jupiter data is missing rather than assuming safe', () => {
+    // No Jupiter entry means we cannot verify authority state — must not pass.
+    const a = analyzeToken(makePair({ liquidity: { usd: 40000 }, volume: { h24: 240000, h1: 20000 } }), null, null);
+    const w = checkLaunchWindow(a);
+    expect(w.qualified).toBe(false);
+    expect(w.failed.some(c => c.key === 'mint_authority')).toBe(true);
+    expect(w.failed.some(c => c.key === 'holders')).toBe(true);
+  });
+
+  it('rejects a token that is too old to be an early entry', () => {
+    const a = analyzeToken(
+      makePair({
+        marketCap: 120000,
+        liquidity: { usd: 40000 },
+        volume: { h24: 240000, h1: 20000 },
+        pairCreatedAt: Date.now() - 10 * 24 * 3600 * 1000, // 10 days
+      }),
+      null,
+      makeJupiter({ holderCount: 800 })
+    );
+    const w = checkLaunchWindow(a);
+    expect(w.qualified).toBe(false);
+    expect(w.failed.some(c => c.key === 'age')).toBe(true);
+  });
+
+  it('rejects a token with no trading activity', () => {
+    const a = analyzeToken(
+      makePair({ marketCap: 120000, liquidity: { usd: 40000 }, volume: { h24: 0, h1: 0 } }),
+      null,
+      makeJupiter({ holderCount: 800 })
+    );
+    expect(checkLaunchWindow(a).qualified).toBe(false);
+  });
+
+  it('reports observed values and targets for every check (no bare rejection)', () => {
+    const w = checkLaunchWindow(analyzeToken(makePair({ liquidity: { usd: 0 } }), null, makeJupiter()));
+    expect(w.checks.length).toBeGreaterThanOrEqual(9);
+    w.checks.forEach(c => {
+      expect(typeof c.label).toBe('string');
+      expect(typeof c.pass).toBe('boolean');
+      expect(c.want).toBeTruthy();
+    });
+    // Failed checks must be individually identifiable by key.
+    expect(w.failed.every(c => typeof c.key === 'string')).toBe(true);
+  });
+
+  it('exposes thresholds that contradict the harmful small-cap advice', () => {
+    // Guards against someone "fixing" the thresholds back to the social-media
+    // numbers that were measured to be harmful.
+    expect(LAUNCH_WINDOW.minLiquidityUsd).toBeGreaterThanOrEqual(10000);
+    expect(LAUNCH_WINDOW.minMcapUsd).toBeGreaterThan(35000 / 2);
+    expect(LAUNCH_WINDOW.minVolume1hUsd).toBeGreaterThan(2500 / 3);
   });
 });

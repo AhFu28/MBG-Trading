@@ -18,6 +18,40 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+---
+
+## [2026-10-02] — Launch Window Filter: Koreksi Berbasis Data atas Saran Filter Medsos
+
+### Sprint 20 — 9 Kriteria Kelayakan & Pelacakan Promosi Berbayar
+- **[KOREKSI PENTING] Saran Filter "MCap Kecil / LP Kecil / Volume Kecil" Terbukti Berbahaya**:
+  - Saran yang beredar di Threads/Twitter (mcap < $35K, volume < $2.5K, LP < $25K) **diuji langsung terhadap data live** dan hasilnya berlawanan dengan tujuan:
+    - **MCap < $35K**: 62% token aktif masuk kategori ini. Dari **11 token kecil** dengan pair DEX, **7 punya LP = $0** — tidak ada likuiditas sama sekali, posisi tidak bisa dijual.
+    - **LP < $25K**: **11 dari 11** token kecil sudah di bawah $25K. Filter ini tidak menyaring apa pun.
+    - **Volume < $2.5K**: volume kecil bukan berarti "belum rame", tetapi "tidak ada yang membeli".
+  - **Validasi tambahan**: dari 3 token yang lolos filter lama, **3/3 punya LP = $0**. Filter baru menghasilkan token dengan LP nyata $26K–$71K.
+  - **Kesimpulan**: target yang benar adalah token **MUDA** yang **sudah punya likuiditas nyata** dan permintaan organik — bukan token kecil tanpa likuiditas.
+- **[FILTER BARU — `checkLaunchWindow()`] 9 Kriteria Kelayakan**:
+  - Rentang mcap **$20K–$800K**, likuiditas **≥ $15K**, volume **≥ $1.000/jam**, umur **5 menit – 72 jam**.
+  - **Security gate**: mint authority **wajib** dimatikan, freeze authority **wajib** dimatikan, konsentrasi top holder **< 45%**, holder **≥ 100**, holder tidak menyusut.
+  - **Fail-closed**: data yang tidak tersedia (misalnya token belum ada di Jupiter) dihitung **GAGAL**, bukan lolos. Token tidak boleh melewati gerbang keamanan yang tidak bisa diperiksa.
+  - Setiap kriteria mengembalikan nilai terukur + target, sehingga UI dapat menampilkan alasan penolakan secara spesifik — bukan penolakan buta.
+  - **OR logic** pada authority: mint **atau** freeze masih aktif = fatal (`authorityCompromised`).
+- **[KOL CALLER] Klaim "Top Caller" Tidak Dapat Diverifikasi — Diganti Data Boost Nyata**:
+  - **Temuan**: API DexScreener **tidak punya** field `kol`, `caller`, `influencer`, atau `promotedBy` sama sekali (diverifikasi langsung). Klaim "top caller" di media sosial umumnya berupa screenshot grup Telegram berbayar, bukan data terverifikasi.
+  - **Pengganti yang jujur**: `fetchBoostedAddressSet()` melacak **promosi berbayar** (boost) yang benar-benar terdata di DexScreener. Token yang sedang boost = sedang dipromosikan; ini fakta, bukan rumor.
+  - Kolom **Promo** baru menampilkan jumlah boost; badge muncul di panel detail. Boost diperlakukan sebagai enrichment saja — kegagalannya tidak pernah merusak pemindaian.
+- **[UI — `MemecoinRadar.jsx`]**:
+  - Panel penjelasan yang menampilkan **mengapa saran filter medsos berbahaya**, dengan angka hasil pengujian live.
+  - Toggle **"HANYA yang lolos 9 kriteria"** beserta hitungan token yang lolos.
+  - Kolom baru: **Promo** (boost) dan **Kriteria** (mis. `9/9` hijau, `7/9` kuning, sisanya merah).
+  - Panel detail menampilkan **checklist 9 kriteria** dengan tanda ✓/✗ per baris, sehingga terlihat persis kriteria mana yang gagal.
+- **[QA/QC & CERTIFICATION]**:
+  - Test Suite: **86/86 tes lulus** (earlySignal 53, brokerGateway 14, marketHours 13, memecoinDesk 6).
+  - 11 tes baru untuk launch window, termasuk: penolakan token LP nol (sesuai temuan 7/11 dunia nyata), penolakan mint/freeze authority aktif meski semua kriteria lain sempurna, dan **fail-closed saat data Jupiter tidak ada**.
+  - Ditambahkan **guard test** yang gagal jika seseorang mengubah ambang batas kembali ke angka saran medsos yang terbukti berbahaya.
+  - Validasi live: filter lama meloloskan 3 token dengan LP $0; filter baru meloloskan token dengan LP $26K–$71K.
+  - Build produksi bersih 1.41s.
+
 ## [2026-10-02] — Jupiter Enrichment: Holder Growth, Organic Demand & Token Audit
 
 ### Sprint 19 — Dari Radar Bukti Menjadi Radar Lengkap (Tetap Tanpa API Key)

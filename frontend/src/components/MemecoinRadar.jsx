@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { buildScanUniverse } from '../services/memecoinDesk.js';
-import { analyzeToken, buildDummyPlan, rankCandidates } from '../services/earlySignal.js';
+import { analyzeToken, buildDummyPlan, rankCandidates, checkLaunchWindow, LAUNCH_WINDOW } from '../services/earlySignal.js';
 
 function fmtUsd(v) {
   if (v === null || v === undefined) return '-';
@@ -50,20 +50,28 @@ export default function MemecoinRadar() {
   const [minScore, setMinScore] = useState(0);
   const [showHighRisk, setShowHighRisk] = useState(false);
   const [jupiterHits, setJupiterHits] = useState(0);
+  const [boostedCount, setBoostedCount] = useState(0);
+  const [onlyQualified, setOnlyQualified] = useState(false);
 
   const scan = useCallback(async () => {
     setError('');
     try {
-      const { scannable: rows, noPair: unpairable, totalActive, jupiterHits } = await buildScanUniverse();
-      const analyzed = rows.map(({ token, pair, jupiter }) => ({
-        token,
-        pair,
-        jupiter,
-        analysis: analyzeToken(pair, token.curve, jupiter),
-      }));
+      const { scannable: rows, noPair: unpairable, totalActive, jupiterHits, boostedCount } = await buildScanUniverse();
+      const analyzed = rows.map(({ token, pair, jupiter, boostAmount }) => {
+        const analysis = analyzeToken(pair, token.curve, jupiter);
+        return {
+          token,
+          pair,
+          jupiter,
+          boostAmount: boostAmount || 0,
+          analysis,
+          launchWindow: checkLaunchWindow(analysis),
+        };
+      });
       setScannable(rankCandidates(analyzed));
       setNoPair(unpairable);
       setJupiterHits(jupiterHits ?? 0);
+      setBoostedCount(boostedCount ?? 0);
       setLastUpdate(new Date());
       if (totalActive === 0) setError('pump.fun tidak mengembalikan token aktif saat ini.');
     } catch (e) {
@@ -80,8 +88,18 @@ export default function MemecoinRadar() {
   }, [scan]);
 
   const visible = useMemo(
-    () => scannable.filter(r => r.analysis.score >= minScore && (showHighRisk || r.analysis.verdict !== 'HIGH_RISK')),
-    [scannable, minScore, showHighRisk]
+    () => scannable.filter(r => {
+      if (onlyQualified && !r.launchWindow.qualified) return false;
+      if (r.analysis.score < minScore) return false;
+      if (!showHighRisk && r.analysis.verdict === 'HIGH_RISK') return false;
+      return true;
+    }),
+    [scannable, minScore, showHighRisk, onlyQualified]
+  );
+
+  const qualifiedCount = useMemo(
+    () => scannable.filter(r => r.launchWindow.qualified).length,
+    [scannable]
   );
 
   const plan = useMemo(() => {
@@ -108,7 +126,9 @@ export default function MemecoinRadar() {
         </div>
         <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px' }}>
           Memindai token Solana yang sedang aktif diperdagangkan · {scannable.length} teranalisis
+          {qualifiedCount > 0 && ` · ${qualifiedCount} lolos semua kriteria`}
           {jupiterHits > 0 && ` · ${jupiterHits} dengan data holder & audit`}
+          {boostedCount > 0 && ` · ${boostedCount} sedang promo berbayar`}
           {noPair.length > 0 && ` · ${noPair.length} belum punya pair DEX`}
           {lastUpdate && ` · update ${lastUpdate.toLocaleTimeString('id-ID')}`}
         </div>
@@ -143,6 +163,28 @@ export default function MemecoinRadar() {
         </div>
       </div>
 
+      {/* ===== KOREKSI FILTER — ini yang membedakan dari saran medsos ===== */}
+      <div style={{
+        background: 'rgba(56,189,248,0.07)', border: '1px solid rgba(56,189,248,0.3)',
+        borderRadius: '10px', padding: '12px 16px', fontSize: '11px', lineHeight: 1.7, color: 'var(--text-secondary)'
+      }}>
+        <strong style={{ color: '#38bdf8' }}>📐 KENAPA FILTER "MCAP KECIL / LP KECIL / VOLUME KECIL" ITU BERBAHAYA:</strong>
+        <div style={{ marginTop: '5px' }}>
+          Saya uji saran itu ke data live dan hasilnya berlawanan:
+        </div>
+        <ul style={{ margin: '6px 0 0 16px', padding: 0 }}>
+          <li><strong>MCap &lt; $35K</strong> — 62% token aktif masuk sini, dan <strong>7 dari 11</strong> token kecil yang diuji punya <strong>LP = $0</strong>. Tidak ada likuiditas = tidak bisa dijual.</li>
+          <li><strong>LP &lt; $25K</strong> — <strong>11 dari 11</strong> token kecil sudah di bawah $25K. Filter ini tidak menyaring apa pun.</li>
+          <li><strong>Volume &lt; $2.500</strong> — volume kecil bukan berarti "belum rame", tapi "tidak ada yang beli".</li>
+        </ul>
+        <div style={{ marginTop: '6px' }}>
+          Target yang benar: token <strong>MUDA</strong> tapi sudah punya <strong>likuiditas nyata</strong> dan permintaan organik.
+          Rentang yang dipakai radar ini: mcap <strong>${LAUNCH_WINDOW.minMcapUsd / 1000}K–${LAUNCH_WINDOW.maxMcapUsd / 1000}K</strong>,
+          LP <strong>≥ ${LAUNCH_WINDOW.minLiquidityUsd / 1000}K</strong>, volume <strong>≥ ${LAUNCH_WINDOW.minVolume1hUsd / 1000}K/jam</strong>,
+          umur <strong>≤ {LAUNCH_WINDOW.maxAgeMinutes / 60} jam</strong>.
+        </div>
+      </div>
+
       {error && (
         <div style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.35)', borderRadius: '10px', padding: '10px 14px', fontSize: '11px', color: '#fbbf24' }}>
           📡 {error}
@@ -160,6 +202,13 @@ export default function MemecoinRadar() {
         <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '700', color: 'var(--text-secondary)', cursor: 'pointer' }}>
           <input type="checkbox" checked={showHighRisk} onChange={e => setShowHighRisk(e.target.checked)} />
           Tampilkan yang Risiko Tinggi
+        </label>
+        <label style={{
+          display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '800', cursor: 'pointer',
+          color: onlyQualified ? '#34d399' : 'var(--text-secondary)'
+        }}>
+          <input type="checkbox" checked={onlyQualified} onChange={e => setOnlyQualified(e.target.checked)} />
+          HANYA yang lolos 9 kriteria ({qualifiedCount})
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '700', color: 'var(--text-secondary)' }}>
           Modal simulasi $
@@ -193,7 +242,9 @@ export default function MemecoinRadar() {
                   <th style={{ textAlign: 'right' }}>Beli/Jual</th>
                   <th style={{ textAlign: 'right' }}>Likuiditas</th>
                   <th style={{ textAlign: 'right' }}>Top 10</th>
+                  <th>Promo</th>
                   <th>Audit</th>
+                  <th style={{ textAlign: 'center' }}>Kriteria</th>
                   <th>Penilaian</th>
                 </tr>
               </thead>
@@ -256,6 +307,18 @@ export default function MemecoinRadar() {
                       }}>
                         {a.metrics.topHoldersPct === null ? '—' : `${a.metrics.topHoldersPct.toFixed(1)}%`}
                       </td>
+                      <td style={{ textAlign: 'center' }}>
+                        {row.boostAmount > 0 ? (
+                          <span title={`Promosi berbayar terdeteksi (boost ${row.boostAmount})`} style={{
+                            fontSize: '8.5px', padding: '2px 5px', borderRadius: '4px',
+                            background: 'rgba(192,132,252,0.18)', color: '#c084fc', fontWeight: '800'
+                          }}>
+                            📣 {row.boostAmount}
+                          </span>
+                        ) : (
+                          <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>—</span>
+                        )}
+                      </td>
                       <td>
                         <div style={{ display: 'flex', gap: '3px', flexWrap: 'wrap' }}>
                           {a.metrics.mintAuthDisabled === false && (
@@ -272,6 +335,15 @@ export default function MemecoinRadar() {
                           )}
                         </div>
                       </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span style={{
+                          fontSize: '9.5px', fontWeight: '800', fontFamily: 'var(--font-mono)',
+                          color: row.launchWindow.qualified ? '#34d399'
+                            : row.launchWindow.passed >= 7 ? '#fbbf24' : '#fb7185'
+                        }}>
+                          {row.launchWindow.passed}/{row.launchWindow.total}
+                        </span>
+                      </td>
                       <td>
                         <span className="badge" style={{ background: v.bg, color: v.color, borderColor: v.border, fontSize: '9px' }}>
                           {v.label}
@@ -282,7 +354,7 @@ export default function MemecoinRadar() {
                 })}
                 {!loading && visible.length === 0 && (
                   <tr>
-                    <td colSpan={9} style={{ textAlign: 'center', padding: '26px', color: 'var(--text-muted)', fontSize: '11.5px' }}>
+                    <td colSpan={11} style={{ textAlign: 'center', padding: '26px', color: 'var(--text-muted)', fontSize: '11.5px' }}>
                       Tidak ada token yang lolos filter. Pindai ulang, atau turunkan skor minimum.
                       <div style={{ marginTop: '6px', fontSize: '10.5px' }}>
                         Ini normal — mayoritas token baru memang tidak punya bukti akumulasi apa pun.
@@ -311,6 +383,33 @@ export default function MemecoinRadar() {
                   <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{selected.token.name}</div>
                 </div>
                 <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '14px' }}>✕</button>
+              </div>
+
+              {/* Launch-window criteria — the 9-check gate */}
+              <div style={{
+                marginBottom: '12px', padding: '10px 12px', borderRadius: '8px',
+                background: selected.launchWindow.qualified ? 'rgba(16,185,129,0.08)' : 'rgba(245,158,11,0.07)',
+                border: `1px solid ${selected.launchWindow.qualified ? 'rgba(16,185,129,0.3)' : 'rgba(245,158,11,0.3)'}`
+              }}>
+                <div style={{
+                  fontSize: '11px', fontWeight: '900', marginBottom: '6px',
+                  color: selected.launchWindow.qualified ? '#34d399' : '#fbbf24'
+                }}>
+                  {selected.launchWindow.qualified ? '✅ LOLOS SEMUA KRITERIA' : `⚠️ LOLOS ${selected.launchWindow.passed}/${selected.launchWindow.total} KRITERIA`}
+                  {selected.boostAmount > 0 && (
+                    <span style={{ marginLeft: '8px', fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(192,132,252,0.2)', color: '#c084fc' }}>
+                      📣 PROMO BERBAYAR ({selected.boostAmount})
+                    </span>
+                  )}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  {selected.launchWindow.checks.map(c => (
+                    <div key={c.key} style={{ display: 'flex', gap: '6px', fontSize: '10px', lineHeight: 1.45 }}>
+                      <span style={{ color: c.pass ? '#34d399' : '#fb7185', flexShrink: 0 }}>{c.pass ? '✓' : '✗'}</span>
+                      <span style={{ color: c.pass ? 'var(--text-muted)' : 'var(--text-secondary)' }}>{c.label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Score breakdown — every point traceable */}
