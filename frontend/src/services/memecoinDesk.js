@@ -17,12 +17,34 @@
 
 // Verified against the live API: `sort` accepts only
 // created_timestamp | market_cap | ath_market_cap | reply_count | last_reply | last_trade_timestamp
-const PUMPFUN_NEW = 'https://frontend-api-v3.pump.fun/coins?offset=0&limit=40&sort=created_timestamp&order=DESC&includeNsfw=false';
+const PUMPFUN_NEW_QUERY = 'coins?offset=0&limit=40&sort=created_timestamp&order=DESC&includeNsfw=false';
 // "Currently being traded" — the pool where early accumulation actually shows up.
-const PUMPFUN_ACTIVE = 'https://frontend-api-v3.pump.fun/coins?offset=0&limit=60&sort=last_trade_timestamp&order=DESC&includeNsfw=false';
+const PUMPFUN_ACTIVE_QUERY = 'coins?offset=0&limit=60&sort=last_trade_timestamp&order=DESC&includeNsfw=false';
 const DEXSCREENER_TOKENS = 'https://api.dexscreener.com/latest/dex/tokens/';
 const DEXSCREENER_BOOSTS = 'https://api.dexscreener.com/token-boosts/top/v1';
 const JUPITER_SEARCH = 'https://lite-api.jup.ag/tokens/v2/search?query=';
+
+/**
+ * Universal pump.fun fetcher:
+ * Uses Cloudflare Pages Function edge proxy (/api/pumpfun/...) to bypass pump.fun's WAF 403 origin lock
+ * on production (https://mbg-trading.pages.dev), with automatic fallback to direct endpoint.
+ */
+async function fetchPumpFunEndpoint(queryPath) {
+  const proxyUrl = `/api/pumpfun/${queryPath.replace(/^\/+/, '')}`;
+  try {
+    const res = await fetch(proxyUrl, { headers: { accept: 'application/json' } });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (_) {
+    // Edge proxy unavailable or non-proxy dev environment, fallback to direct
+  }
+
+  const directUrl = `https://frontend-api-v3.pump.fun/${queryPath.replace(/^\/+/, '')}`;
+  const resDirect = await fetch(directUrl, { headers: { accept: 'application/json' } });
+  if (!resDirect.ok) throw new Error(`pump.fun HTTP ${resDirect.status}`);
+  return await resDirect.json();
+}
 
 /** Chains we track. DexScreener chainId values are authoritative. */
 export const TRACKED_CHAINS = {
@@ -74,9 +96,7 @@ export function computeRugChecks(token) {
 
 /** Fetch freshly launched pump.fun tokens with computed rug checks. */
 export async function fetchPumpFunLaunches() {
-  const res = await fetch(PUMPFUN_NEW, { headers: { accept: 'application/json' } });
-  if (!res.ok) throw new Error(`pump.fun HTTP ${res.status}`);
-  const raw = await res.json();
+  const raw = await fetchPumpFunEndpoint(PUMPFUN_NEW_QUERY);
   return (Array.isArray(raw) ? raw : []).map(t => {
     const ageMs = Date.now() - (t.created_timestamp || 0);
     return {
@@ -170,9 +190,7 @@ export async function fetchDexPairs(addresses) {
  * whereas active ones already have trades to measure.
  */
 export async function fetchPumpFunActive() {
-  const res = await fetch(PUMPFUN_ACTIVE, { headers: { accept: 'application/json' } });
-  if (!res.ok) throw new Error(`pump.fun active HTTP ${res.status}`);
-  const raw = await res.json();
+  const raw = await fetchPumpFunEndpoint(PUMPFUN_ACTIVE_QUERY);
   return (Array.isArray(raw) ? raw : []).map(t => ({
     chain: 'solana',
     mint: t.mint,

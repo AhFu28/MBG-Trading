@@ -71,6 +71,11 @@ export default defineConfig({
         target: 'https://indodax.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/indodax/, '')
+      },
+      '/api/pumpfun': {
+        target: 'https://frontend-api-v3.pump.fun',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/pumpfun/, '')
       }
     }
   }
