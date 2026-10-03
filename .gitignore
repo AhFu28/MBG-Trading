@@ -39,6 +39,10 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
+# Local runtime junk (embedded Python + artifact folders — never commit)
+Python/
+%SystemDrive%/
+
 # Agent workspaces
 .agents/
 
