@@ -800,3 +800,25 @@ Audit kelengkapan oleh reviewer model menemukan 5 bagian yang sebelumnya hilang 
 **Cara memakai lampiran ini:** sebelum mengklaim rencana ini "sudah mencakup semua", baca daftar ini. Bagian yang **DEFER** bukan hilang — ia punya pemilik keputusan ([MP] §22.2 dan §10.5 akan relevan saat D-2 dan RESEARCH* dijalankan). Bagian yang **DIPULIHKAN** sudah kembali ke badan rencana.
 
 > **Batas kejujuran lampiran ini:** reviewer menemukan 5 kelalaian ini dengan membaca 4 dokumen sumber; **tidak ada jaminan daftar ini lengkap**. Ia menutup celah yang ditemukan, bukan menjamin nol celah.
+
+
+---
+
+## 13. V3.1 UPDATE — 3 Oktober 2026 (rebase + re-audit + hardening)
+
+**What happened:** the local tree was 20 commits behind origin/main. Origin had already closed S2 (payload leak — public/data/ emptied), S4 (fake swap hash removed), S8 (data.js fallback secret replaced by derived secret), and shipped: DegenDesk + MemecoinRadar + earlySignal + memecoinDesk (with 86 vitest tests), v5.8.0 hardening, Paper Broker v2 (side-aware), pump.fun edge-proxy fix, and the frontend test runner (vitest 2.1.8).
+
+**Owner decision recorded (3 Okt 2026):** the live gate password stays **"MBG"** — the documented DEFAULT_PASSWORD_HASH (= sha256("MBG"), verified by the sentinel). The local fail-closed auth variant was dropped in the reconcile; the sentinel now ENFORCES the exact default hash instead of forbidding it, so it cannot be silently swapped.
+
+**Reconciled on branch local-v4-vip (every step committed):**
+- ONE VIP dispatch path: engine/run_pipeline.py now routes through vip_signal_router (provenance gate source+observed_at, synthetic never LIVE, subscriber allowlist, dry-run default, VIP_LIVE=1 flag for real sends) — origin's direct broadcast_vip_trade_signal call is gone.
+- Auth hardened: PasswordGate verifies the session against /api/auth on mount (localStorage trust removed — S9-adjacent bypass closed); no-store on all auth responses; tampered-signature and forged-token tests pass (18 runtime cases).
+- Tier badge is display-only (fake PRO cycle removed — S9).
+- HF daemon reset: fail-closed admin auth (S6) — disabled until ARENA_ADMIN_TOKEN is set.
+- Webhook secret: origin enforces TELEGRAM_WEBHOOK_SECRET (S3 resolved at code level).
+- Local junk deleted: Python/ (173.8 MB) + %SystemDrive%/ — gitignored.
+- Audit + plan package: docs/audit_2026-10-02/ (00_MASTER_REPORT .. 08_WEB_UPDATE_PLAN).
+
+**Gate status before push:** build PASS (28 chunks) · vitest 86/86 · pytest 41+5 · both sentinels PASS.
+
+**Remaining open (non-blocking):** S3 live POST-pair verification after deploy; cron re-enable vs manual SOP (owner); D-1 market choice (recommended crypto spot); CWV + WCAG re-verify on deploy.
