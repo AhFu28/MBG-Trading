@@ -3,6 +3,13 @@ name: Intraday IDX Price Refresh (Manual On-Demand)
 on:
   workflow_dispatch: # Allows manual trigger from GitHub UI (Cron scheduled runs disabled)
 
+concurrency:
+  group: mbg-private-pipeline
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
 jobs:
   intraday-refresh:
     runs-on: ubuntu-latest
@@ -23,6 +30,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          MBG_REQUIRE_PRIVATE_PUBLISH: 'true'
           INDEX_ALPHA_API_KEY: ${{ secrets.INDEX_ALPHA_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}

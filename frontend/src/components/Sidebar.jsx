@@ -79,8 +79,16 @@ export default function Sidebar({
     return null;
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (window.confirm('Logout dari sesi MBG Trading Terminal? Data watchlist & paper trading Anda tetap tersimpan aman.')) {
+      try {
+        const response = await fetch('/api/auth', { method: 'DELETE', credentials: 'same-origin' });
+        if (!response.ok) throw new Error('logout unavailable');
+      } catch {
+        window.alert('Logout belum berhasil. Coba lagi saat layanan tersedia.');
+        return;
+      }
+      sessionStorage.removeItem('mbg_cockpit_auth');
       localStorage.removeItem('mbg_cockpit_auth');
       localStorage.removeItem('mbg_cockpit_auth_time');
       window.location.reload();

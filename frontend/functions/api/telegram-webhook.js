@@ -1,3 +1,5 @@
+import { fetchSystemState } from './_private.js';
+
 /**
  * Cloudflare Pages Function: Telegram Webhook Handler (MBG V2 24/7)
  * Route: /api/telegram-webhook
@@ -32,9 +34,6 @@ const POPULAR_ALIASES = {
 
 const KNOWN_CRYPTO = new Set(["BTC", "ETH", "SOL", "BNB", "XRP", "DOGE", "ADA", "AVAX", "LINK", "SUI", "PEPE", "SHIB"]);
 
-// In-memory cache for edge performance
-let cachedBundle = null;
-let lastCacheTime = 0;
 
 function esc(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -144,6 +143,14 @@ export async function onRequestPost(context) {
       return new Response("OK", { status: 200 });
     }
 
+    // Shared groups are not an identity boundary. Subscriber delivery needs a
+    // verified account/chat binding; until then only the configured owner DM is enabled.
+    if (!env.TELEGRAM_OWNER_CHAT_ID || message.chat?.type !== 'private' ||
+        String(message.chat.id) !== String(env.TELEGRAM_OWNER_CHAT_ID) ||
+        String(message.from?.id) !== String(env.TELEGRAM_OWNER_CHAT_ID)) {
+      return new Response("OK", { status: 200 });
+    }
+
     const chatId = message.chat?.id;
     const messageId = message.message_id;
     const text = message.text;
@@ -153,33 +160,18 @@ export async function onRequestPost(context) {
       return new Response("OK", { status: 200 });
     }
 
-    // Ambil bundle data dari origin CDN Cloudflare dengan cache 60s
-    let bundle = {};
-    const now = Date.now();
-    if (cachedBundle && now - lastCacheTime < 60000) {
-      bundle = cachedBundle;
-    } else {
-      try {
-        const url = new URL(request.url);
-        const bundleUrl = `${url.origin}/data/latest_cockpit_bundle.json`;
-        const res = await fetch(bundleUrl);
-        if (res.ok) {
-          bundle = await res.json();
-          cachedBundle = bundle;
-          lastCacheTime = now;
-        }
-      } catch (e) {
-        console.warn("Could not fetch bundle:", e);
-        if (cachedBundle) bundle = cachedBundle;
-      }
+    const snapshot = await fetchSystemState(env, 'LATEST_COCKPIT_BUNDLE');
+    if (!snapshot || !snapshot.val || typeof snapshot.val !== 'object' || Array.isArray(snapshot.val)) {
+      return new Response("Private snapshot unavailable", { status: 503 });
     }
+    const bundle = snapshot.val;
 
     let reply = "";
 
     if (type === "HELP") {
       reply = 
         "🤖 <b>PANDUAN PERINTAH BOT MBG TRADING (24/7 CLOUD)</b>\n\n" +
-        "Ketik salah satu perintah berikut di grup kapan saja:\n" +
+        "Ketik salah satu perintah berikut di percakapan pribadi:\n" +
         "• <code>/brief</code> ➔ Intisari pasar harian (Daily Brief) pagi & sore\n" +
         "• <code>/research</code> ➔ Catatan riset tematik mendalam & evaluasi sepekan\n" +
         "• <code>/saham &lt;KODE&gt;</code> ➔ Cek analisa & level harga saham BEI (cth: <code>/saham BBCA</code>)\n" +
@@ -377,8 +369,7 @@ export async function onRequestPost(context) {
 
     return new Response("OK", { status: 200 });
   } catch (err) {
-    console.error("Webhook processing error:", err);
-    // Return 200 to satisfy Telegram webhook contract and prevent infinite retry loops
-    return new Response("OK", { status: 200 });
+    console.error("Webhook processing unavailable");
+    return new Response("Webhook service unavailable", { status: 503 });
   }
 }

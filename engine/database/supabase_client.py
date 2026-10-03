@@ -3,6 +3,7 @@ import json
 import logging
 import math
 from datetime import datetime
+from .private_state import PrivateStateStore
 
 def _sanitize_for_json(obj):
     """Replace NaN/Infinity with None to produce valid JSON."""
@@ -19,17 +20,18 @@ logger = logging.getLogger("DBClient")
 
 class DatabaseClient:
     def __init__(self):
+        self.private_store = PrivateStateStore()
         self.supabase_url = os.getenv("SUPABASE_URL")
-        self.supabase_key = os.getenv("SUPABASE_KEY")
+        self.supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY")
         self.client = None
 
-        if self.supabase_url and self.supabase_key:
+        if self.private_store.configured:
             try:
                 from supabase import create_client
                 self.client = create_client(self.supabase_url, self.supabase_key)
                 logger.info("Connected to Supabase successfully.")
             except Exception as e:
-                logger.warning(f"Failed to initialize Supabase client: {e}. Running in local file fallback mode.")
+                logger.warning("Auxiliary Supabase SDK unavailable; master snapshot uses private REST storage.")
         else:
             logger.info("Supabase credentials not found in ENV. Operating in LOCAL_JSON fallback mode.")
 
@@ -53,7 +55,8 @@ class DatabaseClient:
                     json.dump(sanitized_data, f, indent=2, default=str)
                 logger.info(f"Local fallback synced to: {target_file}")
             except Exception as e:
-                logger.error(f"Error writing fallback file: {e}")
+                logger.error("Error writing private local cache")
+                raise
 
     def upsert_macro_telemetry(self, macro_data: dict):
         sanitized = _sanitize_for_json(macro_data)
@@ -107,12 +110,37 @@ class DatabaseClient:
         bundle["last_updated"] = now_utc
         sanitized = _sanitize_for_json(bundle)
         self._save_local_fallback("latest_cockpit_bundle.json", sanitized)
-        if self.client:
-            try:
-                self.client.table("system_state").upsert({
-                    "key": "LATEST_COCKPIT_BUNDLE",
-                    "val": sanitized,
-                    "updated_at": now_utc
-                }).execute()
-            except Exception as e:
-                logger.error(f"Supabase upsert error (system_state): {e}")
+        return self.private_store.write("LATEST_COCKPIT_BUNDLE", sanitized)
+
+    def load_system_state(self, key):
+        return self.private_store.read(key)
+
+    def sync_system_state(self, key, value):
+        return self.private_store.write(key, _sanitize_for_json(value))
+
+    # These files carry state across ephemeral pipeline jobs. The continuous arena
+    # has its own LATEST_ARENA_STATE authority and is not overwritten here.
+    PRIVATE_CACHE_KEYS = {
+        "arena_state.json": "PIPELINE_ARENA_STATE",
+        "paper_portfolio.json": "PAPER_PORTFOLIO_STATE",
+        "exp3_state.json": "EXP3_STATE",
+        "last_known_macro.json": "LAST_KNOWN_MACRO",
+        "research_archive.json": "RESEARCH_ARCHIVE",
+        "vip_signal_ledger.json": "VIP_SIGNAL_LEDGER",
+    }
+
+    def restore_private_cache(self):
+        if not self.private_store.configured:
+            return
+        for filename, key in self.PRIVATE_CACHE_KEYS.items():
+            value = self.private_store.read(key)
+            if value is not None:
+                self._save_local_fallback(filename, value)
+
+    def publish_private_cache(self):
+        cache_dir = os.path.join(os.path.dirname(__file__), "..", "cache")
+        for filename, key in self.PRIVATE_CACHE_KEYS.items():
+            path = os.path.join(cache_dir, filename)
+            if os.path.exists(path):
+                with open(path, encoding="utf-8") as source:
+                    self.sync_system_state(key, json.load(source))

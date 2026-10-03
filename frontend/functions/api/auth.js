@@ -1,229 +1,77 @@
-/**
- * Cloudflare Pages Function: Auth Handler (MBG APEX)
- * Route: /api/auth
- * 
- * Handles password validation and JWT session management.
- * Uses Web Crypto API (available natively in Cloudflare Workers).
- */
-
-// --- Minimal JWT using Web Crypto API (Edge-compatible, no Node.js deps) ---
-
-function base64url(buffer) {
-  return btoa(String.fromCharCode(...new Uint8Array(buffer)))
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-
-function base64urlEncode(str) {
-  return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-
-function base64urlDecode(str) {
-  str = str.replace(/-/g, '+').replace(/_/g, '/');
-  while (str.length % 4) str += '=';
-  return atob(str);
-}
-
-async function signJWT(payload, secret) {
-  const header = base64urlEncode(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-  const body = base64urlEncode(JSON.stringify(payload));
-  const data = new TextEncoder().encode(`${header}.${body}`);
-  const key = await crypto.subtle.importKey(
-    'raw', new TextEncoder().encode(secret),
-    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
-  );
-  const sig = await crypto.subtle.sign('HMAC', key, data);
-  return `${header}.${body}.${base64url(sig)}`;
-}
-
-async function verifyJWT(token, secret) {
-  try {
-    const [headerB64, bodyB64, sigB64] = token.split('.');
-    if (!headerB64 || !bodyB64 || !sigB64) return null;
-
-    const data = new TextEncoder().encode(`${headerB64}.${bodyB64}`);
-    const key = await crypto.subtle.importKey(
-      'raw', new TextEncoder().encode(secret),
-      { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']
-    );
-
-    // Reconstruct signature bytes
-    const sigStr = base64urlDecode(sigB64);
-    const sigBytes = new Uint8Array(sigStr.length);
-    for (let i = 0; i < sigStr.length; i++) sigBytes[i] = sigStr.charCodeAt(i);
-
-    const valid = await crypto.subtle.verify('HMAC', key, sigBytes, data);
-    if (!valid) return null;
-
-    return JSON.parse(base64urlDecode(bodyB64));
-  } catch {
-    return null;
-  }
-}
-
-// --- Deployment Fallback (Owner Directive, 2026-09-30) ---
-// The live gate password must remain "MBG" (owner instruction). This constant is
-// sha256("MBG") and is used ONLY when the PASSWORD_HASH env var is not yet set in
-// Cloudflare Pages, so login keeps working out of the box. Setting PASSWORD_HASH
-// in the dashboard immediately overrides it (password rotation without redeploy).
-const DEFAULT_PASSWORD_HASH = 'baab581258781b80bf4b0764a95fae1a9f08934bbd101053d0f4b70626d5dc30';
-
-// When JWT_SECRET env is absent, derive the signing key deterministically from the
-// active password hash so sessions auto-invalidate whenever the password rotates.
-async function deriveJwtSecret(passwordHash) {
-  const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    'raw', encoder.encode('MBG-APEX-JWT-PEPPER-V1'),
-    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
-  );
-  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(passwordHash));
-  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-async function resolveAuthConfig(env) {
-  const passwordHash = env.PASSWORD_HASH || DEFAULT_PASSWORD_HASH;
-  const jwtSecret = env.JWT_SECRET || (await deriveJwtSecret(passwordHash));
-  return { passwordHash, jwtSecret };
-}
-
-// --- Rate Limiting (in-memory, resets on cold start — acceptable for edge) ---
-const rateLimitMap = new Map();
-
-function checkRateLimit(ip) {
+import { authConfig, ownerVersion, signJWT, requireSession, accessFor, SESSION_SECONDS } from './_session.js';
+import { privateConfig, privateRequest, jsonResponse, sameOrigin } from './_private.js';
+// Isolate-local throttle only; use Cloudflare WAF/rate rules for a distributed limit.
+const attempts = new Map();
+function throttle(ip) {
   const now = Date.now();
-  const window = 15 * 60 * 1000; // 15 minutes
-
-  if (!rateLimitMap.has(ip)) {
-    rateLimitMap.set(ip, { count: 1, resetTime: now + window });
-    return true;
-  }
-
-  const entry = rateLimitMap.get(ip);
-  if (now > entry.resetTime) {
-    rateLimitMap.set(ip, { count: 1, resetTime: now + window });
-    return true;
-  }
-
-  entry.count += 1;
+  for (const [key, entry] of attempts) if (entry.until <= now) attempts.delete(key);
+  const entry = attempts.get(ip) || { count: 0, until: now + 15 * 60 * 1000 };
+  entry.count++;
+  attempts.set(ip, entry);
   return entry.count <= 5;
 }
-
-function parseCookies(cookieHeader) {
-  const cookies = {};
-  if (!cookieHeader) return cookies;
-  cookieHeader.split(';').forEach(part => {
-    const [key, ...rest] = part.split('=');
-    cookies[key.trim()] = rest.join('=').trim();
-  });
-  return cookies;
+function sessionView(s) {
+  return { authenticated: true, tier: s.tier, features: s.features, expiresAt: s.payload.exp * 1000 };
 }
-
-async function hashPassword(password) {
-  const data = new TextEncoder().encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-// --- GET: Verify existing JWT session ---
 export async function onRequestGet(context) {
-  const { env, request } = context;
-  const { jwtSecret: JWT_SECRET } = await resolveAuthConfig(env);
-
-  const cookies = parseCookies(request.headers.get('Cookie'));
-  const token = cookies['mbg_jwt'];
-
-  if (!token) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
-    });
-  }
-
-  const payload = await verifyJWT(token, JWT_SECRET);
-  if (!payload || (payload.expiresAt && Date.now() > payload.expiresAt)) {
-    return new Response(JSON.stringify({ error: 'Unauthorized or token expired' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
-    });
-  }
-
-  // TRUST03: the tier comes from the server-issued JWT claim.
-  return new Response(JSON.stringify({ authenticated: true, tier: payload.tier || 'PRO' }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
-  });
+  const s = await requireSession(context);
+  return s.ok ? jsonResponse(sessionView(s)) : s.response;
 }
-
-// --- POST: Validate password, issue JWT ---
 export async function onRequestPost(context) {
   const { env, request } = context;
-  const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
-  const { passwordHash: PASSWORD_HASH, jwtSecret: JWT_SECRET } = await resolveAuthConfig(env);
-
-  if (!checkRateLimit(ip)) {
-    return new Response(JSON.stringify({ error: 'Too many attempts. Try again in 15 minutes.' }), {
-      status: 429,
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
-    });
-  }
-
+  if (!sameOrigin(request)) return jsonResponse({ error: 'Origin not allowed' }, 403);
+  let secret;
+  try { secret = authConfig(env); } catch { return jsonResponse({ error: 'Authentication service unavailable' }, 503); }
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  if (!throttle(ip)) return jsonResponse({ error: 'Too many attempts' }, 429, { 'Retry-After': '900' });
   let body;
   try {
-    body = await request.json();
-  } catch {
-    return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
-    });
-  }
-
-  const { password } = body || {};
-  if (!password) {
-    return new Response(JSON.stringify({ error: 'Password required' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
-    });
-  }
-
-  // Constant-time hash comparison (avoid string equality timing signal)
-  const inputHash = await hashPassword(password);
-  const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey('raw', encoder.encode(JWT_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
-  const refSig = await crypto.subtle.sign('HMAC', key, encoder.encode(inputHash));
-  const cmpSig = await crypto.subtle.sign('HMAC', key, encoder.encode(PASSWORD_HASH));
-  const isMatch =
-    refSig.byteLength === cmpSig.byteLength &&
-    crypto.subtle.timingSafeEqual
-      ? crypto.subtle.timingSafeEqual(refSig, cmpSig)
-      : (() => {
-          // Fallback constant-time compare on bytes
-          const a = new Uint8Array(refSig), b = new Uint8Array(cmpSig);
-          let diff = 0;
-          for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
-          return diff === 0;
-        })();
-
-  if (isMatch) {
-    // Clear rate limit on success
-    rateLimitMap.delete(ip);
-
-    const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
-    // TRUST03: the tier is server-issued (JWT claim), never client-asserted.
-    // M0: every authenticated cockpit user is a Pro-cockpit user; per-user VIP
-    // grants move here when the Supabase grant table lands (D-2).
-    const token = await signJWT({ authenticated: true, tier: 'PRO', expiresAt }, JWT_SECRET);
-
-    return new Response(JSON.stringify({ authenticated: true, tier: 'PRO', expiresAt }), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'no-store',
-        'Set-Cookie': `mbg_jwt=${token}; HttpOnly; Secure; Path=/; Max-Age=${24 * 60 * 60}; SameSite=Strict`
-      }
-    });
-  } else {
-    return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
-    });
-  }
+    const raw = await request.text();
+    if (new TextEncoder().encode(raw).length > 8192) return jsonResponse({ error: 'Payload too large' }, 413);
+    body = JSON.parse(raw);
+  } catch { return jsonResponse({ error: 'Invalid request' }, 400); }
+  if (!body || typeof body.password !== 'string' || !body.password || body.password.length > 1024 || (body.email !== undefined && (typeof body.email !== 'string' || body.email.length > 320))) return jsonResponse({ error: 'Credentials required' }, 400);
+  try {
+    const iat = Math.floor(Date.now() / 1000);
+    let identity;
+    let seconds = SESSION_SECONDS;
+    if (body.email) {
+      const { url, key } = privateConfig(env);
+      const response = await fetch(`${url}/auth/v1/token?grant_type=password`, {
+        method: 'POST', headers: { apikey: key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: body.email.trim(), password: body.password }),
+        signal: AbortSignal.timeout(8000), cache: 'no-store',
+      });
+      if (response.status >= 500) throw new Error('Identity service unavailable');
+      if (response.status === 429) return jsonResponse({ error: 'Too many attempts' }, 429, { 'Retry-After': '900' });
+      if (!response.ok) return jsonResponse({ error: 'Invalid credentials' }, 401);
+      const auth = await response.json();
+      if (!auth.user?.id || !auth.user.email_confirmed_at || !Number.isFinite(auth.expires_in) || auth.expires_in < 1) return jsonResponse({ error: 'Invalid credentials' }, 401);
+      identity = { kind: 'SUBSCRIBER', sub: auth.user.id };
+      seconds = Math.min(SESSION_SECONDS, Math.floor(auth.expires_in));
+    } else {
+      const version = await ownerVersion(env);
+      const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(body.password)));
+      const expected = Uint8Array.from(env.PASSWORD_HASH.match(/../g), hex => parseInt(hex, 16));
+      let different = 0;
+      for (let i = 0; i < digest.length; i++) different |= digest[i] ^ expected[i];
+      if (different) return jsonResponse({ error: 'Invalid credentials' }, 401);
+      identity = { kind: 'OWNER', sub: 'owner', ownerVersion: version };
+    }
+    const payload = { ...identity, sid: crypto.randomUUID(), authenticated: true, iss: 'mbg', aud: 'mbg-cockpit', iat, exp: iat + seconds };
+    const access = await accessFor(env, payload);
+    await privateRequest(env, 'mbg_sessions', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ id: payload.sid, subject: payload.sub, kind: payload.kind, expires_at: new Date(payload.exp * 1000).toISOString() }) });
+    const token = await signJWT(payload, secret);
+    attempts.delete(ip);
+    return jsonResponse(sessionView({ payload, ...access }), 200, { 'Set-Cookie': `mbg_jwt=${token}; HttpOnly; Secure; Path=/; Max-Age=${seconds}; SameSite=Strict` });
+  } catch { return jsonResponse({ error: 'Authentication service unavailable' }, 503); }
+}
+export async function onRequestDelete(context) {
+  if (!sameOrigin(context.request)) return jsonResponse({ error: 'Origin not allowed' }, 403);
+  const session = await requireSession(context);
+  if (!session.ok && session.response.status !== 401) return session.response;
+  try {
+    if (session.ok) await privateRequest(context.env, `mbg_sessions?id=eq.${session.payload.sid}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ revoked_at: new Date().toISOString() }) });
+    return jsonResponse({ authenticated: false }, 200, { 'Set-Cookie': 'mbg_jwt=; HttpOnly; Secure; Path=/; Max-Age=0; SameSite=Strict' });
+  } catch { return jsonResponse({ error: 'Logout service unavailable' }, 503); }
 }

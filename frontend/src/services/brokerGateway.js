@@ -396,115 +396,11 @@ export class PaperBroker {
   }
 }
 
-// ==========================================
-// 2. BINANCE LIVE & TESTNET API ADAPTER
-// ==========================================
-
+// Browser live execution is disabled. Broker credentials and order signing must
+// live behind an independently authorized server execution gateway.
 export class BinanceLiveAdapter {
-  constructor(apiKey = '', secretKey = '', isTestnet = true) {
-    this.apiKey = apiKey;
-    this.secretKey = secretKey;
-    this.isTestnet = isTestnet;
-    this.baseUrl = isTestnet
-      ? 'https://testnet.binance.vision'
-      : 'https://api.binance.com';
-  }
-
-  /**
-   * Generates HMAC-SHA256 signature using native Web Crypto API
-   */
-  async _generateSignature(queryString) {
-    const encoder = new TextEncoder();
-    const keyData = encoder.encode(this.secretKey);
-    const msgData = encoder.encode(queryString);
-
-    const cryptoKey = await crypto.subtle.importKey(
-      'raw',
-      keyData,
-      { name: 'HMAC', hash: 'SHA-256' },
-      false,
-      ['sign']
-    );
-
-    const signatureBuffer = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
-    const hashArray = Array.from(new Uint8Array(signatureBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  }
-
-  /**
-   * Test API connectivity and verify authentication
-   */
-  async testConnection() {
-    if (!this.apiKey || !this.secretKey) {
-      throw new Error('API Key & Secret Key diperlukan untuk terhubung ke Binance.');
-    }
-
-    const timestamp = Date.now();
-    const query = `timestamp=${timestamp}`;
-    const signature = await this._generateSignature(query);
-
-    const url = `${this.baseUrl}/api/v3/account?${query}&signature=${signature}`;
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'X-MBX-APIKEY': this.apiKey
-      }
-    });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(`Binance API Error (${res.status}): ${err.msg || res.statusText}`);
-    }
-
-    const data = await res.json();
-    return {
-      connected: true,
-      canTrade: data.canTrade,
-      accountType: data.accountType,
-      isTestnet: this.isTestnet,
-      balances: (data.balances || []).filter(b => parseFloat(b.free) > 0 || parseFloat(b.locked) > 0)
-    };
-  }
-
-  /**
-   * Dispatch a real live order to Binance
-   */
-  async placeOrder({ symbol, side, type = 'LIMIT', quantity, price, timeInForce = 'GTC' }) {
-    // TRUST06 release flag: real Binance orders stay DISABLED unless explicitly
-    // enabled at build/env time. No accidental real-money orders.
-    const flag = (typeof import.meta !== 'undefined' && import.meta.env)
-      ? import.meta.env.VITE_ENABLE_REAL_ORDERS
-      : undefined;
-    if (flag !== '1') {
-      throw new Error('REAL ORDERS DISABLED (TRUST06): set VITE_ENABLE_REAL_ORDERS=1 untuk mengaktifkan order Binance sungguhan.');
-    }
-    if (!this.apiKey || !this.secretKey) {
-      throw new Error('Binance credentials not set.');
-    }
-
-    const timestamp = Date.now();
-    let query = `symbol=${symbol.replace('/', '').toUpperCase()}&side=${side}&type=${type}&quantity=${quantity}&timestamp=${timestamp}`;
-    if (type === 'LIMIT') {
-      query += `&price=${price}&timeInForce=${timeInForce}`;
-    }
-
-    const signature = await this._generateSignature(query);
-    const url = `${this.baseUrl}/api/v3/order?${query}&signature=${signature}`;
-
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'X-MBX-APIKEY': this.apiKey
-      }
-    });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(`Order Gagal (${res.status}): ${err.msg || res.statusText}`);
-    }
-
-    return await res.json();
-  }
+  async testConnection() { throw new Error('Browser live execution is disabled'); }
+  async placeOrder() { throw new Error('Browser live execution is disabled'); }
 }
 
 // Global Singleton Instance for application-wide paper execution

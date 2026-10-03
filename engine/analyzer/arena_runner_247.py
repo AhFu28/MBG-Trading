@@ -20,6 +20,8 @@ import logging
 import argparse
 import urllib.request
 from datetime import datetime, timezone
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from database.private_state import PrivateStateStore
 from typing import Dict, List, Any, Optional
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -60,10 +62,17 @@ class ArenaRunner247:
             # paid payload and must never be a publicly downloadable static file.
             self.state_file = os.path.join(base_dir, "engine", "cache", "latest_arena_state.json")
         
+        self.private_store = PrivateStateStore()
         self.state = self._load_state()
 
     def _load_state(self) -> Dict[str, Any]:
-        if os.path.exists(self.state_file):
+        if self.private_store.configured:
+            data = self.private_store.read("LATEST_ARENA_STATE")
+            if data is not None:
+                if not isinstance(data, dict) or not isinstance(data.get("agents"), list) or not isinstance(data.get("positions"), list):
+                    raise ValueError("Invalid private arena state; refusing to reset")
+                return data
+        elif os.path.exists(self.state_file):
             try:
                 with open(self.state_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
@@ -88,8 +97,10 @@ class ArenaRunner247:
             with open(temp_file, "w", encoding="utf-8") as f:
                 json.dump(self.state, f, indent=2, default=str)
             os.replace(temp_file, self.state_file)
+            self.private_store.write("LATEST_ARENA_STATE", self.state)
         except Exception as e:
-            logger.error(f"Failed to persist state: {e}")
+            logger.error("Failed to persist arena state")
+            raise
 
     def fetch_live_prices(self) -> Dict[str, Dict[str, float]]:
         prices: Dict[str, Dict[str, float]] = {}

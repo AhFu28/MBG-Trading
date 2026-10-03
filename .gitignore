@@ -49,3 +49,9 @@ Python/
 
 # Logs
 *.log
+
+# Private runtime payloads and local Python environment
+engine/cache/
+frontend/public/data/
+frontend/src/data/dev_bundle.json
+.venv/

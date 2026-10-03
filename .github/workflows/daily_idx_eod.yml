@@ -3,6 +3,10 @@ name: Daily IDX EOD Broker Summary Retrieval (Manual On-Demand)
 on:
   workflow_dispatch: # Allows manual trigger from GitHub Actions tab (Cron scheduled runs disabled)
 
+concurrency:
+  group: mbg-private-pipeline
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
@@ -30,12 +34,13 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          MBG_REQUIRE_PRIVATE_PUBLISH: 'true'
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           INDEX_ALPHA_API_KEY: ${{ secrets.INDEX_ALPHA_API_KEY }}
         run: |
-          python engine/run_pipeline.py --mode all
+          python engine/run_pipeline.py --mode all > "$RUNNER_TEMP/mbg-private-engine.log" 2>&1
       - name: Send Telegram Failure Alert
         if: failure()
         run: |
