@@ -32,6 +32,7 @@ except ImportError as e:
 
 from database.supabase_client import DatabaseClient
 from notifiers.telegram_notifier import TelegramNotifier
+from notifiers.vip_signal_router import route as vip_route, load_subscribers as vip_load_subscribers, dispatch as vip_deliver
 
 logging.basicConfig(
     level=logging.INFO,
@@ -119,6 +120,11 @@ def dispatch_vip_signals(telegram, trade_plans, crypto_spot_10, mode="all"):
     except Exception:
         ledger = {}
 
+    # ONE provenance-gated dispatch path (reconciles origin a044e9b with the router):
+    # route() applies the honesty gate (source + observed_at; synthetic never LIVE)
+    # and the subscriber allowlist; dispatch() delivers - dry-run unless VIP_LIVE=1.
+    subscribers = vip_load_subscribers()
+    dry_run = not os.getenv("VIP_LIVE")
     sent = 0
     for bot_name, plan in candidates:
         key = _vip_signal_key(plan)
@@ -128,16 +134,20 @@ def dispatch_vip_signals(telegram, trade_plans, crypto_spot_10, mode="all"):
         if not plan.get("entry_price"):
             logger.warning(f"VIP dispatch skipped {key}: missing entry price.")
             continue
-        if telegram.broadcast_vip_trade_signal(plan, agent_name=bot_name):
+        vip_msgs, pub_msgs = vip_route([plan], subscribers, agent_name=bot_name)
+        results = vip_deliver(vip_msgs, pub_msgs, notifier=telegram, dry_run=dry_run)
+        if results.get("vip_sent") or results.get("public_sent"):
             ledger[key] = datetime.now(timezone.utc).isoformat()
             sent += 1
-            logger.info(f"VIP signal dispatched: {bot_name} -> {key}")
+            logger.info(f"VIP signal dispatched: {bot_name} -> {key} (vip={results.get('vip_sent')}, public={results.get('public_sent')})")
+        elif results.get("blocked"):
+            logger.warning(f"VIP dispatch blocked {key}: {results['blocked']}")
 
     if sent:
         os.makedirs(os.path.dirname(VIP_LEDGER_PATH), exist_ok=True)
         with open(VIP_LEDGER_PATH, "w", encoding="utf-8") as fh:
             json.dump(ledger, fh, indent=2)
-    logger.info(f"VIP dispatch complete: {sent} new ticket(s) sent, {len(ledger)} total in ledger.")
+    logger.info(f"VIP dispatch complete: {sent} new ticket(s) dispatched, {len(ledger)} total in ledger, dry_run={dry_run}.")
 
 def main():
     # Load .env if present
