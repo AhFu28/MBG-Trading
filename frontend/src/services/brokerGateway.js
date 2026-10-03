@@ -470,6 +470,14 @@ export class BinanceLiveAdapter {
    * Dispatch a real live order to Binance
    */
   async placeOrder({ symbol, side, type = 'LIMIT', quantity, price, timeInForce = 'GTC' }) {
+    // TRUST06 release flag: real Binance orders stay DISABLED unless explicitly
+    // enabled at build/env time. No accidental real-money orders.
+    const flag = (typeof import.meta !== 'undefined' && import.meta.env)
+      ? import.meta.env.VITE_ENABLE_REAL_ORDERS
+      : undefined;
+    if (flag !== '1') {
+      throw new Error('REAL ORDERS DISABLED (TRUST06): set VITE_ENABLE_REAL_ORDERS=1 untuk mengaktifkan order Binance sungguhan.');
+    }
     if (!this.apiKey || !this.secretKey) {
       throw new Error('Binance credentials not set.');
     }
