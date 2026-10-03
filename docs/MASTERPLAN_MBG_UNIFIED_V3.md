@@ -822,3 +822,25 @@ Audit kelengkapan oleh reviewer model menemukan 5 bagian yang sebelumnya hilang 
 **Gate status before push:** build PASS (28 chunks) · vitest 86/86 · pytest 41+5 · both sentinels PASS.
 
 **Remaining open (non-blocking):** S3 live POST-pair verification after deploy; cron re-enable vs manual SOP (owner); D-1 market choice (recommended crypto spot); CWV + WCAG re-verify on deploy.
+
+
+---
+
+## 14. DEPLOYMENT RECORD — 3 Oktober 2026 (deployed + verified live)
+
+**Deployed:** main @ efb0f21 (a168354..efb0f21) — Cloudflare Pages auto-deploy. Live bundle: index-xgtrcLx8.js (451,607 B) — the reconciled build.
+
+**Live verification (all green):**
+| Check | Result |
+|:---|:---|
+| GET / | 200 — site up |
+| GET /api/auth | **401** (server enforces) |
+| POST /api/auth password MBG | **200** + mbg_jwt HttpOnly cookie issued |
+| POST /api/auth password WRONG | **401** |
+| POST /api/auth password mbg (lowercase) | **401** — the old hardcoded bypass stays dead |
+| GET /data/daily_trade_plans.json | 200 with SPA shell (is-html: true) — **no JSON leak** |
+| Bundle markers | DegenDesk + MemecoinRadar PRESENT; fallback-secret-for-dev ABSENT; fakeTxHash ABSENT; same-origin (fixed PasswordGate) PRESENT |
+
+**Note:** the push was unblocked by using Git Credential Manager (the stored Windows credential) instead of the Hermes helper-selector that had hijacked the helper chain and hung the push.
+
+**Status: the web is updated, deployed, and verified. D-8b resolved (password MBG). Remaining non-blocking: S3 live POST-pair via webhook secret header, cron re-enable vs manual SOP, D-1 market choice, CWV/WCAG on deploy.**
