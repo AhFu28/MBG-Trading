@@ -844,3 +844,15 @@ Audit kelengkapan oleh reviewer model menemukan 5 bagian yang sebelumnya hilang 
 **Note:** the push was unblocked by using Git Credential Manager (the stored Windows credential) instead of the Hermes helper-selector that had hijacked the helper chain and hung the push.
 
 **Status: the web is updated, deployed, and verified. D-8b resolved (password MBG). Remaining non-blocking: S3 live POST-pair via webhook secret header, cron re-enable vs manual SOP, D-1 market choice, CWV/WCAG on deploy.**
+
+
+### 14.1 Addendum (3 Okt, ~16:00 WIB) — TRUST03 + TRUST06 deployed and live-verified
+
+Commits 014c484 (TRUST06 release flag) + b1aaa69 (TRUST03 server tier) pushed and deployed. Live bundle index-BxkWhjOv.js (451,253 B):
+- POST /api/auth "MBG" -> 200 {"authenticated":true,"tier":"PRO","expiresAt":...} — the tier is server-issued (TRUST03 live)
+- GET /api/auth -> 401 (enforcement intact)
+- REAL ORDERS DISABLED guard present in bundle (TRUST06 live); VITE_ENABLE_REAL_ORDERS=1 required to enable real Binance orders
+- mbg_user_tier + cycleUserTier GONE from the bundle (localStorage tier fully removed)
+- Webhook secret enforcement live-verified earlier: no/wrong secret -> 500 (fail-closed)
+
+**TRUST01-06 status now: T1 DONE, T2 CLOSED (payload leak), T3 DONE (M0 scope), T4 CLOSED, T5 PARTIAL (router blocked-records), T6 DONE (flags).** Remaining: owner decisions (D-1 market, cron SOP, Telegram wiring with bot token + TELEGRAM_WEBHOOK_SECRET in Cloudflare env), Pekan 3 launch mechanics, CWV/WCAG on deploy.
