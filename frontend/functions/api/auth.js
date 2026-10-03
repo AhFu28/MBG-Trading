@@ -134,7 +134,7 @@ export async function onRequestGet(context) {
   if (!token) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
     });
   }
 
@@ -142,13 +142,13 @@ export async function onRequestGet(context) {
   if (!payload || (payload.expiresAt && Date.now() > payload.expiresAt)) {
     return new Response(JSON.stringify({ error: 'Unauthorized or token expired' }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
     });
   }
 
   return new Response(JSON.stringify({ authenticated: true }), {
     status: 200,
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
   });
 }
 
@@ -161,7 +161,7 @@ export async function onRequestPost(context) {
   if (!checkRateLimit(ip)) {
     return new Response(JSON.stringify({ error: 'Too many attempts. Try again in 15 minutes.' }), {
       status: 429,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
     });
   }
 
@@ -171,7 +171,7 @@ export async function onRequestPost(context) {
   } catch {
     return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
     });
   }
 
@@ -179,7 +179,7 @@ export async function onRequestPost(context) {
   if (!password) {
     return new Response(JSON.stringify({ error: 'Password required' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
     });
   }
 
@@ -212,13 +212,14 @@ export async function onRequestPost(context) {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
+        'Cache-Control': 'no-store',
         'Set-Cookie': `mbg_jwt=${token}; HttpOnly; Secure; Path=/; Max-Age=${24 * 60 * 60}; SameSite=Strict`
       }
     });
   } else {
     return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
     });
   }
 }

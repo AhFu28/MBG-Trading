@@ -42,7 +42,7 @@ const okBody = await okRes.json();
 const setCookie = okRes.headers.get('Set-Cookie') || '';
 check('correct password -> 200', okRes.status === 200, `status=${okRes.status}`);
 check('correct password -> authenticated:true', okBody.authenticated === true, JSON.stringify(okBody));
-check('correct password -> opaque session id returned', typeof okBody.session === 'string' && okBody.session.length > 0, JSON.stringify(okBody));
+check('correct password -> expiresAt returned', typeof okBody.expiresAt === 'number' && okBody.expiresAt > Date.now(), JSON.stringify(okBody));
 check('session cookie is HttpOnly+Secure+SameSite=Strict', /HttpOnly/.test(setCookie) && /Secure/.test(setCookie) && /SameSite=Strict/.test(setCookie), setCookie);
 check('auth responses are Cache-Control: no-store', okRes.headers.get('Cache-Control') === 'no-store', okRes.headers.get('Cache-Control'));
 check('no Clear/plaintext password echoed in body', !JSON.stringify(okBody).includes(PASSWORD), JSON.stringify(okBody));
@@ -68,7 +68,9 @@ const forged = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
 const forgedRes = await onRequestGet({ env: { PASSWORD_HASH, JWT_SECRET }, request: getRequest(`mbg_jwt=${forged}`) });
 check('GET with forged token -> 401', forgedRes.status === 401, `status=${forgedRes.status}`);
 
-const tampered = sessionCookie.replace(/.$/, (c) => (c === 'A' ? 'B' : 'A'));
+// Tamper a SIGNIFICANT signature bit: the last base64 char of a 3-char group
+// only encodes discarded bits, so flipping it is a no-op (the old test bug).
+const tampered = sessionCookie.slice(0, -3) + (sessionCookie.slice(-3, -2) === 'A' ? 'B' : 'A') + sessionCookie.slice(-2);
 const tamperedRes = await onRequestGet({ env: { PASSWORD_HASH, JWT_SECRET }, request: getRequest(tampered) });
 check('GET with tampered signature -> 401', tamperedRes.status === 401, `status=${tamperedRes.status}`);
 
@@ -76,15 +78,25 @@ const validRes = await onRequestGet({ env: { PASSWORD_HASH, JWT_SECRET }, reques
 const validBody = await validRes.json();
 check('GET with real cookie -> 200 authenticated:true', validRes.status === 200 && validBody.authenticated === true, `status=${validRes.status} body=${JSON.stringify(validBody)}`);
 
-// 4. Missing production configuration fails closed (no fallback secret/hash).
-const noHash = await onRequestPost({ env: { JWT_SECRET }, request: postRequest(PASSWORD, '10.0.0.5') });
-check('missing PASSWORD_HASH -> 503', noHash.status === 503, `status=${noHash.status}`);
+// 4. Owner directive (2026-09-30, reconfirmed 3 Okt): with PASSWORD_HASH unset,
+// the gate falls back to the documented default password MBG (sha256-verified
+// by the sentinel); JWT_SECRET is derived from the active hash so sessions
+// auto-invalidate when the password rotates.
+const defaultRes = await onRequestPost({ env: { JWT_SECRET }, request: postRequest('MBG', '10.0.0.5') });
+check('missing PASSWORD_HASH -> default MBG accepted -> 200', defaultRes.status === 200, `status=${defaultRes.status}`);
 
-const noSecret = await onRequestPost({ env: { PASSWORD_HASH }, request: postRequest(PASSWORD, '10.0.0.6') });
-check('missing JWT_SECRET -> 503 (no dev fallback)', noSecret.status === 503, `status=${noSecret.status}`);
+const defaultWrongRes = await onRequestPost({ env: { JWT_SECRET }, request: postRequest('nope', '10.0.0.6') });
+check('missing PASSWORD_HASH -> wrong password -> 401', defaultWrongRes.status === 401, `status=${defaultWrongRes.status}`);
 
-const shortSecret = await onRequestPost({ env: { PASSWORD_HASH, JWT_SECRET: 'short' }, request: postRequest(PASSWORD, '10.0.0.7') });
-check('too-short JWT_SECRET -> 503', shortSecret.status === 503, `status=${shortSecret.status}`);
+const derivedPost = await onRequestPost({ env: { PASSWORD_HASH }, request: postRequest(PASSWORD, '10.0.0.7') });
+const derivedCookie = (derivedPost.headers.get('Set-Cookie') || '').split(';')[0];
+check('missing JWT_SECRET -> login still 200 (derived secret)', derivedPost.status === 200, `status=${derivedPost.status}`);
+const derivedGet = await onRequestGet({ env: { PASSWORD_HASH }, request: getRequest(derivedCookie) });
+const derivedBody = await derivedGet.json().catch(() => ({}));
+check('missing JWT_SECRET -> session verifies -> 200 authenticated', derivedGet.status === 200 && derivedBody.authenticated === true, `status=${derivedGet.status}`);
+
+const derivedForged = await onRequestGet({ env: { PASSWORD_HASH }, request: getRequest(`mbg_jwt=${forged}`) });
+check('missing JWT_SECRET -> forged token -> 401', derivedForged.status === 401, `status=${derivedForged.status}`);
 
 console.log(`\n${failed === 0 ? 'auth handler runtime test: PASS' : `auth handler runtime test: FAIL (${failed})`}`);
 process.exit(failed === 0 ? 0 : 1);

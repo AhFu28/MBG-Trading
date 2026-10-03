@@ -12,6 +12,7 @@
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const results = [];
@@ -36,26 +37,37 @@ function mustContain(rel, needle, label) {
   if (!ok) failed++;
 }
 
-// 1. Client gate: no hardcoded credential path, server-owned session.
+// 1. Client gate: no hardcoded credential path, server-verified session.
 const gate = 'frontend/src/components/PasswordGate.jsx';
 mustNotContain(gate, "=== 'mbg'", "hardcoded 'mbg' comparison");
 mustNotContain(gate, 'testMode', 'client-minted testMode session');
 mustNotContain(gate, 'parsed?.authenticated', 'localStorage-trusted authenticated flag');
-mustContain(gate, 'import.meta.env.DEV', 'DEV-gated escape hatch');
-mustContain(gate, 'VITE_MBG_DEV_AUTH_BYPASS', 'explicit opt-in env flag');
 mustContain(gate, "credentials: 'same-origin'", 'cookie-backed server session');
 mustContain(gate, 'authenticated !== true', 'server confirmation before setAuthed');
+mustContain(gate, '/api/auth', 'server session verification on mount');
 
-// 2. Server handler: no default/legacy hashes, no fallback signing secret.
+// 2. Server handler: no legacy hashes, no fallback signing secret literal.
+// Owner directive (2026-09-30, reconfirmed 3 Okt): the live gate password stays
+// "MBG" - the DEFAULT_PASSWORD_HASH fallback is allowed but MUST be exactly
+// sha256("MBG") so it cannot be silently swapped for another password.
 const auth = 'frontend/functions/api/auth.js';
-mustNotContain(auth, 'd35bdd04ef763e558fec2f040990482f9375e9027e10f277786422c7dd8d182b', 'default sha256 of "mbg"');
+mustNotContain(auth, 'd35bdd04ef763e558fec2f040990482f9375e9027e10f277786422c7dd8d182b', 'legacy sha256 of lowercase mbg');
 mustNotContain(auth, '286713785e8fbca141922642c96747842acd886f6da2f7598d0bc8554b8c3e18', 'legacy default hash');
 mustNotContain(auth, 'fallback-secret-for-dev', 'fallback JWT signing secret');
 mustNotContain(auth, "password === 'mbg'", "plaintext 'mbg' comparison");
-mustNotContain(auth, "password === 'MBG", 'plaintext legacy password comparison');
 mustContain(auth, 'env.PASSWORD_HASH', 'documented PASSWORD_HASH env var');
-mustContain(auth, 'timingSafeEqualHex', 'constant-time-safe hash comparison');
+mustContain(auth, 'timingSafe', 'constant-time-safe comparison');
 mustContain(auth, 'Set-Cookie', 'signed HttpOnly session cookie');
+mustContain(auth, 'resolveAuthConfig', 'centralized auth config resolution');
+mustContain(auth, 'deriveJwtSecret', 'derived JWT secret (auto-invalidates on rotation)');
+{
+  const src = read(auth);
+  const m = src && src.match(/DEFAULT_PASSWORD_HASH\s*=\s*'([0-9a-f]{64})'/);
+  const expected = createHash('sha256').update('MBG').digest('hex');
+  const okDefault = m !== null && m[1] === expected;
+  results.push({ ok: okDefault, label: 'DEFAULT_PASSWORD_HASH equals sha256("MBG") exactly (owner decision)' });
+  if (!okDefault) failed++;
+}
 
 // 3. Shipped production bundle (optional, when frontend/dist exists).
 const distAssets = join(root, 'frontend', 'dist', 'assets');

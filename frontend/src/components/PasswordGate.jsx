@@ -10,41 +10,25 @@ export default function PasswordGate({ children }) {
   const [attempts, setAttempts] = useState(0);
   const [locked, setLocked] = useState(false);
 
-  // M-04: Check existing 24-hour session on mount
+  // M-04: server-verified 24-hour session on mount. The HttpOnly cookie is the
+  // single source of truth; localStorage is a display hint, never the authority.
   useEffect(() => {
     async function verifySession() {
       try {
-        const savedSession = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
-        if (savedSession) {
-          const parsed = JSON.parse(savedSession);
-          // If session is authenticated and within 24-hour TTL window, grant immediate access
-          if (parsed?.authenticated && parsed?.expiresAt && Date.now() < parsed.expiresAt) {
-            setAuthed(true);
-            setLoading(false);
-            return;
-          } else if (parsed?.authenticated && !parsed?.expiresAt) {
-            // Upgrade legacy sessions to 24h expiration
-            parsed.expiresAt = Date.now() + 24 * 3600 * 1000;
-            localStorage.setItem(SESSION_KEY, JSON.stringify(parsed));
-            setAuthed(true);
-            setLoading(false);
-            return;
-          } else {
-            localStorage.removeItem(SESSION_KEY);
-            sessionStorage.removeItem(SESSION_KEY);
-          }
-        }
-      } catch (_) {}
-
-      try {
-        const res = await fetch('/api/auth');
+        const res = await fetch('/api/auth', { credentials: 'same-origin' });
+        const body = await res.json().catch(() => ({}));
+        if (res.ok && body.authenticated !== true) throw new Error('unverified session');
         if (res.ok) {
           const expiresAt = Date.now() + 24 * 3600 * 1000;
           localStorage.setItem(SESSION_KEY, JSON.stringify({ authenticated: true, expiresAt }));
           setAuthed(true);
+          setLoading(false);
+          return;
         }
-      } catch (err) {
-        // Fallback for static host / local dev
+        localStorage.removeItem(SESSION_KEY);
+        sessionStorage.removeItem(SESSION_KEY);
+      } catch (_) {
+        // No server (static host / local dev without functions): show the gate.
       }
       setLoading(false);
     }
