@@ -1,0 +1,19 @@
+{
+  "_comment": "MBG VIP subscriber allowlist (GTM-TG-01 / TRUST03 prerequisite). Copy to vip_subscribers.json and fill in real chat IDs. This file is file-based entitlement: it is a pilot stopgap until server-owned entitlement (TRUST03) lands. Never commit real customer chat IDs.",
+  "_schema": {
+    "chat_id": "Telegram chat id (string)",
+    "tier": "VIP | PRO (anything else is ignored)",
+    "expires_at": "YYYY-MM-DD or ISO-8601; omitted = no expiry (requires active=true)",
+    "active": "boolean; false revokes immediately",
+    "name": "operator label, not sent to Telegram"
+  },
+  "subscribers": [
+    {
+      "chat_id": "000000000",
+      "tier": "VIP",
+      "expires_at": "2026-11-30",
+      "active": true,
+      "name": "founding-cohort-01"
+    }
+  ]
+}
