@@ -191,13 +191,9 @@ export default function App() {
     }
   });
 
-  const cycleUserTier = useCallback(() => {
-    setUserTier(prev => {
-      const next = prev === 'NEW' ? 'FREE' : (prev === 'FREE' ? 'PRO' : 'NEW');
-      try { localStorage.setItem('mbg_user_tier', next); } catch (e) {}
-      return next;
-    });
-  }, []);
+  // S9: no client-side tier escalation — the tier is display-only until the
+  // server-owned tier policy (TRUST03) lands. Fake 'VIP PRO' without payment
+  // violates the honesty rules.
 
   // Web3 Solana Phantom Wallet State
   const [walletState, setWalletState] = useState({
@@ -533,9 +529,8 @@ export default function App() {
                 <span>{displayMode === 'SIMPLE' ? 'MODE SANTAI' : 'MODE PRO'}</span>
               </button>
 
-              {/* User Tier Status Badge (New, Free, Pro) */}
+              {/* User Tier Status Badge (display-only until TRUST03 server tier) */}
               <button
-                onClick={cycleUserTier}
                 style={{
                   fontSize: '9px',
                   fontWeight: '600',
@@ -544,7 +539,7 @@ export default function App() {
                   padding: '3px 8px',
                   minHeight: '26px',
                   borderRadius: '6px',
-                  cursor: 'pointer',
+                  cursor: 'default',
                   border: userTier === 'PRO' ? '1px solid rgba(100, 116, 139, 0.45)' : '1px solid rgba(100, 116, 139, 0.25)',
                   background: userTier === 'PRO' ? 'rgba(100, 116, 139, 0.12)' : 'rgba(100, 116, 139, 0.06)',
                   color: userTier === 'PRO' ? 'var(--text-primary)' : 'var(--text-secondary)',
@@ -552,7 +547,7 @@ export default function App() {
                   alignItems: 'center',
                   gap: '4px'
                 }}
-                title="Status Hak Akses (Klik untuk ganti tier: TAMU → FREE → VIP PRO)"
+                title="Status hak akses. Upgrade ke VIP: hubungi admin / kanal promo Telegram."
               >
                 <span>{userTier === 'PRO' ? '👑' : (userTier === 'FREE' ? '⭐' : '👤')}</span>
                 <span>{userTier === 'PRO' ? 'VIP PRO' : (userTier === 'FREE' ? 'FREE MEMBER' : 'TAMU')}</span>
