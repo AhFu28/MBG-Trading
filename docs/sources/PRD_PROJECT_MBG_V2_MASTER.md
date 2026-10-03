@@ -363,14 +363,14 @@ Buat file bernama `.env` di folder utama dan isi kredensial Anda:
 ```ini
 # Database Supabase
 SUPABASE_URL=https://xyzcompany.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJh...kunci_rahasia
+SUPABASE_SERVICE_ROLE_KEY=[REDACTED entire credential]
 
 # Bot Telegram 24/7
-TELEGRAM_BOT_TOKEN=1234567890:ABCdefGhIJKlmNoPQRsTUVwxyZ
+TELEGRAM_BOT_TOKEN=[REDACTED entire credential]
 TELEGRAM_CHAT_ID=123456789
 
 # Master Password Cockpit Web
-COCKPIT_PASSWORD=MBG::Xk9#Tr4d3!C0ckp1t_Zw&Qr7
+COCKPIT_PASSWORD=[REDACTED entire credential]
 ```
 
 ### Langkah 5: Menjalankan & Menguji di Komputer Lokal

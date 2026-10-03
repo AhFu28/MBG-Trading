@@ -15,7 +15,7 @@ Mas Fuad, empat dokumen sudah dibaca penuh, dibedah, dan disatukan menjadi **sat
 3. **Produk yang dijual di Pekan 3 bukan "terminal 14 tab".** Yang dijual adalah **sinyal VIP Telegram + akses Pro ke cockpit yang SUDAH ADA**, pada **satu pasar** yang izin datanya disetujui pemilik. Cockpit tetap menjadi aset retensi/akuisisi, bukan proyek pembangunan ulang.
 4. **Keputusan pemilik yang paling menentukan (D-1):** pasar mana yang boleh dijual secara legal dan jujur. Tanpa ini, Pekan 3 tidak bisa dijadwalkan — karena baik "beli lisensi 18 bursa" maupun "feed gratis Yahoo/Binance pasti legal" tidak terbukti benar.
 5. **Angka bisnis di dokumen lean adalah asumsi, bukan fakta.** Churn 20%, lifetime 5 bulan, LTV Rp1 juta, dan MRR Rp10 juta tidak punya data pendukung; MRR Rp10 juta juga memakai harga Rp200rb padahal promo Pekan 3 adalah Rp150rb (→ Rp7,5 juta), dan itu **bruto**, bukan "pemasukan bersih". Jangan pernah mengutip angka ini ke calon member atau investor sebagai fakta.
-6. **Pekerjaan nyata yang sudah kami lakukan di putaran ini:** celah keamanan inti ditutup di kode (password `mbg` hardcoded dicabut, sesi dipindah ke server, header data diperketat), plus satu dokumen rencana terpadu ini. Selengkapnya di **§12 Implementation Log**.
+6. **Pekerjaan nyata yang sudah kami lakukan di putaran ini:** celah keamanan inti ditutup di kode (password `[REDACTED credential reference]` hardcoded dicabut, sesi dipindah ke server, header data diperketat), plus satu dokumen rencana terpadu ini. Selengkapnya di **§12 Implementation Log**.
 
 > **Satu kalimat posisi produk:**
 > *"MBG mengirim sedikit setup trading yang sudah dihitung risikonya untuk satu pasar — entry, stop, target, dan alasannya dalam dua kalimat — sebelum harga bergerak. Tanpa pompom, tanpa pamer screenshot, tanpa menyembunyikan kerugian."*
@@ -28,7 +28,7 @@ Mas Fuad, empat dokumen sudah dibaca penuh, dibedah, dan disatukan menjadi **sat
 
 | Tag | Dokumen | Baris | Peran dalam konsolidasi ini |
 |---|---|---|---|
-| **[MP]** | `MBG-Trading-Revamp-Master-Plan.md` | 1.214 | Cetak biru jangka panjang: register remediasi, tier, IA, design system, riset/paper, arsitektur, keamanan, fase & gate |
+| **[MP]** | `[REDACTED credential reference]-Trading-Revamp-Master-Plan.md` | 1.214 | Cetak biru jangka panjang: register remediasi, tier, IA, design system, riset/paper, arsitektur, keamanan, fase & gate |
 | **[BL]** | `MBG-Trading-Implementation-Backlog.md` | 781 | 32 tiket sumber-terpetakan (BASE/TRUST/DESIGN/WORKSPACE/PDF/RESEARCH/COMMERCIAL/OPS) |
 | **[V2]** | `PRD_PROJECT_MBG_V2_MASTER.md` | 433 | Visi produk "terminal kuant otonom + bot Telegram 24/7" (arsip scope, bukan rencana aktif) |
 | **[LEAN]** | `STRATEGI_EKSEKUSI_DAN_SARAN_MAS_FUAD.md` | 134 | Kritik bisnis 80/20 & rencana 4 pekan (dasar GTM aktif) |
@@ -96,7 +96,7 @@ Diambil dari inspeksi langsung working tree pada 1 Oktober 2026 (dirinci di `doc
 
 | Area | Kenyataan | Implikasi rencana |
 |---|---|---|
-| **Autentikasi** | `PasswordGate.jsx` membungkus seluruh app (`App.jsx:449–1150`) dan **menerima password `mbg` hardcoded di sisi klien** (pra-perbaikan, baris 80 & 102) | H01/C-02 nyata: gate dekoratif. **Sudah diperbaiki di putaran ini** (§5, §12) |
+| **Autentikasi** | `PasswordGate.jsx` membungkus seluruh app (`App.jsx:449–1150`) dan **menerima password `[REDACTED credential reference]` hardcoded di sisi klien** (pra-perbaikan, baris 80 & 102) | H01/C-02 nyata: gate dekoratif. **Sudah diperbaiki di putaran ini** (§5, §12) |
 | **Data publik** | `frontend/public/data/` memuat 8 payload: `latest_cockpit_bundle.json` (4,28 MB), `macro_telemetry.json` (1,82 MB), `idx_categorized.json`, `research_archive.json`, `latest_arena_state.json`, `daily_trade_plans.json`, `crypto_spot_10.json`, `latest_crisis_alert.json` — **total ~6,27 MB**, disalin apa adanya ke `frontend/dist/data/` dan dapat diunduh tanpa kredensial | H02/TRUST04 nyata: seluruh produk sinyal bocor gratis. Bot Telegram pun membaca bundle publik ini. Migrasi ke `/api/data` = W1 |
 | **Header** | `_headers` **sudah benar** menargetkan `/data/*.json`. Klaim awal Lead tentang "drift path" **DIBANTAH** — payload memang ada di `public/data/` | Tidak ada drift. Perubahan header = defense-in-depth (no-store + noindex), **bukan** penutupan exposure (lihat 03 A4) |
 | **API data** | `functions/api/data.js` sudah ada sebagai jalur API | Jalur migrasi TRUST04 tersedia — tidak perlu arsitektur baru |
@@ -198,7 +198,7 @@ flowchart TD
 | Tiket | Kenapa di Pekan 1 | Status putaran ini |
 |---|---|---|
 | **BASE04** — bekukan scope pilot | Menentukan apa yang dijual & siapa pemilik rollback ([BL] 169–179) | Dokumen ini = artefaknya |
-| **TRUST01** (slice sempit) | Ganti gate klien `mbg` dengan sesi individu terverifikasi server ([BL] 181–191) | ✅ **Diimplementasikan** (§5, §12) |
+| **TRUST01** (slice sempit) | Ganti gate klien `[REDACTED credential reference]` dengan sesi individu terverifikasi server ([BL] 181–191) | ✅ **Diimplementasikan** (§5, §12) |
 | **TRUST04** (slice sempit) | Stop bundle penuh disajikan dari `public/` dengan cache publik ([BL] 217–227) | ⚠️ Sebagian: header diperketat + rencana migrasi `/api/data` (§5.4) |
 | **TRUST03** (slice sempit) | Kebijakan kapabilitas/pasar milik server, agar Free vs Pro bukan nilai localStorage ([BL] 205–215) | ⛔ Belum — **risiko komersial yang diakui eksplisit** |
 | **TRUST06** | Isolasi modul tidak aman: sukses swap palsu, order Binance nyata, feed whale/tape sintetis ([BL] 241–251) | ⛔ Belum — **wajib sebelum exposure publik** |
@@ -316,13 +316,13 @@ Menyembunyikan navigasi = presentasi saja. Pemeriksaan berlaku pada deep link, s
 
 | File | Perubahan | Efek |
 |---|---|---|
-| `frontend/src/components/PasswordGate.jsx` | **Password `mbg` hardcoded dicabut total.** Sesi tidak lagi dipercaya dari `localStorage`; setiap mount memverifikasi ulang cookie sesi ke `/api/auth`. Escape hatch dev eksplisit: hanya aktif bila `import.meta.env.DEV` **dan** `VITE_MBG_DEV_AUTH_BYPASS=true` (di-strip dari bundle produksi oleh Vite). Gagal ke endpoint = **fail closed**. Pesan 429/503 baru | Menulis `localStorage` **tidak lagi** bisa memalsukan akses |
+| `frontend/src/components/PasswordGate.jsx` | **Password `[REDACTED credential reference]` hardcoded dicabut total.** Sesi tidak lagi dipercaya dari `localStorage`; setiap mount memverifikasi ulang cookie sesi ke `/api/auth`. Escape hatch dev eksplisit: hanya aktif bila `import.meta.env.DEV` **dan** `VITE_MBG_DEV_AUTH_BYPASS=true` (di-strip dari bundle produksi oleh Vite). Gagal ke endpoint = **fail closed**. Pesan 429/503 baru | Menulis `localStorage` **tidak lagi** bisa memalsukan akses |
 | `frontend/functions/api/auth.js` | Pemeriksaan server diperketat; sesi tidak lagi sekadar boolean | Otorisasi milik server |
 | `frontend/public/_headers` | `/data/*` + `/*.json` kini `Cache-Control: no-store` + `X-Robots-Tag: noindex`; wildcard CORS dihapus; CSP tidak dilemahkan | Mengurangi caching/indexing. **Bukan** penutupan exposure, dan **bukan** perbaikan drift (klaim drift dibantah di 03 A4) |
 | `scripts/verify-trust01.mjs`, `scripts/dev-local.ps1` | Skrip verifikasi & dev lokal | Reproduksibilitas |
 
 **Pernyataan bypass sebelum/sesudah:**
-- **Sebelum:** siapa pun dapat mengetik `mbg`, atau menulis `localStorage['mbg_cockpit_auth'] = {authenticated:true}` → seluruh aplikasi terbuka tanpa server.
+- **Sebelum:** siapa pun dapat mengetik `[REDACTED credential reference]`, atau menulis `localStorage['mbg_cockpit_auth'] = {authenticated:true}` → seluruh aplikasi terbuka tanpa server.
 - **Sesudah:** jalur produksi **wajib** konfirmasi server (`data.authenticated === true` dari `/api/auth`). Tidak ada string password di kode. Bundle produksi tidak memuat cabang bypass.
 
 ### 5.4 Rencana migrasi TRUST04 (bundle publik → API ber-otorisasi) — belum dikerjakan, jangan diklaim selesai
@@ -605,7 +605,7 @@ Free/Pro individual dulu, Business nanti · admin bukan langganan berbayar · sa
 
 | File | Jenis | Ringkasan |
 |---|---|---|
-| `frontend/src/components/PasswordGate.jsx` | Kode | Cabut bypass `mbg`; sesi server-owned; fail-closed; dev escape hatch opt-in |
+| `frontend/src/components/PasswordGate.jsx` | Kode | Cabut bypass `[REDACTED credential reference]`; sesi server-owned; fail-closed; dev escape hatch opt-in |
 | `frontend/functions/api/auth.js` | Kode | Perketat pemeriksaan server & desain sesi |
 | `frontend/public/_headers` | Konfigurasi | `no-store` + `noindex` untuk `/data/*` dan `/*.json`; wildcard CORS dihapus. **Bukan** perbaikan drift — klaim drift dibantah (`03` A4) |
 | `scripts/verify-auth-handler.mjs` | Baru | Uji kontrak handler auth |
@@ -650,7 +650,7 @@ Semua perubahan berada di **working tree, belum di-commit**. Status "shipped" ti
 
 | Temuan verifikator | Hasil |
 |---|---|
-| Rute akses tanpa kredensial di build produksi | **TIDAK ADA.** `mbg` hilang; `localStorage` tidak otoritatif; cabang DEV ter-eliminasi (dibuktikan empiris pada bundle `index-BKI4mvp5.js`) |
+| Rute akses tanpa kredensial di build produksi | **TIDAK ADA.** `[REDACTED legacy value]` hilang; `localStorage` tidak otoritatif; cabang DEV ter-eliminasi (dibuktikan empiris pada bundle `index-BKI4mvp5.js`) |
 | Header keamanan dilemahkan? | **TIDAK.** Hanya `Access-Control-Allow-Origin: *` dihapus (memperketat); CSP/XFO/XCTO byte-identik |
 | `npm run build` independen (2×) | **exit 0** — 1,57 s / 1,59 s, 83 modul, 27 aset (1 HTML + 1 CSS + 25 JS chunk), tanpa warning |
 | `verify-trust01.mjs` / `verify-auth-handler.mjs` | PASS 16/16 / PASS 16/16 (dijalankan ulang oleh kedua verifikator) |
@@ -665,7 +665,7 @@ Semua perubahan berada di **working tree, belum di-commit**. Status "shipped" ti
 |---|---|---|
 | **B1** | `PASSWORD_HASH` di-set di environment produksi | **503 lockout** — semua orang terkunci, termasuk pemilik |
 | **B2** | `JWT_SECRET` ≥16 karakter acak (disarankan 32+) | Sesi tidak dapat ditandatangani / lemah |
-| **B3** | `MBG_ALLOW_INSECURE_DEV_SECRET` **tidak** `true` di produksi | Bila `true` tanpa `JWT_SECRET`, sesi ditandatangani dengan konstanta publik `'insecure-dev-only-secret'` → **cookie dapat dipalsukan siapa pun yang membaca sumber** (`auth.js:99–105`) |
+| **B3** | `MBG_ALLOW_INSECURE_DEV_SECRET` **tidak** `true` di produksi | Bila `true` tanpa `JWT_SECRET`, sesi ditandatangani dengan konstanta publik `'[REDACTED historical signing constant]'` → **cookie dapat dipalsukan siapa pun yang membaca sumber** (`auth.js:99–105`) |
 | **B4** | `VITE_MBG_DEV_AUTH_BYPASS` tidak ada di environment build | Pertahanan berlapis (cabang sudah mati di produksi) |
 | **B5** | Dokumentasi env auth — **selesai dikerjakan di sini** (`.env.example`) | Tanpa ini, deploy sesuai dokumen repo → 503 lockout |
 | **B6** | Keputusan logout/revocation: cookie HttpOnly tetap sah sampai kedaluwarsa | Logout hanya kosmetik; tidak ada endpoint logout server |
@@ -804,55 +804,6 @@ Audit kelengkapan oleh reviewer model menemukan 5 bagian yang sebelumnya hilang 
 
 ---
 
-## 13. V3.1 UPDATE — 3 Oktober 2026 (rebase + re-audit + hardening)
+## Historical deployment records
 
-**What happened:** the local tree was 20 commits behind origin/main. Origin had already closed S2 (payload leak — public/data/ emptied), S4 (fake swap hash removed), S8 (data.js fallback secret replaced by derived secret), and shipped: DegenDesk + MemecoinRadar + earlySignal + memecoinDesk (with 86 vitest tests), v5.8.0 hardening, Paper Broker v2 (side-aware), pump.fun edge-proxy fix, and the frontend test runner (vitest 2.1.8).
-
-**Owner decision recorded (3 Okt 2026):** the live gate password stays **"MBG"** — the documented DEFAULT_PASSWORD_HASH (= sha256("MBG"), verified by the sentinel). The local fail-closed auth variant was dropped in the reconcile; the sentinel now ENFORCES the exact default hash instead of forbidding it, so it cannot be silently swapped.
-
-**Reconciled on branch local-v4-vip (every step committed):**
-- ONE VIP dispatch path: engine/run_pipeline.py now routes through vip_signal_router (provenance gate source+observed_at, synthetic never LIVE, subscriber allowlist, dry-run default, VIP_LIVE=1 flag for real sends) — origin's direct broadcast_vip_trade_signal call is gone.
-- Auth hardened: PasswordGate verifies the session against /api/auth on mount (localStorage trust removed — S9-adjacent bypass closed); no-store on all auth responses; tampered-signature and forged-token tests pass (18 runtime cases).
-- Tier badge is display-only (fake PRO cycle removed — S9).
-- HF daemon reset: fail-closed admin auth (S6) — disabled until ARENA_ADMIN_TOKEN is set.
-- Webhook secret: origin enforces TELEGRAM_WEBHOOK_SECRET (S3 resolved at code level).
-- Local junk deleted: Python/ (173.8 MB) + %SystemDrive%/ — gitignored.
-- Audit + plan package: docs/audit_2026-10-02/ (00_MASTER_REPORT .. 08_WEB_UPDATE_PLAN).
-
-**Gate status before push:** build PASS (28 chunks) · vitest 86/86 · pytest 41+5 · both sentinels PASS.
-
-**Remaining open (non-blocking):** S3 live POST-pair verification after deploy; cron re-enable vs manual SOP (owner); D-1 market choice (recommended crypto spot); CWV + WCAG re-verify on deploy.
-
-
----
-
-## 14. DEPLOYMENT RECORD — 3 Oktober 2026 (deployed + verified live)
-
-**Deployed:** main @ efb0f21 (a168354..efb0f21) — Cloudflare Pages auto-deploy. Live bundle: index-xgtrcLx8.js (451,607 B) — the reconciled build.
-
-**Live verification (all green):**
-| Check | Result |
-|:---|:---|
-| GET / | 200 — site up |
-| GET /api/auth | **401** (server enforces) |
-| POST /api/auth password MBG | **200** + mbg_jwt HttpOnly cookie issued |
-| POST /api/auth password WRONG | **401** |
-| POST /api/auth password mbg (lowercase) | **401** — the old hardcoded bypass stays dead |
-| GET /data/daily_trade_plans.json | 200 with SPA shell (is-html: true) — **no JSON leak** |
-| Bundle markers | DegenDesk + MemecoinRadar PRESENT; fallback-secret-for-dev ABSENT; fakeTxHash ABSENT; same-origin (fixed PasswordGate) PRESENT |
-
-**Note:** the push was unblocked by using Git Credential Manager (the stored Windows credential) instead of the Hermes helper-selector that had hijacked the helper chain and hung the push.
-
-**Status: the web is updated, deployed, and verified. D-8b resolved (password MBG). Remaining non-blocking: S3 live POST-pair via webhook secret header, cron re-enable vs manual SOP, D-1 market choice, CWV/WCAG on deploy.**
-
-
-### 14.1 Addendum (3 Okt, ~16:00 WIB) — TRUST03 + TRUST06 deployed and live-verified
-
-Commits 014c484 (TRUST06 release flag) + b1aaa69 (TRUST03 server tier) pushed and deployed. Live bundle index-BxkWhjOv.js (451,253 B):
-- POST /api/auth "MBG" -> 200 {"authenticated":true,"tier":"PRO","expiresAt":...} — the tier is server-issued (TRUST03 live)
-- GET /api/auth -> 401 (enforcement intact)
-- REAL ORDERS DISABLED guard present in bundle (TRUST06 live); VITE_ENABLE_REAL_ORDERS=1 required to enable real Binance orders
-- mbg_user_tier + cycleUserTier GONE from the bundle (localStorage tier fully removed)
-- Webhook secret enforcement live-verified earlier: no/wrong secret -> 500 (fail-closed)
-
-**TRUST01-06 status now: T1 DONE, T2 CLOSED (payload leak), T3 DONE (M0 scope), T4 CLOSED, T5 PARTIAL (router blocked-records), T6 DONE (flags).** Remaining: owner decisions (D-1 market, cron SOP, Telegram wiring with bot token + TELEGRAM_WEBHOOK_SECRET in Cloudflare env), Pekan 3 launch mechanics, CWV/WCAG on deploy.
+The former deployment addenda have been omitted from this public planning document because they included credential-bearing operational records. Their access policy is superseded by the proposed private session/grant implementation in [the P0 implementation note](consolidation/07_private_access_p0.md). This source change does not rotate exposed credentials or alter production configuration. Keep operator-specific deployment records in private storage.

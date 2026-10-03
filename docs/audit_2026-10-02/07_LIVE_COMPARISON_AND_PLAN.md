@@ -20,7 +20,7 @@
 | GET /data/latest_arena_state.json | 200 HTML (same) | promo payload also moved to API |
 | GET /api/auth | **401 {"error":"Unauthorized"}** | auth live and enforcing |
 | Bundle: DegenDesk / MemecoinRadar / memecoinDesk | **PRESENT** | newest origin features live |
-| Bundle: fallback-secret-for-dev | **ABSENT** | **S8 FIXED on live** |
+| Bundle: [REDACTED exposed credential] | **ABSENT** | **S8 FIXED on live** |
 | Bundle: fakeTxHash | **ABSENT** | **S4 FIXED on live** |
 | Bundle: vip_signal | **ABSENT** | local VIP router NOT live (still uncommitted) |
 
@@ -28,7 +28,7 @@
 
 | Finding | On origin/live now | Evidence |
 |:---|:---|:---|
-| S1 TRUST01 auth | **PARTIAL — POLICY DIVERGENCE** | origin fixed PasswordGate (server confirmation) + resolveAuthConfig, BUT keeps DEFAULT_PASSWORD_HASH = sha256("MBG") fallback ("login keeps working out of the box") — violates the [BL] TRUST01 gold standard (no default secrets). The local uncommitted fix **fails closed (503)**. Local sentinel would FAIL on origin's auth.js — correctly per [BL]. -> decision **D-8b** |
+| S1 TRUST01 auth | **PARTIAL — POLICY DIVERGENCE** | origin fixed PasswordGate (server confirmation) + resolveAuthConfig, BUT keeps DEFAULT_PASSWORD_HASH = sha256("[REDACTED credential reference]") fallback ("login keeps working out of the box") — violates the [BL] TRUST01 gold standard (no default secrets). The local uncommitted fix **fails closed (503)**. Local sentinel would FAIL on origin's auth.js — correctly per [BL]. -> decision **D-8b** |
 | S2 premium JSON (TRUST04) | **CLOSED** | public/data/ emptied on origin (all 8 payloads deleted, -142k lines); live /data/*.json returns SPA shell; data.js serves via API |
 | S4 fake swap hash | **CLOSED** | SolanaSwapModal rewritten (+ f4acb13 origin-lock fix); no fakeTxHash in live bundle |
 | S8 data.js fallback secret | **CLOSED** | origin: JWT_SECRET = env.JWT_SECRET or (await deriveJwtSecret(PASSWORD_HASH)); "authentication is mandatory — no anonymous fallback" |
@@ -103,7 +103,7 @@
 
 ## 7. Acceptance criteria (verifiable)
 1. Build + vitest + pytest + both sentinels ALL GREEN on the reconciled tree.
-2. Live: /api/auth 401 on GET, 200 with real password; /data/*.json returns SPA shell; deployed bundle contains vip_signal and contains NO fallback-secret-for-dev, NO fakeTxHash.
+2. Live: /api/auth 401 on GET, 200 with real password; /data/*.json returns SPA shell; deployed bundle contains vip_signal and contains NO [REDACTED exposed credential], NO fakeTxHash.
 3. Zero honesty incidents: no synthetic data shown as LIVE on the deployed site.
 4. Docs package committed; V3.1 matches the deployed reality.
 5. One VIP dispatch path (not two), provenance gate enforced, 41+ tests green.
