@@ -146,7 +146,8 @@ export async function onRequestGet(context) {
     });
   }
 
-  return new Response(JSON.stringify({ authenticated: true }), {
+  // TRUST03: the tier comes from the server-issued JWT claim.
+  return new Response(JSON.stringify({ authenticated: true, tier: payload.tier || 'PRO' }), {
     status: 200,
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
   });
@@ -206,9 +207,12 @@ export async function onRequestPost(context) {
     rateLimitMap.delete(ip);
 
     const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
-    const token = await signJWT({ authenticated: true, expiresAt }, JWT_SECRET);
+    // TRUST03: the tier is server-issued (JWT claim), never client-asserted.
+    // M0: every authenticated cockpit user is a Pro-cockpit user; per-user VIP
+    // grants move here when the Supabase grant table lands (D-2).
+    const token = await signJWT({ authenticated: true, tier: 'PRO', expiresAt }, JWT_SECRET);
 
-    return new Response(JSON.stringify({ authenticated: true, expiresAt }), {
+    return new Response(JSON.stringify({ authenticated: true, tier: 'PRO', expiresAt }), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',

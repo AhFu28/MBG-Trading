@@ -182,18 +182,15 @@ export default function App() {
     });
   }, []);
 
-  // User Tier: 'NEW' (Tamu), 'FREE' (Terdaftar), 'PRO' (VIP Member)
-  const [userTier, setUserTier] = useState(() => {
-    try {
-      return localStorage.getItem('mbg_user_tier') || 'NEW';
-    } catch (e) {
-      return 'NEW';
-    }
-  });
-
-  // S9: no client-side tier escalation — the tier is display-only until the
-  // server-owned tier policy (TRUST03) lands. Fake 'VIP PRO' without payment
-  // violates the honesty rules.
+  // TRUST03: the tier is server-owned (JWT claim from /api/auth). One no-store
+  // fetch on mount; the server is the authority — no localStorage escalation.
+  const [userTier, setUserTier] = useState('PRO');
+  useEffect(() => {
+    fetch('/api/auth', { credentials: 'same-origin' })
+      .then(r => (r.ok ? r.json() : null))
+      .then(b => { if (b && b.tier) setUserTier(b.tier); })
+      .catch(() => {});
+  }, []);
 
   // Web3 Solana Phantom Wallet State
   const [walletState, setWalletState] = useState({

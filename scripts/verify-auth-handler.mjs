@@ -43,6 +43,7 @@ const setCookie = okRes.headers.get('Set-Cookie') || '';
 check('correct password -> 200', okRes.status === 200, `status=${okRes.status}`);
 check('correct password -> authenticated:true', okBody.authenticated === true, JSON.stringify(okBody));
 check('correct password -> expiresAt returned', typeof okBody.expiresAt === 'number' && okBody.expiresAt > Date.now(), JSON.stringify(okBody));
+check('correct password -> server-issued tier in response (TRUST03)', okBody.tier === 'PRO', `tier=${okBody.tier}`);
 check('session cookie is HttpOnly+Secure+SameSite=Strict', /HttpOnly/.test(setCookie) && /Secure/.test(setCookie) && /SameSite=Strict/.test(setCookie), setCookie);
 check('auth responses are Cache-Control: no-store', okRes.headers.get('Cache-Control') === 'no-store', okRes.headers.get('Cache-Control'));
 check('no Clear/plaintext password echoed in body', !JSON.stringify(okBody).includes(PASSWORD), JSON.stringify(okBody));
@@ -77,6 +78,7 @@ check('GET with tampered signature -> 401', tamperedRes.status === 401, `status=
 const validRes = await onRequestGet({ env: { PASSWORD_HASH, JWT_SECRET }, request: getRequest(sessionCookie) });
 const validBody = await validRes.json();
 check('GET with real cookie -> 200 authenticated:true', validRes.status === 200 && validBody.authenticated === true, `status=${validRes.status} body=${JSON.stringify(validBody)}`);
+check('GET with real cookie -> server-issued tier PRO (TRUST03)', validRes.status === 200 && validBody.tier === 'PRO', `tier=${validBody.tier}`);
 
 // 4. Owner directive (2026-09-30, reconfirmed 3 Okt): with PASSWORD_HASH unset,
 // the gate falls back to the documented default password MBG (sha256-verified
