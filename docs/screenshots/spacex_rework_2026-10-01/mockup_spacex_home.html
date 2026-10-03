@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBG Terminal v4 — SpaceX-Class Mockup // Home Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root, [data-theme="dark"] {
+    --canvas:#000000; --panel:#0a0d12; --panel-2:#0e1219;
+    --hairline:1px solid rgba(255,255,255,0.08);
+    --text-1:#f5f7fa; --text-2:#aab3c0; --text-3:#7a8798;
+    --up:#2ee6a8; --down:#ff5c5c; --accent:#4d8dff; --warn:#ffb454;
+    --grid-line:rgba(255,255,255,0.04);
+  }
+  [data-theme="light"] {
+    --canvas:#f7f8fa; --panel:#ffffff; --panel-2:#f1f3f7;
+    --hairline:1px solid rgba(15,23,42,0.10);
+    --text-1:#0f172a; --text-2:#3d4756; --text-3:#5c6673;
+    --up:#0e9f6e; --down:#dc2626; --accent:#1d4ed8; --warn:#b45309;
+    --grid-line:rgba(15,23,42,0.04);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--canvas); color:var(--text-1); font-family:'Barlow','Segoe UI',sans-serif; font-size:13px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .mono { font-family:'JetBrains Mono',ui-monospace,monospace; }
+  .micro { font-family:'JetBrains Mono',ui-monospace,monospace; font-size:9.5px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-3); }
+  .up { color:var(--up); } .down { color:var(--down); }
+  .cicon { width:16px; height:16px; border-radius:50%; object-fit:cover; vertical-align:-3px; margin-right:6px; box-shadow:0 1px 3px rgba(0,0,0,0.4); }
+  .sicon { display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:4px; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:8.5px; font-weight:600; color:#fff; vertical-align:-3px; margin-right:6px; }
+  .num { font-variant-numeric:tabular-nums; }
+
+  /* ---- header ---- */
+  header { position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:10px; height:50px; padding:0 14px; background:color-mix(in srgb, var(--canvas) 88%, transparent); backdrop-filter:blur(12px); border-bottom:var(--hairline); }
+  .brand { display:flex; align-items:center; gap:9px; font-weight:600; font-size:15px; letter-spacing:0.04em; }
+  .logo { width:22px; height:22px; border-radius:50%; border:1.5px solid var(--text-1); display:grid; place-items:center; font-size:10px; }
+  .pro { font-size:8.5px; letter-spacing:0.12em; padding:2px 6px; border:1px solid var(--text-3); border-radius:3px; color:var(--text-3); }
+  .search { flex:1; max-width:420px; display:flex; align-items:center; gap:8px; height:34px; padding:0 12px; border:var(--hairline); border-radius:6px; color:var(--text-3); font-size:11px; }
+  .kbd { margin-left:auto; font-size:9px; padding:1px 5px; border:var(--hairline); border-radius:3px; }
+  .hright { margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .chip { display:flex; align-items:center; gap:6px; height:30px; padding:0 10px; border:var(--hairline); border-radius:6px; font-size:10px; color:var(--text-2); }
+  .dot { width:5px; height:5px; border-radius:50%; background:var(--up); }
+  .btn-solid { height:32px; padding:0 14px; background:var(--text-1); color:var(--canvas); border:none; border-radius:6px; font-weight:600; font-size:11px; letter-spacing:0.06em; cursor:pointer; }
+  .btn-line { height:32px; padding:0 12px; background:transparent; color:var(--text-2); border:var(--hairline); border-radius:6px; font-weight:500; font-size:11px; cursor:pointer; }
+  .btn-line:hover, .btn-solid:hover { opacity:0.85; }
+
+  /* ---- wire ---- */
+  .wire { display:flex; align-items:center; gap:12px; height:28px; padding:0 14px; border-bottom:var(--hairline); overflow:hidden; white-space:nowrap; font-size:10px; color:var(--text-2); }
+  .wire b { color:var(--text-1); font-weight:500; }
+
+  /* ---- layout ---- */
+  main { display:grid; grid-template-columns:1fr 300px; gap:10px; padding:14px; max-width:1720px; margin:0 auto; }
+  .panel { background:var(--panel); border:var(--hairline); border-radius:8px; }
+  .pad { padding:12px 14px; }
+  .row { display:grid; gap:10px; margin-bottom:10px; }
+  .hero { grid-template-columns:1.35fr 1fr 1fr 1fr 1fr; }
+  .cards4 { grid-template-columns:repeat(4,1fr); }
+  .tables { grid-template-columns:repeat(3,1fr); }
+
+  .cardhead { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+  .tag { font-size:8px; letter-spacing:0.1em; padding:2px 6px; border:var(--hairline); border-radius:3px; color:var(--text-3); }
+  .tag-live { color:var(--up); border-color:color-mix(in srgb, var(--up) 40%, transparent); }
+  .display { font-weight:300; font-size:30px; letter-spacing:0.01em; line-height:1.1; margin:6px 0 2px; }
+  .kpi-v { font-weight:300; font-size:22px; margin:5px 0 2px; }
+  .sub { font-size:11px; color:var(--text-3); }
+
+  .alloc { display:flex; height:6px; border-radius:3px; overflow:hidden; margin-top:10px; }
+  .alloc i { display:block; height:100%; }
+  .legend { display:flex; gap:14px; margin-top:8px; font-size:9.5px; }
+  .legend span { display:flex; align-items:center; gap:5px; }
+  .legend i { width:8px; height:8px; border-radius:2px; display:inline-block; }
+
+  .spark { width:100%; height:34px; margin:8px 0 6px; }
+  .levels { display:flex; gap:12px; font-size:9.5px; color:var(--text-3); border-top:var(--hairline); padding-top:7px; }
+  .levels b { color:var(--text-2); font-weight:500; }
+
+  /* ---- tables ---- */
+  table { width:100%; border-collapse:collapse; font-size:11.5px; }
+  th { font-family:'JetBrains Mono',ui-monospace,monospace; font-size:8.5px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-3); text-align:left; padding:0 8px 8px 0; border-bottom:var(--hairline); }
+  th.r, td.r { text-align:right; }
+  td { padding:6px 8px 6px 0; border-bottom:var(--hairline); color:var(--text-2); font-variant-numeric:tabular-nums; }
+  tr:last-child td { border-bottom:none; }
+  td.t1 { color:var(--text-1); font-weight:500; }
+  .badge { font-family:'JetBrains Mono',ui-monospace,monospace; font-size:8px; letter-spacing:0.1em; padding:2px 7px; border-radius:3px; border:var(--hairline); color:var(--text-2); white-space:nowrap; }
+  .badge.up { color:var(--up); border-color:color-mix(in srgb, var(--up) 35%, transparent); }
+  .btn-mini { font-family:'JetBrains Mono',ui-monospace,monospace; font-size:9px; letter-spacing:0.08em; padding:5px 10px; min-height:26px; background:transparent; color:var(--accent); border:1px solid color-mix(in srgb, var(--accent) 40%, transparent); border-radius:4px; cursor:pointer; }
+
+  /* ---- right rail ---- */
+  .rail { display:flex; flex-direction:column; gap:10px; }
+  .news { padding:9px 0; border-bottom:var(--hairline); }
+  .news:last-child { border-bottom:none; }
+  .news .meta { display:flex; gap:8px; align-items:center; margin-bottom:4px; }
+  .news h4 { font-weight:500; font-size:12.5px; line-height:1.4; color:var(--text-1); }
+
+  footer { display:flex; justify-content:space-between; gap:16px; padding:10px 14px 14px; border-top:var(--hairline); }
+
+  @media (max-width:1200px){ .hero { grid-template-columns:1fr 1fr; } .cards4,.tables { grid-template-columns:1fr 1fr; } main { grid-template-columns:1fr; } }
+  @media (max-width:640px){ .hero,.cards4,.tables { grid-template-columns:1fr; } header { flex-wrap:wrap; height:auto; padding:10px 14px; } .search { order:3; max-width:none; flex-basis:100%; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><span class="logo">◉</span> MBG <span class="pro mono">PRO</span></div>
+  <div class="search mono">⌕ &nbsp;Cari saham, kripto, makro… <span class="kbd">Ctrl K</span></div>
+  <div class="hright">
+    <div class="chip mono"><span class="dot"></span> ID JKT 21:56</div>
+    <div class="chip mono">JP TYO 23:56</div>
+    <div class="chip mono">GB LON 15:56</div>
+    <div class="chip mono">US NYC 10:56</div>
+    <div class="chip mono">◉ 21.56.16 WIB</div>
+    <div class="chip mono" style="color:var(--text-1)">DEFCON 4</div>
+    <button class="btn-solid">LOT CALC</button>
+    <button class="btn-line" onclick="toggleTheme(this)">☀ LIGHT</button>
+  </div>
+</header>
+
+<div class="wire mono">
+  <span class="up">▲ MARKET BENCHMARKS</span> <span>DXI <b>100.97</b> <span class="down">−0.52%</span></span>
+  <span>USD/IDR <b>Rp 15.688</b> <span class="down">−0.18%</span></span>
+  <span>IHSG <b>6.071,14</b> <span class="down">−0.83%</span></span>
+  <span>BTC/USD <b>$83.965,76</b> <span class="up">+0.13%</span></span>
+  <span>ETH/USD <b>$2.681,81</b> <span class="down">−1.26%</span></span>
+  <span>XAU/USD <b>$4.321,2</b> <span class="up">+0.54%</span></span>
+  <span class="micro" style="margin-left:auto">MBG MACRO INTELLIGENCE WIRE // 24/7 FEED</span>
+</div>
+
+<main>
+  <div><!-- content column -->
+    <div class="row hero">
+      <div class="panel pad">
+        <div class="cardhead"><span class="micro">Portfolio Net Valuation</span><span class="tag mono">SIMULATOR</span></div>
+        <div class="display num mono">$128,450.80</div>
+        <div class="up num mono" style="font-size:12px">+$4,210.50 (+3.38%) ↗</div>
+        <div class="alloc"><i style="width:45%;background:var(--accent)"></i><i style="width:35%;background:var(--up)"></i><i style="width:20%;background:var(--warn)"></i></div>
+        <div class="legend micro"><span><i style="background:var(--accent)"></i>Saham IDX 45%</span><span><i style="background:var(--up)"></i>Crypto 35%</span><span><i style="background:var(--warn)"></i>Forex/Gold 20%</span></div>
+      </div>
+      <div class="panel pad">
+        <div class="micro">Regime Makro</div>
+        <div class="kpi-v" style="color:var(--up)">Risk-On</div>
+        <div class="sub">Defcon 4 · Stabil</div>
+      </div>
+      <div class="panel pad">
+        <div class="micro">24H Global Vol</div>
+        <div class="kpi-v num mono">$42.85B</div>
+        <div class="sub">Spot & futures</div>
+      </div>
+      <div class="panel pad">
+        <div class="micro">Arus Bandar IDX</div>
+        <div class="kpi-v num mono" style="color:var(--up)">+Rp 480 M</div>
+        <div class="sub">Net foreign buy</div>
+      </div>
+      <div class="panel pad">
+        <div class="micro">Arena Alpha</div>
+        <div class="kpi-v num mono" style="color:var(--up)">+18.4%</div>
+        <div class="sub">Win rate 72.4%</div>
+      </div>
+    </div>
+
+    <div class="row cards4">
+      <div class="panel pad">
+        <div class="cardhead"><span class="micro">IIHS & Global Regime</span><span class="tag mono">ACTIVE</span></div>
+        <div style="font-weight:400;font-size:17px;letter-spacing:0.04em">NEUTRAL</div>
+        <div class="sub" style="margin-bottom:6px">US Markets consolidate ahead of Fed policy statement</div>
+        <div class="levels mono"><span>.JKE <b class="num">6.071,14</b></span><span>Chg <b class="down num">−0.83%</b></span><span>Vol <b class="num">2.1T</b></span></div>
+      </div>
+      <div class="panel pad">
+        <div class="cardhead"><span class="micro">Commodities</span><span class="tag mono">OIL & GOLD</span></div>
+        <div style="display:flex;gap:16px;margin:4px 0 8px">
+          <div><div class="sub">OIL</div><div class="num mono" style="font-size:16px">$98.8 <span class="down" style="font-size:10px">−3.6%</span></div></div>
+          <div><div class="sub">GOLD</div><div class="num mono" style="font-size:16px">$4.321 <span class="up" style="font-size:10px">+0.8%</span></div></div>
+        </div>
+        <svg class="spark" viewBox="0 0 100 38" preserveAspectRatio="none"><polyline points="0,26 10,24 20,28 30,22 40,20 50,25 60,16 70,18 80,12 90,14 100,10" fill="none" stroke="var(--warn)" stroke-width="1.4"/></svg>
+        <div class="levels mono"><span>Sektor <b>SMEDC · ELSA</b></span><span class="up">BULLISH</span></div>
+      </div>
+      <div class="panel pad">
+        <div class="cardhead"><span class="micro">#1 Crypto Spot</span><span class="tag mono">NO LEV · SPOT</span></div>
+        <div style="font-weight:500;font-size:14px;margin-bottom:2px"><img class="cicon" src="https://assets.coincap.io/assets/icons/btc@2x.png" alt="BTC">BTC/USDT</div>
+        <div class="num mono" style="font-size:16px">$83.965,76 <span class="up" style="font-size:10px">+0.13%</span></div>
+        <svg class="spark" viewBox="0 0 100 38" preserveAspectRatio="none"><polyline points="0,22 12,20 24,24 36,18 48,21 60,15 72,17 84,11 100,13" fill="none" stroke="var(--up)" stroke-width="1.4"/></svg>
+        <div class="levels mono"><span>Entry <b class="num">84.150</b></span><span>SL <b class="num">82.647</b></span><span>TP <b class="num">87.516</b></span><span class="up">R:R 1:2.0</span></div>
+      </div>
+      <div class="panel pad">
+        <div class="cardhead"><span class="micro">#1 IDX Alpha</span><span class="tag mono up">BREAKOUT</span></div>
+        <div style="font-weight:500;font-size:14px;margin-bottom:2px"><span class="sicon" style="background:#0e9f6e">C</span>CUAN</div>
+        <div class="num mono" style="font-size:16px">Rp 945 <span class="up" style="font-size:10px">+1.85%</span></div>
+        <svg class="spark" viewBox="0 0 100 38" preserveAspectRatio="none"><polyline points="0,30 14,26 28,28 42,22 56,24 70,16 84,14 100,9" fill="none" stroke="var(--up)" stroke-width="1.4"/></svg>
+        <div class="levels mono"><span>Entry <b class="num">945</b></span><span>SL <b class="num">907</b></span><span>TP <b class="num">1.029</b></span><span class="up">R:R 1:2.1</span></div>
+      </div>
+    </div>
+
+    <div class="row tables">
+      <div class="panel pad">
+        <div class="cardhead"><span class="micro">Saham IDX Signals</span><span class="tag mono">6 / 12 EMITEN</span></div>
+        <table>
+          <thead><tr><th>Ticker</th><th class="r">Entry</th><th class="r">SL</th><th class="r">TP1</th><th class="r">Setup</th></tr></thead>
+          <tbody>
+            <tr><td class="t1"><span class="sicon" style="background:#0e9f6e">C</span>CUAN</td><td class="r">945</td><td class="r down">907</td><td class="r up">1.029</td><td class="r"><span class="badge up">BREAKOUT</span></td></tr>
+            <tr><td class="t1"><span class="sicon" style="background:#ea580c">P</span>PTRO</td><td class="r">5.325</td><td class="r down">5.112</td><td class="r up">5.794</td><td class="r"><span class="badge up">BREAKOUT</span></td></tr>
+            <tr><td class="t1"><span class="sicon" style="background:#2563eb">S</span>SINS</td><td class="r">635</td><td class="r down">610</td><td class="r up">690</td><td class="r"><span class="badge up">BREAKOUT</span></td></tr>
+            <tr><td class="t1"><span class="sicon" style="background:#0891b2">A</span>ASGR</td><td class="r">2.140</td><td class="r down">2.074</td><td class="r up">2.349</td><td class="r"><span class="badge up">BREAKOUT</span></td></tr>
+            <tr><td class="t1"><span class="sicon" style="background:#7c3aed">R</span>RANC</td><td class="r">550</td><td class="r down">528</td><td class="r up">598</td><td class="r"><span class="badge up">BREAKOUT</span></td></tr>
+          </tbody>
+        </table>
+        <div class="levels mono" style="margin-top:10px"><span>TimesFM + SMC AI</span><span class="micro" title="TimesFM = forecasting AI · SMC = Smart Money Concepts">ℹ</span></div>
+      </div>
+      <div class="panel pad">
+        <div class="cardhead"><span class="micro">Crypto Spot Signals</span><span class="tag mono">6 / 10 PAIRS</span></div>
+        <table>
+          <thead><tr><th>Pair</th><th class="r">Entry</th><th class="r">SL</th><th class="r">TP1</th><th class="r">Setup</th></tr></thead>
+          <tbody>
+            <tr><td class="t1"><img class="cicon" src="https://assets.coincap.io/assets/icons/btc@2x.png" alt="BTC">BTC/USDT</td><td class="r">84.150</td><td class="r down">82.647</td><td class="r up">87.516</td><td class="r"><span class="badge">TREND_CONT</span></td></tr>
+            <tr><td class="t1"><img class="cicon" src="https://assets.coincap.io/assets/icons/eth@2x.png" alt="ETH">ETH/USDT</td><td class="r">2.692</td><td class="r down">2.638</td><td class="r up">2.880</td><td class="r"><span class="badge">TREND_CONT</span></td></tr>
+            <tr><td class="t1"><img class="cicon" src="https://assets.coincap.io/assets/icons/render-token@2x.png" alt="RNDR">RENDER/USDT</td><td class="r">2.03</td><td class="r down">1.94</td><td class="r up">2.21</td><td class="r"><span class="badge">TREND_CONT</span></td></tr>
+            <tr><td class="t1"><img class="cicon" src="https://assets.coincap.io/assets/icons/aave@2x.png" alt="AAVE">AAVE/USDT</td><td class="r">11.0</td><td class="r down">10.5</td><td class="r up">11.9</td><td class="r"><span class="badge">TREND_CONT</span></td></tr>
+            <tr><td class="t1"><img class="cicon" src="https://assets.coincap.io/assets/icons/link@2x.png" alt="LINK">LINK/USDT</td><td class="r">14.2</td><td class="r down">13.8</td><td class="r up">15.0</td><td class="r"><span class="badge">TREND_CONT</span></td></tr>
+          </tbody>
+        </table>
+        <div class="levels mono" style="margin-top:10px"><span>Spot USDT · No lev</span></div>
+      </div>
+      <div class="panel pad">
+        <div class="cardhead"><span class="micro">US Stock Signals</span><span class="tag mono">11 / 31 STOCKS</span></div>
+        <table>
+          <thead><tr><th>Ticker</th><th class="r">Entry</th><th class="r">SL</th><th class="r">TP1</th><th class="r">Setup</th></tr></thead>
+          <tbody>
+            <tr><td class="t1"><span class="sicon" style="background:#6b7280">A</span>AAPL</td><td class="r">332.4</td><td class="r down">315.8</td><td class="r up">365.7</td><td class="r"><span class="badge up">BULL_FLAG</span></td></tr>
+            <tr><td class="t1"><span class="sicon" style="background:#76b900">N</span>NVDA</td><td class="r">213.9</td><td class="r down">203.2</td><td class="r up">235.3</td><td class="r"><span class="badge up">BULL_FLAG</span></td></tr>
+            <tr><td class="t1"><span class="sicon" style="background:#00a4ef">M</span>MSFT</td><td class="r">490.3</td><td class="r down">465.8</td><td class="r up">539.3</td><td class="r"><span class="badge up">BULL_FLAG</span></td></tr>
+            <tr><td class="t1"><span class="sicon" style="background:#0668E1">M</span>META</td><td class="r">673.3</td><td class="r down">639.6</td><td class="r up">749.6</td><td class="r"><span class="badge up">BULL_FLAG</span></td></tr>
+            <tr><td class="t1"><span class="sicon" style="background:#4285F4">G</span>GOOGL</td><td class="r">342.9</td><td class="r down">325.7</td><td class="r up">377.2</td><td class="r"><span class="badge up">BULL_FLAG</span></td></tr>
+          </tbody>
+        </table>
+        <div class="levels mono" style="margin-top:10px"><span>Wall St · Top institutional</span></div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="rail">
+    <div class="panel pad">
+      <div class="cardhead"><span class="micro">Live Intelligence Wire</span><span class="tag mono tag-live">566 / 566</span></div>
+      <div class="news">
+        <div class="meta"><span class="badge up">BULLISH</span><span class="micro">27 Sep · 14:26</span></div>
+        <h4>MBG Sector Research Note (27 Sep 2026): Rotasi Likuiditas Perbankan vs Komoditas Emas</h4>
+      </div>
+      <div class="news">
+        <div class="meta"><span class="badge" style="color:var(--down);border-color:color-mix(in srgb,var(--down) 35%,transparent)">BEARISH</span><span class="micro">27 Sep · 14:26</span></div>
+        <h4>MBG Morning Brief (27 Sep 2026): Proyeksi IIHSG, Transisi Makro & Level Kunci</h4>
+      </div>
+      <div class="news">
+        <div class="meta"><span class="badge">NEUTRAL</span><span class="micro">CARNEWSCHINA · 14:21</span></div>
+        <h4>Mazda CX-6e refreshed with LiDAR "self driving", launches at 21.700 USD in China</h4>
+      </div>
+      <div class="news">
+        <div class="meta"><span class="badge">NEUTRAL</span><span class="micro">NIKKEI ASIA · 14:11</span></div>
+        <h4>Southeast Asia manufacturing, Japan immigration costs, Vietnam GDP</h4>
+      </div>
+      <div class="news">
+        <div class="meta"><span class="badge">NEUTRAL</span><span class="micro">PEOPLE'S REPUBLIC · 14:11</span></div>
+        <h4>IDR rallies region's MSMEs for a future-ready ASEAN</h4>
+      </div>
+    </div>
+    <div class="panel pad">
+      <div class="micro" style="margin-bottom:10px">Radar Watchlist <span class="tag mono">CHART ↗</span></div>
+      <table>
+        <thead><tr><th>Saham IDX</th><th class="r">Chg</th></tr></thead>
+        <tbody>
+          <tr><td class="t1"><span class="sicon" style="background:#0f4c9c">B</span>BBCA</td><td class="r down">−1.22%</td></tr>
+          <tr><td class="t1"><span class="sicon" style="background:#0b5cd5">B</span>BBRI</td><td class="r down">−0.99%</td></tr>
+          <tr><td class="t1"><span class="sicon" style="background:#1e40af">B</span>BMRI</td><td class="r down">−0.56%</td></tr>
+          <tr><td class="t1"><span class="sicon" style="background:#475569">A</span>AMMN</td><td class="r up">+0.67%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </aside>
+</main>
+
+<footer>
+  <span class="micro">DISCLAIMER: Algorithmic screening & quantitative intelligence only — bukan ajakan atau nasihat investasi.</span>
+  <span class="micro">MBG QUANT TERMINAL // MARKET BRAIN GRID · v4 SPACEX-CLASS</span>
+</footer>
+
+<script>
+  function toggleTheme(btn){
+    const el = document.documentElement;
+    const dark = el.getAttribute('data-theme') === 'dark';
+    el.setAttribute('data-theme', dark ? 'light' : 'dark');
+    btn.textContent = dark ? '☾ DARK' : '☀ LIGHT';
+  }
+</script>
+</body>
+</html>
