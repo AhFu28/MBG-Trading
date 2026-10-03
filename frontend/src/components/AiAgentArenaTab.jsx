@@ -2405,7 +2405,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
     const syncFromCloudSpace = async () => {
       const endpoints = [
         'https://ahfu28-mbg-trading-arena.hf.space/api/arena/state',
-        `/data/latest_arena_state.json?v=${Date.now()}`
+        import.meta.env.DEV
+          ? `/api/dev-bundle?v=${Date.now()}`
+          : `/api/arena-state?v=${Date.now()}`
       ];
       for (const ep of endpoints) {
         try {
@@ -2525,7 +2527,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
   // Toast Queue Manager: Stack up to 3 toasts with automatic 3.5s dismiss
   const showToast = useCallback((msg) => {
-    const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const id = `toast-${Date.now()}-${(crypto?.randomUUID ? crypto.randomUUID() : `${Date.now()}`).slice(0, 8)}`;
     setToasts(prev => [...prev.slice(-2), { id, msg }]);
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
@@ -3496,7 +3498,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 else decimals = 2;
 
                 const newPos = {
-                  id: `POS-${ag.id}-${targetKey}-${Date.now().toString().slice(-4)}-${Math.floor(Math.random() * 1000)}`,
+                  id: `POS-${ag.id}-${targetKey}-${Date.now().toString().slice(-4)}-${(crypto?.randomUUID ? crypto.randomUUID() : Date.now()).slice(0, 6)}`,
                   agentId: ag.id,
                   symbol: targetKey,
                   market: targetFeed.market,

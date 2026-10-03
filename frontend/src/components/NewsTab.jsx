@@ -37,13 +37,17 @@ export default function NewsTab({
   const handleRefreshAiResearch = async () => {
     setIsRefreshingAi(true);
     try {
-      const [resBundle, resArchive] = await Promise.all([
-        fetch(`/data/latest_cockpit_bundle.json?v=${Date.now()}`),
-        fetch(`/data/research_archive.json?v=${Date.now()}`)
-      ]);
+      // Served via the session-gated API so the VIP research payload is never
+      // a downloadable static file. Dev falls back to the local bundle route.
+      const resArchive = await fetch(
+        import.meta.env.DEV
+          ? `/api/dev-bundle?v=${Date.now()}`
+          : `/api/research-archive?v=${Date.now()}`
+      );
       if (resArchive.ok) {
         const jsonArch = await resArchive.json();
-        if (Array.isArray(jsonArch)) setResearchArchive(jsonArch);
+        const archive = Array.isArray(jsonArch) ? jsonArch : jsonArch?.research_archive;
+        if (Array.isArray(archive)) setResearchArchive(archive);
       }
       setToastMsg('Riset AI berhasil disinkronkan dengan intelijen pasar terkini.');
       setTimeout(() => setToastMsg(null), 3000);
@@ -59,15 +63,20 @@ export default function NewsTab({
     const fetchArchive = async () => {
       try {
         setArchiveLoading(true);
-        const res = await fetch(`/data/research_archive.json?v=${Date.now()}`);
+        const res = await fetch(
+          import.meta.env.DEV
+            ? `/api/dev-bundle?v=${Date.now()}`
+            : `/api/research-archive?v=${Date.now()}`
+        );
         if (res.ok) {
           const json = await res.json();
-          if (Array.isArray(json) && json.length > 0) {
-            setResearchArchive(json);
+          const archive = Array.isArray(json) ? json : json?.research_archive;
+          if (Array.isArray(archive) && archive.length > 0) {
+            setResearchArchive(archive);
           }
         }
       } catch (err) {
-        console.warn('Failed to load research archive from public json:', err);
+        console.warn('Failed to load research archive:', err);
       } finally {
         setArchiveLoading(false);
       }

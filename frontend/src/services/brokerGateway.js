@@ -41,12 +41,20 @@ export class PaperBroker {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.PORTFOLIO);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        // Schema migration v2: legacy positions were always executed long (side field was
+        // decorative). Normalize so the corrected side-aware math treats them as LONG.
+        (parsed.positions || []).forEach(p => {
+          if (p.side !== 'LONG' && p.side !== 'SHORT') p.side = 'LONG';
+        });
+        parsed.schemaVersion = 2;
+        return parsed;
       }
     } catch (e) {
       console.warn('Failed to read paper portfolio from storage, initializing fresh:', e);
     }
     return {
+      schemaVersion: 2,
       cashIdr: DEFAULT_INITIAL_CAPITAL.IDR,
       cashUsdt: DEFAULT_INITIAL_CAPITAL.USDT,
       initialCashIdr: DEFAULT_INITIAL_CAPITAL.IDR,
@@ -72,6 +80,7 @@ export class PaperBroker {
 
   reset(cashIdr = DEFAULT_INITIAL_CAPITAL.IDR, cashUsdt = DEFAULT_INITIAL_CAPITAL.USDT) {
     this.portfolio = {
+      schemaVersion: 2,
       cashIdr: Number(cashIdr) || DEFAULT_INITIAL_CAPITAL.IDR,
       cashUsdt: Number(cashUsdt) || DEFAULT_INITIAL_CAPITAL.USDT,
       initialCashIdr: Number(cashIdr) || DEFAULT_INITIAL_CAPITAL.IDR,
@@ -85,12 +94,14 @@ export class PaperBroker {
   }
 
   /**
-   * Place a simulated order with realistic execution rules and fee deduction
+   * Place a simulated order with realistic execution rules and fee deduction.
+   * v2: side-aware accounting (BUY/SELL × LONG/SHORT), IDX long-only enforcement,
+   * bracket validation (SL/TP must sit on the correct side of entry).
    */
   placeOrder({
     symbol,
     market = 'IDX',
-    side = 'BUY', // 'BUY' | 'SELL'
+    side = 'BUY', // 'BUY' (open long / cover short) | 'SELL' (close long / open short)
     type = 'LIMIT', // 'LIMIT' | 'MARKET'
     price = 0,
     lots = 0, // for IDX (1 lot = 100 shares)
@@ -111,6 +122,32 @@ export class PaperBroker {
     const numPrice = Number(price);
 
     if (numPrice <= 0) throw new Error('Harga order tidak valid.');
+    if (side !== 'BUY' && side !== 'SELL') throw new Error('Arah order tidak valid (BUY/SELL).');
+
+    // IDX is long-only per OJK/IDX rules (README policy).
+    if (isIdr && side === 'SELL') {
+      throw new Error('IDX long-only (aturan OJK/BEI): order SELL/SHORT ditolak di paper broker.');
+    }
+
+    // Validate bracket geometry up-front: LONG needs SL<entry<TP; SHORT needs TP<entry<SL.
+    const sl = Number(stopLoss) || 0;
+    const tp1 = Number(target1) || 0;
+    const tp2 = Number(target2) || 0;
+    if (sl > 0) {
+      if (side === 'BUY' && sl >= numPrice) throw new Error('Stop Loss harus DI BAWAH harga entry untuk posisi LONG.');
+      if (side === 'SELL' && sl <= numPrice) throw new Error('Stop Loss harus DI ATAS harga entry untuk posisi SHORT.');
+    }
+    if (tp1 > 0) {
+      if (side === 'BUY' && tp1 <= numPrice) throw new Error('Target 1 harus DI ATAS harga entry untuk posisi LONG.');
+      if (side === 'SELL' && tp1 >= numPrice) throw new Error('Target 1 harus DI BAWAH harga entry untuk posisi SHORT.');
+    }
+    if (tp2 > 0 && tp1 > 0) {
+      if (side === 'BUY' && tp2 <= tp1) throw new Error('Target 2 harus lebih jauh dari Target 1 (LONG).');
+      if (side === 'SELL' && tp2 >= tp1) throw new Error('Target 2 harus lebih jauh dari Target 1 (SHORT).');
+    }
+
+    // Determine effective opening direction: BUY opens/covers LONG, SELL opens SHORT.
+    const positionSide = side === 'BUY' ? 'LONG' : 'SHORT';
 
     // Calculate total notional value
     let notional = 0;
@@ -127,8 +164,11 @@ export class PaperBroker {
 
     if (notional <= 0) throw new Error('Ukuran kuantitas order harus lebih besar dari 0.');
 
-    // Calculate fee
-    const feeRate = isIdr ? BROKER_FEES.IDX_EQUITY.buy : BROKER_FEES.CRYPTO_SPOT.taker;
+    // Fee charged on the correct side of the transaction:
+    // opening BUY (long/cover) pays buy fee; opening SELL (short entry) pays sell fee.
+    const feeRate = isIdr
+      ? (positionSide === 'LONG' ? BROKER_FEES.IDX_EQUITY.buy : BROKER_FEES.IDX_EQUITY.sell)
+      : BROKER_FEES.CRYPTO_SPOT.taker;
     const estimatedFee = notional * feeRate;
     const totalRequiredCash = notional + estimatedFee;
 
@@ -139,19 +179,29 @@ export class PaperBroker {
       throw new Error(`Saldo tidak mencukupi. Dibutuhkan ${curr}${Math.round(totalRequiredCash).toLocaleString()}, Saldo tersedia ${curr}${Math.round(availableCash).toLocaleString()}`);
     }
 
-    // Deduct cash for long spot buy
-    if (isIdr) {
-      this.portfolio.cashIdr -= totalRequiredCash;
+    if (positionSide === 'LONG') {
+      // BUY LONG: reserve full notional + entry fee from cash (settled on close).
+      if (isIdr) {
+        this.portfolio.cashIdr -= totalRequiredCash;
+      } else {
+        this.portfolio.cashUsdt -= totalRequiredCash;
+      }
     } else {
-      this.portfolio.cashUsdt -= totalRequiredCash;
+      // SELL SHORT: hold notional + fee as margin collateral; proceeds credited at close.
+      if (isIdr) {
+        this.portfolio.cashIdr -= totalRequiredCash;
+      } else {
+        this.portfolio.cashUsdt -= totalRequiredCash;
+      }
     }
 
-    const orderId = `ORD_${Date.now()}_${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+    const orderId = `ORD_${Date.now()}_${(typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36)).slice(0, 5).toUpperCase()}`;
     const newPosition = {
       id: orderId,
       symbol: symbol.toUpperCase(),
       market,
-      side,
+      side: positionSide,
+      orderSide: side,
       type,
       entryPrice: numPrice,
       currentPrice: numPrice,
@@ -159,10 +209,10 @@ export class PaperBroker {
       quantity: effectiveUnits,
       notional,
       entryFee: estimatedFee,
-      stopLoss: Number(stopLoss) || 0,
-      effectiveSl: Number(stopLoss) || 0,
-      target1: Number(target1) || 0,
-      target2: Number(target2) || 0,
+      stopLoss: sl,
+      effectiveSl: sl,
+      target1: tp1,
+      target2: tp2,
       hasHitTp1: false,
       hasHitTp2: false,
       agentId,
@@ -179,7 +229,8 @@ export class PaperBroker {
   }
 
   /**
-   * Close an open position and realize PnL with sell fee friction
+   * Close an open position and realize PnL with correct-side exit fee.
+   * v2: direction-aware settlement for LONG (sell to exit) and SHORT (buy to cover).
    */
   closePosition(positionId, exitPrice = null, reason = 'MANUAL_CLOSE') {
     const idx = this.portfolio.positions.findIndex(p => p.id === positionId);
@@ -187,35 +238,47 @@ export class PaperBroker {
 
     const pos = this.portfolio.positions[idx];
     const isIdr = pos.market === 'IDX';
+    const posSide = pos.side === 'SHORT' ? 'SHORT' : 'LONG'; // legacy data normalized on load
     const numExit = Number(exitPrice) || pos.currentPrice || pos.entryPrice;
 
     // Gross exit notional
     const exitNotional = pos.quantity * numExit;
 
-    // Sell fee friction
-    const feeRate = isIdr ? BROKER_FEES.IDX_EQUITY.sell : BROKER_FEES.CRYPTO_SPOT.taker;
+    // Exit fee charged on the correct side: LONG exits via SELL (0.25% IDX), SHORT covers via BUY (0.15% IDX).
+    const feeRate = isIdr
+      ? (posSide === 'LONG' ? BROKER_FEES.IDX_EQUITY.sell : BROKER_FEES.IDX_EQUITY.buy)
+      : BROKER_FEES.CRYPTO_SPOT.taker;
     const exitFee = exitNotional * feeRate;
-    const netExitProceeds = exitNotional - exitFee;
 
-    // Realized Net PnL = (Net Exit Proceeds) - (Total Entry Capital + Entry Fee)
-    const totalCostBasis = pos.notional + pos.entryFee;
-    const realizedPnL = netExitProceeds - totalCostBasis;
+    // Realized Net PnL (direction-aware):
+    //   LONG:  (exit - entry) * qty - entryFee - exitFee
+    //   SHORT: (entry - exit) * qty - entryFee - exitFee
+    const priceDelta = posSide === 'LONG' ? (numExit - pos.entryPrice) : (pos.entryPrice - numExit);
+    const realizedPnL = (priceDelta * pos.quantity) - (pos.entryFee || 0) - exitFee;
+    const totalCostBasis = (pos.notional || 0) + (pos.entryFee || 0);
     const realizedPnLPct = Number(((realizedPnL / totalCostBasis) * 100).toFixed(2));
 
-    // Credit cash back to portfolio
+    // Cash settlement — release the reserved pool plus realized PnL:
+    //   cashRelease = (notional + entryFee) + realizedPnL
+    //   LONG  ⇒ notional + (exit−entry)*qty − exitFee   (= exitNotional − exitFee)
+    //   SHORT ⇒ notional + (entry−exit)*qty − exitFee   (= 2·notional − exitNotional − exitFee)
+    const cashRelease = posSide === 'LONG'
+      ? exitNotional - exitFee
+      : (2 * pos.notional) - exitNotional - exitFee;
     if (isIdr) {
-      this.portfolio.cashIdr += netExitProceeds;
+      this.portfolio.cashIdr += cashRelease;
     } else {
-      this.portfolio.cashUsdt += netExitProceeds;
+      this.portfolio.cashUsdt += cashRelease;
     }
 
     // Archive to trade history
     const closedRecord = {
       ...pos,
+      side: posSide,
       status: 'CLOSED',
       exitPrice: numExit,
       exitFee,
-      totalFees: pos.entryFee + exitFee,
+      totalFees: (pos.entryFee || 0) + exitFee,
       realizedPnL,
       realizedPnLPct,
       closedAt: new Date().toISOString(),
@@ -229,7 +292,8 @@ export class PaperBroker {
   }
 
   /**
-   * Update all active positions against incoming live prices (Trailing Stop & SL/TP triggers)
+   * Update all active positions against incoming live prices.
+   * v2: direction-aware floating PnL, TP1 breakeven ratchet and SL/TP triggers for LONG and SHORT.
    */
   updatePositionsOnTick(livePricesMap = {}) {
     let hasChanges = false;
@@ -239,39 +303,49 @@ export class PaperBroker {
       const quote = livePricesMap[pos.symbol] || livePricesMap[`IDX:${pos.symbol}`] || livePricesMap[`${pos.symbol}.JK`];
       if (!quote || !quote.price) return true;
 
+      const posSide = pos.side === 'SHORT' ? 'SHORT' : 'LONG';
       const currentPrice = Number(quote.price);
       pos.currentPrice = currentPrice;
 
-      const grossPnL = (currentPrice - pos.entryPrice) * pos.quantity;
-      pos.floatingPnL = Math.round(grossPnL);
-      pos.floatingPnLPct = Number((((currentPrice - pos.entryPrice) / pos.entryPrice) * 100).toFixed(2));
+      // Direction-aware floating PnL (gross, fees settled at close)
+      const priceDelta = posSide === 'LONG' ? (currentPrice - pos.entryPrice) : (pos.entryPrice - currentPrice);
+      pos.floatingPnL = Math.round(priceDelta * pos.quantity);
+      pos.floatingPnLPct = Number(((priceDelta / pos.entryPrice) * 100).toFixed(2));
 
-      // Trailing Stop to Breakeven Logic (Ratchet to Entry when TP1 is touched)
-      if (pos.target1 > 0 && currentPrice >= pos.target1 && !pos.hasHitTp1) {
+      // TP1 touched → ratchet stop to breakeven (mirrored for SHORT)
+      const tp1Touched = posSide === 'LONG'
+        ? (pos.target1 > 0 && currentPrice >= pos.target1)
+        : (pos.target1 > 0 && currentPrice <= pos.target1);
+      if (tp1Touched && !pos.hasHitTp1) {
         pos.hasHitTp1 = true;
-        pos.effectiveSl = Math.max(pos.effectiveSl || pos.stopLoss, pos.entryPrice);
+        if (posSide === 'LONG') {
+          pos.effectiveSl = Math.max(pos.effectiveSl || pos.stopLoss, pos.entryPrice);
+        } else {
+          pos.effectiveSl = (pos.effectiveSl || pos.stopLoss) > 0
+            ? Math.min(pos.effectiveSl, pos.entryPrice)
+            : pos.entryPrice;
+        }
         hasChanges = true;
       }
 
-      // Check Target 2 Max
-      if (pos.target2 > 0 && currentPrice >= pos.target2 && !pos.hasHitTp2) {
-        pos.hasHitTp2 = true;
-        hasChanges = true;
-      }
-
-      // Check Stop Loss Trigger (against effective ratcheted SL)
-      if (pos.effectiveSl > 0 && currentPrice <= pos.effectiveSl) {
-        // Auto-execute Stop Loss
+      // Check Stop Loss Trigger (direction-aware, against effective ratcheted SL)
+      const slHit = posSide === 'LONG'
+        ? (pos.effectiveSl > 0 && currentPrice <= pos.effectiveSl)
+        : (pos.effectiveSl > 0 && currentPrice >= pos.effectiveSl);
+      if (slHit) {
         const reason = pos.hasHitTp1 ? 'TRAILING_STOP_BREAKEVEN_HIT' : 'STOP_LOSS_HIT';
-        const closed = this.closePosition(pos.id, currentPrice, reason);
+        const closed = this.closePosition(pos.id, pos.effectiveSl, reason);
         closedPositions.push(closed);
         hasChanges = true;
         return false;
       }
 
-      // Check Target 2 Full Exit Trigger
-      if (pos.target2 > 0 && currentPrice >= pos.target2) {
-        const closed = this.closePosition(pos.id, currentPrice, 'TARGET_2_MAX_PROFIT');
+      // Check Target 2 Full Exit Trigger (direction-aware)
+      const tp2Hit = posSide === 'LONG'
+        ? (pos.target2 > 0 && currentPrice >= pos.target2)
+        : (pos.target2 > 0 && currentPrice <= pos.target2);
+      if (tp2Hit) {
+        const closed = this.closePosition(pos.id, pos.target2, 'TARGET_2_MAX_PROFIT');
         closedPositions.push(closed);
         hasChanges = true;
         return false;
@@ -308,7 +382,7 @@ export class PaperBroker {
     const closed = [];
     const positionsCopy = [...this.portfolio.positions];
     positionsCopy.forEach(pos => {
-      const quote = livePricesMap[pos.symbol];
+      const quote = livePricesMap[pos.symbol] || livePricesMap[`IDX:${pos.symbol}`] || livePricesMap[`${pos.symbol}.JK`];
       const exitPrice = quote?.price || pos.currentPrice || pos.entryPrice;
       try {
         const res = this.closePosition(pos.id, exitPrice, 'EMERGENCY_KILL_SWITCH_LIQUIDATION');

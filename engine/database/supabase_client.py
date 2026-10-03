@@ -34,9 +34,14 @@ class DatabaseClient:
             logger.info("Supabase credentials not found in ENV. Operating in LOCAL_JSON fallback mode.")
 
     def _save_local_fallback(self, filename: str, data: any):
-        """Saves data to frontend public folder so web dashboard can read it directly without backend"""
+        """Saves data to engine/cache ONLY.
+
+        SECURITY: this used to also write into frontend/public/data, which meant
+        every VIP payload (trade plans, arena state, macro telemetry) was a
+        publicly downloadable static file that anyone could fetch without
+        authenticating. Local caching now stays behind the session-gated API.
+        """
         base_dirs = [
-            os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "public", "data"),
             os.path.join(os.path.dirname(__file__), "..", "cache")
         ]
         for b_dir in base_dirs:

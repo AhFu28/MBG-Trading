@@ -674,8 +674,7 @@ if __name__ == "__main__":
     print(f"Foreign flow regime: {data['foreign_flow']['summary']['regime']}")
 
     cache_paths = [
-        os.path.join(os.path.dirname(__file__), "..", "cache", "latest_cockpit_bundle.json"),
-        os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "public", "data", "latest_cockpit_bundle.json")
+        os.path.join(os.path.dirname(__file__), "..", "cache", "latest_cockpit_bundle.json")
     ]
     for cp in cache_paths:
         try:

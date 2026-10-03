@@ -9,6 +9,8 @@ const PRIMARY_NAV_ITEMS = [
   { id: 'STOCK',               icon: '📈', label: 'Saham IDX',       section: 'MARKETS' },
   { id: 'CRYPTO',              icon: '⚡', label: 'Crypto Spot',      section: 'MARKETS' },
   { id: 'FUTURES',             icon: '🔥', label: 'Crypto Futures',   section: 'MARKETS' },
+  { id: 'DEGEN',               icon: '🎰', label: 'Degen Memecoin',   section: 'MARKETS' },
+  { id: 'RADAR',               icon: '🎯', label: 'Early Signal Radar', section: 'MARKETS' },
   { id: 'FOREX',               icon: '💱', label: 'Forex Scanner',   section: 'MARKETS' },
   { id: 'US_STOCKS',           icon: '🇺🇸', label: 'US Stocks',       section: 'MARKETS' },
   { id: 'WHALES',              icon: '🐋', label: 'Whale Tracker',    section: 'MARKETS' },
@@ -65,8 +67,10 @@ export default function Sidebar({
     if (id === 'AI_AGENTS') return 'PRO';
     if (id === 'AI_SENTINEL') return 'DEFCON';
     if (id === 'CHARTING') return 'PRO';
-    if (id === 'WHALES') return 'LIVE';
+    if (id === 'WHALES') return 'SIM'; // simulated microstructure feed — honest label
     if (id === 'FUTURES') return 'LIVE';
+    if (id === 'DEGEN') return 'NEW';
+    if (id === 'RADAR') return 'SCAN';
     if (id === 'FOREX') return 'LIVE';
     if (id === 'US_STOCKS') return 'LIVE';
     if (id === 'STOCK') return stockCount > 0 ? stockCount : null;

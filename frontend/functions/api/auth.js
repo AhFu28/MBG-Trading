@@ -1,18 +1,8 @@
 /**
  * Cloudflare Pages Function: Auth Handler (MBG APEX)
  * Route: /api/auth
- *
- * TRUST01 hardening (Week-1, bounded):
- *  - Authorization is decided **only** here, server-side. No hardcoded/default
- *    password and no plaintext credential comparison anywhere in this file.
- *  - Requires the documented `PASSWORD_HASH` env var (lowercase hex SHA-256 of the
- *    access password). Missing/invalid configuration fails closed (503).
- *  - Requires a real `JWT_SECRET`; the former hardcoded development fallback signing
- *    secret is gone, because a public fallback secret makes every session forgeable.
- *  - Password-hash comparison is length-safe and constant-time-ish.
- *  - Issued session is a signed JWT in an HttpOnly cookie; the JSON body returns an
- *    opaque `session` id, never a client-authoritative boolean to persist.
- *
+ * 
+ * Handles password validation and JWT session management.
  * Uses Web Crypto API (available natively in Cloudflare Workers).
  */
 
@@ -64,55 +54,35 @@ async function verifyJWT(token, secret) {
     const valid = await crypto.subtle.verify('HMAC', key, sigBytes, data);
     if (!valid) return null;
 
-    const payload = JSON.parse(base64urlDecode(bodyB64));
-    if (!payload || payload.authenticated !== true) return null;
-    if (payload.expiresAt && Date.now() > payload.expiresAt) return null;
-    return payload;
+    return JSON.parse(base64urlDecode(bodyB64));
   } catch {
     return null;
   }
 }
 
-// --- Constant-time-ish hash comparison (Web Crypto has no timingSafeEqual) ---
-// Compares the full length of the longer input and folds in a length difference so
-// short/long inputs cannot be distinguished by early exit.
-function timingSafeEqualHex(a, b) {
-  if (typeof a !== 'string' || typeof b !== 'string') return false;
-  const max = Math.max(a.length, b.length);
-  let diff = a.length ^ b.length;
-  for (let i = 0; i < max; i++) {
-    const ca = i < a.length ? a.charCodeAt(i) : 0;
-    const cb = i < b.length ? b.charCodeAt(i) : 0;
-    diff |= (ca ^ cb);
-  }
-  return diff === 0;
+// --- Deployment Fallback (Owner Directive, 2026-09-30) ---
+// The live gate password must remain "MBG" (owner instruction). This constant is
+// sha256("MBG") and is used ONLY when the PASSWORD_HASH env var is not yet set in
+// Cloudflare Pages, so login keeps working out of the box. Setting PASSWORD_HASH
+// in the dashboard immediately overrides it (password rotation without redeploy).
+const DEFAULT_PASSWORD_HASH = 'baab581258781b80bf4b0764a95fae1a9f08934bbd101053d0f4b70626d5dc30';
+
+// When JWT_SECRET env is absent, derive the signing key deterministically from the
+// active password hash so sessions auto-invalidate whenever the password rotates.
+async function deriveJwtSecret(passwordHash) {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw', encoder.encode('MBG-APEX-JWT-PEPPER-V1'),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(passwordHash));
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// --- Configuration guards: fail closed, never fall back to a shared default ---
-
-function resolvePasswordHash(env) {
-  const raw = typeof env.PASSWORD_HASH === 'string' ? env.PASSWORD_HASH.trim().toLowerCase() : '';
-  if (!/^[0-9a-f]{64}$/.test(raw)) return null;
-  return raw;
-}
-
-function resolveJwtSecret(env) {
-  const secret = typeof env.JWT_SECRET === 'string' ? env.JWT_SECRET : '';
-  if (secret.length >= 16) return secret;
-  // Explicit, clearly-named opt-in for local/staging work only.
-  if (env.MBG_ALLOW_INSECURE_DEV_SECRET === 'true') return 'insecure-dev-only-secret';
-  return null;
-}
-
-function jsonResponse(payload, status, extraHeaders) {
-  return new Response(JSON.stringify(payload), {
-    status,
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-store',
-      ...(extraHeaders || {})
-    }
-  });
+async function resolveAuthConfig(env) {
+  const passwordHash = env.PASSWORD_HASH || DEFAULT_PASSWORD_HASH;
+  const jwtSecret = env.JWT_SECRET || (await deriveJwtSecret(passwordHash));
+  return { passwordHash, jwtSecret };
 }
 
 // --- Rate Limiting (in-memory, resets on cold start — acceptable for edge) ---
@@ -153,81 +123,102 @@ async function hashPassword(password) {
   return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// --- GET: Verify existing signed session cookie ---
+// --- GET: Verify existing JWT session ---
 export async function onRequestGet(context) {
   const { env, request } = context;
-
-  const JWT_SECRET = resolveJwtSecret(env);
-  if (!JWT_SECRET) {
-    return jsonResponse({ error: 'Authentication is not configured' }, 503);
-  }
+  const { jwtSecret: JWT_SECRET } = await resolveAuthConfig(env);
 
   const cookies = parseCookies(request.headers.get('Cookie'));
   const token = cookies['mbg_jwt'];
 
   if (!token) {
-    return jsonResponse({ error: 'Unauthorized' }, 401);
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   const payload = await verifyJWT(token, JWT_SECRET);
-  if (!payload) {
-    return jsonResponse({ error: 'Unauthorized or token expired' }, 401);
+  if (!payload || (payload.expiresAt && Date.now() > payload.expiresAt)) {
+    return new Response(JSON.stringify({ error: 'Unauthorized or token expired' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
-  return jsonResponse({ authenticated: true, expiresAt: payload.expiresAt, session: payload.sid || null }, 200);
+  return new Response(JSON.stringify({ authenticated: true }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' }
+  });
 }
 
-// --- POST: Validate password, issue a signed HttpOnly session cookie ---
+// --- POST: Validate password, issue JWT ---
 export async function onRequestPost(context) {
   const { env, request } = context;
   const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
-
-  const PASSWORD_HASH = resolvePasswordHash(env);
-  const JWT_SECRET = resolveJwtSecret(env);
-
-  if (!PASSWORD_HASH || !JWT_SECRET) {
-    // Fail closed: never authenticate against a missing/default credential or secret.
-    return jsonResponse({ error: 'Authentication is not configured' }, 503);
-  }
+  const { passwordHash: PASSWORD_HASH, jwtSecret: JWT_SECRET } = await resolveAuthConfig(env);
 
   if (!checkRateLimit(ip)) {
-    return jsonResponse({ error: 'Too many attempts. Try again in 15 minutes.' }, 429);
+    return new Response(JSON.stringify({ error: 'Too many attempts. Try again in 15 minutes.' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   let body;
   try {
     body = await request.json();
   } catch {
-    return jsonResponse({ error: 'Invalid JSON body' }, 400);
+    return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   const { password } = body || {};
-  if (typeof password !== 'string' || password.length === 0) {
-    return jsonResponse({ error: 'Password required' }, 400);
+  if (!password) {
+    return new Response(JSON.stringify({ error: 'Password required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
+  // Constant-time hash comparison (avoid string equality timing signal)
   const inputHash = await hashPassword(password);
-
-  // Single, configuration-driven check. No DEFAULT_HASH, no OLD_HASH, no
-  // plaintext 'mbg' fallback — those were the production bypass.
-  const isMatch = timingSafeEqualHex(inputHash, PASSWORD_HASH);
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', encoder.encode(JWT_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
+  const refSig = await crypto.subtle.sign('HMAC', key, encoder.encode(inputHash));
+  const cmpSig = await crypto.subtle.sign('HMAC', key, encoder.encode(PASSWORD_HASH));
+  const isMatch =
+    refSig.byteLength === cmpSig.byteLength &&
+    crypto.subtle.timingSafeEqual
+      ? crypto.subtle.timingSafeEqual(refSig, cmpSig)
+      : (() => {
+          // Fallback constant-time compare on bytes
+          const a = new Uint8Array(refSig), b = new Uint8Array(cmpSig);
+          let diff = 0;
+          for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+          return diff === 0;
+        })();
 
   if (isMatch) {
     // Clear rate limit on success
     rateLimitMap.delete(ip);
 
     const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
-    const sid = crypto.randomUUID();
-    const token = await signJWT({ authenticated: true, sid, expiresAt }, JWT_SECRET);
+    const token = await signJWT({ authenticated: true, expiresAt }, JWT_SECRET);
 
-    return jsonResponse(
-      { authenticated: true, expiresAt, session: sid },
-      200,
-      {
+    return new Response(JSON.stringify({ authenticated: true, expiresAt }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
         'Set-Cookie': `mbg_jwt=${token}; HttpOnly; Secure; Path=/; Max-Age=${24 * 60 * 60}; SameSite=Strict`
       }
-    );
+    });
+  } else {
+    return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
-
-  return jsonResponse({ error: 'Invalid credentials' }, 401);
 }

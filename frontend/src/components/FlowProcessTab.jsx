@@ -4,8 +4,12 @@ export default function FlowProcessTab() {
   const [activeSection, setActiveSection] = useState('FLOW_DIAGRAM'); // FLOW_DIAGRAM | DATA_REALITY | TOURNAMENT_16 | MT5_EA | AI_AUDIT_SPEC
   const [copiedCode, setCopiedCode] = useState(false);
 
+  // The EA is a paid deliverable: fetched through the session-gated route, not
+  // from a public static path, so it cannot be downloaded without authenticating.
+  const EA_ROUTE = import.meta.env.DEV ? '/api/dev-bundle?type=ea' : '/api/ea';
+
   const handleCopyEA = () => {
-    fetch('/ea/MBG_Institutional_Apex_EA.mq5')
+    fetch(EA_ROUTE)
       .then(res => res.text())
       .then(text => {
         navigator.clipboard.writeText(text);
@@ -445,7 +449,7 @@ export default function FlowProcessTab() {
 
               <div style={{ display: 'flex', gap: '10px' }}>
                 <a
-                  href="/ea/MBG_Institutional_Apex_EA.mq5"
+                  href={EA_ROUTE}
                   download="MBG_Institutional_Apex_EA.mq5"
                   style={{
                     display: 'inline-flex',

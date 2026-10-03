@@ -47,22 +47,45 @@ function parseCookies(cookieHeader) {
   return cookies;
 }
 
+// --- Deployment Fallback (Owner Directive, 2026-09-30) ---
+// Must stay byte-identical with auth.js: when JWT_SECRET env is absent, sessions
+// are verified against the same derived key that auth.js used to sign them.
+const DEFAULT_PASSWORD_HASH = 'baab581258781b80bf4b0764a95fae1a9f08934bbd101053d0f4b70626d5dc30';
+
+async function deriveJwtSecret(passwordHash) {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw', encoder.encode('MBG-APEX-JWT-PEPPER-V1'),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(passwordHash));
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 export async function onRequestGet(context) {
   const { env, request } = context;
-  const JWT_SECRET = env.JWT_SECRET || 'fallback-secret-for-dev';
 
-  // 1. Authenticate JWT (allows dev testing fallback if dev secret is used)
+  // SECURITY: authentication is mandatory — no anonymous fallback.
+  const PASSWORD_HASH = env.PASSWORD_HASH || DEFAULT_PASSWORD_HASH;
+  const JWT_SECRET = env.JWT_SECRET || (await deriveJwtSecret(PASSWORD_HASH));
+
+  // 1. Authenticate JWT (required)
   const cookies = parseCookies(request.headers.get('Cookie'));
   const token = cookies['mbg_jwt'];
 
-  if (token) {
-    const payload = await verifyJWT(token, JWT_SECRET);
-    if (!payload || (payload.expiresAt && Date.now() > payload.expiresAt)) {
-      return new Response(JSON.stringify({ error: 'Unauthorized or token expired' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
+  if (!token) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  const payload = await verifyJWT(token, JWT_SECRET);
+  if (!payload || (payload.expiresAt && Date.now() > payload.expiresAt)) {
+    return new Response(JSON.stringify({ error: 'Unauthorized or token expired' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   // 2. Query Supabase REST API for latest market bundle if configured

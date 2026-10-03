@@ -39,6 +39,106 @@ logging.basicConfig(
 )
 logger = logging.getLogger("PipelineRunner")
 
+# VIP signal ledger: prevents duplicate tickets for the same plan on pipeline re-runs.
+VIP_LEDGER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache", "vip_signal_ledger.json")
+
+# Specialist bot roster — the commercial product keeps 3 champions, not all 16 arena bots.
+VIP_SPECIALIST_BOTS = {
+    "IDX": "BANDAR APEX (IDX Specialist)",
+    "CRYPTO": "BTC PULSE (Crypto Specialist)",
+    "XAUUSD": "GOLD HUNTER (Metals Specialist)",
+}
+
+
+def _vip_signal_key(plan):
+    """Stable identity for a ticket: symbol + direction + entry. Same trade never alerts twice."""
+    sym = (plan.get("clean_ticker") or plan.get("ticker") or plan.get("symbol") or "?").upper()
+    direction = (plan.get("direction") or plan.get("action") or "BUY").upper()
+    entry = plan.get("entry_price") or plan.get("entry") or 0
+    return f"{sym}|{direction}|{round(float(entry or 0), 2)}"
+
+
+def dispatch_vip_signals(telegram, trade_plans, crypto_spot_10, mode="all"):
+    """Send at most one VIP ticket per specialist instrument, deduped against the ledger.
+
+    ponytail: flat JSON ledger, no DB. Upgrade to a table when VIP membership exceeds a few hundred.
+    """
+    if not telegram or not getattr(telegram, "enabled", False):
+        logger.info("VIP dispatch skipped: Telegram notifier disabled.")
+        return
+
+    candidates = []
+
+    # IDX: highest-conviction stock plan (Bandarmology confluence already applied upstream).
+    idx_plans = [p for p in (trade_plans or []) if (p.get("market") or "").upper() == "IDX"]
+    if idx_plans:
+        best = sorted(
+            idx_plans,
+            key=lambda p: (
+                p.get("bandar_score") or 0,
+                p.get("confidence_score") or p.get("confidence") or 0,
+            ),
+            reverse=True,
+        )[0]
+        candidates.append((VIP_SPECIALIST_BOTS["IDX"], best))
+
+    # Crypto: top momentum pair from the spot scan.
+    if crypto_spot_10:
+        best_crypto = sorted(
+            crypto_spot_10,
+            key=lambda c: float(c.get("change_24h_pct") or c.get("change_pct") or 0),
+            reverse=True,
+        )[0]
+        sym = (best_crypto.get("symbol") or best_crypto.get("pair") or "BTCUSDT").replace("USDT", "")
+        candidates.append((
+            VIP_SPECIALIST_BOTS["CRYPTO"],
+            {
+                "clean_ticker": sym,
+                "symbol": sym,
+                "market": "CRYPTO",
+                "direction": "BUY",
+                "entry_price": best_crypto.get("price") or best_crypto.get("current_price") or 0,
+                "stop_loss": best_crypto.get("stop_loss") or 0,
+                "target_1": best_crypto.get("target_1") or 0,
+                "target_2": best_crypto.get("target_2") or 0,
+                "risk_reward_ratio": best_crypto.get("risk_reward") or "1:2.0",
+                "strategy": "Momentum Breakout Scan",
+                "thesis": (
+                    f"Peringkat teratas scan momentum 24 jam "
+                    f"({best_crypto.get('change_24h_pct') or best_crypto.get('change_pct') or 0}%)."
+                ),
+            },
+        ))
+
+    if not candidates:
+        logger.info("VIP dispatch: no candidate plans this cycle.")
+        return
+
+    try:
+        ledger = json.load(open(VIP_LEDGER_PATH, encoding="utf-8")) if os.path.exists(VIP_LEDGER_PATH) else {}
+    except Exception:
+        ledger = {}
+
+    sent = 0
+    for bot_name, plan in candidates:
+        key = _vip_signal_key(plan)
+        if key in ledger:
+            continue
+        # Guard against empty/zero-entry tickets polluting the VIP channel.
+        if not plan.get("entry_price"):
+            logger.warning(f"VIP dispatch skipped {key}: missing entry price.")
+            continue
+        if telegram.broadcast_vip_trade_signal(plan, agent_name=bot_name):
+            ledger[key] = datetime.now(timezone.utc).isoformat()
+            sent += 1
+            logger.info(f"VIP signal dispatched: {bot_name} -> {key}")
+
+    if sent:
+        os.makedirs(os.path.dirname(VIP_LEDGER_PATH), exist_ok=True)
+        with open(VIP_LEDGER_PATH, "w", encoding="utf-8") as fh:
+            json.dump(ledger, fh, indent=2)
+    logger.info(f"VIP dispatch complete: {sent} new ticket(s) sent, {len(ledger)} total in ledger.")
+
 def main():
     # Load .env if present
     env_path = os.path.join(os.path.dirname(__file__), "..", ".env")
@@ -135,7 +235,7 @@ def main():
         db.upsert_crypto_spot_10(crypto_spot_10)
         
         # Load existing bundle and update current prices in trade plans
-        bundle_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "public", "data", "latest_cockpit_bundle.json")
+        bundle_path = os.path.join(os.path.dirname(__file__), "cache", "latest_cockpit_bundle.json")
         if os.path.exists(bundle_path):
             with open(bundle_path, "r", encoding="utf-8") as bf:
                 existing_bundle = json.load(bf)
@@ -385,7 +485,7 @@ def main():
 
     # 4. Consolidate Master Cockpit Bundle (Preserve existing data if running hourly)
     existing_bundle = {}
-    bundle_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "public", "data", "latest_cockpit_bundle.json")
+    bundle_path = os.path.join(os.path.dirname(__file__), "cache", "latest_cockpit_bundle.json")
     if os.path.exists(bundle_path):
         try:
             with open(bundle_path, "r", encoding="utf-8") as bf:
@@ -446,6 +546,10 @@ def main():
         telegram.broadcast_macro_flash(macro_data)
     if trade_plans:
         telegram.broadcast_daily_plans(trade_plans)
+
+    # 5b. VIP Signal Dispatch: one actionable ticket per instrument specialist bot.
+    # Dedupe via engine/cache/vip_signal_ledger.json so a re-run never re-spams the VIP group.
+    dispatch_vip_signals(telegram, trade_plans, crypto_spot_10, mode=args.mode)
 
     logger.info(f"Pipeline finished successfully in {bundle['execution_duration_sec']} seconds.")
     print("="*60)

@@ -369,8 +369,8 @@ SUPABASE_SERVICE_ROLE_KEY=eyJh...kunci_rahasia
 TELEGRAM_BOT_TOKEN=1234567890:ABCdefGhIJKlmNoPQRsTUVwxyZ
 TELEGRAM_CHAT_ID=123456789
 
-# Master Password Cockpit Web
-COCKPIT_PASSWORD=MBG::Xk9#Tr4d3!C0ckp1t_Zw&Qr7
+# Master Password Cockpit Web (set via Cloudflare Pages env var PASSWORD_HASH — never commit plaintext)
+COCKPIT_PASSWORD=<redacted — configure via environment>
 ```
 
 ### Langkah 5: Menjalankan & Menguji di Komputer Lokal

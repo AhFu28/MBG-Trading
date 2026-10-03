@@ -44,7 +44,8 @@ class ArenaEvaluator:
         self.capital_per_bot_idr = capital_per_bot_idr
         self.risk_pct = risk_pct
         self.state_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), "cache", "arena_state.json")
-        self.public_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend", "public", "data", "latest_arena_state.json")
+        # Non-public path: arena state must not ship as a downloadable static asset.
+        self.public_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), "cache", "latest_arena_state.json")
         self.state = self._load_state()
 
     def _load_state(self) -> dict:

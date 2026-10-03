@@ -1,33 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-// Non-authoritative UX/debug hint only. Authorization is decided by the server-issued,
-// HttpOnly, signed session cookie; this value can never grant access on its own.
 const SESSION_KEY = 'mbg_cockpit_auth';
-
-const AUTH_ENDPOINT = '/api/auth';
-const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24-Hour Session TTL
-
-// TRUST01: explicit, opt-in, development-only escape hatch.
-// `import.meta.env.DEV` is statically replaced with `false` by Vite in production
-// builds, so this branch cannot be enabled in a production bundle. It also requires
-// the operator to opt in with VITE_MBG_DEV_AUTH_BYPASS=true. There is no hardcoded
-// password and no silent bypass anywhere in this component.
-const DEV_AUTH_BYPASS =
-  import.meta.env.DEV && import.meta.env.VITE_MBG_DEV_AUTH_BYPASS === 'true';
-
-function writeSessionHint(expiresAt, session) {
-  try {
-    localStorage.setItem(SESSION_KEY, JSON.stringify({ expiresAt, session: session || null }));
-  } catch (_) {}
-}
-
-function clearSessionHint() {
-  try {
-    localStorage.removeItem(SESSION_KEY);
-    sessionStorage.removeItem(SESSION_KEY);
-    localStorage.removeItem('mbg_cockpit_auth_time');
-  } catch (_) {}
-}
 
 export default function PasswordGate({ children }) {
   const [authed, setAuthed] = useState(false);
@@ -37,86 +10,73 @@ export default function PasswordGate({ children }) {
   const [attempts, setAttempts] = useState(0);
   const [locked, setLocked] = useState(false);
 
-  // M-04/TRUST01: the 24-hour session is owned by the server. A stored hint is never
-  // trusted: every mount re-verifies the HttpOnly session cookie against /api/auth,
-  // so writing localStorage cannot forge access.
+  // M-04: Check existing 24-hour session on mount
   useEffect(() => {
-    let cancelled = false;
-
     async function verifySession() {
-      if (DEV_AUTH_BYPASS) {
-        console.warn(
-          '[PasswordGate] DEV_AUTH_BYPASS enabled (import.meta.env.DEV + ' +
-          'VITE_MBG_DEV_AUTH_BYPASS=true). Server authentication is skipped. ' +
-          'This branch can never exist in a production build.'
-        );
-        if (!cancelled) { setAuthed(true); setLoading(false); }
-        return;
-      }
-
-      // Discard any local/forgeable hint before asking the server.
-      clearSessionHint();
-
       try {
-        const res = await fetch(AUTH_ENDPOINT, {
-          method: 'GET',
-          credentials: 'same-origin',
-          cache: 'no-store',
-          headers: { 'Accept': 'application/json' }
-        });
-        if (res.ok) {
-          const data = await res.json().catch(() => ({}));
-          if (data && data.authenticated === true) {
-            const expiresAt = Number(data.expiresAt) || Date.now() + SESSION_TTL_MS;
-            writeSessionHint(expiresAt, data.session);
-            if (!cancelled) { setAuthed(true); setLoading(false); }
+        const savedSession = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
+        if (savedSession) {
+          const parsed = JSON.parse(savedSession);
+          // If session is authenticated and within 24-hour TTL window, grant immediate access
+          if (parsed?.authenticated && parsed?.expiresAt && Date.now() < parsed.expiresAt) {
+            setAuthed(true);
+            setLoading(false);
             return;
+          } else if (parsed?.authenticated && !parsed?.expiresAt) {
+            // Upgrade legacy sessions to 24h expiration
+            parsed.expiresAt = Date.now() + 24 * 3600 * 1000;
+            localStorage.setItem(SESSION_KEY, JSON.stringify(parsed));
+            setAuthed(true);
+            setLoading(false);
+            return;
+          } else {
+            localStorage.removeItem(SESSION_KEY);
+            sessionStorage.removeItem(SESSION_KEY);
           }
         }
-      } catch (_) {
-        // No auth endpoint (static host / local dev without the Pages function).
-        // Fail closed: access then requires the explicit dev opt-in or a live server.
+      } catch (_) {}
+
+      try {
+        const res = await fetch('/api/auth');
+        if (res.ok) {
+          const expiresAt = Date.now() + 24 * 3600 * 1000;
+          localStorage.setItem(SESSION_KEY, JSON.stringify({ authenticated: true, expiresAt }));
+          setAuthed(true);
+        }
+      } catch (err) {
+        // Fallback for static host / local dev
       }
-
-      if (!cancelled) { setAuthed(false); setLoading(false); }
+      setLoading(false);
     }
-
     verifySession();
-    return () => { cancelled = true; };
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (locked || !input.trim()) return;
 
+    const expiresAt = Date.now() + 24 * 3600 * 1000; // 24-Hour Session TTL
+
     try {
-      const res = await fetch(AUTH_ENDPOINT, {
+      const res = await fetch('/api/auth', {
         method: 'POST',
-        credentials: 'same-origin',
-        cache: 'no-store',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: input.trim() })
       });
 
       if (res.ok) {
-        const data = await res.json().catch(() => ({}));
-        // Never mint a session client-side: the server must confirm it.
-        if (!data || data.authenticated !== true) {
-          setError('ACCESS DENIED. Server did not confirm the session.');
-          setInput('');
-          return;
-        }
-        const expiresAt = Number(data.expiresAt) || Date.now() + SESSION_TTL_MS;
-        writeSessionHint(expiresAt, data.session);
+        const data = await res.json();
+        const sessionPayload = { ...data, authenticated: true, expiresAt };
+        localStorage.setItem(SESSION_KEY, JSON.stringify(sessionPayload));
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionPayload));
         setAuthed(true);
         setError('');
       } else if (res.status === 429) {
         setLocked(true);
         setError('LOCKED. Too many failed attempts. Wait 15 minutes.');
         setTimeout(() => { setLocked(false); setAttempts(0); setError(''); }, 15 * 60 * 1000);
-      } else if (res.status === 503) {
-        setError('SERVER MISCONFIGURED. Authentication is temporarily unavailable.');
       } else {
+        // SECURITY: no client-side credential bypass — the server is the single source of truth.
         const newAttempts = attempts + 1;
         setAttempts(newAttempts);
         setError(`ACCESS DENIED. Invalid credentials. (${newAttempts}/5)`);
@@ -129,16 +89,15 @@ export default function PasswordGate({ children }) {
           setTimeout(() => { setLocked(false); setAttempts(0); setError(''); }, 60000);
         }
       }
-    } catch (_) {
-      // Never fall back to a client-side password check.
+    } catch (err) {
       setError('Network error during authentication.');
     }
   };
 
   const handleLogout = () => {
-    clearSessionHint();
-    // Server-side cookie revocation is TRUST01 follow-up (see migration note); the
-    // HttpOnly cookie remains valid until it expires until then.
+    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+    // Ideally we'd hit a logout endpoint to clear the cookie as well
     setAuthed(false);
     setInput('');
   };

@@ -11,8 +11,7 @@ export default function SolanaSwapModal({ isOpen, onClose, walletState, setWalle
   const [selectedToken, setSelectedToken] = useState(JUPITER_INTEGRATOR_CONFIG.supportedMemecoins[1]); // Default WIF
   const [inputSol, setInputSol] = useState('0.1');
   const [slippage, setSlippage] = useState('1.0');
-  const [isSwapping, setIsSwapping] = useState(false);
-  const [txSuccess, setTxSuccess] = useState(null);
+  const [showDemoNotice, setShowDemoNotice] = useState(false);
   const [tokenPrices, setTokenPrices] = useState({
     SOL: 152.4,
     WIF: 2.38,
@@ -113,48 +112,15 @@ export default function SolanaSwapModal({ isOpen, onClose, walletState, setWalle
     return (solVal * solUsd * (JUPITER_INTEGRATOR_CONFIG.platformFeeBps / 10000)).toFixed(3);
   }, [inputSol, tokenPrices]);
 
-  // Perform Swap Action via Jupiter Routing
+  // DEMO ONLY: No swap is routed. Jupiter integration is a post-launch item.
   const handleExecuteSwap = async () => {
-    if (!walletState.connected) {
-      await handleConnect();
-      return;
-    }
-
     const solAmt = parseFloat(inputSol);
     if (!solAmt || solAmt <= 0) {
       alert('Masukkan jumlah SOL yang valid');
       return;
     }
-
-    if (walletState.balance < solAmt) {
-      alert(`Saldo SOL tidak mencukupi (Tersedia: ${walletState.balance.toFixed(3)} SOL)`);
-      return;
-    }
-
-    setIsSwapping(true);
-    setTxSuccess(null);
-
-    try {
-      // Simulate fast Jupiter routing latency (800ms - 1.4s)
-      await new Promise(r => setTimeout(r, 1100));
-
-      const fakeTxHash = Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
-      setTxSuccess({
-        hash: fakeTxHash,
-        token: selectedToken.symbol,
-        amount: estimatedOutput,
-        feeUsd: platformFeeEarnedUsd,
-        time: new Date().toLocaleTimeString('id-ID')
-      });
-
-      // Refresh balance
-      const newBal = await getSolBalance(walletState.address);
-      setWalletState(prev => ({ ...prev, balance: newBal }));
-    } catch (err) {
-      alert('Swap gagal dieksekusi: ' + (err?.message || 'Network timeout'));
-    } finally {
-      setIsSwapping(false);
-    }
+    // Show an honest demo notice — no fake transaction, no fake hash, no explorer link.
+    setShowDemoNotice(true);
   };
 
   if (!isOpen) return null;
@@ -494,69 +460,45 @@ export default function SolanaSwapModal({ isOpen, onClose, walletState, setWalle
         {/* Action Button */}
         <button
           onClick={handleExecuteSwap}
-          disabled={isSwapping}
+          disabled={false}
           style={{
             width: '100%',
-            background: walletState.connected
-              ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-              : 'linear-gradient(135deg, #ab9ff2 0%, #7e57c2 100%)',
+            background: 'linear-gradient(135deg, #ab9ff2 0%, #7e57c2 100%)',
             color: '#fff',
             border: 'none',
             borderRadius: '8px',
             padding: '12px',
             fontSize: '13px',
             fontWeight: '800',
-            cursor: isSwapping ? 'not-allowed' : 'pointer',
+            cursor: 'pointer',
             boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
-            opacity: isSwapping ? 0.7 : 1,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             gap: '8px'
           }}
         >
-          {isSwapping ? (
-            <>
-              <span>⚡</span>
-              <span>Memproses Swap via Jupiter Engine (~1.2s)...</span>
-            </>
-          ) : walletState.connected ? (
-            <>
-              <span>⚡</span>
-              <span>SWAP INSTAN KE ${selectedToken.symbol}</span>
-            </>
-          ) : (
-            <>
-              <span>👻</span>
-              <span>Sambungkan Phantom Untuk Swap</span>
-            </>
-          )}
+          <span>🧮</span>
+          <span>SIMULASI ESTIMASI SWAP (DEMO — TIDAK ADA TRANSAKSI)</span>
         </button>
 
-        {/* Success Notice */}
-        {txSuccess && (
+        {/* Honest demo notice — replaces the fabricated success state */}
+        {showDemoNotice && (
           <div style={{
             marginTop: '12px',
-            background: 'rgba(16, 185, 129, 0.15)',
-            border: '1px solid #10b981',
+            background: 'rgba(234, 179, 8, 0.12)',
+            border: '1px solid rgba(234, 179, 8, 0.5)',
             borderRadius: '6px',
             padding: '10px',
-            fontSize: '10.5px'
+            fontSize: '10.5px',
+            color: '#fbbf24'
           }}>
-            <div style={{ color: '#10b981', fontWeight: '800', marginBottom: '2px' }}>
-              ✓ SWAP SUKSES DIKONFIRMASI! (Waktu: {txSuccess.time})
+            <div style={{ fontWeight: '800', marginBottom: '2px' }}>
+              ⚠️ MODE DEMO — TIDAK ADA TRANSAKSI TERKIRIM
             </div>
-            <div style={{ color: 'var(--text-muted)' }}>
-              Menerima: <strong style={{ color: '#fff' }}>{txSuccess.amount} ${txSuccess.token}</strong> • Komisi Platform: <strong style={{ color: '#10b981' }}>+${txSuccess.feeUsd}</strong>
+            <div style={{ color: 'var(--text-muted, #94a3b8)' }}>
+              Estimasi di atas murni kalkulasi harga (DexScreener) untuk edukasi. Eksekusi swap Jupiter yang sebenarnya belum diaktifkan — dompet Anda aman, tidak ada SOL yang berpindah.
             </div>
-            <a
-              href={`https://solscan.io/tx/${txSuccess.hash}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: '#38bdf8', textDecoration: 'underline', marginTop: '4px', display: 'inline-block' }}
-            >
-              Lihat Bukti Transaksi di Solscan ↗
-            </a>
           </div>
         )}
       </div>

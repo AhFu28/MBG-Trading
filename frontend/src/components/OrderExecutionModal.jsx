@@ -69,12 +69,22 @@ export default function OrderExecutionModal({
   if (!isOpen) return null;
 
   const isIdr = (prefill?.market === 'IDX') || (!symbol.includes('USDT') && !symbol.includes('/') && prefill?.market !== 'CRYPTO');
+  const isShort = orderSide === 'SELL';
   const currencySymbol = isIdr ? 'Rp ' : '$';
 
   const entry = Number(entryPrice) || 0;
   const sl = Number(stopLoss) || 0;
   const tp1 = Number(target1) || 0;
   const tp2 = Number(target2) || 0;
+
+  // Bracket geometry guard: LONG needs SL<entry<TP; SHORT needs TP<entry<SL (IDX rejects SELL entirely).
+  const bracketError = isIdr && isShort
+    ? 'IDX long-only (OJK/BEI): gunakan broker lain untuk posisi SHORT.'
+    : (sl > 0 && entry > 0 && ((isShort ? sl <= entry : sl >= entry))
+      ? (isShort ? 'Stop Loss harus DI ATAS harga entry untuk posisi SHORT.' : 'Stop Loss harus DI BAWAH harga entry untuk posisi LONG.')
+      : (tp1 > 0 && entry > 0 && (isShort ? tp1 >= entry : tp1 <= entry)
+        ? (isShort ? 'Target 1 harus DI BAWAH harga entry untuk posisi SHORT.' : 'Target 1 harus DI ATAS harga entry untuk posisi LONG.')
+        : null));
 
   // Account balance from paper broker
   const brokerSummary = institutionalPaperBroker.getSummary();
@@ -124,6 +134,7 @@ export default function OrderExecutionModal({
     try {
       if (entry <= 0) throw new Error('Harga entri harus valid dan lebih besar dari 0.');
       if (sl <= 0) throw new Error('Level Stop Loss harus diisi untuk membatasi risiko.');
+      if (bracketError) throw new Error(bracketError);
       if (isOverAllocated) throw new Error('Total modal yang dibutuhkan melebihi saldo kas tersedia.');
 
       if (brokerType === 'PAPER') {
@@ -404,6 +415,13 @@ export default function OrderExecutionModal({
             </div>
           </div>
 
+          {/* Bracket validation error (shown live, blocks submit) */}
+          {bracketError && (
+            <div style={{ padding: '8px 12px', background: 'rgba(245, 158, 11, 0.12)', border: '1px solid #f59e0b', borderRadius: '4px', color: '#fcd34d', fontSize: '11px', fontWeight: '700' }}>
+              ⚠️ {bracketError}
+            </div>
+          )}
+
           {/* Feedback & Error alerts */}
           {errorMessage && (
             <div style={{ padding: '8px 12px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', borderRadius: '4px', color: '#fca5a5', fontSize: '11px', fontWeight: '700' }}>
@@ -421,7 +439,7 @@ export default function OrderExecutionModal({
           <button
             type="button"
             onClick={handleTransmitOrder}
-            disabled={isSubmitting || isOverAllocated}
+            disabled={isSubmitting || isOverAllocated || !!bracketError}
             style={{
               padding: '12px',
               fontSize: '13px',

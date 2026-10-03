@@ -37,6 +37,215 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
   - **Visual**: 4 screenshot light/dark/US-Stocks/mobile-375px diarsipkan di `docs/screenshots/ui_polish_2026-09-30/` — light mode sepenuhnya terbaca, COMPANY NAME menampilkan nama emiten riil ("Apple Inc.", "NVIDIA Corp."), MKT CAP/P/E nilai riil, RSI honest em-dash, mobile 375px bebas overflow & header rapi.
   - **Computed WCAG**: 5 pasangan warna baru diukur dengan formula relative-luminance WCAG 2.x — semua **PASS ≥ 4.5:1**.
   - **Files Changed (7)**: `src/utils/format.js` (NEW), `src/index.css`, `src/components/USStockTab.jsx`, `src/components/HomeDashboardTab.jsx`, `src/components/MasterQuantLeaderboard.jsx`, `src/components/LotCalculatorModal.jsx`, `src/App.jsx` — 161 insertions / 59 deletions, semua di dalam `frontend/src/**`.
+---
+
+## [2026-10-02] — Perluasan Cakupan Pemindaian: Pagination Multi-Halaman (Tetap Gratis)
+
+### Sprint 22 — Menjawab "Kenapa Cuma Sedikit?" dengan Data
+- **[DIAGNOSA] Kenapa Hasil Pemindaian Terlihat Sedikit**:
+  - Dilakukan analisis funnel terhadap data live untuk menemukan penyebab sebenarnya:
+    - pump.fun diambil: **70 token** (batas keras upstream)
+    - Punya pair DexScreener: **~53%** (16 dari 30 dalam sample) — sisanya masih di bonding curve
+    - Lolos filter 9 kriteria: **7 token** — karena **14 token gagal di LP < $15K**
+  - **Kesimpulan**: hasil sedikit **bukan karena API berbayar**, melainkan karena (a) batas 70 token per request, dan (b) mayoritas memecoin memang tidak punya likuiditas layak.
+- **[TEMUAN] pump.fun Membatasi 70 Token per Request — Bukan per Hari**:
+  - Diuji langsung: `limit=40/60` dihormati, tetapi `limit=100/200/500` **semuanya mengembalikan tepat 70**.
+  - **Pagination `offset` terbukti bekerja** dan **100% gratis**: offset 0/70/140/210 mengembalikan set token yang berbeda.
+  - Verifikasi 8 halaman: **456 token unik** terkumpul (70+70+70+70+70+70+70+70, terdeduplikasi).
+- **[APLIKASI] Pemindaian Multi-Halaman (`fetchPumpFunPages`)**:
+  - Halaman diambil **secara paralel** dengan `Promise.all`; halaman yang gagal dilewati, tidak menggagalkan seluruh pemindaian.
+  - **Deduplikasi berbasis mint** karena jendela pagination dapat tumpang tindih saat token baru terus lahir.
+  - `buildScanUniverse(pageCount)` kini menerima jumlah halaman; `fetchPumpFunActive()` juga.
+  - Batch DexScreener dinaikkan dari 30 → **40 alamat/request** (diuji: 100 alamat pun diterima 200 OK).
+  - Kegagalan satu batch DexScreener tidak lagi membatalkan seluruh hasil.
+- **[UI] Kontrol Ukuran Pool Pemindaian**:
+  - Dropdown baru **"Jumlah token dipindai"**: 70 (cepat) / 140 / 280 / **560 token (maksimal)**.
+  - Header tabel menampilkan **"menampilkan X dari Y token"** secara transparan, bukan hanya jumlah yang terpotong.
+  - Batas tampilan baris dinaikkan **30 → 200 baris**; filter dan tombol pindai ulang menampilkan status loading.
+- **[BIAYA] Konfirmasi: Semua Sumber Gratis**:
+  - 456 token hanya memerlukan **12 request DexScreener + 19 request Jupiter** (batch 40 dan 25).
+  - Tidak ada API berbayar yang dibutuhkan untuk cakupan ini. Biaya hanya muncul bila nanti butuh **identitas wallet insider** (Helius/Birdeye), yang memang tidak tersedia gratis.
+- **[QA/QC & CERTIFICATION]**:
+  - Test Suite: **86/86 lulus**. Build produksi bersih 1.41s.
+  - Verifikasi live: pagination 8 halaman mengembalikan 456 token unik melalui proxy produksi.
+  - Verifikasi dev: `fetchPumpFunPages` dan `PUMPFUN_PAGE_SIZE` tersaji benar di `localhost:3000`.
+
+## [2026-10-02] — Perbaikan Kritis: pump.fun Terblokir 403 di Produksi (Edge Proxy)
+
+### Sprint 21 — Diagnosa Origin-Lock & Solusi Cloudflare Edge Proxy
+- **[BUG PRODUKSI] "Gagal memuat pump.fun: Failed to fetch" Hanya di Web Asli**:
+  - **Gejala**: Radar berjalan normal di `localhost:3000`, tetapi **gagal total** di `https://mbg-trading.pages.dev` dengan pesan `Failed to fetch`.
+  - **Diagnosa**: Diuji dengan header `Origin` yang berbeda terhadap endpoint pump.fun:
+    - `Origin: http://localhost:3000` → **200 OK** (diizinkan)
+    - `Origin: https://mbg-trading.pages.dev` → **403 Forbidden** (diblokir WAF Cloudflare pump.fun)
+  - **Akar masalah**: Cloudflare WAF milik pump.fun menerapkan **origin-lock** — hanya mengizinkan origin yang di-whitelist. Ini tidak terdeteksi di dev karena localhost kebetulan diizinkan. Error `Failed to fetch` muncul karena browser memblokir response 403 tanpa header CORS.
+  - **Bukan masalah CORS biasa**: DexScreener (`Access-Control-Allow-Origin: *`) dan Jupiter (mengizinkan origin produksi) terverifikasi **aman** — hanya pump.fun yang terblokir.
+- **[SOLUSI] Cloudflare Pages Edge Function Reverse Proxy (`/api/pumpfun/[[path]].js`)**:
+  - Request diteruskan **server-side** dari edge Cloudflare, sehingga tidak ada header `Origin` browser yang dikirim ke pump.fun — melewati origin-lock sepenuhnya.
+  - Ditambahkan `User-Agent` browser standar untuk kompatibilitas.
+  - **Caching edge** (`max-age=10, s-maxage=20`) melindungi dari rate-limit dan mempercepat response.
+  - CORS bersih dikembalikan ke client (`Access-Control-Allow-Origin` sesuai origin pemanggil yang sah).
+  - Error handling: kegagalan upstream mengembalikan **502** dengan pesan jelas, bukan crash.
+- **[RESILIENSI] Fallback Otomatis di `memecoinDesk.js`**:
+  - Fungsi baru `fetchPumpFunEndpoint()` mencoba **proxy edge lebih dulu**, dan otomatis jatuh ke endpoint langsung jika proxy tidak tersedia (mis. saat dev tanpa fungsi Pages).
+  - Kedua pemanggil (`fetchPumpFunLaunches` dan `fetchPumpFunActive`) kini melalui jalur tunggal ini, sehingga perbaikan berlaku untuk **semua** konsumen pump.fun sekaligus.
+  - Vite dev server diberi proxy `/api/pumpfun` agar perilaku dev dan produksi **identik** — mencegah bug "jalan di lokal, rusak di produksi" terulang.
+- **[VERIFIKASI] Diuji Tuntas di Kedua Lingkungan**:
+  - Dev: `http://localhost:3000/api/pumpfun/coins?...` → **200 OK** (2 token terverifikasi).
+  - Produksi: `https://mbg-trading.pages.dev/api/pumpfun/coins?...` → **200 OK**, mengembalikan data live (GSMG, BRR, SULY).
+  - Audit origin menyeluruh: DexScreener tokens ✅, DexScreener boosts ✅, Jupiter lite-api ✅, pump.fun langsung ❌ 403, **pump.fun via proxy ✅ 200**.
+  - Test suite: **86/86 lulus**. Build produksi bersih 1.41s.
+
+---
+---
+
+## [2026-10-02] — Launch Window Filter: Koreksi Berbasis Data atas Saran Filter Medsos
+
+### Sprint 20 — 9 Kriteria Kelayakan & Pelacakan Promosi Berbayar
+- **[KOREKSI PENTING] Saran Filter "MCap Kecil / LP Kecil / Volume Kecil" Terbukti Berbahaya**:
+  - Saran yang beredar di Threads/Twitter (mcap < $35K, volume < $2.5K, LP < $25K) **diuji langsung terhadap data live** dan hasilnya berlawanan dengan tujuan:
+    - **MCap < $35K**: 62% token aktif masuk kategori ini. Dari **11 token kecil** dengan pair DEX, **7 punya LP = $0** — tidak ada likuiditas sama sekali, posisi tidak bisa dijual.
+    - **LP < $25K**: **11 dari 11** token kecil sudah di bawah $25K. Filter ini tidak menyaring apa pun.
+    - **Volume < $2.5K**: volume kecil bukan berarti "belum rame", tetapi "tidak ada yang membeli".
+  - **Validasi tambahan**: dari 3 token yang lolos filter lama, **3/3 punya LP = $0**. Filter baru menghasilkan token dengan LP nyata $26K–$71K.
+  - **Kesimpulan**: target yang benar adalah token **MUDA** yang **sudah punya likuiditas nyata** dan permintaan organik — bukan token kecil tanpa likuiditas.
+- **[FILTER BARU — `checkLaunchWindow()`] 9 Kriteria Kelayakan**:
+  - Rentang mcap **$20K–$800K**, likuiditas **≥ $15K**, volume **≥ $1.000/jam**, umur **5 menit – 72 jam**.
+  - **Security gate**: mint authority **wajib** dimatikan, freeze authority **wajib** dimatikan, konsentrasi top holder **< 45%**, holder **≥ 100**, holder tidak menyusut.
+  - **Fail-closed**: data yang tidak tersedia (misalnya token belum ada di Jupiter) dihitung **GAGAL**, bukan lolos. Token tidak boleh melewati gerbang keamanan yang tidak bisa diperiksa.
+  - Setiap kriteria mengembalikan nilai terukur + target, sehingga UI dapat menampilkan alasan penolakan secara spesifik — bukan penolakan buta.
+  - **OR logic** pada authority: mint **atau** freeze masih aktif = fatal (`authorityCompromised`).
+- **[KOL CALLER] Klaim "Top Caller" Tidak Dapat Diverifikasi — Diganti Data Boost Nyata**:
+  - **Temuan**: API DexScreener **tidak punya** field `kol`, `caller`, `influencer`, atau `promotedBy` sama sekali (diverifikasi langsung). Klaim "top caller" di media sosial umumnya berupa screenshot grup Telegram berbayar, bukan data terverifikasi.
+  - **Pengganti yang jujur**: `fetchBoostedAddressSet()` melacak **promosi berbayar** (boost) yang benar-benar terdata di DexScreener. Token yang sedang boost = sedang dipromosikan; ini fakta, bukan rumor.
+  - Kolom **Promo** baru menampilkan jumlah boost; badge muncul di panel detail. Boost diperlakukan sebagai enrichment saja — kegagalannya tidak pernah merusak pemindaian.
+- **[UI — `MemecoinRadar.jsx`]**:
+  - Panel penjelasan yang menampilkan **mengapa saran filter medsos berbahaya**, dengan angka hasil pengujian live.
+  - Toggle **"HANYA yang lolos 9 kriteria"** beserta hitungan token yang lolos.
+  - Kolom baru: **Promo** (boost) dan **Kriteria** (mis. `9/9` hijau, `7/9` kuning, sisanya merah).
+  - Panel detail menampilkan **checklist 9 kriteria** dengan tanda ✓/✗ per baris, sehingga terlihat persis kriteria mana yang gagal.
+- **[QA/QC & CERTIFICATION]**:
+  - Test Suite: **86/86 tes lulus** (earlySignal 53, brokerGateway 14, marketHours 13, memecoinDesk 6).
+  - 11 tes baru untuk launch window, termasuk: penolakan token LP nol (sesuai temuan 7/11 dunia nyata), penolakan mint/freeze authority aktif meski semua kriteria lain sempurna, dan **fail-closed saat data Jupiter tidak ada**.
+  - Ditambahkan **guard test** yang gagal jika seseorang mengubah ambang batas kembali ke angka saran medsos yang terbukti berbahaya.
+  - Validasi live: filter lama meloloskan 3 token dengan LP $0; filter baru meloloskan token dengan LP $26K–$71K.
+  - Build produksi bersih 1.41s.
+
+## [2026-10-02] — Jupiter Enrichment: Holder Growth, Organic Demand & Token Audit
+
+### Sprint 19 — Dari Radar Bukti Menjadi Radar Lengkap (Tetap Tanpa API Key)
+- **[TEMUAN KUNCI] DexScreener Tidak Punya Data Holder — Jupiter Punya, dan Gratis**:
+  - Diuji langsung: DexScreener **tidak punya** field `holders`, `holderCount`, `topHolders`, `traders`, atau `devWallet` sama sekali.
+  - **Jupiter `lite-api` (gratis, TANPA API key)** menyediakan persis yang kurang: `holderCount`, `stats1h.holderChange`, `audit.topHoldersPercentage`, `audit.devBalancePercentage`, `mintAuthorityDisabled`, `freezeAuthorityDisabled`, `numNetBuyers`, `numTraders`, volume organik, dan `organicScore`.
+  - **Tidak perlu API berbayar.** Radar sekarang menggabungkan 3 sumber gratis: pump.fun (curve) + DexScreener (harga/volume/txns) + Jupiter (holder/audit).
+  - Verifikasi live: **30 token aktif → 30 pair DexScreener → 25 token ter-enrich Jupiter** dalam satu siklus pemindaian.
+- **[ENRICHMENT — `fetchJupiterTokenData()`] Layer Data Holder & Audit**:
+  - Batch hingga 25 mint per request, dijalankan **paralel** dengan DexScreener (sumber independen, tidak ada alasan diserialisasi).
+  - Kegagalan Jupiter **tidak merusak pemindaian** — baris hanya tetap tanpa data enrichment, bukan error total.
+- **[SCORING BARU — 6 Faktor Jupiter] Sinyal yang Sebelumnya Mustahil**:
+  - **Pertumbuhan holder**: +2% dalam 1 jam → **+20 poin**; holder menyusut ≤ −1% → **−20 poin** dan naik jadi flag risiko. Ini proksi paling jujur untuk "uang baru sedang masuk".
+  - **Net buyer**: mayoritas wallet akumulasi → **+15 poin**; net seller → **−15 poin**.
+  - **Volume organik**: membedakan permintaan asli dari wash/bot trading. Beli organik dominan → **+15 poin**; jual organik dominan → **−15 poin**. Volume debu (< $1.000) diabaikan agar tidak menyesatkan.
+  - **Audit authority**: `mintAuthority` masih aktif → **−25 poin** (dev bisa cetak supply tanpa batas); `freezeAuthority` aktif → **−20 poin** (dompet bisa dibekukan).
+  - **Konsentrasi holder**: top holder ≥ 50% → **−25 poin**; ≥ 35% → **−10 poin**; distribusi sehat → **+10 poin**.
+  - **Saldo dev**: masih pegang ≥ 5% supply → **−25 poin** (risiko dump).
+- **[UI — `MemecoinRadar.jsx`] Kolom Baru & Transparansi Sumber**:
+  - Kolom tabel baru: **Holder**, **Δ Holder 1j**, **Top 10 (%)**, dan **badge Audit** (`MINT!` / `FREEZE!` / `SAFE`).
+  - Panel detail menampilkan 18 metrik termasuk holder, net buyer, volume organik, skor organik, saldo dev, dan riwayat mint dev.
+  - Header menampilkan **cakupan sumber data** secara eksplisit (DexScreener / Jupiter / pump.fun) beserta jumlah token yang berhasil di-enrich.
+  - Catatan keterbatasan diperbarui: Jupiter **tidak** menyediakan identitas pemilik wallet top holder — hanya persentase agregat. Identitas wallet tetap tidak ditampilkan karena tidak tersedia, bukan dikarang.
+- **[QA/QC & CERTIFICATION]**:
+  - Test Suite: **75/75 tes lulus** (earlySignal 42, brokerGateway 14, marketHours 13, memecoinDesk 6).
+  - 15 tes baru khusus faktor Jupiter: pertumbuhan holder, net buyer, dominasi organik, mint/freeze authority, konsentrasi holder, saldo dev.
+  - Kasus batas diuji: token tanpa entri Jupiter tetap menghasilkan skor valid tanpa faktor holder; volume organik debu diabaikan; skor tetap dibatasi 0–100.
+  - Skenario bentuk-rug penuh (mint+freeze aktif, top holder 70%, dev 15%, holder menyusut) terbukti menghasilkan **skor 0 dengan verdict HIGH_RISK**.
+  - Build produksi bersih 1.55s.
+
+## [2026-10-02] — Early Signal Radar: Evidence-Based Memecoin Scanner & Simulated Entry Planner
+
+### Sprint 18 — Deteksi Dini Berbasis Bukti, Bukan Prediksi
+- **[NEW TAB — EARLY SIGNAL RADAR] Pemindai Sinyal Dini Memecoin Solana**:
+  - **Tab baru `MemecoinRadar.jsx`** di bagian MARKETS, memindai token Solana yang **sedang aktif diperdagangkan** (bukan sekadar peluncuran baru).
+  - **Alur Data Nyata**: `pump.fun (sort=last_trade_timestamp, 60 token)` → resolve ke `DexScreener` (batch 30) → hitung bukti akumulasi. Diuji live: **60 token aktif → 30 pair ter-resolve → semua field analyzer tersedia**.
+  - **Fokus pada token yang BISA dianalisis**: pump.fun sendiri tidak menyediakan data beli/jual/volume, jadi token tanpa pair DEX dipisahkan dan diberi penjelasan eksplisit — bukan ditampilkan dengan angka karangan.
+- **[ENGINE — `earlySignal.js`] Skor Berbasis Bukti dengan Setiap Poin Bisa Ditelusuri**:
+  - **6 Faktor Terukur**: tekanan beli/jual per interval (1j & 5m), akselerasi volume terhadap baseline 24 jam, keamanan likuiditas, turnover, deteksi **akumulasi sebelum harga bergerak** (beli kuat + harga masih flat), dan progres bonding curve.
+  - **Penalti Nyata**: likuiditas < $10.000 (−30 poin), tekanan jual dominan (−20), turnover berlebih/churn (−15), bonding curve hampir kosong (−10).
+  - **Skor Dibatasi 0–100** dan setiap faktor mengembalikan label penjelas — UI menampilkan rincian poin, bukan kotak hitam.
+  - **Risiko Dihitung Terpisah**: token bisa "early" DAN scam sekaligus. Verdict `HIGH_RISK` / `CAUTION` / `CLEAN` berasal dari flag risiko konkret (likuiditas tipis, umur < 5 menit, curve kosong, churn tinggi).
+- **[DUMMY ENTRY PLANNER] Rencana Trading Simulasi dari Volatilitas Nyata**:
+  - **Semua Angka Diturunkan dari Data**: entry = harga saat ini, stop loss = jarak berbasis volatilitas terukur (dikunci 12%–60%), target TP1 = 1.5R dan TP2 = 3R dengan R:R dihitung sungguhan.
+  - **Manajemen Risiko Benar**: ukuran posisi dari anggaran risiko 1% modal, dibatasi maksimal 10% modal per posisi, stop loss tidak pernah nol/negatif.
+  - **Konsistensi Matematis Diverifikasi Tes**: kerugian maksimal tidak pernah melebihi ukuran posisi, dan setiap angka cuan/rugi konsisten dengan unit × selisih harga.
+  - Ditandai `simulated: true` dan diberi label **DUMMY / BUKAN ORDER NYATA** agar tidak pernah disalahartikan sebagai order sungguhan.
+- **[KEJUJURAN PRODUK — KEPUTUSAN DESAIN] Label Eksplisit yang Tidak Dapat Dimatikan**:
+  - Banner merah permanen menyatakan: **tidak ada sistem yang bisa memprediksi memecoin naik puluhan ribu persen**; skor tinggi berarti "ada aktivitas beli terukur", BUKAN "harga akan naik"; mayoritas token bersinyal tetap berakhir nol.
+  - **Keterbatasan Didokumentasikan di Kode**: API pump.fun tidak punya field holder, dan Solana RPC publik menolak `getTokenLargestAccounts` saat pengembangan. Karena itu **tidak ada UI analisis holder** — fitur tersebut sengaja tidak dibuat daripada menampilkan data fabrikasi.
+  - Setiap token menyediakan tautan **verifikasi mandiri ke DexScreener**.
+- **[QA/QC & CERTIFICATION]**:
+  - Test Suite: **60/60 tes lulus** (earlySignal 27, brokerGateway 14, marketHours 13, memecoinDesk 6).
+  - Kasus batas diuji khusus: token tanpa penjualan (`Infinity` tidak bocor ke data tampilan), token mati total, skor tidak pernah melebihi 100 atau di bawah 0, posisi tidak pernah melebihi batas modal, stop loss tidak pernah nol.
+  - Verifikasi live: pipeline pemindaian terbukti jalan terhadap API sesungguhnya; build produksi bersih 1.38s.
+
+## [2026-10-02] — VIP Signal Dispatch, Multi-Chain Degen Desk & Public Payload Leak Closure
+
+### Sprint 17 — Revenue Path Wiring, Memecoin Radar & Attack-Surface Reduction
+- **[REVENUE CRITICAL] VIP Signal Dispatcher Now Actually Fires**:
+  - **Dead Code Resolution**: `broadcast_vip_trade_signal()` di `telegram_notifier.py` sebelumnya punya **0 pemanggil** — produk yang akan dijual (sinyal VIP) secara teknis belum pernah mengirim satu sinyal pun. Kini dipanggil nyata dari `run_pipeline.py` melalui `dispatch_vip_signals()`.
+  - **Specialist Bot Routing**: Memilih maksimal satu tiket per instrumen spesialis (IDX pilih skor bandarmology tertinggi, Crypto pilih momentum 24 jam tertinggi) alih-alih membanjiri grup dengan 16 sinyal arena.
+  - **Dedupe Ledger**: `engine/cache/vip_signal_ledger.json` mencegah satu tiket terkirim dua kali saat pipeline re-run. Entry price berubah = tiket baru; identik = dibungkam.
+  - **Zero-Entry Guard**: Tiket tanpa harga entry dibuang sebelum dikirim, mencegah sinyal sampah masuk grup berbayar.
+- **[MULTI-CHAIN DEGE] Degen Desk — Memecoin Radar & Rug-Check (Solana / Robinhood Chain / BSC-Aster / HyperEVM)**:
+  - **`memecoinDesk.js`**: Layer data baru berbasis endpoint keyless terverifikasi live — `frontend-api-v3.pump.fun` (peluncuran baru + progres bonding curve) dan DexScreener (harga/volume/boost multi-chain, termasuk `robinhood` dan `bsc`/Aster).
+  - **`computeRugChecks()`**: Pemeriksaan faktual dari data on-chain mentah (likuiditas SOL, progres curve, keberadaan sosial media, transfer fee, status banned) dengan verdict `HIGH_RISK` / `CAUTION` / `CLEAN`. Tanpa skor teatrikal — setiap tanda adalah fakta yang bisa diperiksa.
+  - **`DegenDesk.jsx`**: Radar peluncuran baru + papan token yang sedang di-boost, dengan filter "sembunyikan risiko tinggi" dan ambang minimum bonding curve.
+  - **Kejujuran Eksekusi**: Tabel rute eksekusi menyatakan status sebenarnya per chain — Solana masih DEMO (belum menandatangani transaksi), Robinhood Chain & Aster masih radar data saja. Tidak ada klaim swap yang tidak benar.
+- **[SECURITY — P0] Penutupan Kebocoran Payload VIP ke Publik**:
+  - **Akar Masalah**: `DatabaseClient._save_local_fallback()` menulis setiap payload VIP (trade plans, arena state, macro telemetry, research archive) ke `frontend/public/data/`, yang merupakan folder statis publik. Siapa pun bisa mengunduh seluruh sinyal berbayar tanpa login.
+  - **Perbaikan Hulu**: Seluruh penulisan diarahkan ke `engine/cache/` saja. Memperbaiki satu fungsi ini menutup semua pemanggil sekaligus.
+  - **Perbaikan Hilir**: Delapan file JSON VIP dihapus dari `frontend/public/data/`, serta **EA MT5 (`MBG_Institutional_Apex_EA.mq5`) dipindahkan ke `engine/mt5/`** karena sebelumnya juga dapat diunduh gratis.
+  - **Rute API Terproteksi Sesi**: Ditambahkan `functions/api/_session.js` (verifikasi JWT bersama), `/api/arena-state`, `/api/research-archive`, dan `/api/ea` — semuanya wajib sesi valid.
+  - **Dev Fallback Terpisah**: Vite middleware `/api/dev-bundle` melayani data lokal hanya saat development; rute ini tidak ada di build produksi.
+  - **CI Diperbaiki**: Workflow `arena_247_engine.yml` dan `hourly_crypto_macro.yml` tidak lagi meng-commit ke `frontend/public/data/`.
+  - **Verifikasi**: Seluruh delapan endpoint lama kini mengembalikan SPA shell (bukan data), dan build produksi terbukti bersih dari JSON VIP maupun sumber EA.
+- **[DEAD CODE PURGE] Penghapusan 1.560 Baris Kode Mati & 609 KB Artefak Yatim**:
+  - Dihapus: `us_analyzer.py`, `top_down_macro_engine.py` (1.251 baris), `forex_analyzer.py`, `cryptowave_fetcher.py` — keempatnya terbukti 0 referensi di seluruh repo, CI, dan konfigurasi.
+  - Dihapus: `subagent_materials.json`, `test_img.pdf`, `glossary_66_clean.json`, `glossary_66_full.json` (glosarium sudah hardcoded di `QuantAcademyTab.jsx`).
+  - Dihapus: empat file mockup HTML/JPG yatim di `public/` yang masih ter-deploy ke publik.
+- **[QA/QC & CERTIFICATION]**:
+  - Test Suite: **33/33 tes lulus** (marketHours 13, brokerGateway 14, memecoinDesk 6).
+  - Bug ditemukan & diperbaiki saat pengujian: parameter `sort=created` pada pump.fun API tidak valid — diganti ke `created_timestamp` setelah verifikasi terhadap API live.
+  - Build produksi Vite bersih dalam 1.22s tanpa error/warning.
+  - Verifikasi live: seluruh endpoint publik lama tertutup, rute terproteksi berfungsi.
+
+## [2026-09-30] — Security Hardening, Honest Data Labeling & Institutional Paper Broker v2 (Side-Aware)
+
+### Sprint 16 — Authentication Hardening, Data Integrity Disclosures, Broker Engine v2 & QA Certification
+- **[DEFENSE & GEOPOLITICAL HUD → SECURITY] Authentication & Session Hardening**:
+  - **Penghapusan Kredensial Legacy**: Hash cadangan dan pemeriksaan password plaintext (`mbg`, `MBG::...`) dihapus dari fungsi edge `/api/auth`. Validasi kini memakai HMAC dan perbandingan constant-time terhadap `PASSWORD_HASH`.
+  - **Gate Password Sisi Server**: `PasswordGate` tidak lagi memiliki bypass sisi klien. Seluruh sesi diverifikasi via JWT HttpOnly 24 jam (SameSite=Strict) dengan rate limit 5 percobaan / 15 menit per IP.
+  - **Password Gerbang Live Tetap `MBG`**: Sesuai direktif owner, fallback produksi memakai sha256(`MBG`) (`baab58…dc30`) sehingga login live tetap berfungsi tanpa konfigurasi tambahan. Rotasi password dapat dilakukan kapan saja via env `PASSWORD_HASH` + `JWT_SECRET` di dashboard Cloudflare tanpa deploy ulang.
+  - **/api/data & /api/scanner Wajib Sesi**: Endpoint telemetri dan proxy scanner menolak request tanpa cookie JWT valid (401), dengan allowlist pasar ketat (`indonesia`, `america`, `forex`, `cfd`), rate limit 30 scan/menit per IP, dan batas payload 64 KB.
+- **[DATA INTEGRITY & ON-CHAIN HARDENING] Transparansi Sumber Data & Penghapusan Metrik Semu**:
+  - **Whale Feed Jujur**: Badge `STREAM ON-CHAIN (0s DELAY)` diganti `SIMULATED WHALE FEED (DEMO)` disertai peringatan header. Baris simulasi tidak lagi menampilkan tautan explorer palsu (hash:null, `SIM-<SYM>-<USD>`); transaksi mempool Bitcoin riil tetap tertaut ke explorer.
+  - **KPI Homepage Riil**: Valuasi portofolio dihitung dari kas + posisi riil (mark-to-market live), volume 24 jam dijumlahkan dari quoteVolume Binance, statistik Arena Alpha diambil dari state engine riil dengan tag `(engine)`, dan aliran asing tampil `—` saat data tidak tersedia.
+  - **Heatmap NO DATA**: Nilai acak ±5% dihapus. Petak tanpa data tampil abu-abu netral `NO DATA` dan statistik agregat mengecualikannya.
+  - **News Wire Live-First**: Marquee memakai harga live (XAU/UKOIL/DXY/USDIDR) dengan fallback EOD berlabel; USD/IDR live menggantikan angka statis 15.680; US10Y diberi label EOD.
+  - **Solana Swap Mode Demo**: Sukses swap palsu + tautan Solscan diganti pemberitahuan jujur `MODE DEMO — TIDAK ADA TRANSAKSI TERKIRIM`.
+- **[QUANT & AGENTIC ENGINES] Institutional Paper Broker v2 (Side-Aware Accounting, schemaVersion 2)**:
+  - **Perbaikan Bug Kritis SELL-as-BUY**: Order SELL kini membuka posisi SHORT dengan margin hold — sebelumnya salah tercatat sebagai pembelian. PnL, fee exit, dan cash release dihitung per arah posisi (LONG & SHORT) dengan benar.
+  - **Ratchet Breakeven Cermin**: Ratchet SL ke breakeven berlaku benar untuk LONG dan SHORT; geometri bracket divalidasi (SL/TP wajib berada di sisi yang benar) dan order bracket invalid ditolak.
+  - **IDX Long-Only**: Order SELL instrumen IDX ditolak eksplisit sesuai aturan bursa.
+  - **Migrasi Skema v2**: Posisi legacy dinormalisasi ke LONG saat load; orderId memakai `crypto.randomUUID`; emergency liquidate memakai quote lookup penuh.
+  - **Guard Bracket Real-Time**: Modal Eksekusi Trade menghitung `bracketError` live, menampilkan peringatan amber, dan menonaktifkan tombol submit saat bracket invalid.
+  - **UUID Arena**: ID toast & posisi AI Agent Arena beralih dari `Math.random` ke `crypto.randomUUID`.
+- **[VERIFICATION & QA/QC & CERTIFICATION]**:
+  - **CI Secret Guard**: Workflow GitHub Actions baru (`.github/workflows/secret-guard.yml`) gagal-build jika kredensial lama (email, hash legacy, JWT fallback) muncul kembali di repo.
+  - **Creds Engine Env-Only**: `cryptowave_fetcher.py` memakai `CRYPTOWAVE_EMAIL`/`CRYPTOWAVE_PASSWORD` dari environment; password ter-redaksi dari PRD.
+  - **27 Unit Tests Hijau**: 14 test brokerGateway (akuntansi LONG/SHORT, fee, ratchet, IDX, cash conservation) + 13 test marketHours (sesi WIB) via vitest + jsdom (`npm test`).
+  - **Frontend Build**: Compiles cleanly with 0 errors/warnings.
+
+---
 
 ## [2026-09-28] — Simple Mode Switcher, 3-Tier Access Foundation, Bandarmology Confluence & VIP Signal Engine
 
