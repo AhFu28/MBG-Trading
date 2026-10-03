@@ -198,36 +198,48 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
             </div>
           </div>
 
-          <div style={{ overflowX: 'auto' }}>
+          <div className="table-scroll-container">
             <table className="quant-table">
               <thead>
                 <tr>
-                  <th>TICKER</th>
+                  <th className="sticky-col-num">TICKER</th>
                   <th>COMPANY NAME</th>
                   <th>SECTOR</th>
                   <th style={{ textAlign: 'right' }}>PRICE</th>
-                  <th style={{ textAlign: 'right' }}>CHG %</th>
-                  <th style={{ textAlign: 'right' }}>MKT CAP</th>
-                  <th style={{ textAlign: 'right' }}>P/E</th>
-                  <th style={{ textAlign: 'right' }}>RSI (14)</th>
-                  <th style={{ textAlign: 'center' }}>QUANT SETUP</th>
+                  <th style={{ textAlign: 'right' }} title="Perubahan harga 24 jam terakhir dalam persen">CHG %</th>
+                  <th style={{ textAlign: 'right' }} title="Kapitalisasi pasar: total nilai semua saham beredar (T = Triliun, B = Miliar USD)">MKT CAP</th>
+                  <th style={{ textAlign: 'right' }} title="Price-to-Earnings: harga saham dibagi laba per saham. Makin rendah = makin murah relatif terhadap laba">P/E</th>
+                  <th style={{ textAlign: 'right' }} title="RSI 14 hari: indikator momentum 0-100. < 30 oversold, > 70 overbought">RSI (14)</th>
+                  <th style={{ textAlign: 'center' }} title="Setup teknikal hasil skrining quant engine (mis. BULL_FLAG, BREAKOUT, NEUTRAL)">QUANT SETUP</th>
                   <th style={{ textAlign: 'center' }}>ACTION</th>
                 </tr>
               </thead>
               <tbody>
+                {filteredStocks.length === 0 && (
+                  <tr>
+                    <td colSpan={10} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--text-muted)', whiteSpace: 'normal' }}>
+                      Tidak ada emiten yang cocok dengan filter sector atau pencarian "{search}".
+                      <div style={{ fontSize: '11px', marginTop: '4px' }}>Coba reset pencarian atau pilih sector: ALL.</div>
+                    </td>
+                  </tr>
+                )}
                 {filteredStocks.map((s) => {
                   const liveQuote = livePrices[s.ticker] || livePrices[`NASDAQ:${s.ticker}`] || livePrices[`NYSE:${s.ticker}`];
                   const currentPrice = liveQuote?.price !== undefined ? Number(liveQuote.price) : Number(s.price || 0);
                   const chg = liveQuote?.changePct !== undefined ? Number(liveQuote.changePct) : Number(s.change_pct || 0);
                   const isFlashing = flashMap[s.ticker] || flashMap[`NASDAQ:${s.ticker}`] || flashMap[`NYSE:${s.ticker}`];
                   const isPositive = chg >= 0;
-                  const rsiVal = Number(s.rsi_14 || 50);
-                  const rsiColor = rsiVal < 30 ? 'var(--accent-green)' : rsiVal > 70 ? 'var(--accent-rust)' : 'var(--text-primary)';
-                  const rsiBg = rsiVal < 30 ? 'rgba(34, 197, 94, 0.1)' : rsiVal > 70 ? 'rgba(239, 68, 68, 0.1)' : 'transparent';
+                  // Pipeline writes a flat default of 50 when RSI is unavailable.
+                  // Treat exactly 50 as "no data" — render an honest em-dash instead of a fake reading.
+                  const rsiRaw = s.rsi_14;
+                  const hasRsi = rsiRaw !== null && rsiRaw !== undefined && Number(rsiRaw) > 0 && Number(rsiRaw) !== 50;
+                  const rsiVal = Number(rsiRaw || 0);
+                  const rsiColor = !hasRsi ? 'var(--text-muted)' : rsiVal < 30 ? 'var(--accent-green)' : rsiVal > 70 ? 'var(--accent-rust)' : 'var(--text-primary)';
+                  const rsiBg = !hasRsi ? 'transparent' : rsiVal < 30 ? 'rgba(34, 197, 94, 0.1)' : rsiVal > 70 ? 'rgba(239, 68, 68, 0.1)' : 'transparent';
                   
                   return (
                     <tr key={s.ticker}>
-                      <td>
+                      <td className="sticky-col-num">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <AssetIcon symbol={s.ticker} market="US" size={18} />
                           <span style={{ fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
@@ -262,16 +274,20 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                         {s.pe_ratio && s.pe_ratio > 0 ? String(s.pe_ratio) : (US_EQUITIES_METADATA[s.ticker]?.pe || '—')}
                       </td>
                       <td style={{ textAlign: 'right' }}>
-                        <span style={{ 
-                          fontFamily: 'var(--font-mono)', 
-                          fontWeight: '700', 
-                          color: rsiColor,
-                          background: rsiBg,
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          fontSize: '11px'
-                        }}>
-                          {rsiVal !== 50 ? rsiVal.toFixed(1) : '50.0 (NEUTRAL)'}
+                        <span 
+                          title={hasRsi
+                            ? 'RSI (14): ' + rsiVal.toFixed(1) + ' — ' + (rsiVal < 30 ? 'oversold (area beli potensial)' : rsiVal > 70 ? 'overbought (area jual potensial)' : 'netral')
+                            : 'Data RSI (14) belum tersedia dari pipeline'}
+                          style={{ 
+                            fontFamily: 'var(--font-mono)', 
+                            fontWeight: '700', 
+                            color: rsiColor,
+                            background: rsiBg,
+                            padding: '2px 6px',
+                            borderRadius: '4px',
+                            fontSize: '11px'
+                          }}>
+                          {hasRsi ? rsiVal.toFixed(1) : '—'}
                         </span>
                       </td>
                       <td style={{ textAlign: 'center' }}>
@@ -290,12 +306,15 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                       <td style={{ textAlign: 'center' }}>
                         <button 
                           onClick={() => onOpenChart(`NASDAQ:${s.ticker}`)}
+                          title="Buka grafik TradingView untuk ${s.ticker}"
+                          aria-label={"Buka grafik " + s.ticker}
                           style={{
                             padding: '4px 10px',
+                            minHeight: '26px',
                             background: 'rgba(56, 189, 248, 0.1)',
                             border: '1px solid rgba(56, 189, 248, 0.25)',
                             borderRadius: '4px',
-                            color: '#38bdf8',
+                            color: 'var(--accent-blue)',
                             fontSize: '11px',
                             fontWeight: '700',
                             cursor: 'pointer'

@@ -1,8 +1,18 @@
 /**
  * Cloudflare Pages Function: Auth Handler (MBG APEX)
  * Route: /api/auth
- * 
- * Handles password validation and JWT session management.
+ *
+ * TRUST01 hardening (Week-1, bounded):
+ *  - Authorization is decided **only** here, server-side. No hardcoded/default
+ *    password and no plaintext credential comparison anywhere in this file.
+ *  - Requires the documented `PASSWORD_HASH` env var (lowercase hex SHA-256 of the
+ *    access password). Missing/invalid configuration fails closed (503).
+ *  - Requires a real `JWT_SECRET`; the former hardcoded development fallback signing
+ *    secret is gone, because a public fallback secret makes every session forgeable.
+ *  - Password-hash comparison is length-safe and constant-time-ish.
+ *  - Issued session is a signed JWT in an HttpOnly cookie; the JSON body returns an
+ *    opaque `session` id, never a client-authoritative boolean to persist.
+ *
  * Uses Web Crypto API (available natively in Cloudflare Workers).
  */
 
@@ -54,10 +64,55 @@ async function verifyJWT(token, secret) {
     const valid = await crypto.subtle.verify('HMAC', key, sigBytes, data);
     if (!valid) return null;
 
-    return JSON.parse(base64urlDecode(bodyB64));
+    const payload = JSON.parse(base64urlDecode(bodyB64));
+    if (!payload || payload.authenticated !== true) return null;
+    if (payload.expiresAt && Date.now() > payload.expiresAt) return null;
+    return payload;
   } catch {
     return null;
   }
+}
+
+// --- Constant-time-ish hash comparison (Web Crypto has no timingSafeEqual) ---
+// Compares the full length of the longer input and folds in a length difference so
+// short/long inputs cannot be distinguished by early exit.
+function timingSafeEqualHex(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const max = Math.max(a.length, b.length);
+  let diff = a.length ^ b.length;
+  for (let i = 0; i < max; i++) {
+    const ca = i < a.length ? a.charCodeAt(i) : 0;
+    const cb = i < b.length ? b.charCodeAt(i) : 0;
+    diff |= (ca ^ cb);
+  }
+  return diff === 0;
+}
+
+// --- Configuration guards: fail closed, never fall back to a shared default ---
+
+function resolvePasswordHash(env) {
+  const raw = typeof env.PASSWORD_HASH === 'string' ? env.PASSWORD_HASH.trim().toLowerCase() : '';
+  if (!/^[0-9a-f]{64}$/.test(raw)) return null;
+  return raw;
+}
+
+function resolveJwtSecret(env) {
+  const secret = typeof env.JWT_SECRET === 'string' ? env.JWT_SECRET : '';
+  if (secret.length >= 16) return secret;
+  // Explicit, clearly-named opt-in for local/staging work only.
+  if (env.MBG_ALLOW_INSECURE_DEV_SECRET === 'true') return 'insecure-dev-only-secret';
+  return null;
+}
+
+function jsonResponse(payload, status, extraHeaders) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-store',
+      ...(extraHeaders || {})
+    }
+  });
 }
 
 // --- Rate Limiting (in-memory, resets on cold start — acceptable for edge) ---
@@ -98,98 +153,81 @@ async function hashPassword(password) {
   return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// --- GET: Verify existing JWT session ---
+// --- GET: Verify existing signed session cookie ---
 export async function onRequestGet(context) {
   const { env, request } = context;
-  const JWT_SECRET = env.JWT_SECRET || 'fallback-secret-for-dev';
+
+  const JWT_SECRET = resolveJwtSecret(env);
+  if (!JWT_SECRET) {
+    return jsonResponse({ error: 'Authentication is not configured' }, 503);
+  }
 
   const cookies = parseCookies(request.headers.get('Cookie'));
   const token = cookies['mbg_jwt'];
 
   if (!token) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return jsonResponse({ error: 'Unauthorized' }, 401);
   }
 
   const payload = await verifyJWT(token, JWT_SECRET);
-  if (!payload || (payload.expiresAt && Date.now() > payload.expiresAt)) {
-    return new Response(JSON.stringify({ error: 'Unauthorized or token expired' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' }
-    });
+  if (!payload) {
+    return jsonResponse({ error: 'Unauthorized or token expired' }, 401);
   }
 
-  return new Response(JSON.stringify({ authenticated: true }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' }
-  });
+  return jsonResponse({ authenticated: true, expiresAt: payload.expiresAt, session: payload.sid || null }, 200);
 }
 
-// --- POST: Validate password, issue JWT ---
+// --- POST: Validate password, issue a signed HttpOnly session cookie ---
 export async function onRequestPost(context) {
   const { env, request } = context;
   const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
-  const PASSWORD_HASH = env.PASSWORD_HASH;
-  const JWT_SECRET = env.JWT_SECRET || 'fallback-secret-for-dev';
+
+  const PASSWORD_HASH = resolvePasswordHash(env);
+  const JWT_SECRET = resolveJwtSecret(env);
+
+  if (!PASSWORD_HASH || !JWT_SECRET) {
+    // Fail closed: never authenticate against a missing/default credential or secret.
+    return jsonResponse({ error: 'Authentication is not configured' }, 503);
+  }
 
   if (!checkRateLimit(ip)) {
-    return new Response(JSON.stringify({ error: 'Too many attempts. Try again in 15 minutes.' }), {
-      status: 429,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return jsonResponse({ error: 'Too many attempts. Try again in 15 minutes.' }, 429);
   }
 
   let body;
   try {
     body = await request.json();
   } catch {
-    return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return jsonResponse({ error: 'Invalid JSON body' }, 400);
   }
 
   const { password } = body || {};
-  if (!password) {
-    return new Response(JSON.stringify({ error: 'Password required' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' }
-    });
+  if (typeof password !== 'string' || password.length === 0) {
+    return jsonResponse({ error: 'Password required' }, 400);
   }
 
   const inputHash = await hashPassword(password);
 
-  // Default test-phase password: 'mbg' (sha256: d35bdd04ef763e558fec2f040990482f9375e9027e10f277786422c7dd8d182b)
-  // Also supports legacy password and custom PASSWORD_HASH env var
-  const DEFAULT_HASH = 'd35bdd04ef763e558fec2f040990482f9375e9027e10f277786422c7dd8d182b';
-  const OLD_HASH = '286713785e8fbca141922642c96747842acd886f6da2f7598d0bc8554b8c3e18';
-
-  const isMatch = (PASSWORD_HASH && inputHash === PASSWORD_HASH) ||
-                  inputHash === DEFAULT_HASH ||
-                  inputHash === OLD_HASH ||
-                  password === 'mbg' ||
-                  password === 'MBG::Xk9#Tr4d3!C0ckp1t_Zw&Qr7';
+  // Single, configuration-driven check. No DEFAULT_HASH, no OLD_HASH, no
+  // plaintext 'mbg' fallback — those were the production bypass.
+  const isMatch = timingSafeEqualHex(inputHash, PASSWORD_HASH);
 
   if (isMatch) {
     // Clear rate limit on success
     rateLimitMap.delete(ip);
 
     const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
-    const token = await signJWT({ authenticated: true, expiresAt }, JWT_SECRET);
+    const sid = crypto.randomUUID();
+    const token = await signJWT({ authenticated: true, sid, expiresAt }, JWT_SECRET);
 
-    return new Response(JSON.stringify({ authenticated: true, expiresAt }), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
+    return jsonResponse(
+      { authenticated: true, expiresAt, session: sid },
+      200,
+      {
         'Set-Cookie': `mbg_jwt=${token}; HttpOnly; Secure; Path=/; Max-Age=${24 * 60 * 60}; SameSite=Strict`
       }
-    });
-  } else {
-    return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    );
   }
+
+  return jsonResponse({ error: 'Invalid credentials' }, 401);
 }

@@ -4,6 +4,7 @@ import PersonalWatchlistTab from './PersonalWatchlistTab.jsx';
 import PearsonCorrelationWidget from './PearsonCorrelationWidget.jsx';
 import AssetIcon from './AssetIcon.jsx';
 import { evaluateDynamicStrategy } from '../utils/dynamicStrategy.js';
+import { formatIdNumber } from '../utils/format.js';
 
 const VirtualForwardPortfolio = lazy(() => import('./VirtualForwardPortfolio.jsx'));
 const BacktestPerformanceLab = lazy(() => import('./BacktestPerformanceLab.jsx'));
@@ -692,6 +693,17 @@ export default function MasterQuantLeaderboard({
             </div>
           </div>
 
+          {/* Q-Score legend for newcomers (hidden on the dividend sub-view) */}
+          {!(activeMainTab === 'STOCK' && stockSubFilter === 'DIVIDEND') && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px', padding: '2px 2px 8px', fontSize: '10px', color: 'var(--text-muted)' }}>
+              <span>
+                <strong style={{ color: 'var(--text-secondary)' }}>Q-Score</strong>
+                {' '}= skor kuantitatif 0-100 dari momentum, likuiditas, valuasi & arus dana institusi — makin tinggi = makin kuat. Klik header kolom (▲/▼) untuk urutkan, klik baris untuk detail lengkap.
+              </span>
+              <span title="Sinyal adalah hasil skrining algoritmik, bukan ajakan investasi">⚠️ Sinyal bukan ajakan investasi</span>
+            </div>
+          )}
+
           {/* Table View: SPECIALIZED DIVIDEND VIEW vs STANDARD LEADERBOARD */}
           {activeMainTab === 'STOCK' && stockSubFilter === 'DIVIDEND' ? (
             <div style={{ overflowX: 'auto', maxHeight: '580px', background: 'var(--bg-panel)' }}>
@@ -823,7 +835,7 @@ export default function MasterQuantLeaderboard({
                                         fontFamily: 'var(--font-mono)',
                                         color: dChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)'
                                       }}>
-                                        Rp {Number(dPrice).toLocaleString()} ({dChg >= 0 ? '+' : ''}{Number(dChg).toFixed(2)}%)
+                                        Rp {formatIdNumber(dPrice)} ({dChg >= 0 ? '+' : ''}{Number(dChg).toFixed(2)}%)
                                       </span>
                                     )}
                                   </div>
@@ -841,7 +853,7 @@ export default function MasterQuantLeaderboard({
                               {countdownBadge}
                             </td>
                             <td style={{ textAlign: 'right', fontWeight: '700', color: 'var(--text-primary)' }}>
-                              Rp {Number(d.dps_idr || 0).toLocaleString()}
+                              Rp {formatIdNumber(d.dps_idr || 0)}
                             </td>
                             <td style={{ textAlign: 'right', fontWeight: '800', color: 'var(--accent-green)', fontSize: '12px' }}>
                               {d.dividend_yield_pct}%
@@ -898,7 +910,7 @@ export default function MasterQuantLeaderboard({
                                       📊 FAKTA FUNDAMENTAL DIVIDEN:
                                     </div>
                                     <div style={{ color: 'var(--text-primary)', marginBottom: '4px' }}>
-                                      • <strong>DPS:</strong> Rp {Number(d.dps_idr).toLocaleString()} / lembar
+                                      • <strong>DPS:</strong> Rp {formatIdNumber(d.dps_idr)} / lembar
                                     </div>
                                     <div style={{ color: 'var(--text-primary)', marginBottom: '4px' }}>
                                       • <strong>Payout Ratio (DPR):</strong> {d.payout_ratio}%
@@ -939,7 +951,7 @@ export default function MasterQuantLeaderboard({
                                       {d.summary}
                                     </div>
                                     <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                                      Ideal Entry: <strong>Rp {Number(d.buy_zone_low).toLocaleString()} - Rp {Number(d.buy_zone_high).toLocaleString()}</strong> | Hard SL: <strong>Rp {Number(d.sl).toLocaleString()}</strong>
+                                      Ideal Entry: <strong>Rp {formatIdNumber(d.buy_zone_low)} - Rp {formatIdNumber(d.buy_zone_high)}</strong> | Hard SL: <strong>Rp {formatIdNumber(d.sl)}</strong>
                                     </div>
                                   </div>
 
@@ -978,9 +990,9 @@ export default function MasterQuantLeaderboard({
                       Chg %{getSortIcon('changePct')}
                     </th>
                     <th style={{ width: '10%', textAlign: 'right' }} title="Zona beli terencana berdasarkan setup teknikal quant">Entry Plan</th>
-                    <th style={{ width: '9%', textAlign: 'right' }}>Hard SL</th>
-                    <th style={{ width: '9%', textAlign: 'right' }}>TP1</th>
-                    <th style={{ width: '7%', textAlign: 'right', cursor: 'pointer' }} onClick={() => handleSort('riskReward')}>
+                    <th style={{ width: '9%', textAlign: 'right' }} title="Hard Stop Loss: level keluar wajib jika harga bergerak melawan posisi">Hard SL</th>
+                    <th style={{ width: '9%', textAlign: 'right' }} title="Target Profit pertama (Take Profit 1) berdasarkan setup quant">TP1</th>
+                    <th style={{ width: '7%', textAlign: 'right', cursor: 'pointer' }} onClick={() => handleSort('riskReward')} title="Risk:Reward — rasio potensi untung terhadap risiko. 1:2 artinya potensi untung 2x dari risiko yang diambil">
                       R:R{getSortIcon('riskReward')}
                     </th>
                     <th style={{ width: '70px', textAlign: 'center' }}>Aksi</th>
@@ -1063,7 +1075,9 @@ export default function MasterQuantLeaderboard({
                                     background: item.qScore >= 70 ? 'rgba(52, 199, 89, 0.15)' : item.qScore >= 40 ? 'rgba(255, 149, 0, 0.15)' : 'rgba(255, 59, 48, 0.15)',
                                     color: item.qScore >= 70 ? 'var(--accent-green-text, var(--accent-green))' : item.qScore >= 40 ? 'var(--accent-orange-text, var(--accent-orange))' : 'var(--accent-rust-text, #ff3b30)',
                                     border: `1px solid ${item.qScore >= 70 ? 'rgba(52, 199, 89, 0.3)' : item.qScore >= 40 ? 'rgba(255, 149, 0, 0.3)' : 'rgba(255, 59, 48, 0.3)'}`
-                                  }}>
+                                  }}
+                                  title={'Q-Score ' + item.qScore + '/100: skor kuantitatif gabungan (momentum, likuiditas, valuasi & arus dana institusi). ' + (item.qScore >= 70 ? 'Skor kuat.' : item.qScore >= 40 ? 'Skor moderat.' : 'Skor lemah.')}
+                                  >
                                     ⚡ {item.qScore}% Q
                                   </span>
                                 )}

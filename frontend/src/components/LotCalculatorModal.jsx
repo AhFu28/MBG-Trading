@@ -275,7 +275,7 @@ export default function LotCalculatorModal({
                 }}
               />
               <div style={{ fontSize: '10px', color: 'var(--accent-blue)', marginTop: '4px', fontWeight: '700' }}>
-                {!isCrypto ? formatRupiahWords(modalAmount) : `$${Number(modalAmount || 0).toLocaleString()} USD`}
+                {!isCrypto ? formatRupiahWords(modalAmount) : `$${Number(modalAmount || 0).toLocaleString('en-US')} USD`}
               </div>
 
               {/* Quick Preset Chips */}
@@ -296,7 +296,7 @@ export default function LotCalculatorModal({
                       borderRadius: '3px'
                     }}
                   >
-                    {isCrypto ? `$${amt.toLocaleString()}` : `${amt / 1e6} Jt`}
+                    {isCrypto ? `$${amt.toLocaleString('en-US')}` : `${amt / 1e6} Jt`}
                   </button>
                 ))}
               </div>

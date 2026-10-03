@@ -517,7 +517,7 @@ export default function App() {
                 background: 'var(--bg-panel-subtle)',
                 border: '1px solid rgba(255, 255, 255, 0.05)'
               }}>
-                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }} />
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 6px rgba(46, 230, 168, 0.55)' }} />
                 <div style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '0.04em', color: 'var(--text-primary)', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
                   {getTabLabel(activeTab)}
                 </div>
@@ -528,13 +528,16 @@ export default function App() {
                 onClick={toggleDisplayMode}
                 style={{
                   fontSize: '9.5px',
-                  fontWeight: '800',
+                  fontWeight: '600',
+                  fontFamily: 'var(--font-mono)',
+                  letterSpacing: '0.08em',
                   padding: '3px 9px',
-                  borderRadius: '9999px',
+                  minHeight: '26px',
+                  borderRadius: '6px',
                   cursor: 'pointer',
-                  border: displayMode === 'SIMPLE' ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(99, 102, 241, 0.4)',
-                  background: displayMode === 'SIMPLE' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(99, 102, 241, 0.15)',
-                  color: displayMode === 'SIMPLE' ? '#10b981' : '#818cf8',
+                  border: displayMode === 'SIMPLE' ? '1px solid rgba(100, 116, 139, 0.45)' : '1px solid rgba(100, 116, 139, 0.25)',
+                  background: displayMode === 'SIMPLE' ? 'rgba(100, 116, 139, 0.12)' : 'rgba(100, 116, 139, 0.06)',
+                  color: 'var(--text-secondary)',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '4px'
@@ -550,13 +553,16 @@ export default function App() {
                 onClick={cycleUserTier}
                 style={{
                   fontSize: '9px',
-                  fontWeight: '700',
+                  fontWeight: '600',
+                  fontFamily: 'var(--font-mono)',
+                  letterSpacing: '0.08em',
                   padding: '3px 8px',
-                  borderRadius: '9999px',
+                  minHeight: '26px',
+                  borderRadius: '6px',
                   cursor: 'pointer',
-                  border: userTier === 'PRO' ? '1px solid rgba(245, 158, 11, 0.4)' : (userTier === 'FREE' ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid rgba(255, 255, 255, 0.15)'),
-                  background: userTier === 'PRO' ? 'rgba(245, 158, 11, 0.15)' : (userTier === 'FREE' ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.05)'),
-                  color: userTier === 'PRO' ? '#f59e0b' : (userTier === 'FREE' ? '#38bdf8' : 'var(--text-muted)'),
+                  border: userTier === 'PRO' ? '1px solid rgba(100, 116, 139, 0.45)' : '1px solid rgba(100, 116, 139, 0.25)',
+                  background: userTier === 'PRO' ? 'rgba(100, 116, 139, 0.12)' : 'rgba(100, 116, 139, 0.06)',
+                  color: userTier === 'PRO' ? 'var(--text-primary)' : 'var(--text-secondary)',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '4px'
@@ -576,10 +582,11 @@ export default function App() {
                 alignItems: 'center',
                 gap: '8px',
                 background: 'var(--bg-panel-subtle)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: '9999px',
+                border: 'var(--border-hairline)',
+                borderRadius: '6px',
                 padding: '5px 12px',
                 cursor: 'pointer',
+                fontFamily: 'var(--font-mono)',
                 fontSize: '11px',
                 color: 'var(--text-muted)',
                 minWidth: '160px',
@@ -604,18 +611,21 @@ export default function App() {
                 onClick={() => setIsSwapModalOpen(true)}
                 style={{
                   fontSize: '10px',
+                  fontFamily: 'var(--font-mono)',
+                  letterSpacing: '0.06em',
                   padding: '4px 10px',
-                  color: walletState.connected ? '#10b981' : '#c084fc',
-                  border: walletState.connected ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(147, 51, 234, 0.4)',
-                  background: walletState.connected ? 'rgba(16, 185, 129, 0.14)' : 'rgba(147, 51, 234, 0.15)',
-                  borderRadius: '9999px',
+                  minHeight: '26px',
+                  color: walletState.connected ? 'var(--accent-green-text)' : 'var(--text-secondary)',
+                  border: walletState.connected ? '1px solid rgba(46, 230, 168, 0.35)' : '1px solid rgba(100, 116, 139, 0.35)',
+                  background: walletState.connected ? 'rgba(46, 230, 168, 0.10)' : 'rgba(100, 116, 139, 0.08)',
+                  borderRadius: '6px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '5px',
                   cursor: 'pointer',
-                  fontWeight: 800,
+                  fontWeight: 600,
                   whiteSpace: 'nowrap',
-                  boxShadow: walletState.connected ? '0 0 10px rgba(16, 185, 129, 0.15)' : 'none'
+                  boxShadow: 'none'
                 }}
                 title={walletState.connected ? `Phantom Terhubung: ${walletState.address} (${walletState.balance.toFixed(3)} SOL)` : 'Sambungkan Phantom Wallet & Degen Memecoin Swap'}
               >
@@ -625,7 +635,7 @@ export default function App() {
                     ? `${shortenAddress(walletState.address)} (${walletState.balance.toFixed(2)} SOL)`
                     : 'CONNECT PHANTOM'}
                 </span>
-                <span style={{ fontSize: '8px', background: 'rgba(255,255,255,0.18)', padding: '1px 5px', borderRadius: '4px', color: '#fff' }}>
+                <span style={{ fontSize: '8px', background: 'rgba(100,116,139,0.18)', padding: '1px 5px', borderRadius: '4px', color: 'var(--text-secondary)' }}>
                   SWAP
                 </span>
               </button>
@@ -641,14 +651,14 @@ export default function App() {
                   fontWeight: 700,
                   padding: '3px 6px',
                   borderRadius: '6px',
-                  background: isWsConnected ? 'rgba(16, 185, 129, 0.12)' : 'rgba(245, 158, 11, 0.12)',
-                  color: isWsConnected ? '#10b981' : '#f59e0b',
-                  border: isWsConnected ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(245, 158, 11, 0.3)',
+                  background: isWsConnected ? 'rgba(46, 230, 168, 0.10)' : 'rgba(255, 180, 84, 0.10)',
+                  color: isWsConnected ? 'var(--accent-green-text)' : 'var(--accent-gold-text)',
+                  border: isWsConnected ? '1px solid rgba(46, 230, 168, 0.28)' : '1px solid rgba(255, 180, 84, 0.28)',
                   whiteSpace: 'nowrap'
                 }}
                 title="Data Provenance Envelope: Status jalur data aktual pasar vs polling"
               >
-                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isWsConnected ? '#10b981' : '#f59e0b', display: 'inline-block' }} />
+                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isWsConnected ? 'var(--accent-green)' : 'var(--accent-gold)', display: 'inline-block' }} />
                 <span>{isWsConnected ? 'WS LIVE' : 'REST (5S)'}</span>
               </div>
 
@@ -662,9 +672,9 @@ export default function App() {
                 style={{
                   fontSize: '9.5px',
                   padding: '3px 8px',
-                  color: '#38bdf8',
-                  borderColor: 'rgba(56, 189, 248, 0.3)',
-                  background: 'rgba(56, 189, 248, 0.1)',
+                  color: 'var(--accent-blue)',
+                  borderColor: 'rgba(77, 141, 255, 0.3)',
+                  background: 'rgba(77, 141, 255, 0.1)',
                   borderRadius: '8px',
                   display: 'flex',
                   alignItems: 'center',
@@ -685,9 +695,9 @@ export default function App() {
                 style={{
                   fontSize: '9.5px',
                   padding: '3px 8px',
-                  color: '#f59e0b',
-                  borderColor: 'rgba(245, 158, 11, 0.3)',
-                  background: 'rgba(245, 158, 11, 0.1)',
+                  color: 'var(--text-inverse)',
+                  borderColor: 'var(--text-primary)',
+                  background: 'var(--text-primary)',
                   borderRadius: '8px',
                   display: 'flex',
                   alignItems: 'center',

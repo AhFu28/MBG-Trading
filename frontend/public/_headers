@@ -5,6 +5,22 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; frame-ancestors 'self';
 
-/data/*.json
-  Cache-Control: public, max-age=60, s-maxage=300
-  Access-Control-Allow-Origin: *
+# TRUST04 (partial, non-breaking): telemetry/plan payloads must not be indexed,
+# CDN-cached, or readable cross-origin. Static files remain directly fetchable until
+# the /api/data migration lands (see docs/consolidation/05_security_implementation.md);
+# these headers only reduce exposure and must not be removed before that migration.
+/data/*
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+
+# Two separate things are true here, and the earlier revision of this comment
+# stated only one of them:
+#   1. The /data/*.json rule above ALREADY matched the payloads (they live in
+#      frontend/public/data/), so this is NOT a path fix.
+#   2. It IS a hardening pass: the wildcard `Access-Control-Allow-Origin: *` was
+#      removed and public/CDN caching was disabled.
+# It does NOT restrict access: a direct GET /data/<file>.json still succeeds.
+# See docs/consolidation/03_repo_truth_audit.md A4 and 06_verification_b.md §1a.
+/*.json
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive

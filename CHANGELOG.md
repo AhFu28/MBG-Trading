@@ -14,6 +14,30 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+## [2026-09-30] — UI/UX Professional Polish: WCAG AA Contrast, Honest Data States & Locale-Safe Number Formatting
+
+### Sprint 16 — Multi-Agent UI/UX Audit Remediation (playbook panel: Navigator + Forge + Scout)
+- **[COCKPIT UI/UX] Light-Mode Critical Contrast Fixes (WCAG 2.2 AA)**:
+  - **Dark-Surface Resurfacing**: Blok `[data-theme="light"]` baru di `index.css` mengembalikan permukaan terang untuk `.quant-card`, `.quant-card-interactive`, `.quant-pill-nav`, `.quant-pill-btn`, `.quant-input`, `.ticker-chip-interactive`, dan `.mobile-header-hamburger` yang sebelumnya hardcoded gelap (kontras teks terukur **1.09:1** — tidak terbaca).
+  - **Badge AA Text Colors**: Teks badge light mode diganti ke warna lolos AA terukur: `#166534` (bull, **6.34:1**), `#be123c` (bear, **5.50:1**), `#92400e` (alert, **6.67:1**), `#1d4ed8` (blue, **6.0:1**), dengan border 40%-alpha yang dilembutkan.
+  - **Dark Muted Text Bump**: `--text-muted` dark `#64748b` → `#7d8daa` (**3.42:1 → 5.32:1**) untuk label kecil di panel subtle.
+- **[COCKPIT UI/UX] Single Source of Truth Number Formatting (`src/utils/format.js` — NEW)**:
+  - **Locale-Safe IDR/USD**: Helper bersama `formatIdNumber`/`formatIdr` (selalu `id-ID` → `Rp 16.800`), `formatUsd` (selalu `en-US`), `formatPct`, dengan fallback em-dash untuk nilai invalid — menghapus ketergantungan 128 panggilan `.toLocaleString()` pada locale browser (sebelumnya `16,800` di browser en-US vs `16.800` di id-ID).
+- **[COCKPIT UI/UX] Honest Data States & Newcomer Onboarding**:
+  - **Honest RSI (US Stocks)**: Kolom RSI (14) tidak lagi menampilkan nilai palsu `50.0 (NEUTRAL)` dari default pipeline `rsi_14=50`; tepat-50 dirender `—` dengan tooltip bahasa Indonesia (oversold/overbought/netral dijelaskan).
+  - **Real Setup Badges**: Badge setup crypto `{c.setup_type || 'RANGE_ACC'}` dari data engine (TREND_CONTINUATION, dsb.) alih-alih hardcoded `RANGE_ACC` statis di setiap baris.
+  - **Jargon Tooltips & Legend**: Tooltip bahasa Indonesia pada header MKT CAP/P/E/RSI/CHG %/GROSS R:R/NET R:R/Hard SL/TP1, legend Q-Score on-screen ("skor kuantitatif 0-100 dari momentum, likuiditas, valuasi & arus dana institusi"), tooltip engine "TimesFM + SMC (Smart Money Concepts)".
+  - **Empty State Screener**: State kosong US Stocks screener yang menjelaskan aksi berikutnya ("Coba reset pencarian atau pilih sector: ALL").
+- **[COCKPIT UI/UX] Touch Targets, Sticky Column & Layout Tokens**:
+  - **44px Touch Targets**: `min-height` 26/28/32px pada tombol header/chips/sidebar + `@media (pointer:coarse)` 44px pada empat kelas interaktif (WCAG 2.5.5 / Apple HIG 44pt).
+  - **Sticky Ticker Column**: Kolom TICKER sticky (`.sticky-col-num`, sudah terdefinisi di `index.css:544`) di US Stocks screener & MasterQuantLeaderboard dalam container scroll horizontal.
+  - **Spacing Tokens**: Token `--space-1/2/3` (4/8/16px) + warna marquee adaptif light/dark.
+- **[VERIFICATION & QA] Build + Visual + Computed WCAG Evidence**:
+  - **Build**: `npm ci` (63 packages, lockfile; package.json untouched) → `npm run build` ✓ built in 3.19s, zero errors, 19 chunks (diverifikasi ulang secara independen oleh Lead).
+  - **Visual**: 4 screenshot light/dark/US-Stocks/mobile-375px diarsipkan di `docs/screenshots/ui_polish_2026-09-30/` — light mode sepenuhnya terbaca, COMPANY NAME menampilkan nama emiten riil ("Apple Inc.", "NVIDIA Corp."), MKT CAP/P/E nilai riil, RSI honest em-dash, mobile 375px bebas overflow & header rapi.
+  - **Computed WCAG**: 5 pasangan warna baru diukur dengan formula relative-luminance WCAG 2.x — semua **PASS ≥ 4.5:1**.
+  - **Files Changed (7)**: `src/utils/format.js` (NEW), `src/index.css`, `src/components/USStockTab.jsx`, `src/components/HomeDashboardTab.jsx`, `src/components/MasterQuantLeaderboard.jsx`, `src/components/LotCalculatorModal.jsx`, `src/App.jsx` — 161 insertions / 59 deletions, semua di dalam `frontend/src/**`.
+
 ## [2026-09-28] — Simple Mode Switcher, 3-Tier Access Foundation, Bandarmology Confluence & VIP Signal Engine
 
 ### Sprint 15 — Core Data Hardening, Dual Cockpit Modes & VIP Signal Dispatcher
