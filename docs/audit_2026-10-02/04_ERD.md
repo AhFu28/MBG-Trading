@@ -204,7 +204,7 @@ Deliberately **NOT** created in M0: user/identity table beyond chat_id (auth tar
 | `crypto_futures`, `forex_intelligence`, `us_stocks`, `smc_analysis` | **Deferred markets → excluded in M0** | One-market rule (C-2/C-3) |
 | `mode`, `section_timestamps`, `execution_duration_sec`, `last_updated` | **Internal meta**; expose `observed_at`-style freshness per section to all tiers | Honesty labelling (§6.2) |
 
-Mechanics: stop the unconditional public fallback in `sync_complete_bundle` / `_save_local_fallback` (`supabase_client.py:36-51, 98-113`); `/api/data` (`frontend/functions/api/data.js:50-80`) already reads `system_state.LATEST_COCKPIT_BUNDLE` — add the tier filter there (REMOVE the `'fallback-secret-for-dev'` at `data.js:52`, TRUST01 consistency) and serve a stripped public projection without auth.
+Mechanics: stop the unconditional public fallback in `sync_complete_bundle` / `_save_local_fallback` (`supabase_client.py:36-51, 98-113`); `/api/data` (`frontend/functions/api/data.js:50-80`) already reads `system_state.LATEST_COCKPIT_BUNDLE` — add the tier filter there (REMOVE the `'[REDACTED exposed credential]'` at `data.js:52`, TRUST01 consistency) and serve a stripped public projection without auth.
 
 ### C.2 Minimal SQL (Postgres/Supabase)
 

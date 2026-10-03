@@ -8,8 +8,7 @@ import path from 'node:path'
  * public/, so VIP signal payloads are never emitted as a downloadable static
  * file in the production build.
  *
- * The engine still writes to frontend/public/data (its existing output path),
- * but nothing under public/ is fetched by the app at runtime any more.
+ * Development telemetry is loopback-only. Production uses authenticated Functions.
  */
 function devBundlePlugin() {
   return {
@@ -17,7 +16,6 @@ function devBundlePlugin() {
     apply: 'serve',
     configureServer(server) {
       const engineCache = path.resolve(__dirname, '..', 'engine', 'cache');
-      const publicData = path.resolve(__dirname, 'public', 'data');
       const eaPath = path.resolve(__dirname, '..', 'engine', 'mt5', 'MBG_Institutional_Apex_EA.mq5');
 
       const readJson = (candidates) => {
@@ -44,7 +42,6 @@ function devBundlePlugin() {
         const raw = readJson([
           path.join(engineCache, 'latest_cockpit_bundle.json'),
           path.join(__dirname, 'src', 'data', 'dev_bundle.json'),
-          path.join(publicData, 'latest_cockpit_bundle.json'),
         ]);
         if (!raw) {
           return send(res, JSON.stringify({ error: 'no local bundle available' }), 'application/json', 404);
@@ -60,7 +57,7 @@ export default defineConfig({
   plugins: [react(), devBundlePlugin()],
   server: {
     port: 3000,
-    host: true,
+    host: '127.0.0.1',
     proxy: {
       '/api/tokocrypto': {
         target: 'https://www.tokocrypto.com',

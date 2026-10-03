@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { institutionalPaperBroker, BinanceLiveAdapter, BROKER_FEES } from '../services/brokerGateway.js';
+import { institutionalPaperBroker, BROKER_FEES } from '../services/brokerGateway.js';
 
 export default function OrderExecutionModal({
   isOpen,
@@ -8,7 +8,6 @@ export default function OrderExecutionModal({
   livePrices = {},
   onOrderSuccess = () => {}
 }) {
-  const [brokerType, setBrokerType] = useState('PAPER'); // 'PAPER' | 'BINANCE'
   const [riskPercent, setRiskPercent] = useState(1.5);
   const [orderType, setOrderType] = useState('LIMIT');
   const [orderSide, setOrderSide] = useState('BUY');
@@ -20,16 +19,6 @@ export default function OrderExecutionModal({
   const [target1, setTarget1] = useState('');
   const [target2, setTarget2] = useState('');
   const [customLots, setCustomLots] = useState('');
-
-  // Binance API Config state (stored locally in memory/localStorage)
-  const [binanceConfig, setBinanceConfig] = useState(() => {
-    try {
-      const saved = localStorage.getItem('mbg_binance_config');
-      return saved ? JSON.parse(saved) : { apiKey: '', secretKey: '', isTestnet: true };
-    } catch {
-      return { apiKey: '', secretKey: '', isTestnet: true };
-    }
-  });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -137,7 +126,7 @@ export default function OrderExecutionModal({
       if (bracketError) throw new Error(bracketError);
       if (isOverAllocated) throw new Error('Total modal yang dibutuhkan melebihi saldo kas tersedia.');
 
-      if (brokerType === 'PAPER') {
+      {
         const newPos = institutionalPaperBroker.placeOrder({
           symbol: symbol.toUpperCase(),
           market: isIdr ? 'IDX' : 'CRYPTO',
@@ -158,26 +147,6 @@ export default function OrderExecutionModal({
         setTimeout(() => {
           onClose();
         }, 1200);
-      } else {
-        // Binance Live Execution
-        if (!binanceConfig.apiKey || !binanceConfig.secretKey) {
-          throw new Error('API Key & Secret Key Binance belum dikonfigurasi.');
-        }
-
-        const adapter = new BinanceLiveAdapter(binanceConfig.apiKey, binanceConfig.secretKey, binanceConfig.isTestnet);
-        const result = await adapter.placeOrder({
-          symbol,
-          side: orderSide,
-          type: orderType,
-          quantity: effectiveQuantity,
-          price: entry
-        });
-
-        setSuccessMessage(`✅ Order live berhasil dikirim ke Binance! Order ID: ${result.orderId}`);
-        onOrderSuccess(result);
-        setTimeout(() => {
-          onClose();
-        }, 1500);
       }
     } catch (err) {
       setErrorMessage(err.message || 'Gagal mengirim order.');
@@ -248,42 +217,8 @@ export default function OrderExecutionModal({
         {/* Content Body */}
         <div style={{ padding: '18px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '14px' }}>
           
-          {/* 1. Broker Route Selector */}
-          <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-panel-subtle)', padding: '4px', borderRadius: '6px' }}>
-            <button
-              type="button"
-              onClick={() => setBrokerType('PAPER')}
-              style={{
-                flex: 1,
-                padding: '7px',
-                fontSize: '11px',
-                fontWeight: '800',
-                borderRadius: '4px',
-                border: 'none',
-                background: brokerType === 'PAPER' ? 'var(--accent-blue, #3b82f6)' : 'transparent',
-                color: brokerType === 'PAPER' ? '#ffffff' : 'var(--text-muted)',
-                cursor: 'pointer'
-              }}
-            >
-              🛡️ Paper Sandbox Broker (Zero Risk)
-            </button>
-            <button
-              type="button"
-              onClick={() => setBrokerType('BINANCE')}
-              style={{
-                flex: 1,
-                padding: '7px',
-                fontSize: '11px',
-                fontWeight: '800',
-                borderRadius: '4px',
-                border: 'none',
-                background: brokerType === 'BINANCE' ? '#f59e0b' : 'transparent',
-                color: brokerType === 'BINANCE' ? '#000000' : 'var(--text-muted)',
-                cursor: 'pointer'
-              }}
-            >
-              🌐 Binance Live / Testnet API
-            </button>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+            Paper trading simulation · Orders use virtual funds.
           </div>
 
           {/* Balance Strip */}
@@ -447,7 +382,7 @@ export default function OrderExecutionModal({
               letterSpacing: '0.04em',
               background: isOverAllocated 
                 ? 'var(--text-muted)' 
-                : (brokerType === 'PAPER' ? 'var(--accent-green, #10b981)' : '#f59e0b'),
+                : 'var(--accent-green, #10b981)',
               color: isOverAllocated ? '#ffffff' : '#000000',
               border: 'none',
               borderRadius: '6px',
@@ -460,7 +395,7 @@ export default function OrderExecutionModal({
               ? 'TRANSMITTING ORDER...' 
               : isOverAllocated
                 ? 'SALDO KAS KURANG (OVER-ALLOCATED)'
-                : (brokerType === 'PAPER' ? '🛡️ EKSEKUSI DI PAPER BROKER' : '⚡ TRANSMIT ORDER KE BURSA LIVE')}
+                : '🛡️ EKSEKUSI DI PAPER BROKER'}
           </button>
 
         </div>

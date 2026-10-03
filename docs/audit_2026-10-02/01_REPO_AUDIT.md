@@ -1,6 +1,6 @@
 # 01 — Full Repo Re-Audit (2026-10-02)
 
-**Repo:** C:/Users/ASUS/Documents/deepseek-harness/default-workspace/MBG-Trading (origin: AhFu28/MBG-Trading)
+**Repo:** C:/Users/ASUS/Documents/deepseek-harness/default-workspace/[REDACTED credential reference]-Trading (origin: AhFu28/[REDACTED credential reference]-Trading)
 **Date/time:** 2 October 2026, ~15:50-16:20 WIB · **Author:** Lead (direct verification; delegated agents failed, every check below was re-executed by the Lead today)
 **Method:** fresh npm build, py -m compileall, py -m pytest, both verify scripts, grep/read of every named surface, git status. No source modified.
 **Verdict vocabulary:** FIXED / OPEN / PARTIAL / NOT-REPRODUCED / UNVERIFIABLE.
@@ -36,7 +36,7 @@ The repo is in the best state of its history: **build passes, all 41 engine test
 | B1 | npm run build (frontend/) | 0 | 25 chunks; largest: AiAgentArenaTab 290.04 kB, index 426.59 kB, WhaleIntelligenceTab 100.64 kB, QuantAcademyTab 85.13 kB, ChangelogTab 83.88 kB |
 | B2 | py -m compileall -q engine | 0 | clean |
 | B3 | py -m pytest engine/tests -q | 0 | **41 passed, 5 subtests** — incl. VIP router provenance gate, allowlist expiry, dry-run default |
-| B4 | node scripts/verify-trust01.mjs | 0 | PASS — no mbg bypass/hash/fallback secret; PASSWORD_HASH documented; constant-time compare; HttpOnly signed cookie; bundle scan clean |
+| B4 | node scripts/verify-trust01.mjs | 0 | PASS — no [REDACTED credential reference] bypass/hash/fallback secret; PASSWORD_HASH documented; constant-time compare; HttpOnly signed cookie; bundle scan clean |
 | B5 | node scripts/verify-auth-handler.mjs | 0 | PASS — 16 runtime cases, fails closed (503) when PASSWORD_HASH/JWT_SECRET missing or too short |
 | B6 | npm test (frontend/) | — | Missing script: "test" — frontend has zero test runner (unchanged since 2026-09-11) |
 
@@ -48,7 +48,7 @@ The repo is in the best state of its history: **build passes, all 41 engine test
 
 ### S1 — Cockpit auth gate — **FIXED & VERIFIED** (TRUST01)
 - **Files:** frontend/src/components/PasswordGate.jsx, frontend/functions/api/auth.js (both modified, uncommitted)
-- **Evidence:** sentinel B4 + 16 runtime cases B5. No hardcoded mbg, no legacy hash, no fallback JWT secret, constant-time-safe compare, HttpOnly+Secure+SameSite=Strict cookie, no-store cache headers, 503 fail-closed when env secrets missing.
+- **Evidence:** sentinel B4 + 16 runtime cases B5. No hardcoded [REDACTED credential reference], no legacy hash, no fallback JWT secret, constant-time-safe compare, HttpOnly+Secure+SameSite=Strict cookie, no-store cache headers, 503 fail-closed when env secrets missing.
 - **Residual:** the fix is **uncommitted**. Losing the working tree loses the fix.
 
 ### S2 — Premium payloads downloadable without auth — **OPEN (HIGH)** (TRUST04)
@@ -75,7 +75,7 @@ The repo is in the best state of its history: **build passes, all 41 engine test
 - **File:** deploy/huggingface/app.py — reset/admin references present; no auth literals found (grep). Scoped internal admin auth recommended ([MP] H03).
 
 ### S8 — Dev-fallback JWT secret in the data function — **OPEN (HIGH, TRUST01 inconsistency)** *(found by the PRD/ERD subagent, confirmed by the Lead)*
-- **File:** frontend/functions/api/data.js:52 — const JWT_SECRET = env.JWT_SECRET || 'fallback-secret-for-dev';
+- **File:** frontend/functions/api/data.js:52 — const JWT_SECRET = env.JWT_SECRET || '[REDACTED exposed credential]';
 - **Evidence:** grep repo-wide; the literal sits in the deployed functions bundle (frontend/functions/api/ -> /api/data). auth.js itself is clean (resolveJwtSecret, fails closed, 16 runtime cases green) — data.js is the remaining fail-open path: anyone who reads the public source knows a token-signing secret.
 - **Minimal fix:** reuse the auth.js resolveJwtSecret helper and 503 when JWT_SECRET is missing; extend scripts/verify-trust01.mjs to scan functions/api/data.js.
 
@@ -127,7 +127,7 @@ The repo is in the best state of its history: **build passes, all 41 engine test
 | Old finding | Status now | Evidence |
 |:---|:---|:---|
 | CRIT-01 Order-book depth fails via browser CORS | **OBSOLETE/PARTIAL** — OrderBookSimulator no longer in main nav; reachable only via legacy MasterQuantLeaderboard imports | build chunks; import graph |
-| CRIT auth bypass mbg | **FIXED & VERIFIED** | S1, B4, B5 |
+| CRIT auth bypass [REDACTED credential reference] | **FIXED & VERIFIED** | S1, B4, B5 |
 | CRIT webhook open relay | **FIXED (secret present; enforcement unverified)** | S3 |
 | CRIT public premium JSON | **OPEN** | S2 |
 | CRIT math flaws / blockers (remainder) | **UNVERIFIABLE** — not re-enumerated item-by-item today; engine suite passes 41 tests | B3 |

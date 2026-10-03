@@ -14,11 +14,11 @@
 
 | Vector | Verdict | Evidence |
 |---|---|---|
-| Old hardcoded `'mbg'` | **Gone** | `PasswordGate.jsx` has no password comparison; only `POST /api/auth` (`PasswordGate.jsx:93-108`). `git show HEAD:frontend/src/components/PasswordGate.jsx` had `if (input.trim().toLowerCase() === 'mbg')` at **lines 80 and 102**, plus `DEFAULT_HASH`/`OLD_HASH`/`password === 'mbg'` and `env.JWT_SECRET \|\| 'fallback-secret-for-dev'` in `HEAD:frontend/functions/api/auth.js:104,135,164-172`. All absent from the current files. |
+| Old hardcoded `'[REDACTED credential reference]'` | **Gone** | `PasswordGate.jsx` has no password comparison; only `POST /api/auth` (`PasswordGate.jsx:93-108`). `git show HEAD:frontend/src/components/PasswordGate.jsx` had `if (input.trim().toLowerCase() === '[REDACTED credential reference]')` at **lines 80 and 102**, plus `DEFAULT_HASH`/`OLD_HASH`/`password === '[REDACTED credential reference]'` and `env.JWT_SECRET \|\| '[REDACTED exposed credential]'` in `HEAD:frontend/functions/api/auth.js:104,135,164-172`. All absent from the current files. |
 | localStorage / sessionStorage forgery | **No access** | `PasswordGate.jsx:43-86`: `clearSessionHint()` runs first (`:58`), then server GET (`:61-66`); `setAuthed(true)` only inside `if (data && data.authenticated === true)` (`:69-72`). A stored object is never parsed for a flag — the only reader of `SESSION_KEY` is `Sidebar.jsx:80` (removal). HEAD instead *trusted* storage: `if (parsed?.authenticated && parsed?.expiresAt …)` (HEAD lines 17–28) — that forgery path is genuinely closed. |
 | Direct render / alternate entry | **No** | Single app entry only: `App.jsx:448-1150`, with `<PasswordGate>` at `:449`; `PasswordGate.jsx:149-151` returns children only when `authed`; `main.jsx` wraps in an ErrorBoundary that never renders the app on error. `public/*.html` (e.g. `final_cockpit_mockup.html`, `mockup_spacex_*.html`) are standalone static mockups with no `/src/main.jsx` or `/assets/index-*` script tag. |
 | **Premium data** | **OPEN — no credential needed** | 8 payloads live in `frontend/public/data/` (**6,273,550 bytes** total; `latest_cockpit_bundle.json` 4,275,054 + `macro_telemetry.json` 1,820,903 + 6 others) and are copied verbatim into `dist/data/` (measured: 8 files, 6,273,550 bytes). Anyone can `GET /data/<name>.json`. The gate protects the shell, not the product. |
-| Server-side forgery (conditional) | **Deployment risk** | `auth.js:99-105`: if `JWT_SECRET` is missing/<16 chars **and** `MBG_ALLOW_INSECURE_DEV_SECRET === 'true'`, sessions are signed with the public constant `'insecure-dev-only-secret'` → forgeable cookie. With the var unset the same path returns `null` → **503 fail-closed** (`:160-163`, `:186-191`). |
+| Server-side forgery (conditional) | **Deployment risk** | `auth.js:99-105`: if `JWT_SECRET` is missing/<16 chars **and** `MBG_ALLOW_INSECURE_DEV_SECRET === 'true'`, sessions are signed with the public constant `'[REDACTED historical signing constant]'` → forgeable cookie. With the var unset the same path returns `null` → **503 fail-closed** (`:160-163`, `:186-191`). |
 
 ### 1b. Is the DEV bypass impossible in a production bundle?
 
@@ -26,7 +26,7 @@
 
 - Mechanism: `PasswordGate.jsx:15-16` — `import.meta.env.DEV && import.meta.env.VITE_MBG_DEV_AUTH_BYPASS === 'true'`. Vite statically replaces `import.meta.env.DEV` with `false` in a production build (repo uses `vite ^5.4.2`, resolved **5.4.21**), so the whole `if (DEV_AUTH_BYPASS)` block (`:47-55`) is dead code and is eliminated.
 - Two independent operands: even `VITE_MBG_DEV_AUTH_BYPASS=true` in the build environment cannot enable it; no `.env*` file exists in `frontend/`.
-- Empirical: freshly built `dist/` contains **no** occurrence of `DEV_AUTH_BYPASS`, `VITE_MBG_DEV_AUTH_BYPASS`, `insecure-dev-only-secret`, `fallback-secret`, or `d35bdd04ef…` across all 55 files. `scripts/verify-trust01.mjs` re-run by me: **16/16 PASS, exit 0** (includes "production bundle scanned (25 JS chunks) contains no auth-secret literals").
+- Empirical: freshly built `dist/` contains **no** occurrence of `DEV_AUTH_BYPASS`, `VITE_MBG_DEV_AUTH_BYPASS`, `[REDACTED historical signing constant]`, `fallback-secret`, or `d35bdd04ef…` across all 55 files. `scripts/verify-trust01.mjs` re-run by me: **16/16 PASS, exit 0** (includes "production bundle scanned (25 JS chunks) contains no auth-secret literals").
 
 ### 1c. Does the `_headers` rule `/data/*` match where the payloads physically live?
 
@@ -61,7 +61,7 @@ dist/assets/index-BKI4mvp5.js                    426.59 kB │ gzip: 122.40 kB
 - **Exit status: 0.** **Wall time 2.4 s** (Vite reports `built in 1.57s`).
 - **Chunks: 25 JS + 1 CSS = 26 assets, 27 emitted entries** (1 HTML + 1 CSS + 25 JS) — matches Vite's listing and the 25-chunk count `verify-trust01.mjs` scans. `dist/` total files: 55 (incl. the 8 data payloads, 6,273,550 bytes).
 - No Vite warnings or errors. The `node.exe : npm notice …` lines are PowerShell rendering npm's stderr notices, not a build failure.
-- `scripts/verify-auth-handler.mjs` re-run: **16/16 PASS, exit 0** (incl. `hardcoded 'mbg' -> 401`, `legacy plaintext password -> 401`, `forged token -> 401`, `missing JWT_SECRET -> 503`).
+- `scripts/verify-auth-handler.mjs` re-run: **16/16 PASS, exit 0** (incl. `hardcoded '[REDACTED credential reference]' -> 401`, `legacy plaintext password -> 401`, `forged token -> 401`, `missing JWT_SECRET -> 503`).
 
 ---
 
@@ -101,7 +101,7 @@ Read in full (all 685 lines). Against the four sources + repo:
 
 ## 5. VERDICT
 
-**Auth, one sentence:** No one can reach the protected app UI without valid credentials in a production build — the `'mbg'` string, storage forgery, and the DEV bypass are all closed (`PasswordGate.jsx:15-16,58,69-72,149-151`) — but all **6.27 MB** of premium JSON remains anonymously downloadable from `/data/*.json`, because the new `_headers` rules only remove CORS/caching, not access.
+**Auth, one sentence:** No one can reach the protected app UI without valid credentials in a production build — the `'[REDACTED credential reference]'` string, storage forgery, and the DEV bypass are all closed (`PasswordGate.jsx:15-16,58,69-72,149-151`) — but all **6.27 MB** of premium JSON remains anonymously downloadable from `/data/*.json`, because the new `_headers` rules only remove CORS/caching, not access.
 
 **Build, one line:** `npm run build` → **exit 0, 2.4 s wall (Vite 1.57 s), 83 modules, 25 JS chunks + 1 CSS + 1 HTML (27 entries)**, no warnings; both verify scripts PASS (16/16 and 25-chunk bundle scan).
 
@@ -113,7 +113,7 @@ Read in full (all 685 lines). Against the four sources + repo:
 |---|---|---|---|
 | B1 | `PASSWORD_HASH` must be set in production (64-char lowercase hex SHA-256) | Unset → `/api/auth` **503**, nobody can log in | `auth.js:93-97,185-191` |
 | B2 | `JWT_SECRET` must be a random ≥16-char value | Unset/short → **503**; weak → guessable sessions | `auth.js:99-105,186-191` |
-| B3 | `MBG_ALLOW_INSECURE_DEV_SECRET` must **not** be `'true'` in production | With it and no secret, sessions are signed with the public constant `'insecure-dev-only-secret'` → **cookie forgeable by anyone** | `auth.js:102-104` |
+| B3 | `MBG_ALLOW_INSECURE_DEV_SECRET` must **not** be `'true'` in production | With it and no secret, sessions are signed with the public constant `'[REDACTED historical signing constant]'` → **cookie forgeable by anyone** | `auth.js:102-104` |
 | B4 | `VITE_MBG_DEV_AUTH_BYPASS` absent from the build environment | Defense in depth only (branch is already dead in prod) | `PasswordGate.jsx:15-16`; bundle scan |
 | B5 | `PASSWORD_HASH`/`JWT_SECRET` are **not documented anywhere in the repo** (`.env.example` has only Supabase/Gemini/Telegram/IndexAlpha keys) | A deploy following the repo's own docs produces a **503 lockout** | `.env.example:1-13` |
 | B6 | Decide logout/revocation semantics | `handleLogout` clears only local hints; the `HttpOnly` cookie stays valid to expiry; no server logout endpoint | `PasswordGate.jsx:138-144` |

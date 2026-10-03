@@ -182,14 +182,14 @@ export default function App() {
     });
   }, []);
 
-  // TRUST03: the tier is server-owned (JWT claim from /api/auth). One no-store
+  // TRUST03: the tier is derived from current server grants via /api/auth. One no-store
   // fetch on mount; the server is the authority — no localStorage escalation.
-  const [userTier, setUserTier] = useState('PRO');
+  const [userTier, setUserTier] = useState('UNKNOWN');
   useEffect(() => {
     fetch('/api/auth', { credentials: 'same-origin' })
       .then(r => (r.ok ? r.json() : null))
-      .then(b => { if (b && b.tier) setUserTier(b.tier); })
-      .catch(() => {});
+      .then(b => { setUserTier(b?.authenticated === true ? b.tier : 'UNKNOWN'); })
+      .catch(() => { setUserTier('UNKNOWN'); });
   }, []);
 
   // Web3 Solana Phantom Wallet State
@@ -547,7 +547,7 @@ export default function App() {
                 title="Status hak akses. Upgrade ke VIP: hubungi admin / kanal promo Telegram."
               >
                 <span>{userTier === 'PRO' ? '👑' : (userTier === 'FREE' ? '⭐' : '👤')}</span>
-                <span>{userTier === 'PRO' ? 'VIP PRO' : (userTier === 'FREE' ? 'FREE MEMBER' : 'TAMU')}</span>
+                <span>{userTier === 'PRO' ? 'VIP PRO' : (userTier === 'INTERNAL' ? 'OWNER' : (userTier === 'FREE' ? 'FREE MEMBER' : 'TAMU'))}</span>
               </button>
             </div>
 

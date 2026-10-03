@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   arena-continuous-cycle:
@@ -27,22 +27,12 @@ jobs:
           python-version: '3.11'
 
       - name: Execute Autonomous Multi-Tick Trading Loop (4 Minutes @ 30s Ticks)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          MBG_REQUIRE_PRIVATE_PUBLISH: 'true'
         run: |
-          python engine/analyzer/arena_runner_247.py --duration-seconds 240 --interval-seconds 30
-
-      - name: Commit & Push Updated Arena State
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # SECURITY: arena state lives in engine/cache, never in frontend/public.
-          # Committing it to a static folder would publish the VIP payload to anyone.
-          git add engine/cache/latest_arena_state.json || true
-          if ! git diff --staged --quiet; then
-            git commit -m "chore(arena): 24/7 multi-tick state update [skip ci]"
-            for i in 1 2 3; do
-              git pull --rebase -X theirs origin main && git push && break || sleep 2
-            done
-          fi
+          python engine/analyzer/arena_runner_247.py --duration-seconds 240 --interval-seconds 30 > "$RUNNER_TEMP/mbg-private-engine.log" 2>&1
 
       - name: Send Telegram Failure Alert
         if: failure()

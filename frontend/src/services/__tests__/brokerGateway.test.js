@@ -177,3 +177,19 @@ describe('PaperBroker v2 — guards', () => {
     expect(b.portfolio.positions[0].side).toBe('LONG');
   });
 });
+
+describe('Browser live execution boundary', () => {
+  it('rejects account and order calls without contacting a broker or retaining keys', async () => {
+    const { BinanceLiveAdapter } = await import('../brokerGateway.js');
+    const fetchSpy = vi.fn();
+    vi.stubGlobal('fetch', fetchSpy);
+    try {
+      const adapter = new BinanceLiveAdapter('test-key', 'test-secret', false);
+      await expect(adapter.testConnection()).rejects.toThrow('disabled');
+      await expect(adapter.placeOrder({ symbol: 'TEST', quantity: 1 })).rejects.toThrow('disabled');
+      expect(adapter.apiKey).toBeUndefined();
+      expect(adapter.secretKey).toBeUndefined();
+      expect(fetchSpy).not.toHaveBeenCalled();
+    } finally { vi.unstubAllGlobals(); }
+  });
+});

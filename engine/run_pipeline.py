@@ -3,7 +3,7 @@ import sys
 import json
 import argparse
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 
 # Ensure engine path is in sys.path
@@ -124,7 +124,7 @@ def dispatch_vip_signals(telegram, trade_plans, crypto_spot_10, mode="all"):
     # route() applies the honesty gate (source + observed_at; synthetic never LIVE)
     # and the subscriber allowlist; dispatch() delivers - dry-run unless VIP_LIVE=1.
     subscribers = vip_load_subscribers()
-    dry_run = not os.getenv("VIP_LIVE")
+    dry_run = os.getenv("VIP_LIVE", "").lower() not in {"1", "true"}
     sent = 0
     for bot_name, plan in candidates:
         key = _vip_signal_key(plan)
@@ -163,6 +163,7 @@ def main():
     start_time = datetime.now()
 
     db = DatabaseClient()
+    db.restore_private_cache()
     news_fetcher = NewsMacroFetcher()
     idx_fetcher = IDXMarketFetcher()
     crypto_fetcher = CryptoSpotFetcher()
@@ -246,10 +247,15 @@ def main():
         
         # Load existing bundle and update current prices in trade plans
         bundle_path = os.path.join(os.path.dirname(__file__), "cache", "latest_cockpit_bundle.json")
-        if os.path.exists(bundle_path):
+        existing_bundle = db.load_system_state("LATEST_COCKPIT_BUNDLE") or {}
+        if not db.private_store.configured and os.path.exists(bundle_path):
             with open(bundle_path, "r", encoding="utf-8") as bf:
                 existing_bundle = json.load(bf)
-            
+        if not isinstance(existing_bundle, dict):
+            raise ValueError("Invalid cockpit snapshot; refusing to overwrite it")
+        if not existing_bundle:
+            raise RuntimeError("Intraday refresh requires an existing private cockpit bundle")
+        if existing_bundle:
             # Inject current_price into trade plans
             for plan in existing_bundle.get("daily_trade_plans", []):
                 ticker = plan.get("clean_ticker") or plan.get("symbol", "").replace(".JK", "")
@@ -260,7 +266,6 @@ def main():
                     plan["volume"] = rec.get("volume", 0)
             
             # Update sections
-            from datetime import timezone
             now_iso = datetime.now(timezone.utc).isoformat()
             existing_bundle["last_updated"] = now_iso
             existing_bundle["macro_telemetry"] = macro_data or existing_bundle.get("macro_telemetry", {})
@@ -276,10 +281,8 @@ def main():
             existing_bundle["mode"] = args.mode
             existing_bundle["execution_duration_sec"] = round((datetime.now() - start_time).total_seconds(), 2)
             
-            # Write back
-            with open(bundle_path, "w", encoding="utf-8") as bf:
-                json.dump(existing_bundle, bf, ensure_ascii=False, indent=2)
             db.sync_complete_bundle(existing_bundle)
+            db.publish_private_cache()
             
             logger.info(f"Intraday refresh done. Updated {len([p for p in existing_bundle.get('daily_trade_plans',[]) if 'current_price' in p])} trade plan prices.")
         
@@ -494,16 +497,17 @@ def main():
         logger.warning(f"ArenaEvaluator cycle failed: {e}")
 
     # 4. Consolidate Master Cockpit Bundle (Preserve existing data if running hourly)
-    existing_bundle = {}
+    existing_bundle = db.load_system_state("LATEST_COCKPIT_BUNDLE") or {}
+    if not isinstance(existing_bundle, dict):
+        raise ValueError("Invalid cockpit snapshot; refusing to overwrite it")
     bundle_path = os.path.join(os.path.dirname(__file__), "cache", "latest_cockpit_bundle.json")
-    if os.path.exists(bundle_path):
+    if not db.private_store.configured and os.path.exists(bundle_path):
         try:
             with open(bundle_path, "r", encoding="utf-8") as bf:
                 existing_bundle = json.load(bf)
         except Exception as be:
             logger.warning(f"Could not load existing bundle to merge: {be}")
 
-    from datetime import timezone
 
     # Inject current_price into trade plans from IDX all_records
     all_records = idx_data.get("all_records", []) if idx_data else []
@@ -550,6 +554,7 @@ def main():
         "execution_duration_sec": round((datetime.now() - start_time).total_seconds(), 2)
     }
     db.sync_complete_bundle(bundle)
+    db.publish_private_cache()
 
     # 5. Broadcast to Telegram (if enabled in ENV)
     if macro_data:
@@ -560,6 +565,7 @@ def main():
     # 5b. VIP Signal Dispatch: one actionable ticket per instrument specialist bot.
     # Dedupe via engine/cache/vip_signal_ledger.json so a re-run never re-spams the VIP group.
     dispatch_vip_signals(telegram, trade_plans, crypto_spot_10, mode=args.mode)
+    db.publish_private_cache()
 
     logger.info(f"Pipeline finished successfully in {bundle['execution_duration_sec']} seconds.")
     print("="*60)

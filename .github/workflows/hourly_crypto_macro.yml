@@ -5,8 +5,12 @@ on:
     - cron: '0 * * * *' # Otomatis dieksekusi GitHub Actions setiap jam (24/7)
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
+concurrency:
+  group: mbg-private-pipeline
+  cancel-in-progress: false
+
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   hourly-radar:
@@ -32,26 +36,14 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          MBG_REQUIRE_PRIVATE_PUBLISH: 'true'
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           INDEX_ALPHA_API_KEY: ${{ secrets.INDEX_ALPHA_API_KEY }}
         run: |
-          python engine/run_pipeline.py --mode hourly_crypto_macro
+          python engine/run_pipeline.py --mode hourly_crypto_macro > "$RUNNER_TEMP/mbg-private-engine.log" 2>&1
 
-      - name: Commit & Push Updated Cockpit Data Bundle & Arena State
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # SECURITY: written to engine/cache, never frontend/public — a public
-          # static bundle would leak VIP trade plans to unauthenticated visitors.
-          git add engine/cache/latest_cockpit_bundle.json engine/cache/latest_arena_state.json || true
-          if ! git diff --staged --quiet; then
-            git commit -m "chore(data): automated 24/7 arena & market bundle refresh [skip ci]"
-            for i in 1 2 3; do
-              git pull --rebase -X theirs origin main && git push && break || sleep 2
-            done
-          fi
       - name: Send Telegram Failure Alert
         if: failure()
         run: |

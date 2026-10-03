@@ -1,3 +1,6 @@
+// Remove credentials retained by the discontinued browser broker adapter.
+try { localStorage.removeItem('mbg_binance_config'); } catch {}
+
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'

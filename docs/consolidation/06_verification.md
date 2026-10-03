@@ -18,12 +18,12 @@
 
 Evidence:
 
-1. **The old hardcoded `'mbg'` is gone.** It existed in `HEAD` at two places — `git show HEAD:frontend/src/components/PasswordGate.jsx` lines 80 and 102 (`if (input.trim().toLowerCase() === 'mbg')`). The current file contains no such comparison: the only credential path is the server POST at `frontend/src/components/PasswordGate.jsx:93-108`. `scripts/verify-trust01.mjs:41` asserts the string `=== 'mbg'` is absent and passes.
+1. **The old hardcoded `'[REDACTED credential reference]'` is gone.** It existed in `HEAD` at two places — `git show HEAD:frontend/src/components/PasswordGate.jsx` lines 80 and 102 (`if (input.trim().toLowerCase() === '[REDACTED credential reference]')`). The current file contains no such comparison: the only credential path is the server POST at `frontend/src/components/PasswordGate.jsx:93-108`. `scripts/verify-trust01.mjs:41` asserts the string `=== '[REDACTED credential reference]'` is absent and passes.
 2. **Writing `localStorage`/`sessionStorage` cannot grant access.** On every mount the component *first discards* the local hint (`PasswordGate.jsx:58`, `clearSessionHint()`), then asks the server (`:61-66`); `setAuthed(true)` is only reached inside `if (data && data.authenticated === true)` (`:69-72`). A stored object is never parsed for `authenticated`; the old `parsed?.authenticated` read (HEAD lines ~24–40) is removed.
 3. **Direct rendering is not possible.** `App.jsx` has exactly one render return for the whole application (`frontend/src/App.jsx:448`), and it wraps every child in `<PasswordGate>` (`:449`) through `</PasswordGate>` (`:1150`). `PasswordGate` returns `children` only when `authed` is true (`PasswordGate.jsx:149-151`); otherwise it returns the login screen (`:154-240`). `frontend/src/main.jsx` renders `<App />` inside an `ErrorBoundary` that renders an error screen, never the app, on failure. No alternate HTML entry renders the app (the `public/*.html` files are standalone static mockups, not the application).
 4. **The DEV bypass cannot be reached** — see 1b.
 5. **Residual path to premium DATA (not the UI): TRUST04 is open.** The eight signal payloads are static files under `frontend/public/data/` (verified: `frontend/public/data/{latest_cockpit_bundle,macro_telemetry,research_archive,daily_trade_plans,idx_categorized,latest_arena_state,crypto_spot_10,latest_crisis_alert}.json`) and are fetched directly by the app (`App.jsx:367,380,390`; `DataIntegrityModal.jsx:34,130,139`; `NewsTab.jsx:41-42,62`; `AiAgentArenaTab.jsx:2408`). Anyone can request `/data/*.json` without any credential. The gate protects the app shell, **not** the product data. This is explicitly acknowledged as unfixed in the plan (`MASTERPLAN_MBG_UNIFIED_V3.md:184,308-319`).
-6. **Residual conditional forgery path (server):** `functions/api/auth.js:99-105` — if `JWT_SECRET` is missing/`<16` chars **and** `MBG_ALLOW_INSECURE_DEV_SECRET === 'true'` is set, the handler signs sessions with the hardcoded public constant `'insecure-dev-only-secret'`. Anyone who reads the source could then forge a valid `mbg_jwt` cookie. With the env var unset, the same condition returns `null` → `503` fail-closed. **This is a deployment-configuration risk, not a default bypass.**
+6. **Residual conditional forgery path (server):** `functions/api/auth.js:99-105` — if `JWT_SECRET` is missing/`<16` chars **and** `MBG_ALLOW_INSECURE_DEV_SECRET === 'true'` is set, the handler signs sessions with the hardcoded public constant `'[REDACTED historical signing constant]'`. Anyone who reads the source could then forge a valid `mbg_jwt` cookie. With the env var unset, the same condition returns `null` → `503` fail-closed. **This is a deployment-configuration risk, not a default bypass.**
 
 ### 1b. Is the DEV bypass impossible in a production build?
 
@@ -37,7 +37,7 @@ const DEV_AUTH_BYPASS =
 
 Mechanism: Vite performs static replacement of `import.meta.env.DEV` at build time — it is literally replaced by `false` in a production build (Vite ≥5; the repo uses `vite ^5.4.2`, resolved `vite v5.4.21`). `false && <anything>` is `false`, and the minifier then dead-code-eliminates the entire `if (DEV_AUTH_BYPASS) { … }` branch, including its `console.warn`. `VITE_MBG_DEV_AUTH_BYPASS` is a *second, independent* gate, so a stray `VITE_MBG_DEV_AUTH_BYPASS=true` in a build environment still cannot enable it.
 
-Empirical proof (stronger than reading the source): the freshly built `frontend/dist/assets/index-BKI4mvp5.js` contains **no** occurrence of `DEV_AUTH_BYPASS`, `VITE_MBG_DEV_AUTH_BYPASS`, `testMode`, `d35bdd04ef…`, or `fallback-secret-for-dev`. The minified gate begins directly with the fail-closed clearing call:
+Empirical proof (stronger than reading the source): the freshly built `frontend/dist/assets/index-BKI4mvp5.js` contains **no** occurrence of `DEV_AUTH_BYPASS`, `VITE_MBG_DEV_AUTH_BYPASS`, `testMode`, `d35bdd04ef…`, or `[REDACTED exposed credential]`. The minified gate begins directly with the fail-closed clearing call:
 
 ```js
 function ng({children:e}){…F.useEffect(()=>{let T=!1;async function R(){tg();try{const M=await fetch(Js,{method:"GET",credentials:"same-origin",cache:"no-store",…})
@@ -106,7 +106,7 @@ if (res.ok) {
   }
 ```
 
-and on the network-error path (`:132-135`): `catch (_) { /* Never fall back to a client-side password check. */ setError('Network error during authentication.'); }`. Runtime confirmation: `scripts/verify-auth-handler.mjs` executed the real handlers and passed all 16 assertions, including `hardcoded 'mbg' -> 401`, `legacy plaintext password -> 401`, `GET with forged token -> 401`, `GET with tampered signature -> 401`, `missing JWT_SECRET -> 503 (no dev fallback)` (exit 0).
+and on the network-error path (`:132-135`): `catch (_) { /* Never fall back to a client-side password check. */ setError('Network error during authentication.'); }`. Runtime confirmation: `scripts/verify-auth-handler.mjs` executed the real handlers and passed all 16 assertions, including `hardcoded '[REDACTED credential reference]' -> 401`, `legacy plaintext password -> 401`, `GET with forged token -> 401`, `GET with tampered signature -> 401`, `missing JWT_SECRET -> 503 (no dev fallback)` (exit 0).
 
 **Caveat:** `handleLogout` (`PasswordGate.jsx:138-144`) only clears local hints; there is no server logout endpoint, so the `HttpOnly` cookie stays valid until expiry. Logout is therefore not revocation — a known, documented follow-up (`:140-141`).
 
@@ -182,7 +182,7 @@ Verdicts are against the original attached documents; "source line" is the exact
 | **C4** | Master plan states no data rights were established | **TRUE** | "**No actual MBG IDX/US/feed/news rights were established by this plan.**" | `MBG-Trading-Revamp-Master-Plan.md:1009` |
 | **C5** | §4.3 prices labelled "test hypotheses, not present tariffs" | **TRUE** | §4.3 "Quota and pricing experiments"; "These are **test hypotheses**, not present tariffs or promises." | `MBG-Trading-Revamp-Master-Plan.md:238` (section at `:236`) |
 | **C6** | §6.2 token values are proposed starting values, not accessibility-certified | **TRUE** | §6.2 "Initial semantic tokens"; "These are proposed starting values, not accessibility-certified combinations." | `MBG-Trading-Revamp-Master-Plan.md:368` (section at `:366`) |
-| **C7** | §6.2 states there should be no essential 8px text | **TRUE** | Token table row: "Default 14 px; dense data target 12–13 px; supporting metadata about 12 px; **no essential 8 px text**" — line 390 lies inside §6.2 (366 → next heading §7 at 404) | `MBG-Trading-Revamp-Master-Plan.md:390` |
+| **C7** | §6.2 states there should be no essential 8px text | **TRUE** | Token table row: "Default 14 px; dense data target 12–13 px; supporting metadata about 12 px; **no essential 8 px text**" — line 390 lies inside §6.2 (366 → next heading §7 at 404) | `[REDACTED credential reference]-Trading-Revamp-Master-Plan.md:390` |
 | **C8** | PRD says its own status is "FINAL & APPROVED FOR PRODUCTION SPRINT" | **TRUE** | "**Status Dokumen:** FINAL & APPROVED FOR PRODUCTION SPRINT" | `PRD_PROJECT_MBG_V2_MASTER.md:10` |
 | **C9** | PRD budget table lists a domain cost row while totalling Rp0/month | **TRUE** | Row 8: "Domain Kustom (Opsional) │ Cloudflare Registrar │ ~Rp 12.500/bln"; the table's bottom line: "TOTAL BIAYA OPERASIONAL BULANAN │ **RP 0 / BULAN**" — an internal contradiction | `PRD_PROJECT_MBG_V2_MASTER.md:317` vs `:320` (table §5 at `:302`) |
 | **C10** | Lean doc claims 50 × Rp200,000 = Rp10,000,000/month and calls it net income | **TRUE** | "**50 Member VIP Pertama:** 50 × Rp 200.000 = **Rp 10.000.000 / bulan** pemasukan bersih berulang (*MRR*)" — "pemasukan bersih" = net income | `STRATEGI_EKSEKUSI_DAN_SARAN_MAS_FUAD.md:81` |
@@ -216,7 +216,7 @@ Line 137 lists "Supabase + Supabase Auth" among SHIP NOW features, and `02_produ
 Lines 45 and 566 present `01..06_*` as workstream artifacts. At the time of check only `01`–`05` existed; `06_verification.md` did not (this report creates it). Cosmetic/forward-looking, but it was cited as already-delivered evidence.
 
 **Confirmed CORRECT (the two points the task specifically asked about):**
-- **The security bypass was removed** — V3 lines 299 and 306 ("Password `mbg` hardcoded dicabut total", "Bundle produksi tidak memuat cabang bypass") are **TRUE**: verified in the current source and in the minified `dist/assets/index-BKI4mvp5.js` (no `DEV_AUTH_BYPASS`/`VITE_MBG_DEV_AUTH_BYPASS`/`testMode`/hash literals; gate begins at `clearSessionHint()`).
+- **The security bypass was removed** — V3 lines 299 and 306 ("Password `[REDACTED credential reference]` hardcoded dicabut total", "Bundle produksi tidak memuat cabang bypass") are **TRUE**: verified in the current source and in the minified `dist/assets/index-BKI4mvp5.js` (no `DEV_AUTH_BYPASS`/`VITE_MBG_DEV_AUTH_BYPASS`/`testMode`/hash literals; gate begins at `clearSessionHint()`).
 - **TRUST02 / TRUST03 / TRUST06 were NOT implemented** — V3 lines 185–186 and 570 are **TRUE**: no ownership/RLS/private-storage work (`engine/database/schema.sql` untouched; not in `git status`), no server-owned capability/market policy (`access-policy.js` / `/api/me/entitlements` absent), no sandbox release flags. Tier is still user-writable `localStorage` (`App.jsx:184-195`, `mbg_user_tier`, with a click-to-change control at `:570-573`), exactly as V3 line 104 states.
 
 ---
@@ -232,7 +232,7 @@ Lines 45 and 566 present `01..06_*` as workstream artifacts. At the time of chec
 
 ## FINAL VERDICT — GO / NO-GO
 
-**Security change (TRUST01 auth-bypass removal): GO.** The hardcoded `mbg` path is gone from source and from the shipped bundle; the session is server-owned and `HttpOnly`; the client refuses to mint a session; the server fails closed on missing config; the build is green and both verification scripts pass 100%. No user can reach the app UI without valid credentials in a production build, and the DEV bypass is structurally impossible there.
+**Security change (TRUST01 auth-bypass removal): GO.** The hardcoded `[REDACTED credential reference]` path is gone from source and from the shipped bundle; the session is server-owned and `HttpOnly`; the client refuses to mint a session; the server fails closed on missing config; the build is green and both verification scripts pass 100%. No user can reach the app UI without valid credentials in a production build, and the DEV bypass is structurally impossible there.
 
 **Releasing it as a *closed* security workstream: NO-GO.** It is only releasable once the following are satisfied and evidenced; B6 forbids a claim, not the code.
 
@@ -242,7 +242,7 @@ Lines 45 and 566 present `01..06_*` as workstream artifacts. At the time of chec
 |---|---|---|---|
 | **B1** | `PASSWORD_HASH` must be set in the production environment (64-char lowercase hex SHA-256) | Unset → `/api/auth` returns **503**; nobody can log in (availability failure) | `auth.js:93-97,188-191` |
 | **B2** | `JWT_SECRET` must be set to a random, ≥16-char secret | Unset/short → **503**; if set weak, sessions are guessable | `auth.js:99-105,188-191` |
-| **B3** | `MBG_ALLOW_INSECURE_DEV_SECRET` must **not** be `'true'` in production | With it set and a short/missing secret, sessions are signed with the public constant `'insecure-dev-only-secret'` → **anyone can forge a valid cookie** | `auth.js:102-104` |
+| **B3** | `MBG_ALLOW_INSECURE_DEV_SECRET` must **not** be `'true'` in production | With it set and a short/missing secret, sessions are signed with the public constant `'[REDACTED historical signing constant]'` → **anyone can forge a valid cookie** | `auth.js:102-104` |
 | **B4** | `VITE_MBG_DEV_AUTH_BYPASS` must not be present in the production build environment | Defense-in-depth only (the branch is already dead in prod), but it must not be relied on | `PasswordGate.jsx:15-16`; bundle scan |
 | **B5** | Decide and verify logout/revocation semantics | `handleLogout` clears only local hints; the `HttpOnly` cookie remains valid to expiry; no server logout endpoint exists. If "logout revokes access" is in release scope, this blocks | `PasswordGate.jsx:138-144` |
 | **B6** | Do **not** release with any claim that premium data is protected or that TRUST04 is closed | The eight payloads remain anonymously downloadable at `/data/*.json`; the header change is mitigation, not closure | `frontend/public/data/*.json`; `MASTERPLAN_MBG_UNIFIED_V3.md:184,308-319` |
