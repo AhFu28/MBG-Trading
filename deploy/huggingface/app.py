@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 from typing import Dict, List, Any
 
 import requests
-from fastapi import FastAPI, BackgroundTasks, Response
+from fastapi import FastAPI, BackgroundTasks, Response, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -415,8 +415,13 @@ def get_arena_state():
         return JSONResponse(content=arena_state)
 
 @app.post("/api/arena/reset")
-def reset_arena():
-    """Reset state back to clean genesis."""
+def reset_arena(request: Request):
+    """Reset state back to clean genesis. Scoped admin auth (S6): internal-only,
+    fail-closed - disabled entirely until ARENA_ADMIN_TOKEN is set."""
+    expected = os.getenv("ARENA_ADMIN_TOKEN")
+    provided = request.headers.get("x-arena-admin-token")
+    if not expected or provided != expected:
+        return JSONResponse(status_code=403, content={"error": "Forbidden: admin token required"})
     global arena_state
     with state_lock:
         arena_state = {
