@@ -11,7 +11,7 @@
       "winRate": 0.0,
       "totalTrades": 0,
       "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "FIRE",
@@ -24,7 +24,7 @@
       "winRate": 0.0,
       "totalTrades": 0,
       "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "AIR",
@@ -37,7 +37,7 @@
       "winRate": 0.0,
       "totalTrades": 0,
       "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "EARTH",
@@ -50,7 +50,7 @@
       "winRate": 0.0,
       "totalTrades": 0,
       "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "STEAM",
@@ -63,7 +63,7 @@
       "winRate": 0.0,
       "totalTrades": 0,
       "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "STORM",
@@ -76,7 +76,7 @@
       "winRate": 0.0,
       "totalTrades": 0,
       "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "MUD",
@@ -89,7 +89,7 @@
       "winRate": 0.0,
       "totalTrades": 0,
       "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "LIGHTNING",
@@ -102,7 +102,7 @@
       "winRate": 0.0,
       "totalTrades": 0,
       "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "LAVA",
@@ -115,7 +115,7 @@
       "winRate": 0.0,
       "totalTrades": 0,
       "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "SANDSTORM",
@@ -128,7 +128,7 @@
       "winRate": 0.0,
       "totalTrades": 0,
       "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "TEMPEST",
@@ -141,7 +141,7 @@
       "winRate": 0.0,
       "totalTrades": 1,
       "totalRoiPct": -0.92,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "GEOTHERMAL",
@@ -154,7 +154,7 @@
       "winRate": 0.0,
       "totalTrades": 0,
       "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "OCEANIC",
@@ -167,7 +167,7 @@
       "winRate": 0.0,
       "totalTrades": 1,
       "totalRoiPct": -0.92,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "CYCLONE",
@@ -180,7 +180,7 @@
       "winRate": 0.0,
       "totalTrades": 0,
       "totalRoiPct": 0,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "AVATAR",
@@ -193,7 +193,7 @@
       "winRate": 0.0,
       "totalTrades": 1,
       "totalRoiPct": -0.92,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     },
     {
       "id": "CHAOS",
@@ -206,7 +206,7 @@
       "winRate": 0.0,
       "totalTrades": 1,
       "totalRoiPct": -0.92,
-      "activePositionsCount": 1
+      "activePositionsCount": 3
     }
   ],
   "positions": [
@@ -465,6 +465,518 @@
       "trailingStopActive": false,
       "openedAt": "2026-10-03T07:23:47.626062+00:00",
       "rationale": "CHAOS [Synthesis]: Multi-factor technical confluence (+0.50%) pada XAUUSD."
+    },
+    {
+      "id": "POS-WATER-RENDERUSDT-EC4D",
+      "agentId": "WATER",
+      "symbol": "RENDERUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 1.944,
+      "currentPrice": 1.944,
+      "slPrice": 1.9148,
+      "tp1Price": 2.0023,
+      "tp2Price": 2.0412,
+      "roiPct": 0.0,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.599286+00:00",
+      "rationale": "WATER [SMC]: Liquidity sweep Discount (4%) pada RENDERUSDT."
+    },
+    {
+      "id": "POS-FIRE-FETUSDT-458E",
+      "agentId": "FIRE",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2333,
+      "tp1Price": 0.244,
+      "tp2Price": 0.2487,
+      "roiPct": 0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.599504+00:00",
+      "rationale": "FIRE [Momentum]: Volatility surge (+5.10%) breakout pada FETUSDT."
+    },
+    {
+      "id": "POS-AIR-FETUSDT-825C",
+      "agentId": "AIR",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2333,
+      "tp1Price": 0.244,
+      "tp2Price": 0.2487,
+      "roiPct": 0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.599623+00:00",
+      "rationale": "AIR [Donchian]: Range breakout (95%) ekspansi tren pada FETUSDT."
+    },
+    {
+      "id": "POS-EARTH-FETUSDT-1E86",
+      "agentId": "EARTH",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2405,
+      "tp1Price": 0.2298,
+      "tp2Price": 0.2251,
+      "roiPct": -0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.599726+00:00",
+      "rationale": "EARTH [Mean Reversion]: Statistical support bounce (+5.10%) pada FETUSDT."
+    },
+    {
+      "id": "POS-STEAM-RENDERUSDT-B2FF",
+      "agentId": "STEAM",
+      "symbol": "RENDERUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 1.944,
+      "currentPrice": 1.944,
+      "slPrice": 1.9148,
+      "tp1Price": 2.0023,
+      "tp2Price": 2.0412,
+      "roiPct": 0.0,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.599834+00:00",
+      "rationale": "STEAM [SMC]: Liquidity sweep Discount (4%) pada RENDERUSDT."
+    },
+    {
+      "id": "POS-STORM-FETUSDT-D81B",
+      "agentId": "STORM",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2333,
+      "tp1Price": 0.244,
+      "tp2Price": 0.2487,
+      "roiPct": 0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.599931+00:00",
+      "rationale": "STORM [Donchian]: Range breakout (95%) ekspansi tren pada FETUSDT."
+    },
+    {
+      "id": "POS-MUD-FETUSDT-7EDF",
+      "agentId": "MUD",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2405,
+      "tp1Price": 0.2298,
+      "tp2Price": 0.2251,
+      "roiPct": -0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.600030+00:00",
+      "rationale": "MUD [Mean Reversion]: Statistical support bounce (+5.10%) pada FETUSDT."
+    },
+    {
+      "id": "POS-LIGHTNING-FETUSDT-ECA4",
+      "agentId": "LIGHTNING",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2333,
+      "tp1Price": 0.244,
+      "tp2Price": 0.2487,
+      "roiPct": 0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.600143+00:00",
+      "rationale": "LIGHTNING [Momentum]: Volatility surge (+5.10%) breakout pada FETUSDT."
+    },
+    {
+      "id": "POS-LAVA-FETUSDT-E5D2",
+      "agentId": "LAVA",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2405,
+      "tp1Price": 0.2298,
+      "tp2Price": 0.2251,
+      "roiPct": -0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.600232+00:00",
+      "rationale": "LAVA [Capitulation]: Panic sell absorption bounce pada FETUSDT."
+    },
+    {
+      "id": "POS-SANDSTORM-FETUSDT-FEDD",
+      "agentId": "SANDSTORM",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2405,
+      "tp1Price": 0.2298,
+      "tp2Price": 0.2251,
+      "roiPct": -0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.600320+00:00",
+      "rationale": "SANDSTORM [Regime Transition]: Asymmetric shift pada FETUSDT."
+    },
+    {
+      "id": "POS-TEMPEST-FETUSDT-4815",
+      "agentId": "TEMPEST",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2333,
+      "tp1Price": 0.244,
+      "tp2Price": 0.2487,
+      "roiPct": 0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.600412+00:00",
+      "rationale": "TEMPEST [Synthesis]: Multi-factor technical confluence (+5.10%) pada FETUSDT."
+    },
+    {
+      "id": "POS-GEOTHERMAL-FETUSDT-8A5D",
+      "agentId": "GEOTHERMAL",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2405,
+      "tp1Price": 0.2298,
+      "tp2Price": 0.2251,
+      "roiPct": -0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.600497+00:00",
+      "rationale": "GEOTHERMAL [Capitulation]: Panic sell absorption bounce pada FETUSDT."
+    },
+    {
+      "id": "POS-OCEANIC-FETUSDT-53F1",
+      "agentId": "OCEANIC",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2333,
+      "tp1Price": 0.244,
+      "tp2Price": 0.2487,
+      "roiPct": 0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.600592+00:00",
+      "rationale": "OCEANIC [Synthesis]: Multi-factor technical confluence (+5.10%) pada FETUSDT."
+    },
+    {
+      "id": "POS-CYCLONE-FETUSDT-AB45",
+      "agentId": "CYCLONE",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2405,
+      "tp1Price": 0.2298,
+      "tp2Price": 0.2251,
+      "roiPct": -0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.600677+00:00",
+      "rationale": "CYCLONE [Regime Transition]: Asymmetric shift pada FETUSDT."
+    },
+    {
+      "id": "POS-AVATAR-FETUSDT-4A57",
+      "agentId": "AVATAR",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2333,
+      "tp1Price": 0.244,
+      "tp2Price": 0.2487,
+      "roiPct": 0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.600768+00:00",
+      "rationale": "AVATAR [Synthesis]: Multi-factor technical confluence (+5.10%) pada FETUSDT."
+    },
+    {
+      "id": "POS-CHAOS-FETUSDT-2EB3",
+      "agentId": "CHAOS",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 0.2369,
+      "currentPrice": 0.237,
+      "slPrice": 0.2333,
+      "tp1Price": 0.244,
+      "tp2Price": 0.2487,
+      "roiPct": 0.04,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:23:34.600873+00:00",
+      "rationale": "CHAOS [Synthesis]: Multi-factor technical confluence (+5.10%) pada FETUSDT."
+    },
+    {
+      "id": "POS-WATER-FETUSDT-DA2F",
+      "agentId": "WATER",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 0.2365,
+      "currentPrice": 0.237,
+      "slPrice": 0.24,
+      "tp1Price": 0.2294,
+      "tp2Price": 0.2247,
+      "roiPct": -0.21,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.457546+00:00",
+      "rationale": "WATER [SMC]: Liquidity sweep Premium (92%) pada FETUSDT."
+    },
+    {
+      "id": "POS-FIRE-NEARUSDT-3F3D",
+      "agentId": "FIRE",
+      "symbol": "NEARUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 4.896,
+      "currentPrice": 4.888,
+      "slPrice": 4.8226,
+      "tp1Price": 5.0429,
+      "tp2Price": 5.1408,
+      "roiPct": -0.16,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.457734+00:00",
+      "rationale": "FIRE [Momentum]: Volatility surge (+5.06%) breakout pada NEARUSDT."
+    },
+    {
+      "id": "POS-AIR-RENDERUSDT-6DF5",
+      "agentId": "AIR",
+      "symbol": "RENDERUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 1.945,
+      "currentPrice": 1.944,
+      "slPrice": 1.9742,
+      "tp1Price": 1.8866,
+      "tp2Price": 1.8478,
+      "roiPct": 0.05,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.457855+00:00",
+      "rationale": "AIR [Donchian]: Range breakout (5%) ekspansi tren pada RENDERUSDT."
+    },
+    {
+      "id": "POS-EARTH-NEARUSDT-1166",
+      "agentId": "EARTH",
+      "symbol": "NEARUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 4.896,
+      "currentPrice": 4.888,
+      "slPrice": 4.9694,
+      "tp1Price": 4.7491,
+      "tp2Price": 4.6512,
+      "roiPct": 0.16,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.457960+00:00",
+      "rationale": "EARTH [Mean Reversion]: Statistical support bounce (+5.06%) pada NEARUSDT."
+    },
+    {
+      "id": "POS-STEAM-FETUSDT-B503",
+      "agentId": "STEAM",
+      "symbol": "FETUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 0.2365,
+      "currentPrice": 0.237,
+      "slPrice": 0.24,
+      "tp1Price": 0.2294,
+      "tp2Price": 0.2247,
+      "roiPct": -0.21,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.458072+00:00",
+      "rationale": "STEAM [SMC]: Liquidity sweep Premium (92%) pada FETUSDT."
+    },
+    {
+      "id": "POS-STORM-RENDERUSDT-C9F5",
+      "agentId": "STORM",
+      "symbol": "RENDERUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 1.945,
+      "currentPrice": 1.944,
+      "slPrice": 1.9742,
+      "tp1Price": 1.8866,
+      "tp2Price": 1.8478,
+      "roiPct": 0.05,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.458190+00:00",
+      "rationale": "STORM [Donchian]: Range breakout (5%) ekspansi tren pada RENDERUSDT."
+    },
+    {
+      "id": "POS-MUD-NEARUSDT-C295",
+      "agentId": "MUD",
+      "symbol": "NEARUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 4.896,
+      "currentPrice": 4.888,
+      "slPrice": 4.9694,
+      "tp1Price": 4.7491,
+      "tp2Price": 4.6512,
+      "roiPct": 0.16,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.458318+00:00",
+      "rationale": "MUD [Mean Reversion]: Statistical support bounce (+5.06%) pada NEARUSDT."
+    },
+    {
+      "id": "POS-LIGHTNING-NEARUSDT-4EC9",
+      "agentId": "LIGHTNING",
+      "symbol": "NEARUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 4.896,
+      "currentPrice": 4.888,
+      "slPrice": 4.8226,
+      "tp1Price": 5.0429,
+      "tp2Price": 5.1408,
+      "roiPct": -0.16,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.458423+00:00",
+      "rationale": "LIGHTNING [Momentum]: Volatility surge (+5.06%) breakout pada NEARUSDT."
+    },
+    {
+      "id": "POS-LAVA-NEARUSDT-52BA",
+      "agentId": "LAVA",
+      "symbol": "NEARUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 4.896,
+      "currentPrice": 4.888,
+      "slPrice": 4.9694,
+      "tp1Price": 4.7491,
+      "tp2Price": 4.6512,
+      "roiPct": 0.16,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.458512+00:00",
+      "rationale": "LAVA [Capitulation]: Panic sell absorption bounce pada NEARUSDT."
+    },
+    {
+      "id": "POS-SANDSTORM-RENDERUSDT-6BB8",
+      "agentId": "SANDSTORM",
+      "symbol": "RENDERUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 1.945,
+      "currentPrice": 1.944,
+      "slPrice": 1.9742,
+      "tp1Price": 1.8866,
+      "tp2Price": 1.8478,
+      "roiPct": 0.05,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.458602+00:00",
+      "rationale": "SANDSTORM [Regime Transition]: Asymmetric shift pada RENDERUSDT."
+    },
+    {
+      "id": "POS-TEMPEST-NEARUSDT-7923",
+      "agentId": "TEMPEST",
+      "symbol": "NEARUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 4.896,
+      "currentPrice": 4.888,
+      "slPrice": 4.8226,
+      "tp1Price": 5.0429,
+      "tp2Price": 5.1408,
+      "roiPct": -0.16,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.458696+00:00",
+      "rationale": "TEMPEST [Synthesis]: Multi-factor technical confluence (+5.06%) pada NEARUSDT."
+    },
+    {
+      "id": "POS-GEOTHERMAL-NEARUSDT-253F",
+      "agentId": "GEOTHERMAL",
+      "symbol": "NEARUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 4.896,
+      "currentPrice": 4.888,
+      "slPrice": 4.9694,
+      "tp1Price": 4.7491,
+      "tp2Price": 4.6512,
+      "roiPct": 0.16,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.458810+00:00",
+      "rationale": "GEOTHERMAL [Capitulation]: Panic sell absorption bounce pada NEARUSDT."
+    },
+    {
+      "id": "POS-OCEANIC-NEARUSDT-A596",
+      "agentId": "OCEANIC",
+      "symbol": "NEARUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 4.896,
+      "currentPrice": 4.888,
+      "slPrice": 4.8226,
+      "tp1Price": 5.0429,
+      "tp2Price": 5.1408,
+      "roiPct": -0.16,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.458921+00:00",
+      "rationale": "OCEANIC [Synthesis]: Multi-factor technical confluence (+5.06%) pada NEARUSDT."
+    },
+    {
+      "id": "POS-CYCLONE-RENDERUSDT-006A",
+      "agentId": "CYCLONE",
+      "symbol": "RENDERUSDT",
+      "market": "CRYPTO",
+      "direction": "SHORT",
+      "entryPrice": 1.945,
+      "currentPrice": 1.944,
+      "slPrice": 1.9742,
+      "tp1Price": 1.8866,
+      "tp2Price": 1.8478,
+      "roiPct": 0.05,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.459031+00:00",
+      "rationale": "CYCLONE [Regime Transition]: Asymmetric shift pada RENDERUSDT."
+    },
+    {
+      "id": "POS-AVATAR-NEARUSDT-AC90",
+      "agentId": "AVATAR",
+      "symbol": "NEARUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 4.896,
+      "currentPrice": 4.888,
+      "slPrice": 4.8226,
+      "tp1Price": 5.0429,
+      "tp2Price": 5.1408,
+      "roiPct": -0.16,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.459132+00:00",
+      "rationale": "AVATAR [Synthesis]: Multi-factor technical confluence (+5.06%) pada NEARUSDT."
+    },
+    {
+      "id": "POS-CHAOS-NEARUSDT-51D1",
+      "agentId": "CHAOS",
+      "symbol": "NEARUSDT",
+      "market": "CRYPTO",
+      "direction": "LONG",
+      "entryPrice": 4.896,
+      "currentPrice": 4.888,
+      "slPrice": 4.8226,
+      "tp1Price": 5.0429,
+      "tp2Price": 5.1408,
+      "roiPct": -0.16,
+      "trailingStopActive": false,
+      "openedAt": "2026-10-04T12:24:04.459231+00:00",
+      "rationale": "CHAOS [Synthesis]: Multi-factor technical confluence (+5.06%) pada NEARUSDT."
     }
   ],
   "journal": [
@@ -534,5 +1046,5 @@
     }
   ],
   "session_id": 1790953084,
-  "last_evaluated": "2026-10-04T06:19:30.240708+00:00"
+  "last_evaluated": "2026-10-04T12:27:05.053986+00:00"
 }
