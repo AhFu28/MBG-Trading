@@ -267,6 +267,23 @@ def _provenance_footer(plan: Dict[str, Any], gap: Optional[str] = None) -> str:
     return "\n".join(lines)
 
 
+def _website_footer() -> str:
+    """Point recipients back to the cockpit.
+
+    Telegram is the NOTIFICATION channel; the website is where the detail lives
+    (charts, bandarmology, position sizing). Every message therefore ends with a
+    link back, so the paid channel drives traffic to the product instead of
+    replacing it. Override the URL with MBG_WEBSITE_URL if the domain changes.
+    """
+    url = os.getenv("MBG_WEBSITE_URL", "https://mbg-trading.pages.dev").strip()
+    if not url:
+        return ""
+    return '\n📊 <i>Detail lengkap, grafik &amp; kalkulator lot:</i> <a href="%s">%s</a>' % (
+        html.escape(url, quote=True),
+        html.escape(url.replace("https://", "").replace("http://", "")),
+    )
+
+
 # --------------------------------------------------------------------------- #
 # Rendering
 # --------------------------------------------------------------------------- #
@@ -308,6 +325,7 @@ def render_vip(plan: Dict[str, Any], agent_name: str = "MBG CHAMPION BOT") -> st
         "━━━━━━━━━━━━━━━━━━━━━",
         _provenance_footer(plan),
         "\n⚠️ <i>Disiplin Money Management: Risiko maksimal 1-2% per tiket.</i>",
+        _website_footer(),
     ]
     return "\n".join(lines)
 
@@ -325,6 +343,7 @@ def render_public(plan: Dict[str, Any], gap: Optional[str] = None) -> str:
             f"💡 Ringkas: {html.escape(str(thesis))}",
             _provenance_footer(plan, gap=gap),
             "\n🔒 <i>Level entry/stop/target presisi hanya di kanal VIP.</i>",
+            _website_footer(),
         ]
     )
 

@@ -11,6 +11,7 @@ const PRIMARY_NAV_ITEMS = [
   { id: 'FUTURES',             icon: '🔥', label: 'Crypto Futures',   section: 'MARKETS' },
   { id: 'DEGEN',               icon: '🎰', label: 'Degen Memecoin',   section: 'MARKETS' },
   { id: 'RADAR',               icon: '🎯', label: 'Early Signal Radar', section: 'MARKETS' },
+  { id: 'SIGNALS',             icon: '📡', label: 'Sinyal Trading',    section: 'MARKETS' },
   { id: 'FOREX',               icon: '💱', label: 'Forex Scanner',   section: 'MARKETS' },
   { id: 'US_STOCKS',           icon: '🇺🇸', label: 'US Stocks',       section: 'MARKETS' },
   { id: 'WHALES',              icon: '🐋', label: 'Whale Tracker',    section: 'MARKETS' },

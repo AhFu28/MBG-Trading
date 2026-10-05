@@ -31,6 +31,7 @@ const NewsDetailModal = lazy(() => import('./components/NewsDetailModal.jsx'));
 const SecurityHubDrawer = lazy(() => import('./components/SecurityHubDrawer.jsx'));
 const AiAgentArenaTab = lazy(() => import('./components/AiAgentArenaTab.jsx'));
 const AiIntelligenceDrawer = lazy(() => import('./components/AiIntelligenceDrawer.jsx'));
+const SignalsTab = lazy(() => import('./components/SignalsTab.jsx'));
 
 const isIdxMarketOpen = () => {
   const now = new Date();
@@ -410,6 +411,7 @@ export default function App() {
       case 'FUTURES': return '🔥 Crypto Futures Intelligence';
       case 'DEGEN': return '🎰 Degen Desk — Memecoin Radar';
       case 'RADAR': return '🎯 Early Signal Radar — Deteksi Dini';
+      case 'SIGNALS': return '📡 Sinyal Trading — Entry, SL & TP';
       case 'FOREX': return '💱 Forex Command Center';
       case 'US_STOCKS': return '🇺🇸 US Stock Intelligence';
       case 'FLOW_PROCESS': return '⚡ Flow Process & System Architecture';
@@ -883,6 +885,15 @@ export default function App() {
               /* EARLY SIGNAL RADAR — EVIDENCE-BASED MEMECOIN SCANNER */
               <main>
                 <MemecoinRadar />
+              </main>
+            ) : activeTab === 'SIGNALS' ? (
+              /* SIGNAL DESK — tier-gated plan delivery (VIP sees instantly) */
+              <main>
+                <SignalsTab
+                  plans={data?.daily_trade_plans || []}
+                  userTier={userTier}
+                  onNavigateTab={setActiveTab}
+                />
               </main>
             ) : activeTab === 'DEGEN' ? (
               /* MULTI-CHAIN MEMECOIN RADAR & RUG-CHECK DESK */
