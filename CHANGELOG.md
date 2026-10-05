@@ -14,6 +14,23 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+## [2026-10-06] — One-Click WhatsApp Direct Handoff (+62 812-2417-0187)
+
+### Sprint 26 — Direct Operator Communication & Payment Confirmation
+- **[OPERATOR WORKFLOW] One-Click WhatsApp Links for Mas Fuad**:
+  - Semua catatan eksekutif dan briefing Javanese-Kediri `💬 Untuk Mas Fuad` kini otomatis dilengkapi link langsung `wa.me/6281224170187?text=...`.
+  - Satu kali klik (mobile/desktop) langsung membuka aplikasi WhatsApp atau web dengan pesan bersih yang sudah terisi siap kirim (tanpa perlu manual copy-paste atau ketik ulang nomor).
+  - Parser cerdas `cleanForWhatsApp()` membersihkan format markdown, wrapper quote, asterisks ganda, dan header tanpa merusak substansi dialek Kediri.
+- **[PAYMENT DESK INTEGRATION] WhatsApp Confirmation Button on Subscription Page**:
+  - Pada `SubscriptionPage.jsx`, setelah bagian rekening BCA & QRIS, ditambahkan tombol konfirmasi pembayaran langsung ke WhatsApp Mas Fuad (+62 812-2417-0187).
+  - Pesan otomatis menyertakan email akun pendaftar sehingga admin langsung tahu email mana yang perlu diaktifkan via query SQL tanpa tanya bolak-balik.
+- **[VERIFIKASI & QA]**:
+  - 23 tes unit baru pada `whatsappHandoff.test.js` mencakup normalisasi berbagai format nomor Indonesia (`+62`, `08`, `62`, spasi, dash), URL encoding, sanitasi pesan, dan edge cases.
+  - Total 206 tes frontend lolos (100% passing).
+  - 34 tes engine Python lolos. Build produksi Vite bersih 1.87s.
+
+---
+
 ## [2026-10-05] — Sistem Akun, Landing Page & Langganan Berbayar
 
 ### Sprint 25 — Dari Satu Kata Sandi Bersama Menjadi Akun Per-Pengguna

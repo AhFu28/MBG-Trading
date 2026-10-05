@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { PLANS, TIER, limitsFor } from '../services/featureAccess.js';
+import { buildWhatsAppLink } from '../services/whatsappHandoff.js';
 
 /**
  * SubscriptionPage — status langganan + cara upgrade.
@@ -47,6 +48,10 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
 
   const proPlan = PLANS.find(p => p.id === TIER.PRO);
   const limits = limitsFor(account.tier || TIER.FREE);
+
+  const waConfirmLink = buildWhatsAppLink(
+    `Halo Admin MBG Trading, saya ingin konfirmasi pembayaran langganan PRO.\n\nEmail akun: ${email}\nMohon diverifikasi & diaktifkan. Terima kasih!`
+  );
 
   const panel = {
     background: 'rgba(255,255,255,0.032)', border: '1px solid rgba(255,255,255,0.09)',
@@ -220,6 +225,27 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                 </div>
               ))}
             </div>
+
+            {/* Direct WhatsApp confirmation link for manual payment */}
+            {waConfirmLink && (
+              <div style={{ marginTop: '14px' }}>
+                <a
+                  href={waConfirmLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '8px',
+                    padding: '11px 18px', borderRadius: '9px',
+                    background: 'linear-gradient(135deg,#25D366,#128C7E)', color: '#fff',
+                    fontSize: '12px', fontWeight: '800', textDecoration: 'none',
+                    boxShadow: '0 4px 14px rgba(37,211,102,0.25)',
+                  }}
+                >
+                  <span style={{ fontSize: '15px' }}>📲</span>
+                  <span>Konfirmasi Pembayaran via WhatsApp (+62 812-2417-0187)</span>
+                </a>
+              </div>
+            )}
 
             <div style={{
               marginTop: '15px', background: 'rgba(245,158,11,0.08)',
