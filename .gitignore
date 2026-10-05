@@ -52,3 +52,9 @@ Python/
 
 # Atomic-write temp files
 *.tmp
+
+# VIP subscriber list — contains real customer chat IDs
+engine/config/vip_subscribers.json
+
+# Local Python virtualenv
+.venv/

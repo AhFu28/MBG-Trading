@@ -51,6 +51,36 @@ def parse_model_score(model_id: str) -> int:
     return 0
 
 
+def _market_observed_at(idx_data: dict) -> str:
+    """When the IDX quotes were actually observed, as an ISO-8601 string.
+
+    The VIP honesty gate (vip_signal_router) refuses to send a precise signal
+    without an observation time, so this must be a real value rather than a
+    placeholder. Preference order:
+      1. the timestamp the fetcher recorded for the market snapshot,
+      2. the newest per-record timestamp if one exists,
+      3. now, as a last resort (still a truthful "we are reading it now").
+    """
+    if not isinstance(idx_data, dict):
+        return datetime.now(timezone.utc).isoformat()
+
+    for key in ("observed_at", "fetched_at", "timestamp", "last_updated"):
+        value = idx_data.get(key)
+        if isinstance(value, str) and value.strip():
+            return value
+
+    records = idx_data.get("all_records") or []
+    stamps = [
+        r.get("observed_at") or r.get("timestamp")
+        for r in records
+        if isinstance(r, dict) and (r.get("observed_at") or r.get("timestamp"))
+    ]
+    if stamps:
+        return max(str(s) for s in stamps)
+
+    return datetime.now(timezone.utc).isoformat()
+
+
 class LLMBrain:
     def __init__(self):
         self.api_key = os.getenv("GEMINI_API_KEY")
@@ -309,7 +339,13 @@ class LLMBrain:
                 ],
                 "weakest_assumption": "Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak.",
                 "status": "AWAITING_HUMAN_REVIEW",
-                "created_at": datetime.now().isoformat()
+                "created_at": datetime.now().isoformat(),
+                # Provenance required by the VIP honesty gate (vip_signal_router).
+                # Without these two keys a plan can never be sent as a precise VIP
+                # signal — it is downgraded to a provenance-less public note.
+                "source": "IDXMarketFetcher (TradingView BEI scanner) + TechnicalIndicators RSI/MA20",
+                "observed_at": _market_observed_at(idx_data),
+                "data_state": "live",
             })
 
         crypto_target_count = min(8, len(crypto_data))
@@ -345,7 +381,11 @@ class LLMBrain:
                 ],
                 "weakest_assumption": "Mengasumsikan level support $BTC bertahan dan sentimen likuiditas global tidak memburuk.",
                 "status": "AWAITING_HUMAN_REVIEW",
-                "created_at": datetime.now().isoformat()
+                "created_at": datetime.now().isoformat(),
+                # Provenance required by the VIP honesty gate (vip_signal_router).
+                "source": "CryptoSpotFetcher (Binance 24h ticker + technical setup scan)",
+                "observed_at": datetime.now(timezone.utc).isoformat(),
+                "data_state": "live",
             })
 
         # LLM Synthesis Enhancement

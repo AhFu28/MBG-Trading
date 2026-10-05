@@ -19,6 +19,7 @@ from notifiers.vip_signal_router import (  # noqa: E402
     Subscriber,
     dispatch,
     extract_plans,
+    freshness_note,
     provenance_gap,
     provenance_of,
     render_public,
@@ -62,18 +63,18 @@ class FakeNotifier:
 
 class TestHonestyGate(unittest.TestCase):
     def test_missing_source_blocks_vip(self):
-        self.assertIsNotNone(provenance_gap(good_plan(source=None)))
+        self.assertIsNotNone(provenance_gap(good_plan(source=None), now=NOW))
 
     def test_missing_observed_at_blocks_vip(self):
-        self.assertIsNotNone(provenance_gap(good_plan(observed_at=None)))
+        self.assertIsNotNone(provenance_gap(good_plan(observed_at=None), now=NOW))
 
     def test_synthetic_state_blocks_vip(self):
         for state in ("synthetic", "simulated", "mock", "illustrative", "demo"):
             with self.subTest(state=state):
-                self.assertIsNotNone(provenance_gap(good_plan(data_state=state)))
+                self.assertIsNotNone(provenance_gap(good_plan(data_state=state), now=NOW))
 
     def test_clean_plan_passes(self):
-        self.assertIsNone(provenance_gap(good_plan()))
+        self.assertIsNone(provenance_gap(good_plan(), now=NOW))
 
     def test_blocked_plan_produces_no_vip_message(self):
         sub = Subscriber(chat_id="111", expires_at="2026-12-31")
@@ -82,6 +83,61 @@ class TestHonestyGate(unittest.TestCase):
         self.assertEqual(len(public), 1)
         self.assertIn("VIP blocked", public[0].blocked_reason)
 
+class TestStalenessGuard(unittest.TestCase):
+    """A plan with perfect provenance can still be unsellable if it is too old.
+
+    Regression for the 2026-10-05 incident: the cached plans were 18 days old
+    (17 Sep) and CUAN said "entry Rp 945" while the live price was Rp 840.
+    Sending that to paying subscribers means they buy at a price that no
+    longer exists.
+    """
+
+    def _plan_aged(self, hours):
+        observed = NOW - timedelta(hours=hours)
+        return good_plan(observed_at=observed.isoformat())
+
+    def _gap(self, hours):
+        """Evaluate freshness against the fixed test clock, not wall time."""
+        return provenance_gap(self._plan_aged(hours), now=NOW)
+
+    def test_fresh_plan_passes(self):
+        self.assertIsNone(self._gap(1))
+
+    def test_aging_plan_passes_with_warning(self):
+        plan = self._plan_aged(13)
+        self.assertIsNone(provenance_gap(plan, now=NOW))
+        self.assertIsNotNone(freshness_note(plan, now=NOW))
+
+    def test_plan_at_limit_still_passes(self):
+        self.assertIsNone(self._gap(47))
+
+    def test_stale_plan_is_blocked(self):
+        gap = self._gap(49)
+        self.assertIsNotNone(gap)
+        self.assertIn("stale signal", gap)
+
+    def test_eighteen_day_old_plan_is_blocked(self):
+        # The exact real-world case that triggered this guard (429.6 hours).
+        gap = self._gap(18 * 24 + 1)
+        self.assertIsNotNone(gap)
+        self.assertIn("stale signal", gap)
+
+    def test_unparseable_timestamp_blocked(self):
+        self.assertIsNotNone(provenance_gap(good_plan(observed_at="not-a-date"), now=NOW))
+
+    def test_naive_timestamp_treated_as_utc(self):
+        naive = (NOW - timedelta(hours=2)).replace(tzinfo=None).isoformat()
+        self.assertIsNone(provenance_gap(good_plan(observed_at=naive), now=NOW))
+
+    def test_date_only_timestamp_accepted(self):
+        self.assertIsNone(provenance_gap(good_plan(observed_at="2026-10-02"), now=NOW))
+
+    def test_stale_plan_is_downgraded_to_public_not_dropped(self):
+        sub = Subscriber(chat_id="111", expires_at="2026-12-31")
+        vip, public = route([self._plan_aged(100)], [sub], now=NOW)
+        self.assertEqual(vip, [])
+        self.assertEqual(len(public), 1)
+        self.assertIn("stale", public[0].blocked_reason)
 
 class TestSubscriberEntitlement(unittest.TestCase):
     def test_expired_subscriber_is_excluded(self):

@@ -40,6 +40,18 @@ REQUIRED_PROVENANCE_KEYS = ("source", "observed_at")
 # Values of plan["data_state"] that must never be sold as a live signal.
 NON_LIVE_STATES = {"synthetic", "simulated", "mock", "illustrative", "demo"}
 
+# How old a plan may be before it is refused as a PAID signal.
+#
+# Why this exists: on 2026-10-05 the cached plans were 18 days old (generated
+# 17 Sep) and CUAN's plan said "entry Rp 945" while the live price was Rp 840 —
+# an 11% gap. Sending that to a paying subscriber means they buy at a price that
+# no longer exists. A stale plan is not a signal, it is misinformation.
+#
+# Thresholds are deliberately generous for an EOD swing strategy while still
+# catching the "pipeline stopped running" failure this was built for.
+MAX_SIGNAL_AGE_HOURS = 48          # beyond this: blocked entirely
+STALE_WARNING_HOURS = 12           # beyond this: warned, still allowed if < MAX
+
 DEFAULT_SUBSCRIBERS_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     "config",
@@ -171,14 +183,64 @@ def provenance_of(plan: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def provenance_gap(plan: Dict[str, Any]) -> Optional[str]:
-    """Return a human-readable reason the plan may not be sold as a live signal."""
+def plan_age_hours(plan: Dict[str, Any], now: Optional[datetime] = None) -> Optional[float]:
+    """Age of the plan's observation time in hours, or None if unparseable."""
+    prov = provenance_of(plan)
+    raw = prov.get("observed_at")
+    if not raw:
+        return None
+    text = str(raw).strip().replace("Z", "+00:00")
+    try:
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        # Fall back to a date-only value such as "2026-10-05".
+        try:
+            parsed = datetime.strptime(str(raw).strip()[:10], "%Y-%m-%d")
+        except ValueError:
+            return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    reference = now or datetime.now(timezone.utc)
+    if reference.tzinfo is None:
+        reference = reference.replace(tzinfo=timezone.utc)
+    return (reference - parsed).total_seconds() / 3600.0
+
+
+def staleness_gap(plan: Dict[str, Any], now: Optional[datetime] = None) -> Optional[str]:
+    """Return a reason string when the plan is too old to sell as a live signal."""
+    age = plan_age_hours(plan, now=now)
+    if age is None:
+        # Unparseable observation time is not trustworthy for a paid signal.
+        return "unparseable observed_at — cannot verify freshness"
+    if age > MAX_SIGNAL_AGE_HOURS:
+        return "stale signal: plan is %.1f hours old (max %d)" % (age, MAX_SIGNAL_AGE_HOURS)
+    return None
+
+
+def freshness_note(plan: Dict[str, Any], now: Optional[datetime] = None) -> Optional[str]:
+    """Warn (but do not block) when a plan is aging."""
+    age = plan_age_hours(plan, now=now)
+    if age is not None and STALE_WARNING_HOURS < age <= MAX_SIGNAL_AGE_HOURS:
+        return "aging: plan is %.1f hours old" % age
+    return None
+
+
+def provenance_gap(plan: Dict[str, Any], now: Optional[datetime] = None) -> Optional[str]:
+    """Return a human-readable reason the plan may not be sold as a live signal.
+
+    `now` is injectable so tests (and any backfill/replay) can evaluate freshness
+    against a fixed clock instead of wall time.
+    """
     prov = provenance_of(plan)
     missing = [key for key in REQUIRED_PROVENANCE_KEYS if not prov.get(key)]
     if missing:
         return "missing provenance: " + ", ".join(missing)
     if prov["data_state"] in NON_LIVE_STATES:
         return "non-live data_state: %s" % prov["data_state"]
+    # A plan with full provenance can STILL be unsellable if it is too old.
+    stale = staleness_gap(plan, now=now)
+    if stale:
+        return stale
     return None
 
 
@@ -290,7 +352,9 @@ def route(
 
     for plan in plans:
         sym = str(plan.get("clean_ticker") or plan.get("ticker") or plan.get("symbol", "?"))
-        gap = provenance_gap(plan)
+        # Pass the same clock used for entitlement so a replay/backfill evaluates
+        # freshness consistently instead of against wall time.
+        gap = provenance_gap(plan, now=now)
 
         if gap:
             public.append(

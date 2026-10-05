@@ -14,7 +14,41 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
-## [2026-10-05] — Agent DNA: Arena 16 Bot Kini Benar-Benar Independen
+## [2026-10-05] — Aktivasi VIP: Provenance, Pengaman Kesegaran & Perbaikan Pipeline
+
+### Sprint 24 — Menutup Celah yang Hampir Mengirim Sinyal Basi ke Pelanggan Berbayar
+- **[TEMUAN KRITIS — AKTIVASI DIHENTIKAN] Data Trade Plan Basi 18 Hari**:
+  - Saat hendak mengaktifkan VIP, ditemukan trade plan terakhir dibuat **17 September** — sudah **18 hari**.
+  - **Bukti kerugian nyata**: plan CUAN menuliskan entry **Rp 945**, sedangkan harga pasar saat itu **Rp 840** (selisih **−11%**).
+  - Jika VIP diaktifkan tanpa pemeriksaan, grup berbayar akan menerima **"Beli CUAN di Rp 945"** padahal harga sudah jauh di bawah. Penerima membeli di harga yang tidak ada lagi.
+  - **Keputusan**: aktivasi **dihentikan**, akar masalah diperbaiki lebih dulu.
+- **[PERBAIKAN HULU] Generator Trade Plan Kini Menulis Provenance**:
+  - `llm_brain.py` sebelumnya hanya menulis `created_at`. Kini juga menulis:
+    - **`source`** — fetcher mana yang benar-benar menghasilkan data (IDXMarketFetcher + TechnicalIndicators untuk IDX; CryptoSpotFetcher untuk kripto).
+    - **`observed_at`** — waktu data benar-benar diamati, diambil dari timestamp fetcher atau record terbaru.
+    - **`data_state`** — `live`.
+  - Ditambahkan helper `_market_observed_at()` dengan urutan preferensi: timestamp snapshot → timestamp per-record terbaru → waktu sekarang (jujur sebagai "dibaca saat ini").
+- **[PERBAIKAN HILIR] Pengaman Kesegaran di Gerbang VIP**:
+  - Ditambahkan ambang bertingkat di `vip_signal_router.py`:
+    - **> 48 jam → DIBLOKIR total** sebagai sinyal presisi.
+    - **12–48 jam → dikirim dengan peringatan** "aging".
+    - Timestamp tidak terbaca → **diblokir** (tidak bisa diverifikasi = tidak layak dijual).
+  - `provenance_gap()` dan `route()` kini menerima parameter `now` yang dapat di-inject, sehingga pengujian dan replay mengevaluasi kesegaran terhadap jam tetap, bukan waktu berjalan.
+  - **Plan 17 September sekarang otomatis diblokir** (429,6 jam) — masalah ini tidak dapat terulang.
+- **[BUG PIPELINE] `UnboundLocalError` di Mode `daily_idx_morning`**:
+  - Pipeline **crash** di akhir saat menyusun bundle: `cannot access local variable 'broker_summaries'`.
+  - **Penyebab**: `broker_summaries` (dan 13 variabel lain) hanya diinisialisasi di dalam blok analitik berat yang tidak berjalan pada semua mode.
+  - **Perbaikan**: seluruh 14 variabel diinisialisasi di awal `main()`. Sekaligus menghapus deklarasi duplikat yang membingungkan.
+  - **Hasil**: pipeline selesai bersih dalam **4,64 detik**, menghasilkan **12 trade plan segar** dengan provenance lengkap.
+- **[VERIFIKASI END-TO-END]**:
+  - Dry-run VIP dengan data segar: **12 plan lolos gerbang kejujuran** — tidak ada lagi blokir "missing provenance" maupun "stale".
+  - **Alat backfill** (`scripts/backfill_plan_provenance.py`) dibuat untuk memperbaiki plan lama tanpa menunggu pipeline — mengambil `source` dari market plan dan `observed_at` dari `created_at` yang asli, bukan mengarang data.
+  - **Panduan aktivasi lengkap** (`docs/PANDUAN_AKTIVASI_VIP.md`) untuk Mas Fuad: cara ambil token @BotFather, cara ambil chat ID grup, cara daftar pelanggan, dan cara menguji.
+  - **Keamanan**: `vip_subscribers.json`, `.env`, dan `.venv/` dipastikan masuk `.gitignore` agar chat ID pelanggan tidak pernah ter-commit.
+  - **Tes**: **50 tes Python lulus** (termasuk 9 tes kesegaran baru), **92 tes frontend lulus**. Dua bug nyata ditemukan oleh tes saat pengerjaan (parameter `now` tidak diteruskan; `route()` memakai waktu berjalan).
+
+---
+
 
 ### Sprint 23 — Menghilangkan "16 Bot Kembar" & Memperbaiki Kegagalan Senyap Data Tunggal
 - **[LAPORAN PEMILIK] "Bot iki ancen aneh" — Terbukti Benar, Akar Masalah Ditemukan**:

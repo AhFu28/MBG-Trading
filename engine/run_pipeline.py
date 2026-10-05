@@ -174,6 +174,26 @@ def main():
     idx_data = {}
     trade_plans = []
 
+    # Variables consumed by the bundle assembly at the end of main(). They are
+    # only populated by the heavy analytics block, which does not run for every
+    # mode — so they MUST be initialised up front. Without this, running a mode
+    # such as daily_idx_morning crashed with UnboundLocalError when assembling
+    # the bundle (observed 2026-10-05), losing the freshly generated plans.
+    broker_summaries = {}
+    technical_analysis = {}
+    smc_analysis = {}
+    bandarmology_iifs = {}
+    forecasts = {}
+    portfolio_summary = {}
+    strategy_rankings = {}
+    backtest_lab = {}
+    correlation_data = None
+    arena_state = {}
+    whale_data = {}
+    crypto_futures_data = {}
+    forex_data = {}
+    us_data = {}
+
     # 1. Macro & Crypto (Always runs on hourly & all modes)
     if args.mode in ["all", "hourly_crypto_macro"]:
         logger.info("Executing US Macro, Fed/Trump & Commodities News Radar...")
@@ -185,8 +205,6 @@ def main():
         db.upsert_crypto_spot_10(crypto_spot_10)
 
     # v3.0 — Whale Intelligence + Crypto Futures (runs on hourly & all & whale modes)
-    whale_data = {}
-    crypto_futures_data = {}
     if args.mode in ["all", "hourly_crypto_macro", "whale"]:
         try:
             logger.info("Scanning Whale Intelligence (Crypto On-Chain + IDX Foreign + US Institutional)...")
@@ -201,7 +219,6 @@ def main():
             logger.warning(f"CryptoFuturesFetcher failed: {e}")
 
     # v3.0 — Forex Scanner (runs on daily & all & forex modes)
-    forex_data = {}
     if args.mode in ["all", "daily_idx_morning", "forex"]:
         try:
             logger.info("Scanning 28 Forex Pairs + COT Report...")
@@ -210,7 +227,6 @@ def main():
             logger.warning(f"ForexScanner failed: {e}")
 
     # v3.0 — US Market Intelligence (runs on daily & all & us_stocks modes)
-    us_data = {}
     if args.mode in ["all", "daily_idx_morning", "us_stocks"]:
         try:
             logger.info("Scanning 30 US Stocks + Earnings Calendar...")
@@ -285,15 +301,6 @@ def main():
         
         logger.info(f"Intraday IDX refresh completed in {round((datetime.now() - start_time).total_seconds(), 2)} seconds.")
         return  # Exit early, no need for advanced analytics
-
-    technical_analysis = {}
-    smc_analysis = {}
-    bandarmology_iifs = {}
-    forecasts = {}
-    portfolio_summary = {}
-    strategy_rankings = {}
-    backtest_lab = {}
-    correlation_data = None
 
     try:
         logger.info("Running Advanced Analytics & Paper Portfolio...")
@@ -428,6 +435,7 @@ def main():
             backtest_lab = BacktestEngine(history_dfs=history_dfs).run_all_archetypes()
         except Exception as e:
             logger.warning(f"BacktestEngine failed: {e}")
+
 
         # Generate Broker Summaries (EOD Official Matrix ala Stockbit / NeoBDM)
         broker_summaries = {}
