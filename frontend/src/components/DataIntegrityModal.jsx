@@ -57,9 +57,18 @@ export default function DataIntegrityModal({
 
   const arenaDate = arenaData?.last_evaluated ? new Date(arenaData.last_evaluated) : null;
   const arenaAgeMin = arenaDate ? Math.max(0, Math.round((Date.now() - arenaDate.getTime()) / 60000)) : 999;
-  const isArenaFresh = arenaAgeMin <= 15;
-  const isArenaWarning = arenaAgeMin > 15 && arenaAgeMin <= 60;
-  const arenaStatus = isArenaFresh ? '24/7 ACTIVE' : (isArenaWarning ? 'DELAYED' : 'OFFLINE');
+
+  // Freshness thresholds derived from the REAL schedule, not an assumed one.
+  // The arena runs 4 sessions/day (~5h25m each) at 00/06/12/18 UTC, and state is
+  // only committed at the END of each session. So a healthy committed state can
+  // legitimately be up to ~6.5h old. Thresholds tighter than this would report
+  // OFFLINE on a perfectly healthy engine.
+  const ARENA_FRESH_MIN = 400;    // ~6h40m — within the expected session window
+  const ARENA_DELAYED_MIN = 800;  // ~13h20m — one full session appears missed
+
+  const isArenaFresh = arenaAgeMin <= ARENA_FRESH_MIN;
+  const isArenaWarning = arenaAgeMin > ARENA_FRESH_MIN && arenaAgeMin <= ARENA_DELAYED_MIN;
+  const arenaStatus = isArenaFresh ? 'PERIODIC ACTIVE' : (isArenaWarning ? 'DELAYED' : 'OFFLINE');
   const arenaColor = isArenaFresh ? '#10b981' : (isArenaWarning ? '#f59e0b' : '#ef4444');
 
   // 3. IDX Feed Status
@@ -141,13 +150,13 @@ export default function DataIntegrityModal({
       details: `222 Berita Terverifikasi, Klaster Konglomerasi, & Trade Plans. ${bundleAgeMin > 360 ? '⚠️ Data > 6 jam — harap jalankan pipeline EOD.' : 'Pipeline sinkron.'}`
     },
     {
-      name: 'AI Multi-Agent Arena 24/7 Engine',
+      name: 'AI Multi-Agent Arena — Periodic Engine',
       endpoint: '/api/arena-state (session-gated)',
-      provider: 'GitHub Actions Continuous Micro-Loop (30s Ticks)',
+      provider: 'GitHub Actions Scheduled Sessions (4×/hari × ~5,5 jam, tick 60 detik)',
       lastUpdate: isArenaLoading ? 'Menyinkronkan...' : (arenaDate ? `${formatWib(arenaDate)} (${arenaAgeMin} mnt lalu)` : 'Menunggu sync...'),
       status: arenaStatus,
       statusColor: arenaColor,
-      details: `${arenaData?.agents?.length || 16} AI Agents Syndicate, ${arenaData?.positions?.length || 0} Posisi Terbuka. Evaluasi micro-tick 30s per siklus 5 mnt.`
+      details: `${arenaData?.agents?.length || 16} AI Agents Syndicate, ${arenaData?.positions?.length || 0} Posisi Terbuka. Sesi terjadwal 00/06/12/18 UTC; state hanya di-commit di akhir sesi sehingga usia wajar hingga ~6,5 jam. Ini BUKAN engine real-time.`
     },
     {
       name: 'Bursa Efek Indonesia (IDX BEI)',

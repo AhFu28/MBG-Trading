@@ -408,7 +408,7 @@ flowchart TD
 | **News Research & Daily Brief** | 1x pagi saat pipeline + Manual Refresh | Tombol `[🔄 Refresh Riset AI]` di UI News Tab | Mengirim query parameter timestamp `?v=${Date.now()}` untuk mengabaikan cache lokal peramban. |
 | **Sentinel Desk Macro & Geopolitical** | Disinkronkan dengan bundle data | Tombol `[🔄 Sync Desk]` di UI Sentinel Desk | Memuat ulang parameter DEFCON, 4 sub-pilar terbobot, dan krisis geopolitik terkini. |
 | **Dossier & Debat Sindikasi Ticker** | On-Demand (Real-time seketika) | Pilihan ticker pengguna di Tab 2 (IDX, Crypto, US) | **100% Client-Side Engine**: Dihitung seketika tanpa latency jaringan atau konsumsi token API. |
-| **AI Agent Arena Loop** | Real-time per tick harga | Ingestion data WebSocket & Polling | Evaluasi deterministik 16 bot independen; refleksi transaksi ditulis otomatis saat tiket ditutup. |
+| **AI Agent Arena Loop** | **Periodik: 4 sesi/hari × ~5,5 jam** (bukan real-time) | GitHub Actions terjadwal (00/06/12/18 UTC) | Evaluasi deterministik 16 bot independen dengan tick 60 detik; refleksi transaksi ditulis otomatis saat tiket ditutup. Cakupan ≈22 jam/hari — ada jeda antar sesi, dan penjadwal GitHub dapat menunda. |
 
 ---
 
@@ -516,7 +516,7 @@ flowchart TD
         A1["run_pipeline.py\n(Hourly Cron & Daily Ingestion)"]
         A2["LLMBrain / Gemini 3.6 Flash\n(Sintesis Riset & Daily Trade Plans)"]
         A3["BacktestEngine & SMC Detector\n(Smart Money Order Blocks & Risk Brackets)"]
-        A4["16-Variant Headless Runner\n(Tournament Evaluator 24/7)"]
+        A4["16-Variant Headless Runner\n(Periodic Tournament Evaluator)"]
     end
 
     subgraph S3["3. Central State Storage"]

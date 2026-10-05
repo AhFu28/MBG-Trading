@@ -14,7 +14,39 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
-## [2026-09-30] — UI/UX Professional Polish: WCAG AA Contrast, Honest Data States & Locale-Safe Number Formatting
+## [2026-10-05] — Arena Frequency Fix & Honest Scheduling Claims
+
+### Sprint 22 — Menghilangkan Klaim "24/7" yang Tidak Akurat & Memperbaiki Cakupan Mesin 10×
+- **[TEMUAN TERUKUR] Arena "24/7 tiap 5 menit" Ternyata Hanya Jalan 5–6× Sehari**:
+  - Audit commit 5 hari terakhir menunjukkan pola: **1, 6, 6, 5, 5, 5 commit/hari** — bukan 288/hari seperti yang dijadwalkan.
+  - **Efisiensi nyata: ~2% dari jadwal.** Posisi (SL/TP) hanya terkelola tiap beberapa jam, bukan tiap 5 menit.
+  - **Akar masalah**: GitHub Actions **tidak menjamin cron frekuensi tinggi** pada runner gratis — jadwal di bawah 15 menit akan ditunda atau dijatuhkan. Ini batasan platform, bukan bug kode. Mempercepat cron justru memperburuk (antrean menumpuk lalu dibuang).
+  - Runner alternatif (HuggingFace Space) diperiksa: **mati (HTTP 404)**, jadi GitHub Actions satu-satunya jalur.
+- **[PERBAIKAN 2] Cakupan Mesin Naik ~10× (Dari ~20 Menit/Hari ke ~22 Jam/Hari)**:
+  - Strategi diubah dari "banyak trigger pendek" menjadi **"sedikit trigger, job panjang"** — satu-satunya pendekatan yang benar untuk scheduler GitHub.
+  - Jadwal baru: **4 sesi/hari × ~5j25m** (cron `0 0,6,12,18 * * *`) — sebelumnya 4 menit per run.
+  - Tick diperpanjang 30 → **60 detik**: kompromi sadar antara presisi trailing-stop dan stabilitas, serta menghindari pemborosan request API.
+  - **~325 siklus evaluasi per sesi** (sebelumnya 8).
+  - `timeout-minutes: 350` (di bawah batas keras GitHub 360) dan durasi loop 19.500s dipilih agar **langkah commit selalu tereksekusi** — state tidak pernah hilang.
+  - Commit state memakai `if: always()` sehingga **crash di tengah sesi tetap menyimpan** posisi yang sudah tercapai.
+  - `concurrency: cancel-in-progress: false` dipertahankan agar sesi berjalan tidak pernah dibunuh di tengah pengelolaan posisi.
+- **[PERBAIKAN 1] Klaim Publik Dibersihkan (Klaim "24/7/Real-time" Dihapus)**:
+  - **`README.md`**: baris "AI Agent Arena Loop — Real-time per tick harga" diganti menjadi frekuensi sebenarnya (**4 sesi/hari × ~5,5 jam, tick 60 detik, cakupan ≈22 jam/hari**) beserta catatan bahwa penjadwal GitHub dapat menunda. Diagram arsitektur "Tournament Evaluator 24/7" → "Periodic Tournament Evaluator".
+  - **`DataIntegrityModal.jsx`** (modal Provenance Data — justru tempat yang seharusnya paling jujur): provider "Continuous Micro-Loop (30s Ticks)" diganti menjadi **"Scheduled Sessions (4×/hari × ~5,5 jam, tick 60 detik)"**, status `24/7 ACTIVE` → `PERIODIC ACTIVE`, dan catatan tegas **"Ini BUKAN engine real-time"**.
+  - **`arena_runner_247.py`**: docstring "STANDALONE 24/7 ARENA CONTINUOUS RUNNER" diganti dengan penjelasan batasan eksplisit (sesi terbatas, bukan daemon; jangan sebut real-time/24/7 di materi pengguna).
+  - Komentar internal di `AiAgentArenaTab.jsx` disesuaikan agar tidak lagi menyebut runner "24/7".
+  - **Klarifikasi**: label `CRYPTO: ● 24/7` di UI tetap dipertahankan karena merujuk pada **jam pasar kripto** (yang memang 24/7), bukan mesin arena — itu akurat.
+- **[BUG IKUTAN DIPERBAIKI] Modal Provenance Akan Selalu Berbunyi "OFFLINE"**:
+  - Ambang kesegaran sebelumnya **15/60 menit**, diwarisi dari asumsi jadwal 5 menit. Dengan jadwal baru (state hanya di-commit di akhir sesi ~5,5 jam), ambang itu akan **selalu melaporkan OFFLINE** pada mesin yang sehat — alarm palsu yang merusak kepercayaan.
+  - Ambang baru berbasis jadwal nyata: **aktif ≤ 400 menit (~6j40m)**, **DELAYED ≤ 800 menit**, di luar itu baru **OFFLINE**.
+  - Ditambahkan **6 tes penjaga** (`arenaFreshness.test.js`) yang gagal jika seseorang mengembalikan ambang ke nilai 15 menit yang salah.
+- **[VERIFIKASI]**:
+  - Runner diuji langsung: **3 tick berhasil**, mengambil harga live, state tersimpan. State produksi dipulihkan setelah uji agar tidak terkontaminasi.
+  - Test suite: **92/92 lulus** (6 tes kesegaran arena baru).
+  - Build produksi bersih 1,81s; diverifikasi teks lama "Continuous Micro-Loop" **hilang** dari bundle dan teks baru **ada**.
+
+---
+
 
 ### Sprint 16 — Multi-Agent UI/UX Audit Remediation (playbook panel: Navigator + Forge + Scout)
 - **[COCKPIT UI/UX] Light-Mode Critical Contrast Fixes (WCAG 2.2 AA)**:

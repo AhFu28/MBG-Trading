@@ -1,13 +1,28 @@
-name: 24/7 AI Multi-Agent Arena Continuous Trading Engine
+name: AI Multi-Agent Arena — Periodic Trading Engine
+
+# HONEST SCHEDULING NOTE (read before changing the cron):
+# This workflow used to claim "24/7 continuous, every 5 minutes". Measurement on
+# 2026-10-05 showed it actually ran 5-6 times per DAY (~2% of the intended
+# schedule), because GitHub Actions does NOT guarantee high-frequency cron on
+# free runners — it delays or silently drops sub-15-minute schedules.
+#
+# The fix is NOT a faster cron (that just queues and gets dropped). It is fewer
+# triggers with much longer jobs: 4 runs/day x ~5.5 hours = ~22 hours of
+# coverage, versus ~20 minutes/day before.
+#
+# Do not describe this engine as "real-time" or "24/7" in user-facing copy.
+# It performs PERIODIC position management, roughly every 6 hours at worst.
 
 on:
   schedule:
-    - cron: '2,7,12,17,22,27,32,37,42,47,52,57 * * * *' # Off-peak minutes to avoid GitHub Actions scheduler queue delays
+    # 4 runs per day. Each run covers ~5h25m, leaving a safety margin before the
+    # next trigger so runs do not pile up in the concurrency queue.
+    - cron: '0 0,6,12,18 * * *'
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
 concurrency:
   group: arena-continuous-engine
-  cancel-in-progress: false
+  cancel-in-progress: false # Never kill a running session mid-position-management
 
 permissions:
   contents: write
@@ -15,7 +30,9 @@ permissions:
 jobs:
   arena-continuous-cycle:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    # GitHub hard-caps a job at 360 min. 350 leaves room for checkout, setup and
+    # the commit step, so a run always finishes cleanly and persists its state.
+    timeout-minutes: 350
 
     steps:
       - name: Checkout Repository
@@ -26,11 +43,17 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Execute Autonomous Multi-Tick Trading Loop (4 Minutes @ 30s Ticks)
+      - name: Execute Autonomous Multi-Tick Trading Loop (5h25m @ 60s Ticks)
         run: |
-          python engine/analyzer/arena_runner_247.py --duration-seconds 240 --interval-seconds 30
+          # 19500s = 5h25m, deliberately under the 350-min timeout so the commit
+          # step below always executes. 60s ticks give ~325 evaluation cycles per
+          # run instead of the previous 8.
+          python engine/analyzer/arena_runner_247.py --duration-seconds 19500 --interval-seconds 60
 
       - name: Commit & Push Updated Arena State
+        # Runs even if the loop step fails partway, so a crash still preserves
+        # whatever state was reached instead of silently losing the session.
+        if: always()
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -38,7 +61,7 @@ jobs:
           # Committing it to a static folder would publish the VIP payload to anyone.
           git add engine/cache/latest_arena_state.json || true
           if ! git diff --staged --quiet; then
-            git commit -m "chore(arena): 24/7 multi-tick state update [skip ci]"
+            git commit -m "chore(arena): periodic state update [skip ci]"
             for i in 1 2 3; do
               git pull --rebase -X theirs origin main && git push && break || sleep 2
             done
@@ -50,5 +73,5 @@ jobs:
           if [ -n "${{ secrets.TELEGRAM_BOT_TOKEN }}" ] && [ -n "${{ secrets.TELEGRAM_CHAT_ID }}" ]; then
             curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
               -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-              -d "text=⚠️ [MBG Arena Alert] 24/7 Workflow FAILED on ${{ github.ref_name }}. Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" || true
+              -d "text=⚠️ [MBG Arena Alert] Arena workflow FAILED on ${{ github.ref_name }}. Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" || true
           fi

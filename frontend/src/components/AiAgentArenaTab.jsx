@@ -2362,7 +2362,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
   const journalRef = useRef(journal);
   journalRef.current = journal;
 
-  // 1. Hydrate offline 24/7 background progress from Cloud / Master Data Bundle (Option 1)
+  // 1. Hydrate arena progress recorded by the last scheduled cloud session
   useEffect(() => {
     const cloudState = data?.arena_state;
     if (!cloudState) return;
@@ -2375,7 +2375,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
       return;
     }
 
-    // 1. Merge new journal trades closed by the 24/7 cloud runner while offline
+    // 1. Merge new journal trades closed by the last scheduled cloud session
     if (Array.isArray(cloudState.journal) && cloudState.journal.length > 0) {
       setJournal(prev => {
         const existingIds = new Set(prev.map(j => j.id));

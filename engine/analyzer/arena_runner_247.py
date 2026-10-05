@@ -1,13 +1,21 @@
 """
 =============================================================================
-MBG QUANT TRADING ENGINE — STANDALONE 24/7 ARENA CONTINUOUS RUNNER
+MBG QUANT TRADING ENGINE — ARENA PERIODIC RUNNER
 =============================================================================
-Zero-dependency, high-frequency autonomous trading runner for 16 AI Agents.
+Zero-dependency autonomous trading runner for 16 AI Agents.
+
+SCOPE AND LIMITS (read before trusting the word "continuous" anywhere):
+This runner executes a bounded session, not an always-on daemon. In production
+it is driven by GitHub Actions on a 4-sessions-per-day schedule of ~5h25m each.
+GitHub Actions does NOT guarantee high-frequency cron, so real coverage is
+roughly 22 hours/day with gaps, and the scheduler may delay or skip a session.
+Do NOT describe this engine as real-time or 24/7 in user-facing copy.
+
 - Operates strictly with Python Standard Library (zero pip install delay).
 - Ingests real-time Binance & macro market ticks via urllib.
 - Ratchets trailing stops & deducts institutional 0.12% Bitget fees.
-- Supports continuous multi-tick micro-loops for GitHub Actions & local runners.
-- Persists state directly to engine/cache/latest_arena_state.json.
+- Supports configurable session duration for GitHub Actions & local runners.
+- Persists state to engine/cache/latest_arena_state.json (never frontend/public).
 =============================================================================
 """
 
