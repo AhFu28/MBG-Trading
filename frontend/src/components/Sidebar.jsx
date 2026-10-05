@@ -22,6 +22,7 @@ const PRIMARY_NAV_ITEMS = [
   { id: 'NEWS',                icon: '📰', label: 'Live News Wire',   section: 'INTELLIGENCE' },
   { id: 'ECONOMIC_CALENDAR',   icon: '📅', label: 'Kalender Makro',   section: 'INTELLIGENCE' },
   { id: 'AI_SENTINEL',        icon: '🛡️', label: 'AI Sentinel Desk', section: 'INTELLIGENCE' },
+  { id: 'SUBSCRIPTION',        icon: '👑', label: 'Akun & Langganan', section: 'INTELLIGENCE' },
 ];
 
 // Secondary tools tucked into expandable accordion

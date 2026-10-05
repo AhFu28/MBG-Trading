@@ -14,6 +14,43 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+## [2026-10-05] — Sistem Akun, Landing Page & Langganan Berbayar
+
+### Sprint 25 — Dari Satu Kata Sandi Bersama Menjadi Akun Per-Pengguna
+- **[PERUBAHAN MODEL BISNIS] Pengunjung Kini Daftar Sendiri, Free Sangat Terbatas**:
+  - Sebelumnya: satu kata sandi bersama, siapa pun yang tahu langsung dapat akses penuh sebagai PRO.
+  - Sekarang: landing page → daftar gratis → akun FREE dengan fitur terbatas → bayar untuk membuka Pro.
+  - **Peta tier** (`featureAccess.js`) adalah satu-satunya sumber kebenaran: **GUEST** (4 modul publik), **FREE** (+News), **PRO** (14 modul analitik).
+  - Modul yang dikunci Pro: AI Arena, Early Signal Radar, Degen Desk, Charting, Whale Tracker, Forex, US Stocks, Futures, Sentinel, Saham IDX, Crypto Spot, Heatmap, Watchlist, Flow Process.
+- **[KEAMANAN] Kata Sandi Ditangani Supabase Auth, Bukan Kode Kita**:
+  - Roll-your-own password hashing adalah penyebab paling umum kebocoran kredensial. Tidak ada hash/salt/password yang disimpan di repo ini.
+  - Cookie sesi `HttpOnly` + `Secure` + `SameSite=Strict` — tidak dapat dibaca JavaScript, sehingga bug XSS tidak bisa mencuri sesi.
+  - `JWT_SECRET` dipisah dari `SUPABASE_ANON_KEY`. Kunci `service_role` **tidak pernah** dipakai di sisi klien.
+  - Baris di `supabase/schema.sql` mengaktifkan **Row Level Security** dengan hanya policy SELECT untuk baris milik sendiri. Pengguna **tidak bisa** memberi dirinya tier Pro walau mengubah JavaScript.
+- **[ANTI-KEDALUWARSA] Langganan Habis → Akses Otomatis Dicabut**:
+  - Tier dihitung ulang dari `expires_at` **setiap kali dibaca**. Tidak perlu cron job untuk mencabut akses — pelanggan yang habis langsung turun ke Free.
+  - Tanggal yang tidak terbaca diperlakukan sebagai **tanpa kedaluwarsa**, bukan sebagai habis: lebih baik pelanggan yang membayar tetap masuk daripada terkunci karena salah ketik.
+  - `expired: true` dikirim ke UI agar penurunan akses **dijelaskan**, bukan terjadi diam-diam.
+- **[TOOLING] Perpanjangan Tidak Menghanguskan Sisa Hari**:
+  - `activate_subscription(email, hari, catatan)` menambah dari tanggal berakhir yang ada, bukan dari hari ini. Pelanggan dengan sisa 10 hari yang membeli 30 hari mendapat **40 hari**.
+  - Tersedia juga `deactivate_subscription()` dan query pengingat perpanjangan 7 hari.
+- **[BUG NYATA YANG DITEMUKAN PEMERIKSAAN SENDIRI]**:
+  1. **Jalur impor salah** — `_shared.js` mengimpor `./_jwt.js` padahal file berada di `../_jwt.js`. Semua endpoint akun akan gagal saat deploy; tertangkap sebelum push.
+  2. **`PUBLIC_MODULES` tidak konsisten** — daftar publik ditulis terpisah dari peta tier dan langsung saling bertentangan (`SIGNALS` dinyatakan publik tapi peta tier menolak tamu). Sekarang **diturunkan otomatis** dari peta tier sehingga tidak bisa lagi berbeda.
+  3. **`String(['pro'])` menjadi `'pro'`** — tier non-string bisa lolos sebagai Pro. `normalizeTier` kini **menolak non-string** alih-alih mengonversinya.
+  4. **Struktur JSX rusak** — penghapusan `PasswordGate` menyisakan tag tak seimbang; build gagal. Diperbaiki dengan Fragment.
+- **[HALAMAN BARU]**:
+  - **LandingPage** — halaman penjualan: hero, daftar modul per tier, tabel harga, dan **disclaimer risiko permanen**. Mengandung pernyataan tegas bahwa sistem ini adalah alat screening, bukan penasihat investasi, dan tidak menjanjikan keuntungan.
+  - **AuthPanel** — masuk/daftar, plus tautan tersembunyi "akses pemilik" agar pemilik tidak pernah terkunci dari sistemnya sendiri.
+  - **SubscriptionPage** — status langganan, sisa hari, langkah pembayaran manual, rekening transfer & QRIS dengan tombol salin, dan tabel perbandingan paket.
+- **[VERIFIKASI]**:
+  - **171 tes frontend lulus** (naik dari 144), termasuk 27 tes khusus jalur akun: penolakan cookie palsu, konfigurasi belum diisi mengembalikan 503 (bukan diam-diam memberi akses), validasi email/kata sandi, dan pencabutan Pro saat kedaluwarsa.
+  - Build produksi bersih 1,55s. Chunk `LandingPage` (15 KB) dan `SubscriptionPage` (9 KB) terpisah — pengunjung yang belum masuk **tidak** mengunduh bundel cockpit.
+  - **34 tes Python** tetap lulus.
+- **[PANDUAN]** `docs/PANDUAN_AKUN_DAN_LANGGANAN.md` — panduan setup Supabase langkah demi langkah, cara mengaktifkan pelanggan, query pengingat perpanjangan, dan batas sistem yang perlu diketahui pemilik (aktivasi masih manual; gating klien bukan tembok beton).
+
+---
+
 ## [2026-10-05] — Aktivasi VIP: Provenance, Pengaman Kesegaran & Perbaikan Pipeline
 
 ### Sprint 24 — Menutup Celah yang Hampir Mengirim Sinyal Basi ke Pelanggan Berbayar

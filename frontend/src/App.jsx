@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import PasswordGate from './components/PasswordGate.jsx';
+import { fetchMe, logOut } from './services/accountClient.js';
+import { canAccess, requiredTierFor, MODULES, TIER } from './services/featureAccess.js';
 import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
 import HomeDashboardTab from './components/HomeDashboardTab.jsx';
 import Sidebar from './components/Sidebar.jsx';
@@ -32,6 +34,8 @@ const SecurityHubDrawer = lazy(() => import('./components/SecurityHubDrawer.jsx'
 const AiAgentArenaTab = lazy(() => import('./components/AiAgentArenaTab.jsx'));
 const AiIntelligenceDrawer = lazy(() => import('./components/AiIntelligenceDrawer.jsx'));
 const SignalsTab = lazy(() => import('./components/SignalsTab.jsx'));
+const LandingPage = lazy(() => import('./components/LandingPage.jsx'));
+const SubscriptionPage = lazy(() => import('./components/SubscriptionPage.jsx'));
 
 const isIdxMarketOpen = () => {
   const now = new Date();
@@ -183,15 +187,45 @@ export default function App() {
     });
   }, []);
 
-  // TRUST03: the tier is server-owned (JWT claim from /api/auth). One no-store
-  // fetch on mount; the server is the authority — no localStorage escalation.
-  const [userTier, setUserTier] = useState('PRO');
-  useEffect(() => {
-    fetch('/api/auth', { credentials: 'same-origin' })
-      .then(r => (r.ok ? r.json() : null))
-      .then(b => { if (b && b.tier) setUserTier(b.tier); })
-      .catch(() => {});
+  // ACCOUNT ENTITLEMENT — the tier is owned by the server.
+  //
+  // Order matters: /api/account/me is asked FIRST because it is the per-user
+  // answer. Only if that says "no account session" do we fall back to the
+  // legacy cockpit password (/api/auth), which the owner still uses. Before
+  // this, every authenticated visitor was silently treated as PRO.
+  const [account, setAccount] = useState(null);
+  const [accountChecked, setAccountChecked] = useState(false);
+
+  const refreshAccount = useCallback(async () => {
+    const me = await fetchMe();
+    if (me.authenticated) {
+      setAccount(me);
+      setAccountChecked(true);
+      return me;
+    }
+    // Fall back to the owner password session.
+    try {
+      const res = await fetch('/api/auth', { credentials: 'same-origin' });
+      if (res.ok) {
+        const body = await res.json();
+        if (body?.authenticated) {
+          const owner = { authenticated: true, tier: 'pro', isPro: true, owner: true, email: body.email || null };
+          setAccount(owner);
+          setAccountChecked(true);
+          return owner;
+        }
+      }
+    } catch {
+      // No server (static preview) — fall through to guest.
+    }
+    setAccount(me);
+    setAccountChecked(true);
+    return me;
   }, []);
+
+  useEffect(() => { refreshAccount(); }, [refreshAccount]);
+
+  const userTier = account?.isPro ? 'PRO' : (account?.authenticated ? 'FREE' : 'GUEST');
 
   // Web3 Solana Phantom Wallet State
   const [walletState, setWalletState] = useState({
@@ -412,6 +446,7 @@ export default function App() {
       case 'DEGEN': return '🎰 Degen Desk — Memecoin Radar';
       case 'RADAR': return '🎯 Early Signal Radar — Deteksi Dini';
       case 'SIGNALS': return '📡 Sinyal Trading — Entry, SL & TP';
+      case 'SUBSCRIPTION': return '👑 Akun & Langganan';
       case 'FOREX': return '💱 Forex Command Center';
       case 'US_STOCKS': return '🇺🇸 US Stock Intelligence';
       case 'FLOW_PROCESS': return '⚡ Flow Process & System Architecture';
@@ -425,9 +460,40 @@ export default function App() {
     }
   };
 
+  // AUTH GATE — replaces the old single shared password screen.
+  //
+  //  not signed in       -> landing page (marketing + sign up / sign in)
+  //  signed in as free   -> cockpit, paid desks locked
+  //  signed in as pro    -> full cockpit
+  //  owner password      -> treated as pro
+  //
+  // Rendered before the cockpit so a signed-out visitor never sees a flash of
+  // the terminal, and never downloads the cockpit bundle.
+  if (!accountChecked) {
+    return (
+      <div style={{
+        minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: '#070a13', color: 'var(--text-muted)', fontSize: '12px', fontFamily: 'inherit',
+      }}>
+        Memuat…
+      </div>
+    );
+  }
+
+  if (!account?.authenticated) {
+    return (
+      <Suspense fallback={null}>
+        <LandingPage onAuthenticated={() => refreshAccount()} configured={account?.configured !== false} />
+      </Suspense>
+    );
+  }
+
+  // Owner keeps the original gate reachable, but it is not the main path.
+  // Fragments wrap layout + global modals, which used to be two children of
+  // the removed PasswordGate wrapper.
   return (
-    <PasswordGate>
-      <div className="app-layout">
+    <>
+    <div className="app-layout">
 
         {/* Mobile backdrop */}
         {isMobileOpen && (
@@ -895,6 +961,58 @@ export default function App() {
                   onNavigateTab={setActiveTab}
                 />
               </main>
+            ) : activeTab === 'SUBSCRIPTION' ? (
+              /* ACCOUNT & SUBSCRIPTION — status, upgrade, manual payment steps */
+              <main>
+                <SubscriptionPage
+                  account={account || {}}
+                  onRefresh={refreshAccount}
+                  onLogout={async () => { await logOut(); setAccount({ authenticated: false, tier: 'guest' }); }}
+                />
+              </main>
+            ) : !canAccess(activeTab, userTier) ? (
+              /* LOCKED MODULE — show what Pro unlocks instead of an empty desk.
+                 Deliberately obvious rather than silent: a user who clicked a
+                 locked menu item must understand why, not wonder if it broke. */
+              <main>
+                <div className="telemetry-panel" style={{
+                  borderRadius: '16px', padding: '52px 28px', textAlign: 'center', maxWidth: '560px', margin: '40px auto',
+                }}>
+                  <div style={{ fontSize: '38px', marginBottom: '16px' }}>🔒</div>
+                  <div style={{ fontSize: '18px', fontWeight: '900', marginBottom: '10px' }}>
+                    Modul Ini Khusus Pro
+                  </div>
+                  <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '22px' }}>
+                    <strong>{getTabLabel(activeTab)}</strong> memerlukan
+                    paket <strong>{requiredTierFor(activeTab) === TIER.PRO ? 'Pro' : 'Free'}</strong>.
+                    {userTier === 'GUEST'
+                      ? ' Buat akun gratis untuk membuka lebih banyak fitur.'
+                      : ' Upgrade untuk membuka seluruh alat analitik dan sinyal real-time.'}
+                  </div>
+                  <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <button
+                      onClick={() => setActiveTab('SUBSCRIPTION')}
+                      style={{
+                        padding: '11px 24px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '900',
+                        background: 'linear-gradient(135deg,#f59e0b,#d97706)', color: '#000',
+                        border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+                      }}
+                    >
+                      👑 Lihat Paket Pro
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('SIGNALS')}
+                      style={{
+                        padding: '11px 22px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '700',
+                        background: 'rgba(255,255,255,0.06)', color: 'var(--text-primary)',
+                        border: '1px solid rgba(255,255,255,0.14)', cursor: 'pointer', fontFamily: 'inherit',
+                      }}
+                    >
+                      ← Kembali ke Sinyal
+                    </button>
+                  </div>
+                </div>
+              </main>
             ) : activeTab === 'DEGEN' ? (
               /* MULTI-CHAIN MEMECOIN RADAR & RUG-CHECK DESK */
               <main>
@@ -1145,6 +1263,6 @@ export default function App() {
           setWalletState={setWalletState}
         />
       </Suspense>
-    </PasswordGate>
+    </>
   );
 }
