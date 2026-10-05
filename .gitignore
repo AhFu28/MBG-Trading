@@ -49,3 +49,6 @@ Python/
 
 # Logs
 *.log
+
+# Atomic-write temp files
+*.tmp

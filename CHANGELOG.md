@@ -14,6 +14,52 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+## [2026-10-05] — Agent DNA: Arena 16 Bot Kini Benar-Benar Independen
+
+### Sprint 23 — Menghilangkan "16 Bot Kembar" & Memperbaiki Kegagalan Senyap Data Tunggal
+- **[LAPORAN PEMILIK] "Bot iki ancen aneh" — Terbukti Benar, Akar Masalah Ditemukan**:
+  - Audit state produksi 5 Oktober menemukan tiga gejala yang saling berkaitan:
+    1. **16 agen hanya punya 6 logika.** AVATAR, CHAOS, OCEANIC, dan TEMPEST menjalankan aturan `Synthesis (chg >= 0)` yang **persis identik**.
+    2. **Posisi kembar.** `XAUUSD SHORT` dibuka oleh **12 agen berbeda** di entry **sama persis (4205,3)**; `FETUSDT` oleh 14 agen di `0,2369`.
+    3. **Agen mandek.** 12 dari 16 agen **belum pernah menutup satu trade pun** dalam 3 hari; hanya 4 trade tertutup, semuanya −0,92%.
+  - **Kesimpulan jujur:** itu bukan 16 strategi berbeda, melainkan **1 strategi dijalankan 16 kali**. Menjualnya sebagai "16 bot otonom" akan menyesatkan pelanggan.
+- **[AKAR MASALAH KEDUA — KEGAGALAN SENYAP] Hanya 1 Instrumen yang Berhasil Diambil**:
+  - Ditemukan saat pengujian: `fetch_live_prices()` hanya mengembalikan **1 instrumen (XAUUSD)**.
+  - **Penyebab:** `api.binance.com` **tidak dapat diakses dari jaringan ini** (TLS handshake ditolak), sementara Yahoo Finance tetap lolos. Runner **gagal secara senyap** tanpa peringatan apa pun.
+  - **Akibatnya:** seluruh universe kripto kosong, sehingga semua agen wajib memilih emas — inilah sebab sebenarnya 12 agen menumpuk di XAUUSD.
+  - **Perbaikan:** multi-host fallback (`api.binance.com` → **`data-api.binance.vision`** → `api1` → `api2`). Mirror publik resmi Binance terbukti dapat diakses.
+  - **Hasil:** dari **1 instrumen menjadi 3.110 instrumen**. Jika semua host gagal, sekarang dicatat sebagai **ERROR eksplisit** — bukan lagi kegagalan senyap.
+- **[PERBAIKAN UTAMA] Agent DNA — Setiap Agen Kini Punya Aturan Sendiri**:
+  - Ditambahkan tabel `AGENT_DNA` dengan 16 entri, masing-masing berisi:
+    - **`family`** — logika keputusan, kini **unik per agen** (16 family berbeda, tidak ada yang berbagi).
+    - **`sens`** — pengali sensitivitas ambang batas (0,72–1,35).
+    - **`min_conf`** — ambang keyakinan milik agen itu sendiri (62–80), sebelumnya **dipatok 68 untuk semua**.
+    - **`assets`** — preferensi instrumen: `crypto` / `commodity` / `majors` / `both`.
+    - **`bias`** — kecenderungan arah (−0,30 hingga +0,30).
+  - **10 family baru dibuat** agar tidak ada duplikasi: `smc_tight`, `donchian_fast`, `deep_value`, `impulse`, `fade_break`, `triple_conf`, `vol_expand`, `channel_rev`, `asym_reversal`, `quad_synth`.
+  - Contoh konkret: WATER dan STEAM dulu **identik**; kini WATER memakai `smc` (discount < 40%) sedangkan STEAM memakai `smc_tight` (hanya discount dalam < 25%).
+- **[PERBAIKAN KETIGA] Preferensi Instrumen Sempat Tidak Dihormati**:
+  - Versi DNA pertama tetap membuat semua agen memilih emas, karena pencarian menggabungkan universe agen **dan** daftar penuh lalu mengambil nilai keyakinan tertinggi secara global. XAUUSD (volatilitas tinggi = confidence tinggi) selalu menang.
+  - **Diperbaiki:** pencarian universe agen sendiri **diutamakan dan langsung diterima**; fallback ke daftar penuh hanya jika universe agen benar-benar tidak menghasilkan kandidat.
+  - **Ditambahkan juga batas konsentrasi `MAX_AGENTS_PER_SYMBOL = 4`**. Tanpa ini, satu aset yang melonjak menyerap seluruh arena — persis yang terjadi saat FETUSDT naik +15,7% dan 9 agen menumpuk di harga yang sama.
+- **[HASIL TERUKUR] Sebelum vs Sesudah**:
+
+  | Metrik | Sebelum | Sesudah |
+  |---|---|---|
+  | Instrumen diambil | **1** | **3.110** |
+  | Instrumen dipegang | 4 (12 agen di 1 aset) | **6, maks 4 agen/aset** |
+  | Agen belum pernah trading | **12 dari 16** | **0 dari 16** |
+  | Variasi confidence | semua 68 | **71–95** |
+  | Distribusi arah | menumpuk | 9 SHORT / 7 LONG (seimbang) |
+
+- **[VERIFIKASI & PEMBERSIHAN]**:
+  - **11 tes baru** di `test_agent_dna.py`, termasuk penjaga yang gagal jika: ada dua agen ber-fingerprint sama, ada dua agen ber-`family` sama, semua agen sepakat arah, atau agen `crypto-only` memilih emas.
+  - Verifikasi sidik jari: **16 signature unik, 0 kembar** (sebelumnya hanya 6 perilaku berbeda).
+  - **State arena direset bersih** — 48 posisi kembar tidak layak dipertahankan. Diarsipkan ke `engine/cache/arena_state_ARCHIVE_2026-10-05_twin-logic.json` untuk jejak audit.
+  - Test suite: **11 tes DNA lulus**, **92 tes frontend lulus**.
+
+---
+
 ## [2026-10-05] — Arena Frequency Fix & Honest Scheduling Claims
 
 ### Sprint 22 — Menghilangkan Klaim "24/7" yang Tidak Akurat & Memperbaiki Cakupan Mesin 10×

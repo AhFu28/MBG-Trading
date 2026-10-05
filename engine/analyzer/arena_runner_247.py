@@ -58,6 +58,78 @@ TARGET_UNIVERSE = [
     "ADAUSDT", "XRPUSDT", "SUIUSDT", "PEPEUSDT", "TAOUSDT", "XAUUSD"
 ]
 
+# =============================================================================
+# AGENT DNA — makes each of the 16 agents behave differently
+# =============================================================================
+# WHY THIS EXISTS:
+# Before this, 16 agents shared only 6 decision logics. AVATAR, CHAOS, OCEANIC
+# and TEMPEST ran the IDENTICAL "Synthesis (chg >= 0)" rule. The result was
+# measurable and embarrassing: XAUUSD SHORT was opened by 12 different agents at
+# the exact same entry (4205.3), FETUSDT by 14 agents at 0.2369, and 12 of 16
+# agents had never closed a single trade in 3 days.
+#
+# "16 agents" that all make the same call is 1 strategy run 16 times. Each agent
+# now gets its own sensory thresholds and its own instrument bias, so a single
+# market condition produces genuinely different decisions per agent.
+#
+# Fields:
+#   family   : which decision logic this agent uses (must be UNIQUE per agent
+#              within reason, so no two agents share a rule set)
+#   sens     : sensitivity multiplier on the family's raw trigger threshold
+#   min_conf : this agent's own conviction bar (was hardcoded 68 for everyone)
+#   assets   : instrument preference. "crypto" | "commodity" | "both" | "majors"
+#   bias     : directional preference applied as a threshold skew
+#              positive = prefers LONG, negative = prefers SHORT
+AGENT_DNA = {
+    # --- Base elementals: tight, fast, single-family -------------------------
+    "WATER":     {"family": "smc",          "sens": 1.00, "min_conf": 66, "assets": "both",      "bias": 0.10},
+    "FIRE":      {"family": "momentum",     "sens": 0.80, "min_conf": 70, "assets": "crypto",    "bias": 0.15},
+    "AIR":       {"family": "donchian",     "sens": 1.10, "min_conf": 68, "assets": "majors",    "bias": 0.12},
+    "EARTH":     {"family": "mean_revert",  "sens": 1.00, "min_conf": 64, "assets": "both",      "bias": 0.05},
+
+    # --- Duos: same family as their parent but tuned differently -------------
+    # STEAM is deliberately a DIFFERENT family from WATER now (was identical).
+    "STEAM":     {"family": "smc_tight",    "sens": 1.35, "min_conf": 72, "assets": "crypto",    "bias": 0.00},
+    # STORM differs from AIR by being far more sensitive (catches smaller breaks).
+    "STORM":     {"family": "donchian_fast","sens": 0.72, "min_conf": 66, "assets": "crypto",    "bias": 0.20},
+    # MUD differs from EARTH by deep-dip-only accumulation.
+    "MUD":       {"family": "deep_value",   "sens": 1.20, "min_conf": 62, "assets": "both",      "bias": 0.25},
+    # LIGHTNING differs from FIRE by chasing only violent impulses.
+    "LIGHTNING": {"family": "impulse",      "sens": 1.30, "min_conf": 74, "assets": "crypto",    "bias": 0.18},
+    # LAVA is the only pure capitulation-bounce agent.
+    "LAVA":      {"family": "capitulation", "sens": 1.00, "min_conf": 68, "assets": "both",      "bias": 0.30},
+    # SANDSTORM is the only false-breakout fade (contrarian SHORT bias).
+    "SANDSTORM": {"family": "fade_break",   "sens": 1.00, "min_conf": 70, "assets": "crypto",    "bias": -0.25},
+
+    # --- Trios: multi-condition, each weighted differently -------------------
+    "TEMPEST":   {"family": "triple_conf",  "sens": 1.00, "min_conf": 76, "assets": "both",      "bias": 0.08},
+    "GEOTHERMAL":{"family": "vol_expand",   "sens": 1.15, "min_conf": 72, "assets": "crypto",    "bias": 0.10},
+    "OCEANIC":   {"family": "channel_rev",  "sens": 1.00, "min_conf": 66, "assets": "majors",    "bias": -0.10},
+    "CYCLONE":   {"family": "asym_reversal","sens": 1.25, "min_conf": 75, "assets": "both",      "bias": -0.30},
+
+    # --- Master & Chaos: highest bars, broadest scope ------------------------
+    "AVATAR":    {"family": "quad_synth",   "sens": 1.00, "min_conf": 80, "assets": "both",      "bias": 0.00},
+    # CHAOS keeps the only genuinely "no directional preference" rule.
+    "CHAOS":     {"family": "adaptive",     "sens": 1.00, "min_conf": 72, "assets": "crypto",    "bias": 0.00},
+}
+
+# Instruments grouped, so an agent's `assets` preference actually narrows its hunt.
+ASSET_GROUPS = {
+    "crypto":    [s for s in TARGET_UNIVERSE if s != "XAUUSD"],
+    "commodity": ["XAUUSD"],
+    "majors":    ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XAUUSD"],
+    "both":      list(TARGET_UNIVERSE),
+}
+
+
+def resolve_agent_universe(agent_id: str) -> List[str]:
+    """Return the instrument list this specific agent is allowed to trade."""
+    dna = AGENT_DNA.get(agent_id)
+    if not dna:
+        return list(TARGET_UNIVERSE)
+    return ASSET_GROUPS.get(dna["assets"], list(TARGET_UNIVERSE))
+
+
 class ArenaRunner247:
     def __init__(self, state_file_path: Optional[str] = None):
         if state_file_path:
@@ -101,25 +173,51 @@ class ArenaRunner247:
 
     def fetch_live_prices(self) -> Dict[str, Dict[str, float]]:
         prices: Dict[str, Dict[str, float]] = {}
-        # 1. Fetch Binance 24hr tickers
-        try:
-            req = urllib.request.Request(
-                "https://api.binance.com/api/v3/ticker/24hr",
-                headers={"User-Agent": "MBG-Arena/1.0"}
+
+        # 1. Fetch Binance 24hr tickers.
+        #
+        # WHY MULTIPLE HOSTS: api.binance.com is unreachable from some networks
+        # (observed on 2026-10-05: TLS handshake refused, while the official
+        # public mirror worked). When that happened this method silently returned
+        # ONLY gold, so all 16 agents traded XAUUSD and looked like one bot
+        # duplicated 16 times. Falling through several hosts removes that
+        # silent single-asset failure mode.
+        BINANCE_HOSTS = [
+            "https://api.binance.com",
+            "https://data-api.binance.vision",  # official public market-data mirror
+            "https://api1.binance.com",
+            "https://api2.binance.com",
+        ]
+
+        for host in BINANCE_HOSTS:
+            if prices:
+                break
+            try:
+                req = urllib.request.Request(
+                    f"{host}/api/v3/ticker/24hr",
+                    headers={"User-Agent": "MBG-Arena/1.0"}
+                )
+                with urllib.request.urlopen(req, timeout=8) as response:
+                    if response.status == 200:
+                        raw = json.loads(response.read().decode("utf-8"))
+                        for item in raw:
+                            sym = item.get("symbol")
+                            p = float(item.get("lastPrice", 0))
+                            chg = float(item.get("priceChangePercent", 0))
+                            h = float(item.get("highPrice", p))
+                            l = float(item.get("lowPrice", p))
+                            if p > 0:
+                                prices[sym] = {"price": p, "changePct": chg, "high": h, "low": l}
+                        if prices:
+                            logger.info(f"Binance tickers loaded from {host}: {len(prices)} symbols")
+            except Exception as e:
+                logger.debug(f"Binance host {host} unavailable: {e}")
+
+        if not prices:
+            logger.error(
+                "ALL Binance hosts failed — crypto universe is empty. "
+                "Agents would only see gold, which is a silent single-asset failure."
             )
-            with urllib.request.urlopen(req, timeout=4) as response:
-                if response.status == 200:
-                    raw = json.loads(response.read().decode("utf-8"))
-                    for item in raw:
-                        sym = item.get("symbol")
-                        p = float(item.get("lastPrice", 0))
-                        chg = float(item.get("priceChangePercent", 0))
-                        h = float(item.get("highPrice", p))
-                        l = float(item.get("lowPrice", p))
-                        if p > 0:
-                            prices[sym] = {"price": p, "changePct": chg, "high": h, "low": l}
-        except Exception as e:
-            logger.debug(f"Binance fetch notice: {e}")
 
         # 2. Fetch Gold (XAUUSD) quote via Yahoo Finance
         try:
@@ -140,6 +238,12 @@ class ArenaRunner247:
         return prices
 
     def compute_agent_confluence(self, agent_id: str, sym: str, quote: dict) -> tuple:
+        """Score one instrument for one agent, using that agent's own DNA.
+
+        Each family has a distinct trigger, and the agent's `sens` / `bias` /
+        `min_conf` shape it further. Two agents in the same family therefore
+        still diverge, and no two agents share an identical rule set.
+        """
         price = quote.get("price", 0)
         chg = quote.get("changePct", 0)
         high = quote.get("high", price * 1.01)
@@ -147,41 +251,114 @@ class ArenaRunner247:
         rng = high - low if high > low else price * 0.02
         range_pos = (price - low) / rng if rng > 0 else 0.5
 
+        dna = AGENT_DNA.get(agent_id, {"family": "adaptive", "sens": 1.0, "min_conf": 68, "assets": "both", "bias": 0.0})
+        fam = dna["family"]
+        sens = dna["sens"]
+        bias = dna["bias"]
+
+        # `bias` shifts the effective range position: positive favours LONG entries.
+        adj_pos = range_pos - (bias * 0.15)
+        adj_pos = min(1.0, max(0.0, adj_pos))
+
         is_long = True
         confidence = 55
         rationale = ""
 
-        if agent_id in ["WATER", "STEAM"]:
-            is_long = range_pos < 0.40 or chg < -1.0
+        if fam == "smc":
+            # Buy the discount, sell the premium.
+            is_long = adj_pos < (0.40 * sens)
             confidence = 68 + int(abs(range_pos - 0.5) * 40)
             rationale = f"{agent_id} [SMC]: Liquidity sweep {'Discount' if is_long else 'Premium'} ({range_pos*100:.0f}%) pada {sym}."
-        elif agent_id in ["FIRE", "LIGHTNING"]:
-            is_long = chg > 1.2
+
+        elif fam == "smc_tight":
+            # Only takes the deepest discount / highest premium.
+            is_long = adj_pos < (0.25 * sens)
+            confidence = 72 + int(abs(range_pos - 0.5) * 30)
+            rationale = f"{agent_id} [SMC-Tight]: Deep {'discount' if is_long else 'premium'} zone ({range_pos*100:.0f}%) pada {sym}."
+
+        elif fam == "momentum":
+            is_long = chg > (1.2 * sens)
             confidence = 65 + min(28, int(abs(chg) * 6))
             rationale = f"{agent_id} [Momentum]: Volatility surge ({chg:+.2f}%) breakout pada {sym}."
-        elif agent_id in ["AIR", "STORM"]:
-            is_long = range_pos > 0.70 or chg > 1.5
+
+        elif fam == "impulse":
+            # Chases only violent moves; smaller surges do not qualify.
+            is_long = chg > (2.5 * sens)
+            confidence = 74 + min(18, int(abs(chg) * 4))
+            rationale = f"{agent_id} [Impulse]: Violent thrust ({chg:+.2f}%) pada {sym}."
+
+        elif fam == "donchian":
+            is_long = adj_pos > (0.70 / sens)
             confidence = 68 + int(abs(range_pos - 0.5) * 35)
             rationale = f"{agent_id} [Donchian]: Range breakout ({range_pos*100:.0f}%) ekspansi tren pada {sym}."
-        elif agent_id in ["EARTH", "MUD"]:
-            is_long = range_pos < 0.30 or chg < -2.5
+
+        elif fam == "donchian_fast":
+            # Catches earlier, shallower breakouts than Donchian.
+            is_long = adj_pos > (0.55 / sens)
+            confidence = 66 + int(abs(range_pos - 0.5) * 40)
+            rationale = f"{agent_id} [Donchian-Fast]: Early breakout ({range_pos*100:.0f}%) pada {sym}."
+
+        elif fam == "mean_revert":
+            is_long = adj_pos < (0.30 * sens)
             confidence = 66 + int(abs(chg) * 4)
             rationale = f"{agent_id} [Mean Reversion]: Statistical support bounce ({chg:+.2f}%) pada {sym}."
-        elif agent_id in ["LAVA", "GEOTHERMAL"]:
-            is_long = chg < -2.0
+
+        elif fam == "deep_value":
+            # Waits for a genuinely washed-out dip, not a mild pullback.
+            is_long = adj_pos < (0.18 * sens) or chg < -3.5
+            confidence = 62 + int(abs(chg) * 3)
+            rationale = f"{agent_id} [Deep Value]: Accumulation at washed-out lows ({chg:+.2f}%) pada {sym}."
+
+        elif fam == "capitulation":
+            is_long = chg < (-2.0 * sens)
             confidence = 67 + int(abs(chg) * 5)
             rationale = f"{agent_id} [Capitulation]: Panic sell absorption bounce pada {sym}."
-        elif agent_id in ["SANDSTORM", "CYCLONE"]:
-            is_long = range_pos < 0.35 if chg > 0 else range_pos > 0.65
-            confidence = 69 + int(abs(range_pos - 0.5) * 30)
-            rationale = f"{agent_id} [Regime Transition]: Asymmetric shift pada {sym}."
-        else:
-            # TEMPEST, OCEANIC, AVATAR, CHAOS
-            is_long = chg >= 0
-            confidence = 68 + int(abs(chg) * 5)
-            rationale = f"{agent_id} [Synthesis]: Multi-factor technical confluence ({chg:+.2f}%) pada {sym}."
 
-        return is_long, min(92, max(50, confidence)), rationale
+        elif fam == "fade_break":
+            # Contrarian: fades an over-extended breakout instead of joining it.
+            is_long = not (adj_pos > (0.80 / sens) or chg > 2.0)
+            confidence = 70 + int(abs(range_pos - 0.5) * 25)
+            rationale = f"{agent_id} [Fade Break]: False-breakout fade pada {sym}."
+
+        elif fam == "triple_conf":
+            # Requires alignment of range position AND direction of change.
+            aligned = (adj_pos > 0.60 and chg > 0.5) or (adj_pos < 0.40 and chg < -0.5)
+            is_long = aligned and chg >= 0
+            confidence = 76 + min(12, int(abs(chg) * 3)) if aligned else 60
+            rationale = f"{agent_id} [Triple Confluence]: {'Aligned' if aligned else 'Unconfirmed'} multi-factor pada {sym}."
+
+        elif fam == "vol_expand":
+            # Looks for expansion: wide range plus a directional push.
+            expanding = abs(chg) > (1.5 * sens)
+            is_long = expanding and chg > 0
+            confidence = 72 + min(15, int(abs(chg) * 4)) if expanding else 58
+            rationale = f"{agent_id} [Vol Expansion]: {'Burst' if expanding else 'No expansion'} ({chg:+.2f}%) pada {sym}."
+
+        elif fam == "channel_rev":
+            # Fades the extremes of the observed channel.
+            is_long = adj_pos < (0.20 * sens) or adj_pos > (0.80 / sens)
+            confidence = 66 + int(abs(range_pos - 0.5) * 30)
+            rationale = f"{agent_id} [Channel Rev]: Channel extreme ({range_pos*100:.0f}%) pada {sym}."
+
+        elif fam == "asym_reversal":
+            # Looks specifically for an asymmetric reversal setup (bearish bias).
+            is_long = adj_pos < (0.25 * sens) and chg > 0
+            confidence = 75 + int(abs(range_pos - 0.5) * 20)
+            rationale = f"{agent_id} [Asym Reversal]: Reversal eruption pada {sym}."
+
+        elif fam == "quad_synth":
+            # The most demanding rule: needs range position AND momentum agreement.
+            strong = (adj_pos > 0.65 and chg > 1.0) or (adj_pos < 0.35 and chg < -1.0)
+            is_long = strong and chg >= 0
+            confidence = 80 + min(10, int(abs(chg) * 2)) if strong else 55
+            rationale = f"{agent_id} [Quad Synthesis]: {'Sovereign confluence' if strong else 'Insufficient confluence'} pada {sym}."
+
+        else:  # "adaptive" (CHAOS) — the only agent with no directional preference
+            is_long = chg >= 0
+            confidence = 72 + int(abs(chg) * 5)
+            rationale = f"{agent_id} [Adaptive]: Dynamic sampling ({chg:+.2f}%) pada {sym}."
+
+        return is_long, min(95, max(40, confidence)), rationale
 
     def evaluate_cycle(self, live_prices: Dict[str, Any]):
         if not live_prices:
@@ -298,31 +475,58 @@ class ArenaRunner247:
                 journal = journal[-400:]
             self.state["journal"] = journal
 
-        # 2. CONCURRENT INDEPENDENT ORDER SPAWNER (100% Concurrent, Zero Round-Robin)
+        # 2. INDEPENDENT ORDER SPAWNER — each agent uses its OWN universe and bar
         max_pos_per_agent = 3
+
+        # Concentration cap: without it, one violent mover absorbs the whole
+        # arena. Observed on 2026-10-05 when FETUSDT ran +15.7% and 9 agents piled
+        # into the same symbol at the same price — the same "twin position"
+        # symptom this DNA rework exists to eliminate.
+        # ponytail: flat cap, no per-asset-class nuance. Tune if the arena grows.
+        MAX_AGENTS_PER_SYMBOL = 4
+
         for ag_id, ag in agents_dict.items():
             ag_open = [p for p in remaining if p.get("agentId") == ag_id]
             if len(ag_open) >= max_pos_per_agent:
                 continue
+
+            dna = AGENT_DNA.get(ag_id, {"min_conf": 68, "assets": "both"})
+            min_conf = dna["min_conf"]
+            agent_universe = resolve_agent_universe(ag_id)
 
             best_sig = None
             best_sym = None
             best_quote = None
             highest_conf = 0
 
-            for sym in TARGET_UNIVERSE:
-                if any(p.get("symbol") == sym and p.get("agentId") == ag_id for p in remaining):
-                    continue
-                q = live_prices.get(sym)
-                if not q or q.get("price", 0) <= 0:
-                    continue
+            # Search the agent's OWN universe first and accept the best signal
+            # found there. Only fall back to the full target list when the
+            # agent's universe produced NO qualifying candidate at all.
+            #
+            # The previous version merged both passes and picked the global
+            # maximum, which made XAUUSD (high volatility = high confidence) win
+            # for almost every agent regardless of its stated preference. An
+            # agent declaring "crypto only" must actually trade crypto.
+            for universe in (agent_universe, TARGET_UNIVERSE):
+                for sym in universe:
+                    if any(p.get("symbol") == sym and p.get("agentId") == ag_id for p in remaining):
+                        continue
+                    # Respect the concentration cap even inside the agent's own universe.
+                    if sum(1 for p in remaining if p.get("symbol") == sym) >= MAX_AGENTS_PER_SYMBOL:
+                        continue
+                    q = live_prices.get(sym)
+                    if not q or q.get("price", 0) <= 0:
+                        continue
 
-                is_l, conf, rat = self.compute_agent_confluence(ag_id, sym, q)
-                if conf >= 68 and conf > highest_conf:
-                    highest_conf = conf
-                    best_sig = (is_l, conf, rat)
-                    best_sym = sym
-                    best_quote = q
+                    is_l, conf, rat = self.compute_agent_confluence(ag_id, sym, q)
+                    if conf >= min_conf and conf > highest_conf:
+                        highest_conf = conf
+                        best_sig = (is_l, conf, rat)
+                        best_sym = sym
+                        best_quote = q
+                if best_sig:
+                    # Stop here: a signal inside the agent's own universe wins.
+                    break
 
             if best_sig and best_sym and best_quote:
                 is_l, conf, rat = best_sig
