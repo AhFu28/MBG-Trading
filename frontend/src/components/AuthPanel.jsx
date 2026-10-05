@@ -5,23 +5,55 @@ import { signUp, logIn, ownerLogin } from '../services/accountClient.js';
 /**
  * AuthPanel — sign in / sign up.
  *
- * Replaces the old single shared password screen. The owner password is still
- * here, but tucked behind a link so it does not confuse customers.
+ * Replaces the old single shared password screen.
+ *
+ * IMPORTANT: when the account database is not configured yet, the email/password
+ * forms CANNOT work — there is nowhere to store an account. Showing them anyway
+ * is how the owner ended up locked out of his own product, unable to guess what
+ * credentials to type. So when `accountsReady` is false we:
+ *   • say plainly that accounts are not switched on yet,
+ *   • make the owner password path the PRIMARY action rather than a hidden link,
+ *   • and do not pretend sign-up will work.
  */
-export default function AuthPanel({ initialMode = 'login', headline, onAuthenticated }) {
-  const [mode, setMode] = useState(initialMode); // login | signup | owner
+export default function AuthPanel({
+  initialMode = 'login',
+  headline,
+  onAuthenticated,
+  accountsReady = true,
+}) {
+  // A missing account database forces owner mode: it is the only path that works.
+  const [mode, setMode] = useState(accountsReady ? initialMode : 'owner'); // login | signup | owner
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [emptyFieldError, setEmptyFieldError] = useState('');
+
+  // If readiness changes after mount (the setup check finishes late), follow it.
+  React.useEffect(() => {
+    if (!accountsReady) setMode('owner');
+  }, [accountsReady]);
 
   const submit = async (e) => {
     e.preventDefault();
     if (busy) return;
     setError('');
     setNotice('');
+    setEmptyFieldError('');
+
+    // Validate in the panel first so the user always gets a visible reason
+    // instead of a native browser tooltip that disappears.
+    if (mode !== 'owner' && !email.trim()) {
+      setEmptyFieldError('Email wajib diisi.');
+      return;
+    }
+    if (!password.trim()) {
+      setEmptyFieldError('Kata sandi wajib diisi.');
+      return;
+    }
+
     setBusy(true);
 
     try {
@@ -88,6 +120,21 @@ export default function AuthPanel({ initialMode = 'login', headline, onAuthentic
         )}
       </div>
 
+      {/* Accounts not switched on yet — say so instead of showing a form that
+          cannot possibly succeed. This is the fix for the owner being unable to
+          guess what to type: now the panel tells him exactly what to use. */}
+      {!accountsReady && (
+        <div style={{
+          background: 'rgba(245,158,11,0.10)', border: '1px solid rgba(245,158,11,0.38)',
+          borderRadius: '10px', padding: '13px 15px', marginBottom: '18px',
+          fontSize: '11.5px', color: '#fbbf24', lineHeight: 1.7,
+        }}>
+          <strong>🔧 Pendaftaran akun belum diaktifkan</strong><br />
+          Database akun belum disiapkan, jadi pendaftaran email belum bisa dipakai.
+          Untuk masuk sekarang, gunakan <strong>kata sandi sistem</strong> di bawah.
+        </div>
+      )}
+
       {/* Mode tabs — hidden in owner mode to keep it unobtrusive */}
       {mode !== 'owner' && (
         <div style={{
@@ -127,7 +174,7 @@ export default function AuthPanel({ initialMode = 'login', headline, onAuthentic
           <div>
             <label style={label} htmlFor="mbg-email">Email</label>
             <input
-              id="mbg-email" style={field} value={email} type="email" required
+              id="mbg-email" style={field} value={email} type="email"
               autoComplete="email" inputMode="email"
               onChange={e => setEmail(e.target.value)} placeholder="nama@email.com"
             />
@@ -137,7 +184,7 @@ export default function AuthPanel({ initialMode = 'login', headline, onAuthentic
         <div>
           <label style={label} htmlFor="mbg-pass">Kata Sandi</label>
           <input
-            id="mbg-pass" style={field} value={password} type="password" required
+            id="mbg-pass" style={field} value={password} type="password"
             autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
             onChange={e => setPassword(e.target.value)}
             placeholder={mode === 'signup' ? 'Minimal 8 karakter' : '••••••••'}
@@ -148,6 +195,17 @@ export default function AuthPanel({ initialMode = 'login', headline, onAuthentic
             </div>
           )}
         </div>
+
+        {/* An empty submit is reported in the panel rather than by the browser's
+            native tooltip, so the reason is always visible and testable. */}
+        {emptyFieldError && (
+          <div role="alert" style={{
+            fontSize: '11.5px', color: '#fb7185', background: 'rgba(244,63,94,0.10)',
+            border: '1px solid rgba(244,63,94,0.32)', borderRadius: '8px', padding: '9px 11px', lineHeight: 1.5,
+          }}>
+            {emptyFieldError}
+          </div>
+        )}
 
         {error && (
           <div role="alert" style={{
@@ -184,6 +242,17 @@ export default function AuthPanel({ initialMode = 'login', headline, onAuthentic
         <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '14px', lineHeight: 1.65, textAlign: 'center' }}>
           Akun gratis memberi Anda sinyal tertunda 24 jam.<br />
           Untuk sinyal real-time, lihat paket di bawah.
+        </div>
+      )}
+
+      {mode === 'owner' && (
+        <div style={{
+          marginTop: '14px', fontSize: '11px', color: 'var(--text-secondary)',
+          background: 'rgba(0,0,0,0.26)', borderRadius: '9px', padding: '12px 14px', lineHeight: 1.7,
+        }}>
+          <strong style={{ color: 'var(--text-primary)' }}>Halaman ini untuk pemilik sistem.</strong><br />
+          Masukkan <strong>kata sandi sistem</strong> yang Anda pakai sebelumnya untuk masuk sebagai Pro.
+          Ini bukan email pelanggan.
         </div>
       )}
 

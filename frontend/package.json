@@ -14,10 +14,12 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
     "@vitejs/plugin-react": "^4.3.1",
+    "jsdom": "^25.0.1",
     "vite": "^5.4.2",
-    "vitest": "^2.1.8",
-    "jsdom": "^25.0.1"
+    "vitest": "^2.1.8"
   },
   "allowScripts": {
     "esbuild": true

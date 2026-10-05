@@ -31,8 +31,7 @@ const MODULE_LABEL = {
   FLOW_PROCESS: 'Flow Process',
 };
 
-export default function LandingPage({ onAuthenticated, configured = true }) {
-  const [showAuth, setShowAuth] = useState(false);
+export default function LandingPage({ onAuthenticated, configured = true }) {  const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('signup');
 
   const open = (mode) => { setAuthMode(mode); setShowAuth(true); };
@@ -86,6 +85,21 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
 
       {/* ===== HERO ===== */}
       <section style={{ ...section, paddingTop: '64px', paddingBottom: '56px' }}>
+
+        {/* Accounts not set up yet. Stated up front so nobody clicks "Daftar" and
+            hits a dead end wondering whether the site is broken. */}
+        {!configured && (
+          <div style={{
+            background: 'rgba(245,158,11,0.09)', border: '1px solid rgba(245,158,11,0.36)',
+            borderRadius: '12px', padding: '14px 18px', marginBottom: '34px',
+            fontSize: '12px', color: '#fbbf24', lineHeight: 1.7,
+          }}>
+            <strong>🔧 Pendaftaran akun belum diaktifkan.</strong> Database akun belum disiapkan,
+            jadi tombol Daftar belum bisa dipakai. Untuk masuk sekarang, gunakan{' '}
+            <strong>kata sandi sistem</strong> pada tautan di bawah form.
+          </div>
+        )}
+
         <div style={{
           display: 'grid', gridTemplateColumns: showAuth ? '1fr 400px' : '1fr',
           gap: '52px', alignItems: 'center',
@@ -176,6 +190,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                 initialMode={authMode}
                 headline="Gratis untuk mulai. Upgrade kapan saja."
                 onAuthenticated={onAuthenticated}
+                accountsReady={configured}
               />
             </div>
           )}
