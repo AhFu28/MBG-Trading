@@ -39,19 +39,62 @@ jobs:
         run: |
           python engine/run_pipeline.py --mode hourly_crypto_macro
 
-      - name: Commit & Push Updated Cockpit Data Bundle & Arena State
+      - name: Report what the pipeline produced
+        run: |
+          echo "=== Bundle state after pipeline ==="
+          python - <<'PY'
+          import json, os, datetime
+          p = "engine/cache/latest_cockpit_bundle.json"
+          if not os.path.exists(p):
+              print("!! bundle does not exist")
+              raise SystemExit(0)
+          m = datetime.datetime.fromtimestamp(os.path.getmtime(p))
+          with open(p, encoding="utf-8") as f:
+              j = json.load(f)
+          print(f"  file mtime      : {m}")
+          print(f"  last_updated    : {j.get('last_updated')}")
+          print(f"  mode            : {j.get('mode')}")
+          cf = j.get("crypto_futures") or {}
+          print(f"  crypto_futures  : {cf.get('updated_at')}  ({len(cf.get('funding_rates') or [])} pairs, source={cf.get('source')})")
+          w = j.get("whale_intelligence") or {}
+          print(f"  whale           : {w.get('updated_at')}  ({len(w.get('crypto_whales') or [])} whales)")
+          fx = j.get("forex_intelligence") or {}
+          print(f"  forex           : {fx.get('updated_at')}  ({len(fx.get('pairs') or [])} pairs)")
+          PY
+          echo "=== git status ==="
+          git status --short
+
+      - name: Commit & Push Updated Cockpit Data Bundle
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
           # SECURITY: written to engine/cache, never frontend/public — a public
           # static bundle would leak VIP trade plans to unauthenticated visitors.
-          git add engine/cache/latest_cockpit_bundle.json engine/cache/latest_arena_state.json || true
-          if ! git diff --staged --quiet; then
-            git commit -m "chore(data): automated 24/7 arena & market bundle refresh [skip ci]"
-            for i in 1 2 3; do
-              git pull --rebase -X theirs origin main && git push && break || sleep 2
-            done
+          #
+          # ONLY the bundle is staged here. This step used to also stage
+          # latest_arena_state.json, which the arena workflow owns — two writers
+          # on one file is how a rebase conflict quietly discards work.
+          git add engine/cache/latest_cockpit_bundle.json
+
+          # FAIL LOUDLY WHEN NOTHING CHANGED.
+          #
+          # This workflow reported success 107 times while committing nothing
+          # between 2026-09-26 and 2026-10-06. The bundle carries a fresh
+          # `last_updated` timestamp on every run, so an unchanged bundle means
+          # the pipeline did NOT write a file — a real fault. The old code
+          # silently skipped the commit and returned green, so the failure was
+          # invisible for ten days.
+          if git diff --staged --quiet; then
+            echo "::error::Bundle unchanged after the pipeline ran. The pipeline wrote nothing."
+            echo "Expected: a new last_updated timestamp on every run."
+            exit 1
           fi
+
+          git commit -m "chore(data): automated hourly crypto, whale & macro refresh [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push && break || sleep 2
+          done
       - name: Send Telegram Failure Alert
         if: failure()
         run: |
