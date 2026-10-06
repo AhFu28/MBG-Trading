@@ -936,7 +936,7 @@ export default function App() {
                 <WhaleIntelligenceTab data={data} onOpenChart={handleOpenSecurityHub} livePrices={livePrices} />
               </main>
             ) : activeTab === 'FUTURES' ? (
-              /* v3.0 CRYPTO FUTURES INTELLIGENCE + DEXSCREENER */
+              /* v3.0 CRYPTO FUTURES INTELLIGENCE (perpetuals only — DEX radar lives in Memecoin Radar) */
               <main>
                 <CryptoFuturesTab 
                   data={data} 

@@ -14,6 +14,39 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+## [2026-10-06] — Crypto Futures: Data Basi 10 Hari Dipulihkan + Fokus Futures Murni
+
+### Sprint 28 — Membongkar Kenapa Tab Futures Tidak Pernah Update
+- **[MASALAH YANG DILAPORKAN PEMILIK] "KENAPA ITU GA UPDATE"**:
+  - Ditemukan data `crypto_futures` **terakhir diperbarui 26 September 2026** — beku **10 hari** tanpa peringatan apa pun.
+  - Penyebabnya bukan crash. Sistem tidak error, hanya diam-diam menyajikan angka nol.
+- **[AKAR MASALAH 1] Hanya Binance, dan Binance Diblokir di Indonesia**:
+  - `fapi.binance.com` → **SSLError**. Begitu juga `fapi1/2/3.binance.com`, `www.okx.com`, dan `api.bybit.com`.
+  - Setiap permintaan gagal → setiap metode jatuh ke cabang `offline_fallback` → Funding, Open Interest, dan Long/Short semuanya **nol sejak 26 September**.
+  - **Yang masih bisa diakses dari Indonesia: `api.gateio.ws`** (HTTP 200).
+  - Solusi: rantai fallback Binance → Gate.io. Binance tetap **dicoba lebih dulu** karena API-nya lebih kaya dan berfungsi normal dari jaringan luar Indonesia; fetcher menyelidiki **sekali** lalu memakai bursa mana pun yang benar-benar menjawab. Kode yang sama jadi benar di laptop Kediri maupun di VPS Singapura.
+- **[AKAR MASALAH 2] Likuidasi Selalu $0**:
+  - `_fetch_liquidations` mengembalikan **array kosong** dengan komentar *"sampai WebSocket likuidasi dipasang"* — WebSocket-nya ternyata **tidak pernah dipasang**.
+  - UI membaca `liquidations_24h.largest_single`, sedangkan array tidak punya key itu → tab Likuidasi **mustahil menampilkan apa pun selain $0**.
+  - Solusi: bentuk data diperbaiki jadi **object** dengan `largest_single`, `total_usd`, `long_usd`, `short_usd`, dan rincian per pair. Gate.io menyediakan datanya.
+- **[AKAR MASALAH 3] Tidak Ada Jadwal Otomatis**:
+  - `Get-ScheduledTask` untuk MBG: **kosong**. Telemetri kripto hanya menyegar kalau seseorang menjalankannya manual — dan tidak ada yang menjalankan.
+  - Solusi: `scripts/refresh_crypto_futures.py` + jadwal Windows **setiap 30 menit**, sudah diuji berjalan (`LastTaskResult: 0`).
+  - Script ini **hanya menyentuh satu key** (`crypto_futures`). Sudah diverifikasi: **23 bagian bundle lain tidak tersentuh sama sekali**.
+  - Jika semua bursa mati, bundle **tidak ditimpa** — data lama dibiarkan utuh daripada diganti nol.
+- **[FOKUS FUTURES MURNI] DexScreener Dikeluarkan dari Desker Ini**:
+  - Tab bernama "CRYPTO FUTURES & DEXSCREENER RADAR" mencampur **perpetual futures** (instrumen CEX) dengan **trending pair DEX/memecoin** (instrumen on-chain). Dua pasar berbeda, dua keputusan berbeda.
+  - Trader yang membaca funding rate tidak perlu melihat peluncuran pump.fun di layar yang sama.
+  - **232 baris kode DexScreener dihapus** dari `CryptoFuturesTab.jsx`. Chunk turun **39 KB → 27 KB**.
+  - Cakupan on-chain tetap ada di **Memecoin Radar** dan **Degen Desk** — tidak ada kemampuan yang hilang, hanya dipindah ke tempat yang benar.
+- **[KEJUJURAN LABEL]** Klaim **"REALTIME GACOR"** dan **"STREAM FORCED LIQUIDATIONS (REAL-TIME)"** dihapus. Data likuidasi diambil saat pipeline berjalan, **bukan streaming per detik**. Label sekarang menyebut jendela waktu yang sebenarnya.
+- **[VERIFIKASI]**:
+  - **28 tes baru** `test_crypto_futures.py`: pemilihan sumber, kebijakan zero-simulation, **bentuk data likuidasi** (regresi yang membuat tab selalu $0), dan pemetaan field Gate.io. Semua berjalan offline.
+  - **206 tes frontend** + 34 tes VIP router tetap lulus. Build bersih 1,52s.
+  - Data live terverifikasi: BTC funding `+0.0026%` @ `$85,550`, OI `$4.37B`, L/S `51.4%/48.6%`, likuidasi 24 jam `$7.15M`.
+
+---
+
 ## [2026-10-06] — Automated WhatsApp Bot Daemon (Baileys + Outbox Queue)
 
 ### Sprint 27 — Zero-Click Automatic Dispatch to Mas Fuad (+62 812-2417-0187)

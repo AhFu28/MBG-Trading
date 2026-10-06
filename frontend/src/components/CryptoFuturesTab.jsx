@@ -18,9 +18,8 @@ const DEFAULT_FUTURES_PAIRS = [
 ];
 
 export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, flashMap = {}, allCryptoSpot = [] }) {
-  const [activeTab, setActiveTab] = useState('funding'); // 'funding' | 'dexscreener' | 'oi' | 'ls' | 'liquidations'
+  const [activeTab, setActiveTab] = useState('funding'); // 'funding' | 'oi' | 'ls' | 'liquidations'
   const [liveFundingRates, setLiveFundingRates] = useState([]);
-  const [liveLiquidations, setLiveLiquidations] = useState([]);
   const [wsStatus, setWsStatus] = useState('CONNECTING'); // CONNECTING | LIVE | RECONNECTING
   const [countdown, setCountdown] = useState('');
   const [flashingPairs, setFlashingPairs] = useState({});
@@ -31,13 +30,6 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
   const [futuresSortField, setFuturesSortField] = useState('volume_24h_usd'); // 'volume_24h_usd' | 'change_24h_pct' | 'mark_price' | 'funding_rate_pct' | 'symbol'
   const [futuresSortDir, setFuturesSortDir] = useState('desc'); // 'desc' | 'asc'
   const [futuresFilter, setFuturesFilter] = useState('ALL'); // 'ALL' | 'VOLUME' | 'GAINERS' | 'LOSERS' | 'HIGH_FUNDING' | 'SQUEEZE'
-
-  // DexScreener state
-  const [dexPairs, setDexPairs] = useState([]);
-  const [dexLoading, setDexLoading] = useState(false);
-  const [dexSearch, setDexSearch] = useState('');
-  const [dexChainFilter, setDexChainFilter] = useState('ALL'); // 'ALL' | 'solana' | 'base' | 'ethereum' | 'bsc' | 'sui' | 'arbitrum'
-  const [dexLastUpdated, setDexLastUpdated] = useState(null);
 
   const initialRates = data?.crypto_futures?.funding_rates || [];
   const initialLiq = data?.crypto_futures?.liquidations_24h || {};
@@ -326,81 +318,14 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
     };
   }, [initialRates]);
 
-  // 3. DexScreener Live API Fetcher (Trending & High-Volume DEX Pairs Multi-Chain)
-  const fetchDexScreener = useCallback(async (customQuery = null) => {
-    setDexLoading(true);
-    try {
-      const defaultQueries = ['solana', 'base', 'ethereum', 'bsc', 'arbitrum', 'sui', 'pepe', 'pump'];
-      const queries = customQuery ? [customQuery, ...defaultQueries.slice(0, 3)] : defaultQueries;
-
-      const promises = [
-        ...queries.map(q =>
-          fetch(`https://api.dexscreener.com/latest/dex/search?q=${encodeURIComponent(q)}`)
-            .then(r => r.ok ? r.json() : null)
-            .catch(() => null)
-        ),
-        fetch('https://api.dexscreener.com/token-boosts/top/v1')
-          .then(r => r.ok ? r.json() : null)
-          .catch(() => null)
-      ];
-
-      const results = await Promise.all(promises);
-      const pairMap = new Map();
-
-      results.forEach(res => {
-        if (res?.pairs && Array.isArray(res.pairs)) {
-          res.pairs.forEach(p => {
-            if (p.pairAddress && !pairMap.has(p.pairAddress)) {
-              pairMap.set(p.pairAddress, {
-                pairAddress: p.pairAddress,
-                baseToken: p.baseToken?.symbol || 'UNKNOWN',
-                baseName: p.baseToken?.name || '',
-                quoteToken: p.quoteToken?.symbol || 'USDC',
-                chainId: p.chainId || 'solana',
-                dexId: p.dexId || 'uniswap',
-                priceUsd: parseFloat(p.priceUsd || 0),
-                change5m: parseFloat(p.priceChange?.m5 || 0),
-                change1h: parseFloat(p.priceChange?.h1 || 0),
-                change24h: parseFloat(p.priceChange?.h24 || 0),
-                volume24h: parseFloat(p.volume?.h24 || 0),
-                liquidityUsd: parseFloat(p.liquidity?.usd || 0),
-                fdv: parseFloat(p.fdv || 0),
-                url: p.url,
-                txns24h: (p.txns?.h24?.buys || 0) + (p.txns?.h24?.sells || 0)
-              });
-            }
-          });
-        }
-      });
-
-      // Sort by 24h volume descending
-      const sorted = Array.from(pairMap.values()).sort((a, b) => b.volume24h - a.volume24h);
-      if (sorted.length > 0) {
-        setDexPairs(sorted);
-      }
-      setDexLastUpdated(new Date());
-    } catch (err) {
-      console.warn('DexScreener fetch error:', err);
-    } finally {
-      setDexLoading(false);
-    }
-  }, []);
-
-  const handleDexSearchSubmit = (e) => {
-    e?.preventDefault?.();
-    if (dexSearch.trim()) {
-      fetchDexScreener(dexSearch.trim());
-    }
-  };
-
-  // Fetch DexScreener on initial tab select or mount
-  useEffect(() => {
-    if (dexPairs.length === 0) {
-      fetchDexScreener();
-    }
-    const interval = setInterval(fetchDexScreener, 20000); // refresh every 20s
-    return () => clearInterval(interval);
-  }, [fetchDexScreener, dexPairs.length]);
+  // DexScreener was removed from this desk on 2026-10-06.
+  //
+  // It was pulling trending DEX/memecoin pairs into a perpetual-futures desk,
+  // which is a different instrument, a different market and a different decision.
+  // A trader reading funding rates does not want pump.fun launches in the same
+  // view. On-chain coverage still exists in Memecoin Radar and Degen Desk.
+  //
+  // This desk is now Binance/Gate perpetuals only.
 
   const rates = liveFundingRates.length > 0 ? liveFundingRates : initialRates;
   const totalOI = initialOI.reduce((acc, curr) => acc + (curr.open_interest_usd || 0), 0);
@@ -477,20 +402,6 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
       return (a.symbol || '').localeCompare(b.symbol || '');
     });
 
-  // DexScreener Filtered list
-  const filteredDexPairs = dexPairs.filter(p => {
-    const matchSearch = dexSearch === '' ||
-      p.baseToken.toLowerCase().includes(dexSearch.toLowerCase()) ||
-      p.baseName.toLowerCase().includes(dexSearch.toLowerCase()) ||
-      p.pairAddress.toLowerCase().includes(dexSearch.toLowerCase());
-
-    const matchChain = dexChainFilter === 'ALL' || p.chainId.toLowerCase() === dexChainFilter.toLowerCase();
-    return matchSearch && matchChain;
-  });
-
-  const topDexVolume = dexPairs[0];
-  const topDexGainer = [...dexPairs].sort((a, b) => b.change24h - a.change24h)[0];
-
   const getFundingBg = (val) => {
     if (val > 0.05) return 'rgba(184, 50, 50, 0.2)';
     if (val < -0.01) return 'rgba(27, 138, 75, 0.2)';
@@ -517,20 +428,20 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', boxSizing: 'border-box' }}>
 
-      {/* 1. Header with Live Status, Countdown & DexScreener Pill */}
+      {/* 1. Header with Live Status & Countdown */}
       <div className="quant-card" style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ fontSize: '22px' }}>⚡</span>
             <h2 style={{ fontSize: '18px', margin: 0, fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
-              CRYPTO FUTURES & DEXSCREENER RADAR
+              CRYPTO FUTURES INTELLIGENCE
             </h2>
             <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(234, 179, 8, 0.15)', color: '#fbbf24', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
-              REALTIME GACOR
+              PERPETUAL SWAPS
             </span>
           </div>
           <p style={{ margin: '4px 0 0 0', color: 'var(--text-secondary)', fontSize: '12px', letterSpacing: '0.01em' }}>
-            Binance Live WebSocket 1s &middot; DexScreener On-Chain Engine &middot; Funding Rate Heatmap &middot; Radar Likuidasi
+            Funding Rate Heatmap &middot; Open Interest &middot; Rasio Long/Short &middot; Likuidasi 24 Jam
           </p>
         </div>
 
@@ -568,78 +479,12 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: wsStatus === 'LIVE' ? 'var(--accent-green)' : 'var(--accent-gold)', boxShadow: wsStatus === 'LIVE' ? '0 0 5px var(--accent-green)' : 'none' }} />
             <span>{wsStatus === 'LIVE' ? 'BINANCE 1s' : 'CONNECTING...'}</span>
           </div>
-
-          {/* DexScreener Status */}
-          <div style={{
-            fontSize: '11px',
-            padding: '5px 10px',
-            borderRadius: '6px',
-            background: 'rgba(168, 85, 247, 0.12)',
-            color: '#c084fc',
-            fontFamily: 'var(--font-mono)',
-            fontWeight: '700',
-            border: '1px solid rgba(168, 85, 247, 0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px'
-          }}>
-            <span>🚀</span>
-            <span>DEXSCREENER LIVE</span>
-          </div>
         </div>
       </div>
 
-      {/* 2. Top Summary Bento Grid (Context Aware: Futures vs DexScreener) */}
+      {/* 2. Top Summary Bento Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
-        {activeTab === 'dexscreener' ? (
-          <>
-            <div className="quant-card" style={{ padding: '14px 16px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
-                Dex Pools Terpantau
-              </div>
-              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: 'var(--text-primary)' }}>
-                {dexPairs.length} Pools
-              </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Multi-Chain Liquidity Radar</div>
-            </div>
-
-            <div className="quant-card" style={{ padding: '14px 16px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
-                Avg Funding Rate (CEX Ref)
-              </div>
-              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: avgFunding < -0.01 ? 'var(--accent-green)' : avgFunding > 0.05 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
-                {avgFunding.toFixed(4)}%
-              </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
-                {avgFunding > 0.03 ? '⚠️ Long Padat' : avgFunding < -0.01 ? '🚀 Peluang Squeeze' : 'Kondisi Seimbang'}
-              </div>
-            </div>
-
-            <div className="quant-card" style={{ padding: '14px 16px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
-                Top Dex 24h Volume (DexScreener)
-              </div>
-              <div style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: '#c084fc', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {topDexVolume ? `${topDexVolume.baseToken} ($${(topDexVolume.volume24h / 1e6).toFixed(1)}M)` : 'Loading DEX...'}
-              </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
-                {topDexVolume ? `${topDexVolume.chainId.toUpperCase()} · ${topDexVolume.dexId}` : 'On-Chain Radar'}
-              </div>
-            </div>
-
-            <div className="quant-card" style={{ padding: '14px 16px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
-                Top DEX Gainer 24h
-              </div>
-              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: 'var(--accent-green)' }}>
-                {topDexGainer ? `+${topDexGainer.change24h.toFixed(1)}%` : '+0.0%'}
-              </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
-                {topDexGainer ? `${topDexGainer.baseToken} (${topDexGainer.chainId.toUpperCase()})` : 'Scanning...'}
-              </div>
-            </div>
-          </>
-        ) : (
+        <>
           <>
             <div className="quant-card" style={{ padding: '14px 16px' }}>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
@@ -685,7 +530,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
               </div>
             </div>
           </>
-        )}
+        </>
       </div>
 
       {/* 3. Segmented Pill Navigation */}
@@ -694,10 +539,6 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
           <button onClick={() => setActiveTab('funding')} className={`quant-pill-btn ${activeTab === 'funding' ? 'active' : ''}`}>
             <span>💰</span>
             <span>KONTRAK PERPETUAL ({filteredRates.length})</span>
-          </button>
-          <button onClick={() => setActiveTab('dexscreener')} className={`quant-pill-btn ${activeTab === 'dexscreener' ? 'active' : ''}`} style={{ borderColor: activeTab === 'dexscreener' ? '#c084fc' : undefined }}>
-            <span>🚀</span>
-            <span style={{ color: activeTab === 'dexscreener' ? '#c084fc' : undefined, fontWeight: '800' }}>DEXSCREENER RADAR (GACOR)</span>
           </button>
           <button onClick={() => setActiveTab('oi')} className={`quant-pill-btn ${activeTab === 'oi' ? 'active' : ''}`}>
             <span>📊</span>
@@ -709,32 +550,9 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
           </button>
           <button onClick={() => setActiveTab('liquidations')} className={`quant-pill-btn ${activeTab === 'liquidations' ? 'active' : ''}`}>
             <span>💀</span>
-            <span>RADAR LIKUIDASI ({liveLiquidations.length})</span>
+            <span>LIKUIDASI 24 JAM</span>
           </button>
         </div>
-
-        {activeTab === 'dexscreener' && (
-          <button
-            onClick={fetchDexScreener}
-            disabled={dexLoading}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              border: '1px solid rgba(168, 85, 247, 0.4)',
-              background: 'rgba(168, 85, 247, 0.1)',
-              color: '#c084fc',
-              fontSize: '11px',
-              fontWeight: '700',
-              cursor: dexLoading ? 'wait' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <span>{dexLoading ? '⏳' : '🔄'}</span>
-            <span>{dexLoading ? 'SYNCING DEX...' : 'REFRESH DEXSCREENER'}</span>
-          </button>
-        )}
       </div>
 
       {/* 4. Tab Contents */}
@@ -1036,239 +854,6 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
           </div>
         )}
 
-        {/* TAB 2: DEXSCREENER RADAR (GACOR MULTI-CHAIN) */}
-        {activeTab === 'dexscreener' && (
-          <div style={{ padding: '14px' }}>
-            {/* Filter bar */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', marginRight: '4px' }}>CHAIN:</span>
-                {['ALL', 'SOLANA', 'BASE', 'ETHEREUM', 'BSC', 'SUI', 'ARBITRUM'].map(c => (
-                  <button
-                    key={c}
-                    onClick={() => setDexChainFilter(c)}
-                    style={{
-                      padding: '4px 10px',
-                      borderRadius: '4px',
-                      fontSize: '10px',
-                      fontWeight: '800',
-                      cursor: 'pointer',
-                      border: dexChainFilter === c ? '1px solid #c084fc' : 'var(--border-hairline)',
-                      background: dexChainFilter === c ? 'rgba(168, 85, 247, 0.2)' : 'var(--bg-panel-subtle)',
-                      color: dexChainFilter === c ? '#c084fc' : 'var(--text-secondary)'
-                    }}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-
-              <form onSubmit={handleDexSearchSubmit} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <input
-                  type="text"
-                  placeholder="Cari token, simbol, atau contract address (e.g. PEPE, SOL, 0x...)..."
-                  value={dexSearch}
-                  onChange={(e) => setDexSearch(e.target.value)}
-                  style={{
-                    padding: '5px 10px',
-                    borderRadius: '4px',
-                    border: 'var(--border-hairline)',
-                    background: 'var(--bg-panel-subtle)',
-                    color: 'var(--text-primary)',
-                    fontSize: '11px',
-                    width: '260px'
-                  }}
-                />
-                <button
-                  type="submit"
-                  className="telemetry-btn"
-                  style={{
-                    padding: '5px 10px',
-                    fontSize: '10px',
-                    background: 'rgba(168, 85, 247, 0.2)',
-                    borderColor: '#c084fc',
-                    color: '#c084fc',
-                    fontWeight: '700'
-                  }}
-                >
-                  {dexLoading ? '⏳' : '🔍 CARI'}
-                </button>
-              </form>
-            </div>
-
-            {/* DexScreener Table */}
-            {dexLoading && dexPairs.length === 0 ? (
-              <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                <div style={{ fontSize: '20px', marginBottom: '8px' }}>⏳ Mengambil live feed DexScreener...</div>
-                <div style={{ fontSize: '11px' }}>Menghubungkan ke liquidity pool Solana, Base, Ethereum, BSC</div>
-              </div>
-            ) : filteredDexPairs.length === 0 ? (
-              <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                Tidak ada pair yang sesuai filter.
-              </div>
-            ) : (
-              <div style={{ overflowX: 'auto' }}>
-                <table className="quant-table" style={{ width: '100%' }}>
-                  <thead>
-                    <tr style={{ borderBottom: 'var(--border-muted)', background: 'var(--bg-panel-subtle)', textAlign: 'left' }}>
-                      <th style={{ padding: '8px 10px' }}>Token / Pair</th>
-                      <th style={{ padding: '8px 10px', textAlign: 'center' }}>Chain & DEX</th>
-                      <th style={{ padding: '8px 10px', textAlign: 'right' }}>Harga USD</th>
-                      <th style={{ padding: '8px 10px', textAlign: 'right' }}>5m %</th>
-                      <th style={{ padding: '8px 10px', textAlign: 'right' }}>1h %</th>
-                      <th style={{ padding: '8px 10px', textAlign: 'right' }}>24h %</th>
-                      <th style={{ padding: '8px 10px', textAlign: 'right' }}>24h Volume</th>
-                      <th style={{ padding: '8px 10px', textAlign: 'right' }}>Liquidity</th>
-                      <th style={{ padding: '8px 10px', textAlign: 'center' }}>Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredDexPairs.slice(0, 40).map((p, idx) => {
-                      const chainColor = getChainBadgeColor(p.chainId);
-                      const isUp24 = p.change24h >= 0;
-                      return (
-                        <tr key={p.pairAddress || idx} style={{ borderBottom: 'var(--border-hairline)' }}>
-                          <td style={{ padding: '8px 10px' }}>
-                            <div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <strong style={{ fontSize: '12px', color: 'var(--text-primary)' }}>{p.baseToken}</strong>
-                                <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>/{p.quoteToken}</span>
-                              </div>
-                              <div style={{ fontSize: '9px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '140px' }}>
-                                {p.baseName}
-                              </div>
-                            </div>
-                          </td>
-
-                          <td style={{ padding: '8px 10px', textAlign: 'center' }}>
-                            <div style={{ display: 'inline-flex', flexDirection: 'column', gap: '2px', alignItems: 'center' }}>
-                              <span style={{
-                                fontSize: '8px',
-                                padding: '1px 5px',
-                                borderRadius: '3px',
-                                background: chainColor.bg,
-                                color: chainColor.text,
-                                border: `1px solid ${chainColor.border}`,
-                                fontFamily: 'var(--font-mono)',
-                                fontWeight: '800'
-                              }}>
-                                {p.chainId.toUpperCase()}
-                              </span>
-                              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
-                                {p.dexId}
-                              </span>
-                            </div>
-                          </td>
-
-                          <td style={{ padding: '8px 10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '800' }}>
-                            {formatUsdSmart(p.priceUsd)}
-                          </td>
-
-                          <td style={{ padding: '8px 10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: p.change5m >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                            {p.change5m >= 0 ? '+' : ''}{p.change5m.toFixed(1)}%
-                          </td>
-
-                          <td style={{ padding: '8px 10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: p.change1h >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                            {p.change1h >= 0 ? '+' : ''}{p.change1h.toFixed(1)}%
-                          </td>
-
-                          <td style={{ padding: '8px 10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '800', color: isUp24 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                            {isUp24 ? '+' : ''}{p.change24h.toFixed(1)}%
-                          </td>
-
-                          <td style={{ padding: '8px 10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
-                            ${(p.volume24h / 1e6).toFixed(2)}M
-                          </td>
-
-                          <td style={{ padding: '8px 10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
-                            ${(p.liquidityUsd / 1e3).toFixed(0)}K
-                          </td>
-
-                          <td style={{ padding: '8px 10px', textAlign: 'center' }}>
-                            <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
-                              <a
-                                href={p.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                style={{
-                                  padding: '2px 6px',
-                                  borderRadius: '3px',
-                                  background: 'rgba(168, 85, 247, 0.15)',
-                                  color: '#c084fc',
-                                  fontSize: '10px',
-                                  fontWeight: '700',
-                                  textDecoration: 'none',
-                                  border: '1px solid rgba(168, 85, 247, 0.3)'
-                                }}
-                                title="Buka pair di DexScreener"
-                              >
-                                Dex ↗
-                              </a>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* TAB 3: OPEN INTEREST */}
-        {activeTab === 'oi' && (
-          <table className="quant-table">
-            <thead>
-              <tr style={{ borderBottom: 'var(--border-muted)', background: 'var(--bg-panel-subtle)', textAlign: 'left' }}>
-                <th style={{ padding: '10px' }}>Pair</th>
-                <th style={{ padding: '10px', textAlign: 'right' }}>Open Interest (USD)</th>
-                <th style={{ padding: '10px', textAlign: 'right' }}>Perubahan 1 Jam</th>
-                <th style={{ padding: '10px', textAlign: 'right' }}>Harga Acuan</th>
-                <th style={{ padding: '10px', textAlign: 'center' }}>Sinyal Divergensi OI</th>
-              </tr>
-            </thead>
-            <tbody>
-              {initialOI.map((o, idx) => {
-                const base = o.symbol?.replace('USDT', '');
-                const liveQuote = livePrices[o.symbol] || livePrices[o.pair] || livePrices[base];
-                const oiPrice = (o.price && Number(o.price) > 0) ? Number(o.price) : (liveQuote?.price || 0);
-
-                let badgeClass = '';
-                if (o.oi_price_divergence === 'BULLISH_CONFIRMATION') badgeClass = 'badge-bull';
-                else if (o.oi_price_divergence === 'BEARISH_DIVERGENCE') badgeClass = 'badge-bear';
-                return (
-                  <tr key={idx} style={{ borderBottom: 'var(--border-hairline)' }}>
-                    <td style={{ padding: '10px' }}>
-                      <button onClick={() => onOpenChart ? onOpenChart(`BINANCE:${o.symbol}.P`, 'CRYPTO') : null} style={{ background: 'transparent', border: 'none', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 'bold' }}>
-                        {o.pair} ↗
-                      </button>
-                    </td>
-                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
-                      ${(o.open_interest_usd / 1e6).toFixed(2)}M
-                    </td>
-                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: o.oi_change_1h_pct > 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                      {o.oi_change_1h_pct > 0 ? '+' : ''}{o.oi_change_1h_pct}%
-                    </td>
-                    <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
-                      {oiPrice > 0 ? (
-                        `$${oiPrice < 1 ? oiPrice.toFixed(4) : oiPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                      ) : (
-                        <span style={{ color: 'var(--text-muted)' }}>-</span>
-                      )}
-                    </td>
-                    <td style={{ padding: '10px', textAlign: 'center' }}>
-                      <span className={`badge ${badgeClass}`} style={{ fontWeight: 'bold' }}>
-                        {o.oi_price_divergence}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
-
         {/* TAB 4: LONG / SHORT RATIO */}
         {activeTab === 'ls' && (
           <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -1294,53 +879,87 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
           </div>
         )}
 
-        {/* TAB 5: RADAR LIKUIDASI */}
+        {/* TAB: LIKUIDASI 24 JAM (data nyata dari bursa, bukan stream kosong) */}
         {activeTab === 'liquidations' && (
           <div style={{ padding: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
               <div>
-                <strong style={{ fontSize: '14px' }}>📡 STREAM FORCED LIQUIDATIONS (REAL-TIME)</strong>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Posisi margin trader yang terlikuidasi otomatis detik ini</div>
+                <strong style={{ fontSize: '14px' }}>💀 LIKUIDASI 24 JAM</strong>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                  Nilai posisi yang dipaksa tutup bursa dalam 24 jam terakhir
+                </div>
               </div>
               <div style={{ fontSize: '11px', color: 'var(--accent-rust)', fontFamily: 'var(--font-mono)' }}>
-                Largest 24h: ${(initialLiq.largest_single || 0).toLocaleString()}
+                Terbesar: ${(initialLiq.largest_single || 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}
               </div>
             </div>
 
-            {liveLiquidations.length > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {liveLiquidations.map((liq, idx) => (
-                  <div key={idx} style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '10px 14px',
-                    borderRadius: 'var(--radius-xs)',
-                    background: liq.isNew ? 'rgba(239, 68, 68, 0.15)' : 'var(--bg-panel-subtle)',
-                    border: liq.isNew ? '1px solid var(--accent-rust)' : 'var(--border-hairline)',
-                    fontSize: '12px',
-                    transition: 'all 0.3s ease'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{liq.timestamp}</span>
-                      <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{liq.pair}</span>
-                      <span className={`badge ${liq.side === 'SELL' ? 'badge-bear' : 'badge-bull'}`} style={{ fontWeight: 'bold' }}>
-                        {liq.side === 'SELL' ? 'LONG LIQUIDATED 💀' : 'SHORT LIQUIDATED 💥'}
-                      </span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontFamily: 'var(--font-mono)' }}>
-                      <span style={{ color: 'var(--text-muted)' }}>@{liq.price.toLocaleString()}</span>
-                      <strong style={{ color: liq.side === 'SELL' ? 'var(--accent-rust)' : 'var(--accent-green)', fontSize: '13px' }}>
-                        ${liq.usd_value.toLocaleString()}
-                      </strong>
+            {(initialLiq.total_usd || 0) > 0 ? (
+              <>
+                {/* Total ringkasan long vs short */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '10px', marginBottom: '16px' }}>
+                  <div style={{ padding: '12px 14px', background: 'var(--bg-panel-subtle)', borderRadius: 'var(--radius-sm)', border: 'var(--border-hairline)' }}>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: '800', letterSpacing: '0.06em' }}>TOTAL 24 JAM</div>
+                    <div style={{ fontSize: '18px', fontWeight: '800', fontFamily: 'var(--font-mono)', marginTop: '4px' }}>
+                      ${formatVolSmart(initialLiq.total_usd)}
                     </div>
                   </div>
-                ))}
-              </div>
+                  <div style={{ padding: '12px 14px', background: 'rgba(239, 68, 68, 0.08)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(239, 68, 68, 0.25)' }}>
+                    <div style={{ fontSize: '10px', color: 'var(--accent-rust)', fontWeight: '800', letterSpacing: '0.06em' }}>LONG TERLIKUIDASI</div>
+                    <div style={{ fontSize: '18px', fontWeight: '800', fontFamily: 'var(--font-mono)', marginTop: '4px', color: 'var(--accent-rust)' }}>
+                      ${formatVolSmart(initialLiq.long_usd)}
+                    </div>
+                  </div>
+                  <div style={{ padding: '12px 14px', background: 'rgba(0, 208, 132, 0.08)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(0, 208, 132, 0.25)' }}>
+                    <div style={{ fontSize: '10px', color: 'var(--accent-green)', fontWeight: '800', letterSpacing: '0.06em' }}>SHORT TERLIKUIDASI</div>
+                    <div style={{ fontSize: '18px', fontWeight: '800', fontFamily: 'var(--font-mono)', marginTop: '4px', color: 'var(--accent-green)' }}>
+                      ${formatVolSmart(initialLiq.short_usd)}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rincian per pair */}
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid var(--border-hairline)', color: 'var(--text-muted)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                        <th style={{ padding: '8px 10px', textAlign: 'left' }}>Pair</th>
+                        <th style={{ padding: '8px 10px', textAlign: 'right' }}>Long</th>
+                        <th style={{ padding: '8px 10px', textAlign: 'right' }}>Short</th>
+                        <th style={{ padding: '8px 10px', textAlign: 'right' }}>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(initialLiq.pairs || []).slice(0, 15).map((p, idx) => (
+                        <tr key={idx} style={{ borderBottom: '1px solid var(--border-hairline)' }}>
+                          <td style={{ padding: '8px 10px', fontWeight: '700' }}>{p.pair}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>
+                            ${formatVolSmart(p.long_usd)}
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
+                            ${formatVolSmart(p.short_usd)}
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '800' }}>
+                            ${formatVolSmart(p.total_usd)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '12px', lineHeight: 1.6 }}>
+                  Sumber: {initialLiq.source || 'bursa'} &middot; jendela {initialLiq.window_hours || 24} jam.
+                  Data diperbarui setiap kali pipeline berjalan, bukan streaming per detik.
+                </div>
+              </>
             ) : (
               <div style={{ padding: '24px', background: 'var(--bg-panel-subtle)', borderRadius: 'var(--radius-sm)', textAlign: 'center', color: 'var(--text-muted)' }}>
-                <div style={{ fontSize: '20px', marginBottom: '8px' }}>📡 Radar Likuidasi Aktif & Siaga</div>
-                <div style={{ fontSize: '11px' }}>Setiap kali terjadi margin call di bursa Binance Futures, data akan ter-flash seketika di sini.</div>
+                <div style={{ fontSize: '20px', marginBottom: '8px' }}>💀 Belum ada data likuidasi</div>
+                <div style={{ fontSize: '11px', lineHeight: 1.7 }}>
+                  Data likuidasi diambil saat pipeline berjalan.<br />
+                  Jalankan pipeline untuk mengisi angka terbaru.
+                </div>
               </div>
             )}
           </div>

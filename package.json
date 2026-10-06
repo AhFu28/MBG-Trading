@@ -9,7 +9,9 @@
     "wa:start": "node scripts/wa_daemon.mjs",
     "wa:status": "node scripts/send_wa_fuad.mjs --status",
     "wa:qr": "node scripts/send_wa_fuad.mjs --qr",
-    "wa:send": "node scripts/send_wa_fuad.mjs"
+    "wa:send": "node scripts/send_wa_fuad.mjs",
+    "futures:refresh": "python scripts/refresh_crypto_futures.py",
+    "futures:install-task": "powershell -ExecutionPolicy Bypass -File scripts/install_futures_task.ps1"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc14",

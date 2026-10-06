@@ -43,7 +43,7 @@ export default function CommandPaletteModal({
     { id: 'NEWS', label: 'Bloomberg Macro Wire & News', category: 'TABS', icon: '📰', desc: '4-Pilar intelligence, daily brief & Goldman Sachs barbell research' },
     { id: 'WHALES', label: 'Whale Intelligence Hub', category: 'TABS', icon: '🐋', desc: 'Analisis akumulasi bandar, foreign flow & tape antrean paus' },
     { id: 'HEATMAP', label: 'Market Heatmap Treemap', category: 'TABS', icon: '🗺️', desc: 'Peta visual performa saham BEI per sektor' },
-    { id: 'FUTURES', label: 'Crypto Futures & DexScreener', category: 'TABS', icon: '⚡', desc: 'Binance perp funding rates, OI & dexscreener embed' },
+    { id: 'FUTURES', label: 'Crypto Futures', category: 'TABS', icon: '⚡', desc: 'Perpetual funding rates, open interest, long/short ratio & liquidations' },
     { id: 'FOREX', label: 'Forex Command Center', category: 'TABS', icon: '💱', desc: 'Major interbank forex pairs & currency strength' },
     { id: 'US_STOCKS', label: 'Wall Street US Equities', category: 'TABS', icon: '🏛️', desc: '31 Mega-cap US stocks, AI chip cycle & earnings' },
     { id: 'WATCHLIST', label: 'Personal Watchlist', category: 'TABS', icon: '⭐', desc: 'Koleksi instrumen favorit bertanda bintang' },
