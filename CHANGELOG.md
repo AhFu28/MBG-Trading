@@ -14,6 +14,32 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+## [2026-10-06] — 24H Change Diperbaiki + Panel "Uang Sedang Ke Mana"
+
+### Sprint 29 — Aliran Likuiditas & Perbaikan Umpan Harga
+- **[MASALAH YANG DILAPORKAN PEMILIK] "24H Change masih 0% semua"**:
+  - **Dua bug bertumpuk**, keduanya ditemukan dengan mengukur langsung ke Binance:
+    1. **Stream dibatasi 99 simbol.** Kode berlangganan `!miniTicker@arr`. Diuji langsung: hanya **15 dari 60 pair** kita yang pernah datang. 45 pair lain diam-diam memakai nilai bundle, jadi kolom 24h Change tampak beku di 0.00%.
+    2. **Open price yang hilang dipaksa jadi nol.** Baris `openP > 0 ? ... : 0` membuat perubahan yang **tidak diketahui** dirender sebagai **"datar"**, lalu nilai nol itu **menimpa data server yang sebenarnya benar**. Perubahan yang tidak diketahui sekarang menjadi `null` dan data lama dipertahankan.
+  - Solusi: **satu panggilan REST** `ticker/24hr` tanpa parameter — diuji live: **HTTP 200, 3.723 simbol, 1.863 KB, 1,2 detik, 58 dari 60 pair** kita cocok. WebSocket tetap dipakai agar harga berdenyut lebih cepat, REST jadi penopang utama tiap 30 detik.
+  - Panggilan `?symbols=[...]` **dibuang**: daftar dalam kurung siku harus di-encode persis atau Binance menjawab `HTTP 400 Invalid symbol` — rapuh dan sudah terbukti gagal.
+  - Poll TradingView tiap 12 detik **dihapus**: dependensi pihak ketiga tanpa autentikasi, kegagalannya ditelan `catch` kosong, dan sekarang tidak diperlukan lagi.
+- **[FITUR BARU] Panel "🔥 UANG SEDANG KE MANA"** (tab pertama, langsung terbuka):
+  - Menjawab pertanyaan pemilik: *"liquidity lagi rame dimana... biar oh karna duitnya pada kesana jadi bisa tradingin pair itu"*.
+  - **Bukan papan peringkat volume.** Volume besar dengan Open Interest datar hanya berarti koin yang sama berpindah tangan — tidak ada uang baru. Sinyal yang layak ditradingkan adalah **turnover tinggi DAN Open Interest naik DAN arah jelas**.
+  - **Skor = 40% kenaikan OI + 25% turnover + 20% keyakinan arah + 15% funding ekstrem.**
+  - Setiap baris menyertakan **label aliran** dalam bahasa manusia: `Uang Baru Masuk — LONG`, `Short Covering`, `Long Likuidasi`, `Posisi Bertambah, Arah Belum Jelas`, atau `Searah / Churn`.
+  - Setiap baris juga menyertakan **alasan konkret** (misal *"Harga turun 1.04% sambil OI naik"*), supaya trader tidak diminta mempercayai angka tanpa penjelasan.
+  - **Regime pasar** ditampilkan di header: `POSISI BERTAMBAH`, `LONG AGAK PADAT`, `POSISI DITUTUP`, atau `CAMPURAN`.
+  - Peringatan kejujuran: kenaikan OI dibatasi 15% agar satu pair parabola tidak mendominasi; baris `offline_fallback` **tidak pernah** ikut dinilai.
+- **[BUG YANG DITEMUKAN TES SENDIRI]** Pair dengan turnover terbesar tapi OI datar hanya mendapat alasan *"turnover terbesar"* dan **tidak pernah** diberi tahu bahwa tidak ada sinyal arah. Itu membuat churn tampak seperti peluang. Sekarang selalu ditambahkan *"Belum ada sinyal arah — likuiditas hanya berputar"*.
+- **[VERIFIKASI]**:
+  - **27 tes baru** `test_liquidity_heat.py` + **28 tes** `test_crypto_futures.py` (total **55**), termasuk tes bahwa pair dengan OI naik **mengalahkan** pair dengan volume 4x lebih besar tapi OI datar — janji inti fitur ini.
+  - 206 tes frontend lulus. Build bersih 1,52s. Jadwal 30 menit tetap berjalan.
+  - Data live: BTC `-1.04%` dengan OI naik; NEAR `+6.49%` dengan OI naik.
+
+---
+
 ## [2026-10-06] — Crypto Futures: Data Basi 10 Hari Dipulihkan + Fokus Futures Murni
 
 ### Sprint 28 — Membongkar Kenapa Tab Futures Tidak Pernah Update

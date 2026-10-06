@@ -168,14 +168,220 @@ class CryptoFuturesFetcher:
 
     def execute(self):
         source = self._source_or_probe()
+        funding = self._fetch_funding_rates(source)
+        oi = self._fetch_open_interest(source)
+        ls = self._fetch_long_short_ratio(source)
+        liq = self._fetch_liquidations(source)
         return {
-            'funding_rates': self._fetch_funding_rates(source),
-            'open_interest': self._fetch_open_interest(source),
-            'long_short_ratio': self._fetch_long_short_ratio(source),
-            'liquidations_24h': self._fetch_liquidations(source),
+            'funding_rates': funding,
+            'open_interest': oi,
+            'long_short_ratio': ls,
+            'liquidations_24h': liq,
+            # Where money is moving right now — the answer to "liquidity rame
+            # di mana". Derived from the sections above so it can never disagree
+            # with the table a trader is reading.
+            'liquidity_heat': self._build_liquidity_heat(funding, oi, ls, liq),
             'source': source or 'unreachable',
             'updated_at': datetime.now(timezone.utc).isoformat(),
         }
+
+    # ------------------------------------------------------------------
+    # Liquidity heat — "where is the money actually going?"
+    # ------------------------------------------------------------------
+    def _build_liquidity_heat(self, funding, oi, ls, liq):
+        """
+        Rank pairs by how much NEW money is working in them.
+
+        The metric that matters is not turnover alone. High volume with flat open
+        interest means the same coins are churning hands and nothing new arrived.
+        The signal worth trading is turnover AND rising open interest AND a clear
+        directional lean — that combination means fresh positions are being
+        opened, which is what actually moves price.
+
+        Score = 0.40 * rising OI + 0.25 * turnover rank + 0.20 * directional
+                conviction + 0.15 * funding squeeze.
+
+        Every component is derived from real exchange data. Nothing is invented;
+        if a section is missing, its weight is simply not applied.
+        """
+        try:
+            by_symbol_oi = {r.get('symbol'): r for r in (oi or [])}
+            by_symbol_ls = {r.get('symbol'): r for r in (ls or [])}
+            liq_by_symbol = {
+                p.get('symbol'): p for p in ((liq or {}).get('pairs') or [])
+            }
+
+            candidates = []
+            for row in (funding or []):
+                symbol = row.get('symbol')
+                if not symbol:
+                    continue
+                if row.get('data_source') == 'offline_fallback':
+                    continue
+
+                volume = float(row.get('volume_24h_usd') or 0)
+                if volume <= 0:
+                    continue
+
+                oi_row = by_symbol_oi.get(symbol) or {}
+                ls_row = by_symbol_ls.get(symbol) or {}
+
+                oi_change = float(oi_row.get('oi_change_1h_pct') or 0)
+                oi_usd = float(oi_row.get('open_interest_usd') or 0)
+                funding_pct = float(row.get('funding_rate_pct') or 0)
+                change_24h = float(row.get('change_24h_pct') or 0)
+                liq_row = liq_by_symbol.get(symbol) or {}
+                liq_total = float(liq_row.get('total_usd') or 0)
+
+                candidates.append({
+                    'symbol': symbol,
+                    'pair': row.get('pair') or symbol,
+                    'volume_24h_usd': volume,
+                    'oi_usd': oi_usd,
+                    'oi_change_1h_pct': oi_change,
+                    'funding_rate_pct': funding_pct,
+                    'change_24h_pct': change_24h,
+                    'liq_24h_usd': liq_total,
+                    'bias': ls_row.get('bias') or 'UNKNOWN',
+                    'long_short_ratio': float(ls_row.get('long_short_ratio') or 0),
+                })
+
+            if not candidates:
+                return {
+                    'rows': [],
+                    'regime': 'NO_DATA',
+                    'summary': 'Belum ada data likuiditas.',
+                    'updated_at': datetime.now(timezone.utc).isoformat(),
+                }
+
+            max_volume = max(c['volume_24h_usd'] for c in candidates) or 1.0
+            max_oi = max(c['oi_usd'] for c in candidates) or 1.0
+            # Cap OI change so one parabolic symbol cannot dominate the ranking.
+            MAX_OI = 15.0
+
+            for c in candidates:
+                # 1. New money entering (the heaviest weight).
+                oi_component = min(max(c['oi_change_1h_pct'], 0.0), MAX_OI) / MAX_OI
+
+                # 2. Turnover, scaled against the busiest pair on the board.
+                volume_component = c['volume_24h_usd'] / max_volume
+
+                # 3. Directional conviction: price moving AND open interest rising
+                #    together is real positioning, not noise.
+                conviction = 0.0
+                if c['oi_change_1h_pct'] > 0 and abs(c['change_24h_pct']) > 0.5:
+                    conviction = min(abs(c['change_24h_pct']), 10.0) / 10.0
+
+                # 4. Crowding: extreme funding tends to precede a squeeze.
+                squeeze = min(abs(c['funding_rate_pct']), 0.10) / 0.10
+
+                c['heat_score'] = round(
+                    100 * (
+                        0.40 * oi_component
+                        + 0.25 * volume_component
+                        + 0.20 * conviction
+                        + 0.15 * squeeze
+                    ),
+                    2,
+                )
+
+                # A plain-language reason, so the trader is not left guessing why
+                # a pair scored highly.
+                reasons = []
+                if c['oi_change_1h_pct'] > 0.5:
+                    reasons.append(f"Open interest naik {c['oi_change_1h_pct']:+.2f}% (uang baru masuk)")
+                elif c['oi_change_1h_pct'] < -0.5:
+                    reasons.append(f"Open interest turun {c['oi_change_1h_pct']:+.2f}% (posisi ditutup)")
+                if volume_component > 0.35:
+                    reasons.append('Turnover termasuk terbesar di pasar')
+                if c['oi_change_1h_pct'] > 0 and abs(c['change_24h_pct']) > 0.5:
+                    arah = 'naik' if c['change_24h_pct'] > 0 else 'turun'
+                    reasons.append(f"Harga {arah} {abs(c['change_24h_pct']):.2f}% sambil OI naik")
+                if abs(c['funding_rate_pct']) > 0.03:
+                    sisi = 'long' if c['funding_rate_pct'] > 0 else 'short'
+                    reasons.append(f"Funding {c['funding_rate_pct']:+.4f}% — sisi {sisi} padat")
+                if liq_total > 0:
+                    reasons.append(f"Likuidasi 24 jam ${liq_total:,.0f}")
+
+                # If nothing directional happened, say so plainly. Listing only
+                # "biggest turnover" would read like a signal when open interest
+                # is flat — which is exactly the churn this desk must not dress up
+                # as an opportunity.
+                if not any(
+                    ('uang baru masuk' in r.lower())
+                    or ('posisi ditutup' in r.lower())
+                    or ('padat' in r.lower())
+                    for r in reasons
+                ):
+                    reasons.append('Belum ada sinyal arah — likuiditas hanya berputar')
+
+                c['reasons'] = reasons
+
+                c['flow_label'] = self._flow_label(c)
+
+            candidates.sort(key=lambda r: r['heat_score'], reverse=True)
+
+            regime = self._market_regime(candidates)
+            top = candidates[0]
+            summary = (
+                f"Likuiditas paling aktif: {top['pair']} "
+                f"(skor {top['heat_score']:.0f}, {top['flow_label'].lower()})."
+            )
+
+            return {
+                'rows': candidates,
+                'regime': regime,
+                'summary': summary,
+                'updated_at': datetime.now(timezone.utc).isoformat(),
+            }
+        except Exception as exc:
+            logger.warning(f"Liquidity heat build failed: {exc}")
+            return {
+                'rows': [],
+                'regime': 'NO_DATA',
+                'summary': 'Gagal menghitung likuiditas.',
+                'updated_at': datetime.now(timezone.utc).isoformat(),
+            }
+
+    @staticmethod
+    def _flow_label(row) -> str:
+        """Describe what the combination of price and OI actually means."""
+        oi = row.get('oi_change_1h_pct', 0.0)
+        chg = row.get('change_24h_pct', 0.0)
+        if oi > 0.3 and chg > 0.5:
+            return 'Uang Baru Masuk — LONG'
+        if oi > 0.3 and chg < -0.5:
+            return 'Uang Baru Masuk — SHORT'
+        if oi < -0.3 and chg > 0.5:
+            return 'Short Covering (posisi ditutup)'
+        if oi < -0.3 and chg < -0.5:
+            return 'Long Likuidasi (posisi ditutup)'
+        if oi > 0.3:
+            return 'Posisi Bertambah, Arah Belum Jelas'
+        return 'Searah / Churn'
+
+    @staticmethod
+    def _market_regime(rows) -> str:
+        """
+        Read the board, not one pair.
+
+        Broad OI expansion with mostly positive funding is an eager market that
+        can squeeze; contraction with negative funding suggests the opposite.
+        """
+        tracked = [r for r in rows if r.get('oi_change_1h_pct') is not None]
+        if not tracked:
+            return 'NO_DATA'
+        rising = sum(1 for r in tracked if r['oi_change_1h_pct'] > 0)
+        share = rising / len(tracked)
+        avg_funding = sum(r['funding_rate_pct'] for r in tracked) / len(tracked)
+
+        if share > 0.6 and avg_funding > 0.01:
+            return 'EAGER_LONGS'
+        if share > 0.6:
+            return 'POSITION_BUILDING'
+        if share < 0.35:
+            return 'DELEVERAGING'
+        return 'MIXED'
 
     # ------------------------------------------------------------------
     # Funding rates
