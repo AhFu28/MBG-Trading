@@ -14,6 +14,27 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+## [2026-10-06] — Automated WhatsApp Bot Daemon (Baileys + Outbox Queue)
+
+### Sprint 27 — Zero-Click Automatic Dispatch to Mas Fuad (+62 812-2417-0187)
+- **[AUTOMATION BOT] Local WhatsApp Web Daemon (`scripts/wa_daemon.mjs`)**:
+  - Ditenagai `@whiskeysockets/baileys` melalui koneksi WebSocket resmi WhatsApp Web (ringan, pure Node.js, tanpa Chrome/Puppeteer berat).
+  - Menyediakan embedded HTTP REST microservice di `http://127.0.0.1:5055` (`/status`, `/send-fuad`, `/send`, `/qr`, `/`).
+  - Dilengkapi antrean Outbox (`wa_auth/outbox_queue.json`) otomatis: jika bot offline atau baru menyala, pesan tidak akan hilang melainkan disimpan di antrean dan langsung dikirim secara beruntun begitu bot terkoneksi.
+  - Sesi login terenkripsi disimpan secara lokal di folder `wa_auth/` (terlindungi di `.gitignore`, tidak pernah ter-commit).
+- **[VISUAL QR CODE DASHBOARD]**:
+  - Saat pairing awal, QR code otomatis muncul di terminal ASCII (`qrcode-terminal`) DAN di web browser visual SVG `http://127.0.0.1:5055/` dengan auto-refresh setiap 6 detik.
+  - Cukup 1x scan QR dari aplikasi WhatsApp di HP (Perangkat Tertaut), selanjutnya bot terhubung permanen tanpa perlu scan ulang.
+- **[CROSS-LANGUAGE CLI & PYTHON BRIDGE]**:
+  - Node.js CLI: `npm run wa:start`, `npm run wa:status`, `npm run wa:qr`, dan `npm run wa:send "pesan"`.
+  - Python engine module: `engine/send_wa_fuad.py` dengan fungsi `send_wa_mas_fuad(text)`.
+- **[VERIFIKASI & QA]**:
+  - Unit test Python `engine/tests/test_send_wa_fuad.py` (3 tests).
+  - 206 tes frontend tetap 100% passing.
+  - 34 tes VIP signal router tetap passing.
+
+---
+
 ## [2026-10-06] — One-Click WhatsApp Direct Handoff (+62 812-2417-0187)
 
 ### Sprint 26 — Direct Operator Communication & Payment Confirmation

@@ -5,6 +5,16 @@
     "build": "npm --prefix frontend run build",
     "dev": "npm --prefix frontend run dev",
     "preview": "npm --prefix frontend run preview",
-    "test": "python -m unittest engine/tests/test_smoke.py && npm --prefix frontend run build"
+    "test": "python -m unittest engine/tests/test_smoke.py && npm --prefix frontend run build",
+    "wa:start": "node scripts/wa_daemon.mjs",
+    "wa:status": "node scripts/send_wa_fuad.mjs --status",
+    "wa:qr": "node scripts/send_wa_fuad.mjs --qr",
+    "wa:send": "node scripts/send_wa_fuad.mjs"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^7.0.0-rc14",
+    "pino": "^10.4.0",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0"
   }
 }

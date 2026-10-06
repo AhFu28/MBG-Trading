@@ -40,7 +40,7 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# Local runtime junk (embedded Python + artifact folders â€” never commit)
+# Local runtime junk (embedded Python + artifact folders - never commit)
 Python/
 %SystemDrive%/
 
@@ -53,8 +53,13 @@ Python/
 # Atomic-write temp files
 *.tmp
 
-# VIP subscriber list — contains real customer chat IDs
+# VIP subscriber list - contains real customer chat IDs
 engine/config/vip_subscribers.json
 
 # Local Python virtualenv
 .venv/
+
+# WhatsApp Bot auth credentials & session tokens - NEVER commit
+wa_auth/
+engine/config/wa_auth/
+
