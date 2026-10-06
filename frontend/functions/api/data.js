@@ -3,9 +3,33 @@
  * Route: /api/data
  *
  * SOURCES, IN ORDER:
- *   1. Supabase REST  — the live path when SUPABASE_URL/KEY are configured.
+ *   1. Supabase REST   — the live path when SUPABASE_URL/KEY are configured.
  *   2. KV / R2 binding — optional edge storage for a pushed bundle.
- *   3. Static /data/latest_cockpit_bundle.json — last resort.
+ *   3. Bundled snapshot — the engine's last committed bundle, inlined by the
+ *      build. Always available; no credentials required.
+ *
+ * WHY SOURCE 3 EXISTS (added 2026-10-06)
+ * --------------------------------------
+ * Four of the five Crypto Futures tabs rendered empty in production. They all
+ * read `data?.crypto_futures`, and this endpoint was returning 503, so every
+ * engine-computed section was blank — only the tabs fed by direct public
+ * fetches had content.
+ *
+ * The fix everyone assumed was "set the Supabase env vars", which needs the
+ * account owner. But the engine ALREADY publishes the bundle: the hourly GitHub
+ * Action commits engine/cache/latest_cockpit_bundle.json every hour, and
+ * Cloudflare Pages rebuilds from that commit. So the data is sitting in the
+ * build already — nothing was reading it.
+ *
+ * Inlining it here is not the same as the old frontend/public/data mistake:
+ * a file under `functions/` is compiled INTO this worker, so it is never served
+ * as a static asset and remains behind the JWT check below. The old path made
+ * it a plain downloadable URL.
+ *
+ * Trade-off, stated plainly: the snapshot is as fresh as the last Cloudflare
+ * deploy, so it can lag by up to about an hour. Supabase and KV take priority
+ * when configured, and the response reports which source answered plus the
+ * snapshot's age, so the client never has to guess.
  *
  * ⚠️ THE BUG THIS FILE USED TO HAVE (fixed 2026-10-06)
  * ---------------------------------------------------
@@ -23,6 +47,12 @@
  * fails: the client cannot tell the difference and neither can monitoring.
  * This version checks the content type and returns a real error instead.
  */
+
+// The engine's committed bundle, resolved at build time by the Pages bundler.
+// Path is three levels up from functions/api/: api -> functions -> frontend ->
+// repo root. If this file is missing the build fails loudly, which is the right
+// outcome: a silent fallback here is what hid the problem for ten days.
+import bundledSnapshot from '../../../engine/cache/latest_cockpit_bundle.json';
 
 function base64urlDecode(str) {
   str = str.replace(/-/g, '+').replace(/_/g, '/');
@@ -188,49 +218,42 @@ export async function onRequestGet(context) {
     }
   }
 
-  // ---- 3. Static bundle (last resort) ------------------------------------
-  const url = new URL(request.url);
-  const dataUrl = `${url.origin}/data/latest_cockpit_bundle.json`;
+  // ---- 3. Bundled snapshot (always available) ----------------------------
+  //
+  // Inlined by the build from the engine's committed bundle, so it works with
+  // no Supabase and no KV binding. Its age is reported rather than hidden: it
+  // is exactly as fresh as the last Cloudflare deploy, and the hourly GitHub
+  // Action commits a new bundle every hour.
+  if (bundledSnapshot && typeof bundledSnapshot === 'object') {
+    const stamped = Date.parse(bundledSnapshot.last_updated || '');
+    const ageHours = Number.isFinite(stamped)
+      ? Math.max(0, Math.round(((Date.now() - stamped) / 3600000) * 10) / 10)
+      : null;
 
-  try {
-    const dataResp = await fetch(dataUrl, { headers: { 'Accept': 'application/json' } });
-
-    if (!dataResp.ok) {
-      return jsonResponse({
-        error: 'Data bundle unavailable',
-        detail: `Static bundle returned HTTP ${dataResp.status}`,
-        hint: 'Isi SUPABASE_URL + SUPABASE_KEY, atau bind KV ke MBG_BUNDLE.',
-      }, 503, { 'X-Data-Source': 'none' });
-    }
-
-    const text = await dataResp.text();
-    const bundle = parseBundle(text, dataResp.headers.get('Content-Type'));
-
-    if (!bundle) {
-      // THE REGRESSION GUARD. A missing static file on Cloudflare Pages comes
-      // back as index.html with HTTP 200. Forwarding that to the client is how
-      // every desk in the cockpit ended up erroring while the server reported
-      // success. Fail honestly instead.
-      return jsonResponse({
-        error: 'Data bundle is not JSON',
-        detail: 'Static bundle path returned HTML (the file does not exist).',
-        hint: 'Engine tidak lagi menulis ke frontend/public. Isi SUPABASE_URL + SUPABASE_KEY, atau bind KV ke MBG_BUNDLE.',
-        servedBytes: text.length,
-      }, 503, { 'X-Data-Source': 'invalid' });
-    }
-
-    return new Response(JSON.stringify(bundle), {
+    return new Response(JSON.stringify(bundledSnapshot), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
+        // Kept short: a redeploy is what refreshes this source, not the cache.
         'Cache-Control': 'public, max-age=30, s-maxage=60',
-        'X-Data-Source': 'static-bundle-fallback'
-      }
+        'X-Data-Source': 'bundled-snapshot',
+        'X-Data-Age-Hours': ageHours === null ? 'unknown' : String(ageHours),
+        // So the client can tell a fresh push from a build-time snapshot and
+        // label stale sections honestly instead of presenting them as live.
+        'X-Data-Live': 'false',
+      },
     });
-  } catch (err) {
-    return jsonResponse({
-      error: 'Failed to read data bundle',
-      detail: String(err && err.message ? err.message : err),
-    }, 500, { 'X-Data-Source': 'none' });
   }
+
+  // Unreachable by design. The snapshot above is inlined by the build, so it
+  // either exists or the build failed — there is no runtime case where we get
+  // here. Returning an explicit error rather than fetching a static path keeps
+  // the old trap closed: a missing file on Cloudflare Pages comes back as
+  // index.html with HTTP 200, and forwarding that to the client is exactly what
+  // made every desk crash while the server reported success.
+  return jsonResponse({
+    error: 'Data bundle unavailable',
+    detail: 'No Supabase, no KV binding, and the bundled snapshot is absent.',
+    hint: 'This should be impossible: the snapshot is inlined at build time.',
+  }, 503, { 'X-Data-Source': 'none' });
 }

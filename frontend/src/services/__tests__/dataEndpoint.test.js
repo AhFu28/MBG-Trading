@@ -1,25 +1,38 @@
 /**
  * Tests for the /api/data bundle endpoint.
  *
- * WHY THIS FILE EXISTS
- * --------------------
- * Jendral Arib reported every desk erroring. The cause was this endpoint
- * returning success while serving garbage:
+ * SOURCE ORDER UNDER TEST
+ *   1. Supabase REST    — live, when SUPABASE_URL/KEY are configured
+ *   2. KV binding       — when MBG_BUNDLE is bound
+ *   3. Bundled snapshot — the engine's last committed bundle, inlined at build
  *
- *     HTTP 200 | Content-Type: text/html | 1 KB | body "<!doctype html>"
+ * HISTORY, BECAUSE IT SHAPES THESE TESTS
+ * --------------------------------------
+ * This endpoint once returned `HTTP 200 | text/html | "<!doctype html>"`. The
+ * static bundle file had been removed for security, and Cloudflare Pages answers
+ * a MISSING path with index.html and a 200 — so `if (!dataResp.ok)` never fired
+ * and HTML was forwarded as market data. Every desk crashed on JSON.parse while
+ * the server reported perfect health.
  *
- * The static bundle file no longer exists (the engine stopped writing it for
- * security reasons), and Cloudflare Pages answers a MISSING path with index.html
- * and a 200. So `if (!dataResp.ok)` never fired and HTML was forwarded to the
- * client as if it were market data. Every desk then crashed on JSON.parse while
- * the server reported a perfectly healthy response.
+ * THE FIX, AND WHY SOURCE 3 EXISTS
+ * --------------------------------
+ * On 2026-10-06 four of five Crypto Futures tabs rendered empty because this
+ * endpoint returned 503. The expected fix was "set the Supabase env vars", which
+ * needs the account owner — but the engine already publishes the bundle hourly
+ * via a GitHub commit, and Cloudflare rebuilds from that commit. The data was
+ * already in the build; nothing read it.
+ *
+ * Inlining it is NOT the old frontend/public mistake: a file under `functions/`
+ * is compiled into the worker and stays behind the JWT check, whereas the old
+ * path was a plain downloadable URL.
  *
  * The lesson pinned here: an API must never answer 200 with something that is
- * not the data it promised. Failing loudly is strictly better than failing
- * silently, because only one of the two can be monitored.
+ * not the data it promised, and it should not report "no data" when the data is
+ * sitting right there.
  */
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { onRequestGet } from '../../../functions/api/data.js';
+import bundledSnapshot from '../../../../engine/cache/latest_cockpit_bundle.json';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -63,16 +76,6 @@ async function callData({ env = {}, cookie, fetchImpl }) {
   return onRequestGet({ env, request });
 }
 
-/** Mimics Cloudflare Pages serving index.html for a missing path. */
-function htmlResponse() {
-  return {
-    ok: true,
-    status: 200,
-    headers: new Headers({ 'Content-Type': 'text/html; charset=utf-8' }),
-    text: async () => '<!doctype html>\n<html lang="en"><head><title>MBG</title></head></html>',
-  };
-}
-
 /**
  * A response stub that satisfies what data.js actually reads.
  *
@@ -87,6 +90,16 @@ function jsonResponse(body, { contentType = 'application/json', status = 200 } =
     headers: new Headers({ 'Content-Type': contentType }),
     text: async () => (typeof body === 'string' ? body : JSON.stringify(body)),
     json: async () => (typeof body === 'string' ? JSON.parse(body) : body),
+  };
+}
+
+/** A KV binding stub, as Cloudflare exposes it. */
+function kvBinding(value, { throwOnGet = false } = {}) {
+  return {
+    get: async () => {
+      if (throwOnGet) throw new Error('kv down');
+      return value;
+    },
   };
 }
 
@@ -110,190 +123,188 @@ describe('authentication is mandatory', () => {
     const res = await callData({ env: {} });
     expect(res.headers.get('Content-Type')).toContain('application/json');
   });
+
+  it('gates the bundled snapshot behind auth too', async () => {
+    // The snapshot is inlined in the worker, not a static asset — but that only
+    // means anything if reaching it still requires a session.
+    const res = await callData({ env: {} });
+    expect(res.status).toBe(401);
+    const text = await res.text();
+    expect(text).not.toContain('daily_trade_plans');
+  });
 });
 
 // ---------------------------------------------------------------------------
-// THE REGRESSION — HTML must never be served as data
+// Source 3: the bundled snapshot — the reason the empty desks were fixed
 // ---------------------------------------------------------------------------
-describe('missing static bundle', () => {
-  it('does NOT return 200 when Cloudflare serves index.html', async () => {
+describe('bundled snapshot', () => {
+  it('serves data when neither Supabase nor KV is configured', async () => {
+    // This is the case that returned 503 and blanked four tabs in production.
     const cookie = await authCookie();
-    const res = await callData({ env: {}, cookie, fetchImpl: async () => htmlResponse() });
+    const res = await callData({ env: {}, cookie });
 
-    // The exact bug: this used to be 200 with HTML in the body.
-    expect(res.status).not.toBe(200);
-    expect(res.status).toBe(503);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('Content-Type')).toContain('application/json');
+    expect(res.headers.get('X-Data-Source')).toBe('bundled-snapshot');
   });
 
-  it('never forwards an HTML body to the client', async () => {
+  it('returns the real bundle, not an empty object', async () => {
     const cookie = await authCookie();
-    const res = await callData({ env: {}, cookie, fetchImpl: async () => htmlResponse() });
+    const res = await callData({ env: {}, cookie });
+    const body = await res.json();
+
+    expect(Object.keys(body).length).toBeGreaterThanOrEqual(20);
+    expect(body.crypto_futures).toBeTruthy();
+  });
+
+  it('carries the crypto sections the empty tabs read', async () => {
+    const cookie = await authCookie();
+    const res = await callData({ env: {}, cookie });
+    const body = await res.json();
+    const cf = body.crypto_futures;
+
+    // The five desk tabs read exactly these keys. If the bundle stops carrying
+    // one, the corresponding tab silently renders empty again.
+    for (const key of ['funding_rates', 'open_interest', 'long_short_ratio',
+                       'liquidations_24h', 'liquidity_heat']) {
+      expect(cf, `crypto_futures.${key} missing`).toHaveProperty(key);
+    }
+  });
+
+  it('reports its age rather than pretending to be live', async () => {
+    const cookie = await authCookie();
+    const res = await callData({ env: {}, cookie });
+
+    expect(res.headers.get('X-Data-Live')).toBe('false');
+    expect(res.headers.get('X-Data-Age-Hours')).toBeTruthy();
+  });
+
+  it('never forwards HTML', async () => {
+    const cookie = await authCookie();
+    const res = await callData({ env: {}, cookie });
     const text = await res.text();
 
     expect(text).not.toContain('<!doctype');
     expect(text).not.toContain('<html');
   });
 
-  it('explains what to do instead of failing vaguely', async () => {
-    const cookie = await authCookie();
-    const res = await callData({ env: {}, cookie, fetchImpl: async () => htmlResponse() });
-    const body = await res.json();
-
-    expect(body.error).toBeTruthy();
-    expect(body.hint).toMatch(/SUPABASE|MBG_BUNDLE/i);
-  });
-
-  it('marks the response so monitoring can see the bad path', async () => {
-    const cookie = await authCookie();
-    const res = await callData({ env: {}, cookie, fetchImpl: async () => htmlResponse() });
-    expect(res.headers.get('X-Data-Source')).toBe('invalid');
-  });
-
-  it('detects HTML even when the content type lies', async () => {
-    // Some proxies report application/json for an error page.
-    const cookie = await authCookie();
-    const res = await callData({
-      env: {}, cookie,
-      fetchImpl: async () => jsonResponse('<!doctype html><html></html>'),
-    });
-    expect(res.status).toBe(503);
-  });
-
-  it('reports a non-200 from the static fetch', async () => {
-    const cookie = await authCookie();
-    const res = await callData({
-      env: {}, cookie,
-      fetchImpl: async () => ({ ok: false, status: 404, headers: new Headers(), text: async () => '' }),
-    });
-    expect(res.status).toBe(503);
+  it('the snapshot on disk is valid JSON with the expected shape', () => {
+    // Guards against a truncated or conflict-marker-corrupted commit landing in
+    // the build. A rebase autostash left markers in this file once.
+    expect(typeof bundledSnapshot).toBe('object');
+    expect(bundledSnapshot).not.toBeNull();
+    expect(Object.keys(bundledSnapshot).length).toBeGreaterThanOrEqual(20);
+    expect(bundledSnapshot.last_updated).toBeTruthy();
   });
 });
 
 // ---------------------------------------------------------------------------
-// Success paths
+// Source 1: Supabase takes priority when configured
 // ---------------------------------------------------------------------------
-describe('a valid bundle is served', () => {
-  it('returns the parsed bundle with 200', async () => {
+describe('Supabase path', () => {
+  it('is used when env vars are present', async () => {
     const cookie = await authCookie();
-    const bundle = { last_updated: 'x', crypto_futures: { funding_rates: [] } };
-    const res = await callData({ env: {}, cookie, fetchImpl: async () => jsonResponse(bundle) });
+    const live = { last_updated: 'live', crypto_futures: { funding_rates: [{ pair: 'X' }] } };
+    // The endpoint selects the `val` column, not `v`.
+    const res = await callData({
+      env: { SUPABASE_URL: 'https://x.supabase.co', SUPABASE_KEY: 'k' },
+      cookie,
+      fetchImpl: async () => jsonResponse([{ val: live }]),
+    });
 
     expect(res.status).toBe(200);
-    const body = await res.json();
-    expect(body.crypto_futures).toBeTruthy();
-  });
-
-  it('labels the static fallback source', async () => {
-    const cookie = await authCookie();
-    const res = await callData({
-      env: {}, cookie,
-      fetchImpl: async () => jsonResponse({ last_updated: 'x' }),
-    });
-    expect(res.headers.get('X-Data-Source')).toBe('static-bundle-fallback');
-  });
-
-  it('prefers Supabase when it is configured', async () => {
-    const cookie = await authCookie();
-    // Supabase's REST client passes the URL as a string, but a Request-like
-    // object is also possible; match on whichever arrives.
-    const seen = [];
-    const res = await callData({
-      env: { SUPABASE_URL: 'https://s.supabase.co', SUPABASE_KEY: 'k' },
-      cookie,
-      fetchImpl: async (url) => {
-        const target = typeof url === 'string' ? url : (url && url.url) || '';
-        seen.push(target);
-        if (target.includes('supabase')) {
-          return jsonResponse([{ val: { last_updated: 'live' }, updated_at: 'now' }]);
-        }
-        return jsonResponse({ last_updated: 'static' });
-      },
-    });
-
-    // Guard: if Supabase was never called, the test would pass for the wrong
-    // reason on a future refactor, so assert the call actually happened.
-    expect(seen.some(u => u.includes('supabase'))).toBe(true);
     expect(res.headers.get('X-Data-Source')).toBe('supabase-live');
+    const body = await res.json();
+    expect(body.last_updated).toBe('live');
   });
 
-  it('falls back when Supabase returns an empty result', async () => {
+  it('falls through to the snapshot when Supabase errors', async () => {
     const cookie = await authCookie();
     const res = await callData({
-      env: { SUPABASE_URL: 'https://s.supabase.co', SUPABASE_KEY: 'k' },
+      env: { SUPABASE_URL: 'https://x.supabase.co', SUPABASE_KEY: 'k' },
       cookie,
-      fetchImpl: async (url) => {
-        if (String(url).includes('supabase')) return jsonResponse([]);
-        return jsonResponse({ last_updated: 'static' });
-      },
+      fetchImpl: async () => { throw new Error('network down'); },
     });
-    expect(res.headers.get('X-Data-Source')).toBe('static-bundle-fallback');
-  });
 
-  it('does not crash when Supabase throws', async () => {
-    const cookie = await authCookie();
-    const res = await callData({
-      env: { SUPABASE_URL: 'https://s.supabase.co', SUPABASE_KEY: 'k' },
-      cookie,
-      fetchImpl: async (url) => {
-        if (String(url).includes('supabase')) throw new Error('network down');
-        return jsonResponse({ last_updated: 'static' });
-      },
-    });
     expect(res.status).toBe(200);
+    expect(res.headers.get('X-Data-Source')).toBe('bundled-snapshot');
+  });
+
+  it('falls through when Supabase returns an empty row set', async () => {
+    const cookie = await authCookie();
+    const res = await callData({
+      env: { SUPABASE_URL: 'https://x.supabase.co', SUPABASE_KEY: 'k' },
+      cookie,
+      fetchImpl: async () => jsonResponse([]),
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get('X-Data-Source')).toBe('bundled-snapshot');
   });
 });
 
 // ---------------------------------------------------------------------------
-// Edge KV binding
+// Source 2: KV
 // ---------------------------------------------------------------------------
 describe('edge KV binding', () => {
-  it('serves from KV when bound', async () => {
+  it('is used when the binding holds a bundle', async () => {
     const cookie = await authCookie();
-    const store = { get: async () => JSON.stringify({ last_updated: 'kv' }) };
-    const res = await callData({ env: { MBG_BUNDLE: store }, cookie });
+    const stored = { last_updated: 'kv', crypto_futures: { funding_rates: [] } };
+    const res = await callData({
+      env: { MBG_BUNDLE: kvBinding(JSON.stringify(stored)) },
+      cookie,
+    });
 
+    expect(res.status).toBe(200);
     expect(res.headers.get('X-Data-Source')).toBe('edge-kv');
   });
 
-  it('reads from MBG_BUNDLE without hitting the network at all', async () => {
+  it('outranks the snapshot but not Supabase', async () => {
     const cookie = await authCookie();
-    const fetchMock = vi.fn();
-    const store = { get: async () => JSON.stringify({ last_updated: 'kv' }) };
-    await callData({ env: { MBG_BUNDLE: store }, cookie, fetchImpl: fetchMock });
-
-    expect(fetchMock).not.toHaveBeenCalled();
+    const res = await callData({
+      env: { MBG_BUNDLE: kvBinding({ last_updated: 'kv-from-object' }) },
+      cookie,
+    });
+    expect(res.headers.get('X-Data-Source')).toBe('edge-kv');
+    const body = await res.json();
+    expect(body.last_updated).toBe('kv-from-object');
   });
 
-  it('ignores a corrupt KV value and falls through', async () => {
+  it('ignores a corrupt KV value and falls through to the snapshot', async () => {
     const cookie = await authCookie();
-    const store = { get: async () => '<!doctype html>' };
     const res = await callData({
-      env: { MBG_BUNDLE: store }, cookie,
-      fetchImpl: async () => jsonResponse({ last_updated: 'static' }),
+      env: { MBG_BUNDLE: kvBinding('{"truncated": ') },
+      cookie,
     });
-    expect(res.headers.get('X-Data-Source')).toBe('static-bundle-fallback');
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get('X-Data-Source')).toBe('bundled-snapshot');
   });
 
   it('survives a KV read that throws', async () => {
     const cookie = await authCookie();
-    const store = { get: async () => { throw new Error('kv down'); } };
     const res = await callData({
-      env: { MBG_BUNDLE: store }, cookie,
-      fetchImpl: async () => jsonResponse({ last_updated: 'static' }),
+      env: { MBG_BUNDLE: kvBinding(null, { throwOnGet: true }) },
+      cookie,
     });
+
     expect(res.status).toBe(200);
+    expect(res.headers.get('X-Data-Source')).toBe('bundled-snapshot');
   });
 });
 
 // ---------------------------------------------------------------------------
-// Cache safety
+// Caching
 // ---------------------------------------------------------------------------
 describe('caching', () => {
-  it('never caches an error response', async () => {
+  it('never caches an auth rejection', async () => {
+    const res = await callData({ env: {} });
+    expect(res.headers.get('Cache-Control')).toContain('no-store');
+  });
+
+  it('allows short caching of a good response', async () => {
     const cookie = await authCookie();
-    const res = await callData({ env: {}, cookie, fetchImpl: async () => htmlResponse() });
-    // A cached 503 would keep the cockpit broken long after the fix deploys.
-    const cc = res.headers.get('Cache-Control') || '';
-    expect(cc).toMatch(/no-store/);
+    const res = await callData({ env: {}, cookie });
+    expect(res.headers.get('Cache-Control')).toContain('max-age');
   });
 });
