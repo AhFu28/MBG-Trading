@@ -2,39 +2,63 @@ import React, { useState } from 'react';
 import MbgLogo from './MbgLogo.jsx';
 import AssetIcon from './AssetIcon.jsx';
 
-// Core clean trading navigation — clutter removed
+// Navigation grouped by WHAT YOU ARE DOING, not by asset class.
+//
+// WHY THIS CHANGED (2026-10-06)
+// -----------------------------
+// Jendral Arib: "struktur isi di webnya terlalu padat dan buanyak bgt".
+// MARKETS had grown to ELEVEN items in one flat block, which is not a menu any
+// more — it is a wall. Everything sat at the same level, so nothing was
+// findable and every screen looked equally urgent.
+//
+// Now: 4 groups of 4-5, ordered by workflow:
+//   TRADE      — put on a position (start here)
+//   MARKETS    — what is moving
+//   RESEARCH   — why it is moving
+//   ACCOUNT    — you, and the system
+//
+// The highest-traffic desks (signals, futures, news) stay in the top group so
+// daily work is one click, not a hunt through a list.
 const PRIMARY_NAV_ITEMS = [
-  { id: 'HOME',                icon: '🏠', label: 'Home',            section: 'COMMAND CENTER' },
-  { id: 'AI_AGENTS',           icon: '🤖', label: 'AI Agent Arena',   section: 'COMMAND CENTER' },
-  { id: 'STOCK',               icon: '📈', label: 'Saham IDX',       section: 'MARKETS' },
-  { id: 'CRYPTO',              icon: '⚡', label: 'Crypto Spot',      section: 'MARKETS' },
-  { id: 'FUTURES',             icon: '🔥', label: 'Crypto Futures',   section: 'MARKETS' },
-  { id: 'DEGEN',               icon: '🎰', label: 'Degen Memecoin',   section: 'MARKETS' },
-  { id: 'RADAR',               icon: '🎯', label: 'Early Signal Radar', section: 'MARKETS' },
-  { id: 'SIGNALS',             icon: '📡', label: 'Sinyal Trading',    section: 'MARKETS' },
-  { id: 'FOREX',               icon: '💱', label: 'Forex Scanner',   section: 'MARKETS' },
-  { id: 'US_STOCKS',           icon: '🇺🇸', label: 'US Stocks',       section: 'MARKETS' },
-  { id: 'WHALES',              icon: '🐋', label: 'Whale Tracker',    section: 'MARKETS' },
-  { id: 'HEATMAP',             icon: '🗺️', label: 'Market Heatmap',   section: 'MARKETS' },
-  { id: 'CHARTING',            icon: '📊', label: 'Charting Desk',    section: 'MARKETS' },
-  { id: 'WATCHLIST',           icon: '⭐', label: 'Watchlist',        section: 'MARKETS' },
-  { id: 'GLOBAL_MARKETS',      icon: '🌍', label: 'Pasar Global',     section: 'MARKETS' },
-  { id: 'NEWS',                icon: '📰', label: 'Live News Wire',   section: 'INTELLIGENCE' },
-  { id: 'ECONOMIC_CALENDAR',   icon: '📅', label: 'Kalender Makro',   section: 'INTELLIGENCE' },
-  { id: 'AI_SENTINEL',        icon: '🛡️', label: 'AI Sentinel Desk', section: 'INTELLIGENCE' },
-  { id: 'SUBSCRIPTION',        icon: '👑', label: 'Akun & Langganan', section: 'INTELLIGENCE' },
+  // --- TRADE: the daily loop ---
+  { id: 'HOME',              icon: '🏠', label: 'Home',              section: 'TRADE' },
+  { id: 'SIGNALS',           icon: '📡', label: 'Sinyal Trading',    section: 'TRADE' },
+  { id: 'RADAR',             icon: '🎯', label: 'Early Signal Radar', section: 'TRADE' },
+  { id: 'AI_AGENTS',         icon: '🤖', label: 'AI Agent Arena',   section: 'TRADE' },
+  { id: 'CHARTING',          icon: '📊', label: 'Charting Desk',    section: 'TRADE' },
+
+  // --- MARKETS: where things are moving ---
+  { id: 'FUTURES',           icon: '🔥', label: 'Crypto Futures',   section: 'MARKETS' },
+  { id: 'CRYPTO',            icon: '⚡', label: 'Crypto Spot',      section: 'MARKETS' },
+  { id: 'STOCK',             icon: '📈', label: 'Saham IDX',        section: 'MARKETS' },
+  { id: 'US_STOCKS',         icon: '🇺🇸', label: 'US Stocks',       section: 'MARKETS' },
+  { id: 'FOREX',             icon: '💱', label: 'Forex & Emas',     section: 'MARKETS' },
+  { id: 'DEGEN',             icon: '🎰', label: 'Degen Memecoin',   section: 'MARKETS' },
+  { id: 'GLOBAL_MARKETS',    icon: '🌍', label: 'Pasar Global',     section: 'MARKETS' },
+
+  // --- RESEARCH: why it is moving ---
+  { id: 'NEWS',              icon: '📰', label: 'Live News Wire',   section: 'RESEARCH' },
+  { id: 'WHALES',            icon: '🐋', label: 'Whale Tracker',    section: 'RESEARCH' },
+  { id: 'HEATMAP',           icon: '🗺️', label: 'Market Heatmap',   section: 'RESEARCH' },
+  { id: 'ECONOMIC_CALENDAR', icon: '📅', label: 'Kalender Makro',   section: 'RESEARCH' },
+  { id: 'AI_SENTINEL',       icon: '🛡️', label: 'AI Sentinel Desk', section: 'RESEARCH' },
+
+  // --- ACCOUNT ---
+  { id: 'WATCHLIST',         icon: '⭐', label: 'Watchlist',        section: 'ACCOUNT' },
+  { id: 'SUBSCRIPTION',      icon: '👑', label: 'Akun & Langganan', section: 'ACCOUNT' },
 ];
 
-// Secondary tools tucked into expandable accordion
+// Everything else lives behind one collapsed group. These are occasional tools,
+// not daily desks — mixing them into the main list was most of the clutter.
 const SECONDARY_TOOLS = [
   { id: 'TESTING',             icon: '🧪', label: 'Testing Lab' },
   { id: 'PEARSON_CORRELATION', icon: '🔗', label: 'Korelasi Pearson' },
   { id: 'ACADEMY',             icon: '🎓', label: 'Quant Academy' },
   { id: 'FLOW_PROCESS',        icon: '⚡', label: 'Flow Process' },
-  { id: 'CHANGELOG',           icon: '📜', label: 'Changelog Update' }
+  { id: 'CHANGELOG',           icon: '📜', label: 'Changelog Update' },
 ];
 
-const SECTIONS = ['COMMAND CENTER', 'MARKETS', 'INTELLIGENCE'];
+const SECTIONS = ['TRADE', 'MARKETS', 'RESEARCH', 'ACCOUNT'];
 
 // Curated active tickers to display live in the sidebar
 const DEFAULT_RADAR_TICKERS = [

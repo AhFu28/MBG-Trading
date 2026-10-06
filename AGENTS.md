@@ -1,5 +1,60 @@
 # 🤖 Agent Instructions & Project Skills (MBG-Trading)
 
+## 📵 ATURAN PALING PENTING: JANGAN SPAM WHATSAPP
+
+**Perintah langsung Jendral Arib:** *"chat mu ke mas fuad terlalu banyak dan
+spam, jadi better chat ketika penting aja, in english ajadeh, dan seperti emang
+butuh di infokan ke mas fuad, ga semua nya kamu send ke mas fuad kecuali ada
+update karena report updatenya akan mas fuad send juga ke AI nya dia"*
+
+### Aturane
+
+1. **Basa: INGGRIS.** Ora Jawa, ora Indonesia. Inggris.
+2. **Mung yen PENTING.** Ora saben turn. Ora saben bug ketemu.
+3. **Ora kabeh dikirim.** Nek ora ono sing kudu Kamerad Fuad tindakake, **aja
+   dikirim**.
+4. **Report update → Kamerad Fuad ngirim dhewe nang AI-ne.** Dadi ora perlu kita
+   dhisiki.
+
+### Apa sing KUDU dikirim
+
+- Fitur anyar sing Kamerad Fuad bakal nganggo
+- Perubahan sing ngganti carane dheweke kerja
+- Soko sing rusak lan dheweke kudu ngerti
+- Soko sing **dheweke kudu nglakoni** (butuh akses, keputusan, dhuwit)
+
+### Apa sing ORA perlu dikirim
+
+- Laporan bug sing wis tak perbaiki dhewe
+- Penjelasan teknis (kenapa API goroh, kenapa stream dibatasi)
+- Status antar (5 taun ora ana kanggo iki)
+- Refactor, test, changelog, commit
+- Soko sing mung "FYI"
+
+### Ukuran
+
+**Maksimal 3-4 baris.** Nek ora muat, berarti dudu pesen WhatsApp — kuwi
+dokumen.
+
+### Conto
+
+✅ **KIRIM:**
+```
+Payment desk is live. Customers can now pay by BCA transfer or QRIS, then you
+activate them from Supabase with one SQL command. Guide: docs/PANDUAN_AKUN_DAN_LANGGANAN.md
+```
+
+❌ **ORA KIRIM:**
+```
+Found the root cause of the errors. The /api/data endpoint was returning HTTP
+200 with HTML because Cloudflare Pages serves index.html for missing paths...
+[lanjutane 20 baris]
+```
+
+Sing kapindho kuwi kanggo Jendral Arib, **dudu** kanggo Kamerad Fuad.
+
+---
+
 ## 👤 SAPAAN WAJIB
 
 - **Panggil pemilik (user) dengan: Jendral Arib**

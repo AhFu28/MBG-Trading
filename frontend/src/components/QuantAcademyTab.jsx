@@ -1185,6 +1185,31 @@ function VisualExecutionBracket() {
           />
           {safeSL >= safeEntry && <div style={{ fontSize: '10px', color: 'var(--accent-red)', marginTop: '2px' }}>SL harus di bawah Entry!</div>}
         </div>
+
+        {/* Capital and risk were fixed constants driving the lot maths, with no
+            way to set them — so the calculator could only ever answer for one
+            hypothetical account. Both are now inputs. */}
+        <div>
+          <label style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Total Modal (Rp)</label>
+          <input
+            type="number"
+            value={modal}
+            onChange={(e) => setModal(Number(e.target.value))}
+            style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--border-hairline)', padding: '6px 10px', borderRadius: '4px', color: 'var(--text-primary)', fontWeight: '800' }}
+          />
+          {Number(modal) < 1000000 && <div style={{ fontSize: '10px', color: 'var(--accent-gold)', marginTop: '2px' }}>Minimum Rp 1.000.000</div>}
+        </div>
+        <div>
+          <label style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Risiko per Trade (%)</label>
+          <input
+            type="number"
+            step="0.1"
+            value={riskPct}
+            onChange={(e) => setRiskPct(Number(e.target.value))}
+            style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--border-hairline)', padding: '6px 10px', borderRadius: '4px', color: 'var(--text-primary)', fontWeight: '800' }}
+          />
+          {Number(riskPct) > 5 && <div style={{ fontSize: '10px', color: 'var(--accent-red)', marginTop: '2px' }}>Di atas 5% per trade terlalu agresif</div>}
+        </div>
       </div>
 
       <div style={{ background: 'rgba(0,0,0,0.3)', padding: '16px', borderRadius: '8px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>

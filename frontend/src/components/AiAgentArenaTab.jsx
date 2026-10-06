@@ -2461,7 +2461,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
   const [reviewActiveTab, setReviewActiveTab] = useState('RECAP'); // 'RECAP' | 'WATER' | 'FIRE' | 'AIR' | 'EARTH'
   const [resetConfirmModal, setResetConfirmModal] = useState({ isOpen: false, agentId: null, agentName: '' });
   const [selectedPhilosophyAgent, setSelectedPhilosophyAgent] = useState('WATER');
-  const [selectedReviewAgent, setSelectedReviewAgent] = useState('WATER');
+  // `selectedReviewAgent` had no reader and no setter — the review modal keys off
+  // `reviewActiveTab` above. Removed rather than wired up, because nothing asked
+  // for a per-agent review selection.
   const [toasts, setToasts] = useState([]);
 
   // Bot Life Cycle: Evolution & Mutasi DNA Modal

@@ -48,11 +48,19 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
         ...r,
         mark_price: livePrice,
         index_price: r.index_price || livePrice,
-        high_24h: r.high_24h || 0,
-        low_24h: r.low_24h || 0,
-        change_24h_pct: r.change_24h_pct || 0,
-        volume_24h_usd: r.volume_24h_usd || 0,
-        funding_next_pct: r.funding_next_pct || (r.funding_rate_pct || 0.01)
+        // WHY null INSTEAD OF `|| 0` (2026-10-06)
+        // --------------------------------------
+        // `r.high_24h || 0` did two harmful things. It turned a genuine 0 into a
+        // falsy miss, and — worse — it rendered a MISSING field as 0, which the
+        // table displays as a real measured value. A blank cell reads as "no
+        // data"; "0.00%" reads as "measured, and it is flat". null now flows to
+        // the renderer, which prints an em dash.
+        high_24h: r.high_24h ?? null,
+        low_24h: r.low_24h ?? null,
+        change_24h_pct: r.change_24h_pct ?? null,
+        volume_24h_usd: r.volume_24h_usd ?? null,
+        funding_rate_pct: r.funding_rate_pct ?? null,
+        funding_next_pct: r.funding_next_pct ?? r.funding_rate_pct ?? null,
       };
     });
 
@@ -60,22 +68,26 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
       if (!existingSymbols.has(sym)) {
         const baseCoin = sym.replace('USDT', '');
         const live = livePrices[sym] || livePrices[`${baseCoin}/USDT`] || livePrices[baseCoin];
-        const price = (live?.price && live.price > 0) ? live.price : 0;
+        const price = (live?.price && live.price > 0) ? live.price : null;
+        // No funding figure is known for a pair the engine did not report.
+        // The previous version invented 0.01% NEUTRAL for every one of them,
+        // so ~45 of 60 rows showed funding that nobody had measured.
         fullList.push({
           symbol: sym,
           pair: `${baseCoin}/USDT`,
-          funding_rate: 0.0001,
-          funding_rate_pct: 0.01,
-          funding_next_pct: 0.01,
-          next_funding_time: '08:00:00',
+          funding_rate: null,
+          funding_rate_pct: null,
+          funding_next_pct: null,
+          next_funding_time: null,
           mark_price: price,
           index_price: price,
-          high_24h: 0,
-          low_24h: 0,
-          change_24h_pct: 0,
-          volume_24h_usd: 0,
-          signal: 'NEUTRAL',
-          signal_desc: 'Funding seimbang'
+          high_24h: null,
+          low_24h: null,
+          change_24h_pct: null,
+          volume_24h_usd: null,
+          signal: 'NO_DATA',
+          signal_desc: 'Funding belum tersedia untuk pair ini',
+          data_source: 'unavailable',
         });
       }
     });
@@ -92,18 +104,23 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
       if (!Array.isArray(tickers)) return;
 
       setLiveFundingRates(prev => {
+        // When the bundle gave us nothing yet, start from EMPTY placeholders.
+        // The previous version seeded 60 rows with mark_price 0 and funding
+        // 0.01% NEUTRAL, so an unpopulated table looked like a measured flat
+        // market instead of an unpopulated one.
         const list = prev.length > 0 ? prev : DEFAULT_FUTURES_PAIRS.map(sym => ({
           symbol: sym,
           pair: `${sym.replace('USDT', '')}/USDT`,
-          funding_rate: 0.0001,
-          funding_rate_pct: 0.01,
-          funding_next_pct: 0.01,
-          mark_price: 0,
-          index_price: 0,
-          high_24h: 0,
-          low_24h: 0,
-          change_24h_pct: 0,
-          volume_24h_usd: 0
+          funding_rate: null,
+          funding_rate_pct: null,
+          funding_next_pct: null,
+          mark_price: null,
+          index_price: null,
+          high_24h: null,
+          low_24h: null,
+          change_24h_pct: null,
+          volume_24h_usd: null,
+          signal: 'NO_DATA',
         }));
 
         return list.map(item => {
@@ -229,7 +246,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
             low_24h: live.low > 0 ? live.low : item.low_24h,
             // Only overwrite when the live value is genuinely present. A zero
             // produced by a missing field must never replace real data.
-            volume_24h_usd: live.volume > 0 ? live.volume : (item.volume_24h_usd || 0),
+            volume_24h_usd: live.volume > 0 ? live.volume : (item.volume_24h_usd ?? null),
             change_24h_pct: (live.changePct !== null && live.changePct !== undefined)
               ? live.changePct
               : (item.change_24h_pct ?? 0),
@@ -361,7 +378,13 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
 
   const rates = liveFundingRates.length > 0 ? liveFundingRates : initialRates;
   const totalOI = initialOI.reduce((acc, curr) => acc + (curr.open_interest_usd || 0), 0);
-  const avgFunding = rates.reduce((acc, curr) => acc + (curr.funding_rate_pct || 0), 0) / (rates.length || 1);
+  // Average only over pairs that actually reported a funding rate. Including
+  // unknowns as 0 would drag the average toward zero and could flip the market
+  // read from "longs paying" to "balanced" purely from missing data.
+  const fundingRatesKnown = rates.filter(r => r.funding_rate_pct != null);
+  const avgFunding = fundingRatesKnown.length > 0
+    ? fundingRatesKnown.reduce((acc, curr) => acc + Number(curr.funding_rate_pct), 0) / fundingRatesKnown.length
+    : null;
   const lsRatios = initialLS.map(r => r.long_short_ratio);
   const avgLsRatio = lsRatios.reduce((acc, curr) => acc + curr, 0) / (lsRatios.length || 1);
   const marketBias = avgLsRatio > 1.05 ? 'LONG BIASED' : avgLsRatio < 0.95 ? 'SHORT BIASED' : 'NEUTRAL';
@@ -375,12 +398,24 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
     return '20x';
   };
 
+  // --- Missing-value renderers -------------------------------------------------
+  // `'$0'` and `'0.00%'` are claims. When a field is absent we render an em dash
+  // instead, so an unmeasured pair cannot be mistaken for a measured flat one.
+  const EM_DASH = '—';
+
   const formatVolSmart = (val) => {
-    if (!val || isNaN(val)) return '$0';
+    if (val === null || val === undefined || isNaN(val)) return EM_DASH;
     if (val >= 1e9) return `$${(val / 1e9).toFixed(2)}B`;
     if (val >= 1e6) return `$${(val / 1e6).toFixed(2)}M`;
     if (val >= 1e3) return `$${(val / 1e3).toFixed(1)}K`;
     return `$${val.toFixed(0)}`;
+  };
+
+  /** Percent with an explicit sign, or an em dash when unknown. */
+  const fmtPct = (val, decimals = 2) => {
+    if (val === null || val === undefined || isNaN(val)) return EM_DASH;
+    const n = Number(val);
+    return `${n > 0 ? '+' : ''}${n.toFixed(decimals)}%`;
   };
 
   const formatPriceSmart = (val) => {
@@ -391,9 +426,10 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
     return `$${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
-  // Top performers for Futures Bento
-  const topFuturesVolume = [...rates].sort((a, b) => (b.volume_24h_usd || 0) - (a.volume_24h_usd || 0))[0];
-  const topFuturesGainer = [...rates].sort((a, b) => (b.change_24h_pct || 0) - (a.change_24h_pct || 0))[0];
+  // Top performers for Futures Bento. Pairs with no measurement sort last
+  // rather than being treated as zero-volume rows.
+  const topFuturesVolume = [...rates].sort((a, b) => (b.volume_24h_usd ?? -Infinity) - (a.volume_24h_usd ?? -Infinity))[0];
+  const topFuturesGainer = [...rates].sort((a, b) => (b.change_24h_pct ?? -Infinity) - (a.change_24h_pct ?? -Infinity))[0];
 
   const handleFuturesSort = (field) => {
     if (futuresSortField === field) {
@@ -407,10 +443,14 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
   // Filtered & Sorted Perpetual Futures rates
   const filteredRates = rates
     .filter(f => {
-      if (futuresFilter === 'GAINERS' && (f.change_24h_pct || 0) <= 0) return false;
-      if (futuresFilter === 'LOSERS' && (f.change_24h_pct || 0) >= 0) return false;
-      if (futuresFilter === 'HIGH_FUNDING' && (f.funding_rate_pct || 0) <= 0.02) return false;
-      if (futuresFilter === 'SQUEEZE' && (f.funding_rate_pct || 0) >= -0.005) return false;
+      if (futuresFilter === 'GAINERS' && !(f.change_24h_pct > 0)) return false;
+      if (futuresFilter === 'LOSERS' && !(f.change_24h_pct < 0)) return false;
+      // These two filters are about EXTREME funding. Coercing a missing rate to
+      // 0 would silently exclude unknown pairs from HIGH_FUNDING (fine) but also
+      // exclude them from SQUEEZE while LOOKING like they were evaluated — so
+      // both now require a real measurement.
+      if (futuresFilter === 'HIGH_FUNDING' && !(f.funding_rate_pct > 0.02)) return false;
+      if (futuresFilter === 'SQUEEZE' && !(f.funding_rate_pct < -0.005)) return false;
 
       if (!futuresSearch) return true;
       const q = futuresSearch.toLowerCase().trim();
@@ -543,11 +583,14 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
               <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
                 Avg Funding Rate (8h Live)
               </div>
-              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: avgFunding < -0.01 ? 'var(--accent-green)' : avgFunding > 0.05 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
-                {avgFunding.toFixed(4)}%
+              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: avgFunding == null ? 'var(--text-muted)' : avgFunding < -0.01 ? 'var(--accent-green)' : avgFunding > 0.05 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
+                {fmtPct(avgFunding, 4)}
               </div>
               <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
-                {avgFunding > 0.03 ? '⚠️ Long Overleveraged' : avgFunding < -0.01 ? '🚀 Squeeze Potential' : 'Sentimen Seimbang'}
+                {avgFunding == null ? 'Belum ada data funding'
+                  : avgFunding > 0.03 ? '⚠️ Long Overleveraged'
+                    : avgFunding < -0.01 ? '🚀 Squeeze Potential'
+                      : 'Sentimen Seimbang'}
               </div>
             </div>
 
@@ -565,8 +608,8 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
               <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
                 Top 24h Perp Gainer
               </div>
-              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: (topFuturesGainer?.change_24h_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                {topFuturesGainer ? `${(topFuturesGainer.change_24h_pct || 0) >= 0 ? '+' : ''}${Number(topFuturesGainer.change_24h_pct || 0).toFixed(2)}%` : '+0.00%'}
+              <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: topFuturesGainer?.change_24h_pct == null ? 'var(--text-muted)' : topFuturesGainer.change_24h_pct >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                {topFuturesGainer ? fmtPct(topFuturesGainer.change_24h_pct, 2) : '—'}
               </div>
               <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
                 {topFuturesGainer ? `${topFuturesGainer.pair} · Max ${getLeverageTier(topFuturesGainer.symbol)}` : 'Scanning...'}
@@ -643,7 +686,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {(initialLiquidityHeat.rows || []).slice(0, 12).map((row, idx) => {
-                    const up = (row.change_24h_pct || 0) >= 0;
+                    const up = row.change_24h_pct != null && row.change_24h_pct >= 0;
                     const oiUp = (row.oi_change_1h_pct || 0) >= 0;
                     return (
                       <div key={idx} style={{
@@ -677,14 +720,14 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                         <div style={{ minWidth: '86px' }}>
                           <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '800' }}>OI 1 JAM</div>
                           <div style={{ fontSize: '13px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: oiUp ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                            {oiUp ? '+' : ''}{Number(row.oi_change_1h_pct || 0).toFixed(2)}%
+                            {fmtPct(row.oi_change_1h_pct, 2)}
                           </div>
                         </div>
 
                         <div style={{ minWidth: '80px' }}>
                           <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '800' }}>HARGA 24 JAM</div>
                           <div style={{ fontSize: '13px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: up ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                            {up ? '+' : ''}{Number(row.change_24h_pct || 0).toFixed(2)}%
+                            {fmtPct(row.change_24h_pct, 2)}
                           </div>
                         </div>
 
@@ -865,7 +908,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                       : (liveQuote?.price && Number(liveQuote.price) > 0 ? Number(liveQuote.price) : 0);
 
                     const flash = flashingPairs[f.symbol] || flashMap?.[f.symbol] || flashMap?.[base];
-                    const isUp24 = (f.change_24h_pct || 0) >= 0;
+                    const isUp24 = f.change_24h_pct != null && f.change_24h_pct >= 0;
 
                     return (
                       <tr key={f.symbol || f.pair} style={{ borderBottom: 'var(--border-hairline)' }}>
@@ -946,24 +989,24 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                               border: `1px solid ${isUp24 ? 'rgba(0, 208, 132, 0.25)' : 'rgba(239, 68, 68, 0.25)'}`
                             }}
                           >
-                            {isUp24 ? '+' : ''}{Number(f.change_24h_pct || 0).toFixed(2)}%
+                            {fmtPct(f.change_24h_pct, 2)}
                           </span>
                         </td>
 
                         <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11px' }}>
                           <div style={{ color: 'var(--text-secondary)' }}>
                             <span style={{ color: 'var(--text-muted)', fontSize: '9px', marginRight: '3px' }}>H:</span>
-                            {f.high_24h > 0 ? formatPriceSmart(f.high_24h) : '-'}
+                            {f.high_24h != null && f.high_24h > 0 ? formatPriceSmart(f.high_24h) : '-'}
                           </div>
                           <div style={{ color: 'var(--text-secondary)', marginTop: '2px' }}>
                             <span style={{ color: 'var(--text-muted)', fontSize: '9px', marginRight: '3px' }}>L:</span>
-                            {f.low_24h > 0 ? formatPriceSmart(f.low_24h) : '-'}
+                            {f.low_24h != null && f.low_24h > 0 ? formatPriceSmart(f.low_24h) : '-'}
                           </div>
                         </td>
 
                         <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>
                           <div style={{ fontWeight: '700', fontSize: '12px', color: 'var(--text-primary)' }}>
-                            {formatVolSmart(f.volume_24h_usd || 0)}
+                            {formatVolSmart(f.volume_24h_usd)}
                           </div>
                           <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>
                             Turnover USDT
@@ -974,23 +1017,32 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                           <div style={{
                             fontWeight: '800',
                             fontSize: '12px',
-                            color: f.funding_rate_pct < -0.01 ? 'var(--accent-green)' : f.funding_rate_pct > 0.03 ? 'var(--accent-rust)' : 'var(--text-primary)'
+                            color: f.funding_rate_pct == null
+                              ? 'var(--text-muted)'
+                              : f.funding_rate_pct < -0.01 ? 'var(--accent-green)' : f.funding_rate_pct > 0.03 ? 'var(--accent-rust)' : 'var(--text-primary)'
                           }}>
-                            {f.funding_rate_pct > 0 ? '+' : ''}{Number(f.funding_rate_pct || 0).toFixed(4)}%
+                            {fmtPct(f.funding_rate_pct, 4)}
                           </div>
                           <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                            Settle: <span style={{ color: 'var(--accent-gold)' }}>{countdown || '08:00:00'}</span>
-                            {f.funding_next_pct !== undefined && (
+                            Settle: <span style={{ color: 'var(--accent-gold)' }}>{countdown || (f.funding_rate_pct == null ? '—' : '08:00:00')}</span>
+                            {f.funding_next_pct != null && (
                               <span style={{ marginLeft: '4px' }}>
-                                &middot; Pred: {f.funding_next_pct > 0 ? '+' : ''}{Number(f.funding_next_pct || 0).toFixed(4)}%
+                                &middot; Pred: {fmtPct(f.funding_next_pct, 4)}
                               </span>
                             )}
                           </div>
                         </td>
 
                         <td style={{ padding: '10px', textAlign: 'center' }}>
-                          <span className={`badge ${f.funding_rate_pct < -0.01 ? 'badge-bull' : f.funding_rate_pct > 0.03 ? 'badge-bear' : ''}`} style={{ fontWeight: 'bold' }}>
-                            {f.funding_rate_pct > 0.03 ? '⚠️ OVERLEVERAGED' : f.funding_rate_pct < -0.01 ? '🚀 SQUEEZE POTENTIAL' : '⚖️ BALANCED'}
+                          <span
+                            className={`badge ${f.funding_rate_pct == null ? '' : f.funding_rate_pct < -0.01 ? 'badge-bull' : f.funding_rate_pct > 0.03 ? 'badge-bear' : ''}`}
+                            style={{ fontWeight: 'bold' }}
+                          >
+                            {f.funding_rate_pct == null
+                              ? '— NO DATA'
+                              : f.funding_rate_pct > 0.03 ? '⚠️ OVERLEVERAGED'
+                                : f.funding_rate_pct < -0.01 ? '🚀 SQUEEZE POTENTIAL'
+                                  : '⚖️ BALANCED'}
                           </span>
                         </td>
 

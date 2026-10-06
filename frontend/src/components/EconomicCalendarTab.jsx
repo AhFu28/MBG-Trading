@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 
 // Dataset Makro Ekonomi Komprehensif (40+ Event Global: US, ID, EU, GB, JP, CN, AU)
 const COMPREHENSIVE_MACRO_EVENTS = [
@@ -771,11 +771,20 @@ export default function EconomicCalendarTab() {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedId, setExpandedId] = useState(null);
 
-  const [events, setEvents] = useState(COMPREHENSIVE_MACRO_EVENTS);
+  // STATIC SAMPLE, NOT A LIVE FEED.
+  //
+  // The bundle has no `economic_calendar` key, and this component takes no
+  // props — `setEvents(COMPREHENSIVE_MACRO_EVENTS)` re-assigns the same
+  // constant. So every `actual` value below (BI Rate 6.00%, CPI 2.12%,
+  // Cadev $150.2B) is a fixed string, and rows carry RELEASED badges and
+  // "✅ Sudah Dirilis" as if the figures had been published.
+  //
+  // Rather than invent a fetch, the rows are now labelled as a template. The
+  // schedule skeleton is genuinely useful for planning; the numbers are not
+  // real and must not be read as outcomes.
+  const [events] = useState(COMPREHENSIVE_MACRO_EVENTS);
 
-  useEffect(() => {
-    setEvents(COMPREHENSIVE_MACRO_EVENTS);
-  }, []);
+  const isStaticSample = true;
 
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
@@ -824,7 +833,21 @@ export default function EconomicCalendarTab() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', boxSizing: 'border-box' }}>
-      
+
+      {/* Honest disclosure. Without this the table reads as a live wire: rows
+          carry RELEASED badges and "✅ Sudah Dirilis" beside invented numbers. */}
+      {isStaticSample && (
+        <div style={{
+          background: 'rgba(245,158,11,0.10)', border: '1px solid rgba(245,158,11,0.38)',
+          borderRadius: '10px', padding: '12px 16px', fontSize: '12px',
+          color: '#fbbf24', lineHeight: 1.7,
+        }}>
+          <strong>⚠️ Jadwal contoh, dudu feed langsung.</strong> Tanggal rilis lan jeneng
+          acara kuwi kerangka nyata, <strong>nanging angka actual/forecast/previous isih conto</strong> —
+          aja dianggep asil rilis. Sumber kalender durung disambungake.
+        </div>
+      )}
+
       {/* 1. Header Hub Card */}
       <div className="quant-card" style={{ padding: '18px 22px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
         <div>

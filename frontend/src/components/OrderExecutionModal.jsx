@@ -35,6 +35,19 @@ export default function OrderExecutionModal({
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  /** Persist Binance API credentials to the same key the initialiser reads. */
+  const updateBinanceConfig = (patch) => {
+    setBinanceConfig((prev) => {
+      const next = { ...prev, ...patch };
+      try {
+        localStorage.setItem('mbg_binance_config', JSON.stringify(next));
+      } catch {
+        // Storage disabled (private mode): keep working in memory for this session.
+      }
+      return next;
+    });
+  };
+
   // Load prefill values
   useEffect(() => {
     if (prefill) {
@@ -294,6 +307,47 @@ export default function OrderExecutionModal({
             </span>
           </div>
 
+          {/* Binance credential entry.
+              binanceConfig was read at submit time (line ~163) and its keys were
+              required before a live order could be placed, but nothing ever
+              called setBinanceConfig — so the live broker was unreachable by
+              design. The fields now exist and persist to the same localStorage
+              key the initialiser already reads. */}
+          {brokerType === 'BINANCE' && (
+            <div style={{
+              background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.3)',
+              borderRadius: '6px', padding: '12px',
+            }}>
+              <div style={{ fontSize: '11px', fontWeight: '800', color: '#fbbf24', marginBottom: '8px' }}>
+                🔑 API Binance {binanceConfig.isTestnet ? '(TESTNET)' : '(LIVE — dana nyata)'}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                <input
+                  type="password"
+                  placeholder="API Key"
+                  value={binanceConfig.apiKey}
+                  onChange={(e) => updateBinanceConfig({ apiKey: e.target.value })}
+                  style={{ padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--text-primary)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '11px' }}
+                />
+                <input
+                  type="password"
+                  placeholder="Secret Key"
+                  value={binanceConfig.secretKey}
+                  onChange={(e) => updateBinanceConfig({ secretKey: e.target.value })}
+                  style={{ padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--text-primary)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '11px' }}
+                />
+              </div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '8px', fontSize: '10.5px', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={binanceConfig.isTestnet}
+                  onChange={(e) => updateBinanceConfig({ isTestnet: e.target.checked })}
+                />
+                Pakai Testnet (disaranake — dana nyata ora kena)
+              </label>
+            </div>
+          )}
+
           {/* 2. Order Parameters Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px' }}>
             <div>
@@ -329,6 +383,29 @@ export default function OrderExecutionModal({
                 <option value="LIMIT">LIMIT ORDER</option>
                 <option value="MARKET">MARKET (TAKER)</option>
               </select>
+            </div>
+
+            {/* Risk per trade.
+                This was hardwired to 1.5% with no way to change it, yet the
+                rupiah amount it produces is displayed to the user below. A
+                risk-sized order the trader cannot size is not a risk tool — so
+                the input now exists and drives the lot maths at line ~94. */}
+            <div>
+              <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                Risiko per Trade (%)
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                min="0.1"
+                max="100"
+                value={riskPercent}
+                onChange={(e) => setRiskPercent(e.target.value)}
+                style={{ width: '100%', padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--text-primary)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontWeight: '700' }}
+              />
+              <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '3px' }}>
+                Batas kerugian bila stop loss tersentuh
+              </div>
             </div>
 
             <div>

@@ -730,7 +730,16 @@ export default function App() {
                 title="Buka AI Sentinel Desk"
               >
                 <span>🛡️</span>
-                <span style={{ fontWeight: 700 }}>DEFCON {data?.geopolitical_threat?.defcon_level || 4}</span>
+                {/* No `|| 4` fallback. `geopolitical_threat` is not a bundle key,
+                    so the old fallback displayed a permanent "DEFCON 4" in the
+                    top nav as if it were an assessed threat level. A missing
+                    feed now reads "—" — an invented readiness state in the
+                    navigation bar is not a cosmetic problem. */}
+                <span style={{ fontWeight: 700 }}>
+                  {data?.geopolitical_threat?.defcon_level
+                    ? `DEFCON ${data.geopolitical_threat.defcon_level}`
+                    : 'DEFCON —'}
+                </span>
               </button>
 
               {/* Quick Launch Lot Calculator Modal */}

@@ -192,154 +192,51 @@ export default function AiIntelligenceDrawer({
   }, [activeThemes, selectedThemeId]);
 
   // 2. Geopolitical Desk Data
-  const geoDesk = useMemo(() => {
-    return threatData || {
-      defcon_level: 4,
-      defcon_title: 'DEFCON 4 // GUARDED / WASPADA TERUKUR',
-      primary_threat: 'Tensi geopolitik energi Selat Hormuz & divergensi suku bunga The Fed-BI memicu rebalancing portofolio lintas aset.',
-      threat_score: 0.42,
-      macro_risk_guidance: 'Pertahankan alokasi cadangan kas 25-30% likuid. Pasang trailing stop disiplin (1.8x ATR) pada saham energi & perbankan. Manfaatkan emas spot & instrumen jangka pendek untuk safe-haven hedge.',
-      sub_pillars: [
-        { id: 'PILLAR_ENERGY', name: 'Rantai Pasok Energi & Chokepoint Selat Hormuz', score: 68, severity: 'ELEVATED', weight: '35%', note: 'Premi risiko perang tanker naik, Brent rentan spike ke $85-$92/bbl' },
-        { id: 'PILLAR_FX', name: 'Divergensi Moneter & Pertahanan Kurs Rupiah', score: 54, severity: 'MODERATE', weight: '30%', note: 'DXY di atas 104, BI intervensi valas & SRBI untuk menjaga Rp 16.000' },
-        { id: 'PILLAR_TRADE', name: 'Perang Tarif Dagang & Fragmentasi Pasok', score: 45, severity: 'MODERATE', weight: '20%', note: 'Tekanan proteksionisme AS-Tiongkok, peluang relokasi pabrik ke KIT Batang' },
-        { id: 'PILLAR_MILITARY', name: 'Manuver Militer & Titik Rawan Maritim', score: 32, severity: 'GUARDED', weight: '15%', note: 'Pengawasan patroli maritim Selat Malaka & Selat Taiwan' }
-      ],
-      simulated_scenarios: [
-        {
-          id: 'SCENARIO_BASE',
-          name: 'SKENARIO 1: STATUS QUO (DEFCON 4 // GUARDED)',
-          defcon_level: 4,
-          badge: 'KONDISI RIIL AKTIF',
-          threat_score: 0.42,
-          brent_price: '$78 - $84 / bbl',
-          usd_idr: 'Rp 15.900 - Rp 16.150',
-          sbn_yield: '6.75% - 6.90%',
-          cash_buffer: '25% - 30% Likuid',
-          tactical_focus: 'Akumulasi terarah saham berfundamental prima (BBCA, BMRI, ICBP). Manfaatkan swing momentum pada ANTM & MEDC.',
-          winners: ['MEDC', 'BBCA', 'ICBP'],
-          losers: ['GIAA', 'JSMR']
-        },
-        {
-          id: 'SCENARIO_HORMUZ',
-          name: 'SKENARIO 2: ESKALASI SELAT HORMUZ (DEFCON 2 // ARMED ENGAGEMENT)',
-          defcon_level: 2,
-          badge: 'SIMULASI SHOCK MINYAK',
-          threat_score: 0.78,
-          brent_price: '$95 - $110 / bbl (+28%)',
-          usd_idr: 'Rp 16.350 - Rp 16.600 (+3.5%)',
-          sbn_yield: '7.15% - 7.40%',
-          cash_buffer: '35% - 40% Likuid',
-          tactical_focus: 'Rotasi agresif: Naikkan porsi emiten hulu migas (MEDC, ENRG) dan emas safe-haven (ANTM). Cut loss langsung maskapai (GIAA) & manufaktur bahan baku impor.',
-          winners: ['MEDC', 'ENRG', 'ANTM'],
-          losers: ['GIAA', 'TPIA', 'KLBF']
-        },
-        {
-          id: 'SCENARIO_TARIFFS',
-          name: 'SKENARIO 3: PERANG TARIF GLOBAL & STAGFLASI (DEFCON 3 // ELEVATED)',
-          defcon_level: 3,
-          badge: 'SIMULASI SHOCK PERDAGANGAN',
-          threat_score: 0.62,
-          brent_price: '$70 - $76 / bbl (-12%)',
-          usd_idr: 'Rp 16.200 - Rp 16.450',
-          sbn_yield: '6.95% - 7.20%',
-          cash_buffer: '30% - 35% Likuid',
-          tactical_focus: 'Pindah ke mode defensif maksimal. Tingkatkan alokasi instrumen pasar uang, emas spot, dan emiten berdividen tunai jumbo (ITMG, ADRO).',
-          winners: ['ITMG', 'ADRO', 'ANTM'],
-          losers: ['ASII', 'ACES', 'DMAS']
-        }
-      ],
-      flashpoints: [
-        {
-          id: 'FLASH_HORMUZ',
-          name: 'Selat Hormuz & Jalur Tanker Minyak Teluk Persia',
-          region: 'Timur Tengah (Iran / Selat Hormuz)',
-          threat_level: 'ELEVATED',
-          severity_score: 0.85,
-          status_badge: 'ACTIVE CHOKEPOINT RISK',
-          description: 'Selat Hormuz dilalui oleh lebih dari 20% pasokan minyak mentah cair dunia (±21 juta barel per hari). Friksi militer secara berkala memicu lonjakan premi asuransi perang tanker hingga +300% dan risiko lonjakan harga minyak mentah Brent menembus $90+/barel.',
-          transmission: 'Lonjakan ASP minyak mentah -> Ekuitas O&G Hulu (MEDC, ENRG) mencetak windfall EBITDA -> Beban avtur maskapai (GIAA) dan biaya bahan baku nafta petrokimia (TPIA) terkompresi tajam.',
-          affected_tickers: ['MEDC', 'ENRG', 'PGAS', 'AKRA', 'GIAA', 'TPIA'],
-          catalysts: ['Premi risiko perang asuransi tanker', 'Kepatuhan kuota produksi OPEC+', 'Cadangan minyak strategis SPR AS']
-        },
-        {
-          id: 'FLASH_FED_BI',
-          name: 'Divergensi Suku Bunga The Fed vs BI-Rate & Ketahanan Rupiah',
-          region: 'Global / Pasar Finansial Domestik',
-          threat_level: 'HIGH',
-          severity_score: 0.76,
-          status_badge: 'MONETARY REGIME PRESSURE',
-          description: 'Indeks DXY bertahan di atas 104 dan yield US 10-Year Treasury bertahan tinggi menyempitkan yield spread dengan SBN 10Y RI. Bank Indonesia dipaksa mempertahankan suku bunga SRBI tinggi untuk membendung arus modal keluar (capital outflow) dan menahan depresiasi Rupiah di kisaran Rp 16.000 - 16.250/USD.',
-          transmission: 'Suku bunga tinggi berlarut menekan emiten dengan leverage utang tinggi (JSMR, WIKA). Namun, perbankan tier-1 dengan rasio CASA masif (BBCA 82%, BMRI 78%) menikmati Net Interest Margin (NIM) prima.',
-          affected_tickers: ['BBCA', 'BMRI', 'BBRI', 'BBNI', 'JSMR', 'KLBF'],
-          catalysts: ['Dot Plot suku bunga The Fed', 'Lelang instrumen SRBI & SVBI BI', 'Cadangan devisa Bank Indonesia']
-        },
-        {
-          id: 'FLASH_TARIFFS',
-          name: 'Perang Tarif Dagang & Embargo Semikonduktor AS-Tiongkok',
-          region: 'Asia Pasifik / AS - Tiongkok',
-          threat_level: 'MODERATE',
-          severity_score: 0.65,
-          status_badge: 'SUPPLY CHAIN REALIGNMENT',
-          description: 'Kenaikan tarif bea masuk produk industri Tiongkok ke pasar barat dan restriksi ekspor chip canggih memicu fragmentasi rantai pasok global. Tiongkok mengalihkan ekspor murah ke negara berkembang (risiko dumping pasar lokal), namun membuka peluang \'China+1\' berupa relokasi pabrik manufaktur ke koridor industri Jawa Tengah (KIT Batang, KI Kendal).',
-          transmission: 'Peluang penyerapan lahan industri (DMAS, SSIA, AKRA) meningkat. Di sisi lain, persaingan harga produk hilir tekstil & baja lokal tertekan produk impor murah.',
-          affected_tickers: ['AKRA', 'DMAS', 'SSIA', 'ASII', 'SRIL'],
-          catalysts: ['Regulasi Section 301 tarif AS', 'Investasi langsung PMA Tiongkok ke RI', 'Kebijakan anti-dumping Kemendag']
-        },
-        {
-          id: 'FLASH_TAIWAN',
-          name: 'Selat Taiwan & Keamanan Jalur Maritim Pasifik Barat',
-          region: 'Asia Timur / Selat Taiwan',
-          threat_level: 'GUARDED',
-          severity_score: 0.58,
-          status_badge: 'TECH LOGISTICS WATCH',
-          description: 'Selat Taiwan dan Laut Cina Selatan memproses hampir separuh armada peti kemas dunia dan mayoritas distribusi fabrikasi chip logika canggih TSMC. Setiap peningkatan manuver maritim memicu keterlambatan pengapalan komponen elektronik, server AI, dan suku cadang presisi.',
-          transmission: 'Disrupsi pengapalan hardware global -> Kenaikan lead time server cloud & telco (TLKM, ISAT) -> Likuiditas pasar modal Asia bergerak defensif.',
-          affected_tickers: ['NVDA', 'TSM', 'AAPL', 'TLKM', 'TOWR'],
-          catalysts: ['Latihan maritim lintas selat', 'Diversifikasi pabrik TSMC ke Arizona/Jepang', 'Biaya kargo kontainer rute trans-Pasifik']
-        },
-        {
-          id: 'FLASH_BLACKSEA',
-          name: 'Koridor Gandum & Pasokan Pupuk Kalium/Fosfat Laut Hitam',
-          region: 'Eropa Timur / Laut Hitam',
-          threat_level: 'MODERATE',
-          severity_score: 0.52,
-          status_badge: 'FOOD & COMMODITY WATCH',
-          description: 'Ketidakpastian logistik Laut Hitam mempengaruhi harga acuan gandum Chicago (CBOT) dan pasokan pupuk kalium/fosfat dunia. Bagi Indonesia, harga gandum mempengaruhi beban biaya produksi mie instan dan pakan ternak, sementara harga pupuk menentukan biaya operasional perkebunan kelapa sawit.',
-          transmission: 'Volatilitas harga gandum diimbangi oleh kenaikan harga CPO global akibat substitusi minyak nabati -> Emiten CPO (AALI, LSIP, TAPG) mendapatkan momentum perbaikan arus kas operasional.',
-          affected_tickers: ['ICBP', 'INDF', 'AALI', 'LSIP', 'CPIN', 'JPFA'],
-          catalysts: ['Kesepakatan koridor biji-bijian Laut Hitam', 'Bea keluar CPO & pungutan BPDPKS', 'Harga pupuk NPK internasional']
-        }
-      ],
-      cross_asset_matrix: [
-        { asset: 'Minyak Mentah Brent', trend: 'BULLISH', impact: 'Lonjakan premi risiko perang Selat Hormuz', affected_sectors: 'Migas Hulu (+), Aviasi (-), Petrokimia (-)', sentiment_color: '#10b981' },
-        { asset: 'Emas Spot (XAU/USD)', trend: 'STRONG_BULLISH', impact: 'All-Time High de-dolarisasi cadangan devisa bank sentral', affected_sectors: 'Tambang Emas (ANTM, BRMS, MDKA) (+)', sentiment_color: '#10b981' },
-        { asset: 'US Dollar (DXY)', trend: 'BULLISH', impact: 'Yield Treasury 10Y tinggi menarik modal ke safe USD', affected_sectors: 'Eksportir USD (+), Emiten Utang Valas (-)', sentiment_color: '#38bdf8' },
-        { asset: 'USD / IDR', trend: 'BEARISH_PRESSURE', impact: 'Tekanan pelemahan rupiah mendekati level psikologis Rp 16.000', affected_sectors: 'Impor Bahan Baku (-), SBN Valas (-)', sentiment_color: '#ef4444' },
-        { asset: 'Obligasi SBN 10Y', trend: 'NEUTRAL_CAUTION', impact: 'Yield bertahan di kisaran 6.75% - 6.95%', affected_sectors: 'Perbankan NIM (↔), Properti & Konstruksi (-)', sentiment_color: '#f59e0b' },
-        { asset: 'Saham Perbankan Tier-1', trend: 'DEFENSIVE_QUALITY', impact: 'CASA tebal > 80% menjadi jangkar bantalan likuiditas', affected_sectors: 'BBCA, BMRI, BBNI (Defensive Safe Haven)', sentiment_color: '#10b981' }
-      ]
-    };
-  }, [threatData]);
+  // 2. Geopolitical Desk data.
+  //
+  // WHY THE HARDCODED FALLBACK WAS DELETED (2026-10-06)
+  // --------------------------------------------------
+  // This used to be `return threatData || { ...128 lines of literal intel... }`.
+  // `threatData` comes from `data?.geopolitical_threat`, and `geopolitical_threat`
+  // is NOT a key in the cockpit bundle — so the fallback did not degrade, it
+  // rendered PERMANENTLY. The drawer showed DEFCON 4, threat_score 0.42, four
+  // scored sub-pillars, three scenarios and a six-row cross-asset matrix, all
+  // fixed strings presented as an assessed geopolitical read.
+  //
+  // Nothing marked it illustrative, and a trader cannot tell an invented threat
+  // level from a real one. The honest state is: no feed.
+  const geoDesk = useMemo(() => threatData || null, [threatData]);
+  const hasGeoFeed = !!geoDesk;
 
-  // DEFCON is computed strictly from intelligence data (0.42 -> DEFCON 4)
-  const defcon = geoDesk.defcon_level || 4;
+  // With no feed there is no level to report. The old `|| 4` invented one.
+  const defcon = hasGeoFeed ? (geoDesk.defcon_level ?? null) : null;
+
+  // Safe view object for the render path.
+  //
+  // The GEO panels below read `geoDesk.primary_threat`, `.sub_pillars`,
+  // `.flashpoints` and so on. With the fabricated fallback deleted those would
+  // throw, so the render reads this instead. Every field is explicitly empty
+  // when there is no feed — no placeholder numbers, no default threat level.
+  const geo = geoDesk || {
+    defcon_level: null,
+    defcon_title: null,
+    primary_threat: null,
+    threat_score: null,
+    macro_risk_guidance: null,
+    sub_pillars: [],
+    simulated_scenarios: [],
+    flashpoints: [],
+    cross_asset_matrix: [],
+  };
 
   // Selected simulated scenario
   const activeSimulatedScenario = useMemo(() => {
-    return geoDesk.simulated_scenarios?.find(s => s.id === selectedScenarioId) || geoDesk.simulated_scenarios?.[0] || {
-      id: 'SCENARIO_BASE',
-      name: 'SKENARIO 1: STATUS QUO (DEFCON 4 // GUARDED)',
-      defcon_level: 4,
-      brent_price: '$78 - $84 / bbl',
-      usd_idr: 'Rp 15.900 - Rp 16.150',
-      sbn_yield: '6.75% - 6.90%',
-      cash_buffer: '25% - 30% Likuid',
-      tactical_focus: 'Akumulasi terarah saham berfundamental prima (BBCA, BMRI, ICBP). Manfaatkan swing momentum pada ANTM & MEDC.',
-      winners: ['MEDC', 'BBCA', 'ICBP'],
-      losers: ['GIAA', 'JSMR']
-    };
+    // No feed means no scenarios. Inventing a "SCENARIO BASE" with prices in it
+    // is the same fabricate-a-fallback bug this file just had removed.
+    const list = geoDesk?.simulated_scenarios || [];
+    return list.find(s => s.id === selectedScenarioId) || list[0] || null;
   }, [geoDesk, selectedScenarioId]);
+
 
   // 3. Diagnostics & Telemetry Data (Strictly non-alay, factual model status)
   const diag = aiDiagnostics || debateData?.diagnostics || {
@@ -1837,7 +1734,7 @@ export default function AiIntelligenceDrawer({
                     </span>
                   </div>
                   <div style={{ fontSize: '11.5px', color: '#e2e8f0', marginTop: '6px', lineHeight: 1.5, maxWidth: '640px' }}>
-                    {geoDesk.primary_threat}
+                    {geo.primary_threat}
                   </div>
                 </div>
 
@@ -1850,7 +1747,7 @@ export default function AiIntelligenceDrawer({
                 }}>
                   <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>Skor Ancaman Komposit</div>
                   <div style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#f59e0b' }}>
-                    {geoDesk.threat_score} <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>/ 1.00</span>
+                    {geo.threat_score} <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>/ 1.00</span>
                   </div>
                 </div>
               </div>
@@ -1924,7 +1821,7 @@ export default function AiIntelligenceDrawer({
                   marginTop: '10px'
                 }}>
                   <div style={{
-                    width: `${(geoDesk.threat_score || 0.42) * 100}%`,
+                    width: `${(geo.threat_score || 0) * 100}%`,
                     height: '100%',
                     background: 'linear-gradient(90deg, #10b981 0%, #38bdf8 35%, #f59e0b 65%, #ef4444 100%)',
                     borderRadius: '3px'
@@ -1945,7 +1842,7 @@ export default function AiIntelligenceDrawer({
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px' }}>
-                {geoDesk.sub_pillars?.map(pillar => (
+                {geo.sub_pillars?.map(pillar => (
                   <div
                     key={pillar.id}
                     style={{
@@ -2000,7 +1897,7 @@ export default function AiIntelligenceDrawer({
                 🎯 PANDUAN TAKTIKAL MITIGASI RISIKO MAKRO & PORTFOLIO ARMOR:
               </div>
               <div style={{ fontSize: '11px', color: 'var(--text-primary)', lineHeight: 1.55 }}>
-                {geoDesk.macro_risk_guidance}
+                {geo.macro_risk_guidance}
               </div>
             </div>
 
@@ -2022,7 +1919,7 @@ export default function AiIntelligenceDrawer({
 
               {/* Scenario Selector Cards */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px', marginBottom: '14px' }}>
-                {geoDesk.simulated_scenarios?.map(sc => {
+                {geo.simulated_scenarios?.map(sc => {
                   const isSelected = sc.id === selectedScenarioId;
                   return (
                     <button
@@ -2156,7 +2053,7 @@ export default function AiIntelligenceDrawer({
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))', gap: '12px' }}>
-                {geoDesk.flashpoints?.map(fp => (
+                {geo.flashpoints?.map(fp => (
                   <div
                     key={fp.id}
                     style={{
@@ -2262,7 +2159,7 @@ export default function AiIntelligenceDrawer({
                     </tr>
                   </thead>
                   <tbody>
-                    {geoDesk.cross_asset_matrix?.map((row, idx) => (
+                    {geo.cross_asset_matrix?.map((row, idx) => (
                       <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                         <td style={{ padding: '8px', fontWeight: '700', color: '#fff' }}>{row.asset}</td>
                         <td style={{ padding: '8px', fontFamily: 'var(--font-mono)', color: row.sentiment_color, fontWeight: '800' }}>

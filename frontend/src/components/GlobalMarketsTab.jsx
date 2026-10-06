@@ -1,5 +1,60 @@
 import React, { useState, useEffect } from 'react';
 
+// ---------------------------------------------------------------------------
+// Instrument universe. These are NAMES, not prices.
+//
+// The previous version of this file paired each instrument with a hardcoded
+// price that rendered whenever the live feed was missing — which was always,
+// because it read a bundle key that does not exist. A name is safe to hardcode;
+// a price never is.
+// ---------------------------------------------------------------------------
+const IDX_TICKERS = [
+  { ticker: 'BBCA', name: 'Bank Central Asia' },
+  { ticker: 'BBRI', name: 'Bank Rakyat Indonesia' },
+  { ticker: 'BMRI', name: 'Bank Mandiri' },
+  { ticker: 'ASII', name: 'Astra International' },
+];
+
+const US_TICKERS = [
+  { ticker: 'AAPL', name: 'Apple Inc.' },
+  { ticker: 'NVDA', name: 'NVIDIA Corp.' },
+  { ticker: 'MSFT', name: 'Microsoft Corp.' },
+  { ticker: 'TSLA', name: 'Tesla Inc.' },
+];
+
+const FX_TICKERS = [
+  { ticker: 'EUR/USD', key: 'EURUSD', name: 'Euro / US Dollar', flag: '🇪🇺', decimals: 4 },
+  { ticker: 'USD/JPY', key: 'USDJPY', name: 'US Dollar / Japanese Yen', flag: '🇺🇸', decimals: 2 },
+  { ticker: 'GBP/USD', key: 'GBPUSD', name: 'British Pound / US Dollar', flag: '🇬🇧', decimals: 4 },
+  { ticker: 'AUD/USD', key: 'AUDUSD', name: 'Australian Dollar / US Dollar', flag: '🇦🇺', decimals: 4 },
+];
+
+// Real rows produced by ForexScanner (TVC:GOLD, TVC:SILVER, FX:USOIL, ...).
+const MACRO_TICKERS = [
+  { ticker: 'XAU/USD', name: 'Spot Gold Bullion', flag: '🥇', region: 'COMMODITIES' },
+  { ticker: 'XAG/USD', name: 'Spot Silver', flag: '🥈', region: 'COMMODITIES' },
+  { ticker: 'USOIL', name: 'WTI Light Sweet Crude', flag: '⛽', region: 'COMMODITIES' },
+  { ticker: 'UKOIL', name: 'Brent Crude Oil (ICE)', flag: '🛢️', region: 'COMMODITIES' },
+  { ticker: 'DXY', name: 'US Dollar Index', flag: '💵', region: 'FOREX & CURRENCIES' },
+];
+
+/**
+ * Return a display-ready quote, or explicit blanks when there is no live price.
+ *
+ * `price: null` is the signal the table uses to render "—". Returning a
+ * plausible number here is exactly the bug this whole file had.
+ */
+function liveQuote(livePrices, key) {
+  const q = livePrices?.[key];
+  const price = q && Number.isFinite(Number(q.price)) && Number(q.price) > 0 ? Number(q.price) : null;
+  const change = q && Number.isFinite(Number(q.changePct)) ? Number(q.changePct) : null;
+  return { price, change, isLive: price !== null };
+}
+
+// Currencies the converter may offer. A currency with no live rate is omitted
+// rather than converted at an invented one.
+const CURRENCIES_WITH_FEED = ['IDR', 'EUR', 'JPY', 'GBP', 'AUD', 'SGD'];
+
 // Helper to calculate exact timezone time & market status
 function getZoneInfo(date, timeZone) {
   try {
@@ -154,100 +209,162 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
   const marketSessions = getExchangeStatus();
   const jktCurrent = getZoneInfo(currentTime, 'Asia/Jakarta');
 
-  // Live real data references from livePrices or bundle macro telemetry
-  const liveGold = livePrices['GOLD'] || livePrices['XAUUSD'] || livePrices['XAU/USD'] || livePrices['TVC:GOLD'];
-  const rawGoldVal = liveGold?.price !== undefined ? liveGold.price : macro?.gold_price;
-  // Apply reasonable bullion sanity bounds ($1,000 - $10,000) to accept live quotes while rejecting bad data
-  const liveGoldVal = (rawGoldVal && rawGoldVal >= 1000 && rawGoldVal <= 10000) ? Number(rawGoldVal) : (rawGoldVal ? Number(rawGoldVal) : 4262.00);
-  const liveGoldPrice = `$${Number(liveGoldVal >= 1000 ? Math.round(liveGoldVal).toLocaleString() : liveGoldVal.toFixed(2))}`;
-  const liveGoldChange = liveGold?.changePct !== undefined ? Number(liveGold.changePct) : Number(macro?.gold_change_pct || 0.86);
+  // Live macro quotes.
+  //
+  // The previous version ended every chain with a hardcoded literal —
+  // `|| 4262.00` for gold, `'$103.03'` for Brent, `99.39` for WTI, `'100.22'`
+  // for DXY, `'4.84%'` for the 10Y, `'6,455.66'` for the IHSG. A plausible
+  // number is worse than a blank: a trader cannot tell it from a real quote.
+  // These now return null and the UI renders "—".
+  const pick = (...keys) => {
+    for (const k of keys) {
+      const q = livePrices?.[k];
+      if (q && Number.isFinite(Number(q.price)) && Number(q.price) > 0) return q;
+    }
+    return null;
+  };
 
-  const liveBrent = livePrices['BRENT'] || livePrices['UKOIL'] || livePrices['FX:UKOIL'];
-  const liveBrentVal = liveBrent?.price !== undefined ? liveBrent.price : (macro?.brent_oil_price || macro?.brent_oil);
-  const liveBrentPrice = liveBrentVal ? `$${Number(liveBrentVal).toFixed(2)}` : '$103.03';
-  const liveBrentChange = liveBrent?.changePct !== undefined ? Number(liveBrent.changePct) : Number(macro?.brent_oil_change_pct || -1.00);
+  const fmtMoney = (v, decimals = 2) =>
+    v === null ? '—' : `$${Number(v).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
 
-  const liveWti = livePrices['WTI'] || livePrices['USOIL'] || livePrices['FX:USOIL'];
-  const liveWtiVal = liveWti?.price !== undefined ? liveWti.price : 99.39;
-  const liveWtiPrice = `$${Number(liveWtiVal).toFixed(2)}`;
-  const liveWtiChange = liveWti?.changePct !== undefined ? Number(liveWti.changePct) : -1.66;
+  // --- Gold ---
+  const liveGold = pick('GOLD', 'XAUUSD', 'XAU/USD', 'TVC:GOLD');
+  const goldRaw = liveGold ? Number(liveGold.price) : (Number.isFinite(Number(macro?.gold_price)) ? Number(macro.gold_price) : null);
+  // Sanity bounds ($1,000-$10,000) reject bad ticks. Outside the band we report
+  // nothing rather than a fallback that looks like a real bullion price.
+  const liveGoldVal = goldRaw !== null && goldRaw >= 1000 && goldRaw <= 10000 ? goldRaw : null;
+  const liveGoldPrice = liveGoldVal === null
+    ? '—'
+    : `$${liveGoldVal >= 1000 ? Math.round(liveGoldVal).toLocaleString('en-US') : liveGoldVal.toFixed(2)}`;
+  const liveGoldChange = liveGold && Number.isFinite(Number(liveGold.changePct))
+    ? Number(liveGold.changePct)
+    : (Number.isFinite(Number(macro?.gold_change_pct)) ? Number(macro.gold_change_pct) : null);
 
-  const liveDxy = livePrices['DXY'] || livePrices['TVC:DXY'];
-  const liveDxyVal = liveDxy?.price !== undefined ? Number(liveDxy.price).toFixed(2) : (macro?.dxy_index ? Number(macro.dxy_index).toFixed(2) : '100.22');
-  const liveDxyChange = liveDxy?.changePct !== undefined ? Number(liveDxy.changePct) : Number(macro?.dxy_change_pct || -0.02);
+  // --- Brent ---
+  const liveBrent = pick('BRENT', 'UKOIL', 'FX:UKOIL');
+  const brentVal = liveBrent ? Number(liveBrent.price)
+    : (Number.isFinite(Number(macro?.brent_oil_price)) ? Number(macro.brent_oil_price)
+      : (Number.isFinite(Number(macro?.brent_oil)) ? Number(macro.brent_oil) : null));
+  const liveBrentPrice = fmtMoney(brentVal);
+  const liveBrentChange = liveBrent && Number.isFinite(Number(liveBrent.changePct))
+    ? Number(liveBrent.changePct)
+    : (Number.isFinite(Number(macro?.brent_oil_change_pct)) ? Number(macro.brent_oil_change_pct) : null);
 
-  const liveUs10yYield = macro?.us10y_yield ? `${Number(macro.us10y_yield).toFixed(2)}%` : '4.84%';
-  const liveIhsg = livePrices['IHSG'] || livePrices['.JKSE'] || livePrices['IDX:COMPOSITE'];
-  const liveIhsgPrice = liveIhsg?.price !== undefined 
-    ? Number(liveIhsg.price).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    : (macro?.ihsg_price || macro?.jkse_price ? Number(macro.ihsg_price || macro.jkse_price).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '6,455.66');
-  const liveIhsgChange = liveIhsg?.changePct !== undefined ? Number(liveIhsg.changePct) : (macro?.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : -0.10);
+  // --- WTI ---
+  const liveWti = pick('WTI', 'USOIL', 'FX:USOIL');
+  const wtiVal = liveWti ? Number(liveWti.price) : null;
+  const liveWtiPrice = fmtMoney(wtiVal);
+  const liveWtiChange = liveWti && Number.isFinite(Number(liveWti.changePct)) ? Number(liveWti.changePct) : null;
 
-  // Comprehensive Cross-Market Asset Universe with Dynamic livePrices binding
-  const fallbackAssets = [
-    // Major World Indices
-    { ticker: '^GSPC', name: 'S&P 500 Index', flag: '🇺🇸', price: '5,548.20', change: 0.64, high: '5,562.10', low: '5,520.40', region: 'MAJOR INDICES', market: 'GLOBAL' },
-    { ticker: '^IXIC', name: 'Nasdaq Composite', flag: '🇺🇸', price: '17,420.50', change: 1.12, high: '17,490.00', low: '17,310.20', region: 'MAJOR INDICES', market: 'GLOBAL' },
-    { ticker: '^N225', name: 'Nikkei 225 (Tokyo)', flag: '🇯🇵', price: '38,720.40', change: 0.85, high: '38,910.00', low: '38,550.00', region: 'MAJOR INDICES', market: 'GLOBAL' },
-    { ticker: '^HSI', name: 'Hang Seng Index (HK)', flag: '🇭🇰', price: '17,640.10', change: -0.42, high: '17,790.00', low: '17,580.30', region: 'MAJOR INDICES', market: 'GLOBAL' },
-    { ticker: '^FTSE', name: 'FTSE 100 (London)', flag: '🇬🇧', price: '8,280.60', change: 0.28, high: '8,310.00', low: '8,255.40', region: 'MAJOR INDICES', market: 'GLOBAL' },
-    { ticker: '^JKSE', name: 'IHSG (Jakarta Composite)', flag: '🇮🇩', price: liveIhsgPrice, change: liveIhsgChange, high: '6,560.80', low: '6,495.10', region: 'MAJOR INDICES', market: 'IDX' },
+  // --- Dollar index ---
+  const liveDxy = pick('DXY', 'TVC:DXY');
+  const dxyVal = liveDxy ? Number(liveDxy.price)
+    : (Number.isFinite(Number(macro?.dxy_index)) ? Number(macro.dxy_index) : null);
+  const liveDxyVal = dxyVal === null ? '—' : dxyVal.toFixed(2);
+  const liveDxyChange = liveDxy && Number.isFinite(Number(liveDxy.changePct))
+    ? Number(liveDxy.changePct)
+    : (Number.isFinite(Number(macro?.dxy_change_pct)) ? Number(macro.dxy_change_pct) : null);
 
-    // Commodities & Strategic Energy (100% Actual Quotes)
-    { ticker: 'XAU/USD', name: 'Spot Gold Bullion', flag: '🥇', price: liveGoldPrice, change: liveGoldChange, high: liveGold?.high && liveGold.high <= 10000 ? `$${Number(liveGold.high).toLocaleString()}` : `$${(Math.round(liveGoldVal) + 25).toLocaleString()}`, low: liveGold?.low && liveGold.low >= 1000 ? `$${Number(liveGold.low).toLocaleString()}` : `$${(Math.round(liveGoldVal) - 20).toLocaleString()}`, region: 'COMMODITIES', market: 'GLOBAL' },
-    { ticker: 'BRENT', name: 'Brent Crude Oil (ICE)', flag: '🛢️', price: liveBrentPrice, change: liveBrentChange, high: '$104.97', low: '$101.88', region: 'COMMODITIES', market: 'GLOBAL' },
-    { ticker: 'WTI', name: 'WTI Light Sweet Crude', flag: '⛽', price: liveWtiPrice, change: liveWtiChange, high: '$103.46', low: '$99.17', region: 'COMMODITIES', market: 'GLOBAL' },
-    { ticker: 'COPPER', name: 'High Grade Copper (COMEX)', flag: '🥉', price: '$4.48', change: 1.25, high: '$4.52', low: '$4.41', region: 'COMMODITIES', market: 'GLOBAL' },
-    { ticker: 'CPO', name: 'Malaysian Palm Oil (FCPO)', flag: '🌴', price: 'MYR 3,920', change: 0.62, high: 'MYR 3,950', low: 'MYR 3,890', region: 'COMMODITIES', market: 'GLOBAL' },
-    { ticker: 'NICKEL', name: 'LME Nickel Cash', flag: '🪙', price: '$16,240', change: -0.75, high: '$16,450', low: '$16,100', region: 'COMMODITIES', market: 'GLOBAL' },
+  // --- US 10Y yield: no live source is wired yet, so report nothing ---
+  const liveUs10yYield = Number.isFinite(Number(macro?.us10y_yield))
+    ? `${Number(macro.us10y_yield).toFixed(2)}%`
+    : '—';
 
-    // Wall Street Mega-Cap
-    { ticker: 'AAPL', name: 'Apple Inc.', flag: '🇺🇸', price: livePrices['AAPL']?.price ? `$${livePrices['AAPL'].price.toFixed(2)}` : '$178.25', change: livePrices['AAPL']?.changePct ?? 1.45, high: '$179.10', low: '$176.80', region: 'WALL STREET', market: 'US' },
-    { ticker: 'NVDA', name: 'NVIDIA Corp.', flag: '🇺🇸', price: livePrices['NVDA']?.price ? `$${livePrices['NVDA'].price.toFixed(2)}` : '$118.80', change: livePrices['NVDA']?.changePct ?? 3.12, high: '$120.40', low: '$116.50', region: 'WALL STREET', market: 'US' },
-    { ticker: 'MSFT', name: 'Microsoft Corp.', flag: '🇺🇸', price: livePrices['MSFT']?.price ? `$${livePrices['MSFT'].price.toFixed(2)}` : '$424.50', change: livePrices['MSFT']?.changePct ?? 0.85, high: '$426.00', low: '$421.20', region: 'WALL STREET', market: 'US' },
-    { ticker: 'TSLA', name: 'Tesla Inc.', flag: '🇺🇸', price: livePrices['TSLA']?.price ? `$${livePrices['TSLA'].price.toFixed(2)}` : '$210.40', change: livePrices['TSLA']?.changePct ?? -1.82, high: '$215.00', low: '$208.10', region: 'WALL STREET', market: 'US' },
+  // --- IHSG ---
+  const liveIhsg = pick('IHSG', '.JKSE', 'IDX:COMPOSITE');
+  const ihsgRaw = liveIhsg ? Number(liveIhsg.price)
+    : (Number.isFinite(Number(macro?.ihsg_price)) ? Number(macro.ihsg_price)
+      : (Number.isFinite(Number(macro?.jkse_price)) ? Number(macro.jkse_price) : null));
+  const liveIhsgPrice = ihsgRaw === null
+    ? '—'
+    : ihsgRaw.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const liveIhsgChange = liveIhsg && Number.isFinite(Number(liveIhsg.changePct))
+    ? Number(liveIhsg.changePct)
+    : (Number.isFinite(Number(macro?.ihsg_change_pct)) ? Number(macro.ihsg_change_pct) : null);
 
-    // Asia Pacific Leaders
-    { ticker: '7203.T', name: 'Toyota Motor Corp.', flag: '🇯🇵', price: '¥2,950', change: 0.72, high: '¥2,980', low: '¥2,930', region: 'ASIA PACIFIC', market: 'JP' },
-    { ticker: '005930.KS', name: 'Samsung Electronics', flag: '🇰🇷', price: '₩74,200', change: -0.45, high: '₩75,000', low: '₩73,800', region: 'ASIA PACIFIC', market: 'KR' },
-    { ticker: '0700.HK', name: 'Tencent Holdings', flag: '🇭🇰', price: 'HK$378.00', change: 1.88, high: 'HK$382.00', low: 'HK$374.00', region: 'ASIA PACIFIC', market: 'HK' },
-    { ticker: 'D05.SI', name: 'DBS Group Holdings', flag: '🇸🇬', price: 'S$35.80', change: 0.35, high: 'S$36.00', low: 'S$35.60', region: 'ASIA PACIFIC', market: 'SG' },
+  // Cross-market universe.
+  //
+  // WHY THE HARDCODED PRICES ARE GONE (2026-10-06)
+  // ----------------------------------------------
+  // This table read `bundle?.global_markets?.assets`, and `global_markets` is
+  // NOT a key in the cockpit bundle. So the `||` always won and 30 hardcoded
+  // prices rendered as live quotes — S&P 5,548.20, Nasdaq 17,420.50, Nikkei
+  // 38,720.40, Toyota ¥2,950, Samsung ₩74,200, all of them. Nothing on screen
+  // said these were stale.
+  //
+  // A quote with no live price now shows "—" instead of a plausible number.
+  // That is the whole point: a blank is honest, a wrong price is a trade.
+  //
+  // ponytail: only instruments we actually have a live feed for are listed.
+  // Add indices/commodities here once a fetcher supplies them.
+  const assets = [
+    // --- Indonesia: live from the IDX feed ---
+    ...IDX_TICKERS.map(t => ({
+      ticker: t.ticker, name: t.name, flag: '🇮🇩', region: 'INDONESIA', market: 'IDX',
+      ...liveQuote(livePrices, t.ticker),
+    })),
 
-    // Indonesia Bluechips (Live Feed Binding)
-    { ticker: 'BBCA', name: 'Bank Central Asia', flag: '🇮🇩', price: livePrices['BBCA']?.price ? `Rp ${Number(livePrices['BBCA'].price).toLocaleString('id-ID')}` : 'Rp 6.375', change: livePrices['BBCA']?.changePct ?? -0.39, high: 'Rp 6.450', low: 'Rp 6.350', region: 'INDONESIA', market: 'IDX' },
-    { ticker: 'BBRI', name: 'Bank Rakyat Indonesia', flag: '🇮🇩', price: livePrices['BBRI']?.price ? `Rp ${Number(livePrices['BBRI'].price).toLocaleString('id-ID')}` : 'Rp 3.340', change: livePrices['BBRI']?.changePct ?? 0.60, high: 'Rp 3.380', low: 'Rp 3.310', region: 'INDONESIA', market: 'IDX' },
-    { ticker: 'BMRI', name: 'Bank Mandiri', flag: '🇮🇩', price: livePrices['BMRI']?.price ? `Rp ${Number(livePrices['BMRI'].price).toLocaleString('id-ID')}` : 'Rp 4.300', change: livePrices['BMRI']?.changePct ?? -0.92, high: 'Rp 4.350', low: 'Rp 4.280', region: 'INDONESIA', market: 'IDX' },
-    { ticker: 'ASII', name: 'Astra International', flag: '🇮🇩', price: livePrices['ASII']?.price ? `Rp ${Number(livePrices['ASII'].price).toLocaleString('id-ID')}` : 'Rp 4.880', change: livePrices['ASII']?.changePct ?? -0.20, high: 'Rp 4.920', low: 'Rp 4.850', region: 'INDONESIA', market: 'IDX' },
+    // --- Wall Street: live from the US feed ---
+    ...US_TICKERS.map(t => ({
+      ticker: t.ticker, name: t.name, flag: '🇺🇸', region: 'WALL STREET', market: 'US',
+      ...liveQuote(livePrices, t.ticker),
+    })),
 
-    // Bonds & Sovereign Yields
-    { ticker: '^TNX', name: 'US Treasury 10Y Yield', flag: '🇺🇸', price: liveUs10yYield, change: -0.82, high: '4.85%', low: '4.78%', region: 'BONDS & YIELD', market: 'US' },
-    { ticker: '^TYX', name: 'US Treasury 30Y Yield', flag: '🇺🇸', price: '4.95%', change: -0.45, high: '4.98%', low: '4.92%', region: 'BONDS & YIELD', market: 'US' },
-    { ticker: 'ID10YT=RR', name: 'Indonesia 10Y Bond Yield', flag: '🇮🇩', price: '6.78%', change: 0.15, high: '6.82%', low: '6.75%', region: 'BONDS & YIELD', market: 'ID' },
-    { ticker: 'TLT', name: 'iShares 20+ Year Treasury', flag: '🇺🇸', price: '$89.40', change: 0.65, high: '$89.90', low: '$88.90', region: 'BONDS & YIELD', market: 'US' },
+    // --- Forex: live from the TradingView scanner ---
+    ...FX_TICKERS.map(t => ({
+      ticker: t.ticker, name: t.name, flag: t.flag, region: 'FOREX & CURRENCIES', market: 'FX',
+      ...liveQuote(livePrices, t.key),
+      decimalHint: t.decimals,
+    })),
 
-    // Forex & Major Pairs (Live Feed Binding)
-    { ticker: 'USD/IDR', name: 'US Dollar / Indonesian Rupiah', flag: '🇺🇸/🇮🇩', price: '15.680', change: -0.12, high: '15.720', low: '15.650', region: 'FOREX & CURRENCIES', market: 'FX' },
-    { ticker: 'DXY', name: 'US Dollar Index', flag: '💵', price: liveDxyVal, change: liveDxyChange, high: '100.50', low: '99.85', region: 'FOREX & CURRENCIES', market: 'GLOBAL' },
-    { ticker: 'EUR/USD', name: 'Euro / US Dollar', flag: '🇪🇺/🇺🇸', price: livePrices['EURUSD']?.price ? Number(livePrices['EURUSD'].price).toFixed(4) : '1.0845', change: livePrices['EURUSD']?.changePct ?? 0.28, high: '1.0870', low: '1.0820', region: 'FOREX & CURRENCIES', market: 'FX' },
-    { ticker: 'USD/JPY', name: 'US Dollar / Japanese Yen', flag: '🇺🇸/🇯🇵', price: livePrices['USDJPY']?.price ? Number(livePrices['USDJPY'].price).toFixed(2) : '154.20', change: livePrices['USDJPY']?.changePct ?? -0.35, high: '154.80', low: '153.90', region: 'FOREX & CURRENCIES', market: 'FX' },
-    { ticker: 'SGD/IDR', name: 'Singapore Dollar / Rupiah', flag: '🇸🇬/🇮🇩', price: '11.820', change: 0.08, high: '11.850', low: '11.800', region: 'FOREX & CURRENCIES', market: 'FX' },
+    // --- Commodities & index: live from the ForexScanner metals feed ---
+    ...MACRO_TICKERS.map(t => ({
+      ticker: t.ticker, name: t.name, flag: t.flag, region: t.region, market: 'GLOBAL',
+      ...liveQuote(livePrices, t.ticker),
+      percent: true,
+    })),
   ];
-
-  const assets = bundle?.global_markets?.assets || fallbackAssets;
 
   const filtered = activeRegion === 'ALL' ? assets : assets.filter(a => a.region === activeRegion);
 
   // Currency Converter State
-  const rates = bundle?.global_markets?.rates || { USD: 1, IDR: 15680, EUR: 0.922, JPY: 154.2, SGD: 1.326, BTC: 0.000015, ETH: 0.00038 };
+  //
+  // Rates come from the live FX feed where available. The previous hardcoded
+  // table (IDR 15680, EUR 0.922, JPY 154.2, SGD 1.326) was read from a bundle
+  // key that does not exist, so every conversion was computed from invented
+  // rates with no indication. Currencies with no live quote are now simply not
+  // offered.
   const [fromCurr, setFromCurr] = useState('USD');
   const [toCurr, setToCurr] = useState('IDR');
   const [amount, setAmount] = useState(100);
 
-  const convertedValue = ((amount / (rates[fromCurr] || 1)) * (rates[toCurr] || 1)).toLocaleString('id-ID', { maximumFractionDigits: 2 });
+  // USD-based rates derived from the live FX quotes. USD is the unit (1.0).
+  // Only pairs we actually receive are exposed — no invented fallbacks.
+  const liveRates = (() => {
+    const out = { USD: 1 };
+    const usdIdr = livePrices?.['USDIDR']?.price;
+    if (Number.isFinite(Number(usdIdr)) && Number(usdIdr) > 0) out.IDR = Number(usdIdr);
+
+    // EUR/USD, GBP/USD, AUD/USD are quoted as USD per unit; invert for value in USD.
+    for (const [code, key] of [['EUR', 'EURUSD'], ['GBP', 'GBPUSD'], ['AUD', 'AUDUSD']]) {
+      const p = Number(livePrices?.[key]?.price);
+      if (Number.isFinite(p) && p > 0) out[code] = 1 / p;
+    }
+    // USD/JPY and USD/SGD are USD per unit already.
+    for (const [code, key] of [['JPY', 'USDJPY'], ['SGD', 'USDSGD']]) {
+      const p = Number(livePrices?.[key]?.price);
+      if (Number.isFinite(p) && p > 0) out[code] = p;
+    }
+    return out;
+  })();
+
+  const converterCurrencies = ['USD', ...CURRENCIES_WITH_FEED.filter(c => liveRates[c])];
+  const convertedValue = (liveRates[fromCurr] && liveRates[toCurr])
+    ? ((amount / liveRates[fromCurr]) * liveRates[toCurr]).toLocaleString('id-ID', { maximumFractionDigits: 2 })
+    : null;
 
   return (
     <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', padding: '12px 14px', fontFamily: 'var(--font-mono)' }}>
-      {!bundle?.global_markets && !macro?.gold_price && <div style={{fontSize:11,color:'#f59e0b',marginBottom:8}}>📊 Showing cached market data — live feed not available</div>}
       {/* 1. Global Session Clocks & Live Master Clock */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', padding: '5px 8px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: 'var(--text-muted)' }}>
@@ -517,7 +634,22 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
           </thead>
           <tbody>
             {filtered.map(item => {
-              const isUp = item.change >= 0;
+              // A missing quote is rendered as an em dash, never as a number.
+              // The colour is deliberately neutral for no-data rows so a blank
+              // cannot be misread as a flat (unchanged) price.
+              const hasPrice = item.price !== null && item.price !== undefined;
+              const hasChange = item.change !== null && item.change !== undefined;
+              const isUp = hasChange && item.change >= 0;
+              const priceText = hasPrice
+                ? (item.percent
+                  ? `${Number(item.price).toFixed(2)}%`
+                  : item.market === 'IDX'
+                    ? `Rp ${Number(item.price).toLocaleString('id-ID')}`
+                    : Number(item.price).toLocaleString('en-US', {
+                      minimumFractionDigits: item.decimalHint ?? (Number(item.price) < 10 ? 4 : 2),
+                      maximumFractionDigits: item.decimalHint ?? (Number(item.price) < 10 ? 4 : 2),
+                    }))
+                : '—';
               return (
                 <tr key={item.ticker} style={{ borderBottom: 'var(--border-hairline)', transition: 'background 0.15s' }}>
                   <td style={{ padding: '5px 8px', fontWeight: '700', color: 'var(--text-primary)' }}>
@@ -534,14 +666,14 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
                   <td style={{ padding: '5px 8px' }}>
                     <span className="badge" style={{ fontSize: '8px', padding: '1px 4px' }}>{item.region}</span>
                   </td>
-                  <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: '700', color: 'var(--text-primary)', fontSize: '11px' }}>
-                    {item.price}
+                  <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: '700', fontSize: '11px', color: hasPrice ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                    {priceText}
                   </td>
-                  <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: '700', color: isUp ? 'var(--accent-green)' : 'var(--accent-rust)', fontSize: '11px' }}>
-                    {isUp ? '+' : ''}{item.change}%
+                  <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: '700', fontSize: '11px', color: !hasChange ? 'var(--text-muted)' : (isUp ? 'var(--accent-green)' : 'var(--accent-rust)') }}>
+                    {hasChange ? `${isUp ? '+' : ''}${Number(item.change).toFixed(2)}%` : '—'}
                   </td>
                   <td style={{ padding: '5px 8px', textAlign: 'right', color: 'var(--text-muted)', fontSize: '9px' }}>
-                    {item.low} - {item.high}
+                    {hasPrice ? 'live' : 'tidak ada feed'}
                   </td>
                   <td style={{ padding: '5px 8px', textAlign: 'center' }}>
                     <button
@@ -577,7 +709,7 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
               onChange={e => setFromCurr(e.target.value)}
               style={{ padding: '3px 6px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '10px' }}
             >
-              {Object.keys(rates).map(k => <option key={k} value={k}>{k}</option>)}
+              {converterCurrencies.map(k => <option key={k} value={k}>{k}</option>)}
             </select>
             <span style={{ color: 'var(--text-muted)', fontWeight: '700', fontSize: '10px' }}>➔</span>
             <select
@@ -585,13 +717,13 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
               onChange={e => setToCurr(e.target.value)}
               style={{ padding: '3px 6px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '10px' }}
             >
-              {Object.keys(rates).map(k => <option key={k} value={k}>{k}</option>)}
+              {converterCurrencies.map(k => <option key={k} value={k}>{k}</option>)}
             </select>
           </div>
         </div>
 
         <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
-          = {convertedValue} {toCurr}
+          = {convertedValue ?? '—'} {convertedValue ? toCurr : ''}
         </div>
       </div>
 
