@@ -1152,78 +1152,57 @@ export default function App() {
             )}
           </Suspense>
 
-          {/* OpenTerminalUI Provider Health & Data Quality Status Bar */}
-          <div style={{
-            marginTop: '20px',
-            marginBottom: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '8px',
-            padding: '6px 12px',
-            background: 'var(--bg-panel-subtle)',
-            borderRadius: '6px',
-            border: 'var(--border-hairline)',
-            fontSize: '9.5px',
-            fontFamily: 'var(--font-mono)',
-            color: 'var(--text-muted)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <button
-                onClick={() => setIsIntegrityOpen(true)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: isBundleFresh ? '#10b981' : '#f59e0b',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  letterSpacing: '0.04em',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  padding: 0,
-                  fontFamily: 'inherit',
-                  fontSize: 'inherit'
-                }}
-                title="Buka Telemetri Audit Integritas Data"
-              >
-                <span>🛡️ FEED HEALTH:</span>
-                <span>{isBundleFresh ? '🟢 VERIFIED' : '🟡 DEGRADED'}</span>
-              </button>
-              <span>IDX BEI: <strong style={{ color: '#10b981' }}>🟢 849 STOCKS</strong></span>
-              <span>Binance WS: <strong style={{ color: isWsConnected ? '#10b981' : '#f59e0b' }}>{isWsConnected ? '🟢 CONNECTED' : '🟡 POLLING'}</strong></span>
-              <span>Macro Bundle: <strong style={{ color: bundleColor }}>{bundleStatus} ({bundleAgeMin}m)</strong></span>
-              <span>Gemini LLM: <strong style={{ color: '#38bdf8' }}>🟢 {geminiShortLabel}</strong></span>
-              <span>MCP Server: <strong style={{ color: '#38bdf8' }}>🟢 READY</strong></span>
-            </div>
-            <div
-              style={{ color: 'var(--text-muted)', fontSize: '8.5px', cursor: 'pointer' }}
-              onClick={() => setIsIntegrityOpen(true)}
-              title="Periksa integritas data"
-            >
-              KLIK UNTUK AUDIT PROVENANCE & FRESHNESS ↗
-            </div>
-          </div>
-
-          {/* 5. Institutional Disclaimer Footer */}
+          {/* 5. Institutional Disclaimer Footer + Feed Health Status (single bottom region) */}
           <footer style={{
-            marginTop: '24px',
+            marginTop: '16px',
             borderTop: 'var(--border-muted)',
             paddingTop: '10px',
             paddingBottom: '16px',
             fontSize: '10px',
             color: 'var(--text-muted)',
             display: 'flex',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
+            flexDirection: 'column',
             gap: '8px'
           }}>
-            <div>
-              <strong>DISCLAIMER</strong>: Algorithmic screening & quantitative intelligence only. Bukan ajakan atau nasihat investasi.
-            </div>
-            <div>
-              MBG QUANT TERMINAL // MARKET BRAIN GRID · ZERO RUNTIME COST
+            <button
+              onClick={() => setIsIntegrityOpen(true)}
+              title="Buka Telemetri Audit Integritas Data"
+              style={{
+                background: 'var(--bg-panel-subtle)',
+                border: 'var(--border-hairline)',
+                borderRadius: '6px',
+                padding: '5px 10px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '8px',
+                fontSize: '9.5px',
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--text-muted)',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <span style={{ color: isBundleFresh ? '#10b981' : '#f59e0b', fontWeight: 800 }}>
+                  🛡️ FEED HEALTH: {isBundleFresh ? '🟢 VERIFIED' : '🟡 DEGRADED'}
+                </span>
+                <span>IDX BEI: <strong style={{ color: '#10b981' }}>🟢 849 STOCKS</strong></span>
+                <span>Binance WS: <strong style={{ color: isWsConnected ? '#10b981' : '#f59e0b' }}>{isWsConnected ? '🟢 CONNECTED' : '🟡 POLLING'}</strong></span>
+                <span>Macro Bundle: <strong style={{ color: bundleColor }}>{bundleStatus} ({bundleAgeMin}m)</strong></span>
+                <span>Gemini LLM: <strong style={{ color: '#38bdf8' }}>🟢 {geminiShortLabel}</strong></span>
+                <span>MCP Server: <strong style={{ color: '#38bdf8' }}>🟢 READY</strong></span>
+              </span>
+              <span>AUDIT PROVENANCE & FRESHNESS ↗</span>
+            </button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+              <div>
+                <strong>DISCLAIMER</strong>: Algorithmic screening & quantitative intelligence only. Bukan ajakan atau nasihat investasi.
+              </div>
+              <div>
+                MBG QUANT TERMINAL // MARKET BRAIN GRID · ZERO RUNTIME COST
+              </div>
             </div>
           </footer>
 

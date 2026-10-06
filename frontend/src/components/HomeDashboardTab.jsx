@@ -2441,35 +2441,6 @@ export default function HomeDashboardTab({
 
           </div>
         )}
-
-        {/* Footer Navigation Bar */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderTop: '1px solid rgba(255, 255, 255, 0.05)',
-          paddingTop: '4px',
-          fontSize: '8px',
-          fontFamily: 'var(--font-mono)',
-          color: 'var(--text-muted)',
-          flexWrap: 'wrap',
-          gap: '4px'
-        }}>
-          <div>
-            INSTRUMENTS: <strong style={{ color: 'var(--text-primary)' }}>82 IDX • 10 CRYPTO • 31 US EQUITIES</strong> | ENGINE: <strong style={{ color: 'var(--accent-green)' }}>TimesFM AI + SMC + IIFS • MCP ENABLED</strong>
-          </div>
-          <div style={{ display: 'flex', gap: '5px' }}>
-            <button className="telemetry-btn" onClick={() => onNavigateTab('TESTING')} style={{ fontSize: '7.5px', padding: '2px 7px' }}>
-              🧪 TESTING LAB
-            </button>
-            <button className="telemetry-btn" onClick={() => onNavigateTab('ACADEMY')} style={{ fontSize: '7.5px', padding: '2px 7px' }}>
-              🎓 ACADEMY
-            </button>
-            <button className="telemetry-btn" onClick={() => onNavigateTab('ARENA')} style={{ fontSize: '7.5px', padding: '2px 7px' }}>
-              🤖 BOT ARENA
-            </button>
-          </div>
-        </div>
       </div>
 
     </div>
