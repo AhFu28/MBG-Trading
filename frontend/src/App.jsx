@@ -513,8 +513,8 @@ export default function App() {
           setActiveTab={setActiveTab}
           isMobileOpen={isMobileOpen}
           setMobileOpen={setMobileOpen}
-          stockCount={allIdxStocks.length > 0 ? allIdxStocks.length : 849}
-          cryptoCount={allCryptoSpot.length > 0 ? allCryptoSpot.length : 744}
+          stockCount={allIdxStocks.length}
+          cryptoCount={allCryptoSpot.length}
           newsCount={(data?.macro_telemetry?.live_news || []).length}
           livePrices={livePrices}
           flashMap={flashMap}
@@ -1188,7 +1188,7 @@ export default function App() {
                 <span style={{ color: isBundleFresh ? '#10b981' : '#f59e0b', fontWeight: 800 }}>
                   🛡️ FEED HEALTH: {isBundleFresh ? '🟢 VERIFIED' : '🟡 DEGRADED'}
                 </span>
-                <span>IDX BEI: <strong style={{ color: '#10b981' }}>🟢 849 STOCKS</strong></span>
+                <span>IDX BEI: <strong style={{ color: '#10b981' }}>{allIdxStocks.length > 0 ? `🟢 ${allIdxStocks.length} STOCKS` : '—'}</strong></span>
                 <span>Binance WS: <strong style={{ color: isWsConnected ? '#10b981' : '#f59e0b' }}>{isWsConnected ? '🟢 CONNECTED' : '🟡 POLLING'}</strong></span>
                 <span>Macro Bundle: <strong style={{ color: bundleColor }}>{bundleStatus} ({bundleAgeMin}m)</strong></span>
                 <span>Gemini LLM: <strong style={{ color: '#38bdf8' }}>🟢 {geminiShortLabel}</strong></span>

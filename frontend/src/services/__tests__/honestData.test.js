@@ -200,3 +200,28 @@ describe('dead useState setters', () => {
     expect(offenders).toEqual([]);
   });
 });
+
+// ---------------------------------------------------------------------------
+// The running trade tape and the instrument counts
+// ---------------------------------------------------------------------------
+describe('invented running trade tape and counts', () => {
+  it('RunningTrade no longer generates trades with Math.random', () => {
+    expect(readCode('components/RunningTradeWidget.jsx')).not.toMatch(/Math\.random/);
+  });
+
+  it('RunningTrade declares an explicit standby state', () => {
+    expect(readCode('components/RunningTradeWidget.jsx')).toMatch(/standby/i);
+  });
+
+  it('RunningTrade still shows the real BEI market status', () => {
+    expect(readCode('components/RunningTradeWidget.jsx')).toMatch(/marketHours/);
+  });
+
+  it('App never falls back the stock count to a hardcoded 849', () => {
+    expect(readCode('App.jsx')).not.toMatch(/\b849\b/);
+  });
+
+  it('App never falls back the crypto count to a hardcoded 744', () => {
+    expect(readCode('App.jsx')).not.toMatch(/\b744\b/);
+  });
+});
