@@ -11,7 +11,10 @@
     "wa:qr": "node scripts/send_wa_fuad.mjs --qr",
     "wa:send": "node scripts/send_wa_fuad.mjs",
     "futures:refresh": "python scripts/refresh_crypto_futures.py",
-    "futures:install-task": "powershell -ExecutionPolicy Bypass -File scripts/install_futures_task.ps1"
+    "futures:install-task": "powershell -ExecutionPolicy Bypass -File scripts/install_futures_task.ps1",
+    "forex:refresh": "python scripts/refresh_forex.py",
+    "forex:install-task": "powershell -ExecutionPolicy Bypass -File scripts/install_forex_task.ps1",
+    "test:engine": "python -m unittest engine.tests.test_crypto_futures engine.tests.test_liquidity_heat engine.tests.test_forex_scanner engine.tests.test_vip_signal_router"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc14",

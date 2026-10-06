@@ -51,7 +51,11 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
     );
   }
 
-  const { pairs = [], cot_report = [] } = forexData;
+  const { pairs = [], metals_and_energy: metals = [], cot_report = [] } = forexData;
+
+  // Gold, silver, oil and the dollar index used to be missing entirely, so the
+  // desk had no metals at all. They are separate rows now and get their own tab.
+  const currencyPairs = pairs.filter(p => (p.asset_class || 'FOREX') === 'FOREX');
 
   const syd = getZoneInfo(currentTime, 'Australia/Sydney');
   const tyo = getZoneInfo(currentTime, 'Asia/Tokyo');
@@ -126,6 +130,10 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
             <span>📊</span>
             <span>28-PAIR SCREENER</span>
           </button>
+          <button onClick={() => setActiveTab('metals')} className={`quant-pill-btn ${activeTab === 'metals' ? 'active' : ''}`}>
+            <span>🥇</span>
+            <span>EMAS &amp; KOMODITAS ({metals.length})</span>
+          </button>
           <button onClick={() => setActiveTab('pip')} className={`quant-pill-btn ${activeTab === 'pip' ? 'active' : ''}`}>
             <span>🧮</span>
             <span>PIP & RISK CALCULATOR</span>
@@ -150,6 +158,79 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
 
       {/* 4. Main Content Panel */}
       <div className="quant-card" style={{ padding: '0', overflow: 'hidden' }}>
+
+        {/* TAB: EMAS & KOMODITAS — dulu ora ana blas nang daftar */}
+        {activeTab === 'metals' && (
+          <div style={{ padding: '16px' }}>
+            <div style={{ marginBottom: '14px' }}>
+              <strong style={{ fontSize: '14px' }}>🥇 EMAS, PERAK, MINYAK &amp; INDEKS DOLAR</strong>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '3px', lineHeight: 1.6 }}>
+                Instrumen iki sadurunge ora dijupuk blas, dadi desker iki ora duwe baris logam.
+                Saiki dijupuk langsung saka bursa.
+              </div>
+            </div>
+
+            {metals.length === 0 ? (
+              <div style={{ padding: '24px', background: 'var(--bg-panel-subtle)', borderRadius: 'var(--radius-sm)', textAlign: 'center', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '20px', marginBottom: '8px' }}>🥇 Belum ada data logam</div>
+                <div style={{ fontSize: '11px' }}>Jalankan pipeline forex untuk mengisi baris ini.</div>
+              </div>
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <table className="quant-table">
+                  <thead>
+                    <tr>
+                      <th>Instrumen</th>
+                      <th style={{ textAlign: 'center' }}>Jenis</th>
+                      <th style={{ textAlign: 'right' }}>Harga</th>
+                      <th style={{ textAlign: 'right' }}>Perubahan 24h</th>
+                      <th style={{ textAlign: 'right' }}>RSI (14)</th>
+                      <th style={{ textAlign: 'center' }}>Setup</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {metals.map((m) => {
+                      const live = livePrices[m.symbol] || livePrices[m.pair];
+                      const price = live?.price !== undefined ? Number(live.price) : Number(m.price || 0);
+                      const chg = live?.changePct !== undefined ? Number(live.changePct) : Number(m.change_24h_pct || 0);
+                      const isPos = chg > 0;
+                      const rsi = Number(m.rsi_14 || 0);
+                      const kelas = m.asset_class === 'METAL' ? 'Logam'
+                        : m.asset_class === 'ENERGY' ? 'Energi'
+                        : m.asset_class === 'INDEX' ? 'Indeks' : '—';
+                      return (
+                        <tr key={m.symbol}>
+                          <td>
+                            <button onClick={() => onOpenChart(`TVC:${m.symbol}`)} style={{ background: 'transparent', border: 'none', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px', padding: 0 }}>
+                              {m.symbol} ↗
+                            </button>
+                          </td>
+                          <td style={{ textAlign: 'center', fontSize: '11px', color: 'var(--text-secondary)' }}>{kelas}</td>
+                          <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
+                            {/* 2 desimal — persis kaya dealing desk nyebut */}
+                            {price.toFixed(2)}
+                          </td>
+                          <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                            {isPos ? '+' : ''}{chg.toFixed(2)}%
+                          </td>
+                          <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: rsi < 30 ? 'var(--accent-green)' : rsi > 70 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
+                            {rsi.toFixed(1)}
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            <span className={`badge ${m.setup_type === 'LONG' ? 'badge-bull' : m.setup_type === 'SHORT' ? 'badge-bear' : ''}`} style={{ fontWeight: 'bold' }}>
+                              {m.setup_type}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
         {activeTab === 'screener' && (
           <div style={{ overflowX: 'auto' }}>
             <table className="quant-table">
@@ -166,8 +247,13 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
               </thead>
               <tbody>
                 {pairs.filter(p => p.pair.toLowerCase().includes(search.toLowerCase())).map((p) => {
-                  const isJpy = (p.pair || '').includes('JPY');
-                  const decimals = isJpy ? 3 : 5;
+                  // Decimals must follow the instrument, not just the pair name.
+                  // Hardcoding 3/5 rendered gold as "4130.25000". Metals, energy
+                  // and the dollar index use 2 decimals, exactly like a real
+                  // dealing desk quotes them.
+                  const decimals = p.asset_class && p.asset_class !== 'FOREX'
+                    ? 2
+                    : ((p.pair || '').includes('JPY') ? 3 : 5);
                   const cleanPair = (p.pair || '').replace('/', '');
                   const liveQuote = livePrices[p.pair] || livePrices[cleanPair] || livePrices[`FX_IDC:${cleanPair}`] || livePrices[`FX:${cleanPair}`];
                   const currentPrice = liveQuote?.price !== undefined ? Number(liveQuote.price) : Number(p.price || 0);

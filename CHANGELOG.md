@@ -14,6 +14,47 @@ The format follows an enhanced [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
+## [2026-10-06] — Forex & Emas Dipulihkan: XAU Ora Ana Blas + Ora Tau Di-refresh
+
+### Sprint 30 — Logam, Energi & Indeks Dolar Mlebu Desker
+- **[LAPORAN JENDRAL ARIB] "forex dan xau dll ga jalan"**:
+  - Tak priksa kabeh: **jaringan ora masalah blas.** TradingView mangsuli **28/28 pair** lan **kabeh ticker komoditas** saka laptop iki.
+  - Dadi salah-ne dudu blokir. Ana **rong masalah liya**.
+- **[AKAR 1] XAU ORA ANA NANG DAFTAR — BLAS**:
+  - `forex_scanner.py` mung ngemot **28 pair valas**. Emas, perak, minyak lan indeks dolar (DXY) dipakai nang akeh panggonan (agen arena, news wire, global markets, flow desk), tapi **ora ana sing njupuk**.
+  - Akibate desker iki **ora duwe baris logam sekotak-kotak**.
+  - Saiki dijupuk saka **CFD scanner** (dudu forex scanner — wis tak uji, forex scanner nolak ticker iki):
+    | Instrumen | Jenis | Harga live |
+    |---|---|---|
+    | GOLD (XAU/USD) | Logam | 4130.25 |
+    | SILVER (XAG/USD) | Logam | 60.76 |
+    | USOIL | Energi | 89.73 |
+    | UKOIL | Energi | 100.64 |
+    | DXY | Indeks | 102.16 |
+- **[AKAR 2] ORA ANA SING NGREFRESH**:
+  - Pipeline pungkasan mlaku **sedino kepungkur**, mode `daily_idx_morning`.
+  - Ora ana jadwal otomatis — padha karo kasus futures. Data basi mergo **ora ana sing takon**.
+  - Saiki: `scripts/refresh_forex.py` + jadwal Windows **saben 30 menit**, wis tak uji mlaku (`LastTaskResult: 0`).
+  - Script mung nyentuh **rong key** (`forex_intelligence` + cap waktu makro). Yen TradingView mati, bundle **ora ditimpa**.
+- **[DATA PALSU DIBUWANG] Laporan COT**:
+  - `_fetch_cot_report()` mbalekake **siji baris EUR hardcoded** kanthi angka karangan (`net_speculative 50000`, `sentiment LONG`) sing disuguhake minangka bacaan CFTC.
+  - Kuwi **data karangan nang alat trading**. Data COT asli butuh file mingguan CFTC sing ora dijupuk pipeline iki.
+  - Saiki field-e **kosong**. Luwih becik ora ana ketimbang goroh.
+- **[BUG LIYA SING TAK TEMOKNO] Setup mung saka tandha owah-owahan**:
+  - Kode lawas: `setup = "LONG" if change > 0 else "SHORT"` — dina mudhun **kabeh** dilabel SHORT. Kuwi **dudu setup**.
+  - Saiki dijupuk saka kolom sinyal TradingView: `|signal| > 0.1` → LONG/SHORT, liyane NEUTRAL. Keyakinan uga ngikuti kekuwatan sinyal.
+- **[BUG UI] Desimal hardcoded**:
+  - `const decimals = isJpy ? 3 : 5` nggawe GOLD katon **`4130.25000`** — ora kaya dealing desk nyebut.
+  - Saiki ngikuti instrumen: logam/energi/indeks **2 desimal**, JPY 3, valas liyane 5.
+- **[FALLBACK JUJUR]** Yen ora ana bursa sing bisa diakses, baris lawas diisi `price=1.0` kanggo kabeh 28 pair — tembok `1.00000` sing **ketok kaya rega datar sing nyata**. Saiki ditandhani `DATA_UNAVAILABLE` kanthi rega 0.
+- **[TAB ANYAR]** **🥇 EMAS & KOMODITAS** nang `ForexCommandTab` — tabel kapisah kanggo logam, energi lan indeks dolar.
+- **[VERIFIKASI]**:
+  - **30 tes anyar** `test_forex_scanner.py`: XAU kudu ikut dipindai, desimal saben instrumen, setup saka sinyal (dudu tandha owah-owahan), COT ora tau dikarang, lan fallback ora nate nggawe rega palsu.
+  - **122 tes engine** lulus (30 anyar) + 206 tes frontend. Build bersih 1,59s.
+  - Data live: GOLD `4130.25` · SILVER `60.76` · USOIL `89.73` · UKOIL `100.64` · DXY `102.16` · 28 pair valas kabeh keisi.
+
+---
+
 ## [2026-10-06] — 24H Change Diperbaiki + Panel "Uang Sedang Ke Mana"
 
 ### Sprint 29 — Aliran Likuiditas & Perbaikan Umpan Harga
