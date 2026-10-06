@@ -6,7 +6,9 @@ import {
   inferSentiment,
   playTTS,
   stopTTS,
-  formatNewsDateTime
+  formatNewsDateTime,
+  newsFreshness,
+  formatAge
 } from './newsHelpers.js';
 
 export default function NewsTab({
@@ -44,15 +46,26 @@ export default function NewsTab({
           ? `/api/dev-bundle?v=${Date.now()}`
           : `/api/research-archive?v=${Date.now()}`
       );
+      let synced = false;
       if (resArchive.ok) {
         const jsonArch = await resArchive.json();
         const archive = Array.isArray(jsonArch) ? jsonArch : jsonArch?.research_archive;
-        if (Array.isArray(archive)) setResearchArchive(archive);
+        if (Array.isArray(archive)) {
+          setResearchArchive(archive);
+          synced = true;
+        }
       }
-      setToastMsg('Riset AI berhasil disinkronkan dengan intelijen pasar terkini.');
+      // FE-14: only report success when the data actually synced.
+      if (synced) {
+        setToastMsg('Riset AI berhasil disinkronkan dengan intelijen pasar terkini.');
+      } else {
+        setToastMsg('Sinkron riset gagal (HTTP ' + resArchive.status + ') — coba lagi nanti.');
+      }
       setTimeout(() => setToastMsg(null), 3000);
     } catch (err) {
       console.warn('Refresh failed:', err);
+      setToastMsg('Sinkron riset gagal — jaringan atau server bermasalah.');
+      setTimeout(() => setToastMsg(null), 3000);
     } finally {
       setIsRefreshingAi(false);
     }
@@ -701,6 +714,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     {(() => {
                       const dt = formatNewsDateTime(news);
+                      const fresh = newsFreshness(news);
                       const originalTooltip = news.source_time_utc
                         ? `Waktu Rilis Sumber Asli: ${news.source_time_utc} (${news.source || 'Sumber'})`
                         : (news.source_published_at || news.pub_date || '');
@@ -723,6 +737,11 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                           <span style={{ fontSize: '10px', color: 'var(--accent-blue, #60a5fa)', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
                             ⏰ {dt.timeStr}
                           </span>
+                          {fresh && (
+                            <span style={{ fontSize: '9px', fontWeight: '800', color: fresh.color, fontFamily: 'var(--font-mono)' }} title="Umur berita sejak rilis sumber — FRESH < 1 jam, TERLAMBAT < 6 jam, STALE lebih tua">
+                              {fresh.label} {formatAge(fresh.ageMin)}
+                            </span>
+                          )}
                         </div>
                       );
                     })()}

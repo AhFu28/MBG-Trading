@@ -225,3 +225,20 @@ describe('invented running trade tape and counts', () => {
     expect(readCode('App.jsx')).not.toMatch(/\b744\b/);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Honest feedback: a failed refresh must not report success (FE-14)
+// ---------------------------------------------------------------------------
+describe('honest refresh feedback', () => {
+  it('the AI research refresh reports failure instead of pretending success', () => {
+    const news = readCode('components/NewsTab.jsx');
+    expect(news).toContain('Sinkron riset gagal');
+    expect(news).toContain('synced');
+  });
+
+  it('news cards show an honest freshness label from the item publish time', () => {
+    const helpers = readCode('components/newsHelpers.js');
+    expect(helpers).toContain('newsFreshness');
+    expect(helpers).toMatch(/TERLAMBAT/);
+  });
+});

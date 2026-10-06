@@ -261,3 +261,26 @@ export function formatNewsDateTime(newsItem = {}) {
     sourceTime: newsItem.source_time_utc || newsItem.pub_date || ''
   };
 }
+
+/**
+ * Freshness from the item's own publish time (timestamp_ms, else pub_date).
+ *
+ * Honest label per manual section 2.3: an old edition must look old, not be
+ * disguised as fresh. Unknown time returns null so the caller renders a dash
+ * instead of a fake "fresh".
+ */
+export function newsFreshness(newsItem = {}) {
+  const ts = newsItem.timestamp_ms || (newsItem.pub_date ? new Date(newsItem.pub_date).getTime() : 0);
+  if (!ts || isNaN(ts)) return null;
+  const ageMin = Math.max(0, Math.round((Date.now() - ts) / 60000));
+  if (ageMin < 60) return { label: 'FRESH', color: 'var(--accent-green, #10b981)', ageMin };
+  if (ageMin < 360) return { label: 'TERLAMBAT', color: 'var(--accent-gold, #f59e0b)', ageMin };
+  return { label: 'STALE', color: 'var(--accent-rust, #ef4444)', ageMin };
+}
+
+/** Compact age string: 12m / 2.4h / — */
+export function formatAge(ageMin) {
+  if (ageMin == null) return '—';
+  if (ageMin < 60) return ageMin + 'm';
+  return (ageMin / 60).toFixed(1) + 'h';
+}
