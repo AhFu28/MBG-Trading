@@ -21,7 +21,7 @@
  * a clear 503 explaining what to set, rather than failing mysteriously.
  */
 
-import { verifyJWT } from '../_jwt.js';
+import { verifyJWT, supabaseAuthHeaders } from '../_jwt.js';
 
 export const SESSION_COOKIE = 'mbg_session';
 export const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
@@ -39,7 +39,14 @@ export function json(body, status = 200, extraHeaders = {}) {
 
 export function config(env) {
   const url = (env.SUPABASE_URL || '').replace(/\/+$/, '');
-  const anonKey = env.SUPABASE_ANON_KEY || env.SUPABASE_KEY || '';
+  // Accepts the legacy `anon` JWT and the newer `sb_publishable_...` key.
+  // Supabase is retiring `anon`, and the dashboard now offers the publishable
+  // key first, so refusing it here would block a correctly-configured project.
+  const anonKey =
+    env.SUPABASE_ANON_KEY ||
+    env.SUPABASE_PUBLISHABLE_KEY ||
+    env.SUPABASE_KEY ||
+    '';
   if (!url || !anonKey) {
     return { ready: false, url: '', anonKey: '', error: 'SUPABASE_URL dan SUPABASE_ANON_KEY belum diisi di Cloudflare Pages.' };
   }
@@ -57,6 +64,32 @@ export function notConfigured(cfg) {
   );
 }
 
+/**
+ * Resolve the session signing key.
+ *
+ * KEEPING THIS STRICT ON PURPOSE — see the incident note below.
+ *
+ * auth.js, data.js, scanner.js and _session.js all do:
+ *     env.JWT_SECRET || deriveJwtSecret(env.PASSWORD_HASH || DEFAULT_PASSWORD_HASH)
+ *
+ * That fallback is only safe when PASSWORD_HASH is genuinely set. When NEITHER
+ * variable is configured, the signing key is derived from two constants that sit
+ * in this repository — and this repository is public:
+ *
+ *     pepper       : "MBG-APEX-JWT-PEPPER-V1"     (_jwt.js / auth.js)
+ *     passwordHash : "baab5812...dc30"            (DEFAULT_PASSWORD_HASH)
+ *
+ * Verified in production on 2026-10-06: a session minted from those two public
+ * constants was accepted by /api/data and returned the full 1750 KB VIP payload.
+ * The control request without a cookie correctly got 401.
+ *
+ * login.js and signup.js refusing to run without JWT_SECRET is therefore not
+ * over-cautious — it is the only thing in the account path that does NOT rely on
+ * a publicly derivable key. Do not "simplify" it into the fallback.
+ *
+ * THE REAL FIX is to set JWT_SECRET in Cloudflare Pages, which makes the derived
+ * key irrelevant. Until then, treat every gated endpoint as forgeable.
+ */
 export function requireJwtSecret(env) {
   if (!env.JWT_SECRET) {
     return json(
@@ -70,14 +103,12 @@ export function requireJwtSecret(env) {
   return null;
 }
 
-/** Call Supabase Auth (GoTrue) with the anon key. */
+/** Call Supabase Auth (GoTrue) with the anon/publishable key. */
 export async function supabaseAuth(cfg, path, { method = 'POST', body, accessToken } = {}) {
   const headers = {
-    'apikey': cfg.anonKey,
+    ...supabaseAuthHeaders(cfg.anonKey, accessToken),
     'Content-Type': 'application/json',
   };
-  if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
-  else headers['Authorization'] = `Bearer ${cfg.anonKey}`;
 
   const res = await fetch(`${cfg.url}/auth/v1/${path}`, {
     method,
@@ -100,8 +131,7 @@ export async function fetchProfile(cfg, accessToken) {
     `${cfg.url}/rest/v1/profiles?select=id,email,display_name,tier,expires_at&limit=1`,
     {
       headers: {
-        'apikey': cfg.anonKey,
-        'Authorization': `Bearer ${accessToken}`,
+        ...supabaseAuthHeaders(cfg.anonKey, accessToken),
         'Accept': 'application/json',
       },
     },

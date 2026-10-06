@@ -1,5 +1,5 @@
 /**
- * POST /api/account/login — sign in with email + password.
+ * POST /api/account/login â€” sign in with email + password.
  *
  * The password is verified by Supabase Auth, not by us. On success we mint our
  * own HttpOnly session cookie that carries the Supabase access token, so later
@@ -18,6 +18,12 @@ export async function onRequestPost(context) {
 
   const cfg = config(env);
   if (!cfg.ready) return notConfigured(cfg);
+
+  // Deliberately strict. The derived-key fallback used by auth.js and friends is
+  // only safe when PASSWORD_HASH is genuinely set; with neither variable
+  // configured the signing key comes from two constants in this public repo, and
+  // a session forged from them was accepted by /api/data in production on
+  // 2026-10-06. See the note on requireJwtSecret in _shared.js.
   const missingSecret = requireJwtSecret(env);
   if (missingSecret) return missingSecret;
 

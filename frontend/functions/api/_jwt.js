@@ -68,3 +68,43 @@ export async function sha256Hex(text) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
+
+/**
+ * Build the auth headers for a Supabase request.
+ *
+ * WHY THIS EXISTS (added 2026-10-06)
+ * ----------------------------------
+ * Supabase is retiring the legacy `anon` JWT in favour of a short
+ * `sb_publishable_...` key, and the two behave differently on the wire:
+ *
+ *   legacy `eyJ...`         -> accepted in BOTH `apikey` and `Authorization`
+ *   `sb_publishable_...`    -> accepted in `apikey` ONLY
+ *
+ * From the migration guide: "The new secret keys aren't JWTs, so they're
+ * rejected there. Send the key on the apikey header instead."
+ *
+ * Every call site here used to do `Authorization: Bearer ${anonKey}`, which
+ * silently breaks the moment the project moves to the new key format. It was
+ * found while wiring up this deployment, where the dashboard now hands out
+ * `sb_publishable_...` by default.
+ *
+ * So: always send `apikey`; add `Authorization` only when it can be honoured —
+ * a real user token, or a key that is genuinely a JWT.
+ *
+ * @param {string} anonKey   publishable or legacy anon key
+ * @param {string} [accessToken]  the signed-in user's JWT, when there is one
+ */
+export function supabaseAuthHeaders(anonKey, accessToken) {
+  const headers = { apikey: anonKey };
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  } else if (String(anonKey || '').startsWith('eyJ')) {
+    headers.Authorization = `Bearer ${anonKey}`;
+  }
+  return headers;
+}
+
+/** True when a Supabase key is the legacy JWT format rather than sb_*. */
+export function isLegacyJwtKey(key) {
+  return String(key || '').startsWith('eyJ');
+}

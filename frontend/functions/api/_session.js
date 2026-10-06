@@ -5,6 +5,8 @@
  * that decides whether a request may read VIP payloads.
  */
 
+import { supabaseAuthHeaders } from './_jwt.js';
+
 export function base64urlDecode(str) {
   str = str.replace(/-/g, '+').replace(/_/g, '/');
   while (str.length % 4) str += '=';
@@ -98,9 +100,11 @@ export async function fetchSystemState(supabaseUrl, supabaseKey, key) {
   try {
     const restEndpoint = `${supabaseUrl}/rest/v1/system_state?key=eq.${key}&select=val,updated_at`;
     const resp = await fetch(restEndpoint, {
+      // supabaseAuthHeaders() omits Authorization for the newer
+      // `sb_publishable_...` keys, which Supabase rejects in that header because
+      // they are not JWTs. See functions/api/_jwt.js.
       headers: {
-        'apikey': supabaseKey,
-        'Authorization': `Bearer ${supabaseKey}`,
+        ...supabaseAuthHeaders(supabaseKey),
         'Accept': 'application/json'
       }
     });

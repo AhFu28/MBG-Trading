@@ -53,6 +53,7 @@
 // repo root. If this file is missing the build fails loudly, which is the right
 // outcome: a silent fallback here is what hid the problem for ten days.
 import bundledSnapshot from '../../../engine/cache/latest_cockpit_bundle.json';
+import { supabaseAuthHeaders } from './_jwt.js';
 
 function base64urlDecode(str) {
   str = str.replace(/-/g, '+').replace(/_/g, '/');
@@ -161,15 +162,20 @@ export async function onRequestGet(context) {
 
   // ---- 1. Supabase REST (live path) -------------------------------------
   const supabaseUrl = env.SUPABASE_URL;
-  const supabaseKey = env.SUPABASE_KEY || env.SUPABASE_ANON_KEY;
+  const supabaseKey =
+    env.SUPABASE_KEY ||
+    env.SUPABASE_ANON_KEY ||
+    env.SUPABASE_PUBLISHABLE_KEY;
 
   if (supabaseUrl && supabaseKey) {
     try {
       const restEndpoint = `${supabaseUrl}/rest/v1/system_state?key=eq.LATEST_COCKPIT_BUNDLE&select=val,updated_at`;
       const sResp = await fetch(restEndpoint, {
+        // supabaseAuthHeaders() omits Authorization for the new
+        // `sb_publishable_...` keys, which Supabase rejects in that header
+        // because they are not JWTs. See functions/api/_jwt.js.
         headers: {
-          'apikey': supabaseKey,
-          'Authorization': `Bearer ${supabaseKey}`,
+          ...supabaseAuthHeaders(supabaseKey),
           'Accept': 'application/json'
         }
       });

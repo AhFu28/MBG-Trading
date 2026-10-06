@@ -1,5 +1,5 @@
-/**
- * POST /api/account/signup — create a new FREE account.
+﻿/**
+ * POST /api/account/signup â€” create a new FREE account.
  *
  * Passwords go straight to Supabase Auth. We never hash or store them.
  * Every new account starts on the FREE tier; the tier is raised only by the
@@ -17,6 +17,7 @@ export async function onRequestPost(context) {
 
   const cfg = config(env);
   if (!cfg.ready) return notConfigured(cfg);
+
   const missingSecret = requireJwtSecret(env);
   if (missingSecret) return missingSecret;
 
