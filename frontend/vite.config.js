@@ -51,6 +51,12 @@ function devBundlePlugin() {
         }
         return send(res, raw);
       });
+
+      // Dev-only auth stub: production auth is functions/api/auth.js (Cloudflare);
+      // local dev has no functions, so auto-pass the gate to render the cockpit.
+      server.middlewares.use('/api/auth', (req, res) => {
+        send(res, JSON.stringify({ authenticated: true, tier: 'PRO' }));
+      });
     },
   };
 }
