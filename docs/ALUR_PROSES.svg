@@ -12,7 +12,7 @@
   <rect width="1100" height="1240" fill="url(#bg)"/>
 
   <text x="550" y="50" fill="#e2e8f0" font-size="29" font-weight="800" text-anchor="middle">MBG TRADING — ALUR PROSES &amp; QA</text>
-  <text x="550" y="78" fill="#64748b" font-size="13.5" text-anchor="middle">6 Oktober 2026 · commit cb98c83 · laptop Jendral sudah bebas dari jadwal refresh</text>
+  <text x="550" y="78" fill="#64748b" font-size="13.5" text-anchor="middle">6 Oktober 2026 · commit 8159991 · laptop bebas · 6 dari 6 bagian data SEGAR</text>
 
   <!-- ============ 1 LOCAL ============ -->
   <text x="55" y="128" fill="#38bdf8" font-size="14.5" font-weight="800">1 · MESIN LOKAL — hanya dipakai manual</text>
@@ -36,14 +36,16 @@
   <text x="55" y="272" fill="#38bdf8" font-size="14.5" font-weight="800">2 · PIPELINE CLOUD — sekarang pemilik data (GitHub Actions)</text>
 
   <rect x="55" y="290" width="230" height="86" rx="10" fill="#0f172a" stroke="#1e293b"/>
-  <text x="75" y="316" fill="#e2e8f0" font-size="12.5" font-weight="700">hourly_crypto_macro</text>
-  <text x="75" y="338" fill="#94a3b8" font-size="11">Jadwal tiap jam (:00)</text>
-  <text x="75" y="356" fill="#94a3b8" font-size="11">mode hourly_crypto_macro</text>
+  <text x="75" y="313" fill="#e2e8f0" font-size="12.5" font-weight="700">Jadwal jam (:00)</text>
+  <text x="75" y="334" fill="#94a3b8" font-size="11">crypto_futures · whale</text>
+  <text x="75" y="352" fill="#94a3b8" font-size="11">forex · macro</text>
+  <text x="75" y="370" fill="#64748b" font-size="10">mode hourly_crypto_macro</text>
 
   <rect x="310" y="290" width="230" height="86" rx="10" fill="#0f172a" stroke="#1e293b"/>
-  <text x="330" y="316" fill="#e2e8f0" font-size="12.5" font-weight="700">Ambil 4 bagian</text>
-  <text x="330" y="338" fill="#94a3b8" font-size="11">crypto_futures · whale</text>
-  <text x="330" y="356" fill="#94a3b8" font-size="11">forex · macro</text>
+  <text x="330" y="313" fill="#e2e8f0" font-size="12.5" font-weight="700">Jadwal harian (22:30 UTC)</text>
+  <text x="330" y="334" fill="#94a3b8" font-size="11">us_stocks + kalender</text>
+  <text x="330" y="352" fill="#94a3b8" font-size="11">earnings</text>
+  <text x="330" y="370" fill="#64748b" font-size="10">mode us_stocks · BARU</text>
 
   <rect x="565" y="290" width="230" height="86" rx="10" fill="#0a1a1f" stroke="#38bdf8" stroke-width="1.5"/>
   <text x="585" y="316" fill="#7dd3fc" font-size="12.5" font-weight="700">Validasi bundle</text>
@@ -52,8 +54,8 @@
 
   <rect x="820" y="290" width="225" height="86" rx="10" fill="#0a1f12" stroke="#22c55e" stroke-width="1.5"/>
   <text x="840" y="316" fill="#4ade80" font-size="12.5" font-weight="700">Commit + push</text>
-  <text x="840" y="338" fill="#94a3b8" font-size="11">Gagal bersuara kalau</text>
-  <text x="840" y="356" fill="#94a3b8" font-size="11">tidak ada yang terkirim</text>
+  <text x="840" y="338" fill="#94a3b8" font-size="11">Pesan sebut mode asli</text>
+  <text x="840" y="356" fill="#94a3b8" font-size="11">Gagal bersuara kalau kosong</text>
 
   <line x1="285" y1="333" x2="310" y2="333" stroke="#64748b" marker-end="url(#arrow)"/>
   <line x1="540" y1="333" x2="565" y2="333" stroke="#64748b" marker-end="url(#arrow)"/>
@@ -61,10 +63,10 @@
 
   <!-- hasil terverifikasi -->
   <rect x="55" y="400" width="990" height="94" rx="10" fill="#0a1f12" stroke="#22c55e" stroke-width="1.5"/>
-  <text x="77" y="426" fill="#4ade80" font-size="13" font-weight="800">HASIL VERIFIKASI (run 37433849757 — sukses)</text>
-  <text x="77" y="450" fill="#e2e8f0" font-size="12" font-family="Consolas, monospace">bundle is valid and publishable   ·   25 sections   ·   2.452.363 byte</text>
-  <text x="77" y="472" fill="#e2e8f0" font-size="12" font-family="Consolas, monospace">crypto_futures 15 pair (gateio)   ·   whale 5 ekor   ·   forex 33 pair</text>
-  <text x="77" y="488" fill="#64748b" font-size="10.5">Semua segar &lt; 1 menit. Penanda konflik: 0. Data karangan: 0.</text>
+  <text x="77" y="426" fill="#4ade80" font-size="13" font-weight="800">HASIL VERIFIKASI — run 37437433618 sukses</text>
+  <text x="77" y="450" fill="#e2e8f0" font-size="12" font-family="Consolas, monospace">bundle is valid and publishable   ·   25 sections   ·   commit [us_stocks]</text>
+  <text x="77" y="472" fill="#e2e8f0" font-size="12" font-family="Consolas, monospace">SEGAR 6 / BASI 0   ·   crypto 15 pair · whale 5 ekor · forex 33 pair · us_stocks 0,0 jam</text>
+  <text x="77" y="488" fill="#64748b" font-size="10.5">Tidak ada lagi bagian tanpa pemilik otomatis. Penanda konflik: 0. Data karangan: 0.</text>
 
   <!-- ============ 3 QA GATE ============ -->
   <text x="55" y="540" fill="#fbbf24" font-size="14.5" font-weight="800">3 · GERBANG QA — dijalankan sebelum setiap push</text>
@@ -112,8 +114,8 @@
   <text x="77" y="1052" fill="#94a3b8" font-size="11.5">Setelah dapat akses: set env Supabase di Cloudflare + jalankan schema → pelanggan bisa daftar &amp; bayar.</text>
 
   <rect x="55" y="1086" width="990" height="100" rx="10" fill="#0f172a" stroke="#1e293b"/>
-  <text x="77" y="1114" fill="#e2e8f0" font-size="13" font-weight="800">Masih terbuka (bukan penghalang):</text>
-  <text x="77" y="1138" fill="#94a3b8" font-size="11.5">us_stocks hanya refresh saat workflow daily_idx_morning dijalankan manual — perlu jadwal harian.</text>
-  <text x="77" y="1158" fill="#94a3b8" font-size="11.5">AiAgentArenaTab.jsx masih 7.416 baris. Utang teknis, bukan bug.</text>
-  <text x="77" y="1178" fill="#64748b" font-size="10.5">Semua yang bisa dikerjakan tanpa kredensial orang lain sudah selesai.</text>
+  <text x="77" y="1114" fill="#e2e8f0" font-size="13" font-weight="800">Sisa utang teknis (tidak mendesak, bukan penghalang):</text>
+  <text x="77" y="1138" fill="#94a3b8" font-size="11.5">AiAgentArenaTab.jsx masih 7.416 baris. Beberapa catch {} menelan error.</text>
+  <text x="77" y="1158" fill="#94a3b8" font-size="11.5">broker_summary masih bertanggal 17 Sep. Tile kosong di MarketHeatmapTab berwarna hijau.</text>
+  <text x="77" y="1178" fill="#4ade80" font-size="10.5">Semua bagian data sudah punya pemilik otomatis. Nol basi.</text>
 </svg>
