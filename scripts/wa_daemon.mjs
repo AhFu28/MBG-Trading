@@ -432,13 +432,36 @@ const server = http.createServer(async (req, res) => {
       try {
         const body = JSON.parse(bodyStr || '{}');
         const rawMessage = body.message || body.text || '';
-        if (!rawMessage.trim()) {
-          return sendJson(400, { ok: false, error: 'Parameter message wajib diisi.' });
+
+        // An image may be sent with the caption in `message`, or on its own.
+        // The path is resolved here rather than in the CLI so the daemon owns
+        // the one place that reads from disk.
+        const imagePath = body.image ? path.resolve(String(body.image)) : null;
+        if (imagePath && !fs.existsSync(imagePath)) {
+          return sendJson(400, { ok: false, error: `File gambar tidak ditemukan: ${imagePath}` });
         }
 
-        const message = cleanForWhatsApp(rawMessage);
+        if (!rawMessage.trim() && !imagePath) {
+          return sendJson(400, { ok: false, error: 'Parameter message atau image wajib diisi.' });
+        }
+
+        const message = rawMessage.trim() ? cleanForWhatsApp(rawMessage) : '';
 
         if (!isConnected || !sock) {
+          if (imagePath) {
+            // The outbox only stores text. Queue the caption if there is one and
+            // say plainly that the image did not make it, rather than dropping it
+            // silently and letting the caller believe it was delivered.
+            const item = queueMessage(message || '(gambar tidak terkirim - bot belum tersambung)', FUAD_JID);
+            return sendJson(202, {
+              ok: true,
+              queued: true,
+              imageDropped: true,
+              messageId: item.id,
+              to: TARGET_FUAD_DIGITS,
+              note: 'Bot WA belum tersambung. GAMBAR TIDAK DIKIRIM - antrean hanya menyimpan teks. Coba lagi setelah tersambung.',
+            });
+          }
           const item = queueMessage(message, FUAD_JID);
           return sendJson(202, {
             ok: true,
@@ -449,8 +472,28 @@ const server = http.createServer(async (req, res) => {
           });
         }
 
+        let result;
+        if (imagePath) {
+          const bytes = fs.statSync(imagePath).size;
+          log(`Mengirim gambar (${(bytes / 1024).toFixed(1)} KB) + caption ke Mas Fuad (${FUAD_JID})...`);
+          result = await sock.sendMessage(FUAD_JID, {
+            image: fs.readFileSync(imagePath),
+            caption: message || undefined,
+          });
+          log(`✓ Gambar berhasil terkirim ke Mas Fuad! (ID: ${result?.key?.id})`);
+          return sendJson(200, {
+            ok: true,
+            sent: true,
+            sentImage: true,
+            imageBytes: bytes,
+            to: TARGET_FUAD_DIGITS,
+            messageId: result?.key?.id,
+            messagePreview: message.slice(0, 100),
+          });
+        }
+
         log(`Mengirim pesan langsung ke Mas Fuad (${FUAD_JID})...`);
-        const result = await sock.sendMessage(FUAD_JID, { text: message });
+        result = await sock.sendMessage(FUAD_JID, { text: message });
         log(`✓ Pesan berhasil terkirim ke Mas Fuad! (ID: ${result?.key?.id})`);
 
         return sendJson(200, {
