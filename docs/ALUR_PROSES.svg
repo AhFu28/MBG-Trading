@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1480" width="1100" height="1480" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b1020"/>
+      <stop offset="100%" stop-color="#070a13"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#f43f5e"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#22c55e"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="1480" fill="url(#bg)"/>
+
+  <!-- Title -->
+  <text x="550" y="52" fill="#e2e8f0" font-size="30" font-weight="800" text-anchor="middle">MBG TRADING — ALUR PROSES &amp; QA</text>
+  <text x="550" y="82" fill="#64748b" font-size="14" text-anchor="middle">Diperbarui 6 Oktober 2026 · commit d47424f</text>
+
+  <!-- ================= SECTION 1: LOCAL ENGINE ================= -->
+  <text x="60" y="135" fill="#38bdf8" font-size="15" font-weight="800">1 · MESIN LOKAL (laptop Jendral)</text>
+
+  <rect x="60" y="152" width="480" height="66" rx="10" fill="#0f172a" stroke="#1e293b"/>
+  <text x="80" y="180" fill="#e2e8f0" font-size="14" font-weight="700">Engine Python (engine/)</text>
+  <text x="80" y="202" fill="#94a3b8" font-size="12">Ambil data: Gate.io · TradingView · mempool.space</text>
+
+  <rect x="60" y="234" width="480" height="66" rx="10" fill="#0f172a" stroke="#1e293b"/>
+  <text x="80" y="262" fill="#e2e8f0" font-size="14" font-weight="700">Jadwal Windows (tiap 30 menit)</text>
+  <text x="80" y="284" fill="#94a3b8" font-size="12">MBG-CryptoFutures-Refresh · MBG-Forex-Refresh</text>
+
+  <rect x="60" y="316" width="480" height="66" rx="10" fill="#0f172a" stroke="#1e293b"/>
+  <text x="80" y="344" fill="#e2e8f0" font-size="14" font-weight="700">engine/cache/latest_cockpit_bundle.json</text>
+  <text x="80" y="366" fill="#94a3b8" font-size="12">25 bagian · ~2,4 MB · sumber kebenaran lokal</text>
+
+  <line x1="300" y1="218" x2="300" y2="234" stroke="#64748b" marker-end="url(#arrow)"/>
+  <line x1="300" y1="300" x2="300" y2="316" stroke="#64748b" marker-end="url(#arrow)"/>
+
+  <!-- ================= SECTION 2: GATE ================= -->
+  <text x="600" y="135" fill="#fbbf24" font-size="15" font-weight="800">2 · GERBANG QA (sebelum push)</text>
+
+  <rect x="600" y="152" width="440" height="230" rx="10" fill="#1a1508" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="622" y="180" fill="#fbbf24" font-size="13" font-weight="800">WAJIB LULUS SEMUA:</text>
+
+  <text x="622" y="210" fill="#e2e8f0" font-size="12.5">1. 130 tes engine</text>
+  <text x="760" y="210" fill="#22c55e" font-size="12" font-weight="700">LULUS</text>
+  <text x="622" y="236" fill="#e2e8f0" font-size="12.5">2. 244 tes frontend</text>
+  <text x="760" y="236" fill="#22c55e" font-size="12" font-weight="700">LULUS</text>
+  <text x="622" y="262" fill="#e2e8f0" font-size="12.5">3. Build produksi bersih</text>
+  <text x="790" y="262" fill="#22c55e" font-size="12" font-weight="700">OK</text>
+  <text x="622" y="288" fill="#e2e8f0" font-size="12.5">4. Cek data karangan</text>
+  <text x="770" y="288" fill="#22c55e" font-size="12" font-weight="700">0 ditemukan</text>
+  <text x="622" y="314" fill="#e2e8f0" font-size="12.5">5. Diff bundle sesuai harapan</text>
+  <text x="812" y="314" fill="#22c55e" font-size="12" font-weight="700">5/25 bagian</text>
+  <text x="622" y="340" fill="#94a3b8" font-size="11.5">Gagal satu saja = berhenti, tidak push</text>
+  <text x="622" y="362" fill="#94a3b8" font-size="11.5">Pakai exit code, bukan cocok-cocokan teks</text>
+
+  <line x1="540" y1="349" x2="600" y2="267" stroke="#64748b" marker-end="url(#arrow)"/>
+
+  <!-- ================= SECTION 3: GIT ================= -->
+  <text x="60" y="445" fill="#a78bfa" font-size="15" font-weight="800">3 · GIT — STATUS SAAT INI</text>
+
+  <rect x="60" y="462" width="980" height="120" rx="10" fill="#160f26" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="82" y="492" fill="#e2e8f0" font-size="13">Commit lokal 8b69938 (fix workflow) + d47424f (data)</text>
+  <text x="82" y="518" fill="#e2e8f0" font-size="13">Sudah ter-push ke origin/main?</text>
+  <text x="330" y="518" fill="#22c55e" font-size="13" font-weight="700">8b69938 YA</text>
+  <text x="470" y="518" fill="#f43f5e" font-size="13" font-weight="700">d47424f BELUM — push GAGAL 403</text>
+  <text x="82" y="548" fill="#fbbf24" font-size="12">Penyebab: login gh sebagai KingArib99 (tanpa akses push), menimpa kredensial git</text>
+  <text x="82" y="568" fill="#94a3b8" font-size="11.5">Commit aman di lokal. Tidak hilang. Cuma belum naik.</text>
+
+  <!-- ================= SECTION 4: CLOUD ================= -->
+  <text x="60" y="635" fill="#38bdf8" font-size="15" font-weight="800">4 · PIPELINE CLOUD (GitHub Actions)</text>
+
+  <rect x="60" y="652" width="300" height="80" rx="10" fill="#0f172a" stroke="#1e293b"/>
+  <text x="80" y="680" fill="#e2e8f0" font-size="13" font-weight="700">hourly_crypto_macro.yml</text>
+  <text x="80" y="702" fill="#94a3b8" font-size="11.5">Jadwal tiap jam (:00)</text>
+  <text x="80" y="720" fill="#94a3b8" font-size="11.5">GitHub sering tunda 4-5 jam</text>
+
+  <rect x="400" y="652" width="300" height="80" rx="10" fill="#0f172a" stroke="#1e293b"/>
+  <text x="420" y="680" fill="#e2e8f0" font-size="13" font-weight="700">run_pipeline.py</text>
+  <text x="420" y="702" fill="#94a3b8" font-size="11.5">mode hourly_crypto_macro</text>
+  <text x="420" y="720" fill="#94a3b8" font-size="11.5">Binance TIDAK diblokir di luar ID</text>
+
+  <rect x="740" y="652" width="300" height="80" rx="10" fill="#1a0d0d" stroke="#f43f5e" stroke-width="1.5"/>
+  <text x="760" y="680" fill="#fca5a5" font-size="13" font-weight="700">BUG (26 Sep – 6 Okt)</text>
+  <text x="760" y="702" fill="#94a3b8" font-size="11.5">"Sukses" 107x, commit 0x</text>
+  <text x="760" y="720" fill="#94a3b8" font-size="11.5">Sudah diperbaiki (8b69938)</text>
+
+  <line x1="360" y1="692" x2="400" y2="692" stroke="#64748b" marker-end="url(#arrow)"/>
+  <line x1="700" y1="692" x2="740" y2="692" stroke="#f43f5e" marker-end="url(#arrowRed)"/>
+
+  <rect x="200" y="762" width="700" height="72" rx="10" fill="#0a1f12" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="222" y="790" fill="#4ade80" font-size="13" font-weight="800">PERBAIKAN: sekarang gagal BERSUARA, bukan sukses palsu</text>
+  <text x="222" y="812" fill="#94a3b8" font-size="11.5">Hanya bundle yang di-stage · error kalau kosong · ada langkah diagnostik</text>
+
+  <line x1="550" y1="732" x2="550" y2="762" stroke="#22c55e" marker-end="url(#arrowGreen)"/>
+
+  <!-- ================= SECTION 5: DEPLOY ================= -->
+  <text x="60" y="890" fill="#38bdf8" font-size="15" font-weight="800">5 · WEB (Cloudflare Pages)</text>
+
+  <rect x="60" y="908" width="300" height="96" rx="10" fill="#0a1f12" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="80" y="936" fill="#4ade80" font-size="13" font-weight="800">SUDAH JALAN</text>
+  <text x="80" y="960" fill="#94a3b8" font-size="11.5">Harga pasar (CORS langsung)</text>
+  <text x="80" y="978" fill="#94a3b8" font-size="11.5">Crypto Futures · Forex · Emas</text>
+  <text x="80" y="996" fill="#94a3b8" font-size="11.5">Paus on-chain (mempool nyata)</text>
+
+  <rect x="400" y="908" width="300" height="96" rx="10" fill="#1a1207" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="420" y="936" fill="#fbbf24" font-size="13" font-weight="800">TERHALANG</text>
+  <text x="420" y="960" fill="#94a3b8" font-size="11.5">/api/data → 503 (jujur)</text>
+  <text x="420" y="978" fill="#94a3b8" font-size="11.5">Data engine belum sampai</text>
+  <text x="420" y="996" fill="#94a3b8" font-size="11.5">Butuh kredensial</text>
+
+  <rect x="740" y="908" width="300" height="96" rx="10" fill="#1a1207" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="760" y="936" fill="#fbbf24" font-size="13" font-weight="800">TERHALANG</text>
+  <text x="760" y="960" fill="#94a3b8" font-size="11.5">Daftar akun pelanggan</text>
+  <text x="760" y="978" fill="#94a3b8" font-size="11.5">Pembayaran</text>
+  <text x="760" y="996" fill="#94a3b8" font-size="11.5">Butuh Supabase</text>
+
+  <!-- ================= SECTION 6: ACTION ================= -->
+  <text x="60" y="1065" fill="#f43f5e" font-size="15" font-weight="800">6 · YANG DIBUTUHKAN DARI JENDRAL</text>
+
+  <rect x="60" y="1082" width="980" height="100" rx="10" fill="#1a0d0d" stroke="#f43f5e" stroke-width="2"/>
+  <text x="82" y="1112" fill="#fca5a5" font-size="14" font-weight="800">A. Login gh sebagai naufalarib (bukan KingArib99)</text>
+  <text x="82" y="1136" fill="#e2e8f0" font-size="13" font-family="Consolas, monospace">gh auth logout   →   gh auth login   →   pilih akun naufalarib</text>
+  <text x="82" y="1162" fill="#94a3b8" font-size="11.5">Memperbaiki push git DAN mengaktifkan trigger workflow</text>
+
+  <rect x="60" y="1198" width="980" height="100" rx="10" fill="#0a1a1f" stroke="#38bdf8" stroke-width="2"/>
+  <text x="82" y="1228" fill="#7dd3fc" font-size="14" font-weight="800">B. Kamerad Fuad pilih Opsi B — beri akses Cloudflare + Supabase</text>
+  <text x="82" y="1252" fill="#e2e8f0" font-size="13">Tambahkan Jendral sebagai member di kedua akun</text>
+  <text x="82" y="1278" fill="#94a3b8" font-size="11.5">JANGAN kirim token lewat chat. Tambah sebagai member saja.</text>
+
+  <!-- Footer -->
+  <rect x="60" y="1330" width="980" height="100" rx="10" fill="#0f172a" stroke="#1e293b"/>
+  <text x="82" y="1360" fill="#e2e8f0" font-size="13" font-weight="800">Setelah dua langkah itu selesai:</text>
+  <text x="82" y="1386" fill="#94a3b8" font-size="12">1. Jadwal laptop dimatikan (cloud ambil alih) · 2. Data engine mengalir ke web</text>
+  <text x="82" y="1408" fill="#94a3b8" font-size="12">3. Pelanggan bisa daftar &amp; bayar · 4. Verifikasi end-to-end oleh saya</text>
+</svg>
