@@ -2,11 +2,34 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
+import { isChunkLoadFailure, shouldRetryChunkLoad, clearRetryGuard, CHUNK_RETRY_KEY } from './services/chunkLoadRetry.js'
+
+// ---------------------------------------------------------------------------
+// A failed dynamic import is almost always a transient network blip, not a
+// broken build.
+//
+// Observed in production 2026-10-06: the recovery screen appeared for
+// SecurityHubDrawer-C8h4s3MP.js. That chunk was sitting on the CDN answering
+// HTTP 200 the whole time, and all nine chunks the main bundle references were
+// present. The request simply failed once and React never asked again.
+//
+// Why it took down the WHOLE app: every `lazy()` import rejects into the nearest
+// error boundary, and this boundary is the root. So one dropped request for a
+// 24 KB drawer replaced the entire terminal with an error screen.
+//
+// The fix belongs here, not at the 28 `lazy()` call sites. This is the choke
+// point they all route through, and a reload is a legitimate recovery for a
+// transient failure: it re-reads index.html and re-issues the import.
+//
+// The decision logic lives in services/chunkLoadRetry.js so it can be tested
+// without booting React.
+// ---------------------------------------------------------------------------
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, retrying: false };
+    this.clearGuardTimer = null;
   }
 
   static getDerivedStateFromError(error) {
@@ -15,6 +38,26 @@ class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error("ErrorBoundary caught:", error, errorInfo);
+
+    // Only a chunk-load failure may trigger a reload. A genuine render bug that
+    // reloads on every render is an infinite loop.
+    const { retry } = shouldRetryChunkLoad(error);
+    if (!retry) return;
+
+    this.setState({ retrying: true });
+    window.location.reload();
+  }
+
+  componentDidMount() {
+    // Clear the guard once the app has settled, so a later failure in the same
+    // session can retry again. Delayed on purpose: React commits the Suspense
+    // fallback first, so clearing on mount would fire while chunks are still in
+    // flight and defeat the guard entirely.
+    this.clearGuardTimer = setTimeout(() => clearRetryGuard(), 15000);
+  }
+
+  componentWillUnmount() {
+    if (this.clearGuardTimer) clearTimeout(this.clearGuardTimer);
   }
 
   render() {
@@ -43,7 +86,11 @@ class ErrorBoundary extends React.Component {
               ⚠️ MBG QUANT TERMINAL // RUNTIME RECOVERY
             </div>
             <div style={{ fontSize: '11px', color: '#8b949e', marginBottom: '16px' }}>
-              Terdeteksi pengecualian runtime saat memuat komponen antarmuka.
+              {this.state.retrying
+                ? 'Koneksi terputus saat memuat komponen. Memuat ulang otomatis...'
+                : isChunkLoadFailure(this.state.error)
+                  ? 'Gagal memuat satu komponen antarmuka. Coba muat ulang dulu — biasanya hanya gangguan jaringan sebentar.'
+                  : 'Terdeteksi pengecualian runtime saat memuat komponen antarmuka.'}
             </div>
             <pre style={{
               background: '#0a0b0e',
@@ -90,6 +137,11 @@ class ErrorBoundary extends React.Component {
                     });
                     localStorage.clear();
                     Object.entries(backup).forEach(([k, v]) => localStorage.setItem(k, v));
+                    // Clear the automatic-retry guard too. Without this the manual
+                    // reset still cannot re-attempt the failed chunk, because the
+                    // guard lives in sessionStorage and localStorage.clear() does
+                    // not touch it.
+                    sessionStorage.removeItem(CHUNK_RETRY_KEY);
                   } catch (e) {}
                   window.location.reload();
                 }}
