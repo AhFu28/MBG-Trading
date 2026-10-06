@@ -92,9 +92,40 @@ jobs:
           fi
 
           git commit -m "chore(data): automated hourly crypto, whale & macro refresh [skip ci]"
+
+          # PUSH, AND DO NOT LIE ABOUT IT.
+          #
+          # Two separate faults hid here, both observed in run 37432538939 on
+          # 2026-10-06 — the first run after the loud-failure guard was added:
+          #
+          #   1. `git pull --rebase` refused to start:
+          #          error: cannot pull with rebase: You have unstaged changes.
+          #      The pipeline writes several files under engine/cache (arena
+          #      state, trade plans, idx categories). Only the bundle is staged,
+          #      so the rest sit as modifications and rebase bails out. All three
+          #      retries hit the same wall. --autostash fixes it: the pull
+          #      proceeds, and the unrelated working-tree edits are restored
+          #      afterwards untouched.
+          #
+          #   2. `cmd && git push && break || sleep 2` reports the exit status of
+          #      `sleep 2`. The loop therefore ended green after three failed
+          #      pushes, and the commit (8a17fe9, 15197 insertions of real data)
+          #      died with the runner. The workflow must fail when a push never
+          #      lands.
+          pushed=false
           for i in 1 2 3; do
-            git pull --rebase -X theirs origin main && git push && break || sleep 2
+            if git pull --rebase --autostash -X theirs origin main && git push; then
+              pushed=true
+              break
+            fi
+            echo "::warning::push attempt $i failed, retrying"
+            sleep 2
           done
+
+          if [ "$pushed" != "true" ]; then
+            echo "::error::Could not push the refreshed bundle after 3 attempts."
+            exit 1
+          fi
       - name: Send Telegram Failure Alert
         if: failure()
         run: |
