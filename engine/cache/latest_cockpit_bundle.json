@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-06T08:36:34.163834+00:00",
+  "last_updated": "2026-10-06T08:38:39.170150+00:00",
   "data_sources": {
     "macro": "unknown"
   },
@@ -52669,23 +52669,23 @@
     "matrix": [
       [
         1.0,
-        -0.139,
+        -0.137,
         -0.174
       ],
       [
-        -0.139,
+        -0.137,
         1.0,
-        0.061
+        0.06
       ],
       [
         -0.174,
-        0.061,
+        0.06,
         1.0
       ]
     ],
     "data_source": "live",
     "sample_size": 20,
-    "last_updated": "2026-10-06T08:36:34.151686"
+    "last_updated": "2026-10-06T08:38:39.152992"
   },
   "whale_intelligence": {
     "crypto_whales": [
@@ -54751,7 +54751,7 @@
         "take_profit_1": 359.52,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.982455+00:00"
+        "updated_at": "2026-10-06T08:38:39.000246+00:00"
       },
       {
         "ticker": "NVDA",
@@ -54777,7 +54777,7 @@
         "take_profit_1": 258.01,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.982963+00:00"
+        "updated_at": "2026-10-06T08:38:39.001347+00:00"
       },
       {
         "ticker": "MSFT",
@@ -54803,7 +54803,7 @@
         "take_profit_1": 567.19,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.983441+00:00"
+        "updated_at": "2026-10-06T08:38:39.002448+00:00"
       },
       {
         "ticker": "META",
@@ -54829,7 +54829,7 @@
         "take_profit_1": 801.25,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.983920+00:00"
+        "updated_at": "2026-10-06T08:38:39.003531+00:00"
       },
       {
         "ticker": "GOOGL",
@@ -54855,7 +54855,7 @@
         "take_profit_1": 374.19,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.984361+00:00"
+        "updated_at": "2026-10-06T08:38:39.004595+00:00"
       },
       {
         "ticker": "AMD",
@@ -54881,7 +54881,7 @@
         "take_profit_1": 682.29,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.984787+00:00"
+        "updated_at": "2026-10-06T08:38:39.005644+00:00"
       },
       {
         "ticker": "AVGO",
@@ -54907,7 +54907,7 @@
         "take_profit_1": 391.51,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.985219+00:00"
+        "updated_at": "2026-10-06T08:38:39.006654+00:00"
       },
       {
         "ticker": "CRM",
@@ -54933,7 +54933,7 @@
         "take_profit_1": 248.17,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.985662+00:00"
+        "updated_at": "2026-10-06T08:38:39.007694+00:00"
       },
       {
         "ticker": "PLTR",
@@ -54959,7 +54959,7 @@
         "take_profit_1": 204.55,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.986105+00:00"
+        "updated_at": "2026-10-06T08:38:39.008692+00:00"
       },
       {
         "ticker": "SMCI",
@@ -54985,7 +54985,7 @@
         "take_profit_1": 46.65,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.986583+00:00"
+        "updated_at": "2026-10-06T08:38:39.009770+00:00"
       },
       {
         "ticker": "AMZN",
@@ -55011,7 +55011,7 @@
         "take_profit_1": 271.51,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.987007+00:00"
+        "updated_at": "2026-10-06T08:38:39.010751+00:00"
       },
       {
         "ticker": "TSLA",
@@ -55037,7 +55037,7 @@
         "take_profit_1": 409.03,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.987424+00:00"
+        "updated_at": "2026-10-06T08:38:39.011745+00:00"
       },
       {
         "ticker": "NFLX",
@@ -55063,7 +55063,7 @@
         "take_profit_1": 72.9,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.987833+00:00"
+        "updated_at": "2026-10-06T08:38:39.012725+00:00"
       },
       {
         "ticker": "COIN",
@@ -55089,7 +55089,7 @@
         "take_profit_1": 203.28,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.988263+00:00"
+        "updated_at": "2026-10-06T08:38:39.013694+00:00"
       },
       {
         "ticker": "SOFI",
@@ -55115,7 +55115,7 @@
         "take_profit_1": 17.19,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.988672+00:00"
+        "updated_at": "2026-10-06T08:38:39.014665+00:00"
       },
       {
         "ticker": "JPM",
@@ -55141,7 +55141,7 @@
         "take_profit_1": 358.97,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.989093+00:00"
+        "updated_at": "2026-10-06T08:38:39.015649+00:00"
       },
       {
         "ticker": "GS",
@@ -55167,7 +55167,7 @@
         "take_profit_1": 964.94,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.989501+00:00"
+        "updated_at": "2026-10-06T08:38:39.016628+00:00"
       },
       {
         "ticker": "V",
@@ -55193,7 +55193,7 @@
         "take_profit_1": 399.29,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.989928+00:00"
+        "updated_at": "2026-10-06T08:38:39.017594+00:00"
       },
       {
         "ticker": "MA",
@@ -55219,7 +55219,7 @@
         "take_profit_1": 609.76,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.990380+00:00"
+        "updated_at": "2026-10-06T08:38:39.018611+00:00"
       },
       {
         "ticker": "UNH",
@@ -55245,7 +55245,7 @@
         "take_profit_1": 408.87,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.990795+00:00"
+        "updated_at": "2026-10-06T08:38:39.019590+00:00"
       },
       {
         "ticker": "JNJ",
@@ -55271,7 +55271,7 @@
         "take_profit_1": 273.16,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.991215+00:00"
+        "updated_at": "2026-10-06T08:38:39.020572+00:00"
       },
       {
         "ticker": "PFE",
@@ -55297,7 +55297,7 @@
         "take_profit_1": 29.6,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.991618+00:00"
+        "updated_at": "2026-10-06T08:38:39.021546+00:00"
       },
       {
         "ticker": "LLY",
@@ -55323,7 +55323,7 @@
         "take_profit_1": 1234.57,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.992024+00:00"
+        "updated_at": "2026-10-06T08:38:39.022514+00:00"
       },
       {
         "ticker": "XOM",
@@ -55349,7 +55349,7 @@
         "take_profit_1": 177.12,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.992428+00:00"
+        "updated_at": "2026-10-06T08:38:39.023478+00:00"
       },
       {
         "ticker": "CVX",
@@ -55375,7 +55375,7 @@
         "take_profit_1": 222.99,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.992832+00:00"
+        "updated_at": "2026-10-06T08:38:39.024441+00:00"
       },
       {
         "ticker": "BA",
@@ -55401,7 +55401,7 @@
         "take_profit_1": 208.14,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.993253+00:00"
+        "updated_at": "2026-10-06T08:38:39.025404+00:00"
       },
       {
         "ticker": "GE",
@@ -55427,7 +55427,7 @@
         "take_profit_1": 330.85,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.993656+00:00"
+        "updated_at": "2026-10-06T08:38:39.026361+00:00"
       },
       {
         "ticker": "CAT",
@@ -55453,7 +55453,7 @@
         "take_profit_1": 915.99,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.994067+00:00"
+        "updated_at": "2026-10-06T08:38:39.027330+00:00"
       },
       {
         "ticker": "MU",
@@ -55479,7 +55479,7 @@
         "take_profit_1": 1149.08,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.994494+00:00"
+        "updated_at": "2026-10-06T08:38:39.028328+00:00"
       },
       {
         "ticker": "INTC",
@@ -55505,7 +55505,7 @@
         "take_profit_1": 125.49,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.994906+00:00"
+        "updated_at": "2026-10-06T08:38:39.029295+00:00"
       },
       {
         "ticker": "ARM",
@@ -55531,7 +55531,7 @@
         "take_profit_1": 327.13,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-10-06T08:36:33.995304+00:00"
+        "updated_at": "2026-10-06T08:38:39.030261+00:00"
       }
     ],
     "earnings_calendar": [],
@@ -55577,7 +55577,7 @@
       "INTC": "Price             Open        High         Low       Close     Volume\nDate                                                                 \n2026-07-06  122.570000  127.300003  121.519997  122.199997   86950200\n2026-07-07  116.300003  116.470001  108.300003  110.389999  140405900\n2026-07-08  108.300003  110.489998  104.410004  110.239998  105488100\n2026-07-09  114.870003  116.769997  111.510002  112.540001   99352500\n2026-07-10  109.580002  110.849998  107.449997  109.839996   70846600\n...                ...         ...         ...         ...        ...\n2026-09-29  116.699997  118.750000  113.970001  115.930000   88744500\n2026-09-30  116.220001  120.550003  116.000000  120.230003   94917200\n2026-10-01  118.730003  122.150002  117.349998  120.000000  103559800\n2026-10-02  124.010002  126.000000  118.959999  119.330002   95401500\n2026-10-05  115.339996  118.059998  115.309998  116.190002   81109000\n\n[65 rows x 5 columns]",
       "ARM": "Price             Open        High         Low       Close   Volume\nDate                                                               \n2026-07-06  324.269989  338.243988  321.500000  322.239990  5276900\n2026-07-07  305.929993  314.899994  293.989990  300.429993  7269600\n2026-07-08  297.535004  311.364990  290.450012  300.239990  6128700\n2026-07-09  318.315002  339.440002  311.149994  327.869995  7096500\n2026-07-10  322.700012  328.281006  317.880005  323.390015  2770900\n...                ...         ...         ...         ...      ...\n2026-09-29  291.005005  301.000000  287.059998  293.670013  6024200\n2026-09-30  294.000000  295.989990  283.500000  289.660004  4166000\n2026-10-01  294.179993  297.140015  287.500000  292.339996  3279000\n2026-10-02  306.774994  318.362000  303.119995  307.489990  5902400\n2026-10-05  308.029999  311.000000  299.799988  302.899994  2893900\n\n[65 rows x 5 columns]"
     },
-    "updated_at": "2026-10-06T08:36:33.995313+00:00"
+    "updated_at": "2026-10-06T08:38:39.030278+00:00"
   },
   "arena_state": {
     "agents": [
@@ -56065,5 +56065,5 @@
     "macro": "2026-10-06T08:07:09.593054+00:00",
     "trade_plans": "2026-10-05T07:43:06.242975+00:00"
   },
-  "execution_duration_sec": 2.39
+  "execution_duration_sec": 1.93
 }
