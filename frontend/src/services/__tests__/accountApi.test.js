@@ -35,10 +35,32 @@ afterEach(() => { vi.restoreAllMocks(); });
 // Configuration guards — must fail loudly, never silently grant access
 // ---------------------------------------------------------------------------
 describe('configuration guards', () => {
-  it('reports the account config as not ready when env vars are missing', () => {
-    expect(config(ENV_EMPTY).ready).toBe(false);
-    expect(config({ SUPABASE_URL: 'https://x.supabase.co' }).ready).toBe(false);
-    expect(config({ SUPABASE_ANON_KEY: 'k' }).ready).toBe(false);
+  it('falls back to the committed project when env vars are missing', () => {
+    // The publishable key is designed to ship in source, so the account system
+    // works before the owner has set anything in Cloudflare. See
+    // functions/api/_supabaseProject.js.
+    const cfg = config(ENV_EMPTY);
+    expect(cfg.ready).toBe(true);
+    expect(cfg.url).toMatch(/^https:\/\/[a-z0-9]+\.supabase\.co$/);
+    expect(cfg.anonKey).toMatch(/^sb_publishable_|^eyJ/);
+  });
+
+  it('lets the environment OVERRIDE the committed fallback', () => {
+    // Rotation must not require a code change, so env has to win outright.
+    const cfg = config({
+      SUPABASE_URL: 'https://rotated.supabase.co',
+      SUPABASE_ANON_KEY: 'sb_publishable_rotated',
+    });
+    expect(cfg.url).toBe('https://rotated.supabase.co');
+    expect(cfg.anonKey).toBe('sb_publishable_rotated');
+  });
+
+  it('accepts every name the key has had', () => {
+    // anon -> publishable -> the generic name this project used first.
+    const base = { SUPABASE_URL: 'https://x.supabase.co' };
+    expect(config({ ...base, SUPABASE_ANON_KEY: 'k1' }).anonKey).toBe('k1');
+    expect(config({ ...base, SUPABASE_PUBLISHABLE_KEY: 'k2' }).anonKey).toBe('k2');
+    expect(config({ ...base, SUPABASE_KEY: 'k3' }).anonKey).toBe('k3');
   });
 
   it('strips a trailing slash from the Supabase URL', () => {
@@ -46,25 +68,30 @@ describe('configuration guards', () => {
     expect(cfg.url).toBe('https://example.supabase.co');
   });
 
-  it('refuses signup with a 503 when not configured', async () => {
+  it('refuses signup with a 503 when JWT_SECRET is absent', async () => {
+    // Supabase now resolves from the fallback, so the missing signing secret is
+    // the only thing that can block signup. That guard is load-bearing — see the
+    // session-forgery note next to requireJwtSecret in _shared.js.
     const res = await signupPost({ env: ENV_EMPTY, request: req('https://x/api/account/signup', { email: 'a@b.co', password: 'longenough1' }) });
     expect(res.status).toBe(503);
     const body = await res.json();
     expect(body.error).toBeTruthy();
-    expect(body.hint).toMatch(/SUPABASE/i);
+    expect(body.hint).toMatch(/JWT_SECRET/);
   });
 
-  it('refuses login with a 503 when not configured', async () => {
+  it('refuses login with a 503 when JWT_SECRET is absent', async () => {
     const res = await loginPost({ env: ENV_EMPTY, request: req('https://x/api/account/login', { email: 'a@b.co', password: 'longenough1' }) });
     expect(res.status).toBe(503);
+    const body = await res.json();
+    expect(body.hint).toMatch(/JWT_SECRET/);
   });
 
-  it('treats an unconfigured visitor as guest rather than erroring', async () => {
-    // The landing page must still render when accounts are not set up yet.
+  it('reports configured:true on /me once Supabase resolves', async () => {
     const res = await meGet({ env: ENV_EMPTY, request: req('https://x/api/account/me') });
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(body).toMatchObject({ authenticated: false, tier: 'guest', configured: false });
+    // Still a guest — nobody is signed in — but the service itself is ready.
+    expect(body).toMatchObject({ authenticated: false, tier: 'guest', configured: true });
   });
 
   it('refuses signup when JWT_SECRET is missing even if Supabase is set', async () => {

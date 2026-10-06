@@ -6,6 +6,7 @@
  */
 
 import { supabaseAuthHeaders } from './_jwt.js';
+import { resolveSupabaseConfig } from './_supabaseProject.js';
 
 export function base64urlDecode(str) {
   str = str.replace(/-/g, '+').replace(/_/g, '/');
@@ -88,7 +89,12 @@ export async function requireSession(context) {
     return unauthorized('Unauthorized or token expired');
   }
 
-  return { ok: true, payload, supabaseUrl: env.SUPABASE_URL, supabaseKey: env.SUPABASE_KEY || env.SUPABASE_ANON_KEY };
+  // resolveSupabaseConfig prefers the environment and falls back to the committed
+  // publishable coordinates. Returning raw env values here meant every caller of
+  // fetchSystemState got an undefined URL whenever the owner had not set the
+  // variables — the gated routes then silently read nothing.
+  const sb = resolveSupabaseConfig(env);
+  return { ok: true, payload, supabaseUrl: sb.url, supabaseKey: sb.key };
 }
 
 /**

@@ -54,6 +54,7 @@
 // outcome: a silent fallback here is what hid the problem for ten days.
 import bundledSnapshot from '../../../engine/cache/latest_cockpit_bundle.json';
 import { supabaseAuthHeaders } from './_jwt.js';
+import { resolveSupabaseConfig } from './_supabaseProject.js';
 
 function base64urlDecode(str) {
   str = str.replace(/-/g, '+').replace(/_/g, '/');
@@ -161,13 +162,13 @@ export async function onRequestGet(context) {
   }
 
   // ---- 1. Supabase REST (live path) -------------------------------------
-  const supabaseUrl = env.SUPABASE_URL;
-  const supabaseKey =
-    env.SUPABASE_KEY ||
-    env.SUPABASE_ANON_KEY ||
-    env.SUPABASE_PUBLISHABLE_KEY;
+  // resolveSupabaseConfig prefers the environment and falls back to the
+  // committed publishable coordinates, so this path works before the owner has
+  // set anything. The bundled snapshot below still answers if it does not.
+  const { url: supabaseUrl, key: supabaseKey, ready: supabaseReady } =
+    resolveSupabaseConfig(env);
 
-  if (supabaseUrl && supabaseKey) {
+  if (supabaseReady) {
     try {
       const restEndpoint = `${supabaseUrl}/rest/v1/system_state?key=eq.LATEST_COCKPIT_BUNDLE&select=val,updated_at`;
       const sResp = await fetch(restEndpoint, {

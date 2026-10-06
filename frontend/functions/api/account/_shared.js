@@ -22,6 +22,7 @@
  */
 
 import { verifyJWT, supabaseAuthHeaders } from '../_jwt.js';
+import { resolveSupabaseConfig } from '../_supabaseProject.js';
 
 export const SESSION_COOKIE = 'mbg_session';
 export const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
@@ -38,19 +39,14 @@ export function json(body, status = 200, extraHeaders = {}) {
 }
 
 export function config(env) {
-  const url = (env.SUPABASE_URL || '').replace(/\/+$/, '');
-  // Accepts the legacy `anon` JWT and the newer `sb_publishable_...` key.
-  // Supabase is retiring `anon`, and the dashboard now offers the publishable
-  // key first, so refusing it here would block a correctly-configured project.
-  const anonKey =
-    env.SUPABASE_ANON_KEY ||
-    env.SUPABASE_PUBLISHABLE_KEY ||
-    env.SUPABASE_KEY ||
-    '';
-  if (!url || !anonKey) {
+  // resolveSupabaseConfig prefers the Cloudflare environment and falls back to
+  // the committed publishable coordinates, so accounts work before the owner has
+  // set anything. See _supabaseProject.js for why committing that key is safe.
+  const { url, key, ready } = resolveSupabaseConfig(env);
+  if (!ready) {
     return { ready: false, url: '', anonKey: '', error: 'SUPABASE_URL dan SUPABASE_ANON_KEY belum diisi di Cloudflare Pages.' };
   }
-  return { ready: true, url, anonKey, error: null };
+  return { ready: true, url, anonKey: key, error: null };
 }
 
 export function notConfigured(cfg) {
