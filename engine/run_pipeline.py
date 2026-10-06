@@ -218,8 +218,16 @@ def main():
         except Exception as e:
             logger.warning(f"CryptoFuturesFetcher failed: {e}")
 
-    # v3.0 — Forex Scanner (runs on daily & all & forex modes)
-    if args.mode in ["all", "daily_idx_morning", "forex"]:
+    # v3.0 — Forex Scanner (runs on daily & all & forex & hourly modes)
+    #
+    # `hourly_crypto_macro` was added here so the cloud covers everything the two
+    # Windows scheduled tasks used to do locally. Without it, forex was the one
+    # section with no cloud owner: the hourly workflow refreshed crypto, whales
+    # and macro, while forex only updated when this laptop was awake.
+    #
+    # The fetch is a single TradingView scanner call (~33 pairs) and needs no API
+    # key, so running it hourly costs nothing.
+    if args.mode in ["all", "daily_idx_morning", "forex", "hourly_crypto_macro"]:
         try:
             logger.info("Scanning 28 Forex Pairs + COT Report...")
             forex_data = ForexScanner().execute()
