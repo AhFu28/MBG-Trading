@@ -311,6 +311,50 @@ const server = http.createServer(async (req, res) => {
     <p style="font-size: 13px; color: #94a3b8; margin: 30px 0;">Menghubungkan ke WhatsApp Web...</p>
   `}
 
+  ${!isConnected ? `
+    <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #1f293d; text-align: left;">
+      <div style="font-size: 13px; font-weight: 700; color: #f8fafc; margin-bottom: 5px;">
+        💡 Gagal Scan QR? Pakai Kode Pairing (Tanpa Kamera)
+      </div>
+      <div style="font-size: 11.5px; color: #94a3b8; margin-bottom: 12px; line-height: 1.5;">
+        Ketik nomor HP pengirim Anda di bawah ini untuk mendapatkan 8-digit kode pairing:
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <input id="phoneInput" type="text" placeholder="Contoh: 08123456789" style="flex: 1; background: #0b0f19; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+        <button onclick="getPairingCode()" style="background: #25D366; color: #000; border: none; border-radius: 8px; padding: 10px 14px; font-weight: 700; cursor: pointer; font-size: 12px;">Minta Kode</button>
+      </div>
+      <div id="pairingResult" style="display: none; margin-top: 14px; background: rgba(37,211,102,0.1); border: 1px solid rgba(37,211,102,0.3); border-radius: 10px; padding: 14px; text-align: center;">
+        <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px;">KODE PAIRING ANDA:</div>
+        <div id="pairingCodeDisplay" style="font-size: 26px; font-weight: 900; letter-spacing: 4px; color: #25D366; font-family: monospace;">----</div>
+        <div style="font-size: 11.5px; color: #cbd5e1; margin-top: 8px; line-height: 1.5;">
+          Di WA HP: Perangkat Tertaut &gt; Tautkan Perangkat &gt; <b>Tautkan dengan nomor telepon saja</b> &gt; ketikkan kode di atas.
+        </div>
+      </div>
+    </div>
+    <script>
+    async function getPairingCode() {
+      const phone = document.getElementById('phoneInput').value.trim();
+      if (!phone) return alert('Masukkan nomor HP Anda terlebih dahulu');
+      try {
+        const res = await fetch('/pairing-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          document.getElementById('pairingCodeDisplay').innerText = data.code;
+          document.getElementById('pairingResult').style.display = 'block';
+        } else {
+          alert('Gagal: ' + (data.error || 'Terjadi kesalahan'));
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+    </script>
+  ` : ''}
+
   <div class="info-bar">
     Target Mas Fuad: <b>+${TARGET_FUAD_DIGITS}</b><br>
     Antrean Outbox: <b>${queue.length} pesan</b>
@@ -320,6 +364,51 @@ const server = http.createServer(async (req, res) => {
 </html>`;
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     return res.end(html);
+  }
+
+  // Request WhatsApp Pairing Code (Camera-less connection via phone number)
+  if (req.method === 'POST' && url.pathname === '/pairing-code') {
+    let bodyStr = '';
+    req.on('data', chunk => { bodyStr += chunk; });
+    req.on('end', async () => {
+      try {
+        const body = JSON.parse(bodyStr || '{}');
+        const rawPhone = body.phone || body.phoneNumber || '';
+        const digits = normalizePhone(rawPhone);
+        if (!digits || digits.length < 10) {
+          return sendJson(400, { ok: false, error: 'Nomor telepon tidak valid (minimal 10 digit).' });
+        }
+
+        if (isConnected) {
+          return sendJson(200, { ok: true, alreadyConnected: true, message: 'Bot sudah terhubung ke WhatsApp.' });
+        }
+
+        if (!sock) {
+          return sendJson(500, { ok: false, error: 'Socket WhatsApp belum siap.' });
+        }
+
+        log(`Meminta kode pairing untuk nomor: +${digits}...`);
+        const code = await sock.requestPairingCode(digits);
+        const formattedCode = code?.match(/.{1,4}/g)?.join('-') || code;
+        log(`✓ Kode pairing didapatkan: ${formattedCode}`);
+
+        return sendJson(200, {
+          ok: true,
+          code: formattedCode,
+          phone: digits,
+          instructions: [
+            'Buka WhatsApp di HP Anda',
+            'Buka Menu > Perangkat Tertaut > Tautkan Perangkat',
+            'Ketuk tautan di bawah: "Tautkan dengan nomor telepon saja"',
+            `Masukkan kode: ${formattedCode}`,
+          ]
+        });
+      } catch (err) {
+        log(`✗ Gagal meminta kode pairing: ${err.message}`);
+        return sendJson(500, { ok: false, error: err.message });
+      }
+    });
+    return;
   }
 
   // View QR endpoint
@@ -427,6 +516,15 @@ const server = http.createServer(async (req, res) => {
   }
 
   sendJson(404, { ok: false, error: 'Endpoint tidak ditemukan.' });
+});
+
+// Global error resilience (keep daemon alive across network dropouts)
+process.on('uncaughtException', (err) => {
+  log(`Resilience guard: Uncaught exception handled safely: ${err.message}`);
+});
+
+process.on('unhandledRejection', (reason) => {
+  log(`Resilience guard: Unhandled rejection handled safely: ${reason?.message || reason}`);
 });
 
 // Start Daemon

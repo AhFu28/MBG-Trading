@@ -179,6 +179,38 @@ export async function sendMessage(rawMessage) {
   }
 }
 
+async function requestPairing(phone) {
+  try {
+    const res = await request(
+      {
+        hostname: '127.0.0.1',
+        port: PORT,
+        path: '/pairing-code',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      { phone }
+    );
+
+    if (res.data?.ok && res.data?.code) {
+      console.log('\n======================================================');
+      console.log(`📲 KODE PAIRING WHATSAPP: ${res.data.code}`);
+      console.log('======================================================');
+      console.log('Langkah-langkah di HP:');
+      console.log('1. Buka aplikasi WhatsApp di HP Anda');
+      console.log('2. Buka Menu (titik tiga) > Perangkat Tertaut (Linked Devices)');
+      console.log('3. Ketuk "Tautkan Perangkat"');
+      console.log('4. Ketuk tautan di bawah: "Tautkan dengan nomor telepon saja"');
+      console.log(`5. Masukkan 8-digit kode: ${res.data.code}`);
+      console.log('======================================================\n');
+    } else {
+      console.error('Gagal mendapatkan kode pairing:', res.data?.error || res.raw);
+    }
+  } catch (err) {
+    console.error(`Daemon bot belum aktif di port ${PORT}. Jalankan npm run wa:start.`);
+  }
+}
+
 // CLI Execution
 const args = process.argv.slice(2);
 const isDirectCli = process.argv[1] && (path.resolve(process.argv[1]) === fileURLToPath(import.meta.url));
@@ -190,6 +222,17 @@ if (isDirectCli) {
 
   if (args.includes('--qr')) {
     await showQR();
+    process.exit(0);
+  }
+
+  const pairIndex = args.indexOf('--pair');
+  if (pairIndex !== -1) {
+    const phone = args[pairIndex + 1];
+    if (!phone) {
+      console.error('Harap masukkan nomor HP pengirim setelah --pair. Contoh: --pair 08123456789');
+      process.exit(1);
+    }
+    await requestPairing(phone);
     process.exit(0);
   }
 
@@ -207,6 +250,7 @@ if (isDirectCli) {
     console.log('  node scripts/send_wa_fuad.mjs "Pesan update untuk Mas Fuad"');
     console.log('  node scripts/send_wa_fuad.mjs --status');
     console.log('  node scripts/send_wa_fuad.mjs --qr');
+    console.log('  node scripts/send_wa_fuad.mjs --pair <nomor_hp_pengirim>');
     process.exit(0);
   }
 
