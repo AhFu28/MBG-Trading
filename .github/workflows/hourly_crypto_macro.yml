@@ -39,18 +39,42 @@ jobs:
         run: |
           python engine/run_pipeline.py --mode hourly_crypto_macro
 
-      - name: Report what the pipeline produced
+      - name: Validate the bundle before it can be published
         run: |
           echo "=== Bundle state after pipeline ==="
           python - <<'PY'
-          import json, os, datetime
+          import json, os, datetime, sys
+
           p = "engine/cache/latest_cockpit_bundle.json"
           if not os.path.exists(p):
-              print("!! bundle does not exist")
-              raise SystemExit(0)
+              print("::error::Bundle does not exist after the pipeline ran.")
+              sys.exit(1)
+
+          raw = open(p, encoding="utf-8").read()
+
+          # A rebase or autostash pop can leave conflict markers inside a file.
+          # That produces invalid JSON, and a bundle the frontend cannot parse
+          # blanks EVERY desk at once - seen locally on 2026-10-06, where
+          # `<<<<<<< Updated upstream` landed at line 38510. Catch it here, where
+          # it costs one failed run instead of a dead cockpit.
+          for marker in ("<<<<<<<", "=======", ">>>>>>>"):
+              if marker in raw:
+                  print(f"::error::Conflict marker {marker!r} found in the bundle. Refusing to publish corrupt JSON.")
+                  sys.exit(1)
+
+          try:
+              j = json.loads(raw)
+          except json.JSONDecodeError as e:
+              print(f"::error::Bundle is not valid JSON: {e}")
+              sys.exit(1)
+
+          if len(j) < 20:
+              print(f"::error::Bundle has only {len(j)} sections; expected at least 20. Refusing to publish a truncated bundle.")
+              sys.exit(1)
+
           m = datetime.datetime.fromtimestamp(os.path.getmtime(p))
-          with open(p, encoding="utf-8") as f:
-              j = json.load(f)
+          print(f"  size            : {len(raw):,} bytes")
+          print(f"  sections        : {len(j)}")
           print(f"  file mtime      : {m}")
           print(f"  last_updated    : {j.get('last_updated')}")
           print(f"  mode            : {j.get('mode')}")
@@ -60,6 +84,7 @@ jobs:
           print(f"  whale           : {w.get('updated_at')}  ({len(w.get('crypto_whales') or [])} whales)")
           fx = j.get("forex_intelligence") or {}
           print(f"  forex           : {fx.get('updated_at')}  ({len(fx.get('pairs') or [])} pairs)")
+          print("  bundle is valid and publishable")
           PY
           echo "=== git status ==="
           git status --short

@@ -2,7 +2,26 @@
 #  MBG Trading — Auto Refresh Forex / Metals / Energy
 # ============================================================================
 #
-#  WHY THIS EXISTS
+#  ### DEPRECATED — DO NOT RUN. THE CLOUD OWNS THIS NOW. ###
+#
+#  Superseded on 2026-10-06. The GitHub Actions workflow
+#  `.github/workflows/hourly_crypto_macro.yml` refreshes forex_intelligence in
+#  the cloud, alongside crypto_futures, whale_intelligence and macro, then
+#  commits the bundle back to the repo. Both Windows tasks were uninstalled.
+#
+#  Forex needed one extra step to get here: the hourly workflow covered crypto,
+#  whales and macro but NOT forex, so deleting the local task first would have
+#  silently frozen this desk. `hourly_crypto_macro` was added to the forex mode
+#  list in engine/run_pipeline.py beforehand (commit d071418), and the cloud run
+#  verified it at 33 pairs.
+#
+#  Running this script RE-CREATES a task that duplicates the cloud run and ties
+#  data freshness to whether this laptop is open. Emergency fallback only:
+#      Unregister-ScheduledTask -TaskName "MBG-Forex-Refresh" -Confirm:$false
+#
+# ============================================================================
+#
+#  WHY THIS EXISTED
 #  ---------------
 #  Jendral Arib reported "forex dan xau dll ga jalan". The network was fine —
 #  TradingView answered every symbol. The data was a day stale because NOTHING
@@ -21,7 +40,40 @@
 #      Unregister-ScheduledTask -TaskName "MBG-Forex-Refresh" -Confirm:$false
 # ============================================================================
 
+# ---------------------------------------------------------------------------
+# GUARD: refuse to re-create the task that was deliberately removed.
+#
+# A comment in the header is not protection — whoever runs this will not read it.
+# The cloud workflow replaced this task on 2026-10-06 and the forex section was
+# verified there at 33 pairs before the local task was deleted.
+#
+# Emergency override: -Force
+#
+# NOTE: param() must be the first executable statement in a PowerShell script.
+# Nothing — not even $ErrorActionPreference — may precede it. Comments are fine.
+# ---------------------------------------------------------------------------
+param([switch]$Force)
+
 $ErrorActionPreference = 'Stop'
+
+if (-not $Force) {
+    Write-Host ''
+    Write-Host 'JADWAL INI SUDAH TIDAK DIPAKAI.' -ForegroundColor Yellow
+    Write-Host ''
+    Write-Host 'Sejak 6 Oktober 2026, refresh forex dikerjakan di cloud oleh:'
+    Write-Host '  .github/workflows/hourly_crypto_macro.yml'
+    Write-Host ''
+    Write-Host 'Menjalankan script ini akan membuat jadwal DUPLIKAT di laptop ini,'
+    Write-Host 'dan data jadi bergantung pada laptop menyala atau tidak.'
+    Write-Host ''
+    Write-Host 'Kalau memang perlu (misal GitHub Actions sedang mati), pakai:'
+    Write-Host '  powershell -ExecutionPolicy Bypass -File scripts\install_forex_task.ps1 -Force'
+    Write-Host ''
+    Write-Host 'Jangan lupa hapus lagi setelah selesai:'
+    Write-Host '  Unregister-ScheduledTask -TaskName "MBG-Forex-Refresh" -Confirm:$false'
+    Write-Host ''
+    exit 1
+}
 
 $TaskName   = 'MBG-Forex-Refresh'
 $RepoRoot   = Split-Path -Parent $PSScriptRoot
