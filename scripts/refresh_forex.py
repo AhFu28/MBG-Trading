@@ -105,6 +105,17 @@ def refresh(quiet=False) -> int:
         _log(quiet, f"    {row.get('symbol'):<9} {row.get('price'):>10} ({row.get('change_24h_pct'):+.2f}%)")
     _log(quiet, f"Diperbarui      : {fresh.get('updated_at')}")
     _log(quiet, "[OK] Bundle diperbarui.")
+
+    # Push to the edge so the web cockpit actually receives it. See the same
+    # note in refresh_crypto_futures.py — without this the refresh is invisible
+    # to users because /api/data cannot read this laptop's filesystem.
+    try:
+        sys.path.insert(0, os.path.join(REPO_ROOT, "scripts"))
+        from push_bundle_to_edge import run as push_run
+        push_run(quiet=quiet)
+    except Exception as exc:
+        _log(quiet, f"[push] dilewati: {exc}")
+
     return 0
 
 

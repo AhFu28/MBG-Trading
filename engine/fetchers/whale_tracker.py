@@ -217,91 +217,24 @@ class WhaleTracker:
             except Exception as e:
                 logger.warning(f"Whale Alert query error: {e}")
 
-        if len(whales) < 5:
-            whales.extend(self._get_curated_institutional_whales()[len(whales):5])
-
+        # NO FABRICATED PADDING.
+        #
+        # This used to do:
+        #     if len(whales) < 5:
+        #         whales.extend(self._get_curated_institutional_whales()[len(whales):5])
+        #
+        # `_get_curated_institutional_whales()` returned four hardcoded
+        # transactions stamped `data_source: 'verified_cluster_feed'` and
+        # timestamped `now - 18 minutes`, so they never looked stale. One of them
+        # used the Bitcoin GENESIS block hash as though it were a recent
+        # $185M Binance withdrawal, complete with a working explorer link that
+        # opened an entirely unrelated transaction.
+        #
+        # Because WHALE_ALERT_API_KEY is unset in this deployment, the padding
+        # branch always fired — so the "4 whales" in the bundle were never real.
+        #
+        # Real data or nothing. A short honest list beats a padded fake one.
         return whales
-
-    def _get_curated_institutional_whales(self):
-        now = datetime.now(timezone.utc)
-        return [
-            {
-                'hash': '4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b',
-                'hash_short': '4a5e1e4b...deda33b',
-                'blockchain': 'bitcoin',
-                'blockchain_name': 'Bitcoin Network',
-                'symbol': 'BTC',
-                'amount': 2850.0,
-                'amount_usd': 185250000.0,
-                'from_address': '1P5ZEDWTKTFGxQjZphgWPQUpe554WKDfHQ',
-                'to_address': '34xp4vRoCGJym3xR7yCVPFHoCNxv4Twseo',
-                'from_name': 'Binance Hot Wallet #14',
-                'to_name': 'Unknown Whale Cold Storage',
-                'timestamp': (now - timedelta(minutes=18)).isoformat(),
-                'signal': 'EXCHANGE_OUTFLOW',
-                'sentiment': 'BULLISH',
-                'explorer_url': 'https://mempool.space/tx/4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b',
-                'impact_thesis': 'Penarikan 2,850 BTC (~$185M) dari Binance ke Cold Storage pribadi: Suplai koin di bursa berkurang, sinyal akumulasi kuat.',
-                'data_source': 'verified_cluster_feed'
-            },
-            {
-                'hash': '0x8f2d59b4c02919d65176c11db84adcb1b701c9b68d998dcfca1a21e42a98f12a',
-                'hash_short': '0x8f2d59...a98f12a',
-                'blockchain': 'ethereum',
-                'blockchain_name': 'Ethereum Mainnet',
-                'symbol': 'ETH',
-                'amount': 35000.0,
-                'amount_usd': 108500000.0,
-                'from_address': '0x0211f3cedbef3143223d3acf0e5efb5b31f0cf88',
-                'to_address': '0x28c6c06298d514db089934071355e5743bf21d60',
-                'from_name': 'Unknown Whale (0x0211...)',
-                'to_name': 'Binance 14 (Deposit Wallet)',
-                'timestamp': (now - timedelta(minutes=42)).isoformat(),
-                'signal': 'EXCHANGE_INFLOW',
-                'sentiment': 'BEARISH',
-                'explorer_url': 'https://etherscan.io/tx/0x8f2d59b4c02919d65176c11db84adcb1b701c9b68d998dcfca1a21e42a98f12a',
-                'impact_thesis': 'Deposit masif 35,000 ETH (~$108M) ke Binance: Potensi persiapan aksi jual besar atau margin short di pasar derivatif.',
-                'data_source': 'verified_cluster_feed'
-            },
-            {
-                'hash': '0xd3b90f488ef979857d9b9909287c88b776269b8849b21104e4c2747378ef88bb',
-                'hash_short': '0xd3b90f...8ef88bb',
-                'blockchain': 'ethereum',
-                'blockchain_name': 'Ethereum Mainnet',
-                'symbol': 'USDT',
-                'amount': 150000000.0,
-                'amount_usd': 150000000.0,
-                'from_address': '0x5754284f345afc66a98fbb0a0afe71e0f007b949',
-                'to_address': '0xdfd5293d8e347dff59e909147887e43da040493a',
-                'from_name': 'Tether Treasury',
-                'to_name': 'Binance Hot Wallet',
-                'timestamp': (now - timedelta(hours=1, minutes=15)).isoformat(),
-                'signal': 'TREASURY_MINT',
-                'sentiment': 'BULLISH',
-                'explorer_url': 'https://etherscan.io/tx/0xd3b90f488ef979857d9b9909287c88b776269b8849b21104e4c2747378ef88bb',
-                'impact_thesis': 'Penerbitan 150 Juta USDT baru dari Tether Treasury dialirkan ke Binance: Likuiditas amunisi beli segar masuk ke pasar kripto.',
-                'data_source': 'verified_cluster_feed'
-            },
-            {
-                'hash': '3uFzK7JpQw4Z2mN8xL9pRtY6vBnM1cX4vB7nK9mP2qW',
-                'hash_short': '3uFzK7Jp...mP2qW',
-                'blockchain': 'solana',
-                'blockchain_name': 'Solana Network',
-                'symbol': 'SOL',
-                'amount': 450000.0,
-                'amount_usd': 67500000.0,
-                'from_address': '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
-                'to_address': '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
-                'from_name': 'Coinbase Custody (Staking Vault)',
-                'to_name': 'Wintermute OTC Trading Desk',
-                'timestamp': (now - timedelta(hours=2, minutes=5)).isoformat(),
-                'signal': 'WHALE_TO_WHALE',
-                'sentiment': 'NEUTRAL',
-                'explorer_url': 'https://solscan.io/tx/3uFzK7JpQw4Z2mN8xL9pRtY6vBnM1cX4vB7nK9mP2qW',
-                'impact_thesis': 'Transaksi blok OTC 450,000 SOL (~$67M) ke Market Maker Wintermute: Rebalancing portofolio institusi di luar open-market.',
-                'data_source': 'verified_cluster_feed'
-            }
-        ]
 
     def _generate_idx_foreign_whales(self, session_info=None):
         trade_date = session_info.get('trade_date_short', '16 Sep 2026') if session_info else '16 Sep 2026'

@@ -14,7 +14,9 @@
     "futures:install-task": "powershell -ExecutionPolicy Bypass -File scripts/install_futures_task.ps1",
     "forex:refresh": "python scripts/refresh_forex.py",
     "forex:install-task": "powershell -ExecutionPolicy Bypass -File scripts/install_forex_task.ps1",
-    "test:engine": "python -m unittest engine.tests.test_crypto_futures engine.tests.test_liquidity_heat engine.tests.test_forex_scanner engine.tests.test_vip_signal_router"
+    "test:engine": "python -m unittest engine.tests.test_crypto_futures engine.tests.test_liquidity_heat engine.tests.test_forex_scanner engine.tests.test_whale_tracker engine.tests.test_vip_signal_router engine.tests.test_send_wa_fuad",
+    "bundle:push": "python scripts/push_bundle_to_edge.py",
+    "bundle:push-check": "python scripts/push_bundle_to_edge.py --check"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc14",

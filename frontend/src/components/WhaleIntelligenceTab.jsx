@@ -510,10 +510,17 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
   const [usSubView, setUsSubView] = useState('GLOBAL_FLOW');
   const [selectedFundKey, setSelectedFundKey] = useState('berkshire');
 
-  // Crypto On-Chain Live State (35+ initial, live streaming per detik)
+  // Crypto on-chain whales.
+  //
+  // The threshold used to be `> 10`, but the engine reports the real Bitcoin
+  // transactions it finds on mempool.space — a quiet hour yields three or four,
+  // never eleven. So the condition could not be met, and every real whale was
+  // silently replaced with generated ones. Fixed to `> 0`: real data wins
+  // whenever there is any. Generated rows remain the fallback for an empty feed,
+  // and the header already labels that state SIMULATED.
   const [liveWhales, setLiveWhales] = useState(() => {
     const fromBundle = data?.whale_intelligence?.crypto_whales || [];
-    return fromBundle.length > 10 ? fromBundle : generateInitialCryptoWhales(35);
+    return fromBundle.length > 0 ? fromBundle : generateInitialCryptoWhales(35);
   });
   const [isStreamPaused, setIsStreamPaused] = useState(false);
   const [wsStatus, setWsStatus] = useState('LIVE');
@@ -541,9 +548,11 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
 
   const initialWhales = data?.whale_intelligence?.crypto_whales || [];
 
-  // Sinkronkan data jika bundle lebih kaya
+  // Adopt the bundle list whenever it carries more real whales than we hold.
+  // The old guard required `> 10`, which a real mempool feed never reaches, so
+  // the sync never ran.
   useEffect(() => {
-    if (initialWhales.length > 10 && liveWhales.length <= 4) {
+    if (initialWhales.length > liveWhales.length) {
       setLiveWhales(initialWhales);
     }
   }, [initialWhales, liveWhales.length]);
