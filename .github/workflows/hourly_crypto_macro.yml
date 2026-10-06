@@ -71,6 +71,12 @@ jobs:
           fi
 
           echo "Pipeline mode: $MODE"
+          # Publish the mode to later steps so the commit message names what
+          # actually ran. Without this, a daily us_stocks run was committed as
+          # "automated hourly crypto, whale & macro refresh" — accurate-looking
+          # and wrong, which is the kind of thing that misleads a future reader
+          # of the git log.
+          echo "PIPELINE_MODE=$MODE" >> "$GITHUB_ENV"
           python engine/run_pipeline.py --mode "$MODE"
 
       - name: Validate the bundle before it can be published
@@ -150,7 +156,7 @@ jobs:
             exit 1
           fi
 
-          git commit -m "chore(data): automated hourly crypto, whale & macro refresh [skip ci]"
+          git commit -m "chore(data): automated bundle refresh [${PIPELINE_MODE:-unknown}] [skip ci]"
 
           # PUSH, AND DO NOT LIE ABOUT IT.
           #
