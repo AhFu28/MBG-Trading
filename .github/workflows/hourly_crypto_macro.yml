@@ -2,8 +2,29 @@ name: 24/7 Hourly Crypto & US Macro Radar
 
 on:
   schedule:
-    - cron: '0 * * * *' # Otomatis dieksekusi GitHub Actions setiap jam (24/7)
-  workflow_dispatch: # Allows manual trigger from GitHub UI
+    # Hourly: crypto futures, on-chain whales, forex, macro telemetry.
+    - cron: '0 * * * *'
+    # Daily: US stocks and the earnings calendar.
+    #
+    # This ran only inside `daily_idx_morning`, which is workflow_dispatch-only —
+    # so us_stocks refreshed only when somebody remembered to click Run. On
+    # 2026-10-06 it was the one stale section in the bundle, 24.6 hours behind
+    # everything else.
+    #
+    # It does NOT belong on the hourly cron: an earnings calendar changes at most
+    # once a day, and the yfinance sweep over 30 tickers is the slowest fetch in
+    # the pipeline. 22:30 UTC is 05:30 WIB, before the IDX pre-open.
+    - cron: '30 22 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Pipeline mode (leave as-is for the normal hourly run)'
+        required: false
+        default: 'hourly_crypto_macro'
+        type: choice
+        options:
+          - hourly_crypto_macro
+          - us_stocks
 
 permissions:
   contents: write
@@ -28,7 +49,7 @@ jobs:
           pip install --upgrade pip
           pip install -r engine/requirements.txt
 
-      - name: Run Crypto Spot, Futures, Whale & Macro Radar Engine
+      - name: Run the pipeline
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
@@ -37,7 +58,20 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           INDEX_ALPHA_API_KEY: ${{ secrets.INDEX_ALPHA_API_KEY }}
         run: |
-          python engine/run_pipeline.py --mode hourly_crypto_macro
+          # Which cron fired is in github.event.schedule. workflow_dispatch has
+          # no schedule value, so a manual run uses the mode input instead.
+          MODE="${{ github.event.inputs.mode }}"
+
+          if [ -z "$MODE" ]; then
+            if [ "${{ github.event.schedule }}" = "30 22 * * *" ]; then
+              MODE="us_stocks"
+            else
+              MODE="hourly_crypto_macro"
+            fi
+          fi
+
+          echo "Pipeline mode: $MODE"
+          python engine/run_pipeline.py --mode "$MODE"
 
       - name: Validate the bundle before it can be published
         run: |
