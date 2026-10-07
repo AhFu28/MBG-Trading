@@ -61,7 +61,7 @@ describe('free tier is deliberately limited', () => {
     // SUBSCRIPTION is included on purpose: a paying customer must always be able
     // to see their own status and expiry.
     expect(new Set(freeModules)).toEqual(
-      new Set([MODULES.HOME, MODULES.SIGNALS, MODULES.NEWS, MODULES.CHANGELOG, MODULES.SUBSCRIPTION]),
+      new Set([MODULES.HOME, MODULES.SIGNALS, MODULES.NEWS, MODULES.SUBSCRIPTION]),
     );
   });
 
@@ -112,9 +112,26 @@ describe('guest', () => {
 });
 
 describe('pro', () => {
-  it('unlocks every known module', () => {
-    for (const m of Object.keys(MODULE_TIER)) {
+  it('unlocks every analytical trading desk', () => {
+    for (const m of [
+      MODULES.STOCK, MODULES.CRYPTO, MODULES.AI_AGENTS, MODULES.FUTURES,
+      MODULES.FOREX, MODULES.US_STOCKS, MODULES.WHALES, MODULES.HEATMAP,
+      MODULES.CHARTING, MODULES.SENTINEL, MODULES.WATCHLIST, MODULES.TESTING,
+      MODULES.PEARSON_CORRELATION, MODULES.ACADEMY, MODULES.ECONOMIC_CALENDAR,
+    ]) {
       expect(canAccess(m, TIER.PRO)).toBe(true);
+    }
+  });
+
+  it('keeps internal admin-only modules locked for regular pro users', () => {
+    expect(canAccess(MODULES.FLOW_PROCESS, TIER.PRO)).toBe(false);
+    expect(canAccess(MODULES.CHANGELOG, TIER.PRO)).toBe(false);
+    expect(canAccess(MODULES.ADMIN_APPROVAL, TIER.PRO)).toBe(false);
+  });
+
+  it('unlocks everything when admin flag is active', () => {
+    for (const m of Object.keys(MODULE_TIER)) {
+      expect(canAccess(m, TIER.PRO, true)).toBe(true);
     }
   });
 
@@ -142,7 +159,12 @@ describe('safety of the gate itself', () => {
 
   it('never marks a module free by accident', () => {
     for (const [moduleId, tier] of Object.entries(MODULE_TIER)) {
-      expect([TIER.GUEST, TIER.FREE, TIER.PRO]).toContain(tier);
+      expect([TIER.GUEST, TIER.FREE, TIER.PRO, TIER.ADMIN]).toContain(tier);
+      if (tier === TIER.ADMIN) {
+        expect(canAccess(moduleId, TIER.FREE)).toBe(false);
+        expect(canAccess(moduleId, TIER.PRO)).toBe(false);
+        expect(canAccess(moduleId, TIER.PRO, true)).toBe(true);
+      }
       if (tier === TIER.PRO) {
         expect(canAccess(moduleId, TIER.FREE)).toBe(false);
         expect(canAccess(moduleId, TIER.GUEST)).toBe(false);

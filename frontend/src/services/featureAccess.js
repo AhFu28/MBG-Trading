@@ -18,7 +18,7 @@
  * clarity and honesty, not protection. Never put a secret behind a client gate.
  */
 
-export const TIER = { GUEST: 'guest', FREE: 'free', PRO: 'pro' };
+export const TIER = { GUEST: 'guest', FREE: 'free', PRO: 'pro', ADMIN: 'admin' };
 
 /** Every navigable module in the cockpit. */
 export const MODULES = {
@@ -42,29 +42,33 @@ export const MODULES = {
   WATCHLIST: 'WATCHLIST',
   SUBSCRIPTION: 'SUBSCRIPTION',
   ADMIN_APPROVAL: 'ADMIN_APPROVAL',
+  TESTING: 'TESTING',
+  PEARSON_CORRELATION: 'PEARSON_CORRELATION',
+  ACADEMY: 'ACADEMY',
+  ECONOMIC_CALENDAR: 'ECONOMIC_CALENDAR',
 };
 
 /**
  * Minimum tier required per module.
  *
  * GUEST-level modules are the shop window: a visitor with no account can still
- * see the Home page, the heavily delayed Signal desk and the changelog. That is
- * deliberate — a locked door with no window sells nothing.
+ * see the Home page and the heavily delayed Signal desk.
  *
  * FREE-level adds the daily news/riset desk.
  *
- * PRO-level is everything analytical: the arena, the radars, charting, whale
- * flow, forex, US equities and futures.
+ * PRO-level is analytical desks: futures, charting, whale tracker, heatmap,
+ * testing lab, pearson correlation, quant academy, economic calendar.
+ *
+ * ADMIN-only desks: Flow Process, Changelog, Admin Approval.
  */
 export const MODULE_TIER = {
   // --- Public: visible without an account (shop window) ---------------------
   [MODULES.HOME]: TIER.GUEST,
   [MODULES.SIGNALS]: TIER.GUEST,
-  [MODULES.CHANGELOG]: TIER.GUEST,
   // Account management must never be locked — a paying customer has to be able
   // to see their own status and expiry.
   [MODULES.SUBSCRIPTION]: TIER.GUEST,
-  [MODULES.ADMIN_APPROVAL]: TIER.PRO,
+  [MODULES.ADMIN_APPROVAL]: TIER.ADMIN,
 
   // --- Free account: a little more, still not enough to run a business ------
   [MODULES.NEWS]: TIER.FREE,
@@ -83,7 +87,14 @@ export const MODULE_TIER = {
   [MODULES.CHARTING]: TIER.PRO,
   [MODULES.SENTINEL]: TIER.PRO,
   [MODULES.WATCHLIST]: TIER.PRO,
-  [MODULES.FLOW_PROCESS]: TIER.PRO,
+  [MODULES.TESTING]: TIER.PRO,
+  [MODULES.PEARSON_CORRELATION]: TIER.PRO,
+  [MODULES.ACADEMY]: TIER.PRO,
+  [MODULES.ECONOMIC_CALENDAR]: TIER.PRO,
+
+  // --- Admin only (Perintah Jendral Arib: Flow Process & Changelog khusus admin)
+  [MODULES.FLOW_PROCESS]: TIER.ADMIN,
+  [MODULES.CHANGELOG]: TIER.ADMIN,
 };
 
 /**
@@ -95,7 +106,7 @@ export const PUBLIC_MODULES = Object.keys(MODULE_TIER).filter(
   m => MODULE_TIER[m] === TIER.GUEST,
 );
 
-const RANK = { [TIER.GUEST]: 0, [TIER.FREE]: 1, [TIER.PRO]: 2 };
+const RANK = { [TIER.GUEST]: 0, [TIER.FREE]: 1, [TIER.PRO]: 2, [TIER.ADMIN]: 3 };
 
 export function normalizeTier(raw) {
   // Only a real string may name a tier. `String(['pro'])` would coerce to
@@ -103,6 +114,7 @@ export function normalizeTier(raw) {
   // rather than stringified.
   if (typeof raw !== 'string') return TIER.GUEST;
   const v = raw.trim().toLowerCase();
+  if (v === 'admin') return TIER.ADMIN;
   if (v === 'pro' || v === 'vip') return TIER.PRO;
   if (v === 'free') return TIER.FREE;
   return TIER.GUEST;
@@ -113,10 +125,12 @@ export function rankOf(tier) {
 }
 
 /** Does this tier unlock this module? */
-export function canAccess(moduleId, tier) {
+export function canAccess(moduleId, tier, isAdmin = false) {
+  if (isAdmin) return true; // Admin has unrestricted access to all desks and tools
   const required = MODULE_TIER[moduleId];
   // Unknown module: deny rather than assume. A typo must not open a paid desk.
   if (!required) return false;
+  if (required === TIER.ADMIN) return false; // Modul internal khusus admin
   return rankOf(tier) >= rankOf(required);
 }
 

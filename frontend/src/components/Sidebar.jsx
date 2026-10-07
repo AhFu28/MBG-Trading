@@ -23,7 +23,6 @@ const PRIMARY_NAV_ITEMS = [
   // --- TRADE: the daily loop ---
   { id: 'HOME',              icon: '🏠', label: 'Home',              section: 'TRADE' },
   { id: 'SIGNALS',           icon: '📡', label: 'Sinyal Trading',    section: 'TRADE' },
-  { id: 'RADAR',             icon: '🎯', label: 'Early Signal Radar', section: 'TRADE' },
   { id: 'AI_AGENTS',         icon: '🤖', label: 'AI Agent Arena',   section: 'TRADE' },
   { id: 'CHARTING',          icon: '📊', label: 'Charting Desk',    section: 'TRADE' },
 
@@ -33,8 +32,6 @@ const PRIMARY_NAV_ITEMS = [
   { id: 'STOCK',             icon: '📈', label: 'Saham IDX',        section: 'MARKETS' },
   { id: 'US_STOCKS',         icon: '🇺🇸', label: 'US Stocks',       section: 'MARKETS' },
   { id: 'FOREX',             icon: '💱', label: 'Forex & Emas',     section: 'MARKETS' },
-  { id: 'DEGEN',             icon: '🎰', label: 'Degen Memecoin',   section: 'MARKETS' },
-  { id: 'GLOBAL_MARKETS',    icon: '🌍', label: 'Pasar Global',     section: 'MARKETS' },
 
   // --- RESEARCH: why it is moving ---
   { id: 'NEWS',              icon: '📰', label: 'Live News Wire',   section: 'RESEARCH' },
@@ -89,6 +86,13 @@ export default function Sidebar({
   onOpenDataIntegrity
 }) {
   const [showMoreTools, setShowMoreTools] = useState(false);
+  const isAdmin = !!account?.isAdmin || ['naufalarib60@gmail.com', 'ahmfuadi28@gmail.com'].includes(String(account?.email || '').toLowerCase());
+  const visibleSecondaryTools = SECONDARY_TOOLS.filter(item => {
+    if (item.id === 'FLOW_PROCESS' || item.id === 'CHANGELOG') {
+      return isAdmin;
+    }
+    return true;
+  });
 
   const getBadge = (id) => {
     if (id === 'AI_AGENTS') return 'PRO';
@@ -364,7 +368,7 @@ export default function Sidebar({
 
           {showMoreTools && (
             <div style={{ marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              {SECONDARY_TOOLS.map(item => {
+              {visibleSecondaryTools.map(item => {
                 const isActive = activeTab === item.id;
                 return (
                   <button

@@ -100,6 +100,12 @@ export default function HomeDashboardTab({
   const [dismissDefenseAlert, setDismissDefenseAlert] = useState(false);
   const [portfolioCurrency, setPortfolioCurrency] = useState('USD'); // 'USD' | 'IDR'
   const [orderBookModal, setOrderBookModal] = useState({ isOpen: false, ticker: 'BTCUSDT', price: 83000 });
+  const [isWireCollapsed, setIsWireCollapsed] = useState(false);
+
+  // Synchronized Dynamic USD/IDR Reference across all dashboard cards
+  const usdIdrQuote = livePrices['USDIDR'] || livePrices['USDTIDR'] || livePrices['USD/IDR'];
+  const liveUsdIdrVal = usdIdrQuote?.price || data?.macro_telemetry?.usd_idr || data?.usd_idr || 15850;
+  const formattedUsdIdr = Number(liveUsdIdrVal).toLocaleString('id-ID');
 
   // ── REAL STORE BINDINGS (replaces hardcoded fiction) ─────────────────────
   // 1. Paper portfolio: live equity = cash + open positions marked to livePrices.
@@ -387,10 +393,34 @@ export default function HomeDashboardTab({
           The wire starts level with Portfolio Net Valuation and runs down to just
           above the TACTICAL QUANTITATIVE EXECUTION MATRIX (plan P-1b).
           ========================================================================= */}
-      <div className="home-middle-cockpit-split">
+      {/* Tombol Buka Feed saat Wire diringkas/diciutkan */}
+      {isWireCollapsed && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
+          <button
+            onClick={() => setIsWireCollapsed(false)}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '5px 12px',
+              borderRadius: '6px',
+              background: 'rgba(59, 130, 246, 0.15)',
+              border: '1px solid rgba(59, 130, 246, 0.35)',
+              color: '#60a5fa',
+              fontSize: '11px',
+              fontWeight: '700',
+              cursor: 'pointer'
+            }}
+          >
+            <span>📡 Buka Live Intelligence Wire</span>
+            <span>⇤</span>
+          </button>
+        </div>
+      )}
+      <div className="home-middle-cockpit-split" style={isWireCollapsed ? { gridTemplateColumns: '1fr', display: 'block' } : {}}>
 
         {/* LEFT COLUMN: HERO + COCKPIT STACK */}
-        <div className="home-cockpit-left">
+        <div className="home-cockpit-left" style={isWireCollapsed ? { width: '100%' } : {}}>
 
 
       {/* =========================================================================
@@ -766,7 +796,7 @@ export default function HomeDashboardTab({
                 fontFamily: 'var(--font-mono)'
               }}>
                 <span>BI vs Fed Spread: <strong style={{ color: '#34d399' }}>+125 bps Carry</strong> (IDR Support Buffer)</span>
-                <span>USD/IDR: <strong style={{ color: '#f1f5f9' }}>15.680</strong></span>
+                <span>USD/IDR: <strong style={{ color: '#f1f5f9' }}>Rp {formattedUsdIdr}</strong></span>
               </div>
             </div>
 
@@ -1215,59 +1245,77 @@ export default function HomeDashboardTab({
         </div>
 
         {/* RIGHT COLUMN: LIVE INTELLIGENCE WIRE (WITH TACTICAL DEFENSE / NUCLEAR ALERT HUD) */}
-        <div className="home-cockpit-right">
-          <div className="telemetry-panel" style={{
-            border: '1px solid rgba(59, 130, 246, 0.25)',
-            borderRadius: '4px',
-            padding: '0',
-            display: 'flex',
-            flexDirection: 'column',
-            boxSizing: 'border-box',
-            background: 'linear-gradient(180deg, var(--bg-panel) 0%, rgba(15, 23, 42, 0.6) 100%)',
-            height: '100%',
-            minHeight: 0,
-            overflow: 'hidden'
-          }}>
-            {/* Header */}
-            <div className="telemetry-header" style={{
-              padding: '6px 10px',
-              fontSize: '10.5px',
+        {!isWireCollapsed && (
+          <div className="home-cockpit-right">
+            <div className="telemetry-panel" style={{
+              border: '1px solid rgba(59, 130, 246, 0.25)',
+              borderRadius: '4px',
+              padding: '0',
               display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              borderBottom: 'var(--border-hairline)',
-              flexShrink: 0
+              flexDirection: 'column',
+              boxSizing: 'border-box',
+              background: 'linear-gradient(180deg, var(--bg-panel) 0%, rgba(15, 23, 42, 0.6) 100%)',
+              height: '100%',
+              minHeight: 0,
+              overflow: 'hidden'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ fontSize: '12px' }}>📡</span>
-                <span style={{ fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
-                  LIVE INTELLIGENCE WIRE
-                </span>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-green)', display: 'inline-block', boxShadow: '0 0 5px var(--accent-green)' }} />
-              </div>
+              {/* Header */}
+              <div className="telemetry-header" style={{
+                padding: '6px 10px',
+                fontSize: '10.5px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                borderBottom: 'var(--border-hairline)',
+                flexShrink: 0
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '12px' }}>📡</span>
+                  <span style={{ fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
+                    LIVE INTELLIGENCE WIRE
+                  </span>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-green)', display: 'inline-block', boxShadow: '0 0 5px var(--accent-green)' }} />
+                </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                <button
-                  onClick={() => setNewsViewMode(prev => prev === 'scroll' ? 'compact' : 'scroll')}
-                  style={{
-                    background: newsViewMode === 'scroll' ? 'rgba(0, 208, 132, 0.15)' : 'var(--bg-panel-subtle)',
-                    border: newsViewMode === 'scroll' ? '1px solid rgba(0, 208, 132, 0.35)' : 'var(--border-hairline)',
-                    color: newsViewMode === 'scroll' ? 'var(--accent-green)' : 'var(--text-muted)',
-                    borderRadius: '3px',
-                    fontSize: '8px',
-                    padding: '2px 5px',
-                    cursor: 'pointer',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: '700'
-                  }}
-                >
-                  {newsViewMode === 'scroll' ? '📜 SCROLL' : '⚡ TOP 15'}
-                </button>
-                <span style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                  {displayNews.length} / {liveNewsRaw.length}
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <button
+                    onClick={() => setNewsViewMode(prev => prev === 'scroll' ? 'compact' : 'scroll')}
+                    style={{
+                      background: newsViewMode === 'scroll' ? 'rgba(0, 208, 132, 0.15)' : 'var(--bg-panel-subtle)',
+                      border: newsViewMode === 'scroll' ? '1px solid rgba(0, 208, 132, 0.35)' : 'var(--border-hairline)',
+                      color: newsViewMode === 'scroll' ? 'var(--accent-green)' : 'var(--text-muted)',
+                      borderRadius: '3px',
+                      fontSize: '8px',
+                      padding: '2px 5px',
+                      cursor: 'pointer',
+                      fontFamily: 'var(--font-mono)',
+                      fontWeight: '700'
+                    }}
+                  >
+                    {newsViewMode === 'scroll' ? '📜 SCROLL' : '⚡ TOP 15'}
+                  </button>
+                  <span style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    {displayNews.length} / {liveNewsRaw.length}
+                  </span>
+                  <button
+                    onClick={() => setIsWireCollapsed(true)}
+                    title="Ciutkan Live Wire agar dashboard lebih lega"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.06)',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
+                      color: 'var(--text-secondary)',
+                      borderRadius: '3px',
+                      fontSize: '8px',
+                      padding: '2px 6px',
+                      cursor: 'pointer',
+                      fontFamily: 'var(--font-mono)',
+                      fontWeight: '700'
+                    }}
+                  >
+                    ⇥ Ciutkan
+                  </button>
+                </div>
               </div>
-            </div>
 
             {/* Tactical Defense & Nuclear Escalation Alert Banner (Inspired by WorldMonitor & God's Eye View) */}
             {hasHighThreat && !dismissDefenseAlert && (
@@ -1551,6 +1599,7 @@ export default function HomeDashboardTab({
             </div>
           </div>
         </div>
+        )}
 
       </div>
 

@@ -226,7 +226,8 @@ export default function App() {
 
   useEffect(() => { refreshAccount(); }, [refreshAccount]);
 
-  const userTier = account?.isPro ? 'PRO' : (account?.authenticated ? 'FREE' : 'GUEST');
+  const isAdmin = !!account?.isAdmin || ['naufalarib60@gmail.com', 'ahmfuadi28@gmail.com'].includes(String(account?.email || '').toLowerCase());
+  const userTier = isAdmin || account?.isPro ? 'PRO' : (account?.authenticated ? 'FREE' : 'GUEST');
 
   // Web3 Solana Phantom Wallet State
   const [walletState, setWalletState] = useState({
@@ -861,6 +862,18 @@ export default function App() {
             </div>
           )}
 
+          {/* AI MULTI-AGENT ARENA (Mounted persistently so 24/7 background autonomous loop never stops) */}
+          <div style={{ display: activeTab === 'AI_AGENTS' ? 'block' : 'none' }}>
+            <main>
+              <AiAgentArenaTab
+                data={data}
+                livePrices={livePrices}
+                onOpenChart={handleOpenSecurityHub}
+                onOpenExecution={handleOpenExecution}
+              />
+            </main>
+          </div>
+
           {/* 2. Main Content View Routing with Suspense fallback */}
           <Suspense fallback={
             <div style={{ padding: '60px', textAlign: 'center', color: 'var(--text-muted)' }}>
@@ -868,7 +881,8 @@ export default function App() {
               <div style={{ fontWeight: '700', fontFamily: 'var(--font-mono)' }}>MEMUAT MODUL KUANTITATIF...</div>
             </div>
           }>
-            {activeTab === 'AI_SENTINEL' || activeTab === 'AI_SENTINEL_DEFCON' || activeTab === 'AI_SENTINEL_DEBATE' || activeTab === 'SENTINEL' ? (
+            {activeTab === 'AI_AGENTS' ? null :
+            activeTab === 'AI_SENTINEL' || activeTab === 'AI_SENTINEL_DEFCON' || activeTab === 'AI_SENTINEL_DEBATE' || activeTab === 'SENTINEL' ? (
               /* AI SENTINEL EMBEDDED DESK VIEW */
               <main style={{ padding: '12px 0' }}>
                 <AiIntelligenceDrawer
@@ -898,16 +912,6 @@ export default function App() {
                   onNavigateTab={setActiveTab}
                 />
               </main>
-            ) : activeTab === 'AI_AGENTS' ? (
-              /* AI MULTI-AGENT ARENA & 24/7 REAL-MARKET SIMULATOR */
-              <main>
-                <AiAgentArenaTab
-                  data={data}
-                  livePrices={livePrices}
-                  onOpenChart={handleOpenSecurityHub}
-                  onOpenExecution={handleOpenExecution}
-                />
-              </main>
             ) : activeTab === 'HOME' ? (
               /* HOME COMMAND CENTER (Wire + Bento + Foreign Flow + Konglo + Top 5 Alpha) */
               <HomeDashboardTab
@@ -933,22 +937,72 @@ export default function App() {
                 />
               </main>
             ) : activeTab === 'FLOW_PROCESS' ? (
-              /* SYSTEM FLOW PROCESS & ARCHITECTURE BLUEPRINT */
-              <main>
-                <FlowProcessTab />
-              </main>
+              /* SYSTEM FLOW PROCESS & ARCHITECTURE BLUEPRINT (KHUSUS ADMIN) */
+              isAdmin ? (
+                <main>
+                  <FlowProcessTab />
+                </main>
+              ) : (
+                <main>
+                  <div className="telemetry-panel" style={{
+                    borderRadius: '16px', padding: '52px 28px', textAlign: 'center', maxWidth: '560px', margin: '40px auto',
+                  }}>
+                    <div style={{ fontSize: '38px', marginBottom: '16px' }}>🔒</div>
+                    <div style={{ fontSize: '18px', fontWeight: '900', marginBottom: '10px' }}>
+                      Modul Khusus Internal Admin
+                    </div>
+                    <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '22px' }}>
+                      Arsitektur Flow Process hanya dapat diakses oleh administrator sistem.
+                    </div>
+                    <button
+                      onClick={() => setActiveTab('HOME')}
+                      style={{
+                        padding: '10px 22px', borderRadius: '8px', fontSize: '12px', fontWeight: '700',
+                        background: 'var(--accent-blue)', color: '#fff', border: 'none', cursor: 'pointer'
+                      }}
+                    >
+                      ← Kembali ke Home
+                    </button>
+                  </div>
+                </main>
+              )
             ) : activeTab === 'CHANGELOG' ? (
-              /* SYSTEM CHANGELOG & VERSION RELEASES */
-              <main>
-                <ChangelogTab />
-              </main>
+              /* SYSTEM CHANGELOG & VERSION RELEASES (KHUSUS ADMIN) */
+              isAdmin ? (
+                <main>
+                  <ChangelogTab />
+                </main>
+              ) : (
+                <main>
+                  <div className="telemetry-panel" style={{
+                    borderRadius: '16px', padding: '52px 28px', textAlign: 'center', maxWidth: '560px', margin: '40px auto',
+                  }}>
+                    <div style={{ fontSize: '38px', marginBottom: '16px' }}>🔒</div>
+                    <div style={{ fontSize: '18px', fontWeight: '900', marginBottom: '10px' }}>
+                      Changelog Khusus Admin
+                    </div>
+                    <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '22px' }}>
+                      Riwayat rilis teknis internal hanya dapat diakses oleh administrator sistem.
+                    </div>
+                    <button
+                      onClick={() => setActiveTab('HOME')}
+                      style={{
+                        padding: '10px 22px', borderRadius: '8px', fontSize: '12px', fontWeight: '700',
+                        background: 'var(--accent-blue)', color: '#fff', border: 'none', cursor: 'pointer'
+                      }}
+                    >
+                      ← Kembali ke Home
+                    </button>
+                  </div>
+                </main>
+              )
             ) : activeTab === 'WHALES' ? (
               /* v3.0 WHALE INTELLIGENCE HUB */
               <main>
                 <WhaleIntelligenceTab data={data} onOpenChart={handleOpenSecurityHub} livePrices={livePrices} />
               </main>
             ) : activeTab === 'FUTURES' ? (
-              /* v3.0 CRYPTO FUTURES INTELLIGENCE (perpetuals only — DEX radar lives in Memecoin Radar) */
+              /* v3.0 CRYPTO FUTURES INTELLIGENCE */
               <main>
                 <CryptoFuturesTab 
                   data={data} 
@@ -958,11 +1012,6 @@ export default function App() {
                   allCryptoSpot={allCryptoSpot}
                   onOpenSwap={() => setIsSwapModalOpen(true)}
                 />
-              </main>
-            ) : activeTab === 'RADAR' ? (
-              /* EARLY SIGNAL RADAR — EVIDENCE-BASED MEMECOIN SCANNER */
-              <main>
-                <MemecoinRadar />
               </main>
             ) : activeTab === 'SIGNALS' ? (
               /* SIGNAL DESK — tier-gated plan delivery (VIP sees instantly) */
@@ -990,10 +1039,8 @@ export default function App() {
                   onRefreshUser={refreshAccount}
                 />
               </main>
-            ) : !canAccess(activeTab, userTier) ? (
-              /* LOCKED MODULE — show what Pro unlocks instead of an empty desk.
-                 Deliberately obvious rather than silent: a user who clicked a
-                 locked menu item must understand why, not wonder if it broke. */
+            ) : (!isAdmin && !canAccess(activeTab, userTier, isAdmin)) ? (
+              /* LOCKED MODULE — show what Pro unlocks instead of an empty desk */
               <main>
                 <div className="telemetry-panel" style={{
                   borderRadius: '16px', padding: '52px 28px', textAlign: 'center', maxWidth: '560px', margin: '40px auto',
@@ -1033,11 +1080,6 @@ export default function App() {
                   </div>
                 </div>
               </main>
-            ) : activeTab === 'DEGEN' ? (
-              /* MULTI-CHAIN MEMECOIN RADAR & RUG-CHECK DESK */
-              <main>
-                <DegenDesk onOpenSwap={() => setIsSwapModalOpen(true)} />
-              </main>
             ) : activeTab === 'FOREX' ? (
               /* v3.0 FOREX COMMAND CENTER */
               <main>
@@ -1054,7 +1096,7 @@ export default function App() {
                 <MarketHeatmapTab data={data} onSelectTicker={handleOpenSecurityHub} livePrices={livePrices} flashMap={flashMap} />
               </main>
             ) : (
-              /* DEEP-DIVE SCREENER / TESTING / RESEARCH TABS */
+              /* DEEP-DIVE SCREENER / TESTING LAB / KORELASI / ACADEMY / KALENDER MAKRO */
               <main>
                 <MasterQuantLeaderboard
                   activeTab={activeTab}
