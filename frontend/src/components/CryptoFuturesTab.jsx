@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import CryptoIcon from './CryptoIcon.jsx';
+
+const OrderBookSimulator = lazy(() => import('./OrderBookSimulator.jsx'));
 
 // Target 60+ Binance Perpetual Futures Pairs
 const DEFAULT_FUTURES_PAIRS = [
@@ -30,6 +32,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
   const [futuresSortField, setFuturesSortField] = useState('volume_24h_usd'); // 'volume_24h_usd' | 'change_24h_pct' | 'mark_price' | 'funding_rate_pct' | 'symbol'
   const [futuresSortDir, setFuturesSortDir] = useState('desc'); // 'desc' | 'asc'
   const [futuresFilter, setFuturesFilter] = useState('ALL'); // 'ALL' | 'VOLUME' | 'GAINERS' | 'LOSERS' | 'HIGH_FUNDING' | 'SQUEEZE'
+  const [orderBookModal, setOrderBookModal] = useState({ isOpen: false, ticker: 'BTCUSDT', price: 83000 });
 
   const initialRates = data?.crypto_futures?.funding_rates || [];
   const initialLiq = data?.crypto_futures?.liquidations_24h || {};
@@ -1047,21 +1050,39 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                         </td>
 
                         <td style={{ padding: '10px', textAlign: 'center' }}>
-                          <button
-                            onClick={() => onOpenChart ? onOpenChart(`BINANCE:${f.symbol}.P`, 'CRYPTO') : null}
-                            style={{
-                              background: 'transparent',
-                              border: 'var(--border-hairline)',
-                              borderRadius: '4px',
-                              color: 'var(--accent-blue)',
-                              padding: '4px 10px',
-                              fontSize: '11px',
-                              fontWeight: '700',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Chart ↗
-                          </button>
+                          <div style={{ display: 'inline-flex', gap: '5px', alignItems: 'center' }}>
+                            <button
+                              onClick={() => setOrderBookModal({ isOpen: true, ticker: f.symbol, price: f.mark_price || 0 })}
+                              style={{
+                                background: 'rgba(16, 185, 129, 0.12)',
+                                border: '1px solid rgba(16, 185, 129, 0.35)',
+                                borderRadius: '4px',
+                                color: '#34d399',
+                                padding: '4px 8px',
+                                fontSize: '11px',
+                                fontWeight: '700',
+                                cursor: 'pointer'
+                              }}
+                              title="Buka Live L2 Order Book (Hyperliquid & Binance)"
+                            >
+                              📖 Book
+                            </button>
+                            <button
+                              onClick={() => onOpenChart ? onOpenChart(`BINANCE:${f.symbol}.P`, 'CRYPTO') : null}
+                              style={{
+                                background: 'transparent',
+                                border: 'var(--border-hairline)',
+                                borderRadius: '4px',
+                                color: 'var(--accent-blue)',
+                                padding: '4px 8px',
+                                fontSize: '11px',
+                                fontWeight: '700',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Chart ↗
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
@@ -1181,6 +1202,18 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
               </div>
             )}
           </div>
+        )}
+
+        {/* Level 2 Order Book Modal */}
+        {orderBookModal.isOpen && (
+          <Suspense fallback={null}>
+            <OrderBookSimulator
+              ticker={orderBookModal.ticker}
+              currentPrice={orderBookModal.price}
+              isOpen={orderBookModal.isOpen}
+              onClose={() => setOrderBookModal({ isOpen: false, ticker: 'BTCUSDT', price: 0 })}
+            />
+          </Suspense>
         )}
 
       </div>

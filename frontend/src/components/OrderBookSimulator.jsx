@@ -14,6 +14,8 @@ const OrderBookSimulator = ({
   brokerSummaryData = null
 }) => {
   const [activeView, setActiveView] = useState('ORDERBOOK'); // 'ORDERBOOK' | 'BROKER_SUMMARY'
+  const [feedSource, setFeedSource] = useState('hyperliquid'); // 'hyperliquid' | 'binance'
+  const [autoRefresh, setAutoRefresh] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [liveDepth, setLiveDepth] = useState(null);
@@ -34,16 +36,14 @@ const OrderBookSimulator = ({
   const isCrypto = ticker.includes('USDT') || ticker.includes('USD') || ticker.includes('/') || ticker.startsWith('BTC') || ticker.startsWith('ETH');
 
   // Format pair for Crypto APIs
-  const cryptoSymbol = useMemo(() => {
-    if (!isCrypto) return '';
-    let sym = ticker.replace('/', '_').replace('-', '_');
-    if (!sym.includes('_') && sym.endsWith('USDT')) {
-      sym = sym.replace('USDT', '_USDT');
-    }
-    if (!sym.includes('_')) {
-      sym = sym + '_USDT';
-    }
-    return sym.toUpperCase();
+  const cryptoInfo = useMemo(() => {
+    if (!isCrypto) return { baseCoin: '', binanceSymbol: '' };
+    let clean = ticker.replace('/USDT', '').replace('USDT', '').replace('/USD', '').replace('USD', '').replace('/', '').replace('.JK', '').trim().toUpperCase();
+    if (!clean) clean = 'BTC';
+    return {
+      baseCoin: clean,
+      binanceSymbol: `${clean}USDT`
+    };
   }, [ticker, isCrypto]);
 
   // Real OJK/IDX Fraksi Harga Rules
@@ -65,63 +65,125 @@ const OrderBookSimulator = ({
     return 25;
   }, [currentPrice, isCrypto]);
 
-  // Fetch Live Real Depth for Crypto
+  // Fetch Live Real Depth for Crypto via Hyperliquid L1 or Binance Vision
   const fetchLiveCryptoDepth = useCallback(async () => {
     if (!isCrypto) return;
     setIsLoading(true);
     setLiveError(null);
     const t0 = performance.now();
 
+    const { baseCoin, binanceSymbol } = cryptoInfo;
+
     try {
-      // Primary: Tokocrypto API via Edge Function Proxy
-      let res = await fetch(`/api/tokocrypto/open/v1/market/depth?symbol=${cryptoSymbol}&limit=10`);
-      const ct = res.headers.get('content-type') || '';
-      if (!res.ok || !ct.includes('application/json')) {
-        res = await fetch(`https://www.tokocrypto.com/open/v1/market/depth?symbol=${cryptoSymbol}&limit=10`);
-      }
-      if (!(res.headers.get('content-type') || '').includes('application/json')) {
-        throw new Error('Non-JSON depth response');
-      }
-      const json = await res.json();
-      if (json && json.data && json.data.bids) {
-        setLiveDepth({
-          bids: json.data.bids.map(([p, q]) => ({ price: parseFloat(p), lotQuantity: parseFloat(q) })),
-          asks: json.data.asks.map(([p, q]) => ({ price: parseFloat(p), lotQuantity: parseFloat(q) })),
-          source: 'Tokocrypto / Binance Live'
+      if (feedSource === 'hyperliquid') {
+        // Feed 1: Hyperliquid L2 Order Book (Zero API Key, Real Perps Depth)
+        const res = await fetch('https://api.hyperliquid.xyz/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'l2Book', coin: baseCoin }),
         });
-        setLatencyMs(Math.round(performance.now() - t0));
-        setIsLoading(false);
-        return;
-      }
-    } catch (e) {
-      // Fallback: Indodax Public Depth
-      try {
-        const indodaxPair = cryptoSymbol.toLowerCase().replace('_', '');
-        const res2 = await fetch(`https://indodax.com/api/depth/${indodaxPair}`);
-        const json2 = await res2.json();
-        if (json2 && json2.buy && json2.buy.length > 0) {
+
+        if (!res.ok) throw new Error(`Hyperliquid error (${res.status})`);
+        const json = await res.json();
+
+        if (json && json.levels && Array.isArray(json.levels) && json.levels.length >= 2) {
+          const bids = (json.levels[0] || []).map(item => ({
+            price: parseFloat(item.px),
+            lotQuantity: parseFloat(item.sz),
+            orderCount: item.n || null,
+          }));
+          const asks = (json.levels[1] || []).map(item => ({
+            price: parseFloat(item.px),
+            lotQuantity: parseFloat(item.sz),
+            orderCount: item.n || null,
+          }));
+
           setLiveDepth({
-            bids: json2.buy.slice(0, 10).map(([p, q]) => ({ price: parseFloat(p), lotQuantity: parseFloat(q) })),
-            asks: json2.sell.slice(0, 10).map(([p, q]) => ({ price: parseFloat(p), lotQuantity: parseFloat(q) })),
-            source: 'Indodax Bappebti Live'
+            bids,
+            asks,
+            source: 'Hyperliquid L1 (Perps Book)',
+            hasOrderCounts: true,
+            coin: json.coin || baseCoin
           });
           setLatencyMs(Math.round(performance.now() - t0));
           setIsLoading(false);
           return;
         }
-      } catch (err2) {
-        setLiveError('Koneksi bursa live kripto dialihkan ke snapshot aman.');
+      } else {
+        // Feed 2: Binance Vision Spot CDN (Zero API Key, Unblocked Global CDN)
+        const res = await fetch(`https://data-api.binance.vision/api/v3/depth?symbol=${binanceSymbol}&limit=20`);
+        if (!res.ok) throw new Error(`Binance Vision error (${res.status})`);
+        const json = await res.json();
+
+        if (json && json.bids && Array.isArray(json.bids)) {
+          const bids = json.bids.map(([p, q]) => ({
+            price: parseFloat(p),
+            lotQuantity: parseFloat(q),
+            orderCount: null,
+          }));
+          const asks = json.asks.map(([p, q]) => ({
+            price: parseFloat(p),
+            lotQuantity: parseFloat(q),
+            orderCount: null,
+          }));
+
+          setLiveDepth({
+            bids,
+            asks,
+            source: 'Binance Vision (Global Spot CDN)',
+            hasOrderCounts: false,
+            coin: baseCoin
+          });
+          setLatencyMs(Math.round(performance.now() - t0));
+          setIsLoading(false);
+          return;
+        }
       }
+    } catch (err) {
+      // Fallback cross-feed attempt if the selected one fails
+      try {
+        if (feedSource === 'hyperliquid') {
+          // Fallback to Binance Vision
+          const fallbackRes = await fetch(`https://data-api.binance.vision/api/v3/depth?symbol=${binanceSymbol}&limit=20`);
+          if (fallbackRes.ok) {
+            const json = await fallbackRes.json();
+            if (json?.bids) {
+              setLiveDepth({
+                bids: json.bids.map(([p, q]) => ({ price: parseFloat(p), lotQuantity: parseFloat(q) })),
+                asks: json.asks.map(([p, q]) => ({ price: parseFloat(p), lotQuantity: parseFloat(q) })),
+                source: 'Binance Vision (Fallback)',
+                hasOrderCounts: false,
+                coin: baseCoin
+              });
+              setLatencyMs(Math.round(performance.now() - t0));
+              setIsLoading(false);
+              return;
+            }
+          }
+        }
+      } catch {
+        // ignore
+      }
+      setLiveError(`Koneksi ${feedSource === 'hyperliquid' ? 'Hyperliquid L1' : 'Binance Vision'} gagal dijangkau.`);
     }
     setIsLoading(false);
-  }, [isCrypto, cryptoSymbol]);
+  }, [isCrypto, cryptoInfo, feedSource]);
 
-  // Trigger fetch when modal opens or refresh clicked
+  // Trigger fetch when modal opens, refresh clicked, or feed changes
   useEffect(() => {
     if (isOpen && isCrypto) {
       fetchLiveCryptoDepth();
     }
-  }, [isOpen, isCrypto, refreshTrigger, fetchLiveCryptoDepth]);
+  }, [isOpen, isCrypto, refreshTrigger, feedSource, fetchLiveCryptoDepth]);
+
+  // Live Auto-Refresh Polling Loop (1500ms)
+  useEffect(() => {
+    if (!isOpen || !isCrypto || !autoRefresh) return;
+    const interval = setInterval(() => {
+      fetchLiveCryptoDepth();
+    }, 1500);
+    return () => clearInterval(interval);
+  }, [isOpen, isCrypto, autoRefresh, fetchLiveCryptoDepth]);
 
   // Process Real / Microstructure Depth Levels
   const { bidsWithCumulative, asksWithCumulative, maxCumulativeVol, totalBidVol, totalAskVol, spread, spreadPercent, buyerRatio } = useMemo(() => {
@@ -299,7 +361,50 @@ const OrderBookSimulator = ({
           </div>
 
           {/* Tab Switcher: Orderbook vs Broker Summary */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            {isCrypto && (
+              <div style={{
+                display: 'flex',
+                background: 'rgba(0, 0, 0, 0.4)',
+                padding: '2px',
+                borderRadius: '6px',
+                border: '1px solid rgba(255, 255, 255, 0.08)'
+              }}>
+                <button
+                  onClick={() => setFeedSource('hyperliquid')}
+                  style={{
+                    padding: '4px 8px',
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    borderRadius: '4px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    background: feedSource === 'hyperliquid' ? 'linear-gradient(135deg, #10b981, #059669)' : 'transparent',
+                    color: feedSource === 'hyperliquid' ? '#042f2e' : 'var(--text-muted)',
+                  }}
+                  title="Orderbook perpetual real-time langsung dari Hyperliquid L1 (Tanpa API Key)"
+                >
+                  ⚡ Hyperliquid L1 (Perps)
+                </button>
+                <button
+                  onClick={() => setFeedSource('binance')}
+                  style={{
+                    padding: '4px 8px',
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    borderRadius: '4px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    background: feedSource === 'binance' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'transparent',
+                    color: feedSource === 'binance' ? '#451a03' : 'var(--text-muted)',
+                  }}
+                  title="Orderbook spot global dari Binance Vision CDN (Tanpa Blokir)"
+                >
+                  🟡 Binance Vision (Spot)
+                </button>
+              </div>
+            )}
+
             <div style={{ 
               display: 'flex', 
               background: 'rgba(0, 0, 0, 0.4)', 
@@ -341,6 +446,25 @@ const OrderBookSimulator = ({
               )}
             </div>
 
+            {isCrypto && (
+              <button
+                onClick={() => setAutoRefresh(r => !r)}
+                style={{
+                  padding: '4px 8px',
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  borderRadius: '6px',
+                  border: '1px solid ' + (autoRefresh ? 'rgba(16,185,129,0.3)' : 'rgba(255,255,255,0.1)'),
+                  background: autoRefresh ? 'rgba(16,185,129,0.12)' : 'rgba(255,255,255,0.05)',
+                  color: autoRefresh ? '#34d399' : 'var(--text-muted)',
+                  cursor: 'pointer',
+                }}
+                title={autoRefresh ? 'Live feed aktif (polling 1.5 detik)' : 'Klik untuk mengaktifkan live feed'}
+              >
+                {autoRefresh ? '🟢 Live 1.5s' : '⏸️ Paused'}
+              </button>
+            )}
+
             <button
               className="telemetry-btn"
               onClick={() => {
@@ -351,7 +475,7 @@ const OrderBookSimulator = ({
               title="Refresh data langsung dari server bursa"
               disabled={isLoading}
             >
-              {isLoading ? '⏳ Loading...' : '🔄 Refresh'}
+              {isLoading ? '⏳...' : '🔄'}
             </button>
 
             <button 
@@ -401,9 +525,14 @@ const OrderBookSimulator = ({
                   </div>
                 </div>
                 <div>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>SUMBER DATA</span>
-                  <div style={{ fontSize: '11px', color: '#00d084', fontWeight: 600 }}>
-                    {isCrypto ? (liveDepth?.source || 'Tokocrypto / Binance Live') : 'Official BEI Best Quote'}
+                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>SUMBER DATA & LATENSI</span>
+                  <div style={{ fontSize: '11px', color: '#00d084', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>{isCrypto ? (liveDepth?.source || `${feedSource === 'hyperliquid' ? 'Hyperliquid L1' : 'Binance Vision'}`) : 'Official BEI Best Quote'}</span>
+                    {isCrypto && (
+                      <span style={{ fontSize: '9.5px', fontFamily: 'var(--font-mono)', padding: '1px 5px', borderRadius: '4px', background: 'rgba(255,255,255,0.08)', color: '#38bdf8' }}>
+                        {latencyMs}ms
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -509,6 +638,11 @@ const OrderBookSimulator = ({
                           </span>
                           <span style={{ textAlign: 'right', fontWeight: 600, color: 'var(--text-primary)', position: 'relative', zIndex: 1 }}>
                             {formatLots(bid.lotQuantity)}
+                            {bid.orderCount != null && (
+                              <span style={{ fontSize: '9px', color: 'var(--text-muted)', marginLeft: '4px' }}>
+                                ({bid.orderCount} ord)
+                              </span>
+                            )}
                           </span>
                           <span style={{ textAlign: 'right', fontWeight: 700, color: 'var(--accent-green, #00d084)', position: 'relative', zIndex: 1 }}>
                             {formatPrice(bid.price)}
@@ -573,6 +707,11 @@ const OrderBookSimulator = ({
                           </span>
                           <span style={{ textAlign: 'right', fontWeight: 600, color: 'var(--text-primary)', position: 'relative', zIndex: 1 }}>
                             {formatLots(ask.lotQuantity)}
+                            {ask.orderCount != null && (
+                              <span style={{ fontSize: '9px', color: 'var(--text-muted)', marginLeft: '4px' }}>
+                                ({ask.orderCount} ord)
+                              </span>
+                            )}
                           </span>
                           <span style={{ textAlign: 'right', color: 'var(--text-muted)', position: 'relative', zIndex: 1 }}>
                             {Math.round(ask.cumulative).toLocaleString()}

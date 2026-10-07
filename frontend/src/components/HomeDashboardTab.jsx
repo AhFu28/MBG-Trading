@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import BloombergNewsWire from './BloombergNewsWire.jsx';
 import AssetIcon from './AssetIcon.jsx';
 import CryptoIcon from './CryptoIcon.jsx';
 import { formatNewsDateTime } from './newsHelpers.js';
 import { institutionalPaperBroker } from '../services/brokerGateway.js';
+
+const OrderBookSimulator = lazy(() => import('./OrderBookSimulator.jsx'));
 
 // Helper: Format IDR Flow
 function formatFlowIdr(val) {
@@ -97,6 +99,7 @@ export default function HomeDashboardTab({
   const [showLaymanGuide, setShowLaymanGuide] = useState(false);
   const [dismissDefenseAlert, setDismissDefenseAlert] = useState(false);
   const [portfolioCurrency, setPortfolioCurrency] = useState('USD'); // 'USD' | 'IDR'
+  const [orderBookModal, setOrderBookModal] = useState({ isOpen: false, ticker: 'BTCUSDT', price: 83000 });
 
   // ── REAL STORE BINDINGS (replaces hardcoded fiction) ─────────────────────
   // 1. Paper portfolio: live equity = cash + open positions marked to livePrices.
@@ -1974,9 +1977,18 @@ export default function HomeDashboardTab({
                     <span style={{ fontSize: '10.5px', fontWeight: '800', color: '#60a5fa' }}>🪙 Crypto Spot Signals</span>
                     <span className="badge badge-alert" style={{ fontSize: '7.5px', padding: '1px 4px' }}>{topCryptoPicks.length}</span>
                   </div>
-                  <span style={{ fontSize: '8px', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 700 }} onClick={() => onNavigateTab('CRYPTO')}>
-                    Lihat semua →
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span 
+                      style={{ fontSize: '8px', color: '#34d399', cursor: 'pointer', fontWeight: 700 }}
+                      onClick={() => setOrderBookModal({ isOpen: true, ticker: 'BTCUSDT', price: 83000 })}
+                      title="Buka Live L2 Order Book (Hyperliquid / Binance)"
+                    >
+                      ⚡ L2 Book
+                    </span>
+                    <span style={{ fontSize: '8px', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 700 }} onClick={() => onNavigateTab('CRYPTO')}>
+                      Lihat semua →
+                    </span>
+                  </div>
                 </div>
 
                 <table className="telemetry-table" style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
@@ -2005,6 +2017,16 @@ export default function HomeDashboardTab({
                               <CryptoIcon symbol={c.pair} size={12} />
                               <span style={{ color: '#60a5fa', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(c.pair, 'CRYPTO')}>
                                 {c.pair}
+                              </span>
+                              <span 
+                                style={{ color: '#34d399', cursor: 'pointer', fontSize: '9px', opacity: 0.8 }}
+                                title="Buka Live Orderbook L2 (Hyperliquid / Binance)"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setOrderBookModal({ isOpen: true, ticker: c.pair, price: currentPrice });
+                                }}
+                              >
+                                📊
                               </span>
                             </div>
                             <div style={{
@@ -2110,6 +2132,18 @@ export default function HomeDashboardTab({
           </div>
         )}
       </div>
+
+      {/* Live Level-2 Order Book Modal */}
+      {orderBookModal.isOpen && (
+        <Suspense fallback={null}>
+          <OrderBookSimulator
+            ticker={orderBookModal.ticker}
+            currentPrice={orderBookModal.price}
+            isOpen={orderBookModal.isOpen}
+            onClose={() => setOrderBookModal({ isOpen: false, ticker: 'BTCUSDT', price: 0 })}
+          />
+        </Suspense>
+      )}
 
     </div>
   );
