@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import PasswordGate from './components/PasswordGate.jsx';
-import { fetchMe, logOut } from './services/accountClient.js';
+import { fetchMe } from './services/accountClient.js';
+import { endSession } from './services/sessionCleanup.js';
 import { canAccess, requiredTierFor, MODULES, TIER } from './services/featureAccess.js';
 import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
 import HomeDashboardTab from './components/HomeDashboardTab.jsx';
@@ -225,6 +226,20 @@ export default function App() {
   }, []);
 
   useEffect(() => { refreshAccount(); }, [refreshAccount]);
+
+  /**
+   * The single logout path for the whole app.
+   *
+   * Order matters: revoke on the server first, then clear the React account
+   * state, then reload. Reloading is what guarantees the user actually lands on
+   * the LandingPage — it re-asks /api/account/me and /api/auth with no stale
+   * in-memory state that could flash the terminal for a frame.
+   */
+  const handleLogout = useCallback(async () => {
+    await endSession();
+    setAccount({ authenticated: false, tier: 'guest', isPro: false, isAdmin: false });
+    window.location.reload();
+  }, []);
 
   const isAdmin = !!account?.isAdmin || ['naufalarib60@gmail.com', 'ahmfuadi28@gmail.com'].includes(String(account?.email || '').toLowerCase());
   const userTier = isAdmin || account?.isPro ? 'PRO' : (account?.authenticated ? 'FREE' : 'GUEST');
@@ -1028,7 +1043,7 @@ export default function App() {
                 <SubscriptionPage
                   account={account || {}}
                   onRefresh={refreshAccount}
-                  onLogout={async () => { await logOut(); setAccount({ authenticated: false, tier: 'guest' }); }}
+                  onLogout={handleLogout}
                 />
               </main>
             ) : activeTab === 'ADMIN_APPROVAL' ? (

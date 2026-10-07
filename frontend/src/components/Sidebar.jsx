@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MbgLogo from './MbgLogo.jsx';
-import AssetIcon from './AssetIcon.jsx';
+import { endSession } from '../services/sessionCleanup.js';
 
 // Navigation grouped by WHAT YOU ARE DOING, not by asset class.
 //
@@ -57,19 +57,6 @@ const SECONDARY_TOOLS = [
 
 const SECTIONS = ['TRADE', 'MARKETS', 'RESEARCH', 'ACCOUNT'];
 
-// Curated active tickers to display live in the sidebar
-const DEFAULT_RADAR_TICKERS = [
-  { symbol: 'BBCA', name: 'Bank Central Asia', market: 'IDX', defaultPrice: 6375, defaultChange: -0.39 },
-  { symbol: 'BBRI', name: 'Bank Rakyat Indo', market: 'IDX', defaultPrice: 3340, defaultChange: 0.60 },
-  { symbol: 'BMRI', name: 'Bank Mandiri', market: 'IDX', defaultPrice: 4300, defaultChange: -0.92 },
-  { symbol: 'AMMN', name: 'Amman Mineral', market: 'IDX', defaultPrice: 5150, defaultChange: 1.98 },
-  { symbol: 'BTC', name: 'Bitcoin', market: 'CRYPTO', defaultPrice: 75940, defaultChange: -2.21 },
-  { symbol: 'ETH', name: 'Ethereum', market: 'CRYPTO', defaultPrice: 2406, defaultChange: -3.67 },
-  { symbol: 'SOL', name: 'Solana', market: 'CRYPTO', defaultPrice: 97.18, defaultChange: -4.15 },
-  { symbol: 'NVDA', name: 'Nvidia Corp', market: 'US', defaultPrice: 212.17, defaultChange: 0.57 },
-  { symbol: 'EURUSD', name: 'Euro / US Dollar', market: 'FOREX', defaultPrice: 1.155, defaultChange: 0.10 },
-];
-
 export default function Sidebar({
   activeTab,
   setActiveTab,
@@ -78,14 +65,12 @@ export default function Sidebar({
   stockCount = 0,
   cryptoCount = 0,
   newsCount = 0,
-  livePrices = {},
-  flashMap = {},
   account = {},
-  onSelectTicker,
   onOpenAiSentinel,
   onOpenDataIntegrity
 }) {
   const [showMoreTools, setShowMoreTools] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const isAdmin = !!account?.isAdmin || ['naufalarib60@gmail.com', 'ahmfuadi28@gmail.com'].includes(String(account?.email || '').toLowerCase());
   const visibleSecondaryTools = SECONDARY_TOOLS.filter(item => {
     if (item.id === 'FLOW_PROCESS' || item.id === 'CHANGELOG') {
@@ -111,29 +96,19 @@ export default function Sidebar({
     return null;
   };
 
-  const handleLogout = () => {
-    if (window.confirm('Logout dari sesi MBG Trading Terminal? Data watchlist & paper trading Anda tetap tersimpan aman.')) {
-      localStorage.removeItem('mbg_cockpit_auth');
-      localStorage.removeItem('mbg_cockpit_auth_time');
-      window.location.reload();
+  const handleLogout = async () => {
+    if (!window.confirm('Logout dari sesi MBG Trading Terminal? Data watchlist & paper trading Anda tetap tersimpan aman.')) {
+      return;
     }
-  };
-
-  const formatTickerPrice = (sym, market, defPrice) => {
-    const quote = livePrices[sym] || livePrices[`IDX:${sym}`] || livePrices[`${sym}USDT`] || livePrices[`${sym}/USDT`];
-    const val = quote?.price !== undefined ? quote.price : defPrice;
-    if (market === 'IDX') return `Rp ${Math.round(val).toLocaleString('id-ID')}`;
-    if (market === 'CRYPTO') return val >= 1000 ? `$${Math.round(val).toLocaleString()}` : `$${val.toFixed(2)}`;
-    if (market === 'US') return `$${val.toFixed(2)}`;
-    if (market === 'FOREX') return val.toFixed(4);
-    return `${val}`;
-  };
-
-  const formatTickerChange = (sym, defChange) => {
-    const quote = livePrices[sym] || livePrices[`IDX:${sym}`] || livePrices[`${sym}USDT`] || livePrices[`${sym}/USDT`];
-    const chg = quote?.changePct !== undefined ? quote.changePct : defChange;
-    const sign = chg > 0 ? '+' : '';
-    return `${sign}${chg.toFixed(2)}%`;
+    setLoggingOut(true);
+    // Revoke the HTTP-only session cookie on the server, then scrub local
+    // traces. The old handler only deleted the legacy `mbg_cockpit_auth` key
+    // and reloaded, which signed the user straight back in — see the incident
+    // note in services/sessionCleanup.js.
+    await endSession();
+    // Full reload is deliberate: App.jsx re-asks /api/auth and /api/account/me
+    // from scratch, so LandingPage renders with no stale account state.
+    window.location.reload();
   };
 
   return (
@@ -203,140 +178,6 @@ export default function Sidebar({
                   </button>
                 );
               })}
-
-              {/* Tampilkan DUAL-COLUMN BENTO TICKER RADAR persis di bawah section MARKETS */}
-              {section === 'MARKETS' && (
-                <div style={{ margin: '6px 8px 4px', padding: '8px 10px', background: 'var(--bg-panel-subtle)', borderRadius: '10px', border: 'var(--border-hairline)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', paddingBottom: '4px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                    <div style={{ fontSize: '8.5px', fontWeight: '800', letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }} />
-                      <span>RADAR WATCHLIST</span>
-                    </div>
-                    <span style={{ fontSize: '7.5px', color: '#818cf8', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>CHART ↗</span>
-                  </div>
-
-                  {/* Dual-Column Grid Matrix */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px', fontFamily: 'var(--font-mono)' }}>
-                    
-                    {/* Kolom 1: IDX Core Blue Chips */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: '4px' }}>
-                      <div style={{ fontSize: '7px', fontWeight: '800', color: '#38bdf8', letterSpacing: '0.05em', marginBottom: '1px' }}>
-                        SAHAM IDX
-                      </div>
-                      {DEFAULT_RADAR_TICKERS.filter(t => t.market === 'IDX').map(t => {
-                        const quote = livePrices[t.symbol] || livePrices[`IDX:${t.symbol}`];
-                        const chg = quote?.changePct !== undefined ? quote.changePct : t.defaultChange;
-                        const isUp = chg >= 0;
-                        const isFlashing = flashMap[t.symbol];
-
-                        return (
-                          <div
-                            key={t.symbol}
-                            onClick={() => {
-                              if (onSelectTicker) onSelectTicker(t.symbol, t.market);
-                              else setActiveTab('STOCK');
-                              if (isMobileOpen && setMobileOpen) setMobileOpen(false);
-                            }}
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '1px',
-                              padding: '3px 5px',
-                              borderRadius: '6px',
-                              cursor: 'pointer',
-                              background: isFlashing === 'up' ? 'rgba(16, 185, 129, 0.22)' : isFlashing === 'down' ? 'rgba(244, 63, 94, 0.22)' : 'rgba(255, 255, 255, 0.03)',
-                              transition: 'all 0.15s ease',
-                              border: '1px solid transparent'
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)'}
-                            onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
-                            title={`Buka Chart ${t.symbol} (${t.name}) - ${formatTickerPrice(t.symbol, t.market, t.defaultPrice)}`}
-                          >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', lineHeight: 1.1 }}>
-                              <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-primary)' }}>
-                                {t.symbol}
-                              </span>
-                              <span style={{
-                                fontSize: '7.5px',
-                                fontWeight: '800',
-                                color: isUp ? 'var(--accent-green)' : 'var(--accent-rust)'
-                              }}>
-                                {formatTickerChange(t.symbol, t.defaultChange)}
-                              </span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', lineHeight: 1 }}>
-                              <span style={{ fontSize: '7.5px', color: 'var(--text-muted)', fontWeight: '600' }}>
-                                {formatTickerPrice(t.symbol, t.market, t.defaultPrice)}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Kolom 2: Crypto, US, & Global Forex */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', paddingLeft: '2px' }}>
-                      <div style={{ fontSize: '7px', fontWeight: '800', color: '#f59e0b', letterSpacing: '0.05em', marginBottom: '1px' }}>
-                        GLOBAL & CRYPTO
-                      </div>
-                      {DEFAULT_RADAR_TICKERS.filter(t => t.market !== 'IDX').map(t => {
-                        const quote = livePrices[t.symbol] || livePrices[`${t.symbol}USDT`];
-                        const chg = quote?.changePct !== undefined ? quote.changePct : t.defaultChange;
-                        const isUp = chg >= 0;
-                        const isFlashing = flashMap[t.symbol] || flashMap[`${t.symbol}USDT`];
-
-                        return (
-                          <div
-                            key={t.symbol}
-                            onClick={() => {
-                              if (onSelectTicker) onSelectTicker(t.symbol, t.market);
-                              else setActiveTab(t.market === 'CRYPTO' ? 'CRYPTO' : t.market === 'US' ? 'US_STOCKS' : 'FOREX');
-                              if (isMobileOpen && setMobileOpen) setMobileOpen(false);
-                            }}
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '1px',
-                              padding: '3px 5px',
-                              borderRadius: '6px',
-                              cursor: 'pointer',
-                              background: isFlashing === 'up' ? 'rgba(16, 185, 129, 0.22)' : isFlashing === 'down' ? 'rgba(244, 63, 94, 0.22)' : 'rgba(255, 255, 255, 0.03)',
-                              transition: 'all 0.15s ease',
-                              border: '1px solid transparent'
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)'}
-                            onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
-                            title={`Buka Chart ${t.symbol} (${t.name}) - ${formatTickerPrice(t.symbol, t.market, t.defaultPrice)}`}
-                          >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', lineHeight: 1.1 }}>
-                              <span style={{
-                                fontSize: '8px',
-                                fontWeight: '800',
-                                color: 'var(--text-primary)'
-                              }}>
-                                {t.symbol}
-                              </span>
-                              <span style={{
-                                fontSize: '7.5px',
-                                fontWeight: '800',
-                                color: isUp ? 'var(--accent-green)' : 'var(--accent-rust)'
-                              }}>
-                                {formatTickerChange(t.symbol, t.defaultChange)}
-                              </span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', lineHeight: 1 }}>
-                              <span style={{ fontSize: '7.5px', color: 'var(--text-muted)', fontWeight: '600' }}>
-                                {formatTickerPrice(t.symbol, t.market, t.defaultPrice)}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                  </div>
-                </div>
-              )}
 
               {section !== SECTIONS[SECTIONS.length - 1] && <div className="sidebar-divider" />}
             </div>
@@ -417,11 +258,12 @@ export default function Sidebar({
           </button>
           <button
             onClick={handleLogout}
-            style={{ background: 'none', border: 'none', color: 'var(--accent-rust)', cursor: 'pointer', fontSize: '10.5px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 6px', borderRadius: '4px' }}
+            disabled={loggingOut}
+            style={{ background: 'none', border: 'none', color: 'var(--accent-rust)', cursor: loggingOut ? 'wait' : 'pointer', opacity: loggingOut ? 0.6 : 1, fontSize: '10.5px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 6px', borderRadius: '4px' }}
             title="Keluar dari sesi ini"
           >
             <span>🚪</span>
-            <span>Logout</span>
+            <span>{loggingOut ? 'Keluar...' : 'Logout'}</span>
           </button>
         </div>
       </div>
