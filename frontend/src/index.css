@@ -474,6 +474,26 @@ body {
   overflow-x: hidden;
 }
 
+/* =====================================================
+   TOP-NAV LAYOUT (CoinMarketCap-style horizontal nav)
+   When the left sidebar is not rendered, the content must
+   span the full width — otherwise it keeps a 236px hole
+   where the sidebar used to be.
+   ===================================================== */
+
+.app-layout-topnav {
+  flex-direction: column;
+  padding: 8px 18px 24px 18px;
+  box-sizing: border-box;
+}
+
+.app-layout-topnav .main-content {
+  margin-left: 0;
+  padding: 0;
+  min-height: 0;
+  width: 100%;
+}
+
 /* Base hamburger hidden on desktop */
 .sidebar-hamburger {
   display: none;
@@ -1628,3 +1648,43 @@ body[data-theme="dark"],
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   CMC-STYLE TOP NAVIGATION
+   Horizontal hover menus replacing the old left sidebar.
+   The desktop menu collapses to a hamburger drawer on narrow
+   screens, because hover menus are unusable on touch.
+   ============================================================ */
+
+.cmc-topnav-mobile-toggle,
+.cmc-topnav-mobile-drawer {
+  display: none;
+}
+
+@media (max-width: 1080px) {
+  /* Not enough room for six menus plus the right-hand controls. */
+  .cmc-topnav-desktop {
+    display: none !important;
+  }
+  .cmc-topnav-mobile-toggle {
+    display: block !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .cmc-hide-narrow {
+    display: none;
+  }
+  .cmc-topnav {
+    padding: 6px 9px !important;
+    gap: 7px !important;
+  }
+}
+
+/* Two-column dashboard rows stack on narrow viewports. */
+@media (max-width: 900px) {
+  .cmc-two-col {
+    grid-template-columns: 1fr !important;
+  }
+}
+

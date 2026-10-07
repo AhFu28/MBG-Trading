@@ -4,8 +4,8 @@ import { fetchMe } from './services/accountClient.js';
 import { endSession } from './services/sessionCleanup.js';
 import { canAccess, requiredTierFor, MODULES, TIER } from './services/featureAccess.js';
 import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
-import HomeDashboardTab from './components/HomeDashboardTab.jsx';
-import Sidebar from './components/Sidebar.jsx';
+import CmcMarketDashboard from './components/cmc/CmcMarketDashboard.jsx';
+import CmcTopNav from './components/CmcTopNav.jsx';
 import GlobalMarketTicker from './components/GlobalMarketTicker.jsx';
 import { useLivePrices } from './hooks/useLivePrices.js';
 import PersonalWatchlistTab from './components/PersonalWatchlistTab.jsx';
@@ -19,8 +19,6 @@ const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'))
 const LotCalculatorModal = lazy(() => import('./components/LotCalculatorModal.jsx'));
 const OrderExecutionModal = lazy(() => import('./components/OrderExecutionModal.jsx'));
 const SolanaSwapModal = lazy(() => import('./components/SolanaSwapModal.jsx'));
-const DegenDesk = lazy(() => import('./components/DegenDesk.jsx'));
-const MemecoinRadar = lazy(() => import('./components/MemecoinRadar.jsx'));
 import { institutionalPaperBroker } from './services/brokerGateway.js';
 const FlowProcessTab = lazy(() => import('./components/FlowProcessTab.jsx'));
 const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
@@ -511,35 +509,21 @@ export default function App() {
   // the removed PasswordGate wrapper.
   return (
     <>
-    <div className="app-layout">
+    <div className="app-layout app-layout-topnav">
 
-        {/* Mobile backdrop */}
-        {isMobileOpen && (
-          <div
-            onClick={() => setMobileOpen(false)}
-            style={{
-              position: 'fixed', inset: 0,
-              background: 'rgba(0,0,0,0.5)',
-              zIndex: 99
-            }}
-          />
-        )}
-
-        {/* ===== LEFT SIDEBAR (Zero-Scroll 100vh) ===== */}
-        <Sidebar
+        {/* ===== TOP NAVIGATION (CoinMarketCap-style hover menus) =====
+            The left sidebar was removed on Jendral Arib's instruction:
+            "pilihan sectionnya bukan di side bar, tapi di atas aja".
+            Mobile handling now lives inside the nav itself. */}
+        <CmcTopNav
           activeTab={activeTab}
-          setActiveTab={setActiveTab}
+          onNavigate={setActiveTab}
+          account={account}
+          theme={theme}
+          onToggleTheme={toggleTheme}
           isMobileOpen={isMobileOpen}
           setMobileOpen={setMobileOpen}
-          stockCount={allIdxStocks.length}
-          cryptoCount={allCryptoSpot.length}
-          newsCount={(data?.macro_telemetry?.live_news || []).length}
-          livePrices={livePrices}
-          flashMap={flashMap}
-          account={account}
-          onSelectTicker={handleOpenSecurityHub}
-          onOpenAiSentinel={() => setActiveTab('AI_SENTINEL')}
-          onOpenDataIntegrity={() => setIsIntegrityOpen(true)}
+          onOpenCommandPalette={() => setIsPaletteOpen(true)}
         />
 
         {/* ===== MAIN CONTENT AREA ===== */}
@@ -928,18 +912,16 @@ export default function App() {
                 />
               </main>
             ) : activeTab === 'HOME' ? (
-              /* HOME COMMAND CENTER (Wire + Bento + Foreign Flow + Konglo + Top 5 Alpha) */
-              <HomeDashboardTab
-                data={data}
-                livePrices={livePrices}
-                allIdxStocks={allIdxStocks}
-                flashMap={flashMap}
-                onSelectTicker={handleOpenSecurityHub}
-                onOpenLotCalc={handleOpenLotCalc}
-                onOpenExecution={handleOpenExecution}
-                onNavigateTab={setActiveTab}
-                onSelectNews={handleOpenNews}
-              />
+              /* CMC-STYLE MARKET OVERVIEW
+                 Replaces the old portfolio/macro composite. See
+                 components/cmc/CmcMarketDashboard.jsx for why the IDX-centric
+                 panels moved back to their own desks rather than being deleted. */
+              <main>
+                <CmcMarketDashboard
+                  livePrices={livePrices}
+                  onOpenAsset={handleOpenSecurityHub}
+                />
+              </main>
             ) : activeTab === 'CHARTING' ? (
               /* INSTITUTIONAL CHARTING DESK */
               <main>
