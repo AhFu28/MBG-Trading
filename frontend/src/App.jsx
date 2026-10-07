@@ -25,6 +25,8 @@ const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
 const ChartingDeskTab = lazy(() => import('./components/ChartingDeskTab.jsx'));
 const WhaleIntelligenceTab = lazy(() => import('./components/WhaleIntelligenceTab.jsx'));
 const CryptoFuturesTab = lazy(() => import('./components/CryptoFuturesTab.jsx'));
+const CryptoDeskTab = lazy(() => import('./components/CryptoDeskTab.jsx'));
+const StockDeskTab = lazy(() => import('./components/StockDeskTab.jsx'));
 const ForexCommandTab = lazy(() => import('./components/ForexCommandTab.jsx'));
 const USStockTab = lazy(() => import('./components/USStockTab.jsx'));
 const MarketHeatmapTab = lazy(() => import('./components/MarketHeatmapTab.jsx'));
@@ -998,16 +1000,18 @@ export default function App() {
               <main>
                 <WhaleIntelligenceTab data={data} onOpenChart={handleOpenSecurityHub} livePrices={livePrices} />
               </main>
-            ) : activeTab === 'FUTURES' ? (
-              /* v3.0 CRYPTO FUTURES INTELLIGENCE */
+            ) : activeTab === 'CRYPTO' || activeTab === 'FUTURES' ? (
+              /* UNIFIED CRYPTO DESK — perpetuals and spot in one place.
+                 Per request: "Crypto [futures dan spot dijadikan satu aja,
+                 beda di ticker aja kan]". The old FUTURES id still routes here
+                 so any bookmark or deep link keeps working. */
               <main>
-                <CryptoFuturesTab 
-                  data={data} 
-                  onOpenChart={handleOpenSecurityHub} 
-                  livePrices={livePrices} 
+                <CryptoDeskTab
+                  data={data}
+                  onOpenChart={handleOpenSecurityHub}
+                  livePrices={livePrices}
                   flashMap={flashMap}
                   allCryptoSpot={allCryptoSpot}
-                  onOpenSwap={() => setIsSwapModalOpen(true)}
                 />
               </main>
             ) : activeTab === 'SIGNALS' ? (
@@ -1082,10 +1086,21 @@ export default function App() {
               <main>
                 <ForexCommandTab data={data} onOpenChart={handleOpenSecurityHub} livePrices={livePrices} flashMap={flashMap} />
               </main>
-            ) : activeTab === 'US_STOCKS' ? (
-              /* v3.0 US STOCK INTELLIGENCE */
+            ) : activeTab === 'STOCK' || activeTab === 'US_STOCKS' ? (
+              /* UNIFIED STOCK DESK — IDX and US in one page with a market
+                 switcher, per request: "Stock [ada IDX dan US]". The old
+                 US_STOCKS id still routes here for existing deep links. */
               <main>
-                <USStockTab data={data} onOpenChart={handleOpenSecurityHub} livePrices={livePrices} flashMap={flashMap} />
+                <StockDeskTab
+                  data={data}
+                  livePrices={livePrices}
+                  flashMap={flashMap}
+                  allIdxStocks={allIdxStocks}
+                  allCryptoSpot={allCryptoSpot}
+                  onOpenChart={handleOpenSecurityHub}
+                  onOpenLotCalc={handleOpenLotCalc}
+                  onSelectNews={handleOpenNews}
+                />
               </main>
             ) : activeTab === 'HEATMAP' ? (
               /* v4.0 MARKET HEATMAP TREEMAP */

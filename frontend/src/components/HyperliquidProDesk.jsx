@@ -164,46 +164,71 @@ export default function HyperliquidProDesk({
   // Process Orderbook Data for Vertical Display
   const { processedAsks, processedBids, spreadVal, spreadPct, maxDepthCum } = useMemo(() => {
     if (!l2Depth || !l2Depth.bids || !l2Depth.asks) {
-      // Mock micro-structure if network fails
-      const p = markPrice;
+      // No live book yet: synthesize a symmetric ladder around the mark price so
+      // the column has a shape while the WebSocket connects.
+      //
+      // These levels MUST be numbers, not strings. The live branch below parses
+      // px/sz with parseFloat, and the render calls `.toFixed()` on them — a
+      // string here crashed the whole desk with "ask.px.toFixed is not a
+      // function" the moment the component rendered without a live book.
+      const p = Number(markPrice) || 0;
       const tick = p > 1000 ? 1 : 0.01;
       const b = [];
       const a = [];
+      let cumB = 0;
+      let cumA = 0;
       for (let i = 0; i < 7; i++) {
-        b.push({ px: (p - (i + 1) * tick).toFixed(2), sz: (1.5 + i * 0.8).toFixed(2) });
-        a.push({ px: (p + (i + 1) * tick).toFixed(2), sz: (1.2 + i * 0.9).toFixed(2) });
+        const szB = 1.5 + i * 0.8;
+        const szA = 1.2 + i * 0.9;
+        cumB += szB;
+        cumA += szA;
+        b.push({ px: p - (i + 1) * tick, sz: szB, cum: cumB });
+        a.push({ px: p + (i + 1) * tick, sz: szA, cum: cumA });
       }
       return {
         processedAsks: a.reverse(),
         processedBids: b,
         spreadVal: (tick * 2).toFixed(2),
         spreadPct: '0.02%',
-        maxDepthCum: 20
+        maxDepthCum: Math.max(cumA, cumB, 1),
       };
     }
 
     const rawAsks = (l2Depth.asks || []).slice(0, 8);
     const rawBids = (l2Depth.bids || []).slice(0, 8);
 
+    // Hyperliquid returns px/sz as STRINGS. parseFloat them, and drop any level
+    // that fails to parse rather than letting NaN reach `.toFixed()`.
     let cumAsk = 0;
-    const asksWithCum = rawAsks.map(lvl => {
-      const sz = parseFloat(lvl.sz) || 0;
-      cumAsk += sz;
-      return { px: parseFloat(lvl.px), sz, cum: cumAsk, n: lvl.n };
-    });
+    const asksWithCum = rawAsks
+      .map(lvl => {
+        const px = parseFloat(lvl.px);
+        const sz = parseFloat(lvl.sz) || 0;
+        if (!Number.isFinite(px)) return null;
+        cumAsk += sz;
+        return { px, sz, cum: cumAsk, n: lvl.n };
+      })
+      .filter(Boolean);
 
     let cumBid = 0;
-    const bidsWithCum = rawBids.map(lvl => {
-      const sz = parseFloat(lvl.sz) || 0;
-      cumBid += sz;
-      return { px: parseFloat(lvl.px), sz, cum: cumBid, n: lvl.n };
-    });
+    const bidsWithCum = rawBids
+      .map(lvl => {
+        const px = parseFloat(lvl.px);
+        const sz = parseFloat(lvl.sz) || 0;
+        if (!Number.isFinite(px)) return null;
+        cumBid += sz;
+        return { px, sz, cum: cumBid, n: lvl.n };
+      })
+      .filter(Boolean);
 
     const maxCum = Math.max(cumAsk, cumBid, 1);
-    const bestAsk = asksWithCum[0]?.px || markPrice;
-    const bestBid = bidsWithCum[0]?.px || markPrice;
+    // Guard the spread maths: an empty or fully-unparseable book must not
+    // produce NaN in the ribbon.
+    const safeMark = Number.isFinite(Number(markPrice)) ? Number(markPrice) : 0;
+    const bestAsk = asksWithCum[0]?.px || safeMark;
+    const bestBid = bidsWithCum[0]?.px || safeMark;
     const sp = Math.max(0.0001, bestAsk - bestBid);
-    const spP = ((sp / bestAsk) * 100).toFixed(3);
+    const spP = bestAsk > 0 ? ((sp / bestAsk) * 100).toFixed(3) : '0.000';
 
     // Asks are displayed top-to-bottom descending to spread
     const displayAsks = [...asksWithCum].reverse();

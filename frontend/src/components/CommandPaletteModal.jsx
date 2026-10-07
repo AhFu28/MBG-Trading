@@ -43,9 +43,9 @@ export default function CommandPaletteModal({
     { id: 'NEWS', label: 'Bloomberg Macro Wire & News', category: 'TABS', icon: '📰', desc: '4-Pilar intelligence, daily brief & Goldman Sachs barbell research' },
     { id: 'WHALES', label: 'Whale Intelligence Hub', category: 'TABS', icon: '🐋', desc: 'Analisis akumulasi bandar, foreign flow & tape antrean paus' },
     { id: 'HEATMAP', label: 'Market Heatmap Treemap', category: 'TABS', icon: '🗺️', desc: 'Peta visual performa saham BEI per sektor' },
-    { id: 'FUTURES', label: 'Crypto Futures', category: 'TABS', icon: '⚡', desc: 'Perpetual funding rates, open interest, long/short ratio & liquidations' },
-    { id: 'FOREX', label: 'Forex Command Center', category: 'TABS', icon: '💱', desc: 'Major interbank forex pairs & currency strength' },
-    { id: 'US_STOCKS', label: 'Wall Street US Equities', category: 'TABS', icon: '🏛️', desc: '31 Mega-cap US stocks, AI chip cycle & earnings' },
+    { id: 'CRYPTO', label: 'Crypto Desk (Perp & Spot)', category: 'TABS', icon: '⚡', desc: 'Perpetual funding rates, open interest, long/short ratio & daftar spot' },
+    { id: 'FOREX', label: 'Forex & Commodities', category: 'TABS', icon: '💱', desc: 'Major interbank forex pairs, emas & energi' },
+    { id: 'STOCK', label: 'Stock Desk (IDX & US)', category: 'TABS', icon: '🏛️', desc: 'Saham BEI dan mega-cap Wall Street dalam satu meja' },
     { id: 'WATCHLIST', label: 'Personal Watchlist', category: 'TABS', icon: '⭐', desc: 'Koleksi instrumen favorit bertanda bintang' },
     { id: 'CHANGELOG', label: 'Changelog & System History', category: 'TABS', icon: '📋', desc: 'Dokumentasi rilis dan riwayat evolusi platform' }
   ], []);
