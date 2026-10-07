@@ -41,6 +41,7 @@ export const MODULES = {
   FLOW_PROCESS: 'FLOW_PROCESS',
   WATCHLIST: 'WATCHLIST',
   SUBSCRIPTION: 'SUBSCRIPTION',
+  ADMIN_APPROVAL: 'ADMIN_APPROVAL',
 };
 
 /**
@@ -63,6 +64,7 @@ export const MODULE_TIER = {
   // Account management must never be locked — a paying customer has to be able
   // to see their own status and expiry.
   [MODULES.SUBSCRIPTION]: TIER.GUEST,
+  [MODULES.ADMIN_APPROVAL]: TIER.PRO,
 
   // --- Free account: a little more, still not enough to run a business ------
   [MODULES.NEWS]: TIER.FREE,

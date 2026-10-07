@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PLANS, TIER, limitsFor } from '../services/featureAccess.js';
 import { buildWhatsAppLink } from '../services/whatsappHandoff.js';
+import { submitPaymentConfirm } from '../services/accountClient.js';
 
 /**
  * SubscriptionPage — status langganan + cara upgrade.
@@ -52,6 +53,34 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
   const waConfirmLink = buildWhatsAppLink(
     `Halo Admin MBG Trading, saya ingin konfirmasi pembayaran langganan PRO.\n\nEmail akun: ${email}\nMohon diverifikasi & diaktifkan. Terima kasih!`
   );
+
+  const [form, setForm] = useState({
+    senderName: '',
+    paymentMethod: 'Transfer Bank BCA',
+    amount: '149000',
+    notes: '',
+    proofUrl: '',
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  const handleSubmitConfirm = async (e) => {
+    e.preventDefault();
+    setSubmitError('');
+    setSubmitting(true);
+    try {
+      await submitPaymentConfirm({
+        ...form,
+        email: email !== '—' ? email : undefined,
+      });
+      setSubmitSuccess(true);
+    } catch (err) {
+      setSubmitError(err.message || 'Gagal mengirim konfirmasi pembayaran.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const panel = {
     background: 'rgba(255,255,255,0.032)', border: '1px solid rgba(255,255,255,0.09)',
@@ -224,6 +253,163 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* FORMULIR KONFIRMASI PEMBAYARAN MANDIRI */}
+            <div style={{
+              marginTop: '18px',
+              padding: '16px 18px',
+              background: 'rgba(16,185,129,0.04)',
+              border: '1px solid rgba(16,185,129,0.25)',
+              borderRadius: '11px',
+            }}>
+              <div style={{ fontSize: '12.5px', fontWeight: '800', color: '#34d399', marginBottom: '6px' }}>
+                📝 Formulir Konfirmasi Pembayaran
+              </div>
+              <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 14px' }}>
+                Sudah transfer? Kirim data pembayaran Anda di bawah agar Admin langsung mengaktifkan akun VIP Anda.
+              </p>
+
+              {submitSuccess ? (
+                <div style={{
+                  padding: '12px 14px',
+                  background: 'rgba(16,185,129,0.15)',
+                  border: '1px solid rgba(16,185,129,0.4)',
+                  borderRadius: '8px',
+                  color: '#34d399',
+                  fontSize: '12px',
+                  lineHeight: 1.6,
+                }}>
+                  ✅ <strong>Konfirmasi Berhasil Terkirim!</strong><br />
+                  Data pembayaran Anda telah masuk ke sistem antrean Admin (Jendral Arib & Kamerad Fuad). Akun Anda akan aktif otomatis dalam 5-15 menit setelah mutasi diverifikasi.
+                </div>
+              ) : (
+                <form onSubmit={handleSubmitConfirm} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {submitError && (
+                    <div style={{
+                      padding: '8px 12px', background: 'rgba(239,68,68,0.15)',
+                      border: '1px solid rgba(239,68,68,0.3)', borderRadius: '6px',
+                      color: '#f87171', fontSize: '11px',
+                    }}>
+                      {submitError}
+                    </div>
+                  )}
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                        NAMA PEMILIK REKENING / PENGIRIM *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Misal: Budi Santoso"
+                        value={form.senderName}
+                        onChange={(e) => setForm({ ...form, senderName: e.target.value })}
+                        style={{
+                          width: '100%', padding: '8px 10px', background: 'rgba(0,0,0,0.3)',
+                          border: '1px solid rgba(255,255,255,0.15)', borderRadius: '7px',
+                          color: '#f8fafc', fontSize: '11.5px', boxSizing: 'border-box',
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                        METODE PEMBAYARAN *
+                      </label>
+                      <select
+                        value={form.paymentMethod}
+                        onChange={(e) => setForm({ ...form, paymentMethod: e.target.value })}
+                        style={{
+                          width: '100%', padding: '8px 10px', background: 'rgba(20,25,40,0.9)',
+                          border: '1px solid rgba(255,255,255,0.15)', borderRadius: '7px',
+                          color: '#f8fafc', fontSize: '11.5px', boxSizing: 'border-box',
+                        }}
+                      >
+                        <option value="Transfer Bank BCA">Transfer Bank BCA</option>
+                        <option value="Transfer Bank Mandiri">Transfer Bank Mandiri</option>
+                        <option value="Transfer Bank BRI">Transfer Bank BRI</option>
+                        <option value="Transfer Bank BNI">Transfer Bank BNI</option>
+                        <option value="QRIS / GoPay / OVO / Dana">QRIS / GoPay / OVO / Dana</option>
+                        <option value="Lainnya">Lainnya</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                        NOMINAL TRANSFER (RP) *
+                      </label>
+                      <input
+                        type="number"
+                        required
+                        value={form.amount}
+                        onChange={(e) => setForm({ ...form, amount: e.target.value })}
+                        style={{
+                          width: '100%', padding: '8px 10px', background: 'rgba(0,0,0,0.3)',
+                          border: '1px solid rgba(255,255,255,0.15)', borderRadius: '7px',
+                          color: '#34d399', fontWeight: '700', fontSize: '11.5px', boxSizing: 'border-box',
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                        LINK BUKTI TRANSFER (OPSIONAL)
+                      </label>
+                      <input
+                        type="url"
+                        placeholder="Link GDrive / Imgur (jika ada)"
+                        value={form.proofUrl}
+                        onChange={(e) => setForm({ ...form, proofUrl: e.target.value })}
+                        style={{
+                          width: '100%', padding: '8px 10px', background: 'rgba(0,0,0,0.3)',
+                          border: '1px solid rgba(255,255,255,0.15)', borderRadius: '7px',
+                          color: '#f8fafc', fontSize: '11.5px', boxSizing: 'border-box',
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                      NOMOR REFERENSI / CATATAN
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: No Ref 123456 / transfer jam 14:30"
+                      value={form.notes}
+                      onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                      style={{
+                        width: '100%', padding: '8px 10px', background: 'rgba(0,0,0,0.3)',
+                        border: '1px solid rgba(255,255,255,0.15)', borderRadius: '7px',
+                        color: '#f8fafc', fontSize: '11.5px', boxSizing: 'border-box',
+                      }}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    style={{
+                      marginTop: '6px',
+                      padding: '10px 18px',
+                      borderRadius: '8px',
+                      background: 'linear-gradient(135deg, #10b981, #059669)',
+                      border: 'none',
+                      color: '#042f2e',
+                      fontSize: '12px',
+                      fontWeight: '800',
+                      cursor: 'pointer',
+                      alignSelf: 'flex-start',
+                    }}
+                  >
+                    {submitting ? 'Mengirim Data...' : '🚀 Kirim Konfirmasi Pembayaran'}
+                  </button>
+                </form>
+              )}
             </div>
 
             {/* Direct WhatsApp confirmation link for manual payment */}

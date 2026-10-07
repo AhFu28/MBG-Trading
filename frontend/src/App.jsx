@@ -36,6 +36,7 @@ const AiIntelligenceDrawer = lazy(() => import('./components/AiIntelligenceDrawe
 const SignalsTab = lazy(() => import('./components/SignalsTab.jsx'));
 const LandingPage = lazy(() => import('./components/LandingPage.jsx'));
 const SubscriptionPage = lazy(() => import('./components/SubscriptionPage.jsx'));
+const AdminApprovalDesk = lazy(() => import('./components/AdminApprovalDesk.jsx'));
 
 const isIdxMarketOpen = () => {
   const now = new Date();
@@ -447,6 +448,7 @@ export default function App() {
       case 'RADAR': return '🎯 Early Signal Radar — Deteksi Dini';
       case 'SIGNALS': return '📡 Sinyal Trading — Entry, SL & TP';
       case 'SUBSCRIPTION': return '👑 Akun & Langganan';
+      case 'ADMIN_APPROVAL': return '⚡ Admin Approval Desk';
       case 'FOREX': return '💱 Forex Command Center';
       case 'US_STOCKS': return '🇺🇸 US Stock Intelligence';
       case 'FLOW_PROCESS': return '⚡ Flow Process & System Architecture';
@@ -518,6 +520,7 @@ export default function App() {
           newsCount={(data?.macro_telemetry?.live_news || []).length}
           livePrices={livePrices}
           flashMap={flashMap}
+          account={account}
           onSelectTicker={handleOpenSecurityHub}
           onOpenAiSentinel={() => setActiveTab('AI_SENTINEL')}
           onOpenDataIntegrity={() => setIsIntegrityOpen(true)}
@@ -977,6 +980,14 @@ export default function App() {
                   account={account || {}}
                   onRefresh={refreshAccount}
                   onLogout={async () => { await logOut(); setAccount({ authenticated: false, tier: 'guest' }); }}
+                />
+              </main>
+            ) : activeTab === 'ADMIN_APPROVAL' ? (
+              /* ADMIN APPROVAL DESK — instant 1-click subscription management */
+              <main>
+                <AdminApprovalDesk
+                  account={account || {}}
+                  onRefreshUser={refreshAccount}
                 />
               </main>
             ) : !canAccess(activeTab, userTier) ? (

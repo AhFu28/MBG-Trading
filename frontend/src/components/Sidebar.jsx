@@ -83,6 +83,7 @@ export default function Sidebar({
   newsCount = 0,
   livePrices = {},
   flashMap = {},
+  account = {},
   onSelectTicker,
   onOpenAiSentinel,
   onOpenDataIntegrity
@@ -102,6 +103,7 @@ export default function Sidebar({
     if (id === 'STOCK') return stockCount > 0 ? stockCount : null;
     if (id === 'CRYPTO') return cryptoCount > 0 ? cryptoCount : null;
     if (id === 'NEWS') return newsCount > 0 ? newsCount : null;
+    if (id === 'ADMIN_APPROVAL') return 'ADMIN';
     return null;
   };
 
@@ -163,7 +165,14 @@ export default function Sidebar({
 
         {/* Section 1: Command Center & Markets */}
         {SECTIONS.map(section => {
-          const items = PRIMARY_NAV_ITEMS.filter(n => n.section === section);
+          const isAdmin = !!account?.isAdmin || ['naufalarib60@gmail.com', 'ahmfuadi28@gmail.com'].includes(String(account?.email || '').toLowerCase());
+          let items = PRIMARY_NAV_ITEMS.filter(n => n.section === section);
+          if (section === 'ACCOUNT' && isAdmin) {
+            items = [
+              ...items,
+              { id: 'ADMIN_APPROVAL', icon: '⚡', label: 'Admin Approval Desk', section: 'ACCOUNT' }
+            ];
+          }
           return (
             <div key={section} style={{ marginBottom: '2px' }}>
               <div className="sidebar-nav-section-label">{section}</div>

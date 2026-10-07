@@ -162,13 +162,18 @@ export async function onRequestGet(context) {
   }
 
   // ---- 1. Supabase REST (live path) -------------------------------------
-  // resolveSupabaseConfig prefers the environment and falls back to the
-  // committed publishable coordinates, so this path works before the owner has
-  // set anything. The bundled snapshot below still answers if it does not.
+  // Only attempt live Supabase fetch if Supabase credentials are provided in
+  // env. When env is unset, fall through to edge KV and the bundled snapshot.
+  const hasSupabaseInEnv = Boolean(
+    env.SUPABASE_URL ||
+    env.SUPABASE_KEY ||
+    env.SUPABASE_ANON_KEY ||
+    env.SUPABASE_PUBLISHABLE_KEY
+  );
   const { url: supabaseUrl, key: supabaseKey, ready: supabaseReady } =
     resolveSupabaseConfig(env);
 
-  if (supabaseReady) {
+  if (hasSupabaseInEnv && supabaseReady) {
     try {
       const restEndpoint = `${supabaseUrl}/rest/v1/system_state?key=eq.LATEST_COCKPIT_BUNDLE&select=val,updated_at`;
       const sResp = await fetch(restEndpoint, {

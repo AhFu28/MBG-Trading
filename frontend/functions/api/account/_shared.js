@@ -24,6 +24,18 @@
 import { verifyJWT, supabaseAuthHeaders } from '../_jwt.js';
 import { resolveSupabaseConfig } from '../_supabaseProject.js';
 
+export { supabaseAuthHeaders };
+
+export function corsHeaders(request) {
+  const origin = request?.headers?.get ? (request.headers.get('Origin') || '*') : '*';
+  return {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Credentials': 'true',
+  };
+}
+
 export const SESSION_COOKIE = 'mbg_session';
 export const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
@@ -171,6 +183,7 @@ export function resolveEntitlement(profile) {
     expired: rawTier === 'pro' && lapsed,
     email: profile.email || null,
     displayName: profile.display_name || null,
+    isAdmin: isAdmin(profile.email),
   };
 }
 
@@ -246,3 +259,15 @@ export function translateAuthError(payload, fallback) {
   }
   return fallback;
 }
+
+/** Authorized administrators for subscription approvals and governance. */
+export const ADMIN_EMAILS = [
+  'naufalarib60@gmail.com',
+  'ahmfuadi28@gmail.com',
+];
+
+export function isAdmin(email) {
+  if (!email) return false;
+  return ADMIN_EMAILS.includes(String(email).trim().toLowerCase());
+}
+

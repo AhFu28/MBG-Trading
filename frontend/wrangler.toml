@@ -1,0 +1,8 @@
+name = "mbg-trading"
+pages_build_output_dir = "dist"
+compatibility_date = "2024-09-23"
+
+[vars]
+SUPABASE_URL = "https://wxmbqfjdyfqqjykkrkpj.supabase.co"
+SUPABASE_ANON_KEY = "sb_publishable_9uPUXh0B8QVhOyeJC9TgFw_6Ahs-Hq6"
+JWT_SECRET = "mbg_apex_jwt_secret_9uPUXh0B8QVhOyeJC9TgFw_6Ahs_key_production_2026_secured"

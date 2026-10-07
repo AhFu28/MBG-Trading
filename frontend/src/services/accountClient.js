@@ -56,11 +56,12 @@ export async function fetchMe() {
       expiresAt: body?.expiresAt || null,
       daysLeft: body?.daysLeft ?? null,
       expired: !!body?.expired,
+      isAdmin: !!body?.isAdmin,
       configured: body?.configured !== false,
     };
   } catch {
     // Network failure or a 5xx. Treat as guest so the landing page still works.
-    return { authenticated: false, tier: 'guest', isPro: false, configured: false, offline: true };
+    return { authenticated: false, tier: 'guest', isPro: false, isAdmin: false, configured: false, offline: true };
   }
 }
 
@@ -85,6 +86,35 @@ export async function logOut() {
     // Logging out locally must always succeed from the user's point of view.
     return { ok: true };
   }
+}
+
+/** Submit manual payment confirmation */
+export async function submitPaymentConfirm({ senderName, paymentMethod, amount, notes, proofUrl, email }) {
+  return call('/payment-confirm', {
+    method: 'POST',
+    body: JSON.stringify({ senderName, paymentMethod, amount, notes, proofUrl, email }),
+  });
+}
+
+/** Admin: Fetch pending subscription payment requests */
+export async function fetchAdminRequests() {
+  return call('/admin/requests', { method: 'GET' });
+}
+
+/** Admin: Approve subscription in 1 click */
+export async function approveSubscription({ requestId, email, days = 30, note = '' }) {
+  return call('/admin/approve', {
+    method: 'POST',
+    body: JSON.stringify({ requestId, email, days, note }),
+  });
+}
+
+/** Admin: Reject subscription request */
+export async function rejectSubscription({ requestId, reason = '' }) {
+  return call('/admin/reject', {
+    method: 'POST',
+    body: JSON.stringify({ requestId, reason }),
+  });
 }
 
 /**

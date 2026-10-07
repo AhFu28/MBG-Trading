@@ -213,3 +213,30 @@ select
   rowsecurity as rls_aktif
 from pg_tables
 where schemaname = 'public' and tablename = 'profiles';
+
+-- ====================================================================
+-- TABEL: subscription_requests (Konfirmasi Pembayaran Manual)
+-- ====================================================================
+create table if not exists public.subscription_requests (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid references auth.users(id) on delete set null,
+    email text not null,
+    sender_name text not null,
+    payment_method text not null,
+    amount numeric not null default 149000,
+    proof_url text,
+    notes text,
+    status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+    reviewed_by text,
+    reviewed_at timestamptz,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+create index if not exists idx_sub_requests_status on public.subscription_requests(status);
+create index if not exists idx_sub_requests_email on public.subscription_requests(email);
+create index if not exists idx_sub_requests_created_at on public.subscription_requests(created_at desc);
+
+alter table public.subscription_requests enable row level security;
+grant select, insert, update on table public.subscription_requests to anon, authenticated, service_role;
+
