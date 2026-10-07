@@ -380,10 +380,21 @@ export default function HomeDashboardTab({
       <BloombergNewsWire macro={macro} bundle={data} livePrices={livePrices} onSelectTicker={onSelectTicker} onSelectNews={onSelectNews} />
 
       {/* =========================================================================
+          UNIFIED SPLIT: HERO + COCKPIT STACK (LEFT) & LIVE INTELLIGENCE WIRE (RIGHT)
+          The wire starts level with Portfolio Net Valuation and runs down to just
+          above the TACTICAL QUANTITATIVE EXECUTION MATRIX (plan P-1b).
+          ========================================================================= */}
+      <div className="home-middle-cockpit-split">
+
+        {/* LEFT COLUMN: HERO + COCKPIT STACK */}
+        <div className="home-cockpit-left">
+
+
+      {/* =========================================================================
           DRIBBBLE-STYLE CRYPTO & MULTI-ASSET PORTFOLIO ANALYTICS HERO
           Sleek Glassmorphic Bento HUD: Net Valuation, 24h Alpha, Quick Actions & Macro Stats
           ========================================================================= */}
-      <div className="telemetry-panel" style={{
+      <div className="telemetry-panel home-hero-grid" style={{
         background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.88) 0%, rgba(24, 33, 53, 0.72) 100%)',
         border: '1px solid rgba(255, 255, 255, 0.08)',
         borderRadius: '16px',
@@ -391,10 +402,6 @@ export default function HomeDashboardTab({
         boxShadow: 'var(--shadow-md)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        display: 'grid',
-        gridTemplateColumns: 'minmax(320px, 1.2fr) minmax(360px, 1.8fr)',
-        gap: '20px',
-        alignItems: 'center',
         boxSizing: 'border-box'
       }}>
         {/* Left: Portfolio Valuation & Quick Trade Actions */}
@@ -662,15 +669,6 @@ export default function HomeDashboardTab({
         </div>
       </div>
 
-      {/* =========================================================================
-          UNIFIED SPLIT: COCKPIT STACK (LEFT) & LIVE INTELLIGENCE WIRE (RIGHT)
-          News Wire starts from the top (level with Barometer Likuiditas & Portfolio Risk)
-          down through Smart Money Order Flow & Bandarmology Radar!
-          ========================================================================= */}
-      <div className="home-middle-cockpit-split">
-
-        {/* LEFT COLUMN: COCKPIT STACK */}
-        <div className="home-cockpit-left">
 
           {/* SUB-ROW 1: COMPACT MACRO TRIO GRID (Barometer Likuiditas + Portfolio Risk + 4 Visual Gauges) */}
           <div className="home-macro-trio-grid">

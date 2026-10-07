@@ -1521,6 +1521,21 @@ body[data-theme="dark"],
   flex-shrink: 0;
 }
 
+.home-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.2fr) minmax(360px, 1.8fr);
+  gap: 20px;
+  align-items: center;
+}
+
+/* P-1b: the hero sits in the narrowed left column next to the wire - stack its
+   internal grid when the column gets tighter (viewport ~1200px and below). */
+@media (max-width: 1360px) {
+  .home-hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 820px) {
   .home-middle-cockpit-split {
     grid-template-columns: 1fr !important;
