@@ -5,14 +5,6 @@ import CryptoIcon from './CryptoIcon.jsx';
 import { formatNewsDateTime } from './newsHelpers.js';
 import { institutionalPaperBroker } from '../services/brokerGateway.js';
 
-const LQ45_TICKERS = new Set([
-  'BBCA', 'BBRI', 'BMRI', 'BBNI', 'ASII', 'TLKM', 'AMMN', 'BREN', 'CUAN', 'ADRO',
-  'ANTM', 'PTBA', 'BRMS', 'MEDC', 'PGAS', 'UNTR', 'CPIN', 'ICBP', 'INDF', 'KLBF',
-  'MAPI', 'ACES', 'EXCL', 'ISAT', 'BRPT', 'TPIA', 'MDKA', 'MBMA', 'GOTO', 'AKRA',
-  'BUMI', 'HRUM', 'ITMG', 'INCO', 'PGEO', 'SMGR', 'INTP', 'CTRA', 'BSDE', 'PWON',
-  'SMRA', 'BBTN', 'BDMN', 'BRIS', 'UNVR'
-]);
-
 // Helper: Format IDR Flow
 function formatFlowIdr(val) {
   if (val === undefined || val === null || isNaN(val)) return 'Rp 0';
@@ -101,7 +93,6 @@ export default function HomeDashboardTab({
   const [newsFilter, setNewsFilter] = useState('ALL');
   const [newsSearch, setNewsSearch] = useState('');
   const [newsViewMode, setNewsViewMode] = useState('scroll');
-  const [flowScope, setFlowScope] = useState('ALL_100');
   const [matrixViewMode, setMatrixViewMode] = useState('3col');
   const [showLaymanGuide, setShowLaymanGuide] = useState(false);
   const [dismissDefenseAlert, setDismissDefenseAlert] = useState(false);
@@ -352,9 +343,7 @@ export default function HomeDashboardTab({
     }
 
     const allStocksArray = Array.from(poolMap.values());
-    const scopedList = flowScope === 'LQ45'
-      ? allStocksArray.filter(s => LQ45_TICKERS.has(s.ticker))
-      : allStocksArray;
+    const scopedList = allStocksArray;
 
     const inflows = scopedList
       .filter(f => (Number(f.foreign_net_val_idr) || 0) > 0)
@@ -376,22 +365,7 @@ export default function HomeDashboardTab({
         ? Number(foreignFlow.summary.net_today_idr) 
         : netSum
     };
-  }, [foreignFlow, data, allIdxStocks, livePrices, flowScope]);
-
-  // Robust Broker Accumulation
-  const accumulatingBrokers = useMemo(() => {
-    const list = Object.values(brokerSummary)
-      .filter(b => b.bandar_accumulation_grade === 'BIG_ACCUMULATION' || b.bandar_accumulation_grade === 'ACCUMULATION' || (b.top_buyers && b.top_buyers.length > 0))
-      .sort((a, b) => ((b.top_buyers?.[0]?.lots || 0) * (b.bandar_avg_price || b.ref_price || 0)) - ((a.top_buyers?.[0]?.lots || 0) * (a.bandar_avg_price || a.ref_price || 0)))
-      .slice(0, 6);
-    return list;
-  }, [brokerSummary]);
-
-  const totalBandarAccumValue = accumulatingBrokers.reduce((acc, b) => {
-    const topB = b.top_buyers?.[0];
-    const val = Number(topB?.value_idr) || ((topB?.lots || 0) * 100 * Number(b.bandar_avg_price || b.ref_price || 0));
-    return acc + (isNaN(val) ? 0 : val);
-  }, 0);
+  }, [foreignFlow, data, allIdxStocks, livePrices]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', boxSizing: 'border-box' }}>
@@ -1236,310 +1210,6 @@ export default function HomeDashboardTab({
 
           </div>
 
-          {/* SUB-ROW 3: SMART MONEY ORDER FLOW & BANDARMOLOGY RADAR (Zero Bottom Waste, Clean Flush) */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '4px',
-            minWidth: 0,
-            flex: '1 1 0',
-            minHeight: 0,
-            boxSizing: 'border-box'
-          }}>
-
-            {/* Header Bar */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '4px 8px',
-              background: 'var(--bg-panel)',
-              borderRadius: '4px',
-              border: 'var(--border-hairline)',
-              fontSize: '9.5px',
-              fontFamily: 'var(--font-mono)',
-              flexShrink: 0
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                <span>🌊</span>
-                <strong style={{ color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
-                  SMART MONEY ORDER FLOW &amp; BANDARMOLOGY RADAR
-                </strong>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>
-                  L2 DEPTH FRAKSI SYNC
-                </span>
-              </div>
-            </div>
-
-            {/* 2-Column Grid: Foreign Flow (Left) & Bandar Accumulation (Right) */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-              gap: '6px',
-              flex: '1 1 0',
-              minHeight: 0
-            }}>
-
-              {/* Sub-Panel 1: Foreign Flow (Intraday) */}
-              <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <div className="telemetry-header" style={{ padding: '4px 8px', fontSize: '9.5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span>🌐</span>
-                    <span style={{ fontWeight: '800' }}>FOREIGN FLOW (INTRADAY)</span>
-                    <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.3)', borderRadius: '3px', padding: '1px', border: 'var(--border-hairline)' }}>
-                      <button 
-                        onClick={() => setFlowScope('ALL_100')}
-                        style={{ 
-                          background: flowScope === 'ALL_100' ? 'var(--accent-blue)' : 'transparent', 
-                          color: flowScope === 'ALL_100' ? '#fff' : 'var(--text-muted)',
-                          border: 'none', 
-                          borderRadius: '2px', 
-                          fontSize: '7.5px', 
-                          padding: '1px 4px',
-                          cursor: 'pointer',
-                          fontWeight: '800'
-                        }}
-                      >
-                        IDX 100
-                      </button>
-                      <button 
-                        onClick={() => setFlowScope('LQ45')}
-                        style={{ 
-                          background: flowScope === 'LQ45' ? 'var(--accent-blue)' : 'transparent', 
-                          color: flowScope === 'LQ45' ? '#fff' : 'var(--text-muted)',
-                          border: 'none', 
-                          borderRadius: '2px', 
-                          fontSize: '7.5px', 
-                          padding: '1px 4px',
-                          cursor: 'pointer',
-                          fontWeight: '800'
-                        }}
-                      >
-                        LQ45
-                      </button>
-                    </div>
-                  </div>
-
-                  <span className={`badge ${totalNetForeign >= 0 ? 'badge-bull' : 'badge-bear'}`} style={{ fontSize: '8px', padding: '1px 5px', fontWeight: '800' }}>
-                    {totalNetForeign >= 0 ? 'NET BUY ' : 'NET SELL '}
-                    {formatFlowIdr(totalNetForeign)}
-                  </span>
-                </div>
-
-                {/* Dense Inflow vs Outflow List */}
-                <div style={{ padding: '4px 6px', flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  <div className="home-flow-columns" style={{ gap: '6px' }}>
-                    
-                    {/* Inflow Column */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                      <div style={{ fontSize: '8px', fontWeight: '800', color: 'var(--accent-green)', textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
-                        <span>▲ TOP INFLOW</span>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '7.5px' }}>NET BUY</span>
-                      </div>
-                      {topInflow.map(f => {
-                        const live = livePrices[f.ticker] || livePrices[`IDX:${f.ticker}`];
-                        const px = live?.price !== undefined ? live.price : (f.price || 0);
-                        const chg = live?.changePct !== undefined ? live.changePct : (f.change_pct || 0);
-                        const isFlash = flashMap[f.ticker];
-
-                        return (
-                          <div key={f.ticker} style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            fontSize: '8.5px',
-                            fontFamily: 'var(--font-mono)',
-                            padding: '2.5px 4px',
-                            background: 'rgba(0, 208, 132, 0.04)',
-                            borderRadius: '2px',
-                            border: '1px solid rgba(0, 208, 132, 0.1)'
-                          }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '3px', minWidth: 0 }}>
-                              <AssetIcon symbol={f.ticker} market="IDX" size={12} />
-                              <span style={{ color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: '800' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>
-                                ${f.ticker}
-                              </span>
-                              {px > 0 && (
-                                <span style={{ fontSize: '7.5px', color: isFlash === 'up' ? 'var(--accent-green)' : isFlash === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)' }}>
-                                  {Number(px).toLocaleString()}
-                                </span>
-                              )}
-                            </div>
-                            <div style={{ textAlign: 'right' }}>
-                              <strong style={{ color: 'var(--accent-green)', fontSize: '8px' }}>{formatFlowIdr(f.foreign_net_val_idr)}</strong>
-                              {chg !== 0 && (
-                                <span style={{ fontSize: '7px', color: chg >= 0 ? '#34d399' : '#f87171', marginLeft: '3px' }}>
-                                  {chg >= 0 ? '+' : ''}{Number(chg).toFixed(1)}%
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Outflow Column */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                      <div style={{ fontSize: '8px', fontWeight: '800', color: 'var(--accent-rust)', textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
-                        <span>▼ TOP OUTFLOW</span>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '7.5px' }}>NET SELL</span>
-                      </div>
-                      {topOutflow.map(f => {
-                        const live = livePrices[f.ticker] || livePrices[`IDX:${f.ticker}`];
-                        const px = live?.price !== undefined ? live.price : (f.price || 0);
-                        const chg = live?.changePct !== undefined ? live.changePct : (f.change_pct || 0);
-                        const isFlash = flashMap[f.ticker];
-
-                        return (
-                          <div key={f.ticker} style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            fontSize: '8.5px',
-                            fontFamily: 'var(--font-mono)',
-                            padding: '2.5px 4px',
-                            background: 'rgba(239, 68, 68, 0.04)',
-                            borderRadius: '2px',
-                            border: '1px solid rgba(239, 68, 68, 0.1)'
-                          }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '3px', minWidth: 0 }}>
-                              <AssetIcon symbol={f.ticker} market="IDX" size={12} />
-                              <span style={{ color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: '800' }} onClick={() => onSelectTicker(f.ticker, 'IDX')}>
-                                ${f.ticker}
-                              </span>
-                              {px > 0 && (
-                                <span style={{ fontSize: '7.5px', color: isFlash === 'up' ? 'var(--accent-green)' : isFlash === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)' }}>
-                                  {Number(px).toLocaleString()}
-                                </span>
-                              )}
-                            </div>
-                            <div style={{ textAlign: 'right' }}>
-                              <strong style={{ color: 'var(--accent-rust)', fontSize: '8px' }}>{formatFlowIdr(f.foreign_net_val_idr)}</strong>
-                              {chg !== 0 && (
-                                <span style={{ fontSize: '7px', color: chg >= 0 ? '#34d399' : '#f87171', marginLeft: '3px' }}>
-                                  {chg >= 0 ? '+' : ''}{Number(chg).toFixed(1)}%
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                  </div>
-                </div>
-
-                {/* Telemetry Footer */}
-                <div style={{ padding: '4px 6px', borderTop: 'var(--border-muted)', fontSize: '8px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'var(--bg-panel-subtle)', flexShrink: 0, marginTop: 'auto' }}>
-                  <span>Scope: <strong style={{ color: 'var(--accent-blue)' }}>{flowScope === 'LQ45' ? 'LQ45' : 'IDX 100'}</strong></span>
-                  <span>Participation: <strong style={{ color: '#34d399' }}>34.8%</strong></span>
-                  <span>Flow Velocity: <strong style={{ color: '#60a5fa' }}>+0.8σ Acc</strong></span>
-                </div>
-              </div>
-
-              {/* Sub-Panel 2: Bandarmology (EOD) */}
-              <div className="telemetry-panel" style={{ border: 'var(--border-hairline)', padding: '0', display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <div className="telemetry-header" style={{ padding: '4px 8px', fontSize: '9.5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span>📊</span>
-                    <span style={{ fontWeight: '800' }}>SMART MONEY ACCUMULATION</span>
-                    <span style={{ fontSize: '7px', background: 'rgba(56, 189, 248, 0.12)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.28)', padding: '1px 4px', borderRadius: '2px', fontWeight: '800' }} title="Estimasi pemodelan quant institutional flow (bukan feed berbayar IDX)">
-                      EST. QUANT
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span style={{ fontSize: '7.5px', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', padding: '1px 4px', borderRadius: '2px', fontWeight: '800' }}>
-                      🕒 EOD
-                    </span>
-                    <span style={{ fontSize: '8px', color: 'var(--accent-blue)', fontWeight: '800' }}>
-                      CR3: 68.4%
-                    </span>
-                  </div>
-                </div>
-
-                {/* Dense Broker Accumulation Items */}
-                <div style={{ padding: '4px 6px', flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                  {accumulatingBrokers.slice(0, 5).map((b, idx) => {
-                    const topB = b.top_buyers?.[0];
-                    const rawBroker = topB?.broker || 'CC';
-                    const isSimulated = rawBroker.includes('[SIMULATED]');
-                    const cleanBroker = rawBroker.replace('[SIMULATED] ', '').trim();
-                    const brokerName = topB?.name ? topB.name.split(' ')[0] : 'Mandiri';
-                    const lotsK = topB?.lots ? Math.round(topB.lots / 1000).toLocaleString() + 'k lot' : '38k lot';
-                    const ticker = b.ticker || b.symbol || 'AMMN';
-                    const live = livePrices[ticker] || livePrices[`IDX:${ticker}`];
-                    const livePx = live?.price !== undefined ? Number(live.price) : Number(b.ref_price || 4870);
-                    const bandarAvg = Number(b.bandar_avg_price || b.ref_price || 4874);
-                    const spreadPct = bandarAvg > 0 ? ((livePx - bandarAvg) / bandarAvg) * 100 : 0;
-
-                    return (
-                      <div
-                        key={ticker + idx}
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          padding: '3px 5px',
-                          background: 'var(--bg-panel-subtle)',
-                          borderRadius: '2px',
-                          border: 'var(--border-hairline)',
-                          fontSize: '8.5px',
-                          fontFamily: 'var(--font-mono)'
-                        }}
-                      >
-                        {/* Ticker Logo & Bandar Avg Price */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <AssetIcon symbol={ticker} market="IDX" size={12} />
-                          <span
-                            style={{ fontWeight: '800', color: 'var(--accent-blue)', cursor: 'pointer', fontSize: '9px' }}
-                            onClick={() => onSelectTicker(ticker, 'IDX')}
-                          >
-                            {ticker}
-                          </span>
-                          <span style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>
-                            Avg: <strong style={{ color: 'var(--text-primary)' }}>{bandarAvg.toLocaleString()}</strong>
-                          </span>
-                          <span style={{
-                            fontSize: '7.5px',
-                            color: spreadPct <= 0 ? 'var(--accent-green)' : 'var(--text-secondary)',
-                            background: spreadPct <= 0 ? 'rgba(0, 208, 132, 0.12)' : 'transparent',
-                            padding: '0 3px',
-                            borderRadius: '2px',
-                            fontWeight: 700
-                          }}>
-                            {spreadPct <= 0 ? `${spreadPct.toFixed(1)}% (Discount)` : `+${spreadPct.toFixed(1)}%`}
-                          </span>
-                        </div>
-
-                        {/* Broker Details & Big Acc Badge */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <span style={{ fontSize: '7.5px', color: 'var(--text-secondary)', fontWeight: '700' }}>
-                            <strong style={{ color: '#60a5fa' }}>{cleanBroker}</strong>
-                            {isSimulated && <span style={{ fontSize: '7px', color: '#fbbf24', marginLeft: '2px' }} title="Estimasi pemodelan quant">[EST]</span>}
-                            <span style={{ color: 'var(--text-muted)' }}> ({brokerName} • {lotsK})</span>
-                          </span>
-                          <span className="badge badge-bull" style={{ fontSize: '7px', padding: '0 3px', fontWeight: '800' }}>
-                            BIG ACC
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Telemetry Footer */}
-                <div style={{ padding: '4px 6px', borderTop: 'var(--border-muted)', fontSize: '8px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', background: 'var(--bg-panel-subtle)', flexShrink: 0, marginTop: 'auto' }}>
-                  <span>Total Accum: <strong style={{ color: 'var(--accent-green)' }}>{formatFlowIdr(totalBandarAccumValue || 83030000000000)}</strong></span>
-                  <span>Model: <strong style={{ color: '#38bdf8' }}>ESTIMASI QUANT (EOD)</strong></span>
-                  <span>Horizon: <strong style={{ color: '#fbbf24' }}>5D Swing</strong></span>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
 
         </div>
 
