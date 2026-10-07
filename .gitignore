@@ -63,3 +63,6 @@ engine/config/vip_subscribers.json
 wa_auth/
 engine/config/wa_auth/
 
+# HF daemon local runtime state - never commit
+deploy/huggingface/data/
+
