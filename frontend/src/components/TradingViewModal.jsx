@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { getTvSymbol } from '../data/tv-helpers.js';
+import HyperliquidProDesk from './HyperliquidProDesk.jsx';
 
 export default function TradingViewModal({ initialSymbol, market = 'IDX', onClose }) {
   const containerRef = useRef(null);
@@ -8,11 +9,12 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
   const isCryptoSymbol = (sym, mkt) => {
     if (mkt === 'CRYPTO') return true;
     const clean = (sym || '').replace('.JK', '').replace('/', '').toUpperCase();
-    return clean.endsWith('USDT') || clean.startsWith('BTC') || clean.startsWith('ETH') || clean.startsWith('SOL');
+    return clean.endsWith('USDT') || clean.endsWith('USDC') || clean.startsWith('BTC') || clean.startsWith('ETH') || clean.startsWith('SOL') || clean.startsWith('HYPE');
   };
 
   const initialIsCrypto = isCryptoSymbol(initialSymbol, market);
-  const [currentSymbol, setCurrentSymbol] = useState(initialSymbol || 'BBCA');
+  const [modalMode, setModalMode] = useState('PRO'); // 'PRO' (Hyperliquid Pro Desk) | 'STANDARD'
+  const [currentSymbol, setCurrentSymbol] = useState(initialSymbol || (initialIsCrypto ? 'ETHUSDT' : 'BBCA'));
   const [searchInput, setSearchInput] = useState('');
   // Default to 'D' (Day) for IDX stocks because TradingView free IDX feed only supports D, W, M.
   const [chartInterval, setChartInterval] = useState(initialIsCrypto ? '15' : 'D');
@@ -28,6 +30,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
   }, [currentSymbol, market, isCurrentCrypto]);
 
   useEffect(() => {
+    if (modalMode !== 'STANDARD') return;
     const tvSymbol = getTvSymbol(currentSymbol, market);
     
     // Clear previous widget
@@ -52,6 +55,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
       hide_top_toolbar: false,
       hide_legend: false,
       save_image: true,
+      backgroundColor: '#0a0d14',
       studies: [
         "MASimple@tv-basicstudies",
         "RSI@tv-basicstudies",
@@ -75,7 +79,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
         containerRef.current.innerHTML = '';
       }
     };
-  }, [currentSymbol, market, chartInterval, refreshKey]);
+  }, [currentSymbol, market, chartInterval, refreshKey, modalMode]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -89,39 +93,102 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
     }
   };
 
+  if (modalMode === 'PRO') {
+    return (
+      <div 
+        onClick={() => onClose?.()}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(4, 7, 14, 0.82)',
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px'
+        }}
+      >
+        <div 
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            width: 'min(1480px, 98vw)',
+            height: '92vh',
+            borderRadius: '10px',
+            overflow: 'hidden',
+            boxShadow: '0 30px 80px -15px rgba(0, 0, 0, 0.95)',
+            border: '1px solid rgba(255, 255, 255, 0.12)'
+          }}
+        >
+          <HyperliquidProDesk
+            initialSymbol={currentSymbol}
+            onClose={onClose}
+            onSwitchToGrid={() => setModalMode('STANDARD')}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'rgba(18, 19, 22, 0.75)',
-      zIndex: 9999,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 'clamp(6px, 2vw, 20px)'
-    }}>
-      <div className="telemetry-panel" style={{
-        width: '100%',
-        maxWidth: '1200px',
-        height: '90vh',
+    <div 
+      onClick={() => onClose?.()}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(4, 7, 14, 0.82)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
+        zIndex: 9999,
         display: 'flex',
-        flexDirection: 'column',
-        background: '#ffffff',
-        border: '2px solid var(--border-color)',
-        boxShadow: '8px 8px 0px rgba(0,0,0,0.3)'
-      }}>
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '16px'
+      }}
+    >
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        className="telemetry-panel" 
+        style={{
+          width: 'min(1440px, 98vw)',
+          height: '92vh',
+          display: 'flex',
+          flexDirection: 'column',
+          background: '#0c101a',
+          border: '1px solid rgba(255, 255, 255, 0.12)',
+          borderRadius: '10px',
+          overflow: 'hidden',
+          boxShadow: '0 30px 80px -15px rgba(0, 0, 0, 0.95)'
+        }}
+      >
         
         {/* Modal Topbar */}
-        <div className="telemetry-header" style={{ background: '#1c1d22', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="telemetry-header" style={{ background: '#0e1422', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ color: 'var(--accent-orange)', fontWeight: '700' }}>TRADINGVIEW INTERACTIVE TELEMETRY</span>
-            <span className="badge badge-alert">{getTvSymbol(currentSymbol, market)}</span>
+            <span style={{ color: 'var(--accent-orange)', fontWeight: '800', fontSize: '12px' }}>TRADINGVIEW CHART WORKSTATION</span>
+            <span className="badge badge-alert" style={{ fontFamily: 'var(--font-mono)' }}>{getTvSymbol(currentSymbol, market)}</span>
+
+            <button
+              onClick={() => setModalMode('PRO')}
+              style={{
+                background: 'linear-gradient(135deg, #10b981, #059669)',
+                color: '#022c22',
+                border: 'none',
+                padding: '3px 9px',
+                borderRadius: '4px',
+                fontSize: '11px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                marginLeft: '6px'
+              }}
+              title="Beralih ke Hyperliquid Pro Terminal (Orderbook & Execution Desk)"
+            >
+              ⚡ Hyperliquid Pro Desk
+            </button>
 
             {/* Smart Adaptive Timeframe selector */}
-            <div style={{ display: 'flex', gap: '3px', background: 'rgba(255,255,255,0.08)', padding: '2px 4px', borderRadius: '4px', marginLeft: '6px', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '3px', background: 'rgba(255,255,255,0.06)', padding: '2px 4px', borderRadius: '4px', marginLeft: '6px', alignItems: 'center' }}>
               {(isCurrentCrypto ? [
                 { label: '5m', val: '5' },
                 { label: '15m', val: '15' },
@@ -139,7 +206,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
                   onClick={() => setChartInterval(tf.val)}
                   style={{
                     background: chartInterval === tf.val ? 'var(--accent-blue)' : 'transparent',
-                    color: chartInterval === tf.val ? '#ffffff' : '#a0a0a5',
+                    color: chartInterval === tf.val ? '#ffffff' : '#94a3b8',
                     border: 'none',
                     padding: '2px 7px',
                     fontSize: '10px',
@@ -162,7 +229,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
             <button
               onClick={() => setRefreshKey(k => k + 1)}
               className="telemetry-btn"
-              style={{ fontSize: '10px', padding: '2px 8px', background: 'var(--bg-panel)', color: 'var(--accent-green)' }}
+              style={{ fontSize: '10px', padding: '3px 8px', background: 'rgba(255,255,255,0.05)', color: '#34d399', border: '1px solid rgba(255,255,255,0.1)' }}
               title="Reload Chart Data"
             >
               🔄 REFRESH
@@ -171,65 +238,75 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
 
           <button 
             onClick={onClose}
-            className="telemetry-btn" 
-            style={{ background: 'var(--accent-rust)', color: '#fff', padding: '2px 10px', fontSize: '12px' }}
+            style={{
+              background: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.35)',
+              color: '#f87171',
+              padding: '4px 10px',
+              borderRadius: '6px',
+              fontSize: '11px',
+              fontWeight: 800,
+              cursor: 'pointer'
+            }}
           >
             ✕ CLOSE
           </button>
         </div>
 
         {/* Quick Ticker Switcher */}
-        <div style={{ padding: '8px 14px', background: 'var(--bg-panel-subtle)', borderBottom: 'var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+        <div style={{ padding: '8px 14px', background: 'rgba(11, 16, 26, 0.7)', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-            <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)' }}>CHECK ANY TICKER:</span>
+            <span style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8' }}>CARI TICKER:</span>
             <input 
               type="text" 
-              placeholder="e.g. RAJA, ACES, BREN, SOL..."
+              placeholder="e.g. BTC, ETH, SOL, BBCA, NVDA..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               style={{
                 fontFamily: 'var(--font-mono)',
                 padding: '4px 8px',
                 fontSize: '12px',
-                border: 'var(--border-hairline)',
+                background: 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                color: '#fff',
+                borderRadius: '4px',
                 outline: 'none',
                 width: '200px',
                 textTransform: 'uppercase'
               }}
             />
-            <button type="submit" className="telemetry-btn" style={{ background: 'var(--accent-blue)', color: '#fff' }}>
-              LOAD CHART
-            </button>
           </form>
 
           {/* Quick presets */}
-          <div style={{ display: 'flex', gap: '6px', fontSize: '10px' }}>
-            <span style={{ color: 'var(--text-muted)', alignSelf: 'center' }}>PRESETS:</span>
-            {['BBCA', 'BREN', 'ANTM', 'MEDC', 'BTCUSDT', 'SOLUSDT'].map(preset => (
-              <button 
-                key={preset}
+          <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+            {['BBCA', 'BBRI', 'BMRI', 'BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'NVDA'].map(sym => (
+              <button
+                key={sym}
                 onClick={() => {
-                  setCurrentSymbol(preset);
-                  if (!isCryptoSymbol(preset, market)) {
-                    setChartInterval('D');
-                  }
+                  setCurrentSymbol(sym);
+                  if (!isCryptoSymbol(sym, market)) setChartInterval('D');
                 }}
-                className="telemetry-btn"
-                style={{ padding: '2px 6px', fontSize: '10px' }}
+                style={{
+                  background: currentSymbol === sym ? 'var(--accent-blue)' : 'rgba(255, 255, 255, 0.04)',
+                  color: currentSymbol === sym ? '#fff' : '#94a3b8',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  padding: '2px 8px',
+                  borderRadius: '4px',
+                  fontSize: '10px',
+                  fontWeight: '700',
+                  fontFamily: 'var(--font-mono)',
+                  cursor: 'pointer'
+                }}
               >
-                {preset}
+                {sym}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Chart Canvas Area */}
-        <div 
-          ref={containerRef} 
-          className="tradingview-widget-container" 
-          style={{ flex: '1 1 auto', width: '100%', height: '100%', position: 'relative' }}
-        >
-          {/* TradingView Widget will inject here */}
+        {/* Chart iframe container */}
+        <div style={{ flex: 1, position: 'relative', width: '100%', minHeight: 0 }}>
+          <div ref={containerRef} style={{ height: '100%', width: '100%' }} />
         </div>
 
       </div>

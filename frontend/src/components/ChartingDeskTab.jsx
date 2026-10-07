@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { getTvSymbol, cleanSymbolStr } from '../data/tv-helpers.js';
+import HyperliquidProDesk from './HyperliquidProDesk.jsx';
 
 /**
  * ChartPane - Individual TradingView Chart Instance for Multi-Grid Workstation
@@ -306,6 +307,7 @@ export default function ChartingDeskTab({
   onOpenLotCalc,
   initialSymbol = 'BBCA'
 }) {
+  const [deskMode, setDeskMode] = useState('PRO'); // 'PRO' (Hyperliquid Pro Desk) | 'GRID' (Multi-Pane Grid)
   const [layoutMode, setLayoutMode] = useState('1'); // '1' | '2' | '4'
   const [showCompanion, setShowCompanion] = useState(true);
   const [activePreset, setActivePreset] = useState('SMC');
@@ -444,6 +446,17 @@ export default function ChartingDeskTab({
     return `Rp ${Math.round(num).toLocaleString('id-ID')}`;
   };
 
+  if (deskMode === 'PRO') {
+    return (
+      <HyperliquidProDesk
+        initialSymbol={activePane.symbol || initialSymbol || 'ETHUSDT'}
+        livePrices={livePrices}
+        onOpenLotCalc={onOpenLotCalc}
+        onSwitchToGrid={() => setDeskMode('GRID')}
+      />
+    );
+  }
+
   return (
     <div style={{
       display: 'flex',
@@ -473,6 +486,23 @@ export default function ChartingDeskTab({
             <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
               CHART WORKSTATION
             </span>
+            <button
+              onClick={() => setDeskMode('PRO')}
+              style={{
+                background: 'linear-gradient(135deg, #10b981, #059669)',
+                color: '#022c22',
+                border: 'none',
+                padding: '2px 8px',
+                borderRadius: '4px',
+                fontSize: '10px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                marginLeft: '6px'
+              }}
+              title="Beralih ke Hyperliquid Pro Terminal"
+            >
+              ⚡ Pro Desk
+            </button>
           </div>
 
           {/* Quick Instrument Chips */}
