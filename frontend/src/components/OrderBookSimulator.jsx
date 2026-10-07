@@ -11,7 +11,8 @@ const OrderBookSimulator = ({
   currentPrice = 6675, 
   isOpen = false, 
   onClose,
-  brokerSummaryData = null
+  brokerSummaryData = null,
+  embedded = false
 }) => {
   const [activeView, setActiveView] = useState('ORDERBOOK'); // 'ORDERBOOK' | 'BROKER_SUMMARY'
   const [feedSource, setFeedSource] = useState('hyperliquid'); // 'hyperliquid' | 'binance'
@@ -24,13 +25,13 @@ const OrderBookSimulator = ({
 
   // Close modal on Escape key
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || embedded) return;
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose?.();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, embedded]);
 
   // Determine asset class
   const isCrypto = ticker.includes('USDT') || ticker.includes('USD') || ticker.includes('/') || ticker.startsWith('BTC') || ticker.startsWith('ETH');
@@ -171,19 +172,19 @@ const OrderBookSimulator = ({
 
   // Trigger fetch when modal opens, refresh clicked, or feed changes
   useEffect(() => {
-    if (isOpen && isCrypto) {
+    if ((isOpen || embedded) && isCrypto) {
       fetchLiveCryptoDepth();
     }
-  }, [isOpen, isCrypto, refreshTrigger, feedSource, fetchLiveCryptoDepth]);
+  }, [isOpen, embedded, isCrypto, refreshTrigger, feedSource, fetchLiveCryptoDepth]);
 
   // Live Auto-Refresh Polling Loop (1500ms)
   useEffect(() => {
-    if (!isOpen || !isCrypto || !autoRefresh) return;
+    if ((!isOpen && !embedded) || !isCrypto || !autoRefresh) return;
     const interval = setInterval(() => {
       fetchLiveCryptoDepth();
     }, 1500);
     return () => clearInterval(interval);
-  }, [isOpen, isCrypto, autoRefresh, fetchLiveCryptoDepth]);
+  }, [isOpen, embedded, isCrypto, autoRefresh, fetchLiveCryptoDepth]);
 
   // Process Real / Microstructure Depth Levels
   const { bidsWithCumulative, asksWithCumulative, maxCumulativeVol, totalBidVol, totalAskVol, spread, spreadPercent, buyerRatio } = useMemo(() => {
@@ -246,7 +247,7 @@ const OrderBookSimulator = ({
     };
   }, [currentPrice, tickSize, isCrypto, liveDepth]);
 
-  if (!isOpen) return null;
+  if (!isOpen && !embedded) return null;
 
   const formatPrice = (p) => {
     if (isCrypto) {
@@ -286,128 +287,76 @@ const OrderBookSimulator = ({
     ]
   };
 
-  return (
+  const content = (
     <div 
-      onClick={() => onClose?.()}
+      onClick={(e) => e.stopPropagation()}
       style={{
-        position: 'fixed',
-        inset: 0,
-        backgroundColor: 'rgba(5, 7, 12, 0.85)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        zIndex: 9999,
+        background: '#0c101a',
+        border: '1px solid rgba(255, 255, 255, 0.12)',
+        borderRadius: '14px',
+        boxShadow: embedded ? 'none' : '0 30px 80px -15px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.08)',
+        width: embedded ? '100%' : 'min(1140px, 95vw)',
+        maxWidth: embedded ? '100%' : '1140px',
+        minWidth: embedded ? '100%' : '780px',
+        maxHeight: embedded ? 'none' : '92vh',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '16px'
+        flexDirection: 'column',
+        overflow: 'hidden',
+        fontFamily: 'var(--font-sans)'
       }}
     >
-      <div 
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          background: 'var(--bg-panel, #121722)',
-          border: '1px solid var(--border-color, #1e2638)',
-          borderRadius: 'var(--radius-md, 12px)',
-          boxShadow: '0 24px 64px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08)',
-          width: '100%',
-          maxWidth: '920px',
-          maxHeight: '94vh',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          fontFamily: 'var(--font-sans)'
-        }}
-      >
-        {/* Header Bar */}
-        <div style={{
-          padding: '12px 18px',
-          background: 'var(--bg-panel-subtle, #18202e)',
-          borderBottom: 'var(--border-hairline)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '10px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            <span className="badge badge-blue" style={{ fontSize: '11px', padding: '3px 8px' }}>
-              {isCrypto ? '🟢 CRYPTO LIVE L2' : '🏛️ IDX OFFICIAL FEED'}
-            </span>
-            <span style={{
-              fontSize: '9.5px',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: 700,
-              padding: '2px 6px',
-              borderRadius: '3px',
-              background: isCrypto ? 'rgba(16, 185, 129, 0.15)' : 'rgba(168, 85, 247, 0.15)',
-              color: isCrypto ? '#34d399' : '#c084fc',
-              border: '1px solid ' + (isCrypto ? 'rgba(16, 185, 129, 0.3)' : 'rgba(168, 85, 247, 0.3)')
-            }}>
-              {isCrypto ? 'PROVENANCE: BINANCE/BAPPEBTI L2 FEED' : 'PROVENANCE: THEORETICAL DEPTH MODEL (OJK FRAKSI) + EOD BROKER SUMMARY'}
-            </span>
-            <h2 style={{ fontSize: '16px', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
-              {ticker}
-            </h2>
-            <span style={{ 
-              fontSize: '12px', 
-              fontFamily: 'var(--font-mono)', 
-              color: 'var(--text-primary)',
-              background: 'rgba(255, 255, 255, 0.05)',
-              padding: '2px 8px',
-              borderRadius: 'var(--radius-xs)'
-            }}>
-              Ref: {formatPrice(currentPrice)} (Tick: {formatPrice(tickSize)})
-            </span>
-          </div>
+      {/* Tier 1: Main Header */}
+      <div style={{
+        padding: '14px 22px',
+        background: 'rgba(15, 22, 36, 0.9)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '12px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <span style={{
+            fontSize: '11px',
+            fontFamily: 'var(--font-mono)',
+            fontWeight: 800,
+            padding: '3px 8px',
+            borderRadius: '4px',
+            background: isCrypto ? 'rgba(16, 185, 129, 0.15)' : 'rgba(168, 85, 247, 0.15)',
+            color: isCrypto ? '#34d399' : '#c084fc',
+            border: '1px solid ' + (isCrypto ? 'rgba(16, 185, 129, 0.3)' : 'rgba(168, 85, 247, 0.3)')
+          }}>
+            {isCrypto ? '⚡ LEVEL-2 MARKET DEPTH' : '🏛️ IDX OFFICIAL FEED'}
+          </span>
 
-          {/* Tab Switcher: Orderbook vs Broker Summary */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            {isCrypto && (
-              <div style={{
-                display: 'flex',
-                background: 'rgba(0, 0, 0, 0.4)',
-                padding: '2px',
-                borderRadius: '6px',
-                border: '1px solid rgba(255, 255, 255, 0.08)'
-              }}>
-                <button
-                  onClick={() => setFeedSource('hyperliquid')}
-                  style={{
-                    padding: '4px 8px',
-                    fontSize: '10px',
-                    fontWeight: 700,
-                    borderRadius: '4px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    background: feedSource === 'hyperliquid' ? 'linear-gradient(135deg, #10b981, #059669)' : 'transparent',
-                    color: feedSource === 'hyperliquid' ? '#042f2e' : 'var(--text-muted)',
-                  }}
-                  title="Orderbook perpetual real-time langsung dari Hyperliquid L1 (Tanpa API Key)"
-                >
-                  ⚡ Hyperliquid L1 (Perps)
-                </button>
-                <button
-                  onClick={() => setFeedSource('binance')}
-                  style={{
-                    padding: '4px 8px',
-                    fontSize: '10px',
-                    fontWeight: 700,
-                    borderRadius: '4px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    background: feedSource === 'binance' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'transparent',
-                    color: feedSource === 'binance' ? '#451a03' : 'var(--text-muted)',
-                  }}
-                  title="Orderbook spot global dari Binance Vision CDN (Tanpa Blokir)"
-                >
-                  🟡 Binance Vision (Spot)
-                </button>
-              </div>
-            )}
+          <h2 style={{ fontSize: '18px', fontWeight: 900, margin: 0, color: '#f8fafc', letterSpacing: '0.02em' }}>
+            {ticker}
+          </h2>
 
+          <span style={{ 
+            fontSize: '13px', 
+            fontFamily: 'var(--font-mono)', 
+            fontWeight: 700,
+            color: '#38bdf8',
+            background: 'rgba(56, 189, 248, 0.08)',
+            border: '1px solid rgba(56, 189, 248, 0.25)',
+            padding: '2px 10px',
+            borderRadius: '5px'
+          }}>
+            Ref: {formatPrice(currentPrice)}
+          </span>
+
+          <span style={{ fontSize: '10.5px', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+            Tick Size: {formatPrice(tickSize)}
+          </span>
+        </div>
+
+        {/* Close button & View switcher */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {!isCrypto && (
             <div style={{ 
               display: 'flex', 
-              background: 'rgba(0, 0, 0, 0.4)', 
+              background: 'rgba(0, 0, 0, 0.5)', 
               padding: '2px', 
               borderRadius: '6px', 
               border: '1px solid rgba(255, 255, 255, 0.08)' 
@@ -427,135 +376,259 @@ const OrderBookSimulator = ({
               >
                 📊 Order Book L2
               </button>
-              {!isCrypto && (
+              <button
+                onClick={() => setActiveView('BROKER_SUMMARY')}
+                style={{
+                  padding: '4px 10px',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  borderRadius: '4px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  background: activeView === 'BROKER_SUMMARY' ? 'var(--accent-purple, #7c3aed)' : 'transparent',
+                  color: activeView === 'BROKER_SUMMARY' ? '#fff' : 'var(--text-muted)'
+                }}
+              >
+                🕵️ Broker Flow
+              </button>
+            </div>
+          )}
+
+          {onClose && (
+            <button 
+              onClick={onClose}
+              style={{
+                background: 'rgba(255, 255, 255, 0.06)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                color: '#94a3b8',
+                cursor: 'pointer',
+                fontSize: '16px',
+                width: '32px',
+                height: '32px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.15s ease'
+              }}
+              title="Tutup (Esc)"
+              aria-label="Close"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
+
+        {/* Tier 2: Feed Selection & Polling Toolbar */}
+        <div style={{
+          padding: '10px 22px',
+          background: 'rgba(11, 16, 26, 0.7)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '10px'
+        }}>
+          {isCrypto ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Bursa Feed:
+              </span>
+              <div style={{
+                display: 'flex',
+                background: 'rgba(0, 0, 0, 0.4)',
+                padding: '2px',
+                borderRadius: '6px',
+                border: '1px solid rgba(255, 255, 255, 0.08)'
+              }}>
                 <button
-                  onClick={() => setActiveView('BROKER_SUMMARY')}
+                  onClick={() => setFeedSource('hyperliquid')}
                   style={{
-                    padding: '4px 10px',
+                    padding: '5px 12px',
                     fontSize: '11px',
                     fontWeight: 700,
                     borderRadius: '4px',
                     border: 'none',
                     cursor: 'pointer',
-                    background: activeView === 'BROKER_SUMMARY' ? 'var(--accent-purple, #7c3aed)' : 'transparent',
-                    color: activeView === 'BROKER_SUMMARY' ? '#fff' : 'var(--text-muted)'
+                    background: feedSource === 'hyperliquid' ? 'linear-gradient(135deg, #10b981, #059669)' : 'transparent',
+                    color: feedSource === 'hyperliquid' ? '#022c22' : '#94a3b8',
+                    transition: 'all 0.2s ease'
                   }}
+                  title="Orderbook perpetual real-time langsung dari Hyperliquid L1 (Tanpa API Key, dengan data antrean order)"
                 >
-                  🕵️ Broker Flow
+                  ⚡ Hyperliquid L1 (Perps)
                 </button>
-              )}
+                <button
+                  onClick={() => setFeedSource('binance')}
+                  style={{
+                    padding: '5px 12px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    borderRadius: '4px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    background: feedSource === 'binance' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'transparent',
+                    color: feedSource === 'binance' ? '#451a03' : '#94a3b8',
+                    transition: 'all 0.2s ease'
+                  }}
+                  title="Orderbook spot global dari Binance Vision CDN (Tanpa Blokir)"
+                >
+                  🟡 Binance Vision (Spot)
+                </button>
+              </div>
             </div>
+          ) : (
+            <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>
+              BEI REGULATED TICK RULES & EOD BROKER SUMMARY
+            </div>
+          )}
 
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {isCrypto && (
               <button
                 onClick={() => setAutoRefresh(r => !r)}
                 style={{
-                  padding: '4px 8px',
-                  fontSize: '10px',
+                  padding: '5px 12px',
+                  fontSize: '10.5px',
                   fontWeight: 700,
                   borderRadius: '6px',
-                  border: '1px solid ' + (autoRefresh ? 'rgba(16,185,129,0.3)' : 'rgba(255,255,255,0.1)'),
-                  background: autoRefresh ? 'rgba(16,185,129,0.12)' : 'rgba(255,255,255,0.05)',
-                  color: autoRefresh ? '#34d399' : 'var(--text-muted)',
-                  cursor: 'pointer',
+                  border: '1px solid ' + (autoRefresh ? 'rgba(16,185,129,0.35)' : 'rgba(255,255,255,0.1)'),
+                  background: autoRefresh ? 'rgba(16,185,129,0.12)' : 'rgba(255,255,255,0.04)',
+                  color: autoRefresh ? '#34d399' : '#94a3b8',
+                  cursor: 'pointer'
                 }}
                 title={autoRefresh ? 'Live feed aktif (polling 1.5 detik)' : 'Klik untuk mengaktifkan live feed'}
               >
-                {autoRefresh ? '🟢 Live 1.5s' : '⏸️ Paused'}
+                {autoRefresh ? '🟢 Live Auto-Poll (1.5s)' : '⏸️ Polling Dijeda'}
               </button>
             )}
 
             <button
-              className="telemetry-btn"
               onClick={() => {
                 setRefreshTrigger(t => t + 1);
                 if (isCrypto) fetchLiveCryptoDepth();
               }}
-              style={{ padding: '4px 10px', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}
+              style={{
+                padding: '5px 12px',
+                fontSize: '10.5px',
+                fontWeight: 700,
+                borderRadius: '6px',
+                background: 'rgba(255, 255, 255, 0.06)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                color: '#f8fafc',
+                cursor: 'pointer'
+              }}
               title="Refresh data langsung dari server bursa"
               disabled={isLoading}
             >
-              {isLoading ? '⏳...' : '🔄'}
+              {isLoading ? '⏳ Memuat...' : '🔄 Refresh'}
             </button>
 
-            <button 
-              onClick={onClose}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--text-muted)',
-                cursor: 'pointer',
-                fontSize: '20px',
-                lineHeight: 1,
+            {isCrypto && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                fontSize: '10px',
+                fontFamily: 'var(--font-mono)',
+                color: '#38bdf8',
+                background: 'rgba(56, 189, 248, 0.1)',
                 padding: '4px 8px',
-                borderRadius: 'var(--radius-xs)'
-              }}
-              aria-label="Close"
-            >
-              &times;
-            </button>
+                borderRadius: '6px',
+                border: '1px solid rgba(56, 189, 248, 0.25)'
+              }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#38bdf8', display: 'inline-block' }} />
+                <span>{latencyMs}ms</span>
+              </div>
+            )}
           </div>
         </div>
 
         {/* ================= VIEW 1: ORDER BOOK L2 ================= */}
         {activeView === 'ORDERBOOK' && (
           <>
-            {/* Telemetry Summary Bar */}
+            {/* 4-Bento Metrics HUD */}
             <div style={{
-              padding: '10px 18px',
-              background: 'rgba(11, 14, 20, 0.7)',
-              borderBottom: 'var(--border-hairline)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
+              padding: '14px 22px',
+              background: 'rgba(8, 12, 20, 0.7)',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
               gap: '12px'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>SPREAD</span>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent-orange)' }}>
-                    {formatPrice(spread)} ({spreadPercent}%)
-                  </div>
+              {/* Box 1: Spread */}
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderRadius: '8px',
+                padding: '10px 14px'
+              }}>
+                <div style={{ fontSize: '9.5px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                  SPREAD PASAR
                 </div>
-                <div>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>BEST BID / OFFER</span>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--text-primary)' }}>
-                    {formatPrice(bidsWithCumulative[0]?.price || currentPrice)} / {formatPrice(asksWithCumulative[0]?.price || currentPrice)}
-                  </div>
-                </div>
-                <div>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>SUMBER DATA & LATENSI</span>
-                  <div style={{ fontSize: '11px', color: '#00d084', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span>{isCrypto ? (liveDepth?.source || `${feedSource === 'hyperliquid' ? 'Hyperliquid L1' : 'Binance Vision'}`) : 'Official BEI Best Quote'}</span>
-                    {isCrypto && (
-                      <span style={{ fontSize: '9.5px', fontFamily: 'var(--font-mono)', padding: '1px 5px', borderRadius: '4px', background: 'rgba(255,255,255,0.08)', color: '#38bdf8' }}>
-                        {latencyMs}ms
-                      </span>
-                    )}
-                  </div>
+                <div style={{ fontSize: '15px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#f59e0b' }}>
+                  {formatPrice(spread)} <span style={{ fontSize: '11px', color: '#fbbf24', fontWeight: 600 }}>({spreadPercent}%)</span>
                 </div>
               </div>
 
-              {/* Order Flow Imbalance Power Bar */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                  IMBALANCE:
-                </span>
+              {/* Box 2: Best Bid */}
+              <div style={{
+                background: 'rgba(16, 185, 129, 0.05)',
+                border: '1px solid rgba(16, 185, 129, 0.2)',
+                borderRadius: '8px',
+                padding: '10px 14px'
+              }}>
+                <div style={{ fontSize: '9.5px', color: '#34d399', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                  BEST BID (PEMBELI)
+                </div>
+                <div style={{ fontSize: '15px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#10b981' }}>
+                  {formatPrice(bidsWithCumulative[0]?.price || currentPrice)}
+                </div>
+              </div>
+
+              {/* Box 3: Best Ask */}
+              <div style={{
+                background: 'rgba(239, 68, 68, 0.05)',
+                border: '1px solid rgba(239, 68, 68, 0.2)',
+                borderRadius: '8px',
+                padding: '10px 14px'
+              }}>
+                <div style={{ fontSize: '9.5px', color: '#f87171', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                  BEST ASK (PENJUAL)
+                </div>
+                <div style={{ fontSize: '15px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#ef4444' }}>
+                  {formatPrice(asksWithCumulative[0]?.price || currentPrice)}
+                </div>
+              </div>
+
+              {/* Box 4: Order Flow Imbalance */}
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderRadius: '8px',
+                padding: '10px 14px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '9.5px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    IMBALANCE ALIRAN
+                  </span>
+                  <span style={{ fontSize: '10px', fontWeight: 700, color: buyerRatio >= 50 ? '#34d399' : '#f87171', fontFamily: 'var(--font-mono)' }}>
+                    {buyerRatio >= 50 ? `BUY BIAS (+${buyerRatio - 50}%)` : `SELL BIAS (+${50 - buyerRatio}%)`}
+                  </span>
+                </div>
                 <div style={{
-                  width: '200px',
-                  height: '16px',
-                  background: 'rgba(255, 77, 77, 0.3)',
-                  borderRadius: '10px',
+                  height: '14px',
+                  background: 'rgba(239, 68, 68, 0.35)',
+                  borderRadius: '4px',
                   overflow: 'hidden',
-                  display: 'flex',
-                  position: 'relative',
-                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                  position: 'relative'
                 }}>
                   <div 
                     style={{ 
                       width: `${buyerRatio}%`, 
-                      background: 'var(--accent-green, #00d084)',
+                      background: '#10b981',
                       height: '100%',
                       transition: 'width 0.3s ease'
                     }} 
@@ -567,11 +640,10 @@ const OrderBookSimulator = ({
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '0 6px',
-                    fontSize: '9px',
+                    fontSize: '8.5px',
                     fontFamily: 'var(--font-mono)',
-                    fontWeight: 700,
-                    color: '#ffffff',
-                    textShadow: '0 1px 2px rgba(0,0,0,0.9)'
+                    fontWeight: 800,
+                    color: '#fff'
                   }}>
                     <span>BID {buyerRatio}%</span>
                     <span>ASK {100 - buyerRatio}%</span>
@@ -580,29 +652,33 @@ const OrderBookSimulator = ({
               </div>
             </div>
 
-            {/* Depth Columns */}
-            <div style={{ padding: '14px 18px', overflowY: 'auto', flex: 1 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            {/* Depth Columns Container */}
+            <div style={{ padding: '16px 22px', overflowY: 'auto', flex: 1 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 
                 {/* BIDS SIDE (Buyer Depth) */}
                 <div style={{ 
-                  background: 'var(--bg-panel-subtle, #18202e)', 
-                  border: '1px solid rgba(0, 208, 132, 0.25)', 
-                  borderRadius: '6px' 
+                  background: 'rgba(13, 20, 32, 0.7)', 
+                  border: '1px solid rgba(16, 185, 129, 0.25)', 
+                  borderRadius: '8px',
+                  overflow: 'hidden'
                 }}>
                   <div style={{
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1.2fr 1fr',
-                    padding: '6px 12px',
-                    borderBottom: 'var(--border-hairline)',
+                    gridTemplateColumns: '1.2fr 1.5fr 1fr 1.3fr',
+                    padding: '8px 14px',
+                    background: 'rgba(16, 185, 129, 0.08)',
+                    borderBottom: '1px solid rgba(16, 185, 129, 0.2)',
                     fontSize: '10px',
-                    fontWeight: 700,
+                    fontWeight: 800,
                     textTransform: 'uppercase',
-                    color: 'var(--text-muted)'
+                    color: '#94a3b8',
+                    letterSpacing: '0.04em'
                   }}>
                     <span>Cum Vol</span>
-                    <span style={{ textAlign: 'right' }}>Bid Lots</span>
-                    <span style={{ textAlign: 'right', color: 'var(--accent-green, #00d084)' }}>Bid Price</span>
+                    <span style={{ textAlign: 'right' }}>Ukuran Bid</span>
+                    <span style={{ textAlign: 'center' }}>Antrean</span>
+                    <span style={{ textAlign: 'right', color: '#10b981' }}>Harga Bid</span>
                   </div>
 
                   <div>
@@ -613,9 +689,9 @@ const OrderBookSimulator = ({
                           key={`bid-${bid.price}`} 
                           style={{
                             display: 'grid',
-                            gridTemplateColumns: '1fr 1.2fr 1fr',
-                            padding: '4px 12px',
-                            fontSize: '11px',
+                            gridTemplateColumns: '1.2fr 1.5fr 1fr 1.3fr',
+                            padding: '6px 14px',
+                            fontSize: '12px',
                             fontFamily: 'var(--font-mono)',
                             borderBottom: '1px solid rgba(255, 255, 255, 0.03)',
                             position: 'relative',
@@ -629,22 +705,20 @@ const OrderBookSimulator = ({
                               bottom: 0,
                               right: 0,
                               width: `${depthPercent}%`,
-                              background: 'linear-gradient(90deg, rgba(0, 208, 132, 0.05) 0%, rgba(0, 208, 132, 0.2) 100%)',
+                              background: 'linear-gradient(90deg, rgba(16, 185, 129, 0.04) 0%, rgba(16, 185, 129, 0.22) 100%)',
                               pointerEvents: 'none'
                             }} 
                           />
-                          <span style={{ color: 'var(--text-muted)', position: 'relative', zIndex: 1 }}>
+                          <span style={{ color: '#64748b', position: 'relative', zIndex: 1 }}>
                             {Math.round(bid.cumulative).toLocaleString()}
                           </span>
-                          <span style={{ textAlign: 'right', fontWeight: 600, color: 'var(--text-primary)', position: 'relative', zIndex: 1 }}>
+                          <span style={{ textAlign: 'right', fontWeight: 600, color: '#f8fafc', position: 'relative', zIndex: 1 }}>
                             {formatLots(bid.lotQuantity)}
-                            {bid.orderCount != null && (
-                              <span style={{ fontSize: '9px', color: 'var(--text-muted)', marginLeft: '4px' }}>
-                                ({bid.orderCount} ord)
-                              </span>
-                            )}
                           </span>
-                          <span style={{ textAlign: 'right', fontWeight: 700, color: 'var(--accent-green, #00d084)', position: 'relative', zIndex: 1 }}>
+                          <span style={{ textAlign: 'center', fontSize: '10px', color: '#94a3b8', position: 'relative', zIndex: 1 }}>
+                            {bid.orderCount != null ? `${bid.orderCount} ord` : '—'}
+                          </span>
+                          <span style={{ textAlign: 'right', fontWeight: 800, color: '#10b981', position: 'relative', zIndex: 1 }}>
                             {formatPrice(bid.price)}
                           </span>
                         </div>
@@ -655,22 +729,26 @@ const OrderBookSimulator = ({
 
                 {/* ASKS SIDE (Seller Depth) */}
                 <div style={{ 
-                  background: 'var(--bg-panel-subtle, #18202e)', 
-                  border: '1px solid rgba(255, 77, 77, 0.25)', 
-                  borderRadius: '6px' 
+                  background: 'rgba(24, 15, 22, 0.7)', 
+                  border: '1px solid rgba(239, 68, 68, 0.25)', 
+                  borderRadius: '8px',
+                  overflow: 'hidden'
                 }}>
                   <div style={{
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1.2fr 1fr',
-                    padding: '6px 12px',
-                    borderBottom: 'var(--border-hairline)',
+                    gridTemplateColumns: '1.3fr 1fr 1.5fr 1.2fr',
+                    padding: '8px 14px',
+                    background: 'rgba(239, 68, 68, 0.08)',
+                    borderBottom: '1px solid rgba(239, 68, 68, 0.2)',
                     fontSize: '10px',
-                    fontWeight: 700,
+                    fontWeight: 800,
                     textTransform: 'uppercase',
-                    color: 'var(--text-muted)'
+                    color: '#94a3b8',
+                    letterSpacing: '0.04em'
                   }}>
-                    <span style={{ color: 'var(--accent-red, #ff4d4d)' }}>Ask Price</span>
-                    <span style={{ textAlign: 'right' }}>Ask Lots</span>
+                    <span style={{ color: '#ef4444' }}>Harga Ask</span>
+                    <span style={{ textAlign: 'center' }}>Antrean</span>
+                    <span style={{ textAlign: 'right' }}>Ukuran Ask</span>
                     <span style={{ textAlign: 'right' }}>Cum Vol</span>
                   </div>
 
@@ -682,9 +760,9 @@ const OrderBookSimulator = ({
                           key={`ask-${ask.price}`} 
                           style={{
                             display: 'grid',
-                            gridTemplateColumns: '1fr 1.2fr 1fr',
-                            padding: '4px 12px',
-                            fontSize: '11px',
+                            gridTemplateColumns: '1.3fr 1fr 1.5fr 1.2fr',
+                            padding: '6px 14px',
+                            fontSize: '12px',
                             fontFamily: 'var(--font-mono)',
                             borderBottom: '1px solid rgba(255, 255, 255, 0.03)',
                             position: 'relative',
@@ -698,22 +776,20 @@ const OrderBookSimulator = ({
                               bottom: 0,
                               left: 0,
                               width: `${depthPercent}%`,
-                              background: 'linear-gradient(270deg, rgba(255, 77, 77, 0.05) 0%, rgba(255, 77, 77, 0.2) 100%)',
+                              background: 'linear-gradient(270deg, rgba(239, 68, 68, 0.04) 0%, rgba(239, 68, 68, 0.22) 100%)',
                               pointerEvents: 'none'
                             }} 
                           />
-                          <span style={{ fontWeight: 700, color: 'var(--accent-red, #ff4d4d)', position: 'relative', zIndex: 1 }}>
+                          <span style={{ fontWeight: 800, color: '#ef4444', position: 'relative', zIndex: 1 }}>
                             {formatPrice(ask.price)}
                           </span>
-                          <span style={{ textAlign: 'right', fontWeight: 600, color: 'var(--text-primary)', position: 'relative', zIndex: 1 }}>
-                            {formatLots(ask.lotQuantity)}
-                            {ask.orderCount != null && (
-                              <span style={{ fontSize: '9px', color: 'var(--text-muted)', marginLeft: '4px' }}>
-                                ({ask.orderCount} ord)
-                              </span>
-                            )}
+                          <span style={{ textAlign: 'center', fontSize: '10px', color: '#94a3b8', position: 'relative', zIndex: 1 }}>
+                            {ask.orderCount != null ? `${ask.orderCount} ord` : '—'}
                           </span>
-                          <span style={{ textAlign: 'right', color: 'var(--text-muted)', position: 'relative', zIndex: 1 }}>
+                          <span style={{ textAlign: 'right', fontWeight: 600, color: '#f8fafc', position: 'relative', zIndex: 1 }}>
+                            {formatLots(ask.lotQuantity)}
+                          </span>
+                          <span style={{ textAlign: 'right', color: '#64748b', position: 'relative', zIndex: 1 }}>
                             {Math.round(ask.cumulative).toLocaleString()}
                           </span>
                         </div>
@@ -729,18 +805,18 @@ const OrderBookSimulator = ({
 
         {/* ================= VIEW 2: BROKER SUMMARY (STOCKBIT / NEOBDM) ================= */}
         {activeView === 'BROKER_SUMMARY' && (
-          <div style={{ padding: '14px 18px', overflowY: 'auto', flex: 1 }}>
+          <div style={{ padding: '16px 22px', overflowY: 'auto', flex: 1 }}>
             
             {/* Header Telemetry Cards */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-              gap: '10px',
-              marginBottom: '14px'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '12px',
+              marginBottom: '16px'
             }}>
-              <div style={{ background: 'rgba(0, 0, 0, 0.4)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              <div style={{ background: 'rgba(0, 0, 0, 0.4)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
                 <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block' }}>BANDAR ACCUMULATION</span>
-                <span style={{ fontSize: '13px', fontWeight: 800, color: '#00d084' }}>
+                <span style={{ fontSize: '14px', fontWeight: 800, color: '#00d084' }}>
                   {activeBrokerSummary.bandar_accumulation_grade.replace('_', ' ')}
                 </span>
                 <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginTop: '2px' }}>
@@ -748,9 +824,9 @@ const OrderBookSimulator = ({
                 </span>
               </div>
 
-              <div style={{ background: 'rgba(0, 0, 0, 0.4)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              <div style={{ background: 'rgba(0, 0, 0, 0.4)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
                 <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block' }}>NET FOREIGN FLOW (ASING)</span>
-                <span style={{ fontSize: '13px', fontWeight: 800, color: activeBrokerSummary.foreign_net_value_idr >= 0 ? '#00d084' : '#ff4d4d' }}>
+                <span style={{ fontSize: '14px', fontWeight: 800, color: activeBrokerSummary.foreign_net_value_idr >= 0 ? '#00d084' : '#ff4d4d' }}>
                   {activeBrokerSummary.foreign_net_value_idr >= 0 ? '+' : ''}Rp {(activeBrokerSummary.foreign_net_value_idr / 1e9).toFixed(1)} Miliar
                 </span>
                 <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginTop: '2px' }}>
@@ -758,9 +834,9 @@ const OrderBookSimulator = ({
                 </span>
               </div>
 
-              <div style={{ background: 'rgba(0, 0, 0, 0.4)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              <div style={{ background: 'rgba(0, 0, 0, 0.4)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
                 <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block' }}>MODAL RATA-RATA BANDAR</span>
-                <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--accent-orange)' }}>
+                <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--accent-orange)' }}>
                   Rp {activeBrokerSummary.bandar_avg_price?.toLocaleString()}
                 </span>
                 <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginTop: '2px' }}>
@@ -770,12 +846,12 @@ const OrderBookSimulator = ({
             </div>
 
             {/* Dual Column Table: Buyers vs Sellers */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               
               {/* TOP BUYERS */}
-              <div style={{ background: 'var(--bg-panel-subtle, #18202e)', borderRadius: '6px', border: '1px solid rgba(0, 208, 132, 0.25)', padding: '10px' }}>
+              <div style={{ background: 'rgba(13, 20, 32, 0.7)', borderRadius: '8px', border: '1px solid rgba(0, 208, 132, 0.25)', padding: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '6px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 800, color: '#00d084' }}>🟢 TOP BUYERS (AKUMULATOR)</span>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: '#00d084' }}>🟢 TOP BUYERS (AKUMULATOR)</span>
                   <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Lot · Avg · Nilai</span>
                 </div>
                 <table style={{ width: '100%', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
@@ -791,7 +867,7 @@ const OrderBookSimulator = ({
                   <tbody>
                     {activeBrokerSummary.top_buyers.map((b) => (
                       <tr key={`buyer-${b.broker}`} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.03)' }}>
-                        <td style={{ padding: '5px 0', fontWeight: 800, color: '#fff' }}>
+                        <td style={{ padding: '6px 0', fontWeight: 800, color: '#fff' }}>
                           <span style={{ background: 'rgba(0, 208, 132, 0.15)', color: '#00d084', padding: '1px 4px', borderRadius: '3px', marginRight: '4px' }}>
                             {b.broker}
                           </span>
@@ -814,9 +890,9 @@ const OrderBookSimulator = ({
               </div>
 
               {/* TOP SELLERS */}
-              <div style={{ background: 'var(--bg-panel-subtle, #18202e)', borderRadius: '6px', border: '1px solid rgba(255, 77, 77, 0.25)', padding: '10px' }}>
+              <div style={{ background: 'rgba(24, 15, 22, 0.7)', borderRadius: '8px', border: '1px solid rgba(255, 77, 77, 0.25)', padding: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '6px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 800, color: '#ff4d4d' }}>🔴 TOP SELLERS (DISTRIBUTOR)</span>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: '#ff4d4d' }}>🔴 TOP SELLERS (DISTRIBUTOR)</span>
                   <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Lot · Avg · Nilai</span>
                 </div>
                 <table style={{ width: '100%', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
@@ -832,7 +908,7 @@ const OrderBookSimulator = ({
                   <tbody>
                     {activeBrokerSummary.top_sellers.map((s) => (
                       <tr key={`seller-${s.broker}`} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.03)' }}>
-                        <td style={{ padding: '5px 0', fontWeight: 800, color: '#fff' }}>
+                        <td style={{ padding: '6px 0', fontWeight: 800, color: '#fff' }}>
                           <span style={{ background: 'rgba(255, 77, 77, 0.15)', color: '#ff4d4d', padding: '1px 4px', borderRadius: '3px', marginRight: '4px' }}>
                             {s.broker}
                           </span>
@@ -858,12 +934,12 @@ const OrderBookSimulator = ({
 
             {/* Smart Bandar Verdict Box */}
             <div style={{
-              marginTop: '12px',
-              padding: '10px 14px',
+              marginTop: '14px',
+              padding: '12px 16px',
               background: 'rgba(0, 0, 0, 0.5)',
-              borderRadius: '6px',
+              borderRadius: '8px',
               border: '1px solid rgba(255, 255, 255, 0.06)',
-              fontSize: '11px',
+              fontSize: '11.5px',
               display: 'flex',
               alignItems: 'center',
               gap: '8px'
@@ -879,24 +955,51 @@ const OrderBookSimulator = ({
 
         {/* Footer info bar */}
         <div style={{
-          padding: '8px 18px',
-          background: 'rgba(5, 7, 12, 0.9)',
-          borderTop: 'var(--border-hairline)',
-          fontSize: '10px',
-          color: 'var(--text-muted)',
+          padding: '10px 22px',
+          background: 'rgba(8, 12, 20, 0.95)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          fontSize: '10.5px',
+          color: '#64748b',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
-          <span>
-            {isCrypto ? 'TOKOCRYPTO / BAPPEBTI PUBLIC WEBSOCKET & DEPTH API' : 'BEI REGULATED MICROSTRUCTURE & EOD BROKER SUMMARY'}
+          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+            {isCrypto 
+              ? `Jalur Data: ${feedSource === 'hyperliquid' ? 'Hyperliquid L1 L2 Book (On-Chain Perp)' : 'Binance Vision CDN (Global Spot)'} · 100% Bebas API Key`
+              : 'Jalur Data: BEI Regulated Microstructure Model & EOD Broker Summary'
+            }
           </span>
           <span style={{ fontFamily: 'var(--font-mono)' }}>
-            LATENCY: <strong style={{ color: '#00d084' }}>{latencyMs}ms</strong>
+            LATENCY: <strong style={{ color: '#10b981' }}>{latencyMs}ms</strong>
           </span>
         </div>
 
       </div>
+  );
+
+  if (embedded) {
+    return content;
+  }
+
+  return (
+    <div 
+      onClick={() => onClose?.()}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        backgroundColor: 'rgba(4, 7, 14, 0.72)',
+        backdropFilter: 'blur(5px)',
+        WebkitBackdropFilter: 'blur(5px)',
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px'
+      }}
+    >
+      {content}
     </div>
   );
 };

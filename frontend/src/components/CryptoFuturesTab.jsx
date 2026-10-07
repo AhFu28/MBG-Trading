@@ -33,6 +33,8 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
   const [futuresSortDir, setFuturesSortDir] = useState('desc'); // 'desc' | 'asc'
   const [futuresFilter, setFuturesFilter] = useState('ALL'); // 'ALL' | 'VOLUME' | 'GAINERS' | 'LOSERS' | 'HIGH_FUNDING' | 'SQUEEZE'
   const [orderBookModal, setOrderBookModal] = useState({ isOpen: false, ticker: 'BTCUSDT', price: 83000 });
+  const [selectedBookCoin, setSelectedBookCoin] = useState('ETHUSDT');
+  const [selectedBookPrice, setSelectedBookPrice] = useState(2560);
 
   const initialRates = data?.crypto_futures?.funding_rates || [];
   const initialLiq = data?.crypto_futures?.liquidations_24h || {};
@@ -645,6 +647,17 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
             <span>💀</span>
             <span>LIKUIDASI 24 JAM</span>
           </button>
+          <button 
+            onClick={() => setActiveTab('orderbook')} 
+            className={`quant-pill-btn ${activeTab === 'orderbook' ? 'active' : ''}`}
+            style={{
+              borderColor: activeTab === 'orderbook' ? 'rgba(16, 185, 129, 0.45)' : undefined,
+              color: activeTab === 'orderbook' ? '#34d399' : undefined
+            }}
+          >
+            <span>⚡</span>
+            <span>ORDER BOOK L2 (HYPERLIQUID & BINANCE)</span>
+          </button>
         </div>
       </div>
 
@@ -1052,7 +1065,11 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                         <td style={{ padding: '10px', textAlign: 'center' }}>
                           <div style={{ display: 'inline-flex', gap: '5px', alignItems: 'center' }}>
                             <button
-                              onClick={() => setOrderBookModal({ isOpen: true, ticker: f.symbol, price: f.mark_price || 0 })}
+                              onClick={() => {
+                                setSelectedBookCoin(f.symbol);
+                                setSelectedBookPrice(f.mark_price || 0);
+                                setActiveTab('orderbook');
+                              }}
                               style={{
                                 background: 'rgba(16, 185, 129, 0.12)',
                                 border: '1px solid rgba(16, 185, 129, 0.35)',
@@ -1063,7 +1080,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                                 fontWeight: '700',
                                 cursor: 'pointer'
                               }}
-                              title="Buka Live L2 Order Book (Hyperliquid & Binance)"
+                              title="Buka Terminal Live L2 Order Book (Hyperliquid & Binance)"
                             >
                               📖 Book
                             </button>
@@ -1201,6 +1218,56 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* TAB: LIVE LEVEL-2 ORDER BOOK TERMINAL */}
+        {activeTab === 'orderbook' && (
+          <div style={{ padding: '16px' }}>
+            {/* Quick Coin Selector Bar */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700 }}>
+                  PILIH PAIR:
+                </span>
+                {['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'SUIUSDT', 'DOGEUSDT', 'AVAXUSDT', 'LINKUSDT', 'NEARUSDT', 'APTUSDT', 'RENDERUSDT', 'PEPEUSDT', 'WIFUSDT'].map(sym => (
+                  <button
+                    key={sym}
+                    onClick={() => {
+                      setSelectedBookCoin(sym);
+                      const lv = livePrices[sym] || livePrices[`${sym.replace('USDT','')}/USDT`];
+                      if (lv?.price) setSelectedBookPrice(lv.price);
+                    }}
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: '11px',
+                      fontFamily: 'var(--font-mono)',
+                      fontWeight: 700,
+                      borderRadius: '4px',
+                      border: selectedBookCoin === sym ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.08)',
+                      background: selectedBookCoin === sym ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255,255,255,0.03)',
+                      color: selectedBookCoin === sym ? '#34d399' : 'var(--text-muted)',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {sym.replace('USDT', '')}
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ fontSize: '10.5px', color: '#64748b' }}>
+                Klik tombol <strong style={{ color: '#34d399' }}>📖 Book</strong> di tabel Kontrak Perpetual untuk membuka instrumen lainnya.
+              </div>
+            </div>
+
+            {/* Embedded Level 2 Terminal */}
+            <Suspense fallback={<div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)' }}>Memuat Order Book...</div>}>
+              <OrderBookSimulator
+                embedded={true}
+                ticker={selectedBookCoin}
+                currentPrice={selectedBookPrice}
+              />
+            </Suspense>
           </div>
         )}
 
