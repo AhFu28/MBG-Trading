@@ -12,13 +12,11 @@ import PersonalWatchlistTab from './components/PersonalWatchlistTab.jsx';
 import CommandPaletteModal from './components/CommandPaletteModal.jsx';
 import DataIntegrityModal from './components/DataIntegrityModal.jsx';
 import ComplianceRiskModal from './components/ComplianceRiskModal.jsx';
-import { getPhantomProvider, connectPhantom, getSolBalance, shortenAddress } from './services/phantomWallet.js';
 
 // Code Splitting for heavy secondary modules
 const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'));
 const LotCalculatorModal = lazy(() => import('./components/LotCalculatorModal.jsx'));
 const OrderExecutionModal = lazy(() => import('./components/OrderExecutionModal.jsx'));
-const SolanaSwapModal = lazy(() => import('./components/SolanaSwapModal.jsx'));
 import { institutionalPaperBroker } from './services/brokerGateway.js';
 const FlowProcessTab = lazy(() => import('./components/FlowProcessTab.jsx'));
 const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
@@ -255,38 +253,6 @@ export default function App() {
 
   const isAdmin = !!account?.isAdmin || ['naufalarib60@gmail.com', 'ahmfuadi28@gmail.com'].includes(String(account?.email || '').toLowerCase());
   const userTier = isAdmin || account?.isPro ? 'PRO' : (account?.authenticated ? 'FREE' : 'GUEST');
-
-  // Web3 Solana Phantom Wallet State
-  const [walletState, setWalletState] = useState({
-    connected: false,
-    address: '',
-    balance: 0,
-    provider: null
-  });
-  const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);
-
-  // Auto-connect to Phantom if user previously authorized
-  useEffect(() => {
-    async function checkExistingPhantom() {
-      const provider = getPhantomProvider();
-      if (provider && provider.isPhantom) {
-        try {
-          const res = await provider.connect({ onlyIfTrusted: true });
-          if (res?.publicKey) {
-            const addr = res.publicKey.toString();
-            const bal = await getSolBalance(addr);
-            setWalletState({
-              connected: true,
-              address: addr,
-              balance: bal,
-              provider
-            });
-          }
-        } catch (_) {}
-      }
-    }
-    checkExistingPhantom();
-  }, []);
 
   // TradingView Chart Modal State
   const [chartModal, setChartModal] = useState({
@@ -607,30 +573,6 @@ export default function App() {
                 <span>{displayMode === 'SIMPLE' ? '🍃' : '⚡'}</span>
                 <span>{displayMode === 'SIMPLE' ? 'MODE SANTAI' : 'MODE PRO'}</span>
               </button>
-
-              {/* User Tier Status Badge (display-only until TRUST03 server tier) */}
-              <button
-                style={{
-                  fontSize: '9px',
-                  fontWeight: '600',
-                  fontFamily: 'var(--font-mono)',
-                  letterSpacing: '0.08em',
-                  padding: '3px 8px',
-                  minHeight: '26px',
-                  borderRadius: '6px',
-                  cursor: 'default',
-                  border: userTier === 'PRO' ? '1px solid rgba(100, 116, 139, 0.45)' : '1px solid rgba(100, 116, 139, 0.25)',
-                  background: userTier === 'PRO' ? 'rgba(100, 116, 139, 0.12)' : 'rgba(100, 116, 139, 0.06)',
-                  color: userTier === 'PRO' ? 'var(--text-primary)' : 'var(--text-secondary)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}
-                title="Status hak akses. Upgrade ke VIP: hubungi admin / kanal promo Telegram."
-              >
-                <span>{userTier === 'PRO' ? '👑' : (userTier === 'FREE' ? '⭐' : '👤')}</span>
-                <span>{userTier === 'PRO' ? 'VIP PRO' : (userTier === 'FREE' ? 'FREE MEMBER' : 'TAMU')}</span>
-              </button>
             </div>
 
             {/* Center: Dribbble-style Command Search Bar */}
@@ -660,66 +602,10 @@ export default function App() {
               <span style={{ fontSize: '9px', padding: '1px 5px', borderRadius: '4px', background: 'rgba(255, 255, 255, 0.1)', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>Ctrl K</span>
             </div>
 
-            {/* Right: Quick Launch Tools, Web3 Wallet, Theme Switcher & Clock */}
+            {/* Right: Quick Launch Tools & Clock */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', flexShrink: 0 }}>
               {/* Bursa Luar Negeri (Global Market Sessions Ticker) */}
               <GlobalMarketTicker onNavigateGlobal={() => setActiveTab('GLOBAL_MARKETS')} />
-
-              {/* Web3 Phantom Solana Wallet & Memecoin Swap Pill */}
-              <button
-                onClick={() => setIsSwapModalOpen(true)}
-                style={{
-                  fontSize: '10px',
-                  fontFamily: 'var(--font-mono)',
-                  letterSpacing: '0.06em',
-                  padding: '4px 10px',
-                  minHeight: '26px',
-                  color: walletState.connected ? 'var(--accent-green-text)' : 'var(--text-secondary)',
-                  border: walletState.connected ? '1px solid rgba(46, 230, 168, 0.35)' : '1px solid rgba(100, 116, 139, 0.35)',
-                  background: walletState.connected ? 'rgba(46, 230, 168, 0.10)' : 'rgba(100, 116, 139, 0.08)',
-                  borderRadius: '6px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  whiteSpace: 'nowrap',
-                  boxShadow: 'none'
-                }}
-                title={walletState.connected ? `Phantom Terhubung: ${walletState.address} (${walletState.balance.toFixed(3)} SOL)` : 'Sambungkan Phantom Wallet & Degen Memecoin Swap'}
-              >
-                <span>👻</span>
-                <span>
-                  {walletState.connected
-                    ? `${shortenAddress(walletState.address)} (${walletState.balance.toFixed(2)} SOL)`
-                    : 'CONNECT PHANTOM'}
-                </span>
-                <span style={{ fontSize: '8px', background: 'rgba(100,116,139,0.18)', padding: '1px 5px', borderRadius: '4px', color: 'var(--text-secondary)' }}>
-                  SWAP
-                </span>
-              </button>
-
-              {/* Data Provenance Badge */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '3px',
-                  fontSize: '8.5px',
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: 700,
-                  padding: '3px 6px',
-                  borderRadius: '6px',
-                  background: isWsConnected ? 'rgba(46, 230, 168, 0.10)' : 'rgba(255, 180, 84, 0.10)',
-                  color: isWsConnected ? 'var(--accent-green-text)' : 'var(--accent-gold-text)',
-                  border: isWsConnected ? '1px solid rgba(46, 230, 168, 0.28)' : '1px solid rgba(255, 180, 84, 0.28)',
-                  whiteSpace: 'nowrap'
-                }}
-                title="Data Provenance Envelope: Status jalur data aktual pasar vs polling"
-              >
-                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isWsConnected ? 'var(--accent-green)' : 'var(--accent-gold)', display: 'inline-block' }} />
-                <span>{isWsConnected ? 'WS LIVE' : 'REST (5S)'}</span>
-              </div>
 
               {/* Master Terminal Time */}
               <HeaderClock />
@@ -1327,16 +1213,6 @@ export default function App() {
 
       {/* Compliance & Risk Disclosure Modal (First-Run Acknowledgment) */}
       <ComplianceRiskModal />
-
-      {/* Web3 Solana Degen Memecoin Radar & Jupiter Swap Modal */}
-      <Suspense fallback={null}>
-        <SolanaSwapModal
-          isOpen={isSwapModalOpen}
-          onClose={() => setIsSwapModalOpen(false)}
-          walletState={walletState}
-          setWalletState={setWalletState}
-        />
-      </Suspense>
     </>
   );
 }
