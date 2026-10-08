@@ -49,15 +49,25 @@ class ArenaEvaluator:
         self.state = self._load_state()
 
     def _load_state(self) -> dict:
+        # BE-29: two writers share these files (the hourly evaluator and the
+        # long-session runner). Adopting an older timeline would make the public
+        # state jump backward when this evaluator overwrites the runner's newer
+        # progress - so the file with the newest last_evaluated wins.
+        candidates = []
         for path in [self.state_file, self.public_file]:
             if os.path.exists(path):
                 try:
                     with open(path, "r", encoding="utf-8") as f:
                         data = json.load(f)
                         if isinstance(data, dict) and "agents" in data and "positions" in data:
-                            return data
+                            candidates.append((str(data.get("last_evaluated") or ""), path, data))
                 except Exception as e:
                     logger.warning(f"Failed to load arena state from {path}: {e}")
+        if candidates:
+            candidates.sort(key=lambda c: c[0], reverse=True)
+            if len(candidates) > 1 and candidates[0][0] != candidates[1][0]:
+                logger.info(f"Arena state adopted from {candidates[0][1]} (newest last_evaluated {candidates[0][0]})")
+            return candidates[0][2]
 
         # Initialize fresh state
         return {
@@ -73,8 +83,12 @@ class ArenaEvaluator:
         for path in [self.state_file, self.public_file]:
             try:
                 os.makedirs(os.path.dirname(path), exist_ok=True)
-                with open(path, "w", encoding="utf-8") as f:
+                # Atomic replace: a torn write here would be read as corrupt state
+                # by the next writer (the runner already does temp + os.replace).
+                temp_file = f"{path}.tmp"
+                with open(temp_file, "w", encoding="utf-8") as f:
                     json.dump(self.state, f, indent=2, default=str)
+                os.replace(temp_file, path)
             except Exception as e:
                 logger.error(f"Error saving arena state to {path}: {e}")
 
