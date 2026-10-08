@@ -842,9 +842,13 @@ export default function EconomicCalendarTab() {
           borderRadius: '10px', padding: '12px 16px', fontSize: '12px',
           color: '#fbbf24', lineHeight: 1.7,
         }}>
-          <strong>⚠️ Jadwal contoh, dudu feed langsung.</strong> Tanggal rilis lan jeneng
-          acara kuwi kerangka nyata, <strong>nanging angka actual/forecast/previous isih conto</strong> —
-          aja dianggep asil rilis. Sumber kalender durung disambungake.
+          {/* Warning text was Javanese ("dudu feed langsung", "aja dianggep asil
+              rilis"). AGENTS.md requires plain Indonesian for all app text, and
+              this is a data-honesty warning — the one place clarity matters
+              most. */}
+          <strong>⚠️ Jadwal contoh, bukan feed langsung.</strong> Tanggal rilis dan nama
+          acara adalah kerangka nyata, <strong>tetapi angka actual/forecast/previous masih contoh</strong>.
+          Jangan dianggap hasil rilis sebenarnya. Sumber kalender belum disambungkan.
         </div>
       )}
 

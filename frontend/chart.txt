@@ -1,0 +1,38 @@
+﻿node.exe : [WebServer] (node:25140) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 23 tests using 1 worker
+
+(node:22740) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [chromium] › e2e\chart.spec.js:20:3 › chart surfaces › the Charting Desk mounts a chart region with real dimensions (2.2s)
+  ok  2 [chromium] › e2e\chart.spec.js:48:3 › chart surfaces › the Pro Desk header renders its metrics, not blank placeholders (2.1s)
+  ok  3 [chromium] › e2e\chart.spec.js:61:3 › chart surfaces › a failing chart embed does not leave an unlabelled black box (4.2s)
+  ok  4 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › HOME does not print /DEFCON\s+4\b/ (hardcoded threat level) (3.4s)
+  ok  5 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › HOME does not print /\b99\.0\b/ (fabricated profit factor fallback) (3.5s)
+  ok  6 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › HOME does not print /\$529\.7M/ (hardcoded 24h volume) (3.8s)
+  ok  7 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › HOME does not print /\$1\.78B/ (hardcoded open interest) (3.1s)
+  ok  8 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › HOME does not print /0\.0013%\s*00:14:58/ (frozen funding countdown) (3.5s)
+  ok  9 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › CRYPTO does not print /DEFCON\s+4\b/ (hardcoded threat level) (3.0s)
+  ok 10 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › CRYPTO does not print /\b99\.0\b/ (fabricated profit factor fallback) (2.8s)
+  ok 11 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › CRYPTO does not print /\$529\.7M/ (hardcoded 24h volume) (2.3s)
+  ok 12 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › CRYPTO does not print /\$1\.78B/ (hardcoded open interest) (3.2s)
+  ok 13 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › CRYPTO does not print /0\.0013%\s*00:14:58/ (frozen funding countdown) (3.1s)
+  ok 14 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › CHARTING does not print /DEFCON\s+4\b/ (hardcoded threat level) (2.6s)
+  ok 15 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › CHARTING does not print /\b99\.0\b/ (fabricated profit factor fallback) (3.0s)
+  ok 16 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › CHARTING does not print /\$529\.7M/ (hardcoded 24h volume) (3.1s)
+  ok 17 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › CHARTING does not print /\$1\.78B/ (hardcoded open interest) (2.8s)
+  ok 18 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › CHARTING does not print /0\.0013%\s*00:14:58/ (frozen funding countdown) (3.7s)
+  ok 19 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › AI_AGENTS does not print /DEFCON\s+4\b/ (hardcoded threat level) (2.3s)
+  ok 20 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › AI_AGENTS does not print /\b99\.0\b/ (fabricated profit factor fallback) (2.7s)
+  ok 21 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › AI_AGENTS does not print /\$529\.7M/ (hardcoded 24h volume) (2.4s)
+  ok 22 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › AI_AGENTS does not print /\$1\.78B/ (hardcoded open interest) (2.3s)
+  ok 23 [chromium] › e2e\chart.spec.js:102:7 › no fabricated market values reach the screen › AI_AGENTS does not print /0\.0013%\s*00:14:58/ (frozen funding countdown) (2.3s)
+
+  23 passed (1.2m)

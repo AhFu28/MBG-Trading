@@ -159,14 +159,14 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
       {/* 4. Main Content Panel */}
       <div className="quant-card" style={{ padding: '0', overflow: 'hidden' }}>
 
-        {/* TAB: EMAS & KOMODITAS — dulu ora ana blas nang daftar */}
+        {/* TAB: EMAS & KOMODITAS (sebelumnya tidak ada di daftar) */}
         {activeTab === 'metals' && (
           <div style={{ padding: '16px' }}>
             <div style={{ marginBottom: '14px' }}>
               <strong style={{ fontSize: '14px' }}>🥇 EMAS, PERAK, MINYAK &amp; INDEKS DOLAR</strong>
               <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '3px', lineHeight: 1.6 }}>
-                Instrumen iki sadurunge ora dijupuk blas, dadi desker iki ora duwe baris logam.
-                Saiki dijupuk langsung saka bursa.
+                Instrumen ini sebelumnya tidak diambil sama sekali, sehingga desker ini tidak
+                punya baris logam. Sekarang diambil langsung dari bursa.
               </div>
             </div>
 

@@ -1,0 +1,20 @@
+﻿node.exe : [WebServer] (node:9980) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 1 worker
+
+(node:6724) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [chromium] › e2e\session.spec.js:22:3 › logout › the Account menu offers logout to a signed-in user (3.1s)
+  ok 2 [chromium] › e2e\session.spec.js:32:3 › logout › clicking logout calls BOTH revoke endpoints (6.6s)
+  ok 3 [chromium] › e2e\session.spec.js:73:3 › logout › logout clears every local session key (6.8s)
+  ok 4 [chromium] › e2e\session.spec.js:105:3 › session integrity › a signed-in user never sees the landing page (2.8s)
+  ok 5 [chromium] › e2e\session.spec.js:111:3 › session integrity › a visitor with no session sees the landing page, not the terminal (1.8s)
+
+  5 passed (23.0s)

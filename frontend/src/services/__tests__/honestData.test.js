@@ -190,7 +190,12 @@ describe('invented economic calendar outcomes', () => {
   const CAL = readCode('components/EconomicCalendarTab.jsx');
 
   it('discloses that the schedule is a sample, not a feed', () => {
-    expect(CAL).toMatch(/Jadwal contoh, dudu feed langsung/);
+    // Text rewritten 2026-10-08: the notice was in Javanese ("dudu feed
+    // langsung"), which AGENTS.md forbids for app text. The assertion tracks the
+    // user-visible string, and the warning it guards is unchanged — if anything
+    // it matters more now that it is readable to every user.
+    expect(CAL).toMatch(/Jadwal contoh, bukan feed langsung/);
+    expect(CAL).toMatch(/masih contoh/);
   });
 
   it('no longer re-assigns the same constant through state', () => {
