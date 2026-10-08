@@ -380,7 +380,7 @@ export default function HomeDashboardTab({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', boxSizing: 'border-box' }}>
 
       {dataStatus === 'fallback' && (
-        <div style={{ background: '#d97706', color: '#fff', padding: '6px 12px', borderRadius: '4px', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600 }}>
+        <div style={{ background: 'var(--accent-amber)', color: '#fff', padding: '6px 12px', borderRadius: '4px', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600 }}>
           📡 OFFLINE MODE : Menjalankan data fallback/cache. Koneksi bursa sedang disinkronkan ulang.
         </div>
       )}
@@ -763,7 +763,7 @@ export default function HomeDashboardTab({
                 border: '1px solid rgba(255, 255, 255, 0.05)'
               }}>
                 {[
-                  { tenor: '3M', yieldVal: '4.85%', color: '#93c5fd' },
+                  { tenor: '3M', yieldVal: '4.85%', color: 'var(--accent-sky-soft)' },
                   { tenor: '2Y', yieldVal: '3.96%', color: 'var(--accent-sky-soft)' },
                   { tenor: '5Y', yieldVal: '4.05%', color: 'var(--accent-sky)' },
                   { tenor: '10Y', yieldVal: '4.18%', color: 'var(--accent-mint)', hl: true },
@@ -794,7 +794,7 @@ export default function HomeDashboardTab({
                 fontFamily: 'var(--font-mono)'
               }}>
                 <span>BI vs Fed Spread: <strong style={{ color: 'var(--accent-mint)' }}>+125 bps Carry</strong> (IDR Support Buffer)</span>
-                <span>USD/IDR: <strong style={{ color: '#f1f5f9' }}>Rp {formattedUsdIdr}</strong></span>
+                <span>USD/IDR: <strong style={{ color: 'var(--text-inverse)' }}>Rp {formattedUsdIdr}</strong></span>
               </div>
             </div>
 
@@ -1129,7 +1129,7 @@ export default function HomeDashboardTab({
               return (
                 <div className="telemetry-panel" style={{
                   padding: '6px 8px',
-                  borderLeft: '3px solid #3b82f6',
+                  borderLeft: '3px solid var(--accent-sky)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
@@ -1422,7 +1422,7 @@ export default function HomeDashboardTab({
                       borderRadius: '2px',
                       border: newsFilter === f.id ? (f.highlight ? '1px solid var(--accent-red)' : '1px solid var(--accent-blue)') : 'var(--border-hairline)',
                       background: newsFilter === f.id ? (f.highlight ? 'var(--accent-red)' : 'var(--accent-blue)') : f.highlight ? 'rgba(239, 68, 68, 0.15)' : 'var(--bg-panel-subtle)',
-                      color: newsFilter === f.id ? '#ffffff' : f.highlight ? 'var(--accent-softred)' : 'var(--text-muted)',
+                      color: newsFilter === f.id ? 'var(--text-inverse)' : f.highlight ? 'var(--accent-softred)' : 'var(--text-muted)',
                       cursor: 'pointer',
                       fontFamily: 'var(--font-mono)',
                       flexShrink: 0
@@ -1454,7 +1454,7 @@ export default function HomeDashboardTab({
                 const isResearch = news.stream === 'RESEARCH' || news.tag === 'RESEARCH';
                 const titleLower = (news.title || '').toLowerCase();
                 const isWarAlert = titleLower.includes('perang') || titleLower.includes('war') || titleLower.includes('militer') || titleLower.includes('rudal') || titleLower.includes('nuklir') || titleLower.includes('sanction');
-                const borderAccent = isWarAlert ? 'var(--accent-red)' : isBrief ? 'var(--accent-amber)' : isResearch ? '#8b5cf6' : isBear ? 'var(--accent-rust)' : isBull ? 'var(--accent-green)' : 'var(--border-subtle)';
+                const borderAccent = isWarAlert ? 'var(--accent-red)' : isBrief ? 'var(--accent-amber)' : isResearch ? 'var(--accent-purple)' : isBear ? 'var(--accent-rust)' : isBull ? 'var(--accent-green)' : 'var(--border-subtle)';
 
                 return (
                   <div

@@ -77,7 +77,7 @@ export default function BloombergNewsWire({ macro, bundle, livePrices = {} }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          fontSize: '9.5px',
+          fontSize: '12px',
           color: '#fee2e2',
           marginBottom: '3px',
           borderRadius: '3px'
@@ -89,13 +89,13 @@ export default function BloombergNewsWire({ macro, bundle, livePrices = {} }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             {crisisAlert.affected_tickers && crisisAlert.affected_tickers.slice(0, 4).map(t => (
               <span key={t} style={{
-                fontSize: '8.5px',
+                fontSize: '12px',
                 fontWeight: '800',
                 padding: '1px 4px',
                 borderRadius: '2px',
                 background: 'rgba(0,0,0,0.4)',
                 border: '1px solid rgba(248, 113, 113, 0.5)',
-                color: '#fca5a5'
+                color: 'var(--accent-softred)'
               }}>
                 {t}
               </span>
@@ -114,7 +114,7 @@ export default function BloombergNewsWire({ macro, bundle, livePrices = {} }) {
         justifyContent: 'space-between',
         flexWrap: 'nowrap',
         gap: '8px',
-        fontSize: '9.5px',
+        fontSize: '12px',
         fontFamily: 'var(--font-mono)',
         letterSpacing: '0.04em',
         borderRadius: '4px',
@@ -124,16 +124,16 @@ export default function BloombergNewsWire({ macro, bundle, livePrices = {} }) {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0 }}>
           <span style={{ width: '6px', height: '6px', background: 'var(--accent-green)', display: 'inline-block', borderRadius: '50%', boxShadow: '0 0 5px var(--accent-green)' }} />
-          <strong style={{ fontSize: '9px', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>MARKET BENCHMARKS</strong>
+          <strong style={{ fontSize: '12px', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>MARKET BENCHMARKS</strong>
         </div>
 
         {/* Running Marquee Ticker Track */}
         <div className="marquee-ticker-container" title="Continuous Market Feed (Hover to Pause)" style={{ flexGrow: 1, minWidth: 0 }}>
           <div className="marquee-ticker-track">
             {[...tickerItems, ...tickerItems].map((t, i) => (
-              <span key={i} className="marquee-ticker-item" style={{ color: 'var(--text-primary)', fontSize: '9px' }}>
+              <span key={i} className="marquee-ticker-item" style={{ color: 'var(--text-primary)', fontSize: '12px' }}>
                 <b style={{ color: 'var(--text-muted)' }}>{t.label}</b> {t.val}
-                <span style={{ color: t.isUp ? 'var(--accent-green-text, #10b981)' : 'var(--accent-rust-text, #ef4444)', marginLeft: '3px', fontWeight: 700 }}>
+                <span style={{ color: t.isUp ? 'var(--accent-green-text, var(--accent-emerald))' : 'var(--accent-rust-text, var(--accent-red))', marginLeft: '3px', fontWeight: 700 }}>
                   ({t.chg})
                 </span>
               </span>
