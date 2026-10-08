@@ -138,8 +138,46 @@ Saya catat dengan jujur, bukan disembunyikan.
 | Logout lengkap (dua cookie) | ✅ 5 tes, diuji balik |
 | Chart benar-benar menggambar | ✅ 3 tes + penjaga struktural |
 | Teks Jawa di UI | ✅ 2 berkas diperbaiki |
+| Rasio R:R karangan | ✅ 3 tempat, 10 tes penjaga |
 
-**Total: 472 tes unit + 49 tes browser, semuanya lulus.**
+**Total: 482 tes unit + 49 tes browser, semuanya lulus.**
+
+---
+
+## Iterasi Ketiga — Pola, Bukan Kejadian
+
+Setelah menemukan `'2.0'` di form order, saya **tidak berhenti di situ.** Saya cari **bentuk** polanya di seluruh aplikasi:
+
+```
+cond ? hitung : <angka literal>
+```
+
+Itu menemukan **dua tempat lagi** dengan pola sama. Keduanya menampilkan angka karangan **di sebelah angka nyata**, dengan gaya yang sama persis.
+
+| Lokasi | Angka karangan | Akibat |
+|---|---|---|
+| `OrderExecutionModal` | `'2.0'` | Order tanpa SL tampil "1 : 2.0" |
+| `dynamicStrategy` (2 tempat) | `2.0` | Laporan R:R karangan |
+| `MasterQuantLeaderboard` | `null` lolos guard | Tercetak **"1:null"** |
+| `LotCalculatorModal` | `2.2` di 3 tempat | Bisa jadi tidak sinkron |
+
+### Temuan tak terduga
+
+Waktu saya ubah `dynamicStrategy` supaya mengembalikan `null`, **muncul bug baru yang selama ini tersembunyi** oleh angka karangan itu:
+
+```js
+actionAdvice = `... Rasio R:R terukur 1:${dynamicRR}. Siap eksekusi.`;
+```
+
+Tanpa fallback angka, itu akan mencetak **"1:null"**. Selama ini tidak pernah terlihat karena `2.0` selalu menutupinya.
+
+**Pelajarannya:** angka karangan bukan cuma menyesatkan. Ia **menyembunyikan** jalur kode yang belum pernah diuji.
+
+Dan di `MasterQuantLeaderboard`, guard-nya `dynamicRR !== undefined` — yang **meloloskan `null`**. Jadi kombinasi keduanya akan menghasilkan teks "1:null" yang tampil ke pengguna.
+
+---
+
+## Cara Saya Menemukan Ketiga Bug (metode yang berulang)
 
 ### 1. Yang belum diuji di browser
 
