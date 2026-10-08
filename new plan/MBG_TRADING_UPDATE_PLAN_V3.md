@@ -10,7 +10,7 @@
 1. Lokal `main` (dfb2359, 3 Okt) **60 commit di belakang** origin/main (0f29e3a, 6 Okt). Catatan: status "behind 18" yang lama ternyata terhadap snapshot remote 5 Okt yang sudah usang — setelah fetch, angkanya 60. **Rebase tes: bersih tanpa konflik** — 3 file lokal yang belum di-commit rebase mulus ke origin/main.
 2. Kolaborator mengejar sebagian besar semangat V2 lewat jalur berbeda: data jujur (honest-data sweep), pipeline/CI diperbaiki (bug "sukses 10 hari tanpa commit" ditutup), arena dibuat jujur (bukan klaim 24/7), sistem akun/langganan Supabase dibangun dari nol, WhatsApp handoff + daemon, signals desk berbayar.
 3. **4 temuan baru yang lebih mendesak dari UI** (semua berbahaya dan murah untuk ditutup):
-   - **Session forgery dari konstanta publik** — JWT_SECRET belum di-set di Cloudflare → cookie palsu dari konstanta repo publik diterima produksi (HTTP 200, payload VIP 1750 KB).
+   - **[DIPERBARUI 2026-10-08] Kredensial produksi bocor di repo publik** — kunci JWT asli di-commit ke `wrangler.toml` (7b5d3f4) + password cockpit asli di dokumen PRD. Kode sudah dibersihkan (wrangler.toml, redaksi PRD) + secret-guard dibenahi; **ROTASI KEDUA KREDENSIAL di Cloudflare = WAJIB sekarang** — kombinasi kunci publik + admin berbasis email = approve langganan bisa dipalsukan siapa pun.
    - **VIP bundle bocor via repo publik** — `latest_cockpit_bundle.json` bisa diunduh siapa saja.
    - **PII nomor telepon** (+6281224170187) di 15+ tempat repo publik.
    - **Supabase schema belum dijalankan** (`profiles` 404) → pelanggan belum bisa daftar/bayar meski kodenya sudah ada.
@@ -107,14 +107,19 @@ Tidak ada paket V2 yang di-drop; satu di-reframe (P-2), empat menyusut/rebase ke
 
 ### N-1 — Trust hardening (URGENT — murah, mendahului semua UI)
 
-**Fakta (bukti upstream, diuji ke produksi 2026-10-06):**
-- **Session forgery**: `auth.js / data.js / scanner.js / _session.js` fallback `deriveJwtSecret(PASSWORD_HASH || DEFAULT_PASSWORD_HASH)` — pepper + hash adalah konstanta di repo publik. Cookie palsu dari konstanta publik → **HTTP 200, payload VIP 1750 KB diterima**. b9f0442 menyatakan: *"THE REAL FIX IS OPERATIONAL, NOT CODE: set JWT_SECRET in Cloudflare Pages."* Sampai itu, semua endpoint gated dianggap pintu terbuka kedua (pintu pertama = bundle VIP yang sudah bisa diunduh dari repo publik).
+**Fakta (bukti upstream, diuji ke produksi 2026-10-06; DIPERBARUI 2026-10-08 setelah 7b5d3f4):**
+- **[2026-10-08, KRITIS] Kunci JWT produksi di-commit ke repo publik** — `wrangler.toml` + `frontend/wrangler.toml` di 7b5d3f4 membawa kunci JWT dalam teks polos. Repo publik → siapa pun bisa membacanya dan memalsukan sesi valid langsung. **Lebih buruk dari celah yang mau ditutup.** Sudah dibersihkan dari kedua file (commit 2026-10-08) — tapi riwayat git tetap memuatnya → **ROTASI WAJIB**.
+- **[2026-10-08, KRITIS] Kombinasi membunuh: kunci publik + admin berbasis email** — approve/reject langganan dicek dengan `isAdmin(session.email)` (daftar email di `_shared.js`). Kunci publik → siapa pun bisa memalsukan sesi dengan email admin → **approve langganan sendiri gratis**. Sampai rotasi, semua aksi admin dianggap bisa dipalsukan.
+- **[2026-10-08, KRITIS] Password cockpit web asli di dokumen PRD** — `docs/sources/PRD_PROJECT_MBG_V2_MASTER.md` membawa `COCKPIT_PASSWORD` asli (kredensial login owner via `/api/auth` yang masih dipakai). Sudah direduksi (commit 2026-10-08) — riwayat git tetap memuatnya → **rotasi password cockpit juga wajib**.
+- **Session forgery (2026-10-06)**: fallback `deriveJwtSecret(PASSWORD_HASH || DEFAULT_PASSWORD_HASH)` — cookie palsu dari konstanta publik → HTTP 200, payload VIP 1750 KB. b9f0442: *"THE REAL FIX IS OPERATIONAL, NOT CODE."* Fallback kini sudah DIHAPUS dari `_jwt.js` (auth fail-closed tanpa `JWT_SECRET`) — pintu konstanta tertutup; kunci asli yang bocor (poin pertama) jadi satu-satunya pintu.
+- **Secret guard bolong (sudah diperbaiki 2026-10-08)**: guard lama memindai label diskusi + email admin (konfigurasi disengaja) → **selalu MERAH, alarm fatigue** — itulah kenapa kunci yang di-commit lolos tanpa terlihat. Guard baru: pola nilai kredensial + `*.toml` + buang pola stale.
 - **VIP bundle bocor**: `engine/cache/latest_cockpit_bundle.json` dapat diunduh raw (daily_trade_plans 12, broker_summary 81, bandarmology_iifs 18, forecasts 18). Penutup: repo → **private** (satu klik owner) + otorisasi ulang CF Pages setelahnya — ⚠ jangan tanpa verifikasi (GO_LIVE).
 - **PII**: nomor +6281224170187 di 15+ tempat (AGENTS.md, CHANGELOG, `engine/send_wa_fuad.py` TARGET_PHONE, tests, SubscriptionPage.jsx).
 - **Supabase schema belum dijalankan** (GET /rest/v1/profiles → 404) → pelanggan belum bisa daftar/bayar.
 
-**Paket:**
-1. *(Owner, ~5 menit)* Set `JWT_SECRET` di Cloudflare Pages env → forgery mati. Verifikasi: cookie palsu dari konstanta publik → **401**.
+**Paket (urutan WAJIB — rotasi dulu):**
+1. *(Owner, ~5 menit — LAKUKAN SEKARANG)* **Rotasi kunci JWT**: buat string acak BARU (32+ karakter), set di **Cloudflare Pages dashboard** (encrypted env var) — BUKAN di file repo. Kunci lama yang bocor mati; sesi lama hangus (security win). Verifikasi: cookie palsu → **401**. ⚠ Setelah fix kode 2026-10-08, deploy berikutnya tidak lagi membawa kunci dari `wrangler.toml` — kalau dashboard belum di-set, auth gagal-closed (401) sampai variabel di-set. Set dashboard dulu.
+2. *(Owner, ~5 menit)* **Rotasi password cockpit** (kredensial `/api/auth` di Cloudflare env) — password lama bocor di dokumen PRD. Verifikasi: login dengan password lama → **401**.
 2. *(Owner, 1 klik + verifikasi)* Repo → private; sesudahnya verifikasi integrasi CF Pages masih hidup (langkah GO-LIVE; rollback = public lagi).
 3. *(Kode, 0.5 PD)* PII → env/config: `WA_TARGET_PHONE` env; SubscriptionPage + docs tidak menampilkan nomor mentah di UI publik; grep gate di CI agar nomor tidak kembali masuk.
 4. *(Owner, ~5 menit + verifikasi)* Jalankan `supabase/schema.sql`, verifikasi `rls_aktif = true` (GO-LIVE Langkah 2; jangan lanjut kalau bukan true).

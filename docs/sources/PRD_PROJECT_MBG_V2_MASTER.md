@@ -370,7 +370,7 @@ TELEGRAM_BOT_TOKEN=1234567890:ABCdefGhIJKlmNoPQRsTUVwxyZ
 TELEGRAM_CHAT_ID=123456789
 
 # Master Password Cockpit Web
-COCKPIT_PASSWORD=MBG::Xk9#Tr4d3!C0ckp1t_Zw&Qr7
+COCKPIT_PASSWORD=<DIROTASI 2026-10-08 — kredensial asli sempat ter-commit di file ini dan harus diganti di Cloudflare; jangan simpan kredensial asli di repo publik>
 ```
 
 ### Langkah 5: Menjalankan & Menguji di Komputer Lokal
