@@ -58,8 +58,13 @@ describe('bundle contract', () => {
     const bundle = JSON.parse(fs.readFileSync(BUNDLE, 'utf8'));
     // If any of these ever appear, the corresponding component should be
     // switched back to reading them — this test is the reminder.
-    for (const absent of ['geopolitical_threat', 'global_markets', 'economic_calendar']) {
+    for (const absent of ['global_markets', 'economic_calendar']) {
       expect(bundle).not.toHaveProperty(absent);
+    }
+    // Geopolitical threat now arrives from live LLM pipeline; verify it is live, not fabricated
+    if (bundle.geopolitical_threat) {
+      expect(bundle.geopolitical_threat.model_used).toBeDefined();
+      expect(bundle.geopolitical_threat.evaluated_at).toBeDefined();
     }
   });
 });
