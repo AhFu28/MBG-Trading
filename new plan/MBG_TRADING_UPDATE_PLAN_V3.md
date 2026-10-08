@@ -103,6 +103,47 @@ Tidak ada paket V2 yang di-drop; satu di-reframe (P-2), empat menyusut/rebase ke
 
 ---
 
+## 2c. P-9H — Home Command Center: kerapian seluruh tampilan
+
+**Sumber:** Permintaan langsung Kamerad Fuad (8 Okt 2026) — "home command center disesuaikan agar lebih rapi seluruh tampilannya" + cek ulang web live + audit design OD (critique 5-dim).
+**Status:** PROPOSED — menunggu persetujuan sebelum implementasi.
+
+### Fakta LIVE (cek web 8 Okt)
+
+- Situs hidup: `https://mbg-trading.pages.dev` ✓
+- `/api/data` kini **401 tanpa sesi** — migrasi gated SUDAH diterjunkan kolaborator (rantai: session → edge KV → bundled snapshot yang selalu ada). Trust-first jalan: tamu mendapat snapshot build-time dengan header `X-Data-Source` jujur ✓
+- CSP fix: belum bisa diverifikasi lewat fetch `_headers` (CF Pages memakannya sebagai config, bukan menyajikannya) — verifikasi via console browser di sesi berikutnya
+
+### Fakta kode (Home, terukur 8 Okt — dasar kerapian)
+
+| Temuan | Angka terukur |
+|---|---|
+| Deklarasi font di bawah 12px | **~142 dari 149** (7px×16, 7.5px×27, 8px×46, 9px×15, 10.5px×12, 11px×10) — hanya 3 deklarasi ≥12px + 1 hero 26px |
+| Warna hex hardcoded di JSX | **~79 instance, 12+ warna** (#34d399×15, #f59e0b×11, #10b981×10, #38bdf8×9, #60a5fa×8, #fca5a5×6, #ef4444×5, ...) |
+| Token undefined | `--border-subtle` dipakai tapi tidak didefinisikan → border render currentColor |
+| A11y | `:focus-visible` = 0 match, `prefers-reduced-motion` = 0 match |
+| Dua tema dalam satu app | Token `:root` = tema TERANG (bg-panel putih, teks navy) — cockpit JSX = gelap hardcoded (gradients rgba(15,23,42)) — akar Philosophy inconsistency 5/10 |
+
+### Plan (F1–F8, ~4–6 PD, scope Home)
+
+| # | Langkah | Isi | Effort |
+|---|---|---|---|
+| F1 | Token yang kurang (1 file) | Definisikan di `index.css`: `--border-subtle` + set aksen cockpit (mint/emerald/amber/sky/soft-red/purple — dari hex yang sudah dipakai) | 0.5 |
+| F2 | Skala type ke 3 tier | 12px = microcopy MINIMUM; 13px = body panel; label uppercase 12px; 26px hero tetap. ~142 deklarasi sub-12px naik bertahap | 1.5 |
+| F3 | Hex → token | ~79 instance → `var(--accent-*)`; mulai HomeDashboardTab (per komponen, commit terpisah) | 1 |
+| F4 | A11y basics | `:focus-visible` ring 2px accent + offset; `prefers-reduced-motion` matikan `tacticalPulse` + marquee | 0.5 |
+| F5 | Spacing konsisten | Gap 10/12/20px tersebar → token space (`--space-1/2/3` + tambah `--space-4: 20px`) | 0.5 |
+| F6 | Breakpoint disatukan | 7 nilai tersebar → 4 (480 / 820 / 1200 / 1360-hero); hapus `!important` layout | 0.5 |
+| F7 | Hierarki kartu | 10 kartu metrik bersaing → 1 hero + tier panel (primer/sekunder/telemetri); glassmorphism hero = satu treatment terbatas (token-kan, bukan hapus) | 1 |
+| F8 | Verifikasi sebagai gate | build + vitest + **critique re-run** (target: Hierarchy ≥7, Philosophy ≥7, nol band Broken, console tanpa token undefined) + screenshot 1600/1200 (browser — sesi berikutnya) | 0.5 |
+
+### Keputusan yang perlu persetujuan Kamerad Fuad
+
+1. **Dua tema (landing terang + cockpit gelap)** — saran: biarkan dua mode dengan token terpisah per mode (DESIGN.md §9 sudah menyebut mode Terminal vs Reading) — BUKAN disatukan jadi satu tema.
+2. **Urutan F2 (type)** — naikkan semua sekaligus (1 commit besar) atau bertahap per blok (home → wire → matrix)? Saran: bertahap per blok, supaya screenshot bisa dibandingkan.
+
+---
+
 ## 3. Paket baru dari temuan upstream (N)
 
 ### N-1 — Trust hardening (URGENT — murah, mendahului semua UI)
