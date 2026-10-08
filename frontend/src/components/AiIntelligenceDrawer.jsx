@@ -961,7 +961,8 @@ export default function AiIntelligenceDrawer({
         {[
           { id: 'THEMATIC', icon: '🌐', label: `1. ISU MAKRO & TRANSMISI (${activeThemes.length} TEMA)` },
           { id: 'DEBATE', icon: '⚔️', label: `2. DEBAT SINDIKASI (ON-DEMAND: ${selectedTicker})` },
-          { id: 'DEFCON', icon: '🛡️', label: `3. GEOPOLITICAL (DEFCON ${defcon})` }
+          // With no feed there is no level, so the tab does not fake one.
+          { id: 'DEFCON', icon: '🛡️', label: hasGeoFeed ? `3. GEOPOLITICAL (DEFCON ${defcon ?? '—'})` : '3. GEOPOLITICAL (FEED N/A)' }
         ].map(tab => (
           <button
             key={tab.id}
@@ -1710,31 +1711,34 @@ export default function AiIntelligenceDrawer({
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#38bdf8', boxShadow: '0 0 8px #38bdf8' }} />
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: hasGeoFeed ? '#38bdf8' : 'var(--text-muted)', boxShadow: hasGeoFeed ? '0 0 8px #38bdf8' : 'none' }} />
                     <span style={{
                       fontSize: '15px',
                       fontWeight: '900',
                       fontFamily: 'var(--font-mono)',
                       letterSpacing: '0.03em',
-                      color: '#38bdf8'
+                      color: hasGeoFeed ? '#38bdf8' : 'var(--text-muted)'
                     }}>
-                      DEFCON {defcon} // GUARDED / WASPADA TERUKUR
+                      {hasGeoFeed ? `DEFCON ${defcon ?? '—'} // WASPADA TERUKUR` : 'DEFCON — TIDAK ADA FEED'}
                     </span>
+                    {/* The old badge read "LIVE COMPUTED LEVEL" unconditionally.
+                        Nothing is computed when there is no feed, and calling it
+                        live made an empty panel look like a measured one. */}
                     <span style={{
                       fontSize: '9.5px',
                       fontFamily: 'var(--font-mono)',
                       padding: '2px 7px',
                       borderRadius: '4px',
-                      background: 'rgba(56, 189, 248, 0.15)',
-                      color: '#38bdf8',
-                      border: '1px solid rgba(56, 189, 248, 0.3)',
+                      background: hasGeoFeed ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255,255,255,0.05)',
+                      color: hasGeoFeed ? '#38bdf8' : 'var(--text-muted)',
+                      border: hasGeoFeed ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid rgba(255,255,255,0.1)',
                       fontWeight: '800'
                     }}>
-                      LIVE COMPUTED LEVEL
+                      {hasGeoFeed ? 'LIVE COMPUTED LEVEL' : 'FEED BELUM TERSEDIA'}
                     </span>
                   </div>
                   <div style={{ fontSize: '11.5px', color: '#e2e8f0', marginTop: '6px', lineHeight: 1.5, maxWidth: '640px' }}>
-                    {geo.primary_threat}
+                    {geo.primary_threat || 'Tidak ada sumber data geopolitik yang tersedia. Panel ini tidak menampilkan tingkat ancaman karena tidak ada yang diukur.'}
                   </div>
                 </div>
 
@@ -1746,23 +1750,37 @@ export default function AiIntelligenceDrawer({
                   textAlign: 'right'
                 }}>
                   <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>Skor Ancaman Komposit</div>
-                  <div style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#f59e0b' }}>
-                    {geo.threat_score} <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>/ 1.00</span>
+                  <div style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: hasGeoFeed ? '#f59e0b' : 'var(--text-muted)' }}>
+                    {hasGeoFeed && geo.threat_score !== null ? geo.threat_score : '—'}{' '}
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>/ 1.00</span>
                   </div>
                 </div>
               </div>
 
-              {/* 5-Segment Institutional Barometer Gauge */}
+              {/* 5-Segment Institutional Barometer Gauge.
+                  THE `active: true` ON LVL 4 IS GONE. It was hardcoded, so the
+                  gauge always highlighted "LVL 4 // GUARDED" and stamped it
+                  ACTIVE — an assessed threat level displayed on a panel with no
+                  feed behind it. The level is now derived from the composite
+                  score and simply does not light up when there is no data. */}
               <div style={{ marginTop: '12px' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '6px', marginBottom: '8px' }}>
                   {[
                     { lvl: 5, label: 'LVL 5 // NORMAL', range: '0.00 - 0.20', color: '#10b981' },
-                    { lvl: 4, label: 'LVL 4 // GUARDED', range: '0.21 - 0.45', color: '#38bdf8', active: true },
+                    { lvl: 4, label: 'LVL 4 // GUARDED', range: '0.21 - 0.45', color: '#38bdf8' },
                     { lvl: 3, label: 'LVL 3 // ELEVATED', range: '0.46 - 0.65', color: '#f59e0b' },
                     { lvl: 2, label: 'LVL 2 // CONFLICT', range: '0.66 - 0.85', color: '#f97316' },
                     { lvl: 1, label: 'LVL 1 // WARTIME', range: '0.86 - 1.00', color: '#ef4444' }
                   ].map(seg => {
-                    const isActive = seg.active;
+                    const score = hasGeoFeed ? geo.threat_score : null;
+                    // Map the composite score to its band. No score, no active band.
+                    const isActive = score !== null && (
+                      (seg.lvl === 5 && score <= 0.20) ||
+                      (seg.lvl === 4 && score > 0.20 && score <= 0.45) ||
+                      (seg.lvl === 3 && score > 0.45 && score <= 0.65) ||
+                      (seg.lvl === 2 && score > 0.65 && score <= 0.85) ||
+                      (seg.lvl === 1 && score > 0.85)
+                    );
                     return (
                       <div
                         key={seg.lvl}

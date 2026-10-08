@@ -632,16 +632,16 @@ export default function App() {
                 title="Buka AI Sentinel Desk"
               >
                 <span>🛡️</span>
-                {/* No `|| 4` fallback. `geopolitical_threat` is not a bundle key,
-                    so the old fallback displayed a permanent "DEFCON 4" in the
-                    top nav as if it were an assessed threat level. A missing
-                    feed now reads "—" — an invented readiness state in the
-                    navigation bar is not a cosmetic problem. */}
-                <span style={{ fontWeight: 700 }}>
-                  {data?.geopolitical_threat?.defcon_level
-                    ? `DEFCON ${data.geopolitical_threat.defcon_level}`
-                    : 'DEFCON —'}
-                </span>
+                {/* Label is the desk name, not a threat level.
+                    Two earlier revisions of this pill were both wrong: it first
+                    showed a hardcoded "DEFCON 4" (invented readiness), then
+                    "DEFCON —" (honest, but permanently empty). The reason is
+                    simple — `geopolitical_threat` is not a key in the engine
+                    bundle and no free source provides one, so ANY level here
+                    would be fabricated.
+                    The button itself is kept: it opens a real desk. It just
+                    stops pretending to report a number it never had. */}
+                <span style={{ fontWeight: 700 }}>SENTINEL</span>
               </button>
 
               {/* Quick Launch Lot Calculator Modal */}

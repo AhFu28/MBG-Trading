@@ -211,10 +211,26 @@ export default function HomeDashboardTab({
     });
   }, [liveNewsRaw]);
 
-  // M-08: Bind tactical alert strictly to bundle DEFCON threat level (suppress sensational alert when NORMAL/DEFCON 4)
-  const bundleDefconLevel = Number(data?.geopolitical_threat?.defcon_level || 4);
-  const isCrisisEscalated = bundleDefconLevel <= 3 && String(data?.macro_indicators?.crisis_severity || '').toUpperCase() !== 'NORMAL';
-  const hasHighThreat = isCrisisEscalated && geoAlertItems.length > 0;
+  /**
+   * Geopolitical alert banner.
+   *
+   * HISTORY — the DEFCON gate that used to sit here is gone, deliberately.
+   *
+   * It read `Number(data?.geopolitical_threat?.defcon_level || 4)` and required
+   * the level to be <= 3. Since `geopolitical_threat` is not a key in the engine
+   * bundle (verified against engine/cache/latest_cockpit_bundle.json), that
+   * always evaluated to 4 and the condition could never be true. The banner was
+   * dead code dressed as a safety feature: the news filter below kept working,
+   * but nothing it found could ever raise the alert.
+   *
+   * The `|| 4` also invented a threat level out of a missing field — the exact
+   * pattern honestData.test.js forbids.
+   *
+   * What replaces it: the banner is driven by REAL matched headlines over the
+   * live feed. That is a genuine signal the terminal can actually produce, and
+   * it says so on screen rather than claiming an assessed threat level.
+   */
+  const hasGeoHeadlines = geoAlertItems.length > 0;
   const primaryThreatNews = geoAlertItems[0];
 
   // News Filtering with ALL granular categories restored
@@ -1315,19 +1331,24 @@ export default function HomeDashboardTab({
                 </div>
               </div>
 
-            {/* Tactical Defense & Nuclear Escalation Alert Banner (Inspired by WorldMonitor & God's Eye View) */}
-            {hasHighThreat && !dismissDefenseAlert && (
+            {/* Conflict headline watch.
+                Driven by real matched headlines in the live feed — see the
+                comment on `hasGeoHeadlines` for why the old DEFCON gate was
+                removed rather than repaired. */}
+            {hasGeoHeadlines && !dismissDefenseAlert && (
               <div className="tactical-defense-alert-banner">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ fontSize: '12px' }}>☢️</span>
                     <strong style={{ fontSize: '12px', color: '#fee2e2', letterSpacing: '0.04em' }}>
-                      DEFENSE ALERT // ESKALASI MILITER &amp; RISIKO NUKLIR
+                      PANTAUAN KONFLIK &amp; RISIKO GEOPOLITIK
                     </strong>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {/* Counts real headlines. No threat level is claimed, because
+                        no assessable geopolitical feed exists. */}
                     <span style={{ fontSize: '12px', background: 'rgba(239, 68, 68, 0.4)', color: 'var(--accent-softred)', padding: '1px 4px', borderRadius: '2px', fontWeight: '800' }}>
-                      DEFCON {bundleDefconLevel} WATCH
+                      {geoAlertItems.length} BERITA
                     </span>
                     <span
                       onClick={() => setDismissDefenseAlert(true)}
