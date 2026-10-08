@@ -75,8 +75,9 @@ frontend/blob-report/
 frontend/playwright/.cache/
 frontend/e2e-results.json
 
-# Console dumps written during E2E debugging (redirected output from playwright).
-# Named so a future debugging session cannot accidentally commit them again.
-frontend/e2e-run*.txt
-frontend/probe-*.txt
+# Console dumps written during E2E debugging (redirected Playwright output).
+# A broad pattern on purpose: naming individual prefixes failed twice, because
+# each debugging session invents new filenames. No real source lives directly in
+# frontend/ as a .txt, so this cannot swallow anything that belongs in the repo.
+frontend/*.txt
 
