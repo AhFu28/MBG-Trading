@@ -962,7 +962,7 @@ export default function AiIntelligenceDrawer({
           { id: 'THEMATIC', icon: '🌐', label: `1. ISU MAKRO & TRANSMISI (${activeThemes.length} TEMA)` },
           { id: 'DEBATE', icon: '⚔️', label: `2. DEBAT SINDIKASI (ON-DEMAND: ${selectedTicker})` },
           // With no feed there is no level, so the tab does not fake one.
-          { id: 'DEFCON', icon: '🛡️', label: hasGeoFeed ? `3. GEOPOLITICAL (DEFCON ${defcon ?? '—'})` : '3. GEOPOLITICAL (FEED N/A)' }
+          { id: 'DEFCON', icon: '🛡️', label: hasGeoFeed ? `3. GEOPOLITICAL (DEFCON ${defcon ?? '—'})` : '3. GEOPOLITICAL (BELUM DIASESMEN)' }
         ].map(tab => (
           <button
             key={tab.id}
@@ -1719,11 +1719,14 @@ export default function AiIntelligenceDrawer({
                       letterSpacing: '0.03em',
                       color: hasGeoFeed ? '#38bdf8' : 'var(--text-muted)'
                     }}>
-                      {hasGeoFeed ? `DEFCON ${defcon ?? '—'} // WASPADA TERUKUR` : 'DEFCON — TIDAK ADA FEED'}
+                      {hasGeoFeed
+                        ? `DEFCON ${defcon ?? '—'} // WASPADA TERUKUR`
+                        : 'DEFCON — BELUM DIASESMEN'}
                     </span>
-                    {/* The old badge read "LIVE COMPUTED LEVEL" unconditionally.
-                        Nothing is computed when there is no feed, and calling it
-                        live made an empty panel look like a measured one. */}
+                    {/* The old badge read "LIVE COMPUTED LEVEL" unconditionally,
+                        which made an empty panel look like a measured one. It is
+                        conditional now: the assessor can genuinely fail, and a
+                        failed run must not be labelled "live". */}
                     <span style={{
                       fontSize: '9.5px',
                       fontFamily: 'var(--font-mono)',
@@ -1734,11 +1737,11 @@ export default function AiIntelligenceDrawer({
                       border: hasGeoFeed ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid rgba(255,255,255,0.1)',
                       fontWeight: '800'
                     }}>
-                      {hasGeoFeed ? 'LIVE COMPUTED LEVEL' : 'FEED BELUM TERSEDIA'}
+                      {hasGeoFeed ? 'LLM ASSESSED' : 'BELUM DIASESMEN'}
                     </span>
                   </div>
                   <div style={{ fontSize: '11.5px', color: '#e2e8f0', marginTop: '6px', lineHeight: 1.5, maxWidth: '640px' }}>
-                    {geo.primary_threat || 'Tidak ada sumber data geopolitik yang tersedia. Panel ini tidak menampilkan tingkat ancaman karena tidak ada yang diukur.'}
+                    {geo.primary_threat || 'Asesmen geopolitik belum dijalankan pada siklus pipeline terakhir. Panel ini tidak menampilkan tingkat ancaman karena belum ada yang diukur.'}
                   </div>
                 </div>
 

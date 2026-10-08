@@ -632,16 +632,16 @@ export default function App() {
                 title="Buka AI Sentinel Desk"
               >
                 <span>🛡️</span>
-                {/* Label is the desk name, not a threat level.
-                    Two earlier revisions of this pill were both wrong: it first
-                    showed a hardcoded "DEFCON 4" (invented readiness), then
-                    "DEFCON —" (honest, but permanently empty). The reason is
-                    simple — `geopolitical_threat` is not a key in the engine
-                    bundle and no free source provides one, so ANY level here
-                    would be fabricated.
-                    The button itself is kept: it opens a real desk. It just
-                    stops pretending to report a number it never had. */}
-                <span style={{ fontWeight: 700 }}>SENTINEL</span>
+                {/* The engine now publishes `geopolitical_threat` (step 1 of
+                    engine/run_pipeline.py). It is ABSENT whenever the assessor
+                    failed, so this falls back to the desk name, never to a
+                    number. A missing feed must not render as a threat level —
+                    that was the original bug, when a hardcoded 4 was shown. */}
+                <span style={{ fontWeight: 700 }}>
+                  {data?.geopolitical_threat?.defcon_level != null
+                    ? `DEFCON ${data.geopolitical_threat.defcon_level}`
+                    : 'SENTINEL'}
+                </span>
               </button>
 
               {/* Quick Launch Lot Calculator Modal */}

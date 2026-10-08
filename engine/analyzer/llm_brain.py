@@ -561,15 +561,24 @@ Assign a DEFCON level (1 to 5) and output ONLY valid JSON matching this schema:
             res["evaluated_at"] = datetime.now(timezone.utc).isoformat()
             return res
         except Exception as e:
-            logger.warning(f"Geopolitical assessment LLM failed: {e}. Returning baseline DEFCON.")
+            # NO FABRICATED LEVEL. This used to return defcon_level 4 and
+            # threat_score 0.42 tagged "DETERMINISTIC_FALLBACK" — a fabricated
+            # assessment that reached the UI as if a model had produced it. The
+            # `4` and `0.42` seen in the terminal traced back to this branch.
+            #
+            # The honest answer is "we do not know": every field is None so the
+            # caller can render "—" or skip the panel entirely.
+            logger.warning(f"Geopolitical assessment LLM failed: {e}. No level reported.")
             return {
-                "defcon_level": 4,
-                "primary_threat": "Tensi geopolitik Timur Tengah & fluktuasi suku bunga bank sentral global.",
-                "affected_asset_classes": ["Crude Oil", "Gold Spot", "IHSG Banking", "USD/IDR"],
-                "tactical_recommendation": "Pertahankan cadangan kas 20-30%, gunakan trailing stop disiplin pada saham energi dan perbankan.",
-                "threat_score": 0.42,
-                "model_used": "DETERMINISTIC_FALLBACK",
+                "defcon_level": None,
+                "primary_threat": None,
+                "affected_asset_classes": [],
+                "tactical_recommendation": None,
+                "threat_score": None,
+                "model_used": None,
                 "latency_ms": 0,
+                "assessed": False,
+                "reason": str(e)[:200],
                 "evaluated_at": datetime.now(timezone.utc).isoformat()
             }
 

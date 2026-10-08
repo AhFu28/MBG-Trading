@@ -98,27 +98,25 @@ describe('invented threat level', () => {
   });
 
   /**
-   * UPDATED 2026-10-08 — the pill no longer shows a DEFCON level AT ALL.
+   * UPDATED AGAIN 2026-10-08 — the pill now shows a REAL level when one exists.
    *
-   * The previous assertion here required App.jsx to contain the literal
-   * "DEFCON —". That was correct at the time: it replaced a hardcoded
-   * "DEFCON 4" with an honest placeholder.
+   * Timeline of this control, because it has been wrong in both directions:
+   *   v1  hardcoded "DEFCON 4"                            — fabricated
+   *   v2  hardcoded "DEFCON —"                            — honest, permanently empty
+   *   v3  "SENTINEL"                                      — empty control removed
+   *   v4  `defcon_level != null ? DEFCON n : SENTINEL`    — engine now supplies data
    *
-   * But a permanently empty placeholder is still a dead control. Verified:
-   * `assess_geopolitical_threat()` exists in engine/analyzer/llm_brain.py and is
-   * never called from anywhere, so `geopolitical_threat` can never reach the
-   * bundle. The owner's call was to stop showing a number the terminal cannot
-   * produce, so the pill now labels the desk it opens instead of a threat level.
-   *
-   * This is the STRONGER guarantee: not "shows an honest placeholder" but
-   * "does not show a threat level at all".
+   * v4 is only safe because the engine really publishes an assessed level (step 1
+   * of run_pipeline.py). What this test protects is the FALLBACK: a missing or
+   * unassessed feed resolves to the desk name, never to a number.
    */
-  it('App does not render a DEFCON level in the top navigation', () => {
+  it('App never invents a DEFCON level when the feed is absent', () => {
     const app = readCode('App.jsx');
+    // The specific fabrications that shipped before.
     expect(app).not.toMatch(/defcon_level\s*\|\|\s*4/);
-    // No interpolation of a threat level into nav text.
-    expect(app).not.toMatch(/DEFCON \$\{/);
-    // The dead pill is labelled for the desk it opens.
+    expect(app).not.toMatch(/DEFCON 4/);
+    // The read must be null-checked, not truthiness-defaulted.
+    expect(app).toMatch(/geopolitical_threat\?\.defcon_level\s*!=\s*null/);
     expect(app).toMatch(/SENTINEL/);
   });
 
@@ -130,11 +128,12 @@ describe('invented threat level', () => {
     expect(drawer).not.toMatch(/active:\s*true\s*\}/);
   });
 
-  it('the GEO drawer does not claim a live computed level without a feed', () => {
+  it('the GEO drawer distinguishes an assessed level from an unassessed run', () => {
     const drawer = readCode('components/AiIntelligenceDrawer.jsx');
-    expect(drawer).toContain('FEED BELUM TERSEDIA');
-    // The label must be conditional, never a bare literal.
-    expect(drawer).not.toMatch(/\n\s*LIVE COMPUTED LEVEL\s*\n/);
+    // Both states must be explicitly labelled, so a failed assessor run cannot
+    // be mistaken for a real reading.
+    expect(drawer).toContain('LLM ASSESSED');
+    expect(drawer).toContain('BELUM DIASESMEN');
   });
 });
 

@@ -214,23 +214,30 @@ export default function HomeDashboardTab({
   /**
    * Geopolitical alert banner.
    *
-   * HISTORY — the DEFCON gate that used to sit here is gone, deliberately.
+   * HISTORY — read before changing the gate.
    *
-   * It read `Number(data?.geopolitical_threat?.defcon_level || 4)` and required
-   * the level to be <= 3. Since `geopolitical_threat` is not a key in the engine
-   * bundle (verified against engine/cache/latest_cockpit_bundle.json), that
-   * always evaluated to 4 and the condition could never be true. The banner was
-   * dead code dressed as a safety feature: the news filter below kept working,
-   * but nothing it found could ever raise the alert.
+   * v1 gated on `Number(data?.geopolitical_threat?.defcon_level || 4) <= 3`.
+   * That always evaluated to 4, so the banner was unreachable code and the
+   * `|| 4` invented a threat level out of a missing field.
    *
-   * The `|| 4` also invented a threat level out of a missing field — the exact
-   * pattern honestData.test.js forbids.
+   * v2 dropped the gate and fired on matched headlines alone, because the
+   * engine never published a threat section at all.
    *
-   * What replaces it: the banner is driven by REAL matched headlines over the
-   * live feed. That is a genuine signal the terminal can actually produce, and
-   * it says so on screen rather than claiming an assessed threat level.
+   * v3 (now): the engine really does publish `geopolitical_threat` — step 1 of
+   * engine/run_pipeline.py calls the assessor that had been dead since the
+   * project started. So the level is genuine when present and the banner uses
+   * it to escalate. It still fires on headlines alone when the assessor failed,
+   * because those headlines are real either way.
+   *
+   * THE RULE THAT MUST NOT REGRESS: never default the level to a number.
+   * Use `!= null` / `??`, never `|| 4`.
    */
+  const threat = data?.geopolitical_threat;
+  const defconLevel = threat?.defcon_level != null ? Number(threat.defcon_level) : null;
+  // 3 = Elevated volatility, 2 = Severe escalation, 1 = Systemic/war crisis.
+  const isEscalated = defconLevel !== null && defconLevel <= 3;
   const hasGeoHeadlines = geoAlertItems.length > 0;
+  const showGeoBanner = isEscalated || hasGeoHeadlines;
   const primaryThreatNews = geoAlertItems[0];
 
   // News Filtering with ALL granular categories restored
@@ -1335,7 +1342,7 @@ export default function HomeDashboardTab({
                 Driven by real matched headlines in the live feed — see the
                 comment on `hasGeoHeadlines` for why the old DEFCON gate was
                 removed rather than repaired. */}
-            {hasGeoHeadlines && !dismissDefenseAlert && (
+            {showGeoBanner && !dismissDefenseAlert && (
               <div className="tactical-defense-alert-banner">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -1345,11 +1352,17 @@ export default function HomeDashboardTab({
                     </strong>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {/* Counts real headlines. No threat level is claimed, because
-                        no assessable geopolitical feed exists. */}
-                    <span style={{ fontSize: '12px', background: 'rgba(239, 68, 68, 0.4)', color: 'var(--accent-softred)', padding: '1px 4px', borderRadius: '2px', fontWeight: '800' }}>
-                      {geoAlertItems.length} BERITA
-                    </span>
+                    {/* Shows the assessed level when the engine produced one, and
+                        the headline count otherwise. Never a defaulted number. */}
+                    {defconLevel !== null ? (
+                      <span style={{ fontSize: '12px', background: 'rgba(239, 68, 68, 0.4)', color: 'var(--accent-softred)', padding: '1px 4px', borderRadius: '2px', fontWeight: '800' }}>
+                        DEFCON {defconLevel}
+                      </span>
+                    ) : (
+                      <span style={{ fontSize: '12px', background: 'rgba(239, 68, 68, 0.4)', color: 'var(--accent-softred)', padding: '1px 4px', borderRadius: '2px', fontWeight: '800' }}>
+                        {geoAlertItems.length} BERITA
+                      </span>
+                    )}
                     <span
                       onClick={() => setDismissDefenseAlert(true)}
                       style={{ cursor: 'pointer', fontSize: '12px', color: 'var(--accent-softred)', padding: '0 2px' }}
@@ -1361,7 +1374,7 @@ export default function HomeDashboardTab({
                 </div>
 
                 <div style={{ fontSize: '12px', color: '#fecaca', lineHeight: 1.25 }}>
-                  ⚠️ <strong>{primaryThreatNews?.title || 'Eskalasi Geopolitik Terdeteksi'}</strong>
+                  ⚠️ <strong>{threat?.primary_threat || primaryThreatNews?.title || 'Eskalasi Geopolitik Terdeteksi'}</strong>
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: 'var(--accent-softred)', borderTop: '1px solid rgba(239, 68, 68, 0.25)', paddingTop: '2px' }}>

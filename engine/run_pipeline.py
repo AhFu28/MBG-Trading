@@ -193,6 +193,8 @@ def main():
     crypto_futures_data = {}
     forex_data = {}
     us_data = {}
+    # Populated only when the LLM assessor returns a real result — see step 1.
+    geopolitical_threat = {}
 
     # 1. Macro & Crypto (Always runs on hourly & all modes)
     if args.mode in ["all", "hourly_crypto_macro"]:
@@ -203,6 +205,43 @@ def main():
         logger.info("Scanning & Generating Top 10 Crypto Spot Pairs (USDT)...")
         crypto_spot_10 = crypto_fetcher.execute()
         db.upsert_crypto_spot_10(crypto_spot_10)
+
+        # Geopolitical threat assessment (DEFCON 1-5).
+        #
+        # This function has existed in LLMBrain since the beginning but was never
+        # called, so `geopolitical_threat` never reached the bundle and every
+        # DEFCON control in the terminal rendered empty. Wired up on owner
+        # request (2026-10-08).
+        #
+        # Failure is not fatal: on a Gemini error the assessor returns
+        # assessed=False with all fields None, and the bundle simply carries no
+        # threat section. It never substitutes a default level.
+        try:
+            headlines = [
+                item.get("title", "") if isinstance(item, dict) else str(item)
+                for item in (macro_data.get("live_news") or [])
+            ]
+            headlines = [h for h in headlines if h]
+            if headlines:
+                logger.info(f"Assessing geopolitical threat from {len(headlines)} headlines...")
+                threat = brain.assess_geopolitical_threat(headlines, {
+                    "gold_price": macro_data.get("gold_price"),
+                    "brent_oil_price": macro_data.get("brent_oil_price"),
+                    "dxy_index": macro_data.get("dxy_index"),
+                    "us10y_yield": macro_data.get("us10y_yield"),
+                })
+                # Only publish a result that was actually assessed. An
+                # unassessed stub would re-create the empty-panel problem this
+                # change exists to fix.
+                if threat and threat.get("assessed", True) and threat.get("defcon_level") is not None:
+                    geopolitical_threat = threat
+                    logger.info(f"Geopolitical threat assessed: DEFCON {threat.get('defcon_level')}")
+                else:
+                    logger.warning("Geopolitical assessment returned no level; section omitted.")
+            else:
+                logger.info("No headlines available; skipping geopolitical assessment.")
+        except Exception as e:
+            logger.warning(f"Geopolitical assessment step failed: {e}")
 
     # v3.0 — Whale Intelligence + Crypto Futures (runs on hourly & all & whale modes)
     if args.mode in ["all", "hourly_crypto_macro", "whale"]:
@@ -556,6 +595,10 @@ def main():
         "forex_intelligence": forex_data or existing_bundle.get("forex_intelligence", {}),
         "us_stocks": us_data or existing_bundle.get("us_stocks", {}),
         "arena_state": arena_state or existing_bundle.get("arena_state", {}),
+        # Omitted entirely when unassessed, rather than written as an empty
+        # object. Merge preserves a previous real assessment across the hourly
+        # runs that do not re-evaluate it.
+        "geopolitical_threat": geopolitical_threat or existing_bundle.get("geopolitical_threat", {}),
         "mode": args.mode,
         "section_timestamps": {
             "idx": datetime.now(timezone.utc).isoformat() if idx_data else existing_bundle.get("section_timestamps", {}).get("idx"),
