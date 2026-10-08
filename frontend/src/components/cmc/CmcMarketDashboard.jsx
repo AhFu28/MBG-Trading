@@ -1,16 +1,19 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Sparkline,
   FearGreedGauge,
   AltcoinSeasonScale,
   DominanceBar,
   MetricTile,
+  MarketStatusRow,
+  MarketPills,
+  EmptyState,
   DashPanel,
   DASH,
   changeColor,
   formatPct,
 } from './CmcPrimitives.jsx';
-import { formatUsdCompact, formatPrice } from '../../services/marketOverview.js';
+import { formatUsdCompact, formatPrice, computeMarketStatuses } from '../../services/marketOverview.js';
 import { useMarketOverview } from '../../hooks/useMarketOverview.js';
 import { useWatchlist } from '../../hooks/useWatchlist.js';
 import CryptoIcon from '../CryptoIcon.jsx';
@@ -48,6 +51,20 @@ const TIME_RANGES = [
   { id: '30d', label: '30d', days: 30 },
   { id: '90d', label: '90d', days: 90 },
 ];
+
+/** Market label and glyph for the cross-market table. */
+const MARKET_BADGE = {
+  CRYPTO: '🪙 Crypto',
+  US: '🇺🇸 Saham US',
+  FX: '💱 Forex',
+  COMMODITY: '🛢️ Komoditas',
+};
+
+const MARKET_GLYPH = {
+  US: '🏛️',
+  FX: '💱',
+  COMMODITY: '🛢️',
+};
 
 /** Market-cap history line chart. No chart library — an SVG polyline is enough. */
 function MarketCapChart({ series, height = 210 }) {
@@ -195,12 +212,22 @@ function StarButton({ symbol, market, watchlist, size = 14 }) {
   );
 }
 
-export default function CmcMarketDashboard({ onOpenAsset, livePrices = {} }) {
-  const { data, loading, refresh } = useMarketOverview();
+export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrices = {}, newsRows = [] }) {
+  const { data, loading, error, refresh } = useMarketOverview({ newsRows });
   const watchlist = useWatchlist();
   const [range, setRange] = useState('30d');
   const [search, setSearch] = useState('');
   const [view, setView] = useState('overview');
+  const [assetMarket, setAssetMarket] = useState('CRYPTO');
+
+  /**
+   * Opening an asset always goes to the FULL chart.
+   *
+   * `onOpenChart` is App's TradingView modal handler. `onOpenAsset` is kept as
+   * a fallback so a caller that only wires one of the two still works — but the
+   * chart handler wins, because the small Security Hub drawer is not what a
+   * user expects when they click a price. */
+  const openAsset = onOpenChart || onOpenAsset;
 
   const global = data?.global;
   const fng = data?.fearGreed;
@@ -209,6 +236,20 @@ export default function CmcMarketDashboard({ onOpenAsset, livePrices = {} }) {
   const topCoins = data?.topCoins || [];
   const trending = data?.trending || [];
   const deriv = data?.derivatives;
+  const crossMarket = data?.crossMarket || [];
+
+  /**
+   * Live exchange session state.
+   *
+   * Recomputed on a one-minute tick so the open/closed flags and countdowns
+   * stay accurate without refetching any market data.
+   */
+  const [nowTick, setNowTick] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNowTick(Date.now()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+  const marketStatuses = useMemo(() => computeMarketStatuses(new Date(nowTick)), [nowTick]);
 
   // The chart range control filters the 30d series we already fetched; asking
   // the API again for a shorter window would be a redundant round-trip.
@@ -219,24 +260,77 @@ export default function CmcMarketDashboard({ onOpenAsset, livePrices = {} }) {
     return full.slice(full.length - days);
   }, [data, range]);
 
-  const filteredCoins = useMemo(() => {
+  /**
+   * Cross-market rows, normalised into one shape.
+   *
+   * CRYPTO comes from the CMC listing; US / FX / COMMODITY come from the
+   * TradingView scanner. Both are flattened here so the table has a single
+   * render path.
+   */
+  const assetRows = useMemo(() => {
+    const cryptoRows = topCoins.map(c => ({
+      key: `CRYPTO:${c.id}`,
+      market: 'CRYPTO',
+      symbol: c.symbol,
+      name: c.name,
+      price: c.price,
+      change24h: c.change24h,
+      volume: c.volume24h,
+      marketCap: c.marketCap,
+      rank: c.rank,
+    }));
+
+    const other = crossMarket.map(r => ({
+      key: `${r.market}:${r.fullSymbol}`,
+      market: r.market,
+      symbol: r.symbol,
+      name: r.name,
+      price: r.price,
+      change24h: r.change24h,
+      volume: r.volume,
+      marketCap: r.marketCap,
+      rank: null,
+    }));
+
+    const all = [...cryptoRows, ...other];
+    const byMarket = assetMarket === 'ALL' ? all : all.filter(r => r.market === assetMarket);
+
     const q = search.trim().toLowerCase();
-    if (!q) return topCoins;
-    return topCoins.filter(c =>
-      c.symbol?.toLowerCase().includes(q) || c.name?.toLowerCase().includes(q),
+    if (!q) return byMarket;
+    return byMarket.filter(r =>
+      r.symbol?.toLowerCase().includes(q) || r.name?.toLowerCase().includes(q),
     );
-  }, [topCoins, search]);
+  }, [topCoins, crossMarket, assetMarket, search]);
+
+  /** Counts for the market filter pills. */
+  const marketCounts = useMemo(() => {
+    const count = m => {
+      if (m === 'CRYPTO') return topCoins.length;
+      return crossMarket.filter(r => r.market === m).length;
+    };
+    return [
+      { id: 'ALL', label: 'Semua', count: topCoins.length + crossMarket.length },
+      { id: 'CRYPTO', label: '🪙 Crypto', count: count('CRYPTO') },
+      { id: 'US', label: '🇺🇸 Saham US', count: count('US') },
+      { id: 'FX', label: '💱 Forex', count: count('FX') },
+      { id: 'COMMODITY', label: '🛢️ Komoditas', count: count('COMMODITY') },
+    ];
+  }, [topCoins, crossMarket]);
 
   const watched = watchlist.entries;
+
+  // A fetch that returned nothing at all means every upstream is unreachable —
+  // usually a blocked network. Say so instead of showing empty boxes.
+  const nothingLoaded = !loading && !!error;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '11px', width: '100%' }}>
 
       {/* ---------- HEADER: title, live indicator, refresh ---------- */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', flexWrap: 'wrap' }}>
           <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)' }}>
-            Crypto Market Overview
+            Market Overview
           </h2>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '9.5px', fontWeight: 800, color: '#16c784', background: 'rgba(22,199,132,0.12)', border: '1px solid rgba(22,199,132,0.3)', padding: '2px 7px', borderRadius: '20px' }}>
             <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#16c784', boxShadow: '0 0 6px #16c784' }} />
@@ -245,6 +339,11 @@ export default function CmcMarketDashboard({ onOpenAsset, livePrices = {} }) {
           {data?.fetchedAt && (
             <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
               diperbarui {new Date(data.fetchedAt).toLocaleTimeString('id-ID')}
+            </span>
+          )}
+          {error && (
+            <span style={{ fontSize: '10px', color: '#f59e0b' }}>
+              ⚠️ sebagian data gagal dimuat
             </span>
           )}
         </div>
@@ -263,7 +362,7 @@ export default function CmcMarketDashboard({ onOpenAsset, livePrices = {} }) {
               <div key={i} className="telemetry-panel" style={{ height: '92px', opacity: 0.45, borderRadius: '10px' }} />
             ))
           : majors.map(coin => (
-              <MajorCard key={coin.symbol} coin={coin} onOpen={onOpenAsset} />
+              <MajorCard key={coin.symbol} coin={coin} onOpen={openAsset} />
             ))}
       </div>
 
@@ -272,10 +371,19 @@ export default function CmcMarketDashboard({ onOpenAsset, livePrices = {} }) {
 
         <DashPanel
           title="Market Status"
-          subtitle="Ringkasan kondisi pasar global"
+          subtitle="Status sesi bursa saat ini (waktu Jakarta)"
         >
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(148px, 1fr))', gap: '15px', alignItems: 'start' }}>
+          {/* Previously this panel showed market SENTIMENT (Fear & Greed,
+              dominance) under a "Market Status" heading, which answered the
+              wrong question. It now answers the one the name implies: is each
+              exchange tradeable right now, and when does that change. */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '4px 20px' }}>
+            {marketStatuses.map(s => (
+              <MarketStatusRow key={s.id} status={s} />
+            ))}
+          </div>
 
+          <div style={{ borderTop: 'var(--border-hairline)', paddingTop: '11px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(148px, 1fr))', gap: '15px', alignItems: 'start' }}>
             {/* Fear & Greed */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-muted)' }}>Fear &amp; Greed</span>
@@ -359,7 +467,7 @@ export default function CmcMarketDashboard({ onOpenAsset, livePrices = {} }) {
                 return (
                   <div
                     key={item.key}
-                    onClick={() => onOpenAsset && onOpenAsset(item.symbol, item.symbol)}
+                    onClick={() => openAsset && openAsset(item.symbol, item.market === 'CRYPTO' ? 'CRYPTO' : item.market)}
                     style={{ display: 'flex', alignItems: 'center', gap: '9px', padding: '7px 8px', borderRadius: '7px', cursor: 'pointer' }}
                     onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-panel-subtle)'; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
@@ -386,7 +494,7 @@ export default function CmcMarketDashboard({ onOpenAsset, livePrices = {} }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: '11px' }} className="cmc-two-col">
 
         <DashPanel
-          title="Crypto Market Cap"
+          title="Market Cap"
           right={
             <div style={{ display: 'flex', gap: '6px' }}>
               <div style={{ display: 'flex', background: 'var(--bg-panel-subtle)', borderRadius: '6px', padding: '2px', border: 'var(--border-hairline)' }}>
@@ -474,82 +582,108 @@ export default function CmcMarketDashboard({ onOpenAsset, livePrices = {} }) {
         </DashPanel>
       </div>
 
-      {/* ---------- ROW 4: coin table + trending ---------- */}
+      {/* ---------- ROW 4: cross-market asset table + trending ---------- */}
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 3fr) minmax(0, 1fr)', gap: '11px' }} className="cmc-two-col">
 
         <DashPanel
-          title="Semua Koin"
+          title="Semua Aset"
+          subtitle="Crypto, saham US, forex dan komoditas dalam satu tabel"
           right={
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari koin..."
-              style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', borderRadius: '6px', padding: '4px 9px', fontSize: '11px', color: 'var(--text-primary)', fontFamily: 'inherit', outline: 'none', width: '150px' }}
+              placeholder="Cari aset..."
+              style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', borderRadius: '6px', padding: '4px 9px', fontSize: '11px', color: 'var(--text-primary)', fontFamily: 'inherit', outline: 'none', width: '140px' }}
             />
           }
         >
-          <div style={{ overflowX: 'auto', maxHeight: '430px', overflowY: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11.5px' }}>
-              <thead>
-                <tr style={{ position: 'sticky', top: 0, background: 'var(--bg-panel)', zIndex: 2, color: 'var(--text-muted)', fontSize: '10px' }}>
-                  <th style={{ textAlign: 'left', padding: '6px 5px', fontWeight: 700, width: '30px' }}>#</th>
-                  <th style={{ textAlign: 'left', padding: '6px 5px', fontWeight: 700 }}>Nama</th>
-                  <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>Harga</th>
-                  <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>1j %</th>
-                  <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>24j %</th>
-                  <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>7h %</th>
-                  <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>Market Cap</th>
-                  <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>Volume (24j)</th>
-                  <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>Sirkulasi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredCoins.map(c => (
-                  <tr
-                    key={c.id}
-                    onClick={() => onOpenAsset && onOpenAsset(c.symbol, `${c.symbol}USDT`)}
-                    style={{ borderTop: 'var(--border-hairline)', cursor: 'pointer' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-panel-subtle)'; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-                  >
-                    <td style={{ padding: '7px 5px', color: 'var(--text-muted)' }}>{c.rank ?? DASH}</td>
-                    <td style={{ padding: '7px 5px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '7px', minWidth: 0 }}>
-                        <StarButton symbol={c.symbol} market="CRYPTO" watchlist={watchlist} />
-                        <CryptoIcon symbol={c.symbol} size={17} />
-                        <span style={{ fontWeight: 800, color: 'var(--text-primary)' }}>{c.name}</span>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '10.5px' }}>{c.symbol}</span>
-                      </div>
-                    </td>
-                    <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>{formatPrice(c.price)}</td>
-                    <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: changeColor(c.change1h) }}>{formatPct(c.change1h)}</td>
-                    <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: changeColor(c.change24h) }}>{formatPct(c.change24h)}</td>
-                    <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: changeColor(c.change7d) }}>{formatPct(c.change7d)}</td>
-                    <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{formatUsdCompact(c.marketCap)}</td>
-                    <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{formatUsdCompact(c.volume24h)}</td>
-                    <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                      {c.circulatingSupply ? `${(c.circulatingSupply / 1e6).toFixed(2)}M` : DASH}
-                    </td>
+          <MarketPills markets={marketCounts} active={assetMarket} onChange={setAssetMarket} />
+
+          {nothingLoaded ? (
+            <EmptyState
+              message="Data pasar gagal dimuat."
+              hint="Periksa koneksi internet. Beberapa sumber (CoinMarketCap, Binance Vision, TradingView) mungkin diblokir jaringan Anda."
+              onRetry={refresh}
+            />
+          ) : (
+            <div style={{ overflowX: 'auto', maxHeight: '430px', overflowY: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11.5px' }}>
+                <thead>
+                  <tr style={{ position: 'sticky', top: 0, background: 'var(--bg-panel)', zIndex: 2, color: 'var(--text-muted)', fontSize: '10px' }}>
+                    <th style={{ textAlign: 'left', padding: '6px 5px', fontWeight: 700, width: '94px' }}>Pasar</th>
+                    <th style={{ textAlign: 'left', padding: '6px 5px', fontWeight: 700 }}>Nama</th>
+                    <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>Harga</th>
+                    <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>24j %</th>
+                    <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>Volume</th>
+                    <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>Market Cap</th>
+                    <th style={{ textAlign: 'center', padding: '6px 5px', fontWeight: 700 }}>Aksi</th>
                   </tr>
-                ))}
-                {filteredCoins.length === 0 && (
-                  <tr>
-                    <td colSpan={9} style={{ padding: '26px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                      {loading ? 'Memuat data koin...' : 'Tidak ada koin yang cocok.'}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {assetRows.map(row => (
+                    <tr
+                      key={row.key}
+                      onClick={() => openAsset && openAsset(row.symbol, row.market)}
+                      style={{ borderTop: 'var(--border-hairline)', cursor: 'pointer' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-panel-subtle)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                      title={`Buka chart ${row.symbol}`}
+                    >
+                      <td style={{ padding: '7px 5px', fontSize: '9.5px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                        {MARKET_BADGE[row.market] || row.market}
+                      </td>
+                      <td style={{ padding: '7px 5px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '7px', minWidth: 0 }}>
+                          <StarButton symbol={row.symbol} market={row.market} watchlist={watchlist} />
+                          {row.market === 'CRYPTO'
+                            ? <CryptoIcon symbol={row.symbol} size={17} />
+                            : <span style={{ width: 17, textAlign: 'center', fontSize: '13px' }}>{MARKET_GLYPH[row.market] || '•'}</span>}
+                          <span style={{ fontWeight: 800, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.symbol}</span>
+                          <span style={{ color: 'var(--text-muted)', fontSize: '10.5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.name}</span>
+                        </div>
+                      </td>
+                      <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: 700, whiteSpace: 'nowrap' }}>{formatPrice(row.price)}</td>
+                      <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: changeColor(row.change24h) }}>{formatPct(row.change24h)}</td>
+                      <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{formatUsdCompact(row.volume)}</td>
+                      <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{formatUsdCompact(row.marketCap)}</td>
+                      <td style={{ padding: '7px 5px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() => onOpenChart && onOpenChart(row.symbol, row.market)}
+                          style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--accent-blue)', borderRadius: '5px', padding: '3px 8px', fontSize: '10px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
+                        >
+                          📈 Chart
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {assetRows.length === 0 && (
+                    <tr>
+                      <td colSpan={7} style={{ padding: '10px' }}>
+                        {loading
+                          ? <span style={{ color: 'var(--text-muted)' }}>Memuat data aset…</span>
+                          : <EmptyState
+                              compact
+                              message={search ? 'Tidak ada aset yang cocok dengan pencarian.' : 'Belum ada data untuk pasar ini.'}
+                              hint={marketCounts.find(m => m.id === assetMarket)?.count === 0
+                                ? 'Sumber data untuk pasar ini sedang tidak mengembalikan hasil.'
+                                : undefined}
+                              onRetry={search ? undefined : refresh}
+                            />}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </DashPanel>
 
-        <DashPanel title="Trending" subtitle="Paling banyak dicari hari ini">
+        <DashPanel title="Trending & Topik" subtitle="Paling dicari dan paling diliput hari ini">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
             {trending.slice(0, 8).map((t, i) => (
               <div
                 key={`${t.symbol}-${i}`}
-                onClick={() => onOpenAsset && onOpenAsset(t.symbol, `${t.symbol}USDT`)}
+                onClick={() => openAsset && openAsset(t.symbol, 'CRYPTO')}
                 style={{ display: 'flex', alignItems: 'center', gap: '9px', padding: '7px 6px', borderRadius: '7px', cursor: 'pointer' }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-panel-subtle)'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
@@ -568,9 +702,41 @@ export default function CmcMarketDashboard({ onOpenAsset, livePrices = {} }) {
               </div>
             ))}
             {trending.length === 0 && (
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)', padding: '18px 6px', textAlign: 'center' }}>
-                {loading ? 'Memuat...' : 'Data trending belum tersedia'}
+              <EmptyState compact message={loading ? 'Memuat…' : 'Data trending belum tersedia.'} onRetry={loading ? undefined : refresh} />
+            )}
+          </div>
+
+          {/* Topic coverage from the live news feed.
+              HONEST LABEL: this counts headlines in our own news wire. It is
+              NOT X/Twitter or Threads — neither has a free public API. */}
+          <div style={{ borderTop: 'var(--border-hairline)', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span style={{ fontSize: '9.5px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+              Jumlah berita per topik dari Live News Wire (bukan media sosial)
+            </span>
+            {(data?.topics || []).map(topic => (
+              <div key={topic.id} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-primary)', flex: 1, minWidth: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {topic.label}
+                </span>
+                <span style={{ flex: '0 0 60px', height: '5px', borderRadius: '3px', background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+                  <span style={{ display: 'block', height: '100%', width: `${Math.min(100, (topic.count / (data?.topics?.[0]?.count || 1)) * 100)}%`, background: 'var(--accent-blue)' }} />
+                </span>
+                <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', minWidth: '18px', textAlign: 'right' }}>{topic.count}</span>
+              </div>
+            ))}
+            {(data?.topics || []).length === 0 && !loading && (
+              <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
+                Belum ada berita yang bisa dikelompokkan.
               </span>
+            )}
+            {(data?.keywords || []).length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '2px' }}>
+                {data.keywords.slice(0, 10).map(k => (
+                  <span key={k.word} style={{ fontSize: '9.5px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)' }}>
+                    {k.word} <strong style={{ color: 'var(--text-muted)' }}>{k.count}</strong>
+                  </span>
+                ))}
+              </div>
             )}
           </div>
         </DashPanel>

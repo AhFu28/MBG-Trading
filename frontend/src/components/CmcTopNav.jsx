@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import MbgLogo from './MbgLogo.jsx';
 import { useWatchlist } from '../hooks/useWatchlist.js';
+import { usePreferences } from '../context/PreferencesContext.jsx';
 
 /**
  * CmcTopNav — the horizontal, hover-opened navigation bar.
@@ -74,7 +75,8 @@ export const NAV_GROUPS = [
     id: 'ACCOUNT',
     label: 'Account',
     items: [
-      { id: 'SUBSCRIPTION', label: 'Setting & Langganan', desc: 'Status akun dan paket' },
+      { id: 'SETTINGS', label: 'Setting', desc: 'Bahasa, mode tampilan & preferensi' },
+      { id: 'SUBSCRIPTION', label: 'Langganan', desc: 'Status akun dan paket' },
       { id: 'WATCHLIST', label: 'Watchlist Saya', desc: 'Instrumen yang Anda bintangi' },
     ],
   },
@@ -98,6 +100,19 @@ export default function CmcTopNav({
   const closeTimer = useRef(null);
   const navRef = useRef(null);
   const watchlist = useWatchlist();
+  const { t } = usePreferences();
+
+  /**
+   * Translated navigation model.
+   *
+   * Items are translated by id so the structure stays single-sourced in
+   * NAV_GROUPS above. An untranslated id falls back to its Indonesian label,
+   * which is why the whole app keeps working as languages are added.
+   */
+  const navGroups = useMemo(() => NAV_GROUPS.map(g => ({
+    ...g,
+    label: t(`nav.${g.id.toLowerCase()}`, g.label),
+  })), [t]);
 
   const isAdmin = useMemo(
     () => !!account?.isAdmin
@@ -236,7 +251,7 @@ export default function CmcTopNav({
 
   const navButtons = (
     <div ref={navRef} style={{ display: 'flex', alignItems: 'center', gap: '2px', position: 'relative' }}>
-      {NAV_GROUPS.map(group => {
+      {navGroups.map(group => {
         const isOpen = openGroup === group.id;
         const isActive = activeGroupId === group.id;
         const hasPanel = !!group.items;
@@ -403,7 +418,7 @@ export default function CmcTopNav({
             maxHeight: '68vh', overflowY: 'auto',
           }}
         >
-          {NAV_GROUPS.map(group => {
+          {navGroups.map(group => {
             const items = group.id === 'ACCOUNT' ? [...(group.items || []), ...adminExtras] : group.items;
             if (!items) {
               return (

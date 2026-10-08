@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
+import { PreferencesProvider } from './context/PreferencesContext.jsx'
 import { isChunkLoadFailure, shouldRetryChunkLoad, clearRetryGuard, CHUNK_RETRY_KEY } from './services/chunkLoadRetry.js'
 
 // ---------------------------------------------------------------------------
@@ -169,7 +170,9 @@ class ErrorBoundary extends React.Component {
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <App />
+      <PreferencesProvider>
+        <App />
+      </PreferencesProvider>
     </ErrorBoundary>
   </React.StrictMode>,
 )

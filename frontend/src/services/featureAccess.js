@@ -29,8 +29,6 @@ export const MODULES = {
   CRYPTO: 'CRYPTO',
   CHANGELOG: 'CHANGELOG',
   AI_AGENTS: 'AI_AGENTS',
-  RADAR: 'RADAR',
-  DEGEN: 'DEGEN',
   FUTURES: 'FUTURES',
   FOREX: 'FOREX',
   US_STOCKS: 'US_STOCKS',
@@ -41,6 +39,7 @@ export const MODULES = {
   FLOW_PROCESS: 'FLOW_PROCESS',
   WATCHLIST: 'WATCHLIST',
   SUBSCRIPTION: 'SUBSCRIPTION',
+  SETTINGS: 'SETTINGS',
   ADMIN_APPROVAL: 'ADMIN_APPROVAL',
   TESTING: 'TESTING',
   PEARSON_CORRELATION: 'PEARSON_CORRELATION',
@@ -68,6 +67,9 @@ export const MODULE_TIER = {
   // Account management must never be locked — a paying customer has to be able
   // to see their own status and expiry.
   [MODULES.SUBSCRIPTION]: TIER.GUEST,
+  // Settings must never be locked either — language and appearance are a
+  // basic expectation, not a paid feature.
+  [MODULES.SETTINGS]: TIER.GUEST,
   [MODULES.ADMIN_APPROVAL]: TIER.ADMIN,
 
   // --- Free account: a little more, still not enough to run a business ------
@@ -77,8 +79,6 @@ export const MODULE_TIER = {
   [MODULES.STOCK]: TIER.PRO,
   [MODULES.CRYPTO]: TIER.PRO,
   [MODULES.AI_AGENTS]: TIER.PRO,
-  [MODULES.RADAR]: TIER.PRO,
-  [MODULES.DEGEN]: TIER.PRO,
   [MODULES.FUTURES]: TIER.PRO,
   [MODULES.FOREX]: TIER.PRO,
   [MODULES.US_STOCKS]: TIER.PRO,
@@ -177,7 +177,6 @@ export const PLANS = [
     ],
     missing: [
       'AI Multi-Agent Arena (16 bot)',
-      'Early Signal Radar memecoin',
       'Charting Desk & Whale Tracker',
       'Forex, US Stocks & Crypto Futures',
       'Notifikasi Telegram real-time',
@@ -195,7 +194,6 @@ export const PLANS = [
       'Sinyal REAL-TIME (tanpa jeda 24 jam)',
       'Notifikasi langsung ke Telegram',
       'AI Multi-Agent Arena — 16 bot otonom',
-      'Early Signal Radar memecoin',
       'Charting Desk, Whale Tracker & Heatmap',
       'Forex, US Stocks & Crypto Futures',
       'AI Sentinel Desk (makro & geopolitik)',

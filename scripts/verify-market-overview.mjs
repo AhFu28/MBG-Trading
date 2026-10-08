@@ -116,6 +116,42 @@ await check('Hyperliquid derivatives (OI + funding)', async () => {
   };
 });
 
+// ---- Cross-market desks (added 2026-10-08) ------------------------------
+// Requested: the asset table must cover stocks, forex and commodities, not
+// crypto only. All three come from the TradingView scanner.
+
+const TV = 'https://scanner.tradingview.com';
+
+async function scanMarket(scanner, tickers) {
+  return getJSON(`${TV}/${scanner}/scan`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      symbols: { tickers, query: { types: [] } },
+      columns: ['description', 'close', 'change', 'volume'],
+      options: { lang: 'en' },
+    }),
+  });
+}
+
+await check('US equities (TradingView scanner)', async () => {
+  const j = await scanMarket('america', ['NASDAQ:NVDA', 'NASDAQ:AAPL', 'NASDAQ:MSFT']);
+  const rows = j?.data ?? [];
+  return { count: rows.length, first: rows[0]?.d?.[0], close: rows[0]?.d?.[1] };
+});
+
+await check('Forex (TradingView scanner)', async () => {
+  const j = await scanMarket('forex', ['FX_IDC:EURUSD', 'FX_IDC:USDJPY', 'FX_IDC:USDIDR']);
+  const rows = j?.data ?? [];
+  return { count: rows.length, first: rows[0]?.d?.[0], close: rows[0]?.d?.[1] };
+});
+
+await check('Commodities (TradingView scanner)', async () => {
+  const j = await scanMarket('cfd', ['TVC:GOLD', 'TVC:SILVER', 'TVC:USOIL']);
+  const rows = j?.data ?? [];
+  return { count: rows.length, first: rows[0]?.d?.[0], close: rows[0]?.d?.[1] };
+});
+
 console.log('='.repeat(70));
 const failed = results.filter(r => !r.ok);
 console.log(`${results.length - failed.length}/${results.length} sections returned live data.`);

@@ -19,7 +19,7 @@ import { fetchMarketOverview } from '../services/marketOverview.js';
 
 const REFRESH_MS = 90_000;
 
-export function useMarketOverview({ enabled = true } = {}) {
+export function useMarketOverview({ enabled = true, newsRows = [] } = {}) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState(null);
@@ -29,11 +29,17 @@ export function useMarketOverview({ enabled = true } = {}) {
   const mountedRef = useRef(true);
   const inFlightRef = useRef(false);
 
+  // The news feed arrives with the cockpit bundle and changes between renders.
+  // Held in a ref so the polling effect does NOT restart — and refetch every
+  // endpoint — each time a single headline arrives.
+  const newsRef = useRef(newsRows);
+  useEffect(() => { newsRef.current = newsRows; }, [newsRows]);
+
   const load = useCallback(async () => {
     if (inFlightRef.current) return;
     inFlightRef.current = true;
     try {
-      const result = await fetchMarketOverview();
+      const result = await fetchMarketOverview({ newsRows: newsRef.current });
       if (!mountedRef.current) return;
       setData(result);
       setError(null);

@@ -266,6 +266,108 @@ export function MetricTile({ label, value, change, changeSuffix = '%', hint }) {
   );
 }
 
+/**
+ * Exchange open/closed indicator.
+ *
+ * A panel named "Market Status" must answer whether each market is tradeable
+ * right now. Green means open, amber means an intraday break, red means closed.
+ * The colour never claims more than the state allows.
+ */
+export function MarketStatusRow({ status }) {
+  if (!status) return null;
+
+  const palette = {
+    OPEN: { dot: '#16c784', text: '#16c784', label: 'BUKA' },
+    BREAK: { dot: '#f59e0b', text: '#f59e0b', label: 'ISTIRAHAT' },
+    CLOSED: { dot: '#ea3943', text: '#ea3943', label: 'TUTUP' },
+  }[status.state] || { dot: '#64748b', text: 'var(--text-muted)', label: '—' };
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '9px', padding: '6px 0' }}>
+      <span
+        style={{
+          width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
+          background: palette.dot,
+          boxShadow: status.state === 'OPEN' ? `0 0 6px ${palette.dot}` : 'none',
+        }}
+      />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', flex: 1, minWidth: 0 }}>
+        <span style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {status.name}
+        </span>
+        <span style={{ fontSize: '9.5px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {status.detail}
+        </span>
+      </div>
+      <span style={{ fontSize: '9.5px', fontWeight: 800, color: palette.text, fontFamily: 'var(--font-mono)', flexShrink: 0 }}>
+        {palette.label}
+      </span>
+    </div>
+  );
+}
+
+/** Compact market filter pills for the cross-market asset table. */
+export function MarketPills({ markets, active, onChange }) {
+  return (
+    <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
+      {markets.map(m => {
+        const on = active === m.id;
+        return (
+          <button
+            key={m.id}
+            onClick={() => onChange(m.id)}
+            style={{
+              background: on ? 'var(--accent-blue)' : 'var(--bg-panel-subtle)',
+              color: on ? '#fff' : 'var(--text-muted)',
+              border: on ? '1px solid var(--accent-blue)' : 'var(--border-hairline)',
+              borderRadius: '6px',
+              padding: '3px 10px',
+              fontSize: '10.5px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {m.label}{typeof m.count === 'number' ? ` (${m.count})` : ''}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * Shown when a data source returned nothing.
+ *
+ * WHY THIS EXISTS: Jendral Arib reported "dibagian home banyak yg kosong2".
+ * A blank panel gives the user no way to tell a blocked network from a broken
+ * build from an empty market. This states which happened and offers a retry.
+ */
+export function EmptyState({ message, hint, onRetry, compact = false }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: compact ? '18px 10px' : '30px 14px', textAlign: 'center' }}>
+      <span style={{ fontSize: '19px', opacity: 0.5 }}>⚠️</span>
+      <span style={{ fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.6, maxWidth: '380px' }}>
+        {message}
+      </span>
+      {hint && (
+        <span style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.6, maxWidth: '400px' }}>
+          {hint}
+        </span>
+      )}
+      {onRetry && (
+        <button
+          onClick={onRetry}
+          style={{ marginTop: '3px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--accent-blue)', borderRadius: '6px', padding: '4px 12px', fontSize: '10.5px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+        >
+          ↻ Coba lagi
+        </button>
+      )}
+    </div>
+  );
+}
+
 /** Reusable panel shell so every dashboard card has identical chrome. */
 export function DashPanel({ title, subtitle, right, children, minHeight, style }) {
   return (

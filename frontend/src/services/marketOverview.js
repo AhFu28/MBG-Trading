@@ -343,12 +343,327 @@ export async function fetchDerivatives() {
 }
 
 /**
+ * Cross-market asset universe: crypto, US equities, forex, commodities.
+ *
+ * REQUEST (Jendral Arib, 2026-10-08):
+ *   "Semua Koin ini jangan cuma crypto, tapi saham dan forex commodities juga"
+ *   "Trending ini ambil dari news terupdate + twitter dan threads ... gacuma
+ *    crypto tapi saham, forex, atau bahkan AI sekalipun"
+ *
+ * WHY TRADINGVIEW SCANNER FOR STOCKS/FOREX:
+ * The app already uses scanner.tradingview.com for its live IDX/US/forex feeds
+ * in useLivePrices.js, and it answers from Indonesia (verified 2026-10-08).
+ * One POST returns many symbols plus close and % change, so a cross-market
+ * table costs one request per market rather than one per instrument.
+ */
+
+const TV_SCANNER = 'https://scanner.tradingview.com';
+
+/** Universe definitions. Slugs match the scanner's own market identifiers. */
+const CROSS_MARKET_UNIVERSES = [
+  {
+    market: 'US',
+    scanner: 'america',
+    label: 'US Stocks',
+    // Tickers are requested explicitly so the list stays a curated mega-cap set
+    // rather than whatever the scanner happens to rank first.
+    symbols: [
+      'NASDAQ:NVDA', 'NASDAQ:AAPL', 'NASDAQ:MSFT', 'NASDAQ:GOOGL', 'NASDAQ:AMZN',
+      'NASDAQ:META', 'NASDAQ:TSLA', 'NASDAQ:AMD', 'NASDAQ:AVGO', 'NASDAQ:NFLX',
+      'NYSE:JPM', 'NYSE:V', 'NYSE:WMT', 'NYSE:XOM', 'NASDAQ:COST',
+      'NYSE:UNH', 'NASDAQ:PLTR', 'NASDAQ:INTC', 'NYSE:DIS', 'NYSE:BA',
+    ],
+  },
+  {
+    market: 'FX',
+    scanner: 'forex',
+    label: 'Forex',
+    symbols: [
+      'FX_IDC:EURUSD', 'FX_IDC:USDJPY', 'FX_IDC:GBPUSD', 'FX_IDC:AUDUSD',
+      'FX_IDC:USDCAD', 'FX_IDC:USDCHF', 'FX_IDC:NZDUSD', 'FX_IDC:USDCNH',
+      'FX_IDC:USDIDR', 'FX_IDC:USDSGD',
+    ],
+  },
+  {
+    market: 'COMMODITY',
+    scanner: 'cfd',
+    label: 'Komoditas',
+    symbols: [
+      'TVC:GOLD', 'TVC:SILVER', 'TVC:USOIL', 'TVC:UKOIL', 'TVC:DXY',
+      'TVC:PLATINUM', 'TVC:COPPER', 'TVC:NATGAS',
+    ],
+  },
+];
+
+/**
+ * Fetch one market universe from the TradingView scanner.
+ *
+ * Columns requested: description, close, change, volume — enough for a table
+ * row without the payload growing large.
+ */
+async function fetchScannerMarket({ scanner, symbols, market, label }) {
+  const json = await getJSON(`${TV_SCANNER}/${scanner}/scan`, {
+    init: {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        symbols: { tickers: symbols, query: { types: [] } },
+        columns: ['description', 'close', 'change', 'volume', 'market_cap_basic', 'type'],
+        options: { lang: 'en' },
+      }),
+    },
+  });
+
+  const rows = json?.data;
+  if (!Array.isArray(rows)) return [];
+
+  return rows.map(r => {
+    const [description, close, change, volume, marketCap, type] = r.d || [];
+    // The scanner returns "EXCHANGE:TICKER"; the display name is the part after
+    // the colon, which is what a user recognises.
+    const fullSymbol = String(r.s || '');
+    const ticker = fullSymbol.includes(':') ? fullSymbol.split(':').pop() : fullSymbol;
+
+    return {
+      market,
+      marketLabel: label,
+      symbol: ticker,
+      fullSymbol,
+      name: description || ticker,
+      type: type || null,
+      // NOTE: `close` may be null for a symbol the scanner does not cover. That
+      // stays null so the table renders "—" rather than a fabricated 0.
+      price: toNumberOrNull(close),
+      change24h: toNumberOrNull(change),
+      volume: toNumberOrNull(volume),
+      marketCap: toNumberOrNull(marketCap),
+    };
+  });
+}
+
+/** All three non-crypto markets, fetched concurrently. */
+export async function fetchCrossMarketAssets() {
+  const results = await Promise.all(CROSS_MARKET_UNIVERSES.map(fetchScannerMarket));
+  return results.flat().filter(r => r.price !== null);
+}
+
+/**
+ * Session status for the major exchanges.
+ *
+ * REQUEST: "Market Status juga kosongan ini kenapaa"
+ *
+ * The old dashboard rendered MARKET-FORECAST numbers under the heading "Market
+ * Status" (Fear & Greed, dominance, and so on). That is market sentiment, not
+ * market status. A panel named "Market Status" should answer one question: is
+ * each exchange open or closed right now, and when does it next change?
+ *
+ * All times are computed in Asia/Jakarta so the answer matches the user's clock.
+ */
+const MARKET_SESSIONS = [
+  { id: 'IDX', name: 'Bursa Efek Indonesia', tz: 'Asia/Jakarta', tzLabel: 'WIB', open: [540, 960], break: [720, 810], days: [1, 2, 3, 4, 5] },
+  { id: 'NYSE', name: 'New York Stock Exchange', tz: 'America/New_York', tzLabel: 'ET', open: [570, 960], break: null, days: [1, 2, 3, 4, 5] },
+  { id: 'LSE', name: 'London Stock Exchange', tz: 'Europe/London', tzLabel: 'GMT', open: [480, 990], break: null, days: [1, 2, 3, 4, 5] },
+  { id: 'TSE', name: 'Tokyo Stock Exchange', tz: 'Asia/Tokyo', tzLabel: 'JST', open: [540, 900], break: [690, 750], days: [1, 2, 3, 4, 5] },
+  { id: 'CRYPTO', name: 'Crypto (24/7)', tz: 'UTC', tzLabel: 'UTC', open: [0, 1440], break: null, days: [0, 1, 2, 3, 4, 5, 6] },
+];
+
+/** Read the wall-clock hour/minute/weekday inside a given IANA timezone. */
+function zonedParts(timeZone, now = new Date()) {
+  const fmt = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    hour: '2-digit',
+    minute: '2-digit',
+    weekday: 'short',
+    hour12: false,
+  });
+  const parts = fmt.formatToParts(now);
+  const get = t => parts.find(p => p.type === t)?.value;
+  const weekdayMap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  const hour = Number(get('hour'));
+  const minute = Number(get('minute'));
+  return {
+    // Intl renders midnight as "24" in some locales; normalise it.
+    minutes: ((hour % 24) * 60) + minute,
+    weekday: weekdayMap[get('weekday')] ?? 0,
+  };
+}
+
+/** Minutes as HH:MM in the market's own timezone. */
+function formatMinutes(minutes) {
+  const h = Math.floor(minutes / 60) % 24;
+  const m = Math.round(minutes % 60);
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+/** Human-readable "in 2j 15m" / "3j 40m lalu". */
+export function formatDuration(totalMinutes) {
+  const mins = Math.abs(Math.round(totalMinutes));
+  const d = Math.floor(mins / 1440);
+  const h = Math.floor((mins % 1440) / 60);
+  const m = mins % 60;
+  if (d > 0) return `${d} hari ${h} jam`;
+  if (h > 0) return `${h} jam ${m} menit`;
+  return `${m} menit`;
+}
+
+/**
+ * Compute open/closed state for every tracked exchange.
+ *
+ * Pure function of the clock so it can be unit-tested without mocking fetch.
+ */
+export function computeMarketStatuses(now = new Date()) {
+  return MARKET_SESSIONS.map(s => {
+    const { minutes, weekday } = zonedParts(s.tz, now);
+    const isTradingDay = s.days.includes(weekday);
+    const [openAt, closeAt] = s.open;
+
+    // 24/7 venues (crypto) have no closed window at all.
+    const alwaysOpen = openAt === 0 && closeAt === 1440;
+
+    let state = 'CLOSED';
+    let detail = '';
+
+    if (alwaysOpen) {
+      state = 'OPEN';
+      detail = 'Perdagangan tanpa henti';
+    } else if (!isTradingDay) {
+      state = 'CLOSED';
+      detail = 'Akhir pekan';
+    } else if (minutes >= openAt && minutes < closeAt) {
+      const inBreak = s.break && minutes >= s.break[0] && minutes < s.break[1];
+      if (inBreak) {
+        state = 'BREAK';
+        detail = `Istirahat, buka lagi ${formatMinutes(s.break[1])} ${s.tzLabel}`;
+      } else {
+        state = 'OPEN';
+        detail = `Tutup ${formatMinutes(closeAt)} ${s.tzLabel}`;
+      }
+    } else {
+      state = 'CLOSED';
+      detail = minutes < openAt
+        ? `Buka ${formatMinutes(openAt)} ${s.tzLabel}`
+        : `Besok ${formatMinutes(openAt)} ${s.tzLabel}`;
+    }
+
+    return {
+      id: s.id,
+      name: s.name,
+      state,
+      detail,
+      localTime: formatMinutes(minutes),
+      tzLabel: s.tzLabel,
+    };
+  });
+}
+
+/**
+ * Trending topics for the non-crypto markets and for AI.
+ *
+ * REQUEST: "Trending ini ambil dari news terupdate + twitter dan threads soal
+ *           market gacuma crypto tapi saham, forex, atau bahkan AI sekalipun"
+ *
+ * HONEST LIMITATION — please read before changing this:
+ * X/Twitter and Threads have NO free public API. Reading them requires a paid
+ * key, and scraping them violates their terms. So this function does NOT read
+ * social media, and it must never pretend to.
+ *
+ * What it does provide is real and verifiable:
+ *   1. CMC search rank for crypto (a genuine trending signal from CMC itself)
+ *   2. TradingView's live scanner ranking for the non-crypto markets
+ *   3. Headline keywords, counted across the app's own live news feed
+ *
+ * The UI must label which of these it is showing. Calling scanner output
+ * "Twitter trending" would be a lie.
+ */
+
+/** Words that carry no topic signal when scanning headlines. */
+const STOPWORDS = new Set([
+  'the', 'a', 'an', 'and', 'or', 'but', 'for', 'with', 'from', 'that', 'this',
+  'are', 'was', 'were', 'will', 'has', 'have', 'had', 'its', 'you', 'your',
+  'dan', 'yang', 'untuk', 'dari', 'pada', 'dengan', 'akan', 'tidak', 'ini',
+  'itu', 'adalah', 'ke', 'di', 'se', 'para', 'oleh', 'dalam', 'atau', 'juga',
+  'bisa', 'lebih', 'telah', 'masih', 'saat', 'usai', 'soal', 'kata', 'nya',
+]);
+
+/** Topic themes we look for in headlines, including AI. */
+const TOPIC_RULES = [
+  { id: 'AI', label: 'AI & Teknologi', keywords: ['ai', 'nvidia', 'openai', 'chip', 'semiconductor', 'artificial', 'intelligence', 'llm', 'datacenter', 'kecerdasan'] },
+  { id: 'CRYPTO', label: 'Crypto', keywords: ['bitcoin', 'btc', 'ethereum', 'eth', 'crypto', 'kripto', 'altcoin', 'solana', 'stablecoin'] },
+  { id: 'EQUITY', label: 'Saham', keywords: ['stock', 'saham', 'earnings', 'ihsg', 'idx', 'nasdaq', 'dow', 's&p', 'emiten'] },
+  { id: 'FOREX', label: 'Forex', keywords: ['dollar', 'usd', 'rupiah', 'idr', 'euro', 'yen', 'forex', 'currency', 'mata uang'] },
+  { id: 'COMMODITY', label: 'Komoditas', keywords: ['gold', 'emas', 'oil', 'minyak', 'brent', 'commodity', 'komoditas', 'copper'] },
+  { id: 'MACRO', label: 'Makro & Fed', keywords: ['fed', 'inflation', 'inflasi', 'rate', 'suku bunga', 'central bank', 'recession', 'resesi', 'cpi'] },
+  { id: 'GEOPOLITICS', label: 'Geopolitik', keywords: ['war', 'perang', 'sanction', 'sanksi', 'tariff', 'tarif', 'conflict', 'escalation'] },
+];
+
+/**
+ * Rank live news headlines into topic counts.
+ *
+ * @param {Array<{title?:string, headline?:string}>} newsRows
+ * @returns {Array<{id:string,label:string,count:number,samples:string[]}>}
+ */
+export function rankTopicsFromHeadlines(newsRows = []) {
+  const rows = Array.isArray(newsRows) ? newsRows : [];
+  const buckets = TOPIC_RULES.map(rule => ({ id: rule.id, label: rule.label, count: 0, samples: [] }));
+
+  for (const row of rows) {
+    const text = String(row?.title || row?.headline || '').toLowerCase();
+    if (!text) continue;
+    for (let i = 0; i < TOPIC_RULES.length; i += 1) {
+      const hit = TOPIC_RULES[i].keywords.some(k => text.includes(k));
+      if (hit) {
+        buckets[i].count += 1;
+        if (buckets[i].samples.length < 2) {
+          buckets[i].samples.push(String(row.title || row.headline).slice(0, 90));
+        }
+      }
+    }
+  }
+
+  return buckets
+    .filter(b => b.count > 0)
+    .sort((a, b) => b.count - a.count);
+}
+
+/**
+ * Extract the most repeated meaningful words across headlines.
+ * These are literal terms present in real reporting, not inferred topics.
+ */
+export function topKeywordsFromHeadlines(newsRows = [], limit = 14) {
+  const counts = new Map();
+  const rows = Array.isArray(newsRows) ? newsRows : [];
+
+  for (const row of rows) {
+    const text = String(row?.title || row?.headline || '').toLowerCase();
+    if (!text) continue;
+    for (const raw of text.split(/[^a-z0-9%$]+/)) {
+      const w = raw.trim();
+      // Keep tickers and percentages; drop short noise and stopwords.
+      if (w.length < 3) continue;
+      if (STOPWORDS.has(w)) continue;
+      if (/^\d+$/.test(w)) continue;
+      counts.set(w, (counts.get(w) || 0) + 1);
+    }
+  }
+
+  return [...counts.entries()]
+    .filter(([, n]) => n >= 2)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([word, count]) => ({ word, count }));
+}
+
+/**
  * Everything the Home dashboard needs, fetched concurrently.
  *
  * A failed section resolves to `null` / `[]` so the caller can render the rest
  * of the page. Nothing here throws.
+ *
+ * `newsRows` is accepted rather than fetched here because the live news feed
+ * already arrives with the main cockpit bundle; re-fetching it would duplicate
+ * a request the app has already made.
  */
-export async function fetchMarketOverview() {
+export async function fetchMarketOverview({ newsRows = [] } = {}) {
   const [
     global,
     fearGreed,
@@ -358,6 +673,7 @@ export async function fetchMarketOverview() {
     trending,
     derivatives,
     marketCapHistory,
+    crossMarket,
   ] = await Promise.all([
     fetchGlobalMetrics(),
     fetchFearGreed(),
@@ -367,6 +683,7 @@ export async function fetchMarketOverview() {
     fetchTrending(),
     fetchDerivatives(),
     fetchMarketCapHistory(30),
+    fetchCrossMarketAssets(),
   ]);
 
   return {
@@ -378,6 +695,11 @@ export async function fetchMarketOverview() {
     trending,
     derivatives,
     marketCapHistory,
+    crossMarket,
+    // Derived from the caller-supplied news feed. Both are real counts over
+    // real headlines; neither claims to represent social media.
+    topics: rankTopicsFromHeadlines(newsRows),
+    keywords: topKeywordsFromHeadlines(newsRows),
     fetchedAt: Date.now(),
   };
 }

@@ -98,6 +98,15 @@ describe('navigation structure', () => {
     expect(all).not.toContain('DEGEN');
     expect(all).not.toContain('GLOBAL_MARKETS');
   });
+
+  it('keeps admin-only desks out of the static navigation model', () => {
+    // Flow Process, Changelog and Admin Approval are injected only for an
+    // admin account, so they must not be entries any user could reach.
+    const all = NAV_GROUPS.flatMap(g => (g.items || []).map(i => i.id));
+    expect(all).not.toContain('FLOW_PROCESS');
+    expect(all).not.toContain('CHANGELOG');
+    expect(all).not.toContain('ADMIN_APPROVAL');
+  });
 });
 
 describe('rendering', () => {

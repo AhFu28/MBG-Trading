@@ -11,24 +11,25 @@ import { PLANS, TIER, allowedModules, MODULE_TIER } from '../services/featureAcc
  */
 
 const MODULE_LABEL = {
-  HOME: 'Home Command Center',
+  HOME: 'Market Overview',
   SIGNALS: 'Sinyal Trading',
-  NEWS: 'News & Riset Harian',
-  CHANGELOG: 'Changelog',
-  STOCK: 'Saham IDX',
-  CRYPTO: 'Crypto Spot',
+  NEWS: 'Live News Wire',
+  CHANGELOG: 'Changelog (khusus admin)',
+  STOCK: 'Stock Desk (IDX & US)',
+  CRYPTO: 'Crypto Desk (Perp & Spot)',
   AI_AGENTS: 'AI Multi-Agent Arena',
-  RADAR: 'Early Signal Radar',
-  DEGEN: 'Degen Memecoin Desk',
-  FUTURES: 'Crypto Futures',
-  FOREX: 'Forex Scanner',
-  US_STOCKS: 'US Stocks',
+  FOREX: 'Forex & Komoditas',
   WHALES: 'Whale Tracker',
   HEATMAP: 'Market Heatmap',
   CHARTING: 'Charting Desk',
-  SENTINEL: 'AI Sentinel Desk',
+  SENTINEL: 'AI Sentiment DEFCON',
   WATCHLIST: 'Watchlist Pribadi',
-  FLOW_PROCESS: 'Flow Process',
+  TESTING: 'Testing Lab',
+  PEARSON_CORRELATION: 'Korelasi Pearson',
+  ACADEMY: 'Quant Academy',
+  ECONOMIC_CALENDAR: 'Kalender Makro',
+  ADMIN_APPROVAL: 'Admin Approval Desk',
+  FLOW_PROCESS: 'Flow Process (khusus admin)',
 };
 
 export default function LandingPage({ onAuthenticated, configured = true }) {  const [showAuth, setShowAuth] = useState(false);

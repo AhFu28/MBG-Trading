@@ -59,9 +59,10 @@ describe('free tier is deliberately limited', () => {
 
   it('keeps free to the intended modules only', () => {
     // SUBSCRIPTION is included on purpose: a paying customer must always be able
-    // to see their own status and expiry.
+    // to see their own status and expiry. SETTINGS likewise — language and
+    // appearance are a basic expectation, not a paid feature.
     expect(new Set(freeModules)).toEqual(
-      new Set([MODULES.HOME, MODULES.SIGNALS, MODULES.NEWS, MODULES.SUBSCRIPTION]),
+      new Set([MODULES.HOME, MODULES.SIGNALS, MODULES.NEWS, MODULES.SUBSCRIPTION, MODULES.SETTINGS]),
     );
   });
 
@@ -74,13 +75,20 @@ describe('free tier is deliberately limited', () => {
 
   it('locks every money-making desk behind Pro', () => {
     for (const m of [
-      MODULES.AI_AGENTS, MODULES.RADAR, MODULES.DEGEN, MODULES.CHARTING,
+      MODULES.AI_AGENTS, MODULES.CHARTING,
       MODULES.WHALES, MODULES.FOREX, MODULES.US_STOCKS, MODULES.FUTURES,
       MODULES.SENTINEL, MODULES.STOCK, MODULES.CRYPTO,
     ]) {
       expect(canAccess(m, TIER.FREE)).toBe(false);
       expect(canAccess(m, TIER.PRO)).toBe(true);
     }
+  });
+
+  it('no longer exposes the removed RADAR and DEGEN modules at all', () => {
+    // Removed on request. Asserting absence stops a future edit from quietly
+    // reintroducing a desk the owner deleted.
+    expect(MODULES.RADAR).toBeUndefined();
+    expect(MODULES.DEGEN).toBeUndefined();
   });
 
   it('shows free that most of the app is locked', () => {
@@ -96,7 +104,7 @@ describe('guest', () => {
   });
 
   it('cannot open analytical desks', () => {
-    for (const m of [MODULES.STOCK, MODULES.AI_AGENTS, MODULES.RADAR, MODULES.CHARTING]) {
+    for (const m of [MODULES.STOCK, MODULES.AI_AGENTS, MODULES.CHARTING]) {
       expect(canAccess(m, TIER.GUEST)).toBe(false);
     }
   });

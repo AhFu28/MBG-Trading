@@ -27,6 +27,7 @@ const WhaleIntelligenceTab = lazy(() => import('./components/WhaleIntelligenceTa
 const CryptoFuturesTab = lazy(() => import('./components/CryptoFuturesTab.jsx'));
 const CryptoDeskTab = lazy(() => import('./components/CryptoDeskTab.jsx'));
 const StockDeskTab = lazy(() => import('./components/StockDeskTab.jsx'));
+const SettingsPage = lazy(() => import('./components/SettingsPage.jsx'));
 const ForexCommandTab = lazy(() => import('./components/ForexCommandTab.jsx'));
 const USStockTab = lazy(() => import('./components/USStockTab.jsx'));
 const MarketHeatmapTab = lazy(() => import('./components/MarketHeatmapTab.jsx'));
@@ -170,6 +171,17 @@ export default function App() {
 
   const toggleTheme = useCallback(() => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  }, []);
+
+  /**
+   * Set the theme to a specific value.
+   *
+   * The Settings page offers Dark and Light as a direct choice, so it needs a
+   * setter rather than a toggle — a toggle would flip AWAY from the mode the
+   * user just clicked when it is already active.
+   */
+  const applyTheme = useCallback((next) => {
+    setTheme(next === 'light' ? 'light' : 'dark');
   }, []);
 
   // Display Mode: 'SIMPLE' (Mode Santai / New User) vs 'PRO' (Full Quant Terminal)
@@ -445,9 +457,9 @@ export default function App() {
 
   const getTabLabel = (tab) => {
     switch (tab) {
-      case 'HOME': return '🏠 Home Command Center';
-      case 'STOCK': return '📈 Saham IDX Alpha';
-      case 'CRYPTO': return '⚡ Crypto Spot Momentum';
+      case 'HOME': return '🏠 Market Overview';
+      case 'STOCK': return '📈 Stock Desk (IDX & US)';
+      case 'CRYPTO': return '⚡ Crypto Desk (Perp & Spot)';
       case 'CHARTING': return '📊 Institutional Charting Desk';
       case 'WATCHLIST': return '⭐ Personal Watchlist';
       case 'GLOBAL_MARKETS': return '🌍 Pasar Global';
@@ -459,14 +471,13 @@ export default function App() {
       case 'NEWS': return '📰 Terminal Live News';
       case 'ACADEMY': return '🎓 Quant Academy';
       case 'WHALES': return '🐋 Whale Intelligence Hub';
-      case 'FUTURES': return '🔥 Crypto Futures Intelligence';
-      case 'DEGEN': return '🎰 Degen Desk — Memecoin Radar';
-      case 'RADAR': return '🎯 Early Signal Radar — Deteksi Dini';
+      case 'FUTURES': return '⚡ Crypto Desk (Perp & Spot)';
       case 'SIGNALS': return '📡 Sinyal Trading — Entry, SL & TP';
       case 'SUBSCRIPTION': return '👑 Akun & Langganan';
+      case 'SETTINGS': return '⚙️ Pengaturan';
       case 'ADMIN_APPROVAL': return '⚡ Admin Approval Desk';
-      case 'FOREX': return '💱 Forex Command Center';
-      case 'US_STOCKS': return '🇺🇸 US Stock Intelligence';
+      case 'FOREX': return '💱 Forex & Komoditas';
+      case 'US_STOCKS': return '📈 Stock Desk (IDX & US)';
       case 'FLOW_PROCESS': return '⚡ Flow Process & System Architecture';
       case 'CHANGELOG': return '📜 Changelog Update & Catatan Rilis';
       case 'AI_AGENTS': return '🤖 AI Multi-Agent Arena';
@@ -915,13 +926,16 @@ export default function App() {
               </main>
             ) : activeTab === 'HOME' ? (
               /* CMC-STYLE MARKET OVERVIEW
-                 Replaces the old portfolio/macro composite. See
-                 components/cmc/CmcMarketDashboard.jsx for why the IDX-centric
-                 panels moved back to their own desks rather than being deleted. */
+                 Clicking any ticker opens the FULL chart directly, per request:
+                 "ketika klik ticker nya, jgn munculin kecil gini tapi langsung
+                  fullchartnya aja". The small Security Hub panel is no longer
+                  in this path. */
               <main>
                 <CmcMarketDashboard
                   livePrices={livePrices}
-                  onOpenAsset={handleOpenSecurityHub}
+                  onOpenAsset={handleOpenChart}
+                  onOpenChart={handleOpenChart}
+                  newsRows={data?.macro_telemetry?.live_news || []}
                 />
               </main>
             ) : activeTab === 'CHARTING' ? (
@@ -1021,6 +1035,15 @@ export default function App() {
                   plans={data?.daily_trade_plans || []}
                   userTier={userTier}
                   onNavigateTab={setActiveTab}
+                />
+              </main>
+            ) : activeTab === 'SETTINGS' ? (
+              /* ACCOUNT SETTINGS — language and appearance */
+              <main>
+                <SettingsPage
+                  account={account || {}}
+                  theme={theme}
+                  onSetTheme={applyTheme}
                 />
               </main>
             ) : activeTab === 'SUBSCRIPTION' ? (
