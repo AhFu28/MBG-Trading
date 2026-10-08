@@ -106,7 +106,7 @@ Tidak ada paket V2 yang di-drop; satu di-reframe (P-2), empat menyusut/rebase ke
 ## 2c. P-9H — Home Command Center: kerapian seluruh tampilan
 
 **Sumber:** Permintaan langsung Kamerad Fuad (8 Okt 2026) — "home command center disesuaikan agar lebih rapi seluruh tampilannya" + cek ulang web live + audit design OD (critique 5-dim).
-**Status:** PROPOSED — menunggu persetujuan sebelum implementasi.
+**Status:** SEBAGIAN DEPLOYED (8 Okt 2026) — gelombang 1: F1 token + F2 skala type + F3 hex→token + F4 a11y (`1ccf982`); gelombang 2: wire type scale + sisa token (`e0ed13e`). Sisa: F5 spacing sweep, F6 breakpoint, F7 hierarki kartu — butuh verifikasi visual; F8 critique re-run + screenshot (sesi browser).
 
 ### Fakta LIVE (cek web 8 Okt)
 
@@ -161,9 +161,9 @@ Tidak ada paket V2 yang di-drop; satu di-reframe (P-2), empat menyusut/rebase ke
 **Paket (urutan WAJIB — rotasi dulu):**
 1. *(Owner, ~5 menit — LAKUKAN SEKARANG)* **Rotasi kunci JWT**: buat string acak BARU (32+ karakter), set di **Cloudflare Pages dashboard** (encrypted env var) — BUKAN di file repo. Kunci lama yang bocor mati; sesi lama hangus (security win). Verifikasi: cookie palsu → **401**. ⚠ Setelah fix kode 2026-10-08, deploy berikutnya tidak lagi membawa kunci dari `wrangler.toml` — kalau dashboard belum di-set, auth gagal-closed (401) sampai variabel di-set. Set dashboard dulu.
 2. *(Owner, ~5 menit)* **Rotasi password cockpit** (kredensial `/api/auth` di Cloudflare env) — password lama bocor di dokumen PRD. Verifikasi: login dengan password lama → **401**.
-2. *(Owner, 1 klik + verifikasi)* Repo → private; sesudahnya verifikasi integrasi CF Pages masih hidup (langkah GO-LIVE; rollback = public lagi).
-3. *(Kode, 0.5 PD)* PII → env/config: `WA_TARGET_PHONE` env; SubscriptionPage + docs tidak menampilkan nomor mentah di UI publik; grep gate di CI agar nomor tidak kembali masuk.
-4. *(Owner, ~5 menit + verifikasi)* Jalankan `supabase/schema.sql`, verifikasi `rls_aktif = true` (GO-LIVE Langkah 2; jangan lanjut kalau bukan true).
+3. *(Owner, 1 klik + verifikasi)* Repo → private; sesudahnya verifikasi integrasi CF Pages masih hidup (langkah GO-LIVE; rollback = public lagi).
+4. *(Kode, 0.5 PD)* PII → env/config: `WA_TARGET_PHONE` env; SubscriptionPage + docs tidak menampilkan nomor mentah di UI publik; grep gate di CI agar nomor tidak kembali masuk.
+5. *(Owner, ~5 menit + verifikasi)* Jalankan `supabase/schema.sql`, verifikasi `rls_aktif = true` (GO-LIVE Langkah 2; jangan lanjut kalau bukan true).
 
 **Estimasi:** 1 PD kode + aksi owner · **Gate:** cookie palsu 401 · repo private + situs hidup · signup jalan · RLS aktif.
 
