@@ -18,7 +18,7 @@
  * clarity and honesty, not protection. Never put a secret behind a client gate.
  */
 
-export const TIER = { GUEST: 'guest', FREE: 'free', PRO: 'pro', ADMIN: 'admin' };
+export const TIER = { GUEST: 'guest', FREE: 'free', PRO: 'pro', LEGEND: 'legend', ADMIN: 'admin' };
 
 /** Every navigable module in the cockpit. */
 export const MODULES = {
@@ -45,6 +45,13 @@ export const MODULES = {
   PEARSON_CORRELATION: 'PEARSON_CORRELATION',
   ACADEMY: 'ACADEMY',
   ECONOMIC_CALENDAR: 'ECONOMIC_CALENDAR',
+  // LEGEND-only: the autonomous trade executor and the Jev execution overlay.
+  TRADING_BOT: 'TRADING_BOT',
+  JEV_EXECUTION: 'JEV_EXECUTION',
+  // The earned-tier path itself. Must be reachable by every signed-in user —
+  // it is the roadmap they are working through, so gating it would hide the
+  // only explanation of how to reach LEGEND.
+  ACHIEVEMENTS: 'ACHIEVEMENTS',
 };
 
 /**
@@ -70,6 +77,8 @@ export const MODULE_TIER = {
   // Settings must never be locked either — language and appearance are a
   // basic expectation, not a paid feature.
   [MODULES.SETTINGS]: TIER.GUEST,
+  // Same reasoning: a user has to be able to see how to progress.
+  [MODULES.ACHIEVEMENTS]: TIER.GUEST,
   [MODULES.ADMIN_APPROVAL]: TIER.ADMIN,
 
   // --- Free account: a little more, still not enough to run a business ------
@@ -92,6 +101,18 @@ export const MODULE_TIER = {
   [MODULES.ACADEMY]: TIER.PRO,
   [MODULES.ECONOMIC_CALENDAR]: TIER.PRO,
 
+  // --- Legend: the tier that can actually place orders ----------------------
+  //
+  // Why these two are gated harder than everything else: they are the only
+  // features in the product that touch a user's real money. Every other PRO
+  // desk is read-only analysis — a wrong chart is an inconvenience. A wrong
+  // order is a loss.
+  //
+  // Owner decision (2026-10-08): reachable only by earning it, not by paying
+  // for it. `legendEligible()` in achievements.js enforces the prerequisite.
+  [MODULES.TRADING_BOT]: TIER.LEGEND,
+  [MODULES.JEV_EXECUTION]: TIER.LEGEND,
+
   // --- Admin only (Perintah Jendral Arib: Flow Process & Changelog khusus admin)
   [MODULES.FLOW_PROCESS]: TIER.ADMIN,
   [MODULES.CHANGELOG]: TIER.ADMIN,
@@ -106,7 +127,13 @@ export const PUBLIC_MODULES = Object.keys(MODULE_TIER).filter(
   m => MODULE_TIER[m] === TIER.GUEST,
 );
 
-const RANK = { [TIER.GUEST]: 0, [TIER.FREE]: 1, [TIER.PRO]: 2, [TIER.ADMIN]: 3 };
+/**
+ * Tier ordering. LEGEND sits above PRO but below ADMIN.
+ *
+ * ADMIN stays highest on purpose: an administrator must never be locked out of
+ * their own system by a missing achievement.
+ */
+const RANK = { [TIER.GUEST]: 0, [TIER.FREE]: 1, [TIER.PRO]: 2, [TIER.LEGEND]: 3, [TIER.ADMIN]: 4 };
 
 export function normalizeTier(raw) {
   // Only a real string may name a tier. `String(['pro'])` would coerce to
@@ -115,6 +142,7 @@ export function normalizeTier(raw) {
   if (typeof raw !== 'string') return TIER.GUEST;
   const v = raw.trim().toLowerCase();
   if (v === 'admin') return TIER.ADMIN;
+  if (v === 'legend') return TIER.LEGEND;
   if (v === 'pro' || v === 'vip') return TIER.PRO;
   if (v === 'free') return TIER.FREE;
   return TIER.GUEST;
@@ -155,6 +183,7 @@ export const TIER_LIMITS = {
   [TIER.GUEST]: { signals: 3, delayHours: 48, label: 'Tamu', showLevels: false },
   [TIER.FREE]: { signals: 6, delayHours: 24, label: 'Free', showLevels: true },
   [TIER.PRO]: { signals: 100, delayHours: 0, label: 'Pro', showLevels: true },
+  [TIER.LEGEND]: { signals: 100, delayHours: 0, label: 'Legend', showLevels: true },
 };
 
 export function limitsFor(tier) {
@@ -186,8 +215,8 @@ export const PLANS = [
   {
     id: TIER.PRO,
     name: 'Pro',
-    price: 'Rp 149.000',
-    period: 'per bulan',
+    price: 'Rp 40.000',
+    period: 'per minggu',
     tagline: 'Semua alat, sinyal paling cepat.',
     highlight: true,
     features: [
@@ -202,4 +231,37 @@ export const PLANS = [
     missing: [],
     cta: 'Berlangganan Pro',
   },
+  {
+    id: TIER.LEGEND,
+    name: 'Legend',
+    price: 'Rp 75.000',
+    period: 'per minggu',
+    tagline: 'Bot yang mengeksekusi. Bukan sekadar menampilkan.',
+    // NOT purchasable directly. The CTA opens the achievement path.
+    locked: true,
+    unlockHint: 'Terbuka setelah semua achievement Pro terpenuhi.',
+    features: [
+      'Trading Bot Otonom — eksekusi order otomatis',
+      'Jev Execution HUD (TWAP / VWAP / POV)',
+      'Semua fitur Pro tetap terbuka',
+      'Prioritas bantuan & konsultasi',
+    ],
+    missing: [],
+    cta: 'Lihat Achievement',
+  },
 ];
+
+/**
+ * Weekly pricing note.
+ *
+ * Owner decision (2026-10-08): PRO and LEGEND bill per week, not per month.
+ * The monthly-equivalent figures below exist so the pricing page can show a
+ * comparison without the reader doing arithmetic — they are derived, never
+ * stored, so they cannot drift from the weekly price.
+ */
+export const WEEKS_PER_MONTH = 4.345;
+export function monthlyEquivalent(weeklyPriceIdr) {
+  const n = Number(weeklyPriceIdr);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return Math.round((n * WEEKS_PER_MONTH) / 1000) * 1000;
+}

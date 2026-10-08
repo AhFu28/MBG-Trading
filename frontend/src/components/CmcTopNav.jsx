@@ -77,6 +77,7 @@ export const NAV_GROUPS = [
     items: [
       { id: 'SETTINGS', label: 'Setting', desc: 'Bahasa, mode tampilan & preferensi' },
       { id: 'SUBSCRIPTION', label: 'Langganan', desc: 'Status akun dan paket' },
+      { id: 'ACHIEVEMENTS', label: 'Legend Path', desc: 'Achievement menuju tier Legend' },
       { id: 'WATCHLIST', label: 'Watchlist Saya', desc: 'Instrumen yang Anda bintangi' },
     ],
   },

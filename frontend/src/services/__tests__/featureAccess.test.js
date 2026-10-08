@@ -12,6 +12,7 @@ import {
   requiredTierFor,
   rankOf,
   PLANS,
+  monthlyEquivalent,
 } from '../featureAccess.js';
 
 describe('normalizeTier', () => {
@@ -61,9 +62,22 @@ describe('free tier is deliberately limited', () => {
     // SUBSCRIPTION is included on purpose: a paying customer must always be able
     // to see their own status and expiry. SETTINGS likewise — language and
     // appearance are a basic expectation, not a paid feature.
+    // ACHIEVEMENTS is the Legend roadmap. Hiding it would hide the only
+    // explanation of how to reach the earned tier, which is the opposite of
+    // what the tier is for.
     expect(new Set(freeModules)).toEqual(
-      new Set([MODULES.HOME, MODULES.SIGNALS, MODULES.NEWS, MODULES.SUBSCRIPTION, MODULES.SETTINGS]),
+      new Set([
+        MODULES.HOME, MODULES.SIGNALS, MODULES.NEWS,
+        MODULES.SUBSCRIPTION, MODULES.SETTINGS, MODULES.ACHIEVEMENTS,
+      ]),
     );
+  });
+
+  it('never locks the achievement roadmap', () => {
+    // Every tier, including a guest, must be able to see how to progress.
+    for (const t of [TIER.GUEST, TIER.FREE, TIER.PRO, TIER.LEGEND]) {
+      expect(canAccess(MODULES.ACHIEVEMENTS, t)).toBe(true);
+    }
   });
 
   it('never locks the account page, even for a guest', () => {
@@ -167,11 +181,19 @@ describe('safety of the gate itself', () => {
 
   it('never marks a module free by accident', () => {
     for (const [moduleId, tier] of Object.entries(MODULE_TIER)) {
-      expect([TIER.GUEST, TIER.FREE, TIER.PRO, TIER.ADMIN]).toContain(tier);
+      expect([TIER.GUEST, TIER.FREE, TIER.PRO, TIER.LEGEND, TIER.ADMIN]).toContain(tier);
       if (tier === TIER.ADMIN) {
         expect(canAccess(moduleId, TIER.FREE)).toBe(false);
         expect(canAccess(moduleId, TIER.PRO)).toBe(false);
         expect(canAccess(moduleId, TIER.PRO, true)).toBe(true);
+      }
+      if (tier === TIER.LEGEND) {
+        // A LEGEND module must be closed to every tier below it. These are the
+        // only features that can spend a user's money.
+        expect(canAccess(moduleId, TIER.GUEST)).toBe(false);
+        expect(canAccess(moduleId, TIER.FREE)).toBe(false);
+        expect(canAccess(moduleId, TIER.PRO)).toBe(false);
+        expect(canAccess(moduleId, TIER.LEGEND)).toBe(true);
       }
       if (tier === TIER.PRO) {
         expect(canAccess(moduleId, TIER.FREE)).toBe(false);
@@ -181,6 +203,25 @@ describe('safety of the gate itself', () => {
         expect(canAccess(moduleId, TIER.GUEST)).toBe(false);
       }
     }
+  });
+
+  it('keeps the money-touching modules behind LEGEND specifically', () => {
+    // TRADING_BOT can place an order; JEV_EXECUTION is the overlay that sizes
+    // it. Both were gated at LEGEND on purpose. If either drops to PRO, an
+    // autonomous bot becomes reachable by paying rather than by earning.
+    expect(MODULE_TIER[MODULES.TRADING_BOT]).toBe(TIER.LEGEND);
+    expect(MODULE_TIER[MODULES.JEV_EXECUTION]).toBe(TIER.LEGEND);
+  });
+
+  it('ranks LEGEND above PRO and below ADMIN', () => {
+    expect(rankOf(TIER.LEGEND)).toBeGreaterThan(rankOf(TIER.PRO));
+    expect(rankOf(TIER.ADMIN)).toBeGreaterThan(rankOf(TIER.LEGEND));
+  });
+
+  it('normalises the legend tier name, including case and whitespace', () => {
+    expect(normalizeTier('legend')).toBe(TIER.LEGEND);
+    expect(normalizeTier('LEGEND')).toBe(TIER.LEGEND);
+    expect(normalizeTier('  Legend  ')).toBe(TIER.LEGEND);
   });
 
   it('keeps PUBLIC_MODULES derived from the tier map, never a separate list', () => {
@@ -209,13 +250,39 @@ describe('safety of the gate itself', () => {
 });
 
 describe('plans shown to customers', () => {
-  it('has exactly two plans with matching ids', () => {
-    expect(PLANS.map(p => p.id)).toEqual([TIER.FREE, TIER.PRO]);
+  it('has three plans, free through legend', () => {
+    // LEGEND added 2026-10-08 at the owner's request.
+    expect(PLANS.map(p => p.id)).toEqual([TIER.FREE, TIER.PRO, TIER.LEGEND]);
   });
 
   it('marks exactly one plan as the highlight', () => {
     expect(PLANS.filter(p => p.highlight)).toHaveLength(1);
     expect(PLANS.find(p => p.highlight).id).toBe(TIER.PRO);
+  });
+
+  it('does not let LEGEND be bought outright', () => {
+    // Owner's design: it is earned through achievements, so the plan must not
+    // present itself as a normal purchase.
+    const legend = PLANS.find(p => p.id === TIER.LEGEND);
+    expect(legend.locked).toBe(true);
+    expect(legend.unlockHint).toBeTruthy();
+  });
+
+  it('prices the paid plans per week, as decided', () => {
+    for (const id of [TIER.PRO, TIER.LEGEND]) {
+      const plan = PLANS.find(p => p.id === id);
+      expect(plan.period, `${id} is not billed weekly`).toMatch(/minggu/i);
+    }
+  });
+
+  it('derives a monthly equivalent instead of storing a second price', () => {
+    // Two stored prices drift apart. This is computed from the weekly one.
+    const monthly = monthlyEquivalent(40000);
+    expect(monthly).toBeGreaterThan(40000 * 4);
+    expect(monthly).toBeLessThan(40000 * 5);
+    expect(monthlyEquivalent(0)).toBeNull();
+    expect(monthlyEquivalent('abc')).toBeNull();
+    expect(monthlyEquivalent(-100)).toBeNull();
   });
 
   it('lists what the paid plan adds, and what free is missing', () => {

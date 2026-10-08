@@ -37,6 +37,7 @@ const AiIntelligenceDrawer = lazy(() => import('./components/AiIntelligenceDrawe
 const SignalsTab = lazy(() => import('./components/SignalsTab.jsx'));
 const LandingPage = lazy(() => import('./components/LandingPage.jsx'));
 const SubscriptionPage = lazy(() => import('./components/SubscriptionPage.jsx'));
+const AchievementsPage = lazy(() => import('./components/AchievementsPage.jsx'));
 const AdminApprovalDesk = lazy(() => import('./components/AdminApprovalDesk.jsx'));
 
 const isIdxMarketOpen = () => {
@@ -946,6 +947,17 @@ export default function App() {
                   account={account || {}}
                   theme={theme}
                   onSetTheme={applyTheme}
+                />
+              </main>
+            ) : activeTab === 'ACHIEVEMENTS' ? (
+              /* LEGEND PATH — the earned-tier roadmap. Reachable by everyone,
+                 because a user cannot work toward a goal they cannot see. */
+              <main>
+                <AchievementsPage
+                  account={account || {}}
+                  userTier={userTier}
+                  isAdmin={isAdmin}
+                  onNavigate={setActiveTab}
                 />
               </main>
             ) : activeTab === 'SUBSCRIPTION' ? (
