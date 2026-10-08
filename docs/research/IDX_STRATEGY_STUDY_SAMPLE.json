@@ -1,0 +1,452 @@
+{
+  "report": {
+    "slug": "idx-strategy-study-daily-plans",
+    "report_type": "strategy_study",
+    "language": "id",
+    "state": "draft",
+    "edition_no": 1,
+    "schema_version": 1,
+    "draft_revision": 0
+  },
+  "metadata": {
+    "title": "Studi Strategi: Daily Trade Plans IDX — Position Sizing 1% Risk dan Realita Win Rate",
+    "instruments": "IDX equities (saham BEI)",
+    "venue": "Indonesia Stock Exchange (BEI)",
+    "author": "MBG Research Desk (agen terbatas, tanpa kewenangan trading/publish)",
+    "reviewer": "PENDING — review manusia wajib sebelum publish (spesifikasi D03)",
+    "data_cutoff": "2026-10-08T17:10:57Z",
+    "issued_date": null,
+    "edition_id": "PENDING — dibuat saat ingest (P0a storage)",
+    "version": "draft-rev0"
+  },
+  "sections": [
+    {
+      "section_key": "metadata",
+      "claims": [],
+      "content_blocks": [
+        {
+          "type": "kv",
+          "items": {
+            "Report slug": "idx-strategy-study-daily-plans",
+            "Tipe": "strategy_study",
+            "Bahasa": "id",
+            "Cutoff data": "2026-10-08T17:10:57Z",
+            "Status": "draft — review manusia wajib sebelum terbit",
+            "Instrumen": "IDX equities (BEI)"
+          }
+        }
+      ]
+    },
+    {
+      "section_key": "abstrak",
+      "claims": [
+        {
+          "id": "c-abs-1",
+          "claim_type": "fact",
+          "material": true,
+          "evidence_status": "sourced",
+          "text": "Porto riil MBG mencatat 115 trade terbuka (30 tertutup: 6 menang, 24 rugi) dengan modal awal Rp 100 juta per 8 Oktober 2026.",
+          "evidence": [
+            {
+              "source": "engine/cache/latest_cockpit_bundle.json",
+              "locator": "#paper_portfolio (win_count, loss_count, total_trades)"
+            }
+          ]
+        },
+        {
+          "id": "c-abs-2",
+          "claim_type": "derived",
+          "material": true,
+          "evidence_status": "sourced",
+          "text": "Win rate riil 20% berada di bawah titik impas ~31,25% untuk rasio risk-reward 2,2 — expectancy negatif pada sampel ini.",
+          "evidence": [
+            {
+              "source": "calculation manifest cm-run-breakeven",
+              "locator": "#manifests"
+            }
+          ]
+        }
+      ],
+      "content_blocks": [
+        {
+          "type": "paragraph",
+          "text": "Pertanyaan riset: apakah metodologi daily trade plans IDX — position sizing 1% risk per posisi dengan target risk-reward 2,2 — menghasilkan expectancy positif pada kondisi pasar BEI September–Oktober 2026? Metode: evaluasi porto riil (paper portfolio dengan harga pasar riil, tanpa simulasi sintetis) terhadap 12 rencana harian terverifikasi. Temuan utama: win rate 20% dan profit factor 0,62 — di bawah titik impas. Ketidakpastian: sampel tertutup 30 trade, di bawah ambang 40 trade yang dipakai kriteria evaluasi varian EA; hasil belum layak digeneralisasi."
+        }
+      ]
+    },
+    {
+      "section_key": "ringkasan",
+      "claims": [
+        {
+          "id": "c-rk-1",
+          "claim_type": "inference",
+          "material": true,
+          "evidence_status": "sourced",
+          "text": "Tesis metodologi (konsolidasi di atas MA20 + sentimen klaster + akumulasi terukur) TIDAK terkonfirmasi pada sampel: hasil rugi.",
+          "evidence": [
+            {
+              "source": "engine/cache/latest_cockpit_bundle.json",
+              "locator": "#paper_portfolio (profit_factor 0.62)"
+            },
+            {
+              "source": "engine/cache/latest_cockpit_bundle.json",
+              "locator": "#daily_trade_plans[0].opinion_thesis"
+            }
+          ]
+        },
+        {
+          "id": "c-rk-2",
+          "claim_type": "scenario",
+          "material": false,
+          "evidence_status": "pending",
+          "text": "Jika win rate naik ke ~31,25% pada R/R 2,2, strategi berlabuh — implikasi: guardrail sebelum scaling.",
+          "evidence": []
+        }
+      ],
+      "content_blocks": [
+        {
+          "type": "paragraph",
+          "text": "Temuan terpenting: strategi RUGI pada sampel — PnL −19,5% (Rp 80,5 juta dari Rp 100 juta), win rate 20%, profit factor 0,62. Kontra-tesis utama: sampel tertutup 30 trade terlalu kecil; kondisi pasar Sept–Okt bisa tidak mewakili. Implikasi bersyarat: JIKA pola berlanjut setelah 40 trade tertutup, aturan entry (konsolidasi di atas MA20) perlu direview — bukan menambah ukuran posisi. Risiko: hasil belum layak dipakai keputusan alokasi."
+        }
+      ]
+    },
+    {
+      "section_key": "konteks",
+      "claims": [],
+      "content_blocks": [
+        {
+          "type": "paragraph",
+          "text": "Yang diuji: disiplin eksekusi daily trade plans (entry/SL/TP tercatat, position sizing 1% risk, target R/R 2,2) terhadap hasil riil di BEI. Mengapa relevan: kriteria champion varian EA (README §Metodologi Turnamen) mensyaratkan PF ≥ 1,6 dan win rate sehat — porto ini adalah register percobaannya. Horizon: swing 5D per plan. Scope: saham IDX, 12 rencana, periode 16 Sep – 8 Okt 2026."
+        }
+      ]
+    },
+    {
+      "section_key": "teori",
+      "claims": [
+        {
+          "id": "c-te-1",
+          "claim_type": "inference",
+          "material": true,
+          "evidence_status": "sourced",
+          "text": "Mekanisme: dengan R/R tetap 2,2 dan sizing 1% risk, expectancy positif menuntut win rate di atas titik impas ~31,25%; konsolidasi di atas MA20 sebagai trigger entry mengasumsikan support bertahan.",
+          "evidence": [
+            {
+              "source": "engine/cache/latest_cockpit_bundle.json",
+              "locator": "#daily_trade_plans[0] (position_size_math, technical_signal)"
+            }
+          ]
+        }
+      ],
+      "content_blocks": [
+        {
+          "type": "paragraph",
+          "text": "Mekanisme kausal yang diuji: konsolidasi di atas MA20 + akumulasi terukur → breakout bullish. Competing explanation: konsolidasi bisa jadi distribusi (bandarmology arah berlawanan) — data broker summary tersedia untuk diuji di edisi berikutnya."
+        }
+      ]
+    },
+    {
+      "section_key": "data",
+      "claims": [
+        {
+          "id": "c-da-1",
+          "claim_type": "fact",
+          "material": true,
+          "evidence_status": "sourced",
+          "text": "Sumber harga: IDXMarketFetcher (TradingView BEI scanner) + TechnicalIndicators RSI/MA20; tiap plan menyimpan observed_at dan data_state.",
+          "evidence": [
+            {
+              "source": "engine/cache/latest_cockpit_bundle.json",
+              "locator": "#daily_trade_plans[0].source, .observed_at, .data_state"
+            }
+          ]
+        },
+        {
+          "id": "c-da-2",
+          "claim_type": "fact",
+          "material": true,
+          "evidence_status": "missing",
+          "text": "Korelasi antar-strategi pada sampel ini.",
+          "missing_reason": "calculation_run untuk correlation_matrix belum dijalankan pada cutoff 8 Okt — nilai karangan dilarang.",
+          "evidence": []
+        }
+      ],
+      "content_blocks": [
+        {
+          "type": "paragraph",
+          "text": "Sumber: bundle engine ter-commit (latest_cockpit_bundle.json, last_updated 2026-10-08T17:10Z). Periode: 16 Sep – 8 Okt 2026. Satuan: harga IDR, lot BEI (100 saham/lot). Sampling: rencana harian otomatis + eksekusi paper portfolio pada harga pasar riil. Missing data dicatat sebagai null beserta alasan. Hak penggunaan: data internal proyek."
+        }
+      ]
+    },
+    {
+      "section_key": "metode",
+      "claims": [],
+      "content_blocks": [
+        {
+          "type": "formula",
+          "text": "Position sizing: (Porto × 1% Risk) ÷ (Entry − SL) = Lot. Contoh tercatat: (Rp 100M × 1% = Rp 1M) ÷ (Rp 3450,0 − Rp 3312,0 = Rp 138,0) = 72 lot."
+        },
+        {
+          "type": "formula",
+          "text": "Titik impas win rate: p* = 1 / (1 + RR) — untuk RR 2,2 → 31,25%."
+        },
+        {
+          "type": "paragraph",
+          "text": "Aturan: SL hard di bawah konsolidasi; TP1/TP2 bertingkat; posisi dibekukan saat bursa tutup (tanpa fill off-hours). Kontrol: porto paper dengan harga riil (bukan simulasi sintetis). Benchmark: PF ≥ 1,6, MDD ≤ 10%, ≥ 40 trade/30 hari (kriteria champion README). Code/environment version: engine/ (commit 8 Okt), harga dari TradingView BEI scanner."
+        }
+      ]
+    },
+    {
+      "section_key": "hasil",
+      "claims": [
+        {
+          "id": "c-hs-1",
+          "claim_type": "fact",
+          "material": true,
+          "evidence_status": "sourced",
+          "text": "Hasil observasi: 30 trade tertutup — 6 menang (20%), 24 rugi (80%); profit factor 0,62; PnL −19,5%.",
+          "evidence": [
+            {
+              "source": "engine/cache/latest_cockpit_bundle.json",
+              "locator": "#paper_portfolio (win_rate, profit_factor, total_pnl_pct)"
+            }
+          ]
+        },
+        {
+          "id": "c-hs-2",
+          "claim_type": "illustration",
+          "material": false,
+          "evidence_status": "sourced",
+          "text": "Contoh edukasi perhitungan lot dari plan terverifikasi — BUKAN hasil historis tambahan.",
+          "evidence": [
+            {
+              "source": "engine/cache/latest_cockpit_bundle.json",
+              "locator": "#daily_trade_plans[0].position_size_math"
+            }
+          ]
+        }
+      ],
+      "content_blocks": [
+        {
+          "type": "table",
+          "caption": "Hasil observasi (riil, bukan simulasi)",
+          "rows": [
+            {
+              "metrik": "Modal awal",
+              "nilai": "Rp 100.000.000"
+            },
+            {
+              "metrik": "Modal saat cutoff",
+              "nilai": "Rp 80.500.295"
+            },
+            {
+              "metrik": "Total PnL",
+              "nilai": "−Rp 19.499.705 (−19,5%)"
+            },
+            {
+              "metrik": "Trade terbuka / tertutup",
+              "nilai": "40 / 115 (30 closed, sisanya masih dibawa)"
+            },
+            {
+              "metrik": "Win / Loss (closed)",
+              "nilai": "6 / 24"
+            },
+            {
+              "metrik": "Win rate",
+              "nilai": "20%"
+            },
+            {
+              "metrik": "Profit factor",
+              "nilai": "0,62"
+            },
+            {
+              "metrik": "Titik impas (RR 2,2)",
+              "nilai": "31,25%"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Pisah hasil: observasi riil = tabel di atas. Simulasi sintetis = TIDAK ADA (Zero Simulation Policy — simulasi tidak boleh jadi bukti performa)."
+        }
+      ]
+    },
+    {
+      "section_key": "diskusi",
+      "claims": [
+        {
+          "id": "c-di-1",
+          "claim_type": "inference",
+          "material": true,
+          "evidence_status": "sourced",
+          "text": "Win rate 20% jauh di bawah titik impas 31,25% — pada R/R 2,2 tiap trade rata-rata mengikis modal; tidak ada bukti expectancy positif pada sampel.",
+          "evidence": [
+            {
+              "source": "calculation manifest cm-run-breakeven",
+              "locator": "#manifests"
+            }
+          ]
+        },
+        {
+          "id": "c-di-2",
+          "claim_type": "inference",
+          "material": false,
+          "evidence_status": "sourced",
+          "text": "External validity terbatas: periode 16 Sep – 8 Okt mencakup kondisi pasar tunggal; hasil belum mencakup regime naik.",
+          "evidence": []
+        }
+      ],
+      "content_blocks": [
+        {
+          "type": "paragraph",
+          "text": "Arti hasil: metodologi entry belum menghasilkan edge pada sampel. Alternative explanations: (1) sampel kecil — 30 trade tertutup; (2) regime pasar satu arah; (3) selection bias rencana otomatis (semua plan sama belah sisi pasar). External validity: tunggu ≥ 40 closed + regime berbeda sebelum menyimpulkan."
+        }
+      ]
+    },
+    {
+      "section_key": "kontra-tesis",
+      "claims": [
+        {
+          "id": "c-kt-1",
+          "claim_type": "inference",
+          "material": true,
+          "evidence_status": "sourced",
+          "text": "Bukti menentang tesis: profit factor 0,62 (< 1) dan win rate 20% — dua ukuran independen sama-sama menunjukkan strategi rugi.",
+          "evidence": [
+            {
+              "source": "engine/cache/latest_cockpit_bundle.json",
+              "locator": "#paper_portfolio"
+            }
+          ]
+        }
+      ],
+      "content_blocks": [
+        {
+          "type": "paragraph",
+          "text": "Asumsi paling rapuh (dari plan terverifikasi): \"Mengasumsikan likuiditas domestik stabil dan tidak ada intervensi suku bunga mendadak\" — asumsi makro yang tidak terukur dalam sampel ini. Bukti berlawanan TIDAK dihapus: seluruh catatan rugi dipertahankan apa adanya."
+        }
+      ]
+    },
+    {
+      "section_key": "skenario",
+      "claims": [
+        {
+          "id": "c-sc-1",
+          "claim_type": "scenario",
+          "material": false,
+          "evidence_status": "pending",
+          "text": "Base: win rate 20–30% → strategi tetap rugi; scaling dilarang.",
+          "evidence": []
+        },
+        {
+          "id": "c-sc-2",
+          "claim_type": "scenario",
+          "material": false,
+          "evidence_status": "pending",
+          "text": "Bull: win rate > 31,25% pada ≥ 40 closed → berlabuh; scaling bertahap dengan guardrail MDD ≤ 10%.",
+          "evidence": []
+        },
+        {
+          "id": "c-sc-3",
+          "claim_type": "scenario",
+          "material": false,
+          "evidence_status": "pending",
+          "text": "Bear: win rate < 20% → review aturan entry (bukan sizing); pertimbangkan hentikan plan otomatis.",
+          "evidence": []
+        }
+      ],
+      "content_blocks": [
+        {
+          "type": "paragraph",
+          "text": "Driver: win rate aktual vs titik impas 31,25%; RR efektif setelah slippage. Sensitivity: kenaikan win rate 1 poin ≈ kenaikan expectancy 0,022R (pada RR 2,2). Invalidation: tiga invalidasi per plan tercatat (candle di bawah SL, outflow asing masif, IHSG anjlok > 1,5%)."
+        }
+      ]
+    },
+    {
+      "section_key": "risiko",
+      "claims": [],
+      "content_blocks": [
+        {
+          "type": "paragraph",
+          "text": "Data: sampel 30 closed < ambang 40 — risiko kesimpulan prematur. Metode: satu regime pasar; tanpa kontrol out-of-sample. Venue: BEI — likuiditas lot bisa menggeser fill riil. Model: plan otomatis dengan selection bias tersirat. Horizon: swing 5D — tidak menguji day-trade atau posisi panjang. Bias: porto paper memakai harga pasangan fill ideal (tanpa slippage riil) — PF riil bisa lebih rendah lagi."
+        }
+      ]
+    },
+    {
+      "section_key": "kesimpulan",
+      "claims": [
+        {
+          "id": "c-ks-1",
+          "claim_type": "inference",
+          "material": true,
+          "evidence_status": "sourced",
+          "text": "Jawaban pertanyaan riset: PADA SAMPEL INI, metodologi daily trade plans belum menghasilkan expectancy positif — strategi rugi 19,5% dengan win rate 20% di bawah titik impas 31,25%.",
+          "evidence": [
+            {
+              "source": "engine/cache/latest_cockpit_bundle.json",
+              "locator": "#paper_portfolio"
+            },
+            {
+              "source": "calculation manifest cm-run-breakeven",
+              "locator": "#manifests"
+            }
+          ]
+        }
+      ],
+      "content_blocks": [
+        {
+          "type": "paragraph",
+          "text": "Indikator pemantauan: win rate vs 31,25% (titik impas RR 2,2); profit factor vs 1,6 (kriteria champion); closed trade vs 40 (ambang sampel). Review trigger: 40 trade tertutup, ATAU MDD menembus 10%, ATAU regime pasar berubah signifikan — edisi baru diterbitkan saat itu; paper ini tidak diubah setelah terbit (immutable)."
+        }
+      ]
+    },
+    {
+      "section_key": "referensi",
+      "claims": [],
+      "content_blocks": [
+        {
+          "type": "list",
+          "items": [
+            "engine/cache/latest_cockpit_bundle.json#paper_portfolio — hasil observasi riil (cutoff 2026-10-08T17:10Z)",
+            "engine/cache/latest_cockpit_bundle.json#daily_trade_plans — 12 rencana terverifikasi + provenance (source, observed_at, data_state)",
+            "engine/cache/latest_cockpit_bundle.json#daily_trade_plans[0] — contoh position sizing + tiga invalidasi + weakest assumption",
+            "README §Metodologi Turnamen — kriteria champion (PF ≥ 1,6, MDD ≤ 10%, ≥ 40 trade/30 hari)",
+            "Spesifikasi Research Desk §3 — template 14 section + tipe klaim + aturan bukti"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Reproducibility: semua angka pada paper ini dihitung dari bundle ter-commit (hash-able); calculation manifest cm-run-breakeven mencatat formula + input + output. Perhitungan ulang dengan dataset sama = hasil sama (deterministik, tanpa LLM)."
+        }
+      ]
+    }
+  ],
+  "manifests": {
+    "cm-run-breakeven": {
+      "run_type": "breakeven_win_rate",
+      "formula": "p* = 1 / (1 + RR)",
+      "inputs": {
+        "risk_reward_ratio": 2.2
+      },
+      "outputs": {
+        "breakeven_win_rate": 0.3125
+      },
+      "state": "succeeded",
+      "note": "derived — deterministik, tanpa LLM"
+    },
+    "cm-run-portfolio-summary": {
+      "run_type": "portfolio_summary",
+      "formula": "win_rate = win_count / closed_trades; profit_factor = gross_win / gross_loss",
+      "inputs": {
+        "win_count": 6,
+        "loss_count": 24,
+        "total_pnl_pct": -0.195
+      },
+      "outputs": {
+        "win_rate": 0.2,
+        "profit_factor": 0.62
+      },
+      "state": "succeeded",
+      "note": "fact + derived dari engine/cache/latest_cockpit_bundle.json#paper_portfolio"
+    }
+  }
+}
