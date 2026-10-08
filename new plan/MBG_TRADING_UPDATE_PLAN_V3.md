@@ -159,13 +159,15 @@ Tidak ada paket V2 yang di-drop; satu di-reframe (P-2), empat menyusut/rebase ke
 - **Supabase schema belum dijalankan** (GET /rest/v1/profiles → 404) → pelanggan belum bisa daftar/bayar.
 
 **Paket (urutan WAJIB — rotasi dulu):**
-1. *(Owner, ~5 menit — LAKUKAN SEKARANG)* **Rotasi kunci JWT**: buat string acak BARU (32+ karakter), set di **Cloudflare Pages dashboard** (encrypted env var) — BUKAN di file repo. Kunci lama yang bocor mati; sesi lama hangus (security win). Verifikasi: cookie palsu → **401**. ⚠ Setelah fix kode 2026-10-08, deploy berikutnya tidak lagi membawa kunci dari `wrangler.toml` — kalau dashboard belum di-set, auth gagal-closed (401) sampai variabel di-set. Set dashboard dulu.
+1. *(Owner, ~5 menit)* **Rotasi kunci JWT** — **DITAHANKAN owner (8 Okt: "rotasi kredensial tahan dulu")**. Tetap wajib sebelum ada pelanggan berbayar: buat string acak BARU (32+ karakter), set di **Cloudflare Pages dashboard** (encrypted env var) — BUKAN di file repo. Kunci lama yang bocor mati; sesi lama hangus (security win). Verifikasi: cookie palsu → **401**. ⚠ Setelah fix kode 2026-10-08, deploy berikutnya tidak lagi membawa kunci dari `wrangler.toml` — kalau dashboard belum di-set, auth gagal-closed (401) sampai variabel di-set. Set dashboard dulu.
 2. *(Owner, ~5 menit)* **Rotasi password cockpit** (kredensial `/api/auth` di Cloudflare env) — password lama bocor di dokumen PRD. Verifikasi: login dengan password lama → **401**.
 3. *(Owner, 1 klik + verifikasi)* Repo → private; sesudahnya verifikasi integrasi CF Pages masih hidup (langkah GO-LIVE; rollback = public lagi).
 4. *(Kode, 0.5 PD)* PII → env/config: `WA_TARGET_PHONE` env; SubscriptionPage + docs tidak menampilkan nomor mentah di UI publik; grep gate di CI agar nomor tidak kembali masuk.
 5. *(Owner, ~5 menit + verifikasi)* Jalankan `supabase/schema.sql`, verifikasi `rls_aktif = true` (GO-LIVE Langkah 2; jangan lanjut kalau bukan true).
 
 **Estimasi:** 1 PD kode + aksi owner · **Gate:** cookie palsu 401 · repo private + situs hidup · signup jalan · RLS aktif.
+
+**VERDICT N-2 (8 Okt — SEBAGIAN BESAR TERTUTUP):** session `wa_auth/` gitignored ✓ (tidak bocor); reconnect backoff eksponensial (1.5^n, cap 15s) ✓; jeda antar pesan ada ("Small pause ... to prevent spam triggers") ✓; whitelist membatasi ke satu nomor partner ✓. Sisa: verifikasi magnitude jeda + aturan anti-spam AGENTS.md diterapkan konsisten di kode kirim (bukan hanya dokumen). Review ops lanjutan tidak menghalangi apa pun.
 
 ### N-2 — WhatsApp daemon ops review (0.5–1 PD)
 
@@ -176,6 +178,8 @@ Tidak ada paket V2 yang di-drop; satu di-reframe (P-2), empat menyusut/rebase ke
 
 - LandingPage, AuthPanel, SubscriptionPage, SignalsTab: trust check (premium tidak bocor — tests featureAccess sudah ada; badge tier display-only; "jual kecepatan bukan rahasia" konsisten dengan PRD-03 provenance: fitur delivery-time, bukan isi sinyal) + a11y baseline (focus-visible, reduced-motion, touch target).
 - Hasil jadi input langsung daftar refresh P-9.
+
+**VERDICT N-3 (8 Okt — a11y SELESAI, kerapian = gelombang koordinasi):** a11y baseline global SUDAH ter-push (focus-visible + reduced-motion, `1ccf982`) ✓. Trust: kolaborator sudah pin sendiri dengan tests ("honesty rules survive the redesign", "headline stats stay countable facts", tier labels) ✓. Kerapian type/warna 5 permukaan baru (~99 font sub-12px + ~119 hex) = **gelombang P-9 full yang dikoordinasikan dengan kolaborator** (area aktif mereka, test pinning mereka) — BUKAN sweep unilateral.
 
 ---
 
