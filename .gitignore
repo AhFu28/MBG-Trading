@@ -75,3 +75,8 @@ frontend/blob-report/
 frontend/playwright/.cache/
 frontend/e2e-results.json
 
+# Console dumps written during E2E debugging (redirected output from playwright).
+# Named so a future debugging session cannot accidentally commit them again.
+frontend/e2e-run*.txt
+frontend/probe-*.txt
+
