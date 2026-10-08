@@ -287,6 +287,13 @@ class ArenaEvaluator:
                         "tp2Price": tp2_price,
                         "roiPct": 0.0,
                         "trailingStopActive": False,
+                        # Marks this row as machine-owned. The client uses it to
+                        # decide what it may delete: a position the engine opened
+                        # is the engine's to close, while a row the user created
+                        # locally is preserved. Without this flag the client
+                        # cannot tell the two apart, and previously refused to
+                        # sync anything once it held a position of its own.
+                        "origin": "engine",
                         "openedAt": datetime.now(timezone.utc).isoformat()
                     }
                     remaining_positions.append(new_pos)

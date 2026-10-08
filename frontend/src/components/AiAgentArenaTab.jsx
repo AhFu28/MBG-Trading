@@ -44,6 +44,104 @@ export function isSampleMeaningful(tradeCount) {
   return (Number(tradeCount) || 0) >= MIN_TRADES_FOR_CONFIDENCE;
 }
 
+/**
+ * Reconcile the machine's arena state with whatever this browser already had.
+ *
+ * WHY THIS REPLACED THE OLD MERGE (owner report 2026-10-08: "cache ku dan cache
+ * mas fuad beda").
+ *
+ * The previous code was:
+ *
+ *     if (cloudState.positions.length > 0) {
+ *       setPositions(prev => prev.length === 0 ? cloudState.positions : prev);
+ *     }
+ *
+ * i.e. adopt the server's positions ONLY when the local list is empty. That
+ * reads as "never clobber the user's work", but its actual behaviour is that a
+ * browser which has ever held one position stops receiving machine state
+ * FOREVER. Two accounts ended up rendering two different arenas from one
+ * engine, and no amount of reloading could reconcile them.
+ *
+ * THE DECISION (owner, same day): "semua orang akan melihat yg sama aja".
+ * There is ONE engine, so there is ONE roster of machine positions, and every
+ * account displays it identically.
+ *
+ * RULES, in order:
+ *  1. The server is authoritative. For a position both sides know, the SERVER's
+ *     values win — it is the engine that just priced the position.
+ *  2. A machine position the server no longer reports was closed upstream, so
+ *     it is dropped. This is what stops a closed trade lingering on screen.
+ *  3. A position that only ever existed in this browser (tagged `origin:
+ *     'local'`, or carrying no id at all) is preserved. It is the user's own
+ *     paper trade, not the engine's to delete.
+ */
+export function reconcileArenaPositions(localPositions, cloudPositions) {
+  const local = Array.isArray(localPositions) ? localPositions : [];
+  const cloud = Array.isArray(cloudPositions) ? cloudPositions : [];
+
+  const cloudIds = new Set();
+  for (const p of cloud) {
+    if (p?.id) cloudIds.add(p.id);
+  }
+
+  const localById = new Map();
+  for (const p of local) {
+    if (p?.id) localById.set(p.id, p);
+  }
+
+  const merged = [];
+
+  // 1: every cloud position. Server values win; any local-only field the server
+  // does not carry (e.g. a user's note) survives via the spread order.
+  for (const p of cloud) {
+    if (!p) continue;
+    const existing = p.id ? localById.get(p.id) : null;
+    merged.push(existing ? { ...existing, ...p } : p);
+  }
+
+  // 3: rows that exist only here.
+  for (const p of local) {
+    if (!p) continue;
+    if (p.id && cloudIds.has(p.id)) continue;   // already merged above
+    // An untagged row with an id is engine-shaped (it predates the `origin`
+    // field) and the server has dropped it, so it is stale — skipped.
+    // An untagged row with NO id cannot be matched at all; dropping it would
+    // silently delete user data, so it is kept.
+    if (p.id) continue;
+    merged.push(p);
+  }
+
+  return merged;
+}
+
+/**
+ * Reconcile the trade journal across server and browser.
+ *
+ * The journal is append-only: a closed trade is a historical record, so entries
+ * are unioned by id rather than replaced. The engine closing a position adds a
+ * row here; nothing legitimately removes one.
+ */
+export function reconcileArenaJournal(localJournal, cloudJournal) {
+  const local = Array.isArray(localJournal) ? localJournal : [];
+  const cloud = Array.isArray(cloudJournal) ? cloudJournal : [];
+
+  const byId = new Map();
+  for (const t of local) {
+    if (t?.id) byId.set(t.id, t);
+  }
+  // Cloud entries win on conflict: the engine's own record of its trade is the
+  // authoritative copy.
+  for (const t of cloud) {
+    if (t?.id) byId.set(t.id, t);
+  }
+
+  return [...byId.values()].sort((a, b) => {
+    const ta = new Date(a.closedAt || 0).getTime();
+    const tb = new Date(b.closedAt || 0).getTime();
+    return tb - ta;
+  });
+}
+
 // Live Currency Exchange Rate Baseline with Dynamic Fetch Support (with persistent localStorage fallback)
 let currentLiveUsdToIdr = (() => {
   try {
@@ -2403,31 +2501,30 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
     const resetTs = Number(localStorage.getItem('mbg_ai_arena_reset_ts') || 0);
     const cloudEvaluatedTs = cloudState.last_evaluated ? new Date(cloudState.last_evaluated).getTime() : 0;
 
-    // Guard: Do not hydrate stale cloud state generated before user's explicit local reset
+    // Guard: Do not hydrate stale cloud state generated before an explicit reset.
     if (resetTs > 0 && cloudEvaluatedTs > 0 && cloudEvaluatedTs <= resetTs) {
       return;
     }
 
-    // 1. Merge new journal trades closed by the last scheduled cloud session
+    // Journal: union by id, cloud wins on conflict.
     if (Array.isArray(cloudState.journal) && cloudState.journal.length > 0) {
       setJournal(prev => {
-        const existingIds = new Set(prev.map(j => j.id));
-        const newFromCloud = cloudState.journal.filter(j => !existingIds.has(j.id));
-        if (newFromCloud.length === 0) return prev;
-        const merged = [...prev, ...newFromCloud];
+        const merged = reconcileArenaJournal(prev, cloudState.journal);
+        if (merged.length === prev.length) return prev;
         try { localStorage.setItem('mbg_ai_arena_journal', JSON.stringify(merged)); } catch (e) {}
         return merged;
       });
     }
 
-    // 2. Synchronize active positions if local is empty or cloud has newer positions
-    if (Array.isArray(cloudState.positions) && cloudState.positions.length > 0) {
+    // Positions: server is authoritative for machine positions (see the
+    // reconcileArenaPositions docblock). This runs on every new server payload,
+    // not only when local is empty.
+    if (Array.isArray(cloudState.positions)) {
       setPositions(prev => {
-        if (prev.length === 0) {
-          try { localStorage.setItem('mbg_ai_arena_positions', JSON.stringify(cloudState.positions)); } catch (e) {}
-          return cloudState.positions;
-        }
-        return prev;
+        const merged = reconcileArenaPositions(prev, cloudState.positions);
+        if (merged.length === prev.length && merged.every((p, i) => p === prev[i])) return prev;
+        try { localStorage.setItem('mbg_ai_arena_positions', JSON.stringify(merged)); } catch (e) {}
+        return merged;
       });
     }
   }, [data?.arena_state]);
@@ -2453,24 +2550,23 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
             const cloudEvaluatedTs = cloudState.last_evaluated ? new Date(cloudState.last_evaluated).getTime() : 0;
             if (resetTs > 0 && cloudEvaluatedTs > 0 && cloudEvaluatedTs <= resetTs) return;
 
+            // Same reconciliation rules as the bundle hydration above — one
+            // engine, one roster, every account identical.
             if (Array.isArray(cloudState.journal) && cloudState.journal.length > 0) {
               setJournal(prev => {
-                const existingIds = new Set(prev.map(j => j.id));
-                const newFromCloud = cloudState.journal.filter(j => !existingIds.has(j.id));
-                if (newFromCloud.length === 0) return prev;
-                const merged = [...prev, ...newFromCloud];
+                const merged = reconcileArenaJournal(prev, cloudState.journal);
+                if (merged.length === prev.length) return prev;
                 try { localStorage.setItem('mbg_ai_arena_journal', JSON.stringify(merged)); } catch (e) {}
                 return merged;
               });
             }
 
-            if (Array.isArray(cloudState.positions) && cloudState.positions.length > 0) {
+            if (Array.isArray(cloudState.positions)) {
               setPositions(prev => {
-                if (prev.length === 0) {
-                  try { localStorage.setItem('mbg_ai_arena_positions', JSON.stringify(cloudState.positions)); } catch (e) {}
-                  return cloudState.positions;
-                }
-                return prev;
+                const merged = reconcileArenaPositions(prev, cloudState.positions);
+                if (merged.length === prev.length && merged.every((p, i) => p === prev[i])) return prev;
+                try { localStorage.setItem('mbg_ai_arena_positions', JSON.stringify(merged)); } catch (e) {}
+                return merged;
               });
             }
             break; // Stop after successful endpoint
