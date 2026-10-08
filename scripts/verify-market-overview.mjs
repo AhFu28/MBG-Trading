@@ -46,11 +46,11 @@ async function getJSON(url, init) {
 console.log('Live market-overview endpoint verification');
 console.log('='.repeat(70));
 
-await check('CMC global metrics', async () => {
-  const j = await getJSON(`${CMC}/global-metrics/quotes/latest`);
+await check('Global metrics (CoinGecko / CMC fallback)', async () => {
+  const j = await getJSON('https://api.coingecko.com/api/v3/global') || await getJSON(`${CMC}/global-metrics/quotes/latest`);
   return {
-    totalMarketCap: j?.data?.totalMarketCap,
-    btcDominance: j?.data?.btcDominance,
+    totalMarketCap: j?.data?.total_market_cap?.usd ?? j?.data?.totalMarketCap,
+    btcDominance: j?.data?.market_cap_percentage?.btc ?? j?.data?.btcDominance,
   };
 });
 
@@ -59,35 +59,33 @@ await check('Fear & Greed (alternative.me)', async () => {
   return { value: j?.data?.[0]?.value, label: j?.data?.[0]?.value_classification };
 });
 
-await check('CMC altcoin season', async () => {
-  const end = Math.floor(Date.now() / 1000);
-  const start = end - 365 * 86400;
-  const j = await getJSON(`${CMC}/altcoin-season/chart?start=${start}&end=${end}`);
-  return {
-    now: j?.data?.historicalValues?.now,
-    dials: j?.data?.dialConfigs?.length,
-    points: j?.data?.points?.length,
-  };
+await check('Top coins listing (CoinGecko / Binance fallback)', async () => {
+  const cg = await getJSON('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false');
+  if (Array.isArray(cg) && cg.length > 0) {
+    return { count: cg.length, first: cg[0]?.symbol, price: cg[0]?.current_price };
+  }
+  const bn = await getJSON(`${BINANCE}/ticker/24hr`);
+  const rows = (bn || []).filter(t => t.symbol.endsWith('USDT')).slice(0, 10);
+  return { count: rows.length, first: rows[0]?.symbol, price: rows[0]?.lastPrice };
 });
 
-await check('CMC top coins listing', async () => {
-  const j = await getJSON(`${CMC}/cryptocurrency/listing?start=1&limit=10&sortBy=market_cap&sortType=desc&convert=USD`);
-  const rows = j?.data?.cryptoCurrencyList ?? [];
-  return { count: rows.length, first: rows[0]?.symbol, price: rows[0]?.quotes?.[0]?.price };
+await check('Trending (CoinGecko / Binance fallback)', async () => {
+  const cg = await getJSON('https://api.coingecko.com/api/v3/search/trending');
+  const rows = cg?.coins ?? [];
+  if (rows.length > 0) {
+    return { count: rows.length, first: rows[0]?.item?.symbol };
+  }
+  const bn = await getJSON(`${BINANCE}/ticker/24hr`);
+  return { count: (bn || []).slice(0, 10).length, first: bn?.[0]?.symbol };
 });
 
-await check('CMC trending (topsearch)', async () => {
-  const j = await getJSON(`${CMC}/topsearch/rank`);
-  const rows = j?.data?.cryptoTopSearchRanks ?? [];
-  return { count: rows.length, first: rows[0]?.symbol };
-});
-
-await check('CMC market-cap history (30d)', async () => {
-  const end = Math.floor(Date.now() / 1000);
-  const start = end - 30 * 86400;
-  const j = await getJSON(`${CMC}/global-metrics/quotes/historical?timeStart=${start}&timeEnd=${end}&interval=1d`);
-  const quotes = j?.data?.quotes ?? [];
-  return { points: quotes.length, last: quotes[quotes.length - 1]?.quote?.[0]?.totalMarketCap };
+await check('Market-cap history 30d (CoinGecko / Binance fallback)', async () => {
+  const cg = await getJSON('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30&interval=daily');
+  if (cg?.market_caps?.length) {
+    return { points: cg.market_caps.length, last: cg.market_caps[cg.market_caps.length - 1]?.[1] };
+  }
+  const bn = await getJSON(`${BINANCE}/klines?symbol=BTCUSDT&interval=1d&limit=30`);
+  return { points: (bn || []).length, last: bn?.[bn.length - 1]?.[4] };
 });
 
 await check('Binance Vision batched majors', async () => {

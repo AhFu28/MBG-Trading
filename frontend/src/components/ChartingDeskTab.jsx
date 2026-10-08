@@ -448,12 +448,14 @@ export default function ChartingDeskTab({
 
   if (deskMode === 'PRO') {
     return (
-      <HyperliquidProDesk
-        initialSymbol={activePane.symbol || initialSymbol || 'ETHUSDT'}
-        livePrices={livePrices}
-        onOpenLotCalc={onOpenLotCalc}
-        onSwitchToGrid={() => setDeskMode('GRID')}
-      />
+      <div style={{ height: 'calc(100vh - 120px)', minHeight: '650px', width: '100%' }}>
+        <HyperliquidProDesk
+          initialSymbol={activePane.symbol || initialSymbol || 'ETHUSDT'}
+          livePrices={livePrices}
+          onOpenLotCalc={onOpenLotCalc}
+          onSwitchToGrid={() => setDeskMode('GRID')}
+        />
+      </div>
     );
   }
 

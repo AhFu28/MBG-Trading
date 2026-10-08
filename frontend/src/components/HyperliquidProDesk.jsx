@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { institutionalPaperBroker } from '../services/brokerGateway.js';
 import { getTvSymbol, cleanSymbolStr } from '../data/tv-helpers.js';
+import { formatUsdCompact } from '../services/marketOverview.js';
 
 const POPULAR_INSTRUMENTS = [
   { symbol: 'BTCUSDT', coin: 'BTC', name: 'Bitcoin', market: 'CRYPTO' },
@@ -46,10 +47,13 @@ export default function HyperliquidProDesk({
   const [l2Depth, setL2Depth] = useState(null);
   const [bookTickSize, setBookTickSize] = useState('0.1');
 
+  // Live Hyperliquid per-asset stats (volume, open interest, funding, oracle).
+  // Null until loaded — the ribbon renders "—" rather than an invented number.
+  const [assetCtx, setAssetCtx] = useState(null);
+  const [nextFundingMs, setNextFundingMs] = useState(null);
+
   // Paper Broker balance & positions state
   const [brokerPortfolio, setBrokerPortfolio] = useState(() => institutionalPaperBroker.getSummary());
-
-  const chartContainerRef = useRef(null);
 
   const cleanSym = useMemo(() => cleanSymbolStr(selectedPair), [selectedPair]);
   const activeInstrument = useMemo(() => {
@@ -64,25 +68,40 @@ export default function HyperliquidProDesk({
   const isCrypto = activeInstrument.market === 'CRYPTO';
   const baseCoin = activeInstrument.coin || cleanSym.replace('USDT', '');
 
-  // Live mark price
+  /**
+   * Live mark price.
+   *
+   * NO hardcoded fallback: the previous version returned invented prices
+   * (BTC 83050, ETH 2562.5, ...) when every feed was unavailable, so a dead
+   * feed rendered as a confident, wrong price. Returns null instead, and the
+   * ribbon shows "—".
+   *
+   * ponytail: last-resort value is the live L2 mid, not a guess.
+   */
   const markPrice = useMemo(() => {
     const live = livePrices[selectedPair] || livePrices[`${baseCoin}/USDT`] || livePrices[baseCoin];
     if (live?.price && live.price > 0) return live.price;
-    if (l2Depth?.bids?.[0]?.px) return parseFloat(l2Depth.bids[0].px);
-    if (baseCoin === 'BTC') return 83050;
-    if (baseCoin === 'ETH') return 2562.5;
-    if (baseCoin === 'SOL') return 184.2;
-    if (baseCoin === 'HYPE') return 88.52;
-    return 100;
-  }, [livePrices, selectedPair, baseCoin, l2Depth]);
+    const bid = parseFloat(l2Depth?.bids?.[0]?.px);
+    const ask = parseFloat(l2Depth?.asks?.[0]?.px);
+    if (Number.isFinite(bid) && Number.isFinite(ask)) return (bid + ask) / 2;
+    if (Number.isFinite(bid)) return bid;
+    if (assetCtx?.markPx) return assetCtx.markPx;
+    return null;
+  }, [livePrices, selectedPair, baseCoin, l2Depth, assetCtx]);
 
-  const oraclePrice = useMemo(() => {
-    return Number((markPrice * 1.00015).toFixed(4));
-  }, [markPrice]);
+  /**
+   * Oracle price comes from Hyperliquid's own `oraclePx`, not a 0.015% fudge on
+   * the mark price. The fabricated offset was close enough to look plausible
+   * and wrong enough to matter.
+   */
+  const oraclePrice = assetCtx?.oraclePx ?? null;
+
+  /** Funding as a decimal (0.0000125 = 0.00125%). Null until the feed answers. */
+  const fundingRate = Number.isFinite(assetCtx?.funding) ? assetCtx.funding : null;
 
   const change24hPct = useMemo(() => {
     const live = livePrices[selectedPair] || livePrices[`${baseCoin}/USDT`];
-    return live?.changePct !== undefined ? live.changePct : -2.45;
+    return live?.changePct !== undefined ? live.changePct : null;
   }, [livePrices, selectedPair, baseCoin]);
 
   // Sync Broker Portfolio periodically
@@ -113,53 +132,87 @@ export default function HyperliquidProDesk({
     }
   }, [isCrypto, baseCoin]);
 
+  /**
+   * Per-asset stats for the ribbon. Same endpoint as the L2 book, different
+   * request type, so it shares the pattern above.
+   *
+   * Every 30s, not every 1.5s: volume, open interest and funding move on the
+   * scale of minutes, and polling them at book speed would burn the rate limit
+   * for numbers that have not changed.
+   */
+  const fetchAssetCtx = useCallback(async () => {
+    if (!isCrypto) {
+      setAssetCtx(null);
+      return;
+    }
+    try {
+      const res = await fetch('https://api.hyperliquid.xyz/info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'metaAndAssetCtxs' }),
+      });
+      if (!res.ok) return;
+      const json = await res.json();
+      const universe = json?.[0]?.universe;
+      const ctxs = json?.[1];
+      if (!Array.isArray(universe) || !Array.isArray(ctxs)) return;
+      const idx = universe.findIndex(u => u.name === baseCoin);
+      if (idx < 0 || !ctxs[idx]) return;
+      const c = ctxs[idx];
+      const px = Number(c.markPx) || 0;
+      setAssetCtx({
+        volume24h: Number(c.dayNtlVlm) || null,
+        openInterestUsd: (Number(c.openInterest) || 0) * px || null,
+        funding: Number(c.funding),
+        oraclePx: Number(c.oraclePx) || null,
+      });
+    } catch {
+      // Leaves the previous values in place; the ribbon shows "—" if never loaded.
+    }
+  }, [isCrypto, baseCoin]);
+
   useEffect(() => {
     fetchL2Book();
     const interval = setInterval(fetchL2Book, 1500);
     return () => clearInterval(interval);
   }, [fetchL2Book]);
 
-  // TradingView Interactive Chart Embed
   useEffect(() => {
-    if (!chartContainerRef.current) return;
-    chartContainerRef.current.innerHTML = '';
+    fetchAssetCtx();
+    const interval = setInterval(fetchAssetCtx, 30000);
+    return () => clearInterval(interval);
+  }, [fetchAssetCtx]);
 
-    const tvSymbol = getTvSymbol(selectedPair, activeInstrument.market);
-    const script = document.createElement('script');
-    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
-    script.type = 'text/javascript';
-    script.async = true;
-    script.innerHTML = JSON.stringify({
-      autosize: true,
-      symbol: tvSymbol,
-      interval: timeframe,
-      timezone: 'Asia/Jakarta',
-      theme: 'dark',
-      style: '1',
-      locale: 'id',
-      enable_publishing: false,
-      hide_top_toolbar: false,
-      hide_side_toolbar: false,
-      allow_symbol_change: false,
-      save_image: true,
-      backgroundColor: '#0a0d14',
-      gridColor: 'rgba(255, 255, 255, 0.04)',
-      studies: ["MASimple@tv-basicstudies", "Volume@tv-basicstudies"],
-      support_host: 'https://www.tradingview.com'
-    });
-
-    const widgetWrapper = document.createElement('div');
-    widgetWrapper.className = 'tradingview-widget-container__widget';
-    widgetWrapper.style.width = '100%';
-    widgetWrapper.style.height = '100%';
-
-    chartContainerRef.current.appendChild(widgetWrapper);
-    chartContainerRef.current.appendChild(script);
-
-    return () => {
-      if (chartContainerRef.current) chartContainerRef.current.innerHTML = '';
+  /**
+   * Hyperliquid settles funding hourly, on the hour (UTC). The countdown is
+   * derived from the clock, so it actually ticks instead of showing a frozen
+   * timestamp. Recomputed once a second by the interval below.
+   */
+  useEffect(() => {
+    if (!isCrypto) {
+      setNextFundingMs(null);
+      return undefined;
+    }
+    const tick = () => {
+      const now = new Date();
+      const next = new Date(now);
+      next.setUTCMinutes(0, 0, 0);
+      next.setUTCHours(now.getUTCHours() + 1);
+      setNextFundingMs(next.getTime() - now.getTime());
     };
-  }, [selectedPair, activeInstrument.market, timeframe]);
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [isCrypto]);
+
+  const fundingCountdown = useMemo(() => {
+    if (nextFundingMs === null) return null;
+    const total = Math.max(0, Math.floor(nextFundingMs / 1000));
+    const h = String(Math.floor(total / 3600)).padStart(2, '0');
+    const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+    const s = String(total % 60).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }, [nextFundingMs]);
 
   // Process Orderbook Data for Vertical Display
   const { processedAsks, processedBids, spreadVal, spreadPct, maxDepthCum } = useMemo(() => {
@@ -335,8 +388,12 @@ export default function HyperliquidProDesk({
     <div style={{
       display: 'flex',
       flexDirection: 'column',
-      height: 'calc(100vh - 120px)',
-      minHeight: '750px',
+      // Fill whatever contains it (a modal at 92vh, or the Charting tab).
+      // Was `calc(100vh - 120px)` + `minHeight: 750px`, which forced the desk
+      // taller than a 92vh modal on any screen under ~870px, so the order book
+      // and execution deck spilled off-screen.
+      height: '100%',
+      minHeight: 0,
       background: 'var(--bg-canvas, #000000)',
       color: 'var(--text-primary)',
       fontFamily: 'var(--font-sans, system-ui, sans-serif)',
@@ -407,7 +464,9 @@ export default function HyperliquidProDesk({
           <div>
             <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>Mark</div>
             <div style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#38bdf8' }}>
-              ${Number(markPrice).toLocaleString(undefined, { minimumFractionDigits: markPrice < 1 ? 4 : 2, maximumFractionDigits: 4 })}
+              {markPrice === null
+                ? '—'
+                : `$${Number(markPrice).toLocaleString(undefined, { minimumFractionDigits: markPrice < 1 ? 4 : 2, maximumFractionDigits: 4 })}`}
             </div>
           </div>
 
@@ -415,7 +474,9 @@ export default function HyperliquidProDesk({
           <div>
             <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>Oracle</div>
             <div style={{ fontSize: '13px', fontWeight: 700, fontFamily: 'var(--font-mono)', color: '#94a3b8' }}>
-              ${Number(oraclePrice).toLocaleString(undefined, { minimumFractionDigits: oraclePrice < 1 ? 4 : 2, maximumFractionDigits: 4 })}
+              {oraclePrice === null
+                ? '—'
+                : `$${Number(oraclePrice).toLocaleString(undefined, { minimumFractionDigits: oraclePrice < 1 ? 4 : 2, maximumFractionDigits: 4 })}`}
             </div>
           </div>
 
@@ -426,9 +487,9 @@ export default function HyperliquidProDesk({
               fontSize: '13px',
               fontWeight: 800,
               fontFamily: 'var(--font-mono)',
-              color: change24hPct >= 0 ? '#10b981' : '#f87171'
+              color: change24hPct === null ? '#94a3b8' : change24hPct >= 0 ? '#10b981' : '#f87171'
             }}>
-              {change24hPct >= 0 ? '+' : ''}{change24hPct.toFixed(2)}%
+              {change24hPct === null ? '—' : `${change24hPct >= 0 ? '+' : ''}${change24hPct.toFixed(2)}%`}
             </div>
           </div>
 
@@ -436,7 +497,7 @@ export default function HyperliquidProDesk({
           <div>
             <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>24h Volume</div>
             <div style={{ fontSize: '13px', fontWeight: 700, fontFamily: 'var(--font-mono)', color: '#cbd5e1' }}>
-              $529.7M
+              {formatUsdCompact(assetCtx?.volume24h)}
             </div>
           </div>
 
@@ -444,15 +505,16 @@ export default function HyperliquidProDesk({
           <div>
             <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>Open Interest</div>
             <div style={{ fontSize: '13px', fontWeight: 700, fontFamily: 'var(--font-mono)', color: '#cbd5e1' }}>
-              $1.78B
+              {formatUsdCompact(assetCtx?.openInterestUsd)}
             </div>
           </div>
 
           {/* Funding / Countdown */}
           <div>
             <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>Funding / Countdown</div>
-            <div style={{ fontSize: '13px', fontWeight: 700, fontFamily: 'var(--font-mono)', color: '#10b981' }}>
-              0.0013% <span style={{ color: '#94a3b8', fontSize: '11px' }}>00:14:58</span>
+            <div style={{ fontSize: '13px', fontWeight: 700, fontFamily: 'var(--font-mono)', color: fundingRate === null ? '#94a3b8' : fundingRate >= 0 ? '#10b981' : '#f87171' }}>
+              {fundingRate === null ? '—' : `${(fundingRate * 100).toFixed(4)}%`}
+              {fundingCountdown && <span style={{ color: '#94a3b8', fontSize: '11px' }}> {fundingCountdown}</span>}
             </div>
           </div>
         </div>
@@ -626,7 +688,19 @@ export default function HyperliquidProDesk({
 
           {/* Chart Iframe Canvas */}
           <div style={{ flex: 1, position: 'relative', width: '100%', minHeight: 0 }}>
-            <div ref={chartContainerRef} style={{ width: '100%', height: '100%' }} />
+            {chartSubTab === 'chart' ? (
+              <iframe
+                key={`${selectedPair}-${timeframe}`}
+                src={`https://s.tradingview.com/widgetembed/?frameElementId=tv_pro_${cleanSym}&symbol=${encodeURIComponent(getTvSymbol(selectedPair, activeInstrument.market))}&interval=${timeframe}&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=0a0d14&studies=%5B%22MASimple%40tv-basicstudies%22%2C%22Volume%40tv-basicstudies%22%5D&theme=dark&style=1&timezone=Asia%2FJakarta&locale=id`}
+                style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+                title={`TradingView Chart ${selectedPair}`}
+                allowFullScreen
+              />
+            ) : (
+              <div style={{ padding: '24px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontSize: '12px' }}>
+                Funding rate saat ini: {fundingRate !== null ? `${(fundingRate * 100).toFixed(4)}%` : '—'}
+              </div>
+            )}
           </div>
         </div>
 
@@ -935,7 +1009,7 @@ export default function HyperliquidProDesk({
               }}>
                 <input
                   type="number"
-                  placeholder={markPrice.toString()}
+                  placeholder={markPrice === null ? '—' : markPrice.toString()}
                   value={limitPrice}
                   onChange={(e) => setLimitPrice(e.target.value)}
                   style={{

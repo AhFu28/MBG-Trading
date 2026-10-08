@@ -218,7 +218,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
   const [range, setRange] = useState('30d');
   const [search, setSearch] = useState('');
   const [view, setView] = useState('overview');
-  const [assetMarket, setAssetMarket] = useState('CRYPTO');
+  const [assetMarket, setAssetMarket] = useState('ALL');
 
   /**
    * Opening an asset always goes to the FULL chart.

@@ -157,10 +157,12 @@ export default function CryptoDeskTab({ data, onOpenChart, livePrices = {}, flas
 
       {/* ---- Primary view: Hyperliquid-style 3-column trade desk ---- */}
       {view === 'DESK' && (
-        <HyperliquidProDesk
-          initialSymbol="ETHUSDT"
-          livePrices={livePrices}
-        />
+        <div style={{ height: 'calc(100vh - 140px)', minHeight: '650px', width: '100%' }}>
+          <HyperliquidProDesk
+            initialSymbol="BTCUSDT"
+            livePrices={livePrices}
+          />
+        </div>
       )}
 
       {/* ---- Funding / open interest analytics (was the Futures page) ---- */}
