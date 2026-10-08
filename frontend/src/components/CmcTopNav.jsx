@@ -88,6 +88,8 @@ const ADMIN_ONLY_IDS = new Set(['FLOW_PROCESS', 'CHANGELOG', 'ADMIN_APPROVAL']);
 export default function CmcTopNav({
   activeTab,
   onNavigate,
+  onLogout,
+  isAuthenticated = false,
   account = {},
   theme,
   onToggleTheme,
@@ -162,6 +164,22 @@ export default function CmcTopNav({
     if (setMobileOpen) setMobileOpen(false);
     if (onNavigate) onNavigate(id);
   }, [onNavigate, setMobileOpen]);
+
+  /**
+   * Logout lives at the foot of the Account menu.
+   *
+   * WHY HERE: it was previously reachable only from Account > Langganan, which
+   * is not where anyone looks for it — the owner reported "gk ada tombol logout".
+   * Account is the menu a user opens when they want out, so the action belongs
+   * there. It closes every open menu before handing off, so the nav does not
+   * stay expanded behind the confirmation.
+   */
+  const handleLogoutClick = useCallback(() => {
+    setOpenGroup(null);
+    setMobileGroup(null);
+    if (setMobileOpen) setMobileOpen(false);
+    if (onLogout) onLogout();
+  }, [onLogout, setMobileOpen]);
 
   /** Which group contains the active tab, so it can be highlighted. */
   const activeGroupId = useMemo(() => {
@@ -245,6 +263,36 @@ export default function CmcTopNav({
             </button>
           );
         })}
+
+        {/* Logout sits below a divider so it is not mistaken for a page link. */}
+        {group.id === 'ACCOUNT' && isAuthenticated && onLogout && (
+          <>
+            <div style={{ height: '1px', background: 'var(--border-subtle, rgba(255,255,255,0.08))', margin: '5px 3px' }} />
+            <button
+              role="menuitem"
+              onClick={handleLogoutClick}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '7px',
+                width: '100%',
+                padding: '8px 10px',
+                borderRadius: '7px',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                textAlign: 'left',
+                fontFamily: 'inherit',
+                color: 'var(--accent-red, #ff5c5c)',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255, 92, 92, 0.10)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+            >
+              <span style={{ fontSize: '13px' }}>⏻</span>
+              <span style={{ fontSize: '12px', fontWeight: 700 }}>Log out</span>
+            </button>
+          </>
+        )}
       </div>
     );
   };
@@ -447,6 +495,15 @@ export default function CmcTopNav({
                     {item.label}
                   </button>
                 ))}
+                {/* Logout mirrors the desktop Account menu — same divider, same position. */}
+                {open && group.id === 'ACCOUNT' && isAuthenticated && onLogout && (
+                  <button
+                    onClick={handleLogoutClick}
+                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '8px 11px 8px 22px', background: 'none', border: 'none', color: 'var(--accent-red, #ff5c5c)', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', borderRadius: '6px' }}
+                  >
+                    ⏻ Log out
+                  </button>
+                )}
               </div>
             );
           })}

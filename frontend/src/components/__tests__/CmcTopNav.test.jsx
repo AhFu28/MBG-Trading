@@ -178,6 +178,49 @@ describe('dependency wiring', () => {
   });
 });
 
+describe('logout', () => {
+  /**
+   * The owner reported "gk ada tombol logout". The handler existed and was wired
+   * to SubscriptionPage, but nothing in the navigation offered it — Account had
+   * only Setting, Langganan and Watchlist, and a user looking for logout opens
+   * Account, not the billing page.
+   */
+  it('offers logout from the Account menu to a signed-in user', () => {
+    renderNav({
+      account: { email: 'user@example.com', isPro: false, authenticated: true },
+      isAuthenticated: true,
+      onLogout: () => {},
+    });
+    const accountMenu = screen.getByRole('button', { name: /Account/i });
+    act(() => { accountMenu.click(); });
+    expect(screen.getByText('Log out')).toBeDefined();
+  });
+
+  it('calls onLogout exactly once when clicked', () => {
+    const onLogout = vi.fn();
+    renderNav({
+      account: { email: 'user@example.com', authenticated: true },
+      isAuthenticated: true,
+      onLogout,
+    });
+    const accountMenu = screen.getByRole('button', { name: /Account/i });
+    act(() => { accountMenu.click(); });
+    act(() => { screen.getByText('Log out').click(); });
+    expect(onLogout).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not offer logout to a visitor who is not signed in', () => {
+    // A guest has no session to end; showing the button would imply otherwise.
+    renderNav({
+      account: { authenticated: false },
+      isAuthenticated: false,
+      onLogout: () => {},
+    });
+    const accountMenu = screen.getByRole('button', { name: /Account/i });
+    act(() => { accountMenu.click(); });
+    expect(screen.queryByText('Log out')).toBeNull();
+  });
+});
 describe('accessibility', () => {
   it('marks dropdown buttons with aria-haspopup and aria-expanded', () => {
     renderNav();

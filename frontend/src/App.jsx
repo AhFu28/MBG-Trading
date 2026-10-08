@@ -497,6 +497,8 @@ export default function App() {
         <CmcTopNav
           activeTab={activeTab}
           onNavigate={setActiveTab}
+          onLogout={handleLogout}
+          isAuthenticated={!!account?.authenticated}
           account={account}
           theme={theme}
           onToggleTheme={toggleTheme}
