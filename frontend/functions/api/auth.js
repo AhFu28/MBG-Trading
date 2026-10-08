@@ -227,3 +227,23 @@ export async function onRequestPost(context) {
     });
   }
 }
+
+// --- DELETE: End the owner session ---
+//
+// WHY THIS EXISTS (bug reported 2026-10-08, "gabisa di log out"):
+// `mbg_jwt` is this route's own cookie and the only way to clear it, because
+// HttpOnly means no script can. Without a delete path the owner session was
+// unendable: /api/account/logout clears the account cookie, not this one.
+//
+// Not gated on a valid token: an expired or corrupt cookie still needs clearing,
+// and refusing would leave the browser holding a cookie it cannot remove.
+export async function onRequestDelete() {
+  return new Response(JSON.stringify({ ok: true, authenticated: false }), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-store',
+      'Set-Cookie': 'mbg_jwt=; HttpOnly; Secure; Path=/; SameSite=Strict; Max-Age=0'
+    }
+  });
+}

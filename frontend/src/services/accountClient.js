@@ -79,12 +79,37 @@ export async function logIn({ email, password }) {
   });
 }
 
+/**
+ * End the account session (`mbg_session`).
+ *
+ * This covers the account path only. The legacy owner cookie `mbg_jwt` is
+ * cleared by `endSession()` in sessionCleanup.js — see the note there for why
+ * one logout has to hit two endpoints.
+ */
 export async function logOut() {
   try {
     return await call('/logout', { method: 'POST' });
   } catch {
     // Logging out locally must always succeed from the user's point of view.
     return { ok: true };
+  }
+}
+
+/**
+ * End the legacy owner-cockpit session (`mbg_jwt`).
+ *
+ * Separate from logOut() because it is a different cookie on a different route.
+ * Never throws: a network failure must not strand the user inside the terminal.
+ */
+export async function logOutOwner() {
+  try {
+    const res = await fetch('/api/auth', {
+      method: 'DELETE',
+      credentials: 'same-origin',
+    });
+    return res.ok ? await res.json().catch(() => ({ ok: true })) : { ok: false };
+  } catch {
+    return { ok: false };
   }
 }
 

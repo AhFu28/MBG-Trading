@@ -121,3 +121,67 @@ describe('endSession', () => {
     await expect(endSession()).resolves.toBeDefined();
   });
 });
+
+/**
+ * Second round of the same bug (2026-10-08), reported as "gabisa di log out"
+ * even after the button existed and was wired up.
+ *
+ * There are TWO HttpOnly session cookies, and the logout path cleared only one:
+ *
+ *   mbg_session — account session   (/api/account/login → /api/account/logout)
+ *   mbg_jwt     — owner cockpit     (/api/auth → had no delete path at all)
+ *
+ * App.jsx falls back to /api/auth when /api/account/me reports no account, so a
+ * surviving `mbg_jwt` restored the session on the next reload. These tests exist
+ * so a future edit cannot drop one half of the revocation again.
+ */
+describe('endSession revokes BOTH session cookies', () => {
+  it('calls the owner-cockpit logout as well as the account logout', async () => {
+    const accountSpy = vi.spyOn(accountClient, 'logOut').mockResolvedValue({ ok: true });
+    const ownerSpy = vi.spyOn(accountClient, 'logOutOwner').mockResolvedValue({ ok: true });
+
+    await endSession();
+
+    expect(accountSpy).toHaveBeenCalledTimes(1);
+    expect(ownerSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('revokes both even when the account logout fails', async () => {
+    // The owner cookie is the one that used to survive. It must not depend on
+    // the account endpoint succeeding.
+    vi.spyOn(accountClient, 'logOut').mockRejectedValue(new Error('500'));
+    const ownerSpy = vi.spyOn(accountClient, 'logOutOwner').mockResolvedValue({ ok: true });
+
+    await endSession();
+
+    expect(ownerSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('revokes both even when the owner logout fails', async () => {
+    const accountSpy = vi.spyOn(accountClient, 'logOut').mockResolvedValue({ ok: true });
+    vi.spyOn(accountClient, 'logOutOwner').mockRejectedValue(new Error('network'));
+
+    await endSession();
+
+    expect(accountSpy).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('logOutOwner', () => {
+  it('sends DELETE to /api/auth with credentials, the only way to clear mbg_jwt', async () => {
+    // mbg_jwt is HttpOnly, so no client code can delete it. The DELETE route is
+    // the sole mechanism, which is why this assertion pins the method and path.
+    const fetchSpy = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
+    vi.stubGlobal('fetch', fetchSpy);
+
+    const { logOutOwner } = accountClient;
+    await logOutOwner();
+
+    expect(fetchSpy).toHaveBeenCalledWith('/api/auth', expect.objectContaining({ method: 'DELETE' }));
+  });
+
+  it('never throws when the request fails', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline')));
+    await expect(accountClient.logOutOwner()).resolves.toEqual({ ok: false });
+  });
+});

@@ -40,14 +40,22 @@ export const SESSION_COOKIE = 'mbg_session';
 export const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
 export function json(body, status = 200, extraHeaders = {}) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-store',
-      ...extraHeaders,
-    },
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-store',
   });
+  // Set-Cookie is appended rather than assigned: a plain object literal would
+  // silently drop all but the last one, which is how a logout that clears two
+  // cookies would quietly clear only one.
+  for (const [key, value] of Object.entries(extraHeaders)) {
+    if (key.toLowerCase() === 'set-cookie') {
+      const list = Array.isArray(value) ? value : [value];
+      for (const cookie of list) headers.append('Set-Cookie', cookie);
+    } else {
+      headers.set(key, value);
+    }
+  }
+  return new Response(JSON.stringify(body), { status, headers });
 }
 
 export function config(env) {
@@ -211,6 +219,33 @@ export function sessionCookie(token, maxAge = SESSION_TTL_SECONDS) {
 
 export function clearSessionCookie() {
   return `${SESSION_COOKIE}=; HttpOnly; Secure; Path=/; SameSite=Strict; Max-Age=0`;
+}
+
+/**
+ * The legacy owner-cockpit cookie, issued by /api/auth and read by
+ * /api/_session.js `requireSession`.
+ *
+ * WHY A SECOND COOKIE EXISTS: two independent auth paths share one browser. The
+ * shared cockpit password mints `mbg_jwt`; the account system mints
+ * `mbg_session`. Both are HttpOnly, so neither can be cleared from JavaScript.
+ *
+ * WHY THIS MATTERS (bug reported 2026-10-08, "gabisa di log out"):
+ * /api/account/logout only cleared `mbg_session`. App.jsx then falls back to
+ * /api/auth, which still saw a valid `mbg_jwt` and answered `authenticated: true`
+ * — so the reload put the owner straight back in the terminal. The session
+ * survived logout for its full 24h TTL with no way to end it from the browser.
+ *
+ * Any route that ends a session MUST clear both, or the owner can never leave.
+ */
+export const LEGACY_COOKIE = 'mbg_jwt';
+
+export function clearLegacyCookie() {
+  return `${LEGACY_COOKIE}=; HttpOnly; Secure; Path=/; SameSite=Strict; Max-Age=0`;
+}
+
+/** Both Set-Cookie values, for routes that must end a session completely. */
+export function clearAllSessionCookies() {
+  return [clearSessionCookie(), clearLegacyCookie()];
 }
 
 /** Read + verify the session cookie. Returns the JWT payload or null. */

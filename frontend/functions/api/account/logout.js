@@ -1,12 +1,19 @@
 /**
- * POST /api/account/logout — clear the session cookie.
+ * POST /api/account/logout — clear BOTH session cookies.
  *
  * Also revokes the Supabase token so a stolen cookie cannot be replayed.
- * Revocation failure is not fatal: the local cookie is cleared regardless, and
+ * Revocation failure is not fatal: the local cookies are cleared regardless, and
  * the token expires on its own.
+ *
+ * WHY BOTH COOKIES (bug reported 2026-10-08, "gabisa di log out"):
+ * This handler used to clear only `mbg_session`. App.jsx falls back to
+ * /api/auth when /api/account/me reports no account, and that route reads the
+ * separate `mbg_jwt` owner cookie — which was still valid. The user was
+ * therefore logged straight back in on reload, and because both cookies are
+ * HttpOnly there was no way to clear the leftover from the browser.
  */
 
-import { config, json, readSession, clearSessionCookie } from './_shared.js';
+import { config, json, readSession, clearAllSessionCookies } from './_shared.js';
 
 export async function onRequestPost(context) {
   const { env, request } = context;
@@ -24,7 +31,7 @@ export async function onRequestPost(context) {
           },
         });
       } catch {
-        // Best effort only — the cookie is cleared below either way.
+        // Best effort only — the cookies are cleared below either way.
       }
     }
   }
@@ -32,6 +39,6 @@ export async function onRequestPost(context) {
   return json(
     { ok: true, authenticated: false },
     200,
-    { 'Set-Cookie': clearSessionCookie() },
+    { 'Set-Cookie': clearAllSessionCookies() },
   );
 }

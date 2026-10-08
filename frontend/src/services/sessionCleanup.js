@@ -19,12 +19,25 @@
  *      localStorage keys behind, so a stale `mbg_cockpit_auth` could still make
  *      PasswordGate think a session existed.
  *
- * The fix is one shared routine that does BOTH halves in the right order:
- * revoke on the server first, then scrub every local trace. Anything that
- * offers a logout control must call this, never hand-roll its own.
+ * SECOND ROUND (same day, "gabisa di log out")
+ * -------------------------------------------
+ * Fixing the local keys was not enough, because there are TWO session cookies
+ * and only one of them was being cleared:
+ *
+ *   mbg_session  — account session, minted by /api/account/login
+ *   mbg_jwt      — legacy owner-cockpit session, minted by /api/auth
+ *
+ * App.jsx falls back to /api/auth whenever /api/account/me says "no account".
+ * Clearing only `mbg_session` therefore left `mbg_jwt` valid, the owner session
+ * was restored on the very next reload, and because both cookies are HttpOnly
+ * there was no script-side way out. A session you cannot end is a security bug,
+ * not a UX bug.
+ *
+ * So this routine now revokes BOTH, server-side, and only then scrubs local
+ * traces. Every logout control must call this and never hand-roll its own.
  */
 
-import { logOut as revokeServerSession } from './accountClient.js';
+import { logOut as revokeServerSession, logOutOwner as revokeOwnerSession } from './accountClient.js';
 
 /**
  * Every localStorage/sessionStorage key that can hold a session or account
@@ -50,21 +63,21 @@ export function clearLocalSession() {
 }
 
 /**
- * End the session for real: revoke server-side, then scrub locally.
+ * End the session for real: revoke BOTH server sessions, then scrub locally.
  *
- * `logOut()` never throws — it resolves even when the network is down, because
- * from the user's point of view "keluar" must always succeed. That means this
- * function always completes, and the caller can reload unconditionally.
+ * Both revocations run concurrently and neither can throw — from the user's
+ * point of view "keluar" must always succeed. That means this function always
+ * completes, and the caller can reload unconditionally.
  *
  * @returns {Promise<{ok: true}>}
  */
 export async function endSession() {
   try {
-    await revokeServerSession();
+    await Promise.all([revokeServerSession(), revokeOwnerSession()]);
   } catch {
-    // Defence in depth: accountClient already swallows errors, but a logout
-    // that throws would strand the user inside the terminal. Never let that
-    // happen — the local scrub below still logs them out of this browser.
+    // Defence in depth: neither client throws, but a logout that throws would
+    // strand the user inside the terminal. Never let that happen — the local
+    // scrub below still logs them out of this browser.
   }
   clearLocalSession();
   return { ok: true };

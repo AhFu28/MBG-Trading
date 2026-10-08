@@ -12,6 +12,7 @@ import { onRequestGet as meGet } from '../../../functions/api/account/me.js';
 import { onRequestPost as signupPost } from '../../../functions/api/account/signup.js';
 import { onRequestPost as loginPost } from '../../../functions/api/account/login.js';
 import { onRequestPost as logoutPost } from '../../../functions/api/account/logout.js';
+import { onRequestDelete as ownerLogoutDelete } from '../../../functions/api/auth.js';
 import { resolveEntitlement, validateCredentials, config } from '../../../functions/api/account/_shared.js';
 
 const ENV_EMPTY = {};
@@ -231,6 +232,54 @@ describe('logout', () => {
     const res = await logoutPost({ env: ENV_OK, request: req('https://x/api/account/logout', {}) });
     expect(res.status).toBe(200);
     expect(res.headers.get('Set-Cookie')).toMatch(/Max-Age=0/);
+  });
+
+  /**
+   * The bug that made logout impossible ("gabisa di log out", 2026-10-08):
+   * /api/auth mints a SEPARATE HttpOnly cookie `mbg_jwt`, and App.jsx falls back
+   * to that route when /api/account/me reports no account. Clearing only
+   * `mbg_session` left the owner session alive, so the reload signed the user
+   * straight back in — and no script could clear the leftover cookie.
+   *
+   * NOTE ON READING THE HEADER: these must be asserted against the raw
+   * getSetCookie() list. `res.headers.get('Set-Cookie')` returns only the FIRST
+   * cookie, so a test written that way passes even when the second is dropped —
+   * exactly the failure being guarded against.
+   */
+  it('clears BOTH session cookies, account and legacy owner', async () => {
+    const res = await logoutPost({ env: ENV_EMPTY, request: req('https://x/api/account/logout', {}) });
+    const cookies = res.headers.getSetCookie();
+    const joined = cookies.join(' | ');
+
+    expect(cookies.length).toBe(2);
+    expect(joined).toMatch(/mbg_session=;/);
+    expect(joined).toMatch(/mbg_jwt=;/);
+    for (const c of cookies) {
+      expect(c).toMatch(/Max-Age=0/);
+      expect(c).toMatch(/HttpOnly/);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The legacy owner cookie needs its own delete path
+// ---------------------------------------------------------------------------
+describe('owner session logout', () => {
+  it('DELETE /api/auth clears mbg_jwt, the only route that can', async () => {
+    const res = await ownerLogoutDelete();
+    expect(res.status).toBe(200);
+    const cookies = res.headers.getSetCookie();
+    expect(cookies.join(' ')).toMatch(/mbg_jwt=;/);
+    expect(cookies.join(' ')).toMatch(/Max-Age=0/);
+  });
+
+  it('answers even with no cookie present, so a stale one can always be cleared', async () => {
+    // Not gated on a valid token: refusing here would leave the browser holding
+    // a cookie it has no way to remove.
+    const res = await ownerLogoutDelete();
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.authenticated).toBe(false);
   });
 });
 
