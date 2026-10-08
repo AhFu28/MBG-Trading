@@ -46,6 +46,11 @@ export function evaluateDynamicStrategy({
   }
 
   // Baseline fallback if missing core levels
+  //
+  // dynamicRR is null, not 2.0. This branch runs precisely when the levels needed
+  // to compute a ratio are absent, so there is nothing to report — and the
+  // previous 2.0 was a plausible-looking constant. Callers downstream render it as
+  // '—' (MasterQuantLeaderboard) or fall back to their own computed value.
   if (!price || !entry || !sl || !tp1) {
     return {
       status: 'NEUTRAL',
@@ -55,7 +60,7 @@ export function evaluateDynamicStrategy({
       effectiveSl: sl,
       isTrailingActive: false,
       floatingPnLPct: 0,
-      dynamicRR: 2.0,
+      dynamicRR: null,
       actionAdvice: 'Menunggu konfirmasi harga pasar...',
       isTp1Hit: false,
       isTp2Hit: false,
@@ -108,9 +113,14 @@ export function evaluateDynamicStrategy({
 
   // Bounded Dynamic Risk / Reward Calculation
   // Standard Initial R:R = |Target 1 - Entry| / |Entry - StopLoss|
+  //
+  // Returns null when there is no risk distance to divide by. It used to return
+  // the literal 2.0, which displayed a confident "1 : 2.0" for a position whose
+  // stop loss sits exactly at entry — a case with no measurable risk at all.
+  // Callers must treat null as "not computable", not as a number.
   const initialRisk = Math.abs(entry - sl);
   const initialReward = Math.abs(tp1 - entry);
-  const initialRR = initialRisk > 0 ? Number((initialReward / initialRisk).toFixed(2)) : 2.0;
+  const initialRR = initialRisk > 0 ? Number((initialReward / initialRisk).toFixed(2)) : null;
 
   // Floating R:R relative to current distance to target vs current distance to SL
   const currentRiskDist = Math.abs(price - effectiveSl);
@@ -128,6 +138,10 @@ export function evaluateDynamicStrategy({
     // Cap at 10.0 to prevent absurd numbers when hovering near SL
     dynamicRR = Number(Math.min(10.0, Math.max(0.1, rawRR)).toFixed(2));
   }
+  // If none of the branches applied, `initialRR` may be null (no measurable
+  // initial risk). Keep it null rather than letting it fall through as a value —
+  // the advice string below checks for it explicitly. Leaving it as null is the
+  // honest outcome: there is no ratio to report.
 
   // State Machine Classification
   const isExtended = pnlPct > 3.5 && !hasHitTp1;
@@ -169,7 +183,12 @@ export function evaluateDynamicStrategy({
     status = 'ENTRY_TRIGGER';
     statusLabel = '🎯 TRIGGER ZONE';
     badgeClass = 'badge-entry-ready';
-    actionAdvice = `Harga berada di zona eksekusi optimal (±${Math.abs(pnlPct)}% dari Entry). Rasio R:R terukur 1:${dynamicRR}. Siap eksekusi.`;
+    // The advice must not claim a ratio that was never computed. When
+    // dynamicRR is null the sentence drops the clause instead of printing
+    // "1:null", which is what the old numeric fallback was hiding.
+    actionAdvice = dynamicRR === null
+      ? `Harga berada di zona eksekusi optimal (±${Math.abs(pnlPct)}% dari Entry). Rasio R:R belum bisa dihitung karena jarak risiko nol. Siap eksekusi.`
+      : `Harga berada di zona eksekusi optimal (±${Math.abs(pnlPct)}% dari Entry). Rasio R:R terukur 1:${dynamicRR}. Siap eksekusi.`;
   } else if (isWaitingPullback) {
     status = 'WAITING_PULLBACK';
     statusLabel = '⏳ WAIT RETEST';

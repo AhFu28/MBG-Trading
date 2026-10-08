@@ -129,19 +129,29 @@ Sekalian diperbaiki: `OrderExecutionModal` menulis *"disaranake, dana nyata ora 
 
 Saya catat dengan jujur, bukan disembunyikan.
 
-### 1. Cakupan E2E baru menyentuh permukaan
+### 0. Sudah tertutup di iterasi kedua
 
-20 tes yang ada membuktikan **semua halaman dimuat tanpa error**. Itu penting, tapi belum menguji **perilaku**:
+| Area | Status |
+|---|---|
+| Semua 18 halaman dimuat tanpa error | ✅ 18 tes |
+| Nilai karangan tidak tampil di layar | ✅ 20 tes, 4 halaman |
+| Logout lengkap (dua cookie) | ✅ 5 tes, diuji balik |
+| Chart benar-benar menggambar | ✅ 3 tes + penjaga struktural |
+| Teks Jawa di UI | ✅ 2 berkas diperbaiki |
+
+**Total: 472 tes unit + 49 tes browser, semuanya lulus.**
+
+### 1. Yang belum diuji di browser
 
 | Belum diuji | Risiko |
 |---|---|
-| Order placement di paper broker | Alur uang, belum ada tes browser |
+| **Order placement** | Satu-satunya alur yang menyentuh uang, dan sama sekali belum diuji |
 | Persistensi watchlist antar reload | Data pengguna |
 | Ganti bahasa dan tema | Belum diverifikasi di browser |
-| Login dan logout sungguhan | Alur sesi |
-| Chart benar-benar menggambar | Persis bug hitam yang Jendral laporkan |
+| Login sungguhan (bukan sesi palsu) | Alur sesi |
+| Eksekusi Binance / Hyperliquid | Belum ada sama sekali |
 
-**Prioritas berikutnya: logout dan chart.** Logout sudah pernah rusak dua kali, dan chart sudah pernah hitam.
+**Prioritas berikutnya: order placement.** Setiap alur lain sudah punya penjaga; yang ini tidak, padahal dampaknya paling besar.
 
 ### 2. H-2 belum selesai
 

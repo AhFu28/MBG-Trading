@@ -1139,9 +1139,22 @@ export default function MasterQuantLeaderboard({
                               <code>{formatFinancialPrice(item.target1, item.market)}</code>
                             </td>
                             <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}>
-                              <span style={{ fontWeight: '700', color: 'var(--accent-blue)' }}>
-                                1:{item.dynamic?.dynamicRR !== undefined ? item.dynamic.dynamicRR : item.riskReward}
-                              </span>
+                              {/*
+                                `!= null` catches BOTH undefined and null. The
+                                previous `!== undefined` let a null dynamicRR
+                                through and rendered the literal text "1:null",
+                                because dynamicStrategy returns null when there
+                                is no measurable risk distance to divide by.
+                              */}
+                              {(() => {
+                                const rr = item.dynamic?.dynamicRR ?? item.riskReward;
+                                const shown = typeof rr === 'number' && Number.isFinite(rr) ? rr : null;
+                                return (
+                                  <span style={{ fontWeight: '700', color: shown === null ? 'var(--text-muted)' : 'var(--accent-blue)' }}>
+                                    {shown === null ? '—' : `1:${shown}`}
+                                  </span>
+                                );
+                              })()}
                               {item.dynamic?.floatingPnLPct !== undefined && (
                                 <div style={{ fontSize: '8.5px', color: item.dynamic.floatingPnLPct >= 0 ? 'var(--accent-green-text, var(--accent-green))' : 'var(--accent-rust-text, var(--accent-rust))', fontWeight: '700' }}>
                                   {item.dynamic.floatingPnLPct >= 0 ? `+${item.dynamic.floatingPnLPct}%` : `${item.dynamic.floatingPnLPct}%`} PnL

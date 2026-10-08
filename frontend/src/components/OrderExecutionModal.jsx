@@ -134,10 +134,22 @@ export default function OrderExecutionModal({
   const totalRequiredCapital = notionalValue + totalFee;
   const isOverAllocated = notionalValue > availableCash;
 
-  // Structural R:R
+  /**
+   * Structural R:R, or null when there is nothing to compute it from.
+   *
+   * The fallback used to be the literal '2.0', which meant an order with no stop
+   * loss yet displayed "1 : 2.0" — a fabricated risk ratio shown in the same
+   * style as a real one. It sat next to the order button, so the number a trader
+   * reads to decide whether to enter was invented whenever the inputs were
+   * incomplete.
+   *
+   * A missing ratio now renders as '—'. The form already refuses to submit
+   * without a stop loss, so this path is display-only.
+   */
   const riskDistance = Math.abs(entry - sl);
   const rewardDistance = Math.abs(tp1 - entry);
-  const netRR = riskDistance > 0 ? (rewardDistance / riskDistance).toFixed(2) : '2.0';
+  const hasRiskDistance = Number.isFinite(riskDistance) && riskDistance > 0;
+  const netRR = hasRiskDistance ? (rewardDistance / riskDistance).toFixed(2) : null;
 
   const handleTransmitOrder = async () => {
     setErrorMessage('');
@@ -480,8 +492,8 @@ export default function OrderExecutionModal({
 
               <div>
                 <div style={{ fontSize: '9px', color: 'var(--accent-green)' }}>Rasio Risk-Reward</div>
-                <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
-                  1 : {netRR}
+                <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: netRR === null ? 'var(--text-muted)' : 'var(--accent-green)' }}>
+                  {netRR === null ? '—' : `1 : ${netRR}`}
                 </div>
               </div>
             </div>

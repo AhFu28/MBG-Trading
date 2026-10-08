@@ -67,6 +67,9 @@ export default function LotCalculatorModal({
   let positionPercent = 0;
   let rrRatioDisplay = '-';
   let targetPrice = 0;
+  // The multiplier actually applied to the target, so the clipboard summary can
+  // quote the same number the screen shows instead of repeating a literal.
+  let targetRr = null;
   let isCashCapped = false;
   let feeImpactTotal = 0;
 
@@ -101,9 +104,23 @@ export default function LotCalculatorModal({
       }
 
       positionPercent = modalAmount > 0 ? (totalPositionValue / modalAmount) * 100 : 0;
+
+      /**
+       * Target and R:R come from ONE constant.
+       *
+       * The multiplier was the literal 2.2 in three places: the target price, the
+       * R:R label, and the copy-to-clipboard summary. They happened to agree, so
+       * nothing looked wrong — but changing the target would have silently left
+       * two stale claims about the ratio, and the label is what a trader reads.
+       */
+      const TARGET_RR = 2.2;
       const pureStructuralRisk = Math.abs(entry - sl);
-      targetPrice = isShort ? Math.max(0, entry - (2.2 * pureStructuralRisk)) : entry + (2.2 * pureStructuralRisk);
-      rrRatioDisplay = isShort ? '1 : 2.2 (SHORT)' : '1 : 2.2 (LONG)';
+      targetPrice = isShort
+        ? Math.max(0, entry - (TARGET_RR * pureStructuralRisk))
+        : entry + (TARGET_RR * pureStructuralRisk);
+      // Derived, not asserted: the displayed ratio is the one actually applied.
+      rrRatioDisplay = `1 : ${TARGET_RR.toFixed(1)} ${isShort ? '(SHORT)' : '(LONG)'}`;
+      targetRr = TARGET_RR;
     }
   }
 
@@ -122,7 +139,7 @@ export default function LotCalculatorModal({
       `Sizing: ${!isCrypto ? `${maxLots} LOT (${(maxLots * 100).toLocaleString()} Lembar)` : `${formatTokens(maxTokens)} UNIT`}\n` +
       `Entry: ${isCrypto ? '$' + entry : 'Rp ' + entry.toLocaleString('id-ID')}\n` +
       `Stop Loss: ${isCrypto ? '$' + sl : 'Rp ' + sl.toLocaleString('id-ID')}\n` +
-      `Target (1:2.2): ${isCrypto ? '$' + targetPrice.toFixed(4) : 'Rp ' + Math.round(targetPrice).toLocaleString('id-ID')}\n` +
+      `Target${targetRr !== null ? ` (1:${targetRr.toFixed(1)})` : ''}: ${isCrypto ? '$' + targetPrice.toFixed(4) : 'Rp ' + Math.round(targetPrice).toLocaleString('id-ID')}\n` +
       `Total Posisi: ${isCrypto ? '$' + totalPositionValue.toFixed(2) : 'Rp ' + Math.round(totalPositionValue).toLocaleString('id-ID')} (${positionPercent.toFixed(1)}% Porto)\n` +
       `Max Resiko: ${isCrypto ? '$' + riskAmount.toFixed(2) : 'Rp ' + Math.round(riskAmount).toLocaleString('id-ID')} (${riskPercent}%)`;
 
