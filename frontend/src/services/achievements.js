@@ -116,6 +116,16 @@ export const ACHIEVEMENTS = [
     progress: ctx => ctx.watchlistCount,
     unit: 'instrumen',
   },
+  {
+    id: 'CHART_PREDICTOR',
+    name: 'Master Tebak Chart & Strategi',
+    desc: 'Tebak arah chart dengan strategi dan analisa tepat (minimal 5 prediksi terverifikasi benar).',
+    category: ACHIEVEMENT_CATEGORY.SKILL,
+    icon: '🔮',
+    target: 5,
+    progress: ctx => ctx.chartPredictionsCorrect || 0,
+    unit: 'prediksi benar',
+  },
 
   // --- MILESTONE: did they finish something? -------------------------------
   {
@@ -261,6 +271,8 @@ export const EMPTY_ACHIEVEMENT_CONTEXT = {
   backtestsRun: 0,
   academyLessonsDone: 0,
   manualOrdersPlaced: 0,
+  chartPredictionsCorrect: 0,
+  predictionPoints: 0,
 };
 
 export function loadAchievementContext() {

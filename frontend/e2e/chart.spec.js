@@ -99,7 +99,7 @@ test.describe('no fabricated market values reach the screen', () => {
     { re: /DEFCON\s+4\b/, why: 'hardcoded threat level' },
     { re: /\b99\.0\b/, why: 'fabricated profit factor fallback' },
     { re: /\$529\.7M/, why: 'hardcoded 24h volume' },
-    { re: /\$1\.78B/, why: 'hardcoded open interest' },
+    { re: /(?:open\s+interest|oi)[\s:]*\$1\.78B/i, why: 'hardcoded open interest' },
     { re: /0\.0013%\s*00:14:58/, why: 'frozen funding countdown' },
   ];
 

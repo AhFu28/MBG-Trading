@@ -53,7 +53,7 @@ const CONTRACT_TYPES = [
   { id: 'SPOT', label: 'Spot', hint: 'Beli/lepas aset langsung' },
 ];
 
-export default function CryptoDeskTab({ data, onOpenChart, livePrices = {}, flashMap = {}, allCryptoSpot = [] }) {
+export default function CryptoDeskTab({ data, onOpenChart, onOpenExecution, livePrices = {}, flashMap = {}, allCryptoSpot = [] }) {
   const [contractType, setContractType] = useState('PERP');
   const [view, setView] = useState('DESK'); // 'DESK' | 'FUNDING' | 'SPOT'
   const [search, setSearch] = useState('');
@@ -151,6 +151,25 @@ export default function CryptoDeskTab({ data, onOpenChart, livePrices = {}, flas
             style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '7px', padding: '5px 11px', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
           >
             ⤢ Popup Chart
+          </button>
+
+          <button
+            id="btn-open-order-modal"
+            onClick={() => onOpenExecution && onOpenExecution({ symbol: 'BTCUSDT', market: 'CRYPTO' })}
+            style={{
+              background: 'linear-gradient(135deg, var(--accent-blue), #2563eb)',
+              border: 'none',
+              color: '#ffffff',
+              borderRadius: '7px',
+              padding: '5px 12px',
+              fontSize: '11px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)'
+            }}
+          >
+            ⚡ Tiket Order
           </button>
         </div>
       </div>

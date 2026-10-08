@@ -44,7 +44,7 @@ const DIRECTION_STYLE = {
  * GUEST waits 48 hours and sees no precise levels. The page always shows how
  * many signals are waiting, so the upgrade reason is visible rather than hidden.
  */
-export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavigateTab }) {
+export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavigateTab, onOpenExecution }) {
   const tier = String(userTier || '').toUpperCase() === 'PRO' || String(userTier || '').toUpperCase() === 'VIP'
     ? TIERS.VIP
     : String(userTier || '').toUpperCase() === 'FREE' ? TIERS.FREE : TIERS.GUEST;
@@ -288,6 +288,36 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
                   <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
                     🔒 Alasan lengkap hanya untuk VIP Pro
                   </div>
+                )}
+
+                {/* Execution Gateway Trigger */}
+                {row.masked === false && (
+                  <button
+                    onClick={() => onOpenExecution && onOpenExecution({
+                      symbol: row.symbol,
+                      market: row.market,
+                      entryPrice: row.entry_price,
+                      stopLoss: row.stop_loss,
+                      target1: row.target_1,
+                      target2: row.target_2,
+                      direction: row.direction
+                    })}
+                    style={{
+                      width: '100%',
+                      padding: '7px 10px',
+                      borderRadius: '6px',
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      background: 'rgba(59, 130, 246, 0.12)',
+                      border: '1px solid rgba(59, 130, 246, 0.3)',
+                      color: 'var(--accent-blue)',
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                      marginTop: '4px'
+                    }}
+                  >
+                    ⚡ Eksekusi Rencana Ini
+                  </button>
                 )}
               </div>
             );

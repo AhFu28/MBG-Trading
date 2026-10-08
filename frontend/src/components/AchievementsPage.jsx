@@ -89,7 +89,7 @@ function AchievementRow({ item }) {
   );
 }
 
-export default function AchievementsPage({ account = {}, userTier = TIER.GUEST, isAdmin = false, onNavigate }) {
+export default function AchievementsPage({ account = {}, userTier = TIER.GUEST, isAdmin = false, onNavigate, onOpenPredictionModal }) {
   const [ctx, setCtx] = useState(() => loadAchievementContext());
 
   // Opening this page counts as a day of activity. It is the user's own action,
@@ -145,6 +145,48 @@ export default function AchievementsPage({ account = {}, userTier = TIER.GUEST, 
             transition: 'width 0.4s ease',
           }} />
         </div>
+      </div>
+
+      {/* ---------- ARENA PREDIKSI STRATEGI CALLOUT ---------- */}
+      <div className="telemetry-panel" style={{
+        padding: '14px 18px',
+        borderRadius: '12px',
+        background: 'linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(30, 41, 59, 0.25) 100%)',
+        border: '1px solid rgba(234, 179, 8, 0.3)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '14px',
+        flexWrap: 'wrap',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{ fontSize: '26px' }}>🎯</span>
+          <div>
+            <div style={{ fontSize: '13.5px', fontWeight: 900, color: 'var(--accent-gold)' }}>
+              Arena Tebak Chart & Uji Strategi
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              Makin sering analisa chart Anda terverifikasi benar, makin tinggi poin kuantitatif Anda menuju LEGEND.
+            </div>
+          </div>
+        </div>
+        <button
+          id="btn-open-prediction-modal-achievements"
+          onClick={() => onOpenPredictionModal && onOpenPredictionModal()}
+          style={{
+            padding: '8px 16px',
+            background: 'var(--accent-gold, #facc15)',
+            color: '#000000',
+            border: 'none',
+            borderRadius: '6px',
+            fontSize: '11.5px',
+            fontWeight: 900,
+            cursor: 'pointer',
+            letterSpacing: '0.03em',
+          }}
+        >
+          🚀 Buka Arena Prediksi (+Poin)
+        </button>
       </div>
 
       {/* ---------- THE GATE ---------- */}

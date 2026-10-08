@@ -305,6 +305,7 @@ export default function ChartingDeskTab({
   livePrices = {},
   flashMap = {},
   onOpenLotCalc,
+  onOpenPrediction,
   initialSymbol = 'BBCA'
 }) {
   const [deskMode, setDeskMode] = useState('PRO'); // 'PRO' (Hyperliquid Pro Desk) | 'GRID' (Multi-Pane Grid)
@@ -872,7 +873,7 @@ export default function ChartingDeskTab({
                 <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '4px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
                   <span style={{ color: 'var(--text-muted)' }}>R:R Rasio:</span>
                   <strong style={{ color: 'var(--accent-orange, var(--accent-gold))' }}>
-                    1 : {activePlan?.risk_reward_ratio ? Number(activePlan.risk_reward_ratio).toFixed(1) : '2.0+'}
+                    1 : {activePlan?.risk_reward_ratio ? Number(activePlan.risk_reward_ratio).toFixed(1) : '—'}
                   </strong>
                 </div>
               </div>
@@ -914,6 +915,29 @@ export default function ChartingDeskTab({
                 }}
               >
                 💰 {isCrypto ? 'Kalkulator Sizing USDT' : 'Kalkulator Lot BEI'}
+              </button>
+
+              <button
+                id="btn-open-prediction-charting"
+                onClick={() => onOpenPrediction && onOpenPrediction({
+                  symbol: activePane.symbol,
+                  market: activePane.market,
+                  price: entryPrice || (isCrypto ? 65000 : 9000),
+                })}
+                style={{
+                  width: '100%',
+                  marginTop: '6px',
+                  padding: '7px 10px',
+                  background: 'var(--accent-gold, #facc15)',
+                  color: '#000000',
+                  border: 'none',
+                  borderRadius: '4px',
+                  fontSize: '10px',
+                  fontWeight: 800,
+                  cursor: 'pointer'
+                }}
+              >
+                🎯 Tebak Chart & Poin Legend
               </button>
             </div>
           </div>

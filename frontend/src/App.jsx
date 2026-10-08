@@ -17,6 +17,7 @@ import ComplianceRiskModal from './components/ComplianceRiskModal.jsx';
 const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'));
 const LotCalculatorModal = lazy(() => import('./components/LotCalculatorModal.jsx'));
 const OrderExecutionModal = lazy(() => import('./components/OrderExecutionModal.jsx'));
+const ChartPredictionModal = lazy(() => import('./components/ChartPredictionModal.jsx'));
 import { institutionalPaperBroker } from './services/brokerGateway.js';
 const FlowProcessTab = lazy(() => import('./components/FlowProcessTab.jsx'));
 const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
@@ -38,6 +39,9 @@ const SignalsTab = lazy(() => import('./components/SignalsTab.jsx'));
 const LandingPage = lazy(() => import('./components/LandingPage.jsx'));
 const SubscriptionPage = lazy(() => import('./components/SubscriptionPage.jsx'));
 const AchievementsPage = lazy(() => import('./components/AchievementsPage.jsx'));
+// The LEGEND desks are lazy for the same reason as every other heavy tab: a
+// non-Legend account should never download the execution surface's code.
+const LegendDeskTab = lazy(() => import('./components/LegendDeskTab.jsx'));
 const AdminApprovalDesk = lazy(() => import('./components/AdminApprovalDesk.jsx'));
 
 const isIdxMarketOpen = () => {
@@ -270,7 +274,35 @@ export default function App() {
   }, []);
 
   const isAdmin = !!account?.isAdmin || ['naufalarib60@gmail.com', 'ahmfuadi28@gmail.com'].includes(String(account?.email || '').toLowerCase());
-  const userTier = isAdmin || account?.isPro ? 'PRO' : (account?.authenticated ? 'FREE' : 'GUEST');
+
+  /**
+   * The tier the UI gates on. The SERVER decides it; this only reads.
+   *
+   * BUG FIXED HERE (2026-10-09): this used to collapse every paid account to
+   * 'PRO' whenever `isPro` was true, so a LEGEND account was labelled PRO and
+   * then locked out of its own LEGEND modules by `canAccess`. The gate and the
+   * label disagreed, and the gate won — a user who had earned the tier, and paid
+   * for it, still saw "Modul Ini Khusus Legend" with no way through. Found by
+   * probing what each tier actually renders, after a test that should have caught
+   * it passed anyway.
+   *
+   * Order of precedence, and why:
+   *   admin  — bypasses every gate, and must be checked before the server tier
+   *            because an admin account may not carry a paid tier at all.
+   *   legend — an explicit tier from the server. It is only ever issued after the
+   *            server has re-verified the achievements, so trusting it here is
+   *            trusting the authority that owns entitlement.
+   *   pro    — `isPro` still implies PRO, for accounts whose tier field is absent
+   *            (an older session shape). This is the previous behaviour, kept as
+   *            the fallback rather than the first rule.
+   */
+  const userTier = (() => {
+    if (isAdmin) return 'PRO';
+    const serverTier = String(account?.tier || '').toUpperCase();
+    if (serverTier === 'LEGEND') return 'LEGEND';
+    if (serverTier === 'PRO' || account?.isPro) return 'PRO';
+    return account?.authenticated ? 'FREE' : 'GUEST';
+  })();
 
   // TradingView Chart Modal State
   const [chartModal, setChartModal] = useState({
@@ -323,6 +355,27 @@ export default function App() {
 
   const handleCloseExecution = useCallback(() => {
     setExecutionModal(prev => ({ ...prev, isOpen: false }));
+  }, []);
+
+  // 🎯 Chart Prediction & Strategy Scoring Arena (Legend Path requirement)
+  const [predictionModal, setPredictionModal] = useState({
+    isOpen: false,
+    symbol: 'BTCUSDT',
+    market: 'CRYPTO',
+    price: null,
+  });
+
+  const handleOpenPrediction = useCallback((prefill = {}) => {
+    setPredictionModal({
+      isOpen: true,
+      symbol: prefill.symbol || 'BTCUSDT',
+      market: prefill.market || 'CRYPTO',
+      price: prefill.price || null,
+    });
+  }, []);
+
+  const handleClosePrediction = useCallback(() => {
+    setPredictionModal(prev => ({ ...prev, isOpen: false }));
   }, []);
 
   // Live Position Ratchet & Trailing Stop Updates on Live Price Engine Ticks
@@ -458,6 +511,12 @@ export default function App() {
       case 'FUTURES': return '⚡ Crypto Desk (Perp & Spot)';
       case 'SIGNALS': return '📡 Sinyal Trading (Entry, SL & TP)';
       case 'SUBSCRIPTION': return '👑 Akun & Langganan';
+      // The LEGEND desks. Without these the header showed the previous page's
+      // label while the new desk rendered, which is how the routing probe
+      // first detected that the branch was missing.
+      case 'TRADING_BOT': return '🤖 Trading Bot Otonom';
+      case 'JEV_EXECUTION': return '⚡ Jev Execution HUD';
+      case 'ACHIEVEMENTS': return '🏆 Legend Path';
       case 'SETTINGS': return '⚙️ Pengaturan';
       case 'ADMIN_APPROVAL': return '⚡ Admin Approval Desk';
       case 'FOREX': return '💱 Forex & Komoditas';
@@ -850,6 +909,7 @@ export default function App() {
                   livePrices={livePrices}
                   flashMap={flashMap}
                   onOpenLotCalc={handleOpenLotCalc}
+                  onOpenPrediction={handleOpenPrediction}
                   initialSymbol={chartModal.symbol || 'BBCA'}
                 />
               </main>
@@ -942,6 +1002,7 @@ export default function App() {
                 <CryptoDeskTab
                   data={data}
                   onOpenChart={handleOpenSecurityHub}
+                  onOpenExecution={handleOpenExecution}
                   livePrices={livePrices}
                   flashMap={flashMap}
                   allCryptoSpot={allCryptoSpot}
@@ -954,6 +1015,7 @@ export default function App() {
                   plans={data?.daily_trade_plans || []}
                   userTier={userTier}
                   onNavigateTab={setActiveTab}
+                  onOpenExecution={handleOpenExecution}
                 />
               </main>
             ) : activeTab === 'SETTINGS' ? (
@@ -974,6 +1036,7 @@ export default function App() {
                   userTier={userTier}
                   isAdmin={isAdmin}
                   onNavigate={setActiveTab}
+                  onOpenPredictionModal={handleOpenPrediction}
                 />
               </main>
             ) : activeTab === 'SUBSCRIPTION' ? (
@@ -994,7 +1057,67 @@ export default function App() {
                 />
               </main>
             ) : (!isAdmin && !canAccess(activeTab, userTier, isAdmin)) ? (
-              /* LOCKED MODULE — show what Pro unlocks instead of an empty desk */
+              /**
+               * LOCKED MODULE.
+               *
+               * Two DIFFERENT lock screens, because the two cases need opposite
+               * messages. A Pro desk says "upgrade and you get this". A LEGEND
+               * desk must NOT say that, because LEGEND cannot be bought — showing
+               * a price would promise something the product will not honour, and
+               * the user would pay and still be locked out.
+               *
+               * The LEGEND screen therefore explains what has to be EARNED and
+               * sends the user to the achievement board, which is the only path
+               * that actually opens these two modules.
+               */
+              requiredTierFor(activeTab) === TIER.LEGEND ? (
+                <main>
+                  <div className="telemetry-panel" style={{
+                    borderRadius: '16px', padding: '52px 28px', textAlign: 'center', maxWidth: '600px', margin: '40px auto',
+                  }}>
+                    <div style={{ fontSize: '38px', marginBottom: '16px' }}>👑</div>
+                    <div style={{ fontSize: '18px', fontWeight: '900', marginBottom: '10px' }}>
+                      Modul Ini Khusus Legend
+                    </div>
+                    <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '8px' }}>
+                      <strong>{getTabLabel(activeTab)}</strong> adalah modul yang bisa
+                      mengirim order ke akun bursa Anda.
+                    </div>
+                    <div style={{
+                      fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8,
+                      marginBottom: '22px', padding: '12px 16px', borderRadius: '10px',
+                      background: 'rgba(255,180,84,0.08)', border: '1px solid rgba(255,180,84,0.30)',
+                    }}>
+                      Karena itu LEGEND <strong>tidak bisa dibeli langsung</strong>.
+                      Selesaikan seluruh achievement sambil berlangganan Pro, lalu
+                      tier ini terbuka sendiri.
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                      <button
+                        onClick={() => setActiveTab('ACHIEVEMENTS')}
+                        style={{
+                          padding: '11px 24px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '900',
+                          background: 'linear-gradient(135deg,var(--accent-gold),#d97706)', color: '#000',
+                          border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+                        }}
+                      >
+                        👑 Lihat Legend Path
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('ACHIEVEMENTS')}
+                        style={{
+                          padding: '11px 22px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '700',
+                          background: 'rgba(255,255,255,0.06)', color: 'var(--text-primary)',
+                          border: '1px solid rgba(255,255,255,0.14)', cursor: 'pointer', fontFamily: 'inherit',
+                        }}
+                      >
+                        Lihat Achievement
+                      </button>
+                    </div>
+                  </div>
+                </main>
+              ) : (
+              /* PRO MODULE — a straightforward purchase path */
               <main>
                 <div className="telemetry-panel" style={{
                   borderRadius: '16px', padding: '52px 28px', textAlign: 'center', maxWidth: '560px', margin: '40px auto',
@@ -1033,6 +1156,33 @@ export default function App() {
                     </button>
                   </div>
                 </div>
+              </main>
+              )
+            ) : (activeTab === 'TRADING_BOT' || activeTab === 'JEV_EXECUTION') ? (
+              /**
+               * THE LEGEND DESKS — placed AFTER the canAccess gate on purpose.
+               *
+               * These two modules were registered as modules, gated at LEGEND,
+               * priced on the subscription page — and had NO route. `?tab=TRADING_BOT`
+               * fell through to the leaderboard fallback, so the flagship feature of
+               * the tier did not exist. The fallback happened to contain the words
+               * "Khusus Legend", which made the tier tests pass while the desk was
+               * missing entirely: the assertion matched text from an unrelated
+               * component.
+               *
+               * Position matters. My first attempt put this branch BEFORE the gate,
+               * which meant a free account reached the desk and the E2E suite caught
+               * it: "TRADING_BOT did not lock a free account". Reaching here now
+               * already proves canAccess passed, and LegendDeskTab re-checks the
+               * eligibility predicate as well.
+               */
+              <main>
+                <LegendDeskTab
+                  moduleId={activeTab}
+                  userTier={userTier}
+                  isAdmin={isAdmin}
+                  onNavigate={setActiveTab}
+                />
               </main>
             ) : activeTab === 'FOREX' ? (
               /* v3.0 FOREX COMMAND CENTER */
@@ -1121,6 +1271,20 @@ export default function App() {
               />
             )}
 
+            {/* 4c. Chart Prediction & Strategy Scoring Arena (Legend Path) */}
+            {predictionModal.isOpen && (
+              <ChartPredictionModal
+                isOpen={predictionModal.isOpen}
+                onClose={handleClosePrediction}
+                initialSymbol={predictionModal.symbol}
+                initialMarket={predictionModal.market}
+                initialPrice={predictionModal.price}
+                onPredictionSubmitted={(rec) => {
+                  console.log('Chart prediction locked:', rec);
+                }}
+              />
+            )}
+
             {/* 5. News Detail Modal */}
             {newsModal.isOpen && (
               <NewsDetailModal
@@ -1148,6 +1312,7 @@ export default function App() {
                 onOpenLotCalc={(entry, sl, mkt, sym) => {
                   handleOpenLotCalc(entry, sl, mkt || securityHub.market, sym || securityHub.symbol);
                 }}
+                onOpenExecution={handleOpenExecution}
                 onNavigateTab={(tab) => {
                   handleCloseSecurityHub();
                   setActiveTab(tab);

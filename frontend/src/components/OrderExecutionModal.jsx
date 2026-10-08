@@ -62,10 +62,10 @@ export default function OrderExecutionModal({
       setSuccessMessage('');
     } else if (isOpen && !symbol) {
       setSymbol('BBCA');
-      setEntryPrice('10000');
-      setStopLoss('9600');
-      setTarget1('10500');
-      setTarget2('11000');
+      setEntryPrice('');
+      setStopLoss('');
+      setTarget1('');
+      setTarget2('');
       setOrderSide('BUY');
     }
   }, [prefill, isOpen]);
@@ -182,7 +182,7 @@ export default function OrderExecutionModal({
         onOrderSuccess(newPos);
         setTimeout(() => {
           onClose();
-        }, 1200);
+        }, 2500);
       } else {
         // Binance Live Execution
         if (!binanceConfig.apiKey || !binanceConfig.secretKey) {
@@ -213,6 +213,9 @@ export default function OrderExecutionModal({
 
   return (
     <div 
+      role="dialog"
+      aria-label="Order Execution Gateway"
+      data-testid="order-execution-modal"
       onClick={onClose}
       style={{
         position: 'fixed',
@@ -397,33 +400,12 @@ export default function OrderExecutionModal({
               </select>
             </div>
 
-            {/* Risk per trade.
-                This was hardwired to 1.5% with no way to change it, yet the
-                rupiah amount it produces is displayed to the user below. A
-                risk-sized order the trader cannot size is not a risk tool, so
-                the input now exists and drives the lot maths at line ~94. */}
-            <div>
-              <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
-                Risiko per Trade (%)
-              </label>
-              <input
-                type="number"
-                step="0.1"
-                min="0.1"
-                max="100"
-                value={riskPercent}
-                onChange={(e) => setRiskPercent(e.target.value)}
-                style={{ width: '100%', padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--text-primary)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontWeight: '700' }}
-              />
-              <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '3px' }}>
-                Batas kerugian bila stop loss tersentuh
-              </div>
-            </div>
-
             <div>
               <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>Harga Entri ({currencySymbol})</label>
               <input
+                id="input-order-entry"
                 type="number"
+                placeholder="0"
                 value={entryPrice}
                 onChange={(e) => setEntryPrice(e.target.value)}
                 style={{ width: '100%', padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--text-primary)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontWeight: '700' }}
@@ -433,33 +415,59 @@ export default function OrderExecutionModal({
             <div>
               <label style={{ fontSize: '10px', color: 'var(--accent-rust)', display: 'block', marginBottom: '3px' }}>Stop Loss ({currencySymbol})</label>
               <input
+                id="input-order-stop-loss"
                 type="number"
+                placeholder="0"
                 value={stopLoss}
                 onChange={(e) => setStopLoss(e.target.value)}
                 style={{ width: '100%', padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--accent-rust)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontWeight: '700' }}
               />
             </div>
-          </div>
 
-          {/* Targets Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            {/* Target 1 */}
             <div>
-              <label style={{ fontSize: '10px', color: 'var(--accent-green)', display: 'block', marginBottom: '3px' }}>Target Profit 1 (Lock BE) ({currencySymbol})</label>
+              <label style={{ fontSize: '10px', color: 'var(--accent-green)', display: 'block', marginBottom: '3px' }}>Target Profit 1 ({currencySymbol})</label>
               <input
+                id="input-order-target-1"
                 type="number"
+                placeholder="0"
                 value={target1}
                 onChange={(e) => setTarget1(e.target.value)}
                 style={{ width: '100%', padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--accent-green)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontWeight: '700' }}
               />
             </div>
+
+            {/* Target 2 */}
             <div>
-              <label style={{ fontSize: '10px', color: 'var(--accent-blue)', display: 'block', marginBottom: '3px' }}>Target Profit 2 (Runner) ({currencySymbol})</label>
+              <label style={{ fontSize: '10px', color: 'var(--accent-blue)', display: 'block', marginBottom: '3px' }}>Target Profit 2 ({currencySymbol})</label>
               <input
+                id="input-order-target-2"
                 type="number"
+                placeholder="0"
                 value={target2}
                 onChange={(e) => setTarget2(e.target.value)}
                 style={{ width: '100%', padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--accent-blue)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontWeight: '700' }}
               />
+            </div>
+
+            {/* Risk per trade */}
+            <div>
+              <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                Risiko per Trade (%)
+              </label>
+              <input
+                id="input-order-risk-percent"
+                type="number"
+                step="0.1"
+                min="0.1"
+                max="100"
+                value={riskPercent}
+                onChange={(e) => setRiskPercent(e.target.value)}
+                style={{ width: '100%', padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--text-primary)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontWeight: '700' }}
+              />
+              <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '3px' }}>
+                Batas kerugian bila stop tersentuh
+              </div>
             </div>
           </div>
 
@@ -519,13 +527,18 @@ export default function OrderExecutionModal({
           )}
 
           {successMessage && (
-            <div style={{ padding: '8px 12px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid var(--accent-emerald)', borderRadius: '4px', color: '#6ee7b7', fontSize: '11px', fontWeight: '700' }}>
+            <div
+              id="order-success-banner"
+              data-testid="order-success-banner"
+              style={{ padding: '8px 12px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid var(--accent-emerald)', borderRadius: '4px', color: '#6ee7b7', fontSize: '11px', fontWeight: '700' }}
+            >
               {successMessage}
             </div>
           )}
 
           {/* 4. Action Button */}
           <button
+            id="btn-transmit-order"
             type="button"
             onClick={handleTransmitOrder}
             disabled={isSubmitting || isOverAllocated || !!bracketError}

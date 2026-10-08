@@ -78,6 +78,18 @@ export const NAV_GROUPS = [
       { id: 'SETTINGS', label: 'Setting', desc: 'Bahasa, mode tampilan & preferensi' },
       { id: 'SUBSCRIPTION', label: 'Langganan', desc: 'Status akun dan paket' },
       { id: 'ACHIEVEMENTS', label: 'Legend Path', desc: 'Achievement menuju tier Legend' },
+      /**
+       * The LEGEND desks are listed here so they are REACHABLE.
+       *
+       * They were registered, gated, priced and advertised with no route and no
+       * menu entry, so the tier's flagship feature could not be opened at all.
+       * Entry is visible to everyone on purpose: a locked desk that explains what
+       * it is and what it takes to open is a reason to climb the tier, whereas a
+       * hidden one is just absent. Clicking it as a non-Legend account lands on
+       * the lock screen, which is the correct destination.
+       */
+      { id: 'TRADING_BOT', label: 'Trading Bot Otonom', desc: 'Eksekusi order otomatis (Legend)' },
+      { id: 'JEV_EXECUTION', label: 'Jev Execution HUD', desc: 'TWAP / VWAP / POV (Legend)' },
       { id: 'WATCHLIST', label: 'Watchlist Saya', desc: 'Instrumen yang Anda bintangi' },
     ],
   },
@@ -462,8 +474,20 @@ export default function CmcTopNav({
           title={account?.email ? `Masuk sebagai ${account.email}` : 'Akun'}
           style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '5px 10px', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}
         >
-          <span>{isAdmin ? '👑' : account?.isPro ? '⭐' : '👤'}</span>
-          <span className="cmc-hide-narrow">{isAdmin ? 'ADMIN' : account?.isPro ? 'PRO' : 'AKUN'}</span>
+          {/*
+            The badge reads the TIER, not `isPro`.
+
+            `isPro` is true for both PRO and LEGEND, so a Legend account was
+            labelled "PRO" in the top nav while its own desks were gated at
+            LEGEND — the badge and the gate disagreed, and a user who had earned
+            the tier saw a lower one. The icon differs too: a crown for Legend,
+            a star for Pro, so the two are distinguishable at a glance rather
+            than by reading small text.
+          */}
+          <span>{isAdmin ? '👑' : account?.tier === 'legend' ? '👑' : account?.isPro ? '⭐' : '👤'}</span>
+          <span className="cmc-hide-narrow">
+            {isAdmin ? 'ADMIN' : account?.tier === 'legend' ? 'LEGEND' : account?.isPro ? 'PRO' : 'AKUN'}
+          </span>
         </button>
 
         {/* Mobile hamburger */}

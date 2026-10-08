@@ -89,6 +89,19 @@ async function installSession(page, { tier = 'pro', isAdmin = false, email = 'e2
     contentType: 'application/json',
     body: JSON.stringify({ last_evaluated: new Date().toISOString(), agents: [], positions: [], journal: [] }),
   }));
+
+  // Hyperliquid derivatives mock for deterministic testing without external network flakiness.
+  await page.route('https://api.hyperliquid.xyz/info', route => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify([
+      { universe: [{ name: 'BTC' }, { name: 'ETH' }] },
+      [
+        { markPx: '65000', openInterest: '1000', dayNtlVlm: '50000000', funding: '0.0001' },
+        { markPx: '3500', openInterest: '5000', dayNtlVlm: '20000000', funding: '0.0001' }
+      ]
+    ])
+  }));
 }
 
 /** Console noise that is not a product defect. Each entry needs a reason. */
