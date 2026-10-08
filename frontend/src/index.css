@@ -1688,3 +1688,137 @@ body[data-theme="dark"],
   }
 }
 
+/* ============================================================
+   LANDING PAGE — motion and interaction polish
+   Everything here is decorative. Each effect has a
+   prefers-reduced-motion escape so the page stays usable for
+   users who ask their OS to reduce animation.
+   ============================================================ */
+
+/* --- Reveal on scroll --- */
+.lp-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.lp-reveal[data-revealed='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Live market marquee --- */
+.lp-marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: lp-marquee 46s linear infinite;
+  will-change: transform;
+}
+
+/* Pause on hover so a price can actually be read. */
+.lp-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes lp-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-33.333%); }
+}
+
+/* --- Card lift on hover --- */
+.lp-card {
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.lp-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(129, 140, 248, 0.38);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.34);
+}
+
+/* --- Primary CTA with cursor-tracked glow --- */
+.lp-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.lp-cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    130px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.30),
+    transparent 62%
+  );
+  opacity: 0;
+  transition: opacity 0.24s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.lp-cta:hover::after {
+  opacity: 1;
+}
+
+.lp-cta-lg {
+  box-shadow: 0 12px 34px rgba(79, 70, 229, 0.34);
+}
+
+/* --- Stat tiles --- */
+.lp-stat {
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.lp-stat:hover {
+  transform: translateY(-2px);
+  border-color: rgba(129, 140, 248, 0.38);
+}
+
+/* --- Nav links --- */
+.lp-nav-links a {
+  transition: color 0.16s ease, background 0.16s ease;
+}
+
+.lp-nav-links a:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* --- Product preview lift --- */
+.lp-preview {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+}
+
+.lp-preview:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 34px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.16) inset;
+}
+
+/* --- Narrow screens --- */
+@media (max-width: 880px) {
+  .lp-nav-links {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .lp-marquee-track {
+    animation: none;
+  }
+  .lp-card:hover,
+  .lp-stat:hover,
+  .lp-preview:hover {
+    transform: none;
+  }
+}
+
+
