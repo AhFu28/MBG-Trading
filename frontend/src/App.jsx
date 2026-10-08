@@ -30,6 +30,7 @@ const ForexCommandTab = lazy(() => import('./components/ForexCommandTab.jsx'));
 const USStockTab = lazy(() => import('./components/USStockTab.jsx'));
 const MarketHeatmapTab = lazy(() => import('./components/MarketHeatmapTab.jsx'));
 const NewsDetailModal = lazy(() => import('./components/NewsDetailModal.jsx'));
+const NewsTab = lazy(() => import('./components/NewsTab.jsx'));
 const SecurityHubDrawer = lazy(() => import('./components/SecurityHubDrawer.jsx'));
 const AiAgentArenaTab = lazy(() => import('./components/AiAgentArenaTab.jsx'));
 const AiIntelligenceDrawer = lazy(() => import('./components/AiIntelligenceDrawer.jsx'));
@@ -895,6 +896,21 @@ export default function App() {
                   </div>
                 </main>
               )
+            ) : activeTab === 'NEWS' ? (
+              /* TERMINAL LIVE NEWS — was never routed.
+                 The menu entry existed since the CMC top nav shipped, but no
+                 branch rendered it, so clicking it fell through to the
+                 "unknown module" panel. NewsTab itself was only reachable as a
+                 sub-tab of MasterQuantLeaderboard. */
+              <main>
+                <NewsTab
+                  liveNews={data?.macro_telemetry?.live_news || []}
+                  macro={data?.macro_telemetry || {}}
+                  foreignFlow={data?.foreign_flow || {}}
+                  onSelectTicker={handleOpenSecurityHub}
+                  onSelectNews={handleOpenNews}
+                />
+              </main>
             ) : activeTab === 'WHALES' ? (
               /* v3.0 WHALE INTELLIGENCE HUB */
               <main>

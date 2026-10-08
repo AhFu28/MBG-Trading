@@ -176,6 +176,48 @@ describe('dependency wiring', () => {
     const { MODULE_TIER, MODULES, TIER } = await import('../../services/featureAccess.js');
     expect(MODULE_TIER[MODULES.SENTINEL]).toBe(TIER.PRO);
   });
+
+  /**
+   * A menu entry is worthless if App's router has no branch for it.
+   *
+   * The NEWS entry shipped with the CMC top nav but no `activeTab === 'NEWS'`
+   * branch existed, so clicking "Live News Wire" fell through to the fallback
+   * desk. The owner reported it as "ini gk ada datanya". Being in MODULES is not
+   * enough — the id must also reach a component.
+   *
+   * An id counts as routed if App mentions it directly, OR if it is one of the
+   * ids the fallback `MasterQuantLeaderboard` branch forwards on (`activeTab` is
+   * passed to it). That fallback is the last `else` in the chain, so an id that
+   * reaches it is rendered, not dropped.
+   */
+  it('every menu id either has a router branch or reaches the fallback desk', async () => {
+    const fs = await import('node:fs');
+    const path = await import('node:path');
+    const app = fs.readFileSync(path.resolve(__dirname, '..', '..', 'App.jsx'), 'utf8');
+
+    // Passed through to MasterQuantLeaderboard by the final `else` branch.
+    const fallbackDeskIds = new Set([
+      'TESTING', 'ECONOMIC_CALENDAR', 'PEARSON_CORRELATION', 'ACADEMY',
+    ]);
+
+    const ids = NAV_GROUPS.flatMap(g => (g.items || []).map(i => i.id));
+    const unrouted = [];
+    for (const id of ids) {
+      if (fallbackDeskIds.has(id)) continue;
+      if (!new RegExp(`activeTab === '${id}'`).test(app)) unrouted.push(id);
+    }
+
+    expect(unrouted, `menu ids with no App router branch: ${unrouted.join(', ')}`).toEqual([]);
+  });
+
+  it('Live News Wire is actually routed, not just listed', async () => {
+    // The specific regression the owner hit.
+    const fs = await import('node:fs');
+    const path = await import('node:path');
+    const app = fs.readFileSync(path.resolve(__dirname, '..', '..', 'App.jsx'), 'utf8');
+    expect(app).toMatch(/activeTab === 'NEWS'/);
+    expect(app).toMatch(/<NewsTab/);
+  });
 });
 
 describe('logout', () => {

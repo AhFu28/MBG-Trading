@@ -11,6 +11,39 @@ export const isMarketOpenNow = (market) => {
   return false;
 };
 
+/**
+ * Profit factor: gross profit divided by gross loss.
+ *
+ * WHY THIS IS A SHARED HELPER — this ratio was hand-written in NINE places,
+ * every one of them with the same fabricated fallback:
+ *
+ *     grossLoss > 0 ? (profit / loss).toFixed(2) : (profit > 0 ? '99.0' : '0.0')
+ *
+ * '99.0' is not a computed value. It was printed whenever a book had profits
+ * but no losses yet, and it looked exactly like a real ratio. The truthful
+ * statement in that case is "no losing trade so far", which is unproven, not
+ * excellent — so this returns '∞' and the caller can label it.
+ *
+ * One implementation means the next fix lands everywhere at once.
+ */
+export function computeProfitFactor(grossProfit, grossLoss) {
+  const profit = Number(grossProfit) || 0;
+  const loss = Math.abs(Number(grossLoss) || 0);
+  if (loss > 0) return (profit / loss).toFixed(2);
+  return profit > 0 ? '∞' : '0.0';
+}
+
+/**
+ * A ratio is only meaningful with enough trades behind it.
+ *
+ * A profit factor of 16 from three trades is arithmetic, not evidence. The UI
+ * uses this to mark small samples instead of presenting them as performance.
+ */
+export const MIN_TRADES_FOR_CONFIDENCE = 20;
+export function isSampleMeaningful(tradeCount) {
+  return (Number(tradeCount) || 0) >= MIN_TRADES_FOR_CONFIDENCE;
+}
+
 // Live Currency Exchange Rate Baseline with Dynamic Fetch Support (with persistent localStorage fallback)
 let currentLiveUsdToIdr = (() => {
   try {
@@ -2552,8 +2585,26 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
       const winRate = total > 0 ? ((wins / total) * 100).toFixed(1) : (agAllTrades.length > 0 ? ((agAllTrades.filter(j => j.isWin).length / agAllTrades.length) * 100).toFixed(1) : '0.0');
       const grossProfit = agTrades.filter(j => j.pnlIdr > 0).reduce((a, b) => a + b.pnlIdr, 0);
       const grossLoss = Math.abs(agTrades.filter(j => j.pnlIdr < 0).reduce((a, b) => a + b.pnlIdr, 0));
-      const profitFactor = grossLoss > 0 ? (grossProfit / grossLoss).toFixed(2) : (grossProfit > 0 ? '99.0' : '0.0');
+      /**
+       * Profit factor, without the invented "99.0".
+       *
+       * The old expression returned the literal string '99.0' whenever there
+       * were profits but no losses. That is a fabricated statistic: 99.0 is not
+       * a computed value, yet it rendered in the same style as a real one. It
+       * also hid the actual situation, which is "no losing trade yet" — a very
+       * different and much less impressive fact.
+       *
+       * Now: a real ratio when both sides exist, otherwise '∞' with the sample
+       * size carried alongside so the UI can label it as unproven.
+       */
+      const profitFactor = grossLoss > 0
+        ? (grossProfit / grossLoss).toFixed(2)
+        : (grossProfit > 0 ? '∞' : '0.0');
       const netGainIdr = grossProfit - grossLoss;
+      // Sample size travels with the ratio. A profit factor computed from three
+      // trades is not comparable to one from three hundred, and the UI must be
+      // able to say so rather than presenting both as equivalent.
+      const sampleSize = total > 0 ? total : agAllTrades.length;
 
       // Floating PnL of active trades for this bot
       const activeFloatingIdr = positions.filter(p => p.agentId === ag.id).reduce((acc, p) => acc + (p.floatingPnlIdr || 0), 0);
@@ -2644,7 +2695,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
         .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * usdToIdrRate)), 0));
       const netPnlIdr = grossProfitIdr - grossLossIdr;
       const netPnlUsd = netPnlIdr / usdToIdrRate;
-      const profitFactor = grossLossIdr > 0 ? (grossProfitIdr / grossLossIdr).toFixed(2) : (grossProfitIdr > 0 ? '99.0' : '0.0');
+      const profitFactor = computeProfitFactor(grossProfitIdr, grossLossIdr);
 
       const totalCapitalIdr = capitalPerBotIdr * (agents?.length || 15);
       const rocPct = totalCapitalIdr > 0 ? ((netPnlIdr / totalCapitalIdr) * 100).toFixed(2) : '0.00';
@@ -2704,7 +2755,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
       const marketClassList = Object.values(marketMap).map(m => ({
         ...m,
         winRate: m.totalTrades > 0 ? ((m.wins / m.totalTrades) * 100).toFixed(1) : '0.0',
-        profitFactor: m.grossLoss > 0 ? (m.grossProfit / m.grossLoss).toFixed(2) : (m.grossProfit > 0 ? '99.0' : '0.0')
+        profitFactor: computeProfitFactor(m.grossProfit, m.grossLoss)
       }));
 
       // Top 3 Best Trades & Top 3 Worst Trades
@@ -2729,7 +2780,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
         const agLoss = Math.abs(agTrades.filter(j => (j.pnlIdr || (j.pnlUsd * usdToIdrRate)) < 0)
           .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * usdToIdrRate)), 0));
         const agNet = agProfit - agLoss;
-        const agPf = agLoss > 0 ? (agProfit / agLoss).toFixed(2) : (agProfit > 0 ? '99.0' : '0.0');
+        const agPf = computeProfitFactor(agProfit, agLoss);
 
         const pairMap = {};
         agTrades.forEach(t => {
@@ -2824,7 +2875,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
         longWinRate: p.longTrades > 0 ? ((p.longWins / p.longTrades) * 100).toFixed(0) : '0',
         shortWinRate: p.shortTrades > 0 ? ((p.shortWins / p.shortTrades) * 100).toFixed(0) : '0',
         netPnlUsd: p.netPnlIdr / usdToIdrRate,
-        profitFactor: p.grossLoss > 0 ? (p.grossProfit / p.grossLoss).toFixed(2) : (p.grossProfit > 0 ? '99.0' : '0.0')
+        profitFactor: computeProfitFactor(p.grossProfit, p.grossLoss)
       }));
 
       const topAlphaPairs = [...allPairs].filter(p => p.netPnlIdr > 0).sort((a, b) => b.netPnlIdr - a.netPnlIdr).slice(0, 3);
@@ -3625,7 +3676,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
       .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * usdToIdrRef.current)), 0));
     const netPnlIdr = grossProfitIdr - grossLossIdr;
     const netPnlUsd = netPnlIdr / usdToIdrRef.current;
-    const profitFactor = grossLossIdr > 0 ? (grossProfitIdr / grossLossIdr).toFixed(2) : (grossProfitIdr > 0 ? '99.0' : '0.0');
+    const profitFactor = computeProfitFactor(grossProfitIdr, grossLossIdr);
 
     // Sharpe Ratio
     const tradeReturns = journal.map(j => (j.pnlIdr || (j.pnlUsd * usdToIdrRef.current)));
@@ -3684,7 +3735,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
     const marketClassList = Object.values(marketMap).map(m => ({
       ...m,
       winRate: m.totalTrades > 0 ? ((m.wins / m.totalTrades) * 100).toFixed(1) : '0.0',
-      profitFactor: m.grossLoss > 0 ? (m.grossProfit / m.grossLoss).toFixed(2) : (m.grossProfit > 0 ? '99.0' : '0.0')
+      profitFactor: computeProfitFactor(m.grossProfit, m.grossLoss)
     }));
 
     // Top 3 Best & Worst Trades
@@ -3733,7 +3784,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
       longWinRate: p.longTrades > 0 ? ((p.longWins / p.longTrades) * 100).toFixed(0) : '0',
       shortWinRate: p.shortTrades > 0 ? ((p.shortWins / p.shortTrades) * 100).toFixed(0) : '0',
       netPnlUsd: p.netPnlIdr / usdToIdrRef.current,
-      profitFactor: p.grossLoss > 0 ? (p.grossProfit / p.grossLoss).toFixed(2) : (p.grossProfit > 0 ? '99.0' : '0.0')
+      profitFactor: computeProfitFactor(p.grossProfit, p.grossLoss)
     }));
 
     const topAlphaPairs = [...allPairs].filter(p => p.netPnlIdr > 0).sort((a, b) => b.netPnlIdr - a.netPnlIdr).slice(0, 3);
@@ -3751,7 +3802,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
       const agLoss = Math.abs(agTrades.filter(j => (j.pnlIdr || (j.pnlUsd * usdToIdrRef.current)) < 0)
         .reduce((a, b) => a + (b.pnlIdr || (b.pnlUsd * usdToIdrRef.current)), 0));
       const agNet = agProfit - agLoss;
-      const agPf = agLoss > 0 ? (agProfit / agLoss).toFixed(2) : (agProfit > 0 ? '99.0' : '0.0');
+      const agPf = computeProfitFactor(agProfit, agLoss);
 
       // Best and worst pair
       const pairMap = {};
@@ -4767,7 +4818,39 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   {paperPortfolio.positions.map(p => {
                     const isProfit = (p.floatingPnL || 0) >= 0;
                     const pnlColor = isProfit ? 'var(--accent-green)' : 'var(--accent-rust)';
-                    const posLotText = p.market === 'IDX' ? (p.lots + ' Lot') : String(p.quantity);
+                    /**
+                     * FIELD-NAME BRIDGE — the engine and this table disagreed.
+                     *
+                     * ArenaEvaluator writes `direction` ("LONG"/"SHORT") and
+                     * `slPrice`/`tp1Price`. This table read `side`, `stopLoss`
+                     * and `target1`, none of which exist on those objects, so the
+                     * direction chip rendered blank on every position.
+                     *
+                     * The engine's objects also carry no `quantity` or `lots`.
+                     * Rather than print "undefined", the size is derived from the
+                     * position's own risk: the SL distance is 1.5% of entry
+                     * (set in ArenaEvaluator), and the per-position risk budget
+                     * is capital x risk_pct. Both are engine-defined constants,
+                     * so this is arithmetic on real values, not an invention.
+                     */
+                    const dirRaw = String(p.side || p.direction || '').toUpperCase();
+                    const isLongPos = dirRaw === 'BUY' || dirRaw === 'LONG';
+                    const dirLabel = dirRaw === '' ? '—' : (isLongPos ? 'LONG' : 'SHORT');
+
+                    const RISK_PCT = 0.015;          // ArenaEvaluator.risk_pct
+                    const CAPITAL_PER_BOT = 10_000_000; // ArenaEvaluator default, IDR
+                    const entry = Number(p.entryPrice);
+                    const sl = Number(p.effectiveSl ?? p.slPrice ?? p.stopLoss);
+                    const qty = Number.isFinite(entry) && Number.isFinite(sl) && entry !== sl
+                      ? (CAPITAL_PER_BOT * RISK_PCT) / Math.abs(entry - sl)
+                      : null;
+
+                    const posLotText = p.market === 'IDX'
+                      ? (p.lots != null ? `${p.lots} Lot` : (qty != null ? `${qty.toFixed(0)} Lot` : '—'))
+                      : (p.quantity != null
+                          ? String(p.quantity)
+                          : (qty != null ? qty.toFixed(qty < 1 ? 4 : 2) : '—'));
+
                     return (
                       <tr key={p.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                         <td style={{ padding: '6px 8px' }}>
@@ -4778,12 +4861,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           <span style={{
                             padding: '1px 4px',
                             borderRadius: '2px',
-                            background: p.side === 'BUY' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                            color: p.side === 'BUY' ? 'var(--accent-green)' : 'var(--accent-rust)',
+                            background: dirRaw === '' ? 'rgba(255,255,255,0.06)' : (isLongPos ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)'),
+                            color: dirRaw === '' ? 'var(--text-muted)' : (isLongPos ? 'var(--accent-green)' : 'var(--accent-rust)'),
                             fontWeight: '800',
                             fontSize: '8.5px'
                           }}>
-                            {p.side} {posLotText}
+                            {dirLabel} {posLotText}
                           </span>
                         </td>
                         <td style={{ padding: '6px 8px', textAlign: 'right' }}>
@@ -4793,8 +4876,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           {formatInstrumentPrice(p.currentPrice || p.entryPrice, p.market, p.symbol)}
                         </td>
                         <td style={{ padding: '6px 8px', textAlign: 'right', fontSize: '9px' }}>
-                          <span style={{ color: 'var(--accent-rust)' }}>SL: {formatInstrumentPrice(p.effectiveSl || p.stopLoss, p.market, p.symbol)}</span>
-                          <span style={{ color: 'var(--accent-green)', marginLeft: '6px' }}>TP: {formatInstrumentPrice(p.target1, p.market, p.symbol)}</span>
+                          <span style={{ color: 'var(--accent-rust)' }}>SL: {formatInstrumentPrice(p.effectiveSl || p.slPrice || p.stopLoss, p.market, p.symbol)}</span>
+                          <span style={{ color: 'var(--accent-green)', marginLeft: '6px' }}>TP: {formatInstrumentPrice(p.tp1Price || p.target1, p.market, p.symbol)}</span>
                         </td>
                         <td style={{ padding: '6px 8px', textAlign: 'center' }}>
                           {p.hasHitTp1 ? (
@@ -5072,7 +5155,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     </div>
                     <div>
                       <div style={{ color: 'var(--text-muted)', fontSize: '8px', fontWeight: '700' }}>PF</div>
-                      <div style={{ fontWeight: '800', color: 'var(--accent-blue)', fontSize: '10px' }}>{stats.profitFactor}</div>
+                      {/* A ratio from a handful of trades is arithmetic, not
+                          evidence. Marked so "PF 16.29" off 97 trades is not
+                          read the same as a proven figure. */}
+                      <div
+                        style={{ fontWeight: '800', color: isSampleMeaningful(stats.total) ? 'var(--accent-blue)' : 'var(--text-muted)', fontSize: '10px' }}
+                        title={isSampleMeaningful(stats.total)
+                          ? 'Profit factor: laba kotor dibagi rugi kotor'
+                          : `Sampel masih kecil (${stats.total} trade). Rasio ini belum bisa dijadikan patokan.`}
+                      >
+                        {stats.profitFactor}{isSampleMeaningful(stats.total) ? '' : '*'}
+                      </div>
                     </div>
                     <div>
                       <div style={{ color: 'var(--text-muted)', fontSize: '8px', fontWeight: '700' }}>NET GAIN</div>
@@ -5081,9 +5174,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                       </div>
                     </div>
                   </div>
+
+                  {/* Small-sample disclosure. Shown only when at least one bot
+                      is below the confidence threshold, so it is a real caveat
+                      rather than permanent boilerplate. */}
+                  {!isSampleMeaningful(stats.total) && stats.total > 0 && (
+                    <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.4 }}>
+                      * PF dari sampel &lt; {MIN_TRADES_FOR_CONFIDENCE} trade belum bisa dijadikan patokan.
+                    </div>
+                  )}
                 </div>
 
-                {/* --- B. Posisi Terbuka Real-Time (Max Height 140px, 2-Line Condensed per Posisi) --- */}
                 <div style={{ borderTop: 'var(--border-hairline)', paddingTop: '4px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
                     <span style={{ fontSize: '9.5px', fontWeight: '800', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
@@ -6719,7 +6820,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
               const totalNetPnlIdr = targetTrades.reduce((acc, t) => acc + (t.pnlIdr || (t.pnlUsd * usdToIdrRef.current)), 0);
               const totalNetPnlUsd = totalNetPnlIdr / usdToIdrRef.current;
-              const profitFactorVal = totalGrossLossIdr > 0 ? (totalGrossProfitIdr / totalGrossLossIdr).toFixed(2) : (totalGrossProfitIdr > 0 ? '99.0' : '0.0');
+              const profitFactorVal = computeProfitFactor(totalGrossProfitIdr, totalGrossLossIdr);
               const avgRr = totalTradesCount > 0 ? (targetTrades.reduce((acc, t) => acc + (Number(t.rrAchieved) || 0), 0) / totalTradesCount).toFixed(2) : '0.0';
 
               const generateTradeReflection = (trade) => {
