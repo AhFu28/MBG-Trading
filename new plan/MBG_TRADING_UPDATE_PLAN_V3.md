@@ -106,7 +106,7 @@ Tidak ada paket V2 yang di-drop; satu di-reframe (P-2), empat menyusut/rebase ke
 ## 2c. P-9H — Home Command Center: kerapian seluruh tampilan
 
 **Sumber:** Permintaan langsung Kamerad Fuad (8 Okt 2026) — "home command center disesuaikan agar lebih rapi seluruh tampilannya" + cek ulang web live + audit design OD (critique 5-dim).
-**Status:** SEBAGIAN DEPLOYED (8 Okt 2026) — gelombang 1: F1 token + F2 skala type + F3 hex→token + F4 a11y (`1ccf982`); gelombang 2: wire type scale + sisa token (`e0ed13e`). Sisa: F5 spacing sweep, F6 breakpoint, F7 hierarki kartu — butuh verifikasi visual; F8 critique re-run + screenshot (sesi browser).
+**Status:** RETARGET + SEBAGIAN DEPLOYED (8–9 Okt 2026) — **PENTING: kolaborator ME-REBUILD Home sebagai CoinMarketCap-style dashboard (`f8e0d88`, 8 Okt 00:18, +2.537 baris: CmcMarketDashboard + CmcTopNav + CmcPrimitives + hooks) — HomeDashboardTab lama jadi ORPHANED (tidak diimpor siapa pun, tidak dibundel)**. Gelombang 1–2 (type/token/wire) = menyapu komponen yatim — TAPI token :root + a11y global dari gelombang itu TETAP LIVE ✓. RETARGET (9 Okt, `82af24d`): Home sebenarnya = CMC dashboard — 3 file CMC sekarang di floor 12px (64 deklarasi sub-12px hilang) + palet CMC di-token-kan (`--cmc-up #16c784`, `--cmc-down #ea3943`, `--slate-500`); warna brand koin (BTC/ETH) + single tetap inline (identitas per-koin). Sisa: F5–F7 butuh verifikasi visual; F8 critique re-run (sesi browser). **Insiden produksi 8 Okt (chunk 404) = PULIH** — deploy baru mendarat, 32/32 chunk hidup.
 
 ### Fakta LIVE (cek web 8 Okt)
 
