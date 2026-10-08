@@ -380,7 +380,7 @@ export default function HomeDashboardTab({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', boxSizing: 'border-box' }}>
 
       {dataStatus === 'fallback' && (
-        <div style={{ background: '#d97706', color: '#fff', padding: '6px 12px', borderRadius: '4px', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 600 }}>
+        <div style={{ background: '#d97706', color: '#fff', padding: '6px 12px', borderRadius: '4px', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600 }}>
           📡 OFFLINE MODE : Menjalankan data fallback/cache. Koneksi bursa sedang disinkronkan ulang.
         </div>
       )}
@@ -406,8 +406,8 @@ export default function HomeDashboardTab({
               borderRadius: '6px',
               background: 'rgba(59, 130, 246, 0.15)',
               border: '1px solid rgba(59, 130, 246, 0.35)',
-              color: '#60a5fa',
-              fontSize: '11px',
+              color: 'var(--accent-sky-soft)',
+              fontSize: '12px',
               fontWeight: '700',
               cursor: 'pointer'
             }}
@@ -440,16 +440,16 @@ export default function HomeDashboardTab({
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span style={{ fontSize: '13px' }}>💼</span>
-              <span style={{ fontSize: '10px', fontWeight: '800', letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                 Portfolio Net Valuation
               </span>
               <span style={{
-                fontSize: '8px',
+                fontSize: '12px',
                 fontWeight: '700',
                 padding: '1px 5px',
                 borderRadius: '4px',
                 background: 'rgba(56, 189, 248, 0.15)',
-                color: '#38bdf8',
+                color: 'var(--accent-sky)',
                 border: '1px solid rgba(56, 189, 248, 0.3)'
               }}>
                 SIMULATOR
@@ -472,7 +472,7 @@ export default function HomeDashboardTab({
                     border: 'none',
                     background: portfolioCurrency === curr ? 'rgba(99, 102, 241, 0.3)' : 'transparent',
                     color: portfolioCurrency === curr ? '#fff' : 'var(--text-muted)',
-                    fontSize: '9px',
+                    fontSize: '12px',
                     fontWeight: '800',
                     padding: '2px 8px',
                     borderRadius: '9999px',
@@ -508,8 +508,8 @@ export default function HomeDashboardTab({
               borderRadius: '9999px',
               background: 'rgba(16, 185, 129, 0.15)',
               border: '1px solid rgba(16, 185, 129, 0.35)',
-              color: '#10b981',
-              fontSize: '11px',
+              color: 'var(--accent-emerald)',
+              fontSize: '12px',
               fontWeight: '800',
               fontFamily: 'var(--font-mono)'
             }}>
@@ -532,7 +532,7 @@ export default function HomeDashboardTab({
                 border: 'none',
                 borderRadius: '8px',
                 padding: '6px 12px',
-                fontSize: '10.5px',
+                fontSize: '12px',
                 fontWeight: '800',
                 cursor: 'pointer',
                 display: 'inline-flex',
@@ -553,7 +553,7 @@ export default function HomeDashboardTab({
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '8px',
                 padding: '6px 12px',
-                fontSize: '10.5px',
+                fontSize: '12px',
                 fontWeight: '700',
                 cursor: 'pointer',
                 display: 'inline-flex',
@@ -576,7 +576,7 @@ export default function HomeDashboardTab({
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '8px',
                 padding: '6px 12px',
-                fontSize: '10.5px',
+                fontSize: '12px',
                 fontWeight: '700',
                 cursor: 'pointer',
                 display: 'inline-flex',
@@ -610,12 +610,12 @@ export default function HomeDashboardTab({
               flexDirection: 'column',
               gap: '2px'
             }}>
-              <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>REGIME MAKRO</span>
-              <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>REGIME MAKRO</span>
+              <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-emerald)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--accent-emerald)', display: 'inline-block' }} />
                 Risk-On
               </span>
-              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>DEFCON 4 · Stabil</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>DEFCON 4 · Stabil</span>
             </div>
 
             {/* Metric 2: 24h Volume */}
@@ -628,13 +628,13 @@ export default function HomeDashboardTab({
               flexDirection: 'column',
               gap: '2px'
             }}>
-              <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>24H GLOBAL VOL</span>
-              <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#38bdf8', fontFamily: 'var(--font-mono)' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>24H GLOBAL VOL</span>
+              <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)' }}>
                 {crypto24hVolumeUsd > 0
                   ? `$${(crypto24hVolumeUsd / 1e9).toFixed(2)}B`
                   : '—'}
               </span>
-              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Spot 24h (tracked pairs)</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Spot 24h (tracked pairs)</span>
             </div>
 
             {/* Metric 3: Bandarmology Net Flow */}
@@ -647,11 +647,11 @@ export default function HomeDashboardTab({
               flexDirection: 'column',
               gap: '2px'
             }}>
-              <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>ARUS BANDAR IDX</span>
-              <span style={{ fontSize: '11.5px', fontWeight: '800', color: netForeignFlowIdr === null ? 'var(--text-muted)' : (netForeignFlowIdr >= 0 ? '#10b981' : '#ef4444'), fontFamily: 'var(--font-mono)' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>ARUS BANDAR IDX</span>
+              <span style={{ fontSize: '13px', fontWeight: '800', color: netForeignFlowIdr === null ? 'var(--text-muted)' : (netForeignFlowIdr >= 0 ? 'var(--accent-emerald)' : 'var(--accent-red)'), fontFamily: 'var(--font-mono)' }}>
                 {netForeignFlowIdr === null ? '—' : formatFlowIdr(netForeignFlowIdr)}
               </span>
-              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Net Foreign {netForeignFlowIdr === null ? '(no data)' : (netForeignFlowIdr >= 0 ? 'Buy' : 'Sell')}</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Net Foreign {netForeignFlowIdr === null ? '(no data)' : (netForeignFlowIdr >= 0 ? 'Buy' : 'Sell')}</span>
             </div>
 
             {/* Metric 4: AI Arena Win Rate */}
@@ -664,11 +664,11 @@ export default function HomeDashboardTab({
               flexDirection: 'column',
               gap: '2px'
             }}>
-              <span style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>ARENA ALPHA</span>
-              <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#f59e0b', fontFamily: 'var(--font-mono)' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>ARENA ALPHA</span>
+              <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-amber)', fontFamily: 'var(--font-mono)' }}>
                 {arenaStats ? `${arenaStats.roiPct >= 0 ? '+' : ''}${arenaStats.roiPct.toFixed(1)}% ROI` : '—'}
               </span>
-              <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 {arenaStats?.winRate != null ? `Win Rate ${arenaStats.winRate.toFixed(1)}% (engine)` : 'Arena engine stats : awaiting sync'}
               </span>
             </div>
@@ -681,20 +681,20 @@ export default function HomeDashboardTab({
             padding: '6px 10px',
             border: '1px solid rgba(255, 255, 255, 0.05)'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
               <span>ALOKASI RADAR PORTOFOLIO</span>
               <span>100% TERMONITOR AKTIF</span>
             </div>
             {/* Progress Segment */}
             <div style={{ display: 'flex', height: '6px', borderRadius: '3px', overflow: 'hidden', gap: '2px' }}>
-              <div style={{ width: '45%', background: '#38bdf8', borderRadius: '2px' }} title="Saham IDX: 45%" />
-              <div style={{ width: '35%', background: '#f59e0b', borderRadius: '2px' }} title="Crypto Spot & Memecoin: 35%" />
-              <div style={{ width: '20%', background: '#10b981', borderRadius: '2px' }} title="Forex & Gold (XAUUSD): 20%" />
+              <div style={{ width: '45%', background: 'var(--accent-sky)', borderRadius: '2px' }} title="Saham IDX: 45%" />
+              <div style={{ width: '35%', background: 'var(--accent-amber)', borderRadius: '2px' }} title="Crypto Spot & Memecoin: 35%" />
+              <div style={{ width: '20%', background: 'var(--accent-emerald)', borderRadius: '2px' }} title="Forex & Gold (XAUUSD): 20%" />
             </div>
-            <div style={{ display: 'flex', gap: '12px', marginTop: '4px', fontSize: '8.5px', fontWeight: '600' }}>
-              <span style={{ color: '#38bdf8' }}>● Saham IDX (45%)</span>
-              <span style={{ color: '#f59e0b' }}>● Crypto Spot & Memecoins (35%)</span>
-              <span style={{ color: '#10b981' }}>● Forex / XAUUSD (20%)</span>
+            <div style={{ display: 'flex', gap: '12px', marginTop: '4px', fontSize: '12px', fontWeight: '600' }}>
+              <span style={{ color: 'var(--accent-sky)' }}>● Saham IDX (45%)</span>
+              <span style={{ color: 'var(--accent-amber)' }}>● Crypto Spot & Memecoins (35%)</span>
+              <span style={{ color: 'var(--accent-emerald)' }}>● Forex / XAUUSD (20%)</span>
             </div>
           </div>
         </div>
@@ -719,18 +719,18 @@ export default function HomeDashboardTab({
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ fontSize: '11px' }}>📈</span>
-                  <span style={{ fontSize: '9px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.03em' }}>
+                  <span style={{ fontSize: '12px' }}>📈</span>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.03em' }}>
                     US YIELD CURVE & LIQUIDITY (10Y-2Y)
                   </span>
                 </div>
                 <span
                   title="Spread Positif (+22 bps) artinya ekonomi normal & tidak ada ancaman resesi jangka pendek."
                   style={{
-                    fontSize: '8px',
+                    fontSize: '12px',
                     fontWeight: 800,
                     background: 'rgba(16, 185, 129, 0.15)',
-                    color: '#34d399',
+                    color: 'var(--accent-mint)',
                     padding: '1px 4px',
                     borderRadius: '2px',
                     border: '1px solid rgba(16, 185, 129, 0.3)',
@@ -742,8 +742,8 @@ export default function HomeDashboardTab({
               </div>
 
               {/* Layman Subtitle / Definition */}
-              <div style={{ fontSize: '8px', color: 'var(--text-secondary)', display: 'flex', justifyContent: 'space-between' }}>
-                <span>Regime: <strong style={{ color: '#34d399' }}>Normal Expansion (Low Recession Risk)</strong></span>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', justifyContent: 'space-between' }}>
+                <span>Regime: <strong style={{ color: 'var(--accent-mint)' }}>Normal Expansion (Low Recession Risk)</strong></span>
                 <span
                   style={{ color: 'var(--accent-blue)', cursor: 'pointer', textDecoration: 'underline' }}
                   onClick={() => setShowLaymanGuide(prev => !prev)}
@@ -764,10 +764,10 @@ export default function HomeDashboardTab({
               }}>
                 {[
                   { tenor: '3M', yieldVal: '4.85%', color: '#93c5fd' },
-                  { tenor: '2Y', yieldVal: '3.96%', color: '#60a5fa' },
-                  { tenor: '5Y', yieldVal: '4.05%', color: '#38bdf8' },
-                  { tenor: '10Y', yieldVal: '4.18%', color: '#34d399', hl: true },
-                  { tenor: '30Y', yieldVal: '4.45%', color: '#a78bfa' }
+                  { tenor: '2Y', yieldVal: '3.96%', color: 'var(--accent-sky-soft)' },
+                  { tenor: '5Y', yieldVal: '4.05%', color: 'var(--accent-sky)' },
+                  { tenor: '10Y', yieldVal: '4.18%', color: 'var(--accent-mint)', hl: true },
+                  { tenor: '30Y', yieldVal: '4.45%', color: 'var(--accent-purple)' }
                 ].map(item => (
                   <div key={item.tenor} style={{
                     display: 'flex',
@@ -777,8 +777,8 @@ export default function HomeDashboardTab({
                     background: item.hl ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
                     borderRadius: '2px'
                   }}>
-                    <span style={{ fontSize: '7px', color: 'var(--text-muted)' }}>{item.tenor}</span>
-                    <strong style={{ fontSize: '9px', color: item.color, fontFamily: 'var(--font-mono)' }}>{item.yieldVal}</strong>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{item.tenor}</span>
+                    <strong style={{ fontSize: '12px', color: item.color, fontFamily: 'var(--font-mono)' }}>{item.yieldVal}</strong>
                   </div>
                 ))}
               </div>
@@ -787,13 +787,13 @@ export default function HomeDashboardTab({
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                fontSize: '8px',
+                fontSize: '12px',
                 color: 'var(--text-muted)',
                 borderTop: '1px solid rgba(255, 255, 255, 0.05)',
                 paddingTop: '2px',
                 fontFamily: 'var(--font-mono)'
               }}>
-                <span>BI vs Fed Spread: <strong style={{ color: '#34d399' }}>+125 bps Carry</strong> (IDR Support Buffer)</span>
+                <span>BI vs Fed Spread: <strong style={{ color: 'var(--accent-mint)' }}>+125 bps Carry</strong> (IDR Support Buffer)</span>
                 <span>USD/IDR: <strong style={{ color: '#f1f5f9' }}>Rp {formattedUsdIdr}</strong></span>
               </div>
             </div>
@@ -813,13 +813,13 @@ export default function HomeDashboardTab({
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ fontSize: '11px' }}>🛡️</span>
-                  <span style={{ fontSize: '9px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.03em' }}>
+                  <span style={{ fontSize: '12px' }}>🛡️</span>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.03em' }}>
                     PORTFOLIO RISK &amp; CAPITAL ALLOCATION
                   </span>
                 </div>
                 <span style={{
-                  fontSize: '8px',
+                  fontSize: '12px',
                   fontWeight: 800,
                   background: 'rgba(59, 130, 246, 0.15)',
                   color: 'var(--accent-blue)',
@@ -832,8 +832,8 @@ export default function HomeDashboardTab({
               </div>
 
               {/* Layman Subtitle / Definition */}
-              <div style={{ fontSize: '8px', color: 'var(--text-secondary)' }}>
-                Safety Buffer: <strong style={{ color: '#60a5fa' }}>21.6% Cash Reserve</strong> • Max Daily VaR: <strong style={{ color: '#f59e0b' }}>1.18%</strong>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                Safety Buffer: <strong style={{ color: 'var(--accent-sky-soft)' }}>21.6% Cash Reserve</strong> • Max Daily VaR: <strong style={{ color: 'var(--accent-amber)' }}>1.18%</strong>
               </div>
 
               {/* 4 Factor Telemetry */}
@@ -847,20 +847,20 @@ export default function HomeDashboardTab({
                 border: '1px solid rgba(255, 255, 255, 0.05)'
               }}>
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '7px', color: 'var(--text-muted)' }}>GROSS EXPOSURE</div>
-                  <strong style={{ fontSize: '9.5px', color: '#60a5fa', fontFamily: 'var(--font-mono)' }}>78.4%</strong>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>GROSS EXPOSURE</div>
+                  <strong style={{ fontSize: '12px', color: 'var(--accent-sky-soft)', fontFamily: 'var(--font-mono)' }}>78.4%</strong>
                 </div>
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '7px', color: 'var(--text-muted)' }}>NET BIAS</div>
-                  <strong style={{ fontSize: '9.5px', color: '#34d399', fontFamily: 'var(--font-mono)' }}>+64.2%</strong>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>NET BIAS</div>
+                  <strong style={{ fontSize: '12px', color: 'var(--accent-mint)', fontFamily: 'var(--font-mono)' }}>+64.2%</strong>
                 </div>
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '7px', color: 'var(--text-muted)' }}>1D VaR (95%)</div>
-                  <strong style={{ fontSize: '9.5px', color: '#f59e0b', fontFamily: 'var(--font-mono)' }}>1.18%</strong>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>1D VaR (95%)</div>
+                  <strong style={{ fontSize: '12px', color: 'var(--accent-amber)', fontFamily: 'var(--font-mono)' }}>1.18%</strong>
                 </div>
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '7px', color: 'var(--text-muted)' }}>PORTFOLIO BETA</div>
-                  <strong style={{ fontSize: '9.5px', color: '#a78bfa', fontFamily: 'var(--font-mono)' }}>1.05x</strong>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>PORTFOLIO BETA</div>
+                  <strong style={{ fontSize: '12px', color: 'var(--accent-purple)', fontFamily: 'var(--font-mono)' }}>1.05x</strong>
                 </div>
               </div>
 
@@ -868,14 +868,14 @@ export default function HomeDashboardTab({
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                fontSize: '8px',
+                fontSize: '12px',
                 color: 'var(--text-muted)',
                 borderTop: '1px solid rgba(255, 255, 255, 0.05)',
                 paddingTop: '2px',
                 fontFamily: 'var(--font-mono)'
               }}>
                 <span>Risk Discipline: <strong style={{ color: 'var(--text-primary)' }}>Min 1:2.0 Net R:R</strong></span>
-                <span style={{ color: '#10b981', fontWeight: 700 }}>LONG-ONLY (CASH)</span>
+                <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>LONG-ONLY (CASH)</span>
               </div>
             </div>
 
@@ -894,16 +894,16 @@ export default function HomeDashboardTab({
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ fontSize: '11px' }}>🧭</span>
-                  <span style={{ fontSize: '9px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.03em' }}>
+                  <span style={{ fontSize: '12px' }}>🧭</span>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.03em' }}>
                     GLOBAL SENTIMENT &amp; VOLATILITY
                   </span>
                 </div>
                 <span style={{
-                  fontSize: '8px',
+                  fontSize: '12px',
                   fontWeight: 800,
                   background: 'rgba(245, 158, 11, 0.15)',
-                  color: '#fbbf24',
+                  color: 'var(--accent-gold-bright)',
                   padding: '1px 4px',
                   borderRadius: '2px',
                   border: '1px solid rgba(245, 158, 11, 0.3)'
@@ -917,49 +917,49 @@ export default function HomeDashboardTab({
 
                 {/* Gauge 1: Fear & Greed */}
                 <div style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 4px', borderRadius: '3px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7.5px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
                     <span style={{ color: 'var(--text-muted)' }}>FEAR &amp; GREED</span>
-                    <strong style={{ color: '#10b981' }}>71 GREED</strong>
+                    <strong style={{ color: 'var(--accent-emerald)' }}>71 GREED</strong>
                   </div>
                   {/* Visual Bar */}
-                  <div style={{ width: '100%', height: '4px', background: '#334155', borderRadius: '2px', overflow: 'hidden', marginTop: '2px' }}>
-                    <div style={{ width: '71%', height: '100%', background: 'linear-gradient(90deg, #ef4444 0%, #eab308 50%, #10b981 100%)' }} />
+                  <div style={{ width: '100%', height: '4px', background: 'var(--slate-700)', borderRadius: '2px', overflow: 'hidden', marginTop: '2px' }}>
+                    <div style={{ width: '71%', height: '100%', background: 'linear-gradient(90deg, var(--accent-red) 0%, var(--accent-gold-bright) 50%, var(--accent-emerald) 100%)' }} />
                   </div>
                 </div>
 
                 {/* Gauge 2: VIX Volatilitas */}
                 <div style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 4px', borderRadius: '3px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7.5px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
                     <span style={{ color: 'var(--text-muted)' }}>VIX VOLATILITY</span>
-                    <strong style={{ color: '#60a5fa' }}>14.21 CALM</strong>
+                    <strong style={{ color: 'var(--accent-sky-soft)' }}>14.21 CALM</strong>
                   </div>
                   {/* Visual Bar (Low is calm green) */}
-                  <div style={{ width: '100%', height: '4px', background: '#334155', borderRadius: '2px', overflow: 'hidden', marginTop: '2px' }}>
-                    <div style={{ width: '28%', height: '100%', background: '#34d399' }} />
+                  <div style={{ width: '100%', height: '4px', background: 'var(--slate-700)', borderRadius: '2px', overflow: 'hidden', marginTop: '2px' }}>
+                    <div style={{ width: '28%', height: '100%', background: 'var(--accent-mint)' }} />
                   </div>
                 </div>
 
                 {/* Gauge 3: BTC Dominance */}
                 <div style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 4px', borderRadius: '3px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7.5px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
                     <span style={{ color: 'var(--text-muted)' }}>BTC DOMINANCE</span>
-                    <strong style={{ color: '#fbbf24' }}>58.7% DOM</strong>
+                    <strong style={{ color: 'var(--accent-gold-bright)' }}>58.7% DOM</strong>
                   </div>
                   {/* Visual Bar */}
-                  <div style={{ width: '100%', height: '4px', background: '#334155', borderRadius: '2px', overflow: 'hidden', marginTop: '2px' }}>
-                    <div style={{ width: '58.7%', height: '100%', background: '#f59e0b' }} />
+                  <div style={{ width: '100%', height: '4px', background: 'var(--slate-700)', borderRadius: '2px', overflow: 'hidden', marginTop: '2px' }}>
+                    <div style={{ width: '58.7%', height: '100%', background: 'var(--accent-amber)' }} />
                   </div>
                 </div>
 
                 {/* Gauge 4: DXY Dollar Index */}
                 <div style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 4px', borderRadius: '3px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7.5px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
                     <span style={{ color: 'var(--text-muted)' }}>DXY (DOLLAR)</span>
-                    <strong style={{ color: '#34d399' }}>100.63 SOFT</strong>
+                    <strong style={{ color: 'var(--accent-mint)' }}>100.63 SOFT</strong>
                   </div>
                   {/* Visual Bar (Soft is good for IHSG) */}
-                  <div style={{ width: '100%', height: '4px', background: '#334155', borderRadius: '2px', overflow: 'hidden', marginTop: '2px' }}>
-                    <div style={{ width: '45%', height: '100%', background: '#10b981' }} />
+                  <div style={{ width: '100%', height: '4px', background: 'var(--slate-700)', borderRadius: '2px', overflow: 'hidden', marginTop: '2px' }}>
+                    <div style={{ width: '45%', height: '100%', background: 'var(--accent-emerald)' }} />
                   </div>
                 </div>
 
@@ -969,7 +969,7 @@ export default function HomeDashboardTab({
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                fontSize: '8px',
+                fontSize: '12px',
                 color: 'var(--text-muted)',
                 borderTop: '1px solid rgba(255, 255, 255, 0.05)',
                 paddingTop: '2px',
@@ -989,7 +989,7 @@ export default function HomeDashboardTab({
               border: '1px solid var(--accent-blue)',
               borderRadius: '4px',
               padding: '6px 10px',
-              fontSize: '8.5px',
+              fontSize: '12px',
               color: 'var(--text-primary)',
               lineHeight: 1.4,
               fontFamily: 'var(--font-mono)'
@@ -1005,7 +1005,7 @@ export default function HomeDashboardTab({
                   78.4% active gross exposure with 21.6% safe liquid cash reserve. Maximum daily downside bounded by 1.18% 1D VaR (95% CI). Enforces strict minimum 1:2.0 Net Risk/Reward before execution.
                 </div>
                 <div>
-                  <strong style={{ color: '#fbbf24' }}>3. Global Sentiment &amp; Volatility:</strong><br/>
+                  <strong style={{ color: 'var(--accent-gold-bright)' }}>3. Global Sentiment &amp; Volatility:</strong><br/>
                   Fear &amp; Greed (71 Greed = robust risk appetite), VIX (14.21 Calm = low equity tail-risk), BTC Dominance (58.7% concentration), and DXY (100.63 Soft = catalyst for foreign capital inflow to BEI/IHSG).
                 </div>
               </div>
@@ -1029,13 +1029,13 @@ export default function HomeDashboardTab({
             }}>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="metric-label" style={{ fontSize: '8px' }}>IHSG &amp; DOMESTIC REGIME</span>
-                  <span className="badge badge-bull" style={{ fontSize: '7px', padding: '1px 4px' }}>ACTIVE</span>
+                  <span className="metric-label" style={{ fontSize: '12px' }}>IHSG &amp; DOMESTIC REGIME</span>
+                  <span className="badge badge-bull" style={{ fontSize: '12px', padding: '1px 4px' }}>ACTIVE</span>
                 </div>
-                <div style={{ fontSize: '12px', fontWeight: '900', marginTop: '1px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ fontSize: '13px', fontWeight: '900', marginTop: '1px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                   {sentiment}
                 </div>
-                <div style={{ fontSize: '7.5px', color: 'var(--text-muted)', marginTop: '1px', lineHeight: 1.25, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '1px', lineHeight: 1.25, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                   {narrative}
                 </div>
               </div>
@@ -1048,7 +1048,7 @@ export default function HomeDashboardTab({
                 const isIhsgFlash = flashMap['IHSG'] || flashMap['IDX:COMPOSITE'];
 
                 return (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', fontFamily: 'var(--font-mono)', paddingTop: '2px', borderTop: 'var(--border-muted)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', fontFamily: 'var(--font-mono)', paddingTop: '2px', borderTop: 'var(--border-muted)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
                       <span style={{ color: 'var(--text-muted)' }}>.JKSE:</span>
                       <strong style={{
@@ -1094,23 +1094,23 @@ export default function HomeDashboardTab({
                 }}>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="metric-label" style={{ fontSize: '8px' }}>COMMODITIES &amp; DXY</span>
-                      <span style={{ fontSize: '7px', padding: '1px 4px', borderRadius: '2px', background: 'rgba(245, 158, 11, 0.18)', color: '#f59e0b', fontWeight: '800' }}>OIL &amp; GOLD</span>
+                      <span className="metric-label" style={{ fontSize: '12px' }}>COMMODITIES &amp; DXY</span>
+                      <span style={{ fontSize: '12px', padding: '1px 4px', borderRadius: '2px', background: 'rgba(245, 158, 11, 0.18)', color: 'var(--accent-amber)', fontWeight: '800' }}>OIL &amp; GOLD</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
-                      <div style={{ fontSize: '10.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-orange-text, #f59e0b)' }}>
-                        OIL ${brentPrice.toFixed(1)} <span style={{ fontSize: '7.5px', color: brentChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{brentChg >= 0 ? '+' : ''}{brentChg.toFixed(1)}%</span>
+                      <div style={{ fontSize: '12px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-orange-text, var(--accent-amber))' }}>
+                        OIL ${brentPrice.toFixed(1)} <span style={{ fontSize: '12px', color: brentChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{brentChg >= 0 ? '+' : ''}{brentChg.toFixed(1)}%</span>
                       </div>
-                      <div style={{ fontSize: '10.5px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#eab308' }}>
-                        GOLD ${Math.round(goldPrice).toLocaleString('en-US')} <span style={{ fontSize: '7.5px', color: goldChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{goldChg >= 0 ? '+' : ''}{goldChg.toFixed(1)}%</span>
+                      <div style={{ fontSize: '12px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold-bright)' }}>
+                        GOLD ${Math.round(goldPrice).toLocaleString('en-US')} <span style={{ fontSize: '12px', color: goldChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{goldChg >= 0 ? '+' : ''}{goldChg.toFixed(1)}%</span>
                       </div>
                     </div>
-                    <div style={{ fontSize: '7.5px', color: 'var(--text-muted)', marginTop: '1px' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '1px' }}>
                       IDX Energy Correlation
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', fontFamily: 'var(--font-mono)', paddingTop: '2px', borderTop: 'var(--border-muted)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', fontFamily: 'var(--font-mono)', paddingTop: '2px', borderTop: 'var(--border-muted)' }}>
                     <span>Sektor: <strong style={{ color: 'var(--accent-green)', cursor: 'pointer' }} onClick={() => onSelectTicker('MEDC', 'IDX')}>$MEDC</strong> <strong style={{ color: 'var(--accent-green)', cursor: 'pointer' }} onClick={() => onSelectTicker('ELSA', 'IDX')}>$ELSA</strong></span>
                     <span style={{ color: 'var(--accent-blue)', fontWeight: '800' }}>BULLISH</span>
                   </div>
@@ -1139,36 +1139,36 @@ export default function HomeDashboardTab({
                 }}>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="metric-label" style={{ fontSize: '8px' }}>#1 QUANT CRYPTO SPOT</span>
-                      <span className="badge badge-alert" style={{ fontSize: '7px', padding: '1px 4px' }}>SPOT ONLY</span>
+                      <span className="metric-label" style={{ fontSize: '12px' }}>#1 QUANT CRYPTO SPOT</span>
+                      <span className="badge badge-alert" style={{ fontSize: '12px', padding: '1px 4px' }}>SPOT ONLY</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
                         <CryptoIcon symbol={topCrypto?.pair || 'BTC'} size={13} />
-                        <span style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                        <span style={{ fontSize: '12px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                           {topCrypto?.pair || 'BTC/USDT'}
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
                         <span style={{
-                          fontSize: '10.5px',
+                          fontSize: '12px',
                           fontWeight: '800',
                           fontFamily: 'var(--font-mono)',
                           color: isCryptoFlashing === 'up' ? 'var(--accent-green)' : isCryptoFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)'
                         }}>
                           ${Number(liveCryptoPrice).toLocaleString(undefined, { minimumFractionDigits: Number(liveCryptoPrice) > 100 ? 0 : 2, maximumFractionDigits: 2 })}
                         </span>
-                        <span style={{ fontSize: '7.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveCryptoChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                        <span style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveCryptoChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                           {liveCryptoChange >= 0 ? '+' : ''}{Number(liveCryptoChange).toFixed(1)}%
                         </span>
                       </div>
                     </div>
-                    <div style={{ fontSize: '7.5px', color: 'var(--text-muted)', marginTop: '1px' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '1px' }}>
                       Range Accumulation
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', fontFamily: 'var(--font-mono)', paddingTop: '2px', borderTop: 'var(--border-muted)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', fontFamily: 'var(--font-mono)', paddingTop: '2px', borderTop: 'var(--border-muted)' }}>
                     <span>Entry: <strong style={{ color: 'var(--text-primary)' }}>{Math.round(topCrypto?.current_price || 76680).toLocaleString()}</strong></span>
                     <span style={{ color: 'var(--accent-green)', fontWeight: '800' }}>1:2.0 Net</span>
                   </div>
@@ -1197,14 +1197,14 @@ export default function HomeDashboardTab({
                 }}>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="metric-label" style={{ fontSize: '8px' }}>#1 QUANT IDX ALPHA</span>
-                      <span className="badge badge-bull" style={{ fontSize: '7px', padding: '1px 4px' }}>BREAKOUT</span>
+                      <span className="metric-label" style={{ fontSize: '12px' }}>#1 QUANT IDX ALPHA</span>
+                      <span className="badge badge-bull" style={{ fontSize: '12px', padding: '1px 4px' }}>BREAKOUT</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
                         <AssetIcon symbol={topIdxTicker} market="IDX" size={13} />
                         <span
-                          style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', cursor: 'pointer' }}
+                          style={{ fontSize: '12px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', cursor: 'pointer' }}
                           onClick={() => onSelectTicker(topIdxTicker, 'IDX')}
                         >
                           {topIdxTicker}
@@ -1212,26 +1212,26 @@ export default function HomeDashboardTab({
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
                         <span style={{
-                          fontSize: '10.5px',
+                          fontSize: '12px',
                           fontWeight: '800',
                           fontFamily: 'var(--font-mono)',
                           color: isIdxFlashing === 'up' ? 'var(--accent-green)' : isIdxFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-primary)'
                         }}>
                           Rp {Number(liveIdxPrice).toLocaleString('id-ID')}
                         </span>
-                        <span style={{ fontSize: '7.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveIdxChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                        <span style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveIdxChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                           {liveIdxChange >= 0 ? '+' : ''}{Number(liveIdxChange).toFixed(1)}%
                         </span>
                       </div>
                     </div>
-                    <div style={{ fontSize: '7.5px', color: 'var(--text-muted)', marginTop: '1px' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '1px' }}>
                       Barito Cluster Expansion
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', fontFamily: 'var(--font-mono)', paddingTop: '2px', borderTop: 'var(--border-muted)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', fontFamily: 'var(--font-mono)', paddingTop: '2px', borderTop: 'var(--border-muted)' }}>
                     <span>Entry: <strong style={{ color: 'var(--text-primary)' }}>{Number(topIdx?.entry_price || 945).toLocaleString()}</strong></span>
-                    <span style={{ color: '#34d399', fontWeight: '800' }}>1:2.1 Net</span>
+                    <span style={{ color: 'var(--accent-mint)', fontWeight: '800' }}>1:2.1 Net</span>
                   </div>
                 </div>
               );
@@ -1260,7 +1260,7 @@ export default function HomeDashboardTab({
               {/* Header */}
               <div className="telemetry-header" style={{
                 padding: '6px 10px',
-                fontSize: '10.5px',
+                fontSize: '12px',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -1268,7 +1268,7 @@ export default function HomeDashboardTab({
                 flexShrink: 0
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: '12px' }}>📡</span>
+                  <span style={{ fontSize: '13px' }}>📡</span>
                   <span style={{ fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
                     LIVE INTELLIGENCE WIRE
                   </span>
@@ -1283,7 +1283,7 @@ export default function HomeDashboardTab({
                       border: newsViewMode === 'scroll' ? '1px solid rgba(0, 208, 132, 0.35)' : 'var(--border-hairline)',
                       color: newsViewMode === 'scroll' ? 'var(--accent-green)' : 'var(--text-muted)',
                       borderRadius: '3px',
-                      fontSize: '8px',
+                      fontSize: '12px',
                       padding: '2px 5px',
                       cursor: 'pointer',
                       fontFamily: 'var(--font-mono)',
@@ -1292,7 +1292,7 @@ export default function HomeDashboardTab({
                   >
                     {newsViewMode === 'scroll' ? '📜 SCROLL' : '⚡ TOP 15'}
                   </button>
-                  <span style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                     {displayNews.length} / {liveNewsRaw.length}
                   </span>
                   <button
@@ -1303,7 +1303,7 @@ export default function HomeDashboardTab({
                       border: '1px solid rgba(255, 255, 255, 0.15)',
                       color: 'var(--text-secondary)',
                       borderRadius: '3px',
-                      fontSize: '8px',
+                      fontSize: '12px',
                       padding: '2px 6px',
                       cursor: 'pointer',
                       fontFamily: 'var(--font-mono)',
@@ -1320,18 +1320,18 @@ export default function HomeDashboardTab({
               <div className="tactical-defense-alert-banner">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span style={{ fontSize: '11px' }}>☢️</span>
-                    <strong style={{ fontSize: '8.5px', color: '#fee2e2', letterSpacing: '0.04em' }}>
+                    <span style={{ fontSize: '12px' }}>☢️</span>
+                    <strong style={{ fontSize: '12px', color: '#fee2e2', letterSpacing: '0.04em' }}>
                       DEFENSE ALERT // ESKALASI MILITER &amp; RISIKO NUKLIR
                     </strong>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span style={{ fontSize: '7.5px', background: 'rgba(239, 68, 68, 0.4)', color: '#fca5a5', padding: '1px 4px', borderRadius: '2px', fontWeight: '800' }}>
+                    <span style={{ fontSize: '12px', background: 'rgba(239, 68, 68, 0.4)', color: 'var(--accent-softred)', padding: '1px 4px', borderRadius: '2px', fontWeight: '800' }}>
                       DEFCON {bundleDefconLevel} WATCH
                     </span>
                     <span
                       onClick={() => setDismissDefenseAlert(true)}
-                      style={{ cursor: 'pointer', fontSize: '9px', color: '#fca5a5', padding: '0 2px' }}
+                      style={{ cursor: 'pointer', fontSize: '12px', color: 'var(--accent-softred)', padding: '0 2px' }}
                       title="Tutup Alert"
                     >
                       ✕
@@ -1339,12 +1339,12 @@ export default function HomeDashboardTab({
                   </div>
                 </div>
 
-                <div style={{ fontSize: '8px', color: '#fecaca', lineHeight: 1.25 }}>
+                <div style={{ fontSize: '12px', color: '#fecaca', lineHeight: 1.25 }}>
                   ⚠️ <strong>{primaryThreatNews?.title || 'Eskalasi Geopolitik Terdeteksi'}</strong>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '7.5px', color: '#fca5a5', borderTop: '1px solid rgba(239, 68, 68, 0.25)', paddingTop: '2px' }}>
-                  <span>Hedge Play: <strong style={{ color: '#fff' }}>Long Brent &amp; Gold</strong> • Saham BEI: <strong style={{ color: '#34d399' }}>$MEDC $ELSA $ANTM</strong></span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: 'var(--accent-softred)', borderTop: '1px solid rgba(239, 68, 68, 0.25)', paddingTop: '2px' }}>
+                  <span>Hedge Play: <strong style={{ color: '#fff' }}>Long Brent &amp; Gold</strong> • Saham BEI: <strong style={{ color: 'var(--accent-mint)' }}>$MEDC $ELSA $ANTM</strong></span>
                   <span
                     onClick={() => setNewsFilter('NUCLEAR_WAR')}
                     style={{ textDecoration: 'underline', cursor: 'pointer', color: '#fff', fontWeight: 700 }}
@@ -1366,7 +1366,7 @@ export default function HomeDashboardTab({
                   style={{
                     width: '100%',
                     padding: '3px 22px 3px 6px',
-                    fontSize: '9px',
+                    fontSize: '12px',
                     background: 'var(--bg-panel-subtle)',
                     border: 'var(--border-hairline)',
                     borderRadius: '3px',
@@ -1385,7 +1385,7 @@ export default function HomeDashboardTab({
                       top: '50%',
                       transform: 'translateY(-50%)',
                       cursor: 'pointer',
-                      fontSize: '9px',
+                      fontSize: '12px',
                       color: 'var(--text-muted)'
                     }}
                   >
@@ -1417,12 +1417,12 @@ export default function HomeDashboardTab({
                     onClick={() => setNewsFilter(f.id)}
                     style={{
                       padding: '2px 5px',
-                      fontSize: '7.5px',
+                      fontSize: '12px',
                       fontWeight: '700',
                       borderRadius: '2px',
-                      border: newsFilter === f.id ? (f.highlight ? '1px solid #ef4444' : '1px solid var(--accent-blue)') : 'var(--border-hairline)',
-                      background: newsFilter === f.id ? (f.highlight ? '#ef4444' : 'var(--accent-blue)') : f.highlight ? 'rgba(239, 68, 68, 0.15)' : 'var(--bg-panel-subtle)',
-                      color: newsFilter === f.id ? '#ffffff' : f.highlight ? '#fca5a5' : 'var(--text-muted)',
+                      border: newsFilter === f.id ? (f.highlight ? '1px solid var(--accent-red)' : '1px solid var(--accent-blue)') : 'var(--border-hairline)',
+                      background: newsFilter === f.id ? (f.highlight ? 'var(--accent-red)' : 'var(--accent-blue)') : f.highlight ? 'rgba(239, 68, 68, 0.15)' : 'var(--bg-panel-subtle)',
+                      color: newsFilter === f.id ? '#ffffff' : f.highlight ? 'var(--accent-softred)' : 'var(--text-muted)',
                       cursor: 'pointer',
                       fontFamily: 'var(--font-mono)',
                       flexShrink: 0
@@ -1454,7 +1454,7 @@ export default function HomeDashboardTab({
                 const isResearch = news.stream === 'RESEARCH' || news.tag === 'RESEARCH';
                 const titleLower = (news.title || '').toLowerCase();
                 const isWarAlert = titleLower.includes('perang') || titleLower.includes('war') || titleLower.includes('militer') || titleLower.includes('rudal') || titleLower.includes('nuklir') || titleLower.includes('sanction');
-                const borderAccent = isWarAlert ? '#ef4444' : isBrief ? '#f59e0b' : isResearch ? '#8b5cf6' : isBear ? 'var(--accent-rust)' : isBull ? 'var(--accent-green)' : 'var(--border-subtle)';
+                const borderAccent = isWarAlert ? 'var(--accent-red)' : isBrief ? 'var(--accent-amber)' : isResearch ? '#8b5cf6' : isBear ? 'var(--accent-rust)' : isBull ? 'var(--accent-green)' : 'var(--border-subtle)';
 
                 return (
                   <div
@@ -1488,25 +1488,25 @@ export default function HomeDashboardTab({
                     {/* Source, Tag & Time */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span style={{ fontSize: '8px', fontWeight: '800', color: isWarAlert ? '#fca5a5' : isBrief ? '#f59e0b' : isResearch ? '#c084fc' : 'var(--text-primary)', textTransform: 'uppercase' }}>
+                        <span style={{ fontSize: '12px', fontWeight: '800', color: isWarAlert ? 'var(--accent-softred)' : isBrief ? 'var(--accent-amber)' : isResearch ? 'var(--accent-purple-light)' : 'var(--text-primary)', textTransform: 'uppercase' }}>
                           {news.source || 'WIRE'}
                         </span>
                         {isWarAlert && (
-                          <span style={{ fontSize: '7px', padding: '0 3px', background: 'rgba(239, 68, 68, 0.3)', color: '#fca5a5', borderRadius: '2px', fontWeight: '800' }}>
+                          <span style={{ fontSize: '12px', padding: '0 3px', background: 'rgba(239, 68, 68, 0.3)', color: 'var(--accent-softred)', borderRadius: '2px', fontWeight: '800' }}>
                             MILITARY/GEO
                           </span>
                         )}
                         {isBrief && (
-                          <span style={{ fontSize: '7px', padding: '0 3px', background: 'rgba(245, 158, 11, 0.25)', color: '#f59e0b', borderRadius: '2px', fontWeight: '800' }}>
+                          <span style={{ fontSize: '12px', padding: '0 3px', background: 'rgba(245, 158, 11, 0.25)', color: 'var(--accent-amber)', borderRadius: '2px', fontWeight: '800' }}>
                             BRIEF
                           </span>
                         )}
                         {isResearch && (
-                          <span style={{ fontSize: '7px', padding: '0 3px', background: 'rgba(139, 92, 246, 0.25)', color: '#c084fc', borderRadius: '2px', fontWeight: '800' }}>
+                          <span style={{ fontSize: '12px', padding: '0 3px', background: 'rgba(139, 92, 246, 0.25)', color: 'var(--accent-purple-light)', borderRadius: '2px', fontWeight: '800' }}>
                             RESEARCH
                           </span>
                         )}
-                        <span className={`badge ${isBear ? 'badge-bear' : isBull ? 'badge-bull' : 'badge-neutral'}`} style={{ fontSize: '7px', padding: '0 3px' }}>
+                        <span className={`badge ${isBear ? 'badge-bear' : isBull ? 'badge-bull' : 'badge-neutral'}`} style={{ fontSize: '12px', padding: '0 3px' }}>
                           {news.sentiment || 'NEUTRAL'}
                         </span>
                       </div>
@@ -1515,7 +1515,7 @@ export default function HomeDashboardTab({
                         const dt = formatNewsDateTime(news);
                         return (
                           <span
-                            style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
+                            style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
                             title={`Waktu rilis sumber: ${news.source_time_utc || news.pub_date || ''}`}
                           >
                             {dt.dateStr} • {dt.timeStr}
@@ -1526,7 +1526,7 @@ export default function HomeDashboardTab({
 
                     {/* Headline Title */}
                     <div style={{
-                      fontSize: '11px',
+                      fontSize: '12px',
                       fontWeight: '600',
                       color: 'var(--text-primary)',
                       lineHeight: 1.3,
@@ -1549,7 +1549,7 @@ export default function HomeDashboardTab({
                               onSelectTicker && onSelectTicker(t, 'IDX');
                             }}
                             style={{
-                              fontSize: '8px',
+                              fontSize: '12px',
                               fontFamily: 'var(--font-mono)',
                               color: 'var(--accent-blue)',
                               background: 'rgba(59, 130, 246, 0.15)',
@@ -1569,7 +1569,7 @@ export default function HomeDashboardTab({
               })}
 
               {displayNews.length === 0 && (
-                <div style={{ padding: '20px 8px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '9px' }}>
+                <div style={{ padding: '20px 8px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>
                   Tidak ada berita yang cocok dengan filter ini.
                 </div>
               )}
@@ -1582,7 +1582,7 @@ export default function HomeDashboardTab({
                 style={{
                   width: '100%',
                   padding: '3px 6px',
-                  fontSize: '8px',
+                  fontSize: '12px',
                   fontWeight: '700',
                   borderRadius: '2px',
                   border: '1px solid rgba(59, 130, 246, 0.3)',
@@ -1625,16 +1625,16 @@ export default function HomeDashboardTab({
           gap: '6px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontSize: '12px' }}>⚡</span>
-            <strong style={{ fontSize: '10.5px', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
+            <span style={{ fontSize: '13px' }}>⚡</span>
+            <strong style={{ fontSize: '12px', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
               TACTICAL QUANTITATIVE EXECUTION MATRIX
             </strong>
             <span style={{
-              fontSize: '8px',
+              fontSize: '12px',
               padding: '1px 5px',
               borderRadius: '2px',
               background: 'rgba(16, 185, 129, 0.15)',
-              color: '#34d399',
+              color: 'var(--accent-mint)',
               border: '1px solid rgba(16, 185, 129, 0.3)',
               fontWeight: 800
             }}>
@@ -1646,7 +1646,7 @@ export default function HomeDashboardTab({
             <button
               onClick={() => setMatrixViewMode('3col')}
               style={{
-                fontSize: '8px',
+                fontSize: '12px',
                 fontWeight: 700,
                 padding: '2px 5px',
                 borderRadius: '2px',
@@ -1661,7 +1661,7 @@ export default function HomeDashboardTab({
             <button
               onClick={() => setMatrixViewMode('wide')}
               style={{
-                fontSize: '8px',
+                fontSize: '12px',
                 fontWeight: 700,
                 padding: '2px 5px',
                 borderRadius: '2px',
@@ -1679,7 +1679,7 @@ export default function HomeDashboardTab({
         {/* Dynamic Execution Matrix Grid */}
         {matrixViewMode === 'wide' ? (
           <div style={{ overflowX: 'auto' }}>
-            <table className="telemetry-table" style={{ width: '100%', fontSize: '9px', borderCollapse: 'collapse' }}>
+            <table className="telemetry-table" style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', color: 'var(--text-muted)' }}>
                   <th style={{ textAlign: 'left', padding: '4px 6px' }}>ASSET / TICKER</th>
@@ -1714,13 +1714,13 @@ export default function HomeDashboardTab({
                             ${ticker}
                           </span>
                         </div>
-                        <div style={{ fontSize: '8px', color: isFlash === 'up' ? 'var(--accent-green)' : isFlash === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)' }}>
+                        <div style={{ fontSize: '12px', color: isFlash === 'up' ? 'var(--accent-green)' : isFlash === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)' }}>
                           Rp {Number(curPrice).toLocaleString('id-ID')} ({chgPct >= 0 ? '+' : ''}{Number(chgPct).toFixed(1)}%)
                         </div>
                       </td>
                       <td style={{ padding: '4px 6px', color: 'var(--text-secondary)' }}>IDX BEI</td>
                       <td style={{ padding: '4px 6px', textAlign: 'center' }}>
-                        <span className="badge badge-bull" style={{ fontSize: '7.5px', padding: '1px 4px' }}>
+                        <span className="badge badge-bull" style={{ fontSize: '12px', padding: '1px 4px' }}>
                           {plan.technical_signal || 'BREAKOUT'}
                         </span>
                       </td>
@@ -1737,11 +1737,11 @@ export default function HomeDashboardTab({
                         {rr.gross}
                       </td>
                       <td style={{ padding: '4px 6px', textAlign: 'center' }}>
-                        <strong style={{ color: '#34d399' }}>{rr.net}</strong>
+                        <strong style={{ color: 'var(--accent-mint)' }}>{rr.net}</strong>
                       </td>
                       <td style={{ padding: '4px 6px', textAlign: 'right' }}>
                         <strong style={{ color: 'var(--text-primary)' }}>{sizing.lots}</strong>
-                        <div style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>{sizing.valIdr}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{sizing.valIdr}</div>
                       </td>
                       <td style={{ padding: '4px 6px', textAlign: 'center' }}>
                         <button
@@ -1761,7 +1761,7 @@ export default function HomeDashboardTab({
                         }}
                           style={{
                             padding: '2px 5px',
-                            fontSize: '8px',
+                            fontSize: '12px',
                             background: 'rgba(59, 130, 246, 0.15)',
                             color: 'var(--accent-blue)',
                             border: '1px solid rgba(59, 130, 246, 0.3)',
@@ -1792,17 +1792,17 @@ export default function HomeDashboardTab({
                       <td style={{ padding: '4px 6px', fontWeight: 800 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <CryptoIcon symbol={c.pair} size={13} />
-                          <span style={{ color: '#60a5fa', cursor: 'pointer' }} onClick={() => onSelectTicker(c.pair, 'CRYPTO')}>
+                          <span style={{ color: 'var(--accent-sky-soft)', cursor: 'pointer' }} onClick={() => onSelectTicker(c.pair, 'CRYPTO')}>
                             {c.pair}
                           </span>
                         </div>
-                        <div style={{ fontSize: '8px', color: isFlash === 'up' ? 'var(--accent-green)' : isFlash === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)' }}>
+                        <div style={{ fontSize: '12px', color: isFlash === 'up' ? 'var(--accent-green)' : isFlash === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)' }}>
                           ${Number(curPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ({chgPct >= 0 ? '+' : ''}{Number(chgPct).toFixed(1)}%)
                         </div>
                       </td>
-                      <td style={{ padding: '4px 6px', color: '#a78bfa' }}>SPOT</td>
+                      <td style={{ padding: '4px 6px', color: 'var(--accent-purple)' }}>SPOT</td>
                       <td style={{ padding: '4px 6px', textAlign: 'center' }}>
-                        <span className="badge badge-alert" style={{ fontSize: '7.5px', padding: '1px 4px' }}>
+                        <span className="badge badge-alert" style={{ fontSize: '12px', padding: '1px 4px' }}>
                           RANGE_ACC
                         </span>
                       </td>
@@ -1819,11 +1819,11 @@ export default function HomeDashboardTab({
                         {rr.gross}
                       </td>
                       <td style={{ padding: '4px 6px', textAlign: 'center' }}>
-                        <strong style={{ color: '#34d399' }}>{rr.net}</strong>
+                        <strong style={{ color: 'var(--accent-mint)' }}>{rr.net}</strong>
                       </td>
                       <td style={{ padding: '4px 6px', textAlign: 'right' }}>
                         <strong style={{ color: 'var(--text-primary)' }}>{sizing.lots}</strong>
-                        <div style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>{sizing.valIdr}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{sizing.valIdr}</div>
                       </td>
                       <td style={{ padding: '4px 6px', textAlign: 'center' }}>
                         <button
@@ -1843,7 +1843,7 @@ export default function HomeDashboardTab({
                         }}
                           style={{
                             padding: '2px 5px',
-                            fontSize: '8px',
+                            fontSize: '12px',
                             background: 'rgba(59, 130, 246, 0.15)',
                             color: 'var(--accent-blue)',
                             border: '1px solid rgba(59, 130, 246, 0.3)',
@@ -1874,17 +1874,17 @@ export default function HomeDashboardTab({
                       <td style={{ padding: '4px 6px', fontWeight: 800 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <AssetIcon symbol={s.ticker} market="US" size={13} />
-                          <span style={{ color: '#38bdf8', cursor: 'pointer' }} onClick={() => onSelectTicker(s.ticker, 'US')}>
+                          <span style={{ color: 'var(--accent-sky)', cursor: 'pointer' }} onClick={() => onSelectTicker(s.ticker, 'US')}>
                             ${s.ticker}
                           </span>
                         </div>
-                        <div style={{ fontSize: '8px', color: isFlash === 'up' ? 'var(--accent-green)' : isFlash === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)' }}>
+                        <div style={{ fontSize: '12px', color: isFlash === 'up' ? 'var(--accent-green)' : isFlash === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)' }}>
                           ${Number(curPrice).toFixed(1)} ({chgPct >= 0 ? '+' : ''}{Number(chgPct).toFixed(1)}%)
                         </div>
                       </td>
-                      <td style={{ padding: '4px 6px', color: '#38bdf8' }}>US STOCKS</td>
+                      <td style={{ padding: '4px 6px', color: 'var(--accent-sky)' }}>US STOCKS</td>
                       <td style={{ padding: '4px 6px', textAlign: 'center' }}>
-                        <span className="badge badge-bull" style={{ fontSize: '7.5px', padding: '1px 4px' }}>
+                        <span className="badge badge-bull" style={{ fontSize: '12px', padding: '1px 4px' }}>
                           {s.setup_type && s.setup_type !== 'NEUTRAL' ? s.setup_type : 'BULL_FLAG'}
                         </span>
                       </td>
@@ -1901,11 +1901,11 @@ export default function HomeDashboardTab({
                         {rr.gross}
                       </td>
                       <td style={{ padding: '4px 6px', textAlign: 'center' }}>
-                        <strong style={{ color: '#34d399' }}>{rr.net}</strong>
+                        <strong style={{ color: 'var(--accent-mint)' }}>{rr.net}</strong>
                       </td>
                       <td style={{ padding: '4px 6px', textAlign: 'right' }}>
                         <strong style={{ color: 'var(--text-primary)' }}>{sizing.lots}</strong>
-                        <div style={{ fontSize: '7.5px', color: 'var(--text-muted)' }}>{sizing.valIdr}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{sizing.valIdr}</div>
                       </td>
                       <td style={{ padding: '4px 6px', textAlign: 'center' }}>
                         <button
@@ -1924,7 +1924,7 @@ export default function HomeDashboardTab({
                         }}
                           style={{
                             padding: '2px 5px',
-                            fontSize: '8px',
+                            fontSize: '12px',
                             background: 'rgba(59, 130, 246, 0.15)',
                             color: 'var(--accent-blue)',
                             border: '1px solid rgba(59, 130, 246, 0.3)',
@@ -1951,17 +1951,17 @@ export default function HomeDashboardTab({
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    <span style={{ fontSize: '10.5px', fontWeight: '800', color: 'var(--text-primary)' }}>🇮🇩 Saham IDX Signals</span>
-                    <span className="badge badge-bull" style={{ fontSize: '7.5px', padding: '1px 4px' }}>{topIdxPlans.length}</span>
+                    <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)' }}>🇮🇩 Saham IDX Signals</span>
+                    <span className="badge badge-bull" style={{ fontSize: '12px', padding: '1px 4px' }}>{topIdxPlans.length}</span>
                   </div>
-                  <span style={{ fontSize: '8px', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 700 }} onClick={() => onNavigateTab('STOCK')}>
+                  <span style={{ fontSize: '12px', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 700 }} onClick={() => onNavigateTab('STOCK')}>
                     Lihat semua →
                   </span>
                 </div>
                 
-                <table className="telemetry-table" style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                <table className="telemetry-table" style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                   <thead>
-                    <tr style={{ color: 'var(--text-muted)', borderBottom: 'var(--border-hairline)', textAlign: 'left', fontSize: '8px' }}>
+                    <tr style={{ color: 'var(--text-muted)', borderBottom: 'var(--border-hairline)', textAlign: 'left', fontSize: '12px' }}>
                       <th style={{ padding: '3px 2px', width: '28%' }}>Ticker</th>
                       <th style={{ padding: '3px 2px', width: '22%' }}>Setup</th>
                       <th style={{ padding: '3px 2px', width: '17%', textAlign: 'right' }}>Entry</th>
@@ -1987,7 +1987,7 @@ export default function HomeDashboardTab({
                               </span>
                             </div>
                             <div style={{
-                              fontSize: '7.5px',
+                              fontSize: '12px',
                               fontFamily: 'var(--font-mono)',
                               color: isFlashing === 'up' ? 'var(--accent-green)' : isFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)',
                               fontVariantNumeric: 'tabular-nums'
@@ -1996,7 +1996,7 @@ export default function HomeDashboardTab({
                             </div>
                           </td>
                           <td style={{ padding: '3.5px 2px' }}>
-                            <span className="badge badge-bull" style={{ fontSize: '7px', padding: '1px 3px' }}>
+                            <span className="badge badge-bull" style={{ fontSize: '12px', padding: '1px 3px' }}>
                               {plan.technical_signal || 'BREAKOUT'}
                             </span>
                           </td>
@@ -2010,7 +2010,7 @@ export default function HomeDashboardTab({
                 </table>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', color: 'var(--text-muted)', marginTop: '3px', paddingTop: '2px', borderTop: 'var(--border-muted)', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: 'var(--text-muted)', marginTop: '3px', paddingTop: '2px', borderTop: 'var(--border-muted)', fontFamily: 'var(--font-mono)' }}>
                 <span>TimesFM + SMC AI</span>
                 <span>6 / {topIdxPlans.length} Emiten</span>
               </div>
@@ -2021,26 +2021,26 @@ export default function HomeDashboardTab({
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    <span style={{ fontSize: '10.5px', fontWeight: '800', color: '#60a5fa' }}>🪙 Crypto Spot Signals</span>
-                    <span className="badge badge-alert" style={{ fontSize: '7.5px', padding: '1px 4px' }}>{topCryptoPicks.length}</span>
+                    <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-sky-soft)' }}>🪙 Crypto Spot Signals</span>
+                    <span className="badge badge-alert" style={{ fontSize: '12px', padding: '1px 4px' }}>{topCryptoPicks.length}</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span 
-                      style={{ fontSize: '8px', color: '#34d399', cursor: 'pointer', fontWeight: 700 }}
+                      style={{ fontSize: '12px', color: 'var(--accent-mint)', cursor: 'pointer', fontWeight: 700 }}
                       onClick={() => setOrderBookModal({ isOpen: true, ticker: 'BTCUSDT', price: 83000 })}
                       title="Buka Live L2 Order Book (Hyperliquid / Binance)"
                     >
                       ⚡ L2 Book
                     </span>
-                    <span style={{ fontSize: '8px', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 700 }} onClick={() => onNavigateTab('CRYPTO')}>
+                    <span style={{ fontSize: '12px', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 700 }} onClick={() => onNavigateTab('CRYPTO')}>
                       Lihat semua →
                     </span>
                   </div>
                 </div>
 
-                <table className="telemetry-table" style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                <table className="telemetry-table" style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                   <thead>
-                    <tr style={{ color: 'var(--text-muted)', borderBottom: 'var(--border-hairline)', textAlign: 'left', fontSize: '8px' }}>
+                    <tr style={{ color: 'var(--text-muted)', borderBottom: 'var(--border-hairline)', textAlign: 'left', fontSize: '12px' }}>
                       <th style={{ padding: '3px 2px', width: '28%' }}>Pair</th>
                       <th style={{ padding: '3px 2px', width: '22%' }}>Setup</th>
                       <th style={{ padding: '3px 2px', width: '17%', textAlign: 'right' }}>Entry</th>
@@ -2062,11 +2062,11 @@ export default function HomeDashboardTab({
                           <td style={{ padding: '3.5px 2px', fontWeight: '800' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', minWidth: 0 }}>
                               <CryptoIcon symbol={c.pair} size={12} />
-                              <span style={{ color: '#60a5fa', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(c.pair, 'CRYPTO')}>
+                              <span style={{ color: 'var(--accent-sky-soft)', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(c.pair, 'CRYPTO')}>
                                 {c.pair}
                               </span>
                               <span 
-                                style={{ color: '#34d399', cursor: 'pointer', fontSize: '9px', opacity: 0.8 }}
+                                style={{ color: 'var(--accent-mint)', cursor: 'pointer', fontSize: '12px', opacity: 0.8 }}
                                 title="Buka Live Orderbook L2 (Hyperliquid / Binance)"
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -2077,7 +2077,7 @@ export default function HomeDashboardTab({
                               </span>
                             </div>
                             <div style={{
-                              fontSize: '7.5px',
+                              fontSize: '12px',
                               fontFamily: 'var(--font-mono)',
                               color: isFlashing === 'up' ? 'var(--accent-green)' : isFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)',
                               fontVariantNumeric: 'tabular-nums'
@@ -2086,7 +2086,7 @@ export default function HomeDashboardTab({
                             </div>
                           </td>
                           <td style={{ padding: '3.5px 2px' }}>
-                            <span className="badge badge-alert" style={{ fontSize: '7px', padding: '1px 3px' }}>
+                            <span className="badge badge-alert" style={{ fontSize: '12px', padding: '1px 3px' }}>
                               RANGE_ACC
                             </span>
                           </td>
@@ -2100,7 +2100,7 @@ export default function HomeDashboardTab({
                 </table>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', color: 'var(--text-muted)', marginTop: '3px', paddingTop: '2px', borderTop: 'var(--border-muted)', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: 'var(--text-muted)', marginTop: '3px', paddingTop: '2px', borderTop: 'var(--border-muted)', fontFamily: 'var(--font-mono)' }}>
                 <span>Spot Accumulation</span>
                 <span>6 / {topCryptoPicks.length} Pairs</span>
               </div>
@@ -2111,17 +2111,17 @@ export default function HomeDashboardTab({
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    <span style={{ fontSize: '10.5px', fontWeight: '800', color: '#38bdf8' }}>🇺🇸 US Stock Signals</span>
-                    <span className="badge badge-bull" style={{ fontSize: '7.5px', padding: '1px 4px' }}>{topUsPlans.length}</span>
+                    <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-sky)' }}>🇺🇸 US Stock Signals</span>
+                    <span className="badge badge-bull" style={{ fontSize: '12px', padding: '1px 4px' }}>{topUsPlans.length}</span>
                   </div>
-                  <span style={{ fontSize: '8px', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 700 }} onClick={() => onNavigateTab('US_STOCKS')}>
+                  <span style={{ fontSize: '12px', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: 700 }} onClick={() => onNavigateTab('US_STOCKS')}>
                     Lihat semua →
                   </span>
                 </div>
 
-                <table className="telemetry-table" style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                <table className="telemetry-table" style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                   <thead>
-                    <tr style={{ color: 'var(--text-muted)', borderBottom: 'var(--border-hairline)', textAlign: 'left', fontSize: '8px' }}>
+                    <tr style={{ color: 'var(--text-muted)', borderBottom: 'var(--border-hairline)', textAlign: 'left', fontSize: '12px' }}>
                       <th style={{ padding: '3px 2px', width: '27%' }}>Ticker</th>
                       <th style={{ padding: '3px 2px', width: '23%' }}>Setup</th>
                       <th style={{ padding: '3px 2px', width: '17%', textAlign: 'right' }}>Entry</th>
@@ -2142,12 +2142,12 @@ export default function HomeDashboardTab({
                           <td style={{ padding: '3.5px 2px', fontWeight: '800' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', minWidth: 0 }}>
                               <AssetIcon symbol={s.ticker} market="US" size={12} />
-                              <span style={{ color: '#38bdf8', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(s.ticker, 'US')}>
+                              <span style={{ color: 'var(--accent-sky)', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} onClick={() => onSelectTicker(s.ticker, 'US')}>
                                 {s.ticker}
                               </span>
                             </div>
                             <div style={{
-                              fontSize: '7.5px',
+                              fontSize: '12px',
                               fontFamily: 'var(--font-mono)',
                               color: isFlashing === 'up' ? 'var(--accent-green)' : isFlashing === 'down' ? 'var(--accent-rust)' : 'var(--text-muted)',
                               fontVariantNumeric: 'tabular-nums'
@@ -2156,7 +2156,7 @@ export default function HomeDashboardTab({
                             </div>
                           </td>
                           <td style={{ padding: '3.5px 2px' }}>
-                            <span className="badge badge-bull" style={{ fontSize: '7px', padding: '1px 3px' }}>
+                            <span className="badge badge-bull" style={{ fontSize: '12px', padding: '1px 3px' }}>
                               {s.setup_type && s.setup_type !== 'NEUTRAL' ? s.setup_type : 'BULL_FLAG'}
                             </span>
                           </td>
@@ -2170,7 +2170,7 @@ export default function HomeDashboardTab({
                 </table>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', color: 'var(--text-muted)', marginTop: '3px', paddingTop: '2px', borderTop: 'var(--border-muted)', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: 'var(--text-muted)', marginTop: '3px', paddingTop: '2px', borderTop: 'var(--border-muted)', fontFamily: 'var(--font-mono)' }}>
                 <span>US Momentum Alpha</span>
                 <span>6 / {topUsPlans.length} Stocks</span>
               </div>

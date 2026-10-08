@@ -49,6 +49,15 @@
   --border-subtle: 1px solid rgba(15, 23, 42, 0.06);
   --color-bear: #dc2626;
   --color-bull: #0e9f6e;
+  --accent-mint: #34d399;
+  --accent-emerald: #10b981;
+  --accent-sky: #38bdf8;
+  --accent-sky-soft: #60a5fa;
+  --accent-softred: #fca5a5;
+  --accent-purple-light: #c084fc;
+  --accent-gold-bright: #fbbf24;
+  --slate-700: #334155;
+  --space-4: 20px;
 
   --shadow-sm: 0 2px 6px -1px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
@@ -1579,6 +1588,26 @@ body[data-theme="dark"],
 @media (max-width: 1360px) {
   .home-hero-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* P-9H F4: keyboard users must see where focus is (the cockpit had zero
+   focus-visible rules - tabbing was invisible). */
+:focus-visible {
+  outline: 2px solid var(--accent-sky);
+  outline-offset: 2px;
+}
+
+/* P-9H F4: respect reduced motion - kill the tactical pulse, the news marquee
+   and every other animation for users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
