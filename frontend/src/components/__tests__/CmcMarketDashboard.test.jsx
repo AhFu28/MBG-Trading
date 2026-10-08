@@ -6,7 +6,8 @@ import { __resetWatchlistMemory } from '../../hooks/useWatchlist.js';
 
 /**
  * Regression guard for the Home dashboard fixes requested on 2026-10-08:
- *   1. rename "Crypto Market Cap" to "Market Cap"
+ *   1. the market-cap panel must name the asset it plots (BTC), not claim to be
+ *      the whole crypto market
  *   2. an empty "Market Status" panel that never explained itself
  *   3. clicking a ticker must open the FULL chart, not the small hub
  *   4. the asset table must cover stocks, forex and commodities — not crypto only
@@ -42,12 +43,17 @@ const renderDash = (props = {}) => render(
 );
 
 describe('Market Cap panel', () => {
-  it('is titled "Market Cap", not "Crypto Market Cap"', () => {
+  it('names the asset the series actually covers, not a vague "Market Cap"', () => {
     renderDash();
+    // The panel used to read "Market Cap" (and before that "Crypto Market Cap"),
+    // but the series underneath is BTC only — no free source publishes a total
+    // crypto market-cap history. A banner heading over a BTC line would overstate
+    // what the chart shows, so the title states the asset.
+    //
     // "Market Cap" also appears as a metric label and a column header, so a
     // plain getByText would be ambiguous. Assert on the panel heading instead.
     const headings = screen.getAllByRole('heading').map(h => h.textContent);
-    expect(headings).toContain('Market Cap');
+    expect(headings).toContain('Kapitalisasi Pasar BTC');
     expect(headings).not.toContain('Crypto Market Cap');
   });
 });

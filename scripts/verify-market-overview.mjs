@@ -45,12 +45,20 @@ async function getJSON(url, init) {
 
 console.log('Live market-overview endpoint verification');
 console.log('='.repeat(70));
+console.log('Order matters: Binance Vision is asked FIRST because CoinGecko\'s free');
+console.log('tier allows only ~5 calls/min per IP. Reversing these causes HTTP 429.');
+console.log('='.repeat(70));
 
-await check('Global metrics (CoinGecko / CMC fallback)', async () => {
-  const j = await getJSON('https://api.coingecko.com/api/v3/global') || await getJSON(`${CMC}/global-metrics/quotes/latest`);
+await check('Global metrics (CMC / CoinGecko fallback)', async () => {
+  const cmc = await getJSON(`${CMC}/global-metrics/quotes/latest`);
+  if (cmc?.data) {
+    return { marketCap: cmc.data.totalMarketCap, btcDom: cmc.data.btcDominance, from: 'CMC' };
+  }
+  const cg = await getJSON('https://api.coingecko.com/api/v3/global');
   return {
-    totalMarketCap: j?.data?.total_market_cap?.usd ?? j?.data?.totalMarketCap,
-    btcDominance: j?.data?.market_cap_percentage?.btc ?? j?.data?.btcDominance,
+    marketCap: cg?.data?.total_market_cap?.usd,
+    btcDom: cg?.data?.market_cap_percentage?.btc,
+    from: 'CoinGecko',
   };
 });
 
@@ -59,33 +67,40 @@ await check('Fear & Greed (alternative.me)', async () => {
   return { value: j?.data?.[0]?.value, label: j?.data?.[0]?.value_classification };
 });
 
-await check('Top coins listing (CoinGecko / Binance fallback)', async () => {
-  const cg = await getJSON('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false');
-  if (Array.isArray(cg) && cg.length > 0) {
-    return { count: cg.length, first: cg[0]?.symbol, price: cg[0]?.current_price };
-  }
+await check('Top coins listing (Binance Vision / CoinGecko fallback)', async () => {
   const bn = await getJSON(`${BINANCE}/ticker/24hr`);
-  const rows = (bn || []).filter(t => t.symbol.endsWith('USDT')).slice(0, 10);
-  return { count: rows.length, first: rows[0]?.symbol, price: rows[0]?.lastPrice };
+  if (Array.isArray(bn) && bn.length > 0) {
+    const rows = bn
+      .filter(t => t.symbol.endsWith('USDT'))
+      .sort((a, b) => (parseFloat(b.quoteVolume) || 0) - (parseFloat(a.quoteVolume) || 0))
+      .slice(0, 10);
+    return { count: rows.length, first: rows[0]?.symbol, price: rows[0]?.lastPrice, from: 'Binance' };
+  }
+  const cg = await getJSON('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false');
+  return { count: (cg || []).length, first: cg?.[0]?.symbol, price: cg?.[0]?.current_price, from: 'CoinGecko' };
 });
 
 await check('Trending (CoinGecko / Binance fallback)', async () => {
   const cg = await getJSON('https://api.coingecko.com/api/v3/search/trending');
   const rows = cg?.coins ?? [];
   if (rows.length > 0) {
-    return { count: rows.length, first: rows[0]?.item?.symbol };
+    return { count: rows.length, first: rows[0]?.item?.symbol, from: 'CoinGecko search' };
   }
   const bn = await getJSON(`${BINANCE}/ticker/24hr`);
-  return { count: (bn || []).slice(0, 10).length, first: bn?.[0]?.symbol };
+  const gainers = (bn || [])
+    .filter(t => t.symbol.endsWith('USDT'))
+    .sort((a, b) => (parseFloat(b.priceChangePercent) || 0) - (parseFloat(a.priceChangePercent) || 0))
+    .slice(0, 8);
+  return { count: gainers.length, first: gainers[0]?.symbol, from: 'Binance gainers' };
 });
 
-await check('Market-cap history 30d (CoinGecko / Binance fallback)', async () => {
-  const cg = await getJSON('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30&interval=daily');
-  if (cg?.market_caps?.length) {
-    return { points: cg.market_caps.length, last: cg.market_caps[cg.market_caps.length - 1]?.[1] };
-  }
+await check('BTC market-cap history 30d (Binance Vision / CoinGecko fallback)', async () => {
   const bn = await getJSON(`${BINANCE}/klines?symbol=BTCUSDT&interval=1d&limit=30`);
-  return { points: (bn || []).length, last: bn?.[bn.length - 1]?.[4] };
+  if (Array.isArray(bn) && bn.length > 0) {
+    return { points: bn.length, lastClose: bn[bn.length - 1]?.[4], from: 'Binance' };
+  }
+  const cg = await getJSON('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30&interval=daily');
+  return { points: cg?.prices?.length ?? 0, from: 'CoinGecko' };
 });
 
 await check('Binance Vision batched majors', async () => {

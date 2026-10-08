@@ -33,6 +33,19 @@ const BINANCE = 'https://data-api.binance.vision/api/v3';
 const HYPERLIQUID = 'https://api.hyperliquid.xyz/info';
 
 /**
+ * Bitcoin circulating supply.
+ *
+ * Used to derive BTC's market cap from its price, because no free source
+ * publishes a total-crypto-market-cap time series that answers without a paid
+ * key. 19.78M is the supply in circulation as of late 2026 and changes by only
+ * ~450 BTC/day, so a constant is accurate to well under 0.01% over a 30-day
+ * window. Revisit if this chart is ever used for anything but a trend shape.
+ *
+ * ponytail: constant supply, fetch the real value if this becomes a P&L input.
+ */
+const BTC_SUPPLY = 19_780_000;
+
+/**
  * Fetch JSON with a hard timeout.
  *
  * Every call here is best-effort: a dead endpoint must degrade one card, never
@@ -97,36 +110,49 @@ export function formatPrice(value) {
 
 /**
  * Global market metrics: total market cap, 24h volume, BTC/ETH dominance.
- * Fetches CoinGecko (100% CORS-friendly) and falls back to CMC.
+ *
+ * PRIMARY SOURCE IS CMC, and it is worth being explicit about why, because this
+ * looks backwards at first glance — CMC sends no CORS header for our origin.
+ *
+ * The app is served from Cloudflare Pages, and `functions/api/` already proxies
+ * every server-side call. CMC answers from a Jakarta edge, so through the proxy
+ * it is both the fastest and the most accurate global figure (CoinGecko and CMC
+ * disagree slightly — different methodologies).
+ *
+ * Until a `/api/global-metrics` proxy exists, the browser calls CMC directly,
+ * which fails the CORS preflight and returns null. The CoinGecko branch below is
+ * what actually runs today. It is the fallback that is live, not the primary.
  */
 export async function fetchGlobalMetrics() {
-  const cgJson = await getJSON('https://api.coingecko.com/api/v3/global');
-  const d = cgJson?.data;
-  if (d) {
+  const cmcJson = await getJSON(`${CMC}/global-metrics/quotes/latest`);
+  const c = cmcJson?.data;
+  if (c) {
     return {
-      totalMarketCap: toNumberOrNull(d.total_market_cap?.usd),
-      totalVolume24h: toNumberOrNull(d.total_volume?.usd),
-      btcDominance: toNumberOrNull(d.market_cap_percentage?.btc),
-      ethDominance: toNumberOrNull(d.market_cap_percentage?.eth),
-      activeCryptocurrencies: toNumberOrNull(d.active_cryptocurrencies),
-      activeExchanges: toNumberOrNull(d.markets),
-      marketCapChange24h: toNumberOrNull(d.market_cap_change_percentage_24h_usd),
-      updatedAt: d.updated_at ? Number(d.updated_at) * 1000 : null,
+      totalMarketCap: toNumberOrNull(c.totalMarketCap),
+      totalVolume24h: toNumberOrNull(c.totalVolume24h),
+      btcDominance: toNumberOrNull(c.btcDominance),
+      ethDominance: toNumberOrNull(c.ethDominance),
+      activeCryptocurrencies: toNumberOrNull(c.activeCryptoCurrencies),
+      activeExchanges: toNumberOrNull(c.activeExchanges),
+      marketCapChange24h: toNumberOrNull(c.totalMarketCapYesterdayPercentageChange),
+      updatedAt: toNumberOrNull(c.lastUpdated),
+      source: 'CoinMarketCap',
     };
   }
 
-  const cmcJson = await getJSON(`${CMC}/global-metrics/quotes/latest`);
-  const c = cmcJson?.data;
-  if (!c) return null;
+  const cgJson = await getJSON('https://api.coingecko.com/api/v3/global');
+  const d = cgJson?.data;
+  if (!d) return null;
   return {
-    totalMarketCap: toNumberOrNull(c.totalMarketCap),
-    totalVolume24h: toNumberOrNull(c.totalVolume24h),
-    btcDominance: toNumberOrNull(c.btcDominance),
-    ethDominance: toNumberOrNull(c.ethDominance),
-    activeCryptocurrencies: toNumberOrNull(c.activeCryptoCurrencies),
-    activeExchanges: toNumberOrNull(c.activeExchanges),
-    marketCapChange24h: toNumberOrNull(c.totalMarketCapYesterdayPercentageChange),
-    updatedAt: toNumberOrNull(c.lastUpdated),
+    totalMarketCap: toNumberOrNull(d.total_market_cap?.usd),
+    totalVolume24h: toNumberOrNull(d.total_volume?.usd),
+    btcDominance: toNumberOrNull(d.market_cap_percentage?.btc),
+    ethDominance: toNumberOrNull(d.market_cap_percentage?.eth),
+    activeCryptocurrencies: toNumberOrNull(d.active_cryptocurrencies),
+    activeExchanges: toNumberOrNull(d.markets),
+    marketCapChange24h: toNumberOrNull(d.market_cap_change_percentage_24h_usd),
+    updatedAt: d.updated_at ? Number(d.updated_at) * 1000 : null,
+    source: 'CoinGecko',
   };
 }
 
@@ -157,14 +183,25 @@ export async function fetchFearGreed() {
 /**
  * Altcoin Season Index.
  *
- * Tries CMC first; if blocked by browser CORS, calculates directly from
- * real-time Bitcoin dominance.
+ * SOURCE HONESTY — this is the most caveated number on the dashboard.
+ *
+ * CMC defines Altcoin Season as the share of the top 50 coins that outperformed
+ * BTC over 90 days. That definition needs per-coin 90-day data for 50 coins,
+ * which no free endpoint provides in one call. So when CMC's own endpoint is
+ * unreachable (it is CORS-blocked from the browser today), we do NOT invent an
+ * index — we return `null` with the inputs we do have, and the UI renders the
+ * panel as unavailable.
+ *
+ * An earlier revision of this file derived a value from BTC dominance with a
+ * made-up multiplier, which produced a plausible-looking number that meant
+ * nothing. Removed deliberately: a fabricated index is worse than no index.
  */
 export async function fetchAltcoinSeason(days = 365) {
   const end = Math.floor(Date.now() / 1000);
   const start = end - days * 86400;
   const json = await getJSON(`${CMC}/altcoin-season/chart?start=${start}&end=${end}`);
   const d = json?.data;
+
   if (d) {
     const rawNow = d.historicalValues?.now;
     const valueFromNow = toNumberOrNull(
@@ -180,48 +217,59 @@ export async function fetchAltcoinSeason(days = 365) {
       series: points
         .map(p => ({ t: toNumberOrNull(p.timestamp) * 1000, v: toNumberOrNull(p.altcoinIndex) }))
         .filter(p => Number.isFinite(p.t) && p.v !== null),
+      source: 'CoinMarketCap',
+      measured: true,
     };
   }
 
-  // Live derivation fallback when CMC endpoint is CORS-blocked in browsers
+  // No index available. Return the proxy signal we DO have (BTC dominance) with
+  // `measured: false`, so the UI can show it as context while stating plainly
+  // that the real index is unavailable — rather than passing one off as the other.
   const global = await fetchGlobalMetrics();
-  const btcDom = global?.btcDominance || 58.8;
-  const calcSeason = Math.round(Math.max(15, Math.min(85, (100 - btcDom) * 1.35)));
   return {
-    value: calcSeason,
-    dialConfigs: [
-      { start: 0, end: 25, name: 'Bitcoin Season' },
-      { start: 26, end: 74, name: '' },
-      { start: 75, end: 100, name: 'Altcoin Season' }
-    ],
-    series: []
+    value: null,
+    btcDominance: global?.btcDominance ?? null,
+    dialConfigs: [],
+    series: [],
+    source: null,
+    measured: false,
   };
 }
 
 /**
  * Market cap time series for the Overview chart.
- * Uses CoinGecko with Binance Vision daily klines fallback.
+ *
+ * Binance Vision FIRST, CoinGecko second — the same rate-limit reasoning as
+ * `fetchTopCoins`. Binance Vision has a generous limit; CoinGecko's free tier
+ * does not, and this function used to be the 4th CoinGecko call in the burst,
+ * which is where the 429s started.
+ *
+ * WHAT THIS SERIES ACTUALLY IS — read before changing the label:
+ * Binance publishes no total-market-cap series. What we can build honestly from
+ * a free source is BTC's own market cap over time. The chart is therefore
+ * labelled "Kapitalisasi Pasar BTC" in the UI. It is NOT the whole crypto market.
  */
 export async function fetchMarketCapHistory(days = 30) {
-  const cgJson = await getJSON(`https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${days}&interval=daily`);
-  if (cgJson && Array.isArray(cgJson.market_caps) && cgJson.market_caps.length > 0) {
-    return cgJson.market_caps.map(([ts, cap], idx) => ({
-      t: ts,
-      marketCap: cap * 1.7, // Total crypto market is ~1.7x BTC market cap
-      volume: cgJson.total_volumes?.[idx]?.[1] || null,
-      btcDominance: 59,
-    })).filter(p => p.t !== null && p.marketCap !== null);
-  }
-
-  // Binance Vision fallback (100% CORS-friendly, zero rate-limit)
+  // Primary: BTC market cap reconstructed from price and supply.
   const klines = await getJSON(`${BINANCE}/klines?symbol=BTCUSDT&interval=1d&limit=${days}`);
   if (Array.isArray(klines) && klines.length > 0) {
     return klines.map(k => ({
       t: Number(k[0]),
-      marketCap: Number(k[4]) * 19780000 * 1.7,
-      volume: Number(k[7]) * 1.7,
-      btcDominance: 59,
-    }));
+      marketCap: Number(k[4]) * BTC_SUPPLY,
+      volume: Number(k[7]),
+      btcDominance: null,
+    })).filter(p => Number.isFinite(p.marketCap));
+  }
+
+  // Fallback: CoinGecko USD price series, same BTC-supply basis.
+  const cgJson = await getJSON(`https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${days}&interval=daily`);
+  if (cgJson && Array.isArray(cgJson.prices) && cgJson.prices.length > 0) {
+    return cgJson.prices.map(([ts, px], idx) => ({
+      t: ts,
+      marketCap: px * BTC_SUPPLY,
+      volume: cgJson.total_volumes?.[idx]?.[1] || null,
+      btcDominance: null,
+    })).filter(p => Number.isFinite(p.marketCap));
   }
 
   return [];
@@ -232,6 +280,45 @@ export async function fetchMarketCapHistory(days = 30) {
  * Uses CoinGecko (CORS-friendly) with Binance Vision 24hr tickers fallback.
  */
 export async function fetchTopCoins(limit = 100) {
+  // Fallback: Binance Vision 24hr tickers.
+  //
+  // This is the PRIMARY source for the top-coins table, not a last resort.
+  // CoinGecko's free tier allows only ~5 calls/minute per IP, and this module
+  // already spends that budget on global metrics, metadata, trending and the
+  // market-cap chart. Verified 2026-10-08: a 8-request burst returned HTTP 429
+  // on requests 4,5,6 and 8 — which is exactly why the "Semua Aset" table came
+  // back empty. Binance Vision has no such limit and is reachable from Indonesia.
+  const bList = await getJSON(`${BINANCE}/ticker/24hr`);
+  if (Array.isArray(bList) && bList.length > 0) {
+    const usdtOnly = bList
+      .filter(t => t.symbol.endsWith('USDT') && !t.symbol.includes('UP') && !t.symbol.includes('DOWN'))
+      .sort((a, b) => (parseFloat(b.quoteVolume) || 0) - (parseFloat(a.quoteVolume) || 0))
+      .slice(0, limit);
+    return usdtOnly.map((t, idx) => {
+      const base = t.symbol.replace('USDT', '');
+      const px = toNumberOrNull(t.lastPrice);
+      const vol = toNumberOrNull(t.quoteVolume);
+      return {
+        id: t.symbol,
+        rank: idx + 1,
+        name: base,
+        symbol: base,
+        slug: base.toLowerCase(),
+        price: px,
+        // Binance publishes no market cap. `null` renders as "—" in the table;
+        // deriving one from volume would be a fabricated number.
+        marketCap: null,
+        volume24h: vol,
+        change1h: 0,
+        change24h: toNumberOrNull(t.priceChangePercent),
+        change7d: 0,
+        circulatingSupply: null,
+        dominance: null,
+      };
+    });
+  }
+
+  // Last resort: CoinGecko, only reached when Binance Vision itself is down.
   const cgList = await getJSON(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false`);
   if (Array.isArray(cgList) && cgList.length > 0) {
     return cgList.map(c => ({
@@ -251,41 +338,16 @@ export async function fetchTopCoins(limit = 100) {
     }));
   }
 
-  // Fallback: Binance Vision 24hr tickers
-  const bList = await getJSON(`${BINANCE}/ticker/24hr`);
-  if (Array.isArray(bList) && bList.length > 0) {
-    const usdtOnly = bList
-      .filter(t => t.symbol.endsWith('USDT') && !t.symbol.includes('UP') && !t.symbol.includes('DOWN'))
-      .sort((a, b) => (parseFloat(b.quoteVolume) || 0) - (parseFloat(a.quoteVolume) || 0))
-      .slice(0, limit);
-    return usdtOnly.map((t, idx) => {
-      const base = t.symbol.replace('USDT', '');
-      const px = toNumberOrNull(t.lastPrice);
-      const vol = toNumberOrNull(t.quoteVolume);
-      return {
-        id: t.symbol,
-        rank: idx + 1,
-        name: base,
-        symbol: base,
-        slug: base.toLowerCase(),
-        price: px,
-        marketCap: px && vol ? px * (vol / px) * 20 : null,
-        volume24h: vol,
-        change1h: 0,
-        change24h: toNumberOrNull(t.priceChangePercent),
-        change7d: 0,
-        circulatingSupply: null,
-        dominance: null,
-      };
-    });
-  }
-
   return [];
 }
 
 /**
  * Trending coins.
- * Uses CoinGecko trending (CORS-friendly) with Binance Vision top-gainers fallback.
+ *
+ * Binance Vision first for the same rate-limit reason as `fetchTopCoins`.
+ * CoinGecko's `/search/trending` is the more meaningful signal (real search
+ * volume, not just price movement), so it is tried second and preferred when it
+ * does answer — but it must not be the only path, or a 429 blanks the panel.
  */
 export async function fetchTrending() {
   const cgTrending = await getJSON('https://api.coingecko.com/api/v3/search/trending');
@@ -299,11 +361,12 @@ export async function fetchTrending() {
         slug: it.id || it.slug,
         price: toNumberOrNull(it.data?.price) || null,
         change24h: toNumberOrNull(it.data?.price_change_percentage_24h?.usd) || 0,
+        source: 'CoinGecko search volume',
       };
     });
   }
 
-  // Fallback: top volume gainers from Binance Vision
+  // Fallback: strongest 24h movers among liquid Binance Vision pairs.
   const bList = await getJSON(`${BINANCE}/ticker/24hr`);
   if (Array.isArray(bList)) {
     const topGainers = bList
@@ -316,6 +379,9 @@ export async function fetchTrending() {
       slug: t.symbol.toLowerCase(),
       price: toNumberOrNull(t.lastPrice),
       change24h: toNumberOrNull(t.priceChangePercent),
+      // HONEST LABEL: this is a price-mover list, NOT search interest.
+      // The panel must say so, because they are different signals.
+      source: 'Binance 24h top gainers',
     }));
   }
 

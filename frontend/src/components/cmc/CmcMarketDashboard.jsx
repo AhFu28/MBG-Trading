@@ -66,13 +66,19 @@ const MARKET_GLYPH = {
   COMMODITY: '🛢️',
 };
 
-/** Market-cap history line chart. No chart library — an SVG polyline is enough. */
+/**
+ * Market-cap history line chart. No chart library — an SVG polyline is enough.
+ *
+ * LABEL HONESTY: the series is BTC's market cap, not the whole crypto market
+ * (no free source publishes a total-market-cap series). The empty state says so,
+ * because "market cap" alone would overstate what the line actually shows.
+ */
 function MarketCapChart({ series, height = 210 }) {
   const points = (series || []).filter(p => Number.isFinite(p?.marketCap));
   if (points.length < 2) {
     return (
-      <div style={{ height, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '11.5px' }}>
-        Grafik market cap belum tersedia
+      <div style={{ height, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '11.5px', textAlign: 'center', padding: '0 16px' }}>
+        Grafik kapitalisasi pasar BTC belum tersedia
       </div>
     );
   }
@@ -117,7 +123,7 @@ function MarketCapChart({ series, height = 210 }) {
           ))}
         </div>
 
-        <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" style={{ width: '100%', height, display: 'block', paddingLeft: '52px', boxSizing: 'border-box' }} role="img" aria-label="Total crypto market cap over time">
+        <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" style={{ width: '100%', height, display: 'block', paddingLeft: '52px', boxSizing: 'border-box' }} role="img" aria-label="Kapitalisasi pasar Bitcoin sepanjang waktu">
           <defs>
             <linearGradient id="mcArea" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={stroke} stopOpacity="0.30" />
@@ -494,7 +500,8 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: '11px' }} className="cmc-two-col">
 
         <DashPanel
-          title="Market Cap"
+          title="Kapitalisasi Pasar BTC"
+          subtitle="30 hari terakhir, dihitung dari harga BTC dan supply beredar"
           right={
             <div style={{ display: 'flex', gap: '6px' }}>
               <div style={{ display: 'flex', background: 'var(--bg-panel-subtle)', borderRadius: '6px', padding: '2px', border: 'var(--border-hairline)' }}>
@@ -752,11 +759,15 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
 
       {/* ---------- FOOTER: honest disclosure of what is NOT shown ---------- */}
       <div className="telemetry-panel" style={{ padding: '9px 13px', borderRadius: '9px', fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.7 }}>
-        <strong style={{ color: 'var(--text-secondary)' }}>Sumber data:</strong> CoinMarketCap Data API (market cap, dominasi, tabel koin, trending, altcoin season) ·
-        Binance Vision (harga &amp; grafik koin utama) · Hyperliquid (open interest &amp; funding) · alternative.me (Fear &amp; Greed).
+        <strong style={{ color: 'var(--text-secondary)' }}>Sumber data:</strong> Binance Vision (tabel koin, top gainers, grafik BTC) ·
+        CoinGecko (market cap global, dominasi, trending) · Hyperliquid (open interest &amp; funding) ·
+        TradingView (saham US, forex, komoditas) · alternative.me (Fear &amp; Greed).
         <br />
-        <strong style={{ color: 'var(--text-secondary)' }}>Tidak ditampilkan:</strong> ETF Flows, Likuidasi 24 Jam, dan Community Posts (belum ada sumber data publik gratis,
-        jadi panel tersebut dikosongkan daripada diisi angka perkiraan).
+        <strong style={{ color: 'var(--text-secondary)' }}>Tidak ditampilkan:</strong> ETF Flows, Likuidasi 24 Jam, Community Posts,
+        dan Altcoin Season Index (belum ada sumber data publik gratis, jadi panelnya dikosongkan daripada diisi angka perkiraan).
+        <br />
+        <strong style={{ color: 'var(--text-secondary)' }}>Catatan grafik:</strong> grafik market cap menampilkan kapitalisasi pasar BTC,
+        bukan seluruh pasar kripto. Tidak ada sumber gratis yang menyediakan seri total market cap.
       </div>
     </div>
   );
