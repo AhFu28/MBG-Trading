@@ -66,3 +66,12 @@ engine/config/wa_auth/
 # HF daemon local runtime state - never commit
 deploy/huggingface/data/
 
+# Playwright: run output, traces and screenshots. These are per-run artifacts
+# containing machine-specific paths; committing them bloats the repo and adds
+# noise to every diff. The tests themselves live in frontend/e2e/.
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/
+frontend/playwright/.cache/
+frontend/e2e-results.json
+
