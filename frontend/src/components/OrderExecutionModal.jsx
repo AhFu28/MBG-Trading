@@ -290,7 +290,7 @@ export default function OrderExecutionModal({
                 fontWeight: '800',
                 borderRadius: '4px',
                 border: 'none',
-                background: brokerType === 'BINANCE' ? '#f59e0b' : 'transparent',
+                background: brokerType === 'BINANCE' ? 'var(--accent-gold)' : 'transparent',
                 color: brokerType === 'BINANCE' ? '#000000' : 'var(--text-muted)',
                 cursor: 'pointer'
               }}
@@ -494,7 +494,7 @@ export default function OrderExecutionModal({
 
           {/* Bracket validation error (shown live, blocks submit) */}
           {bracketError && (
-            <div style={{ padding: '8px 12px', background: 'rgba(245, 158, 11, 0.12)', border: '1px solid #f59e0b', borderRadius: '4px', color: '#fcd34d', fontSize: '11px', fontWeight: '700' }}>
+            <div style={{ padding: '8px 12px', background: 'rgba(245, 158, 11, 0.12)', border: '1px solid var(--accent-gold)', borderRadius: '4px', color: '#fcd34d', fontSize: '11px', fontWeight: '700' }}>
               ⚠️ {bracketError}
             </div>
           )}
@@ -507,7 +507,7 @@ export default function OrderExecutionModal({
           )}
 
           {successMessage && (
-            <div style={{ padding: '8px 12px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid #10b981', borderRadius: '4px', color: '#6ee7b7', fontSize: '11px', fontWeight: '700' }}>
+            <div style={{ padding: '8px 12px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid var(--accent-emerald)', borderRadius: '4px', color: '#6ee7b7', fontSize: '11px', fontWeight: '700' }}>
               {successMessage}
             </div>
           )}
@@ -524,7 +524,7 @@ export default function OrderExecutionModal({
               letterSpacing: '0.04em',
               background: isOverAllocated 
                 ? 'var(--text-muted)' 
-                : (brokerType === 'PAPER' ? 'var(--accent-green, #10b981)' : '#f59e0b'),
+                : (brokerType === 'PAPER' ? 'var(--accent-green, var(--accent-emerald))' : 'var(--accent-gold)'),
               color: isOverAllocated ? '#ffffff' : '#000000',
               border: 'none',
               borderRadius: '6px',

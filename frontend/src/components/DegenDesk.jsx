@@ -33,7 +33,7 @@ function fmtAge(minutes) {
 const VERDICT_STYLE = {
   HIGH_RISK: { bg: 'rgba(244, 63, 94, 0.15)', color: '#fb7185', border: 'rgba(244, 63, 94, 0.4)', label: '🚨 RISIKO TINGGI' },
   CAUTION: { bg: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', border: 'rgba(245, 158, 11, 0.4)', label: '⚠️ WASPADA' },
-  CLEAN: { bg: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: 'rgba(16, 185, 129, 0.4)', label: '✅ RELATIF AMAN' },
+  CLEAN: { bg: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-mint)', border: 'rgba(16, 185, 129, 0.4)', label: '✅ RELATIF AMAN' },
 };
 
 /**
@@ -149,7 +149,7 @@ export default function DegenDesk({ onOpenSwap }) {
       <div className="telemetry-panel" style={{ borderRadius: '14px', overflow: 'hidden' }}>
         <div className="telemetry-header">
           <span>🚀 PELUNCURAN BARU (pump.fun Live) — {visible.length} token</span>
-          {loading && <span style={{ color: '#38bdf8', fontSize: '10px' }}>memuat…</span>}
+          {loading && <span style={{ color: 'var(--accent-sky)', fontSize: '10px' }}>memuat…</span>}
         </div>
 
         <div style={{ overflowX: 'auto' }}>
@@ -194,7 +194,7 @@ export default function DegenDesk({ onOpenSwap }) {
                           <div style={{
                             width: `${t.progress}%`,
                             height: '100%',
-                            background: t.progress >= 100 ? '#10b981' : t.progress > 50 ? '#38bdf8' : '#f59e0b'
+                            background: t.progress >= 100 ? 'var(--accent-emerald)' : t.progress > 50 ? 'var(--accent-sky)' : 'var(--accent-gold)'
                           }} />
                         </div>
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10.5px', fontWeight: '700', minWidth: '32px' }}>
@@ -272,7 +272,7 @@ export default function DegenDesk({ onOpenSwap }) {
                 </div>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   <a href={b.url} target="_blank" rel="noopener noreferrer"
-                     style={{ fontSize: '9.5px', color: '#38bdf8', fontWeight: '700', textDecoration: 'none' }}>
+                     style={{ fontSize: '9.5px', color: 'var(--accent-sky)', fontWeight: '700', textDecoration: 'none' }}>
                     Chart ↗
                   </a>
                   {b.links.filter(l => l.type === 'twitter').map((l, i) => (
@@ -283,7 +283,7 @@ export default function DegenDesk({ onOpenSwap }) {
                   ))}
                   {b.links.filter(l => l.url && !l.type).slice(0, 1).map((l, i) => (
                     <a key={i} href={l.url} target="_blank" rel="noopener noreferrer"
-                       style={{ fontSize: '9.5px', color: '#34d399', fontWeight: '700', textDecoration: 'none' }}>
+                       style={{ fontSize: '9.5px', color: 'var(--accent-mint)', fontWeight: '700', textDecoration: 'none' }}>
                       Site ↗
                     </a>
                   ))}

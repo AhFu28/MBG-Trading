@@ -42,7 +42,7 @@ function getJakartaSessionInfo(bundleDateInput, sessionInfoProp) {
 
   let sessionLabel = 'Pasar Tutup Resmi (Data EOD Broker Summary Final)';
   let sessionPill = 'EOD FINAL';
-  let sessionColor = '#38bdf8';
+  let sessionColor = 'var(--accent-sky)';
   let dotClass = 'pulse-dot-green';
 
   if (isWeekend) {
@@ -78,7 +78,7 @@ function getJakartaSessionInfo(bundleDateInput, sessionInfoProp) {
   } else {
     sessionLabel = 'Pasar Tutup Resmi (Data EOD Broker Summary Final)';
     sessionPill = 'EOD FINAL';
-    sessionColor = '#38bdf8';
+    sessionColor = 'var(--accent-sky)';
     dotClass = 'pulse-dot-green';
   }
 
@@ -323,7 +323,7 @@ export const WHALE_ACTION_PROTOCOLS = {
     key: 'TREASURY_MINT',
     badge: '💵 INJEKSI STABLECOIN (MINT)',
     title: 'INJEKSI AMUNISI LIKUIDITAS SEGAR SIAP BELANJA',
-    color: '#38bdf8',
+    color: 'var(--accent-sky)',
     bg: 'rgba(56, 189, 248, 0.12)',
     border: 'rgba(56, 189, 248, 0.3)',
     riskLevel: 'LIKUIDITAS TINGGI (BULLISH CATALYST)',
@@ -871,7 +871,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
             <h2 style={{ fontSize: '18px', margin: 0, fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
               WHALE INTELLIGENCE HUB & RUNNING DESK
             </h2>
-            <span style={{ fontSize: '9px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '9px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-sky-soft)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
               INSTITUTIONAL RADAR
             </span>
           </div>
@@ -888,7 +888,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               padding: '5px 10px',
               borderRadius: '6px',
               background: 'rgba(56, 189, 248, 0.18)',
-              color: '#38bdf8',
+              color: 'var(--accent-sky)',
               fontFamily: 'var(--font-mono)',
               fontWeight: '800',
               border: '1px solid rgba(56, 189, 248, 0.35)',
@@ -968,7 +968,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               <span style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
                 IDX Foreign Flow
               </span>
-              <div style={{ fontSize: '10px', color: '#38bdf8', fontFamily: 'var(--font-mono)', fontWeight: '700', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <div style={{ fontSize: '10px', color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)', fontWeight: '700', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <span>📅 {sessionInfo.idShortDate}</span>
                 <span>&bull;</span>
                 <span style={{ background: 'rgba(56, 189, 248, 0.15)', padding: '1px 5px', borderRadius: '3px' }}>{sessionInfo.sessionPill}</span>
@@ -1123,7 +1123,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                   borderRadius: '4px',
                   background: 'rgba(56, 189, 248, 0.18)',
                   border: '1px solid rgba(56, 189, 248, 0.4)',
-                  color: '#38bdf8',
+                  color: 'var(--accent-sky)',
                   fontSize: '11px',
                   fontWeight: '800',
                   cursor: 'pointer',
@@ -1214,7 +1214,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                   .map((w, idx) => {
                     const isBull = w.sentiment === 'BULLISH';
                     const isBear = w.sentiment === 'BEARISH';
-                    const sigColor = isBull ? 'var(--accent-green)' : isBear ? 'var(--accent-rust)' : '#60a5fa';
+                    const sigColor = isBull ? 'var(--accent-green)' : isBear ? 'var(--accent-rust)' : 'var(--accent-sky-soft)';
                     const sigBg = isBull ? 'rgba(0, 208, 132, 0.12)' : isBear ? 'rgba(239, 68, 68, 0.12)' : 'rgba(59, 130, 246, 0.12)';
 
                     return (
@@ -1413,7 +1413,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                     cursor: 'pointer',
                     border: '1px solid var(--accent-blue)',
                     background: 'rgba(56, 189, 248, 0.15)',
-                    color: '#38bdf8',
+                    color: 'var(--accent-sky)',
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '5px'
@@ -1623,7 +1623,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                 <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)' }}>
                   RIWAYAT PENCATATAN PERPINDAHAN PAUS (&ge; {whaleThresholdBtc} BTC)
                 </span>
-                <span style={{ fontSize: '10px', padding: '2px 7px', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ fontSize: '10px', padding: '2px 7px', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
                   {megaWhales.length} TRANSAKSI
                 </span>
               </div>
@@ -1654,7 +1654,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                     .map((w, idx) => {
                       const isBull = w.sentiment === 'BULLISH';
                       const isBear = w.sentiment === 'BEARISH';
-                      const badgeColor = isBull ? 'var(--accent-green)' : isBear ? 'var(--accent-rust)' : '#60a5fa';
+                      const badgeColor = isBull ? 'var(--accent-green)' : isBear ? 'var(--accent-rust)' : 'var(--accent-sky-soft)';
                       const badgeBg = isBull ? 'rgba(0, 208, 132, 0.12)' : isBear ? 'rgba(239, 68, 68, 0.12)' : 'rgba(59, 130, 246, 0.12)';
                       const isTitan = (w.symbol === 'BTC' && (w.amount || 0) >= 1000);
                       const isHumpback = (w.symbol === 'BTC' && (w.amount || 0) >= 500);
@@ -1836,7 +1836,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                 <div style={{ color: 'var(--text-muted)', fontSize: '10px', textTransform: 'uppercase', fontWeight: '700' }}>
                   SINKRONISASI EOD OTOMATIS:
                 </div>
-                <div style={{ color: '#38bdf8', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
+                <div style={{ color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
                   Pukul 18:15 WIB (Setiap Pasca-Tutup Bursa)
                 </div>
               </div>
@@ -1929,12 +1929,12 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                         <div style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
                           <span>🕒 {whale.trade_time || sessionInfo.idTime}</span>
                           <span>&bull;</span>
-                          <span style={{ color: '#38bdf8', fontWeight: '700' }}>{whale.trade_session || sessionInfo.sessionPill}</span>
+                          <span style={{ color: 'var(--accent-sky)', fontWeight: '700' }}>{whale.trade_session || sessionInfo.sessionPill}</span>
                         </div>
                       </td>
                       <td style={{ padding: '10px' }}>
                         <span style={{ fontWeight: '700', color: 'var(--accent-gold)' }}>{whale.broker_code}</span> - {whale.broker_name}
-                        <span style={{ marginLeft: '4px', fontSize: '9px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '1px 4px', borderRadius: '3px' }}>ASING</span>
+                        <span style={{ marginLeft: '4px', fontSize: '9px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', padding: '1px 4px', borderRadius: '3px' }}>ASING</span>
                       </td>
                       <td style={{ padding: '10px', color: 'var(--text-secondary)' }}>
                         {whale.counterparty_name || 'Ritel Domestik (YP/PD/XC)'}
@@ -2001,7 +2001,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                             padding: '2px 6px',
                             borderRadius: '3px',
                             background: b.type === 'F' ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                            color: b.type === 'F' ? '#38bdf8' : 'var(--text-muted)'
+                            color: b.type === 'F' ? 'var(--accent-sky)' : 'var(--text-muted)'
                           }}>
                             {b.type === 'F' ? 'ASING' : 'DOMESTIK'}
                           </span>
@@ -2118,7 +2118,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                       Rincian harga beli rata-rata, harga jual rata-rata, net volume lot, dan status kepemilikan barang.
                     </div>
                   </div>
-                  <div style={{ fontSize: '11px', color: '#38bdf8', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
+                  <div style={{ fontSize: '11px', color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
                     Periode: {brokerDateRange === '1D' ? '1 Hari Terakhir (EOD)' : brokerDateRange === '3D' ? 'Akumulasi 3 Hari' : brokerDateRange === '1W' ? 'Akumulasi 1 Minggu' : 'Akumulasi 1 Bulan (MTD)'}
                   </div>
                 </div>
@@ -2196,7 +2196,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                               const pnlPct = h.avgHold > 0 ? ((livePrice - h.avgHold) / h.avgHold) * 100 : 0;
                               return (
                                 <div>
-                                  <div style={{ fontWeight: '800', color: '#38bdf8' }}>
+                                  <div style={{ fontWeight: '800', color: 'var(--accent-sky)' }}>
                                     Rp {h.avgHold.toLocaleString()}
                                   </div>
                                   {live && live.price && (
@@ -2345,7 +2345,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               </div>
 
               {/* Fund Profile Card */}
-              <div className="quant-card" style={{ padding: '12px 18px', background: 'rgba(56, 189, 248, 0.05)', borderLeft: '3px solid #38bdf8' }}>
+              <div className="quant-card" style={{ padding: '12px 18px', background: 'rgba(56, 189, 248, 0.05)', borderLeft: '3px solid var(--accent-sky)' }}>
                 <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.4 }}>
                   <strong>Filosofi Investasi: </strong>{currentFund.description}
                 </div>
@@ -2427,7 +2427,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                           </td>
 
                           {/* Avg Cost */}
-                          <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: '#38bdf8' }}>
+                          <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--accent-sky)' }}>
                             ${h.avgCost.toFixed(2)}
                           </td>
 

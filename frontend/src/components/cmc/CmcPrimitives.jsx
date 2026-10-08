@@ -100,7 +100,7 @@ export function FearGreedGauge({ score, label, size = 132 }) {
 
   const bands = [
     { from: 0, to: 20, color: '#ea3943' },
-    { from: 20, to: 40, color: '#f59e0b' },
+    { from: 20, to: 40, color: 'var(--accent-gold)' },
     { from: 40, to: 60, color: '#eab308' },
     { from: 60, to: 80, color: '#84cc16' },
     { from: 80, to: 100, color: '#16c784' },
@@ -174,7 +174,7 @@ export function AltcoinSeasonScale({ value, dialConfigs = [], fallbackHigh = 75,
       <div style={{ position: 'relative', height: '9px', borderRadius: '5px', overflow: 'hidden', display: 'flex', border: '1px solid rgba(255,255,255,0.08)' }}>
         <div style={{ width: `${btcEnd}%`, background: 'linear-gradient(90deg,#f7931a,#fcd34d)' }} />
         <div style={{ width: `${altStart - btcEnd}%`, background: 'rgba(255,255,255,0.09)' }} />
-        <div style={{ flex: 1, background: 'linear-gradient(90deg,#38bdf8,#6366f1)' }} />
+        <div style={{ flex: 1, background: 'linear-gradient(90deg,var(--accent-sky),#6366f1)' }} />
 
         {v !== null && (
           <div
@@ -278,7 +278,7 @@ export function MarketStatusRow({ status }) {
 
   const palette = {
     OPEN: { dot: '#16c784', text: '#16c784', label: 'BUKA' },
-    BREAK: { dot: '#f59e0b', text: '#f59e0b', label: 'ISTIRAHAT' },
+    BREAK: { dot: 'var(--accent-gold)', text: 'var(--accent-gold)', label: 'ISTIRAHAT' },
     CLOSED: { dot: '#ea3943', text: '#ea3943', label: 'TUTUP' },
   }[status.state] || { dot: '#64748b', text: 'var(--text-muted)', label: '—' };
 

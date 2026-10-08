@@ -101,14 +101,30 @@ export default function App() {
   const { livePrices, flashMap, allIdxStocks, allCryptoSpot, isWsConnected, lastUpdateTime, refetchAll } = useLivePrices(data);
 
   // Native hash routing
+  /**
+   * Resolve the active tab from the URL.
+   *
+   * HASH WINS OVER THE QUERY STRING, and that ordering is load-bearing.
+   *
+   * `setActiveTab` writes the hash, and the hashchange listener re-reads the
+   * whole URL. When the query string was checked FIRST, a URL like
+   * `/?tab=HOME#achievements` resolved back to HOME on every hash change — so
+   * clicking a menu item updated the hash and then immediately snapped back to
+   * the page it started on. The menu looked dead: it changed nothing on screen.
+   *
+   * `?tab=` is still honoured for entry links (the E2E suite and any bookmark
+   * use it), but only when there is no hash, which is the genuinely "fresh
+   * navigation" case.
+   */
   const getTabFromHash = () => {
+    const hash = window.location.hash.replace('#', '').toUpperCase();
+    if (hash) return hash;
     try {
       const params = new URLSearchParams(window.location.search);
       const qTab = params.get('tab');
       if (qTab) return qTab.toUpperCase();
     } catch (e) {}
-    const hash = window.location.hash.replace('#', '').toUpperCase();
-    return hash || 'HOME';
+    return 'HOME';
   };
   const [activeTab, setActiveTabState] = useState(getTabFromHash);
 
@@ -135,7 +151,7 @@ export default function App() {
   const bundleAgeMin = bundleDate ? Math.max(0, Math.round((Date.now() - bundleDate.getTime()) / 60000)) : 999;
   const isBundleFresh = bundleAgeMin < 60;
   const bundleStatus = isBundleFresh ? '🟢 SYNCED' : (bundleAgeMin < 360 ? '🟡 DEGRADED' : '🔴 STALE');
-  const bundleColor = isBundleFresh ? '#10b981' : (bundleAgeMin < 360 ? '#f59e0b' : '#ef4444');
+  const bundleColor = isBundleFresh ? 'var(--accent-emerald)' : (bundleAgeMin < 360 ? 'var(--accent-gold)' : '#ef4444');
   const activeGeminiModel = data?.model_used || data?.daily_snips?.model_used || 'gemini-3.8-flash';
   const geminiShortLabel = String(activeGeminiModel).toUpperCase().replace('GEMINI-', '').replace(' (AUTO-DISCOVERED)', '');
 
@@ -999,7 +1015,7 @@ export default function App() {
                       onClick={() => setActiveTab('SUBSCRIPTION')}
                       style={{
                         padding: '11px 24px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '900',
-                        background: 'linear-gradient(135deg,#f59e0b,#d97706)', color: '#000',
+                        background: 'linear-gradient(135deg,var(--accent-gold),#d97706)', color: '#000',
                         border: 'none', cursor: 'pointer', fontFamily: 'inherit',
                       }}
                     >
@@ -1187,14 +1203,14 @@ export default function App() {
               }}
             >
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <span style={{ color: isBundleFresh ? '#10b981' : '#f59e0b', fontWeight: 800 }}>
+                <span style={{ color: isBundleFresh ? 'var(--accent-emerald)' : 'var(--accent-gold)', fontWeight: 800 }}>
                   🛡️ FEED HEALTH: {isBundleFresh ? '🟢 VERIFIED' : '🟡 DEGRADED'}
                 </span>
-                <span>IDX BEI: <strong style={{ color: '#10b981' }}>{allIdxStocks.length > 0 ? `🟢 ${allIdxStocks.length} STOCKS` : '—'}</strong></span>
-                <span>Binance WS: <strong style={{ color: isWsConnected ? '#10b981' : '#f59e0b' }}>{isWsConnected ? '🟢 CONNECTED' : '🟡 POLLING'}</strong></span>
+                <span>IDX BEI: <strong style={{ color: 'var(--accent-emerald)' }}>{allIdxStocks.length > 0 ? `🟢 ${allIdxStocks.length} STOCKS` : '—'}</strong></span>
+                <span>Binance WS: <strong style={{ color: isWsConnected ? 'var(--accent-emerald)' : 'var(--accent-gold)' }}>{isWsConnected ? '🟢 CONNECTED' : '🟡 POLLING'}</strong></span>
                 <span>Macro Bundle: <strong style={{ color: bundleColor }}>{bundleStatus} ({bundleAgeMin}m)</strong></span>
-                <span>Gemini LLM: <strong style={{ color: '#38bdf8' }}>🟢 {geminiShortLabel}</strong></span>
-                <span>MCP Server: <strong style={{ color: '#38bdf8' }}>🟢 READY</strong></span>
+                <span>Gemini LLM: <strong style={{ color: 'var(--accent-sky)' }}>🟢 {geminiShortLabel}</strong></span>
+                <span>MCP Server: <strong style={{ color: 'var(--accent-sky)' }}>🟢 READY</strong></span>
               </span>
               <span>AUDIT PROVENANCE & FRESHNESS ↗</span>
             </button>

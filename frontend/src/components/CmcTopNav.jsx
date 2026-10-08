@@ -212,6 +212,19 @@ export default function CmcTopNav({
       <div
         role="menu"
         aria-label={group.label}
+        /**
+         * The hover handlers live ON the menu, not on a wrapper around it.
+         *
+         * ARIA requires `menuitem` to be an owned child of `menu`, with no
+         * intervening generic element. The previous structure was
+         * <div onMouseEnter><div role="menu"><button role="menuitem"> — so the
+         * menu items were nested inside an unlabelled div and assistive tech
+         * (and Playwright's role queries) could not resolve them. Moving the
+         * handlers here keeps the "pointer may travel into the panel during the
+         * grace period" behaviour while making the roles valid.
+         */
+        onMouseEnter={cancelClose}
+        onMouseLeave={scheduleClose}
         style={{
           position: 'absolute',
           top: 'calc(100% + 6px)',
@@ -253,7 +266,7 @@ export default function CmcTopNav({
               onMouseEnter={(e) => { e.currentTarget.style.background = active ? 'rgba(59,130,246,0.18)' : 'var(--bg-panel-subtle)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = active ? 'rgba(59,130,246,0.13)' : 'transparent'; }}
             >
-              <span style={{ fontSize: '12px', fontWeight: 700, color: active ? '#60a5fa' : 'var(--text-primary)' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: active ? 'var(--accent-sky-soft)' : 'var(--text-primary)' }}>
                 {item.label}
               </span>
               {item.desc && (
@@ -318,8 +331,22 @@ export default function CmcTopNav({
           >
             <button
               onClick={() => {
-                // Click still works for touch devices, which have no hover.
-                if (hasPanel) setOpenGroup(isOpen ? null : group.id);
+                /**
+                 * Click OPENS; it does not toggle.
+                 *
+                 * A plain toggle is wrong here because hover has already opened
+                 * the panel before the click lands — the pointer has to arrive
+                 * at the button to click it, and arriving triggers onMouseEnter.
+                 * So `isOpen ? null : group.id` closed the panel that hover had
+                 * just opened, and every click appeared to do nothing. That is
+                 * what the E2E suite hit when driving the nav as a user would.
+                 *
+                 * Opening unconditionally is also the correct behaviour for a
+                 * touch device, where there is no hover and a click is the only
+                 * way in. Dismissal happens by moving away, pressing Escape, or
+                 * clicking outside — all of which are already wired.
+                 */
+                if (hasPanel) { cancelClose(); setOpenGroup(group.id); }
                 else handleNavigate(group.id);
               }}
               aria-haspopup={hasPanel ? 'true' : undefined}
@@ -351,13 +378,7 @@ export default function CmcTopNav({
               )}
             </button>
 
-            {hasPanel && isOpen && (
-              // onMouseEnter here is what lets the pointer travel into the panel
-              // during the grace period without it disappearing.
-              <div onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
-                {renderPanel(group)}
-              </div>
-            )}
+            {hasPanel && isOpen && renderPanel(group)}
           </div>
         );
       })}
@@ -416,11 +437,11 @@ export default function CmcTopNav({
         <button
           onClick={() => handleNavigate('WATCHLIST')}
           title={`Watchlist (${watchlist.count} instrumen)`}
-          style={{ position: 'relative', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: '#f59e0b', borderRadius: '8px', padding: '5px 9px', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}
+          style={{ position: 'relative', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--accent-gold)', borderRadius: '8px', padding: '5px 9px', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}
         >
           ★
           {watchlist.count > 0 && (
-            <span style={{ position: 'absolute', top: '-5px', right: '-5px', background: '#f59e0b', color: '#000', borderRadius: '9px', fontSize: '9.5px', fontWeight: 900, padding: '0 4px', lineHeight: '13px', minWidth: '13px' }}>
+            <span style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--accent-gold)', color: '#000', borderRadius: '9px', fontSize: '9.5px', fontWeight: 900, padding: '0 4px', lineHeight: '13px', minWidth: '13px' }}>
               {watchlist.count}
             </span>
           )}
@@ -491,7 +512,7 @@ export default function CmcTopNav({
                   <button
                     key={item.id}
                     onClick={() => handleNavigate(item.id)}
-                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '7px 11px 7px 22px', background: activeTab === item.id ? 'rgba(59,130,246,0.13)' : 'none', border: 'none', color: activeTab === item.id ? '#60a5fa' : 'var(--text-secondary)', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit', borderRadius: '6px' }}
+                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '7px 11px 7px 22px', background: activeTab === item.id ? 'rgba(59,130,246,0.13)' : 'none', border: 'none', color: activeTab === item.id ? 'var(--accent-sky-soft)' : 'var(--text-secondary)', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit', borderRadius: '6px' }}
                   >
                     {item.label}
                   </button>

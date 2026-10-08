@@ -267,7 +267,7 @@ export default function CommandPaletteModal({
           borderBottom: 'var(--border-hairline, 1px solid rgba(255,255,255,0.08))',
           background: 'rgba(18, 23, 34, 0.95)'
         }}>
-          <span style={{ fontSize: '16px', color: '#60a5fa' }}>🔍</span>
+          <span style={{ fontSize: '16px', color: 'var(--accent-sky-soft)' }}>🔍</span>
           <input
             ref={inputRef}
             type="text"
@@ -322,7 +322,7 @@ export default function CommandPaletteModal({
               onClick={() => setActiveCategory(c.id)}
               style={{
                 background: activeCategory === c.id ? 'rgba(59, 130, 246, 0.25)' : 'transparent',
-                color: activeCategory === c.id ? '#60a5fa' : 'var(--text-muted, #94a3b8)',
+                color: activeCategory === c.id ? 'var(--accent-sky-soft)' : 'var(--text-muted, #94a3b8)',
                 border: activeCategory === c.id ? '1px solid rgba(59, 130, 246, 0.4)' : '1px solid transparent',
                 borderRadius: '4px',
                 padding: '2px 8px',
@@ -411,18 +411,18 @@ export default function CommandPaletteModal({
                         ? 'rgba(168, 85, 247, 0.15)'
                         : 'rgba(59, 130, 246, 0.15)',
                       color: item.category === 'IDX'
-                        ? '#10b981'
+                        ? 'var(--accent-emerald)'
                         : item.category === 'CRYPTO'
-                        ? '#f59e0b'
+                        ? 'var(--accent-gold)'
                         : item.category === 'ACTIONS'
                         ? '#c084fc'
-                        : '#60a5fa',
+                        : 'var(--accent-sky-soft)',
                       border: '1px solid rgba(255,255,255,0.06)'
                     }}>
                       {item.category}
                     </span>
                     {isSelected && (
-                      <span style={{ fontSize: '10px', color: '#60a5fa' }}>↵</span>
+                      <span style={{ fontSize: '10px', color: 'var(--accent-sky-soft)' }}>↵</span>
                     )}
                   </div>
                 </div>
@@ -447,7 +447,7 @@ export default function CommandPaletteModal({
             <span><strong style={{ color: '#f1f5f9' }}>↵</strong> Pilih</span>
             <span><strong style={{ color: '#f1f5f9' }}>ESC</strong> Tutup</span>
           </div>
-          <div style={{ color: '#60a5fa', fontWeight: 700 }}>
+          <div style={{ color: 'var(--accent-sky-soft)', fontWeight: 700 }}>
             MBG QUICK LAUNCHER // OPENTERMINALUI SPEC
           </div>
         </div>

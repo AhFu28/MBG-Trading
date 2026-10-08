@@ -207,7 +207,7 @@ function ProductPreview() {
       {/* Window chrome */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '9px 13px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
         <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#ef4444', opacity: 0.75 }} />
-        <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#f59e0b', opacity: 0.75 }} />
+        <span style={{ width: 9, height: 9, borderRadius: '50%', background: 'var(--accent-gold)', opacity: 0.75 }} />
         <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#22c55e', opacity: 0.75 }} />
         <span style={{ marginLeft: '8px', fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
           mbg-trading : market overview
@@ -244,8 +244,8 @@ function ProductPreview() {
           <div style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '9px', letterSpacing: '0.04em' }}>MARKET STATUS</div>
           {[
             ['Bursa Efek Indonesia', 100, '#16c784'],
-            ['New York Stock Exchange', 72, '#f59e0b'],
-            ['London Stock Exchange', 58, '#f59e0b'],
+            ['New York Stock Exchange', 72, 'var(--accent-gold)'],
+            ['London Stock Exchange', 58, 'var(--accent-gold)'],
             ['Crypto (24/7)', 100, '#16c784'],
           ].map(([name, pct, color]) => (
             <div key={name} style={{ marginBottom: '7px' }}>
@@ -404,7 +404,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                 borderRadius: '9999px', background: 'rgba(99,102,241,0.14)',
                 border: '1px solid rgba(99,102,241,0.4)', color: '#a5b4fc', marginBottom: '20px',
               }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#34d399', boxShadow: '0 0 8px #34d399' }} />
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent-mint)', boxShadow: '0 0 8px var(--accent-mint)' }} />
                 Terminal Trading Kuantitatif · Live
               </div>
             </Reveal>
@@ -416,7 +416,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
               }}>
                 Sinyal Trading dengan<br />
                 <span style={{
-                  background: 'linear-gradient(120deg,#818cf8 0%,#22d3ee 55%,#34d399 100%)',
+                  background: 'linear-gradient(120deg,#818cf8 0%,#22d3ee 55%,var(--accent-mint) 100%)',
                   WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
                 }}>
                   Entry, Stop Loss &amp; Target
@@ -586,7 +586,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
             const badge = isPro
               ? { text: 'PRO', color: '#fbbf24', bg: 'rgba(245,158,11,0.14)', border: 'rgba(245,158,11,0.38)' }
               : isGuest
-                ? { text: 'PUBLIK', color: '#34d399', bg: 'rgba(16,185,129,0.13)', border: 'rgba(16,185,129,0.35)' }
+                ? { text: 'PUBLIK', color: 'var(--accent-mint)', bg: 'rgba(16,185,129,0.13)', border: 'rgba(16,185,129,0.35)' }
                 : { text: 'GRATIS', color: '#818cf8', bg: 'rgba(99,102,241,0.14)', border: 'rgba(99,102,241,0.38)' };
             return (
               <Reveal key={id} delay={Math.min(i * 25, 300)}>
@@ -639,7 +639,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                   <div style={{
                     position: 'absolute', top: '-11px', left: '24px',
                     fontSize: '9.5px', fontWeight: 900, padding: '4px 12px', borderRadius: '9999px',
-                    background: 'linear-gradient(135deg,#f59e0b,#d97706)', color: '#000',
+                    background: 'linear-gradient(135deg,var(--accent-gold),#d97706)', color: '#000',
                   }}>
                     PALING POPULER
                   </div>
@@ -660,7 +660,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '22px' }}>
                   {plan.features.map(f => (
                     <div key={f} style={{ fontSize: '12px', display: 'flex', gap: '8px', lineHeight: 1.55 }}>
-                      <span style={{ color: '#34d399', flexShrink: 0 }}>✓</span>
+                      <span style={{ color: 'var(--accent-mint)', flexShrink: 0 }}>✓</span>
                       <span>{f}</span>
                     </div>
                   ))}
@@ -677,7 +677,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                   style={{
                     width: '100%', padding: '13px', borderRadius: '10px', fontSize: '13px', fontWeight: 900,
                     fontFamily: 'inherit', cursor: 'pointer', border: 'none',
-                    background: plan.highlight ? 'linear-gradient(135deg,#f59e0b,#d97706)' : 'rgba(99,102,241,0.92)',
+                    background: plan.highlight ? 'linear-gradient(135deg,var(--accent-gold),#d97706)' : 'rgba(99,102,241,0.92)',
                     color: plan.highlight ? '#000' : '#fff',
                   }}
                 >

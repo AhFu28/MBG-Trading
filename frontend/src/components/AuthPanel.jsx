@@ -217,7 +217,7 @@ export default function AuthPanel({
         )}
         {notice && (
           <div role="status" style={{
-            fontSize: '11.5px', color: '#34d399', background: 'rgba(16,185,129,0.10)',
+            fontSize: '11.5px', color: 'var(--accent-mint)', background: 'rgba(16,185,129,0.10)',
             border: '1px solid rgba(16,185,129,0.32)', borderRadius: '8px', padding: '9px 11px', lineHeight: 1.5,
           }}>
             {notice}

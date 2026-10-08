@@ -240,7 +240,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
           <button 
             onClick={handleAutoPickAI}
             style={{ 
-              backgroundColor: 'var(--accent-orange, #f59e0b)', 
+              backgroundColor: 'var(--accent-orange, var(--accent-gold))', 
               color: '#000', 
               border: 'none', 
               padding: '6px 12px', 

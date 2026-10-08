@@ -62,7 +62,7 @@ export default function ComplianceRiskModal() {
         }}>
           <span style={{ fontSize: '20px' }}>⚠️</span>
           <div>
-            <div style={{ fontSize: '13px', fontWeight: '800', color: '#f59e0b', letterSpacing: '0.04em' }}>
+            <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-gold)', letterSpacing: '0.04em' }}>
               PERNYATAAN KEPATUHAN & PENGUNGKAPAN RISIKO (DISCLAIMER)
             </div>
             <div style={{ fontSize: '10px', color: '#8b949e' }}>
@@ -112,7 +112,7 @@ export default function ComplianceRiskModal() {
           <button
             onClick={handleAcknowledge}
             style={{
-              background: '#f59e0b',
+              background: 'var(--accent-gold)',
               color: '#000000',
               border: 'none',
               padding: '7px 18px',

@@ -353,7 +353,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
       <div className='telemetry-panel' style={{
         padding: '8px 14px',
         background: 'var(--bg-panel)',
-        borderLeft: '4px solid var(--accent-orange, #f59e0b)',
+        borderLeft: '4px solid var(--accent-orange, var(--accent-gold))',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -697,7 +697,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                       alignItems: 'center',
                       gap: '3px',
                       background: snrScore >= 85 ? 'rgba(16, 185, 129, 0.12)' : 'rgba(245, 158, 11, 0.12)',
-                      color: snrScore >= 85 ? 'var(--accent-green, #10b981)' : 'var(--accent-gold, #f59e0b)',
+                      color: snrScore >= 85 ? 'var(--accent-green, var(--accent-emerald))' : 'var(--accent-gold, var(--accent-gold))',
                       border: snrScore >= 85 ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(245, 158, 11, 0.35)'
                     }} title="Signal-to-Noise Ratio: Mengukur keaslian akumulasi institusi vs rumor">
                       <span>⚡</span>
@@ -734,7 +734,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                           <span style={{ fontSize: '10px', color: 'var(--text-primary)', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
                             🗓️ {dt.dateStr}
                           </span>
-                          <span style={{ fontSize: '10px', color: 'var(--accent-blue, #60a5fa)', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
+                          <span style={{ fontSize: '10px', color: 'var(--accent-blue, var(--accent-sky-soft))', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
                             ⏰ {dt.timeStr}
                           </span>
                           {fresh && (
@@ -803,7 +803,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     <span>•</span>
                     <span>R1: <strong style={{ color: 'var(--accent-red)' }}>{news.technical_levels.r1?.toLocaleString()}</strong></span>
                     <span>•</span>
-                    <span>Cut Loss: <strong style={{ color: '#f59e0b' }}>&lt; {news.technical_levels.invalidation?.toLocaleString()}</strong></span>
+                    <span>Cut Loss: <strong style={{ color: 'var(--accent-gold)' }}>&lt; {news.technical_levels.invalidation?.toLocaleString()}</strong></span>
                     <span style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: '700' }} onClick={() => onSelectNews && onSelectNews(news)}>
                       Lihat Chart &amp; S/R Lengkap ↗
                     </span>
@@ -880,7 +880,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                       fontSize: '9px',
                       fontWeight: '800',
                       fontFamily: 'var(--font-mono)',
-                      color: 'var(--accent-gold, #f59e0b)',
+                      color: 'var(--accent-gold, var(--accent-gold))',
                       letterSpacing: '0.04em',
                       display: 'flex',
                       alignItems: 'center',
@@ -910,7 +910,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                               key={dIdx}
                               style={{
                                 width: `${d.weight_pct}%`,
-                                background: d.color || (dIdx === 0 ? '#3b82f6' : dIdx === 1 ? '#f59e0b' : '#10b981')
+                                background: d.color || (dIdx === 0 ? '#3b82f6' : dIdx === 1 ? 'var(--accent-gold)' : 'var(--accent-emerald)')
                               }}
                               title={`${d.factor}: ${d.weight_pct}%`}
                             />
@@ -970,7 +970,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                       fontSize: '9px',
                       fontWeight: '800',
                       fontFamily: 'var(--font-mono)',
-                      color: 'var(--accent-green, #10b981)',
+                      color: 'var(--accent-green, var(--accent-emerald))',
                       letterSpacing: '0.04em',
                       display: 'flex',
                       alignItems: 'center',
@@ -1041,7 +1041,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                               style={{
                                 padding: '2px 7px',
                                 fontSize: '9px',
-                                color: isCryptoTicker ? 'var(--accent-orange, #f59e0b)' : 'var(--accent-blue)',
+                                color: isCryptoTicker ? 'var(--accent-orange, var(--accent-gold))' : 'var(--accent-blue)',
                                 borderColor: isCryptoTicker ? 'rgba(245, 158, 11, 0.3)' : 'rgba(0, 102, 204, 0.3)',
                                 fontFamily: 'var(--font-mono)',
                                 fontWeight: '700',

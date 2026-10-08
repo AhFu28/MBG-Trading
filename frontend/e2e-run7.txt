@@ -1,0 +1,35 @@
+﻿node.exe : [WebServer] (node:13116) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 20 tests using 1 worker
+
+(node:12156) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › HOME mounts and shows its own content (2.8s)
+  ok  2 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › SIGNALS mounts and shows its own content (1.9s)
+  ok  3 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › AI_AGENTS mounts and shows its own content (1.9s)
+  ok  4 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › CHARTING mounts and shows its own content (2.0s)
+  ok  5 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › HEATMAP mounts and shows its own content (2.1s)
+  ok  6 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › CRYPTO mounts and shows its own content (2.0s)
+  ok  7 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › STOCK mounts and shows its own content (4.8s)
+  ok  8 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › FOREX mounts and shows its own content (2.1s)
+  ok  9 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › NEWS mounts and shows its own content (1.9s)
+  ok 10 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › WHALES mounts and shows its own content (2.3s)
+  ok 11 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › ECONOMIC_CALENDAR mounts and shows its own content (1.9s)
+  ok 12 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › ACADEMY mounts and shows its own content (1.9s)
+  ok 13 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › PEARSON_CORRELATION mounts and shows its own content (1.8s)
+  ok 14 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › TESTING mounts and shows its own content (1.8s)
+  ok 15 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › WATCHLIST mounts and shows its own content (1.9s)
+  ok 16 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › SETTINGS mounts and shows its own content (2.0s)
+  ok 17 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › ACHIEVEMENTS mounts and shows its own content (2.0s)
+  ok 18 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › SUBSCRIPTION mounts and shows its own content (2.0s)
+  ok 19 [chromium] › e2e\routes.spec.js:83:3 › navigation reaches every route by clicking, not by URL › the Account menu reaches Legend Path and it renders (1.9s)
+  ok 20 [chromium] › e2e\routes.spec.js:100:3 › navigation reaches every route by clicking, not by URL › the Research menu reaches Live News Wire and it renders content (3.7s)
+
+  20 passed (46.4s)

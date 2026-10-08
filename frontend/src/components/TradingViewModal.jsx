@@ -172,7 +172,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
             <button
               onClick={() => setModalMode('PRO')}
               style={{
-                background: 'linear-gradient(135deg, #10b981, #059669)',
+                background: 'linear-gradient(135deg, var(--accent-emerald), #059669)',
                 color: '#022c22',
                 border: 'none',
                 padding: '3px 9px',
@@ -229,7 +229,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
             <button
               onClick={() => setRefreshKey(k => k + 1)}
               className="telemetry-btn"
-              style={{ fontSize: '10px', padding: '3px 8px', background: 'rgba(255,255,255,0.05)', color: '#34d399', border: '1px solid rgba(255,255,255,0.1)' }}
+              style={{ fontSize: '10px', padding: '3px 8px', background: 'rgba(255,255,255,0.05)', color: 'var(--accent-mint)', border: '1px solid rgba(255,255,255,0.1)' }}
               title="Reload Chart Data"
             >
               🔄 REFRESH

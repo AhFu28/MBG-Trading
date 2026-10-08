@@ -463,7 +463,7 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
             <span style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.5px' }}>
               BLOOMBERG INTERMARKET CORRELATION & ROTATION MATRIX
             </span>
-            <span style={{ fontSize: '8px', padding: '1px 5px', borderRadius: '3px', background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', fontWeight: '700' }}>
+            <span style={{ fontSize: '8px', padding: '1px 5px', borderRadius: '3px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-sky-soft)', fontWeight: '700' }}>
               CROSS-ASSET FLOWS
             </span>
           </div>
@@ -513,7 +513,7 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>GOLD ⇄ EMITEN LOGAM</span>
-              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: '700' }}>
+              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-emerald)', fontWeight: '700' }}>
                 +0.85 POSITIVE
               </span>
             </div>
@@ -537,11 +537,11 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>BRENT ⇄ ENERGI & LOGISTIK</span>
-              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', fontWeight: '700' }}>
+              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-sky-soft)', fontWeight: '700' }}>
                 +0.82 SECTORIAL
               </span>
             </div>
-            <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveBrentChange >= 0 ? '#f59e0b' : 'var(--accent-green)' }}>
+            <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveBrentChange >= 0 ? 'var(--accent-gold)' : 'var(--accent-green)' }}>
               {liveBrentChange >= 0 ? 'Oil ↑ ➔ MEDC Cuan, Aviasi Tertekan' : 'Oil ↓ ➔ Tekanan Beban BBM Berkurang'}
             </div>
             <div style={{ fontSize: '8px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
@@ -585,7 +585,7 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>BITCOIN ⇄ GLOBAL LIQUIDITY</span>
-              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: '700' }}>
+              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-emerald)', fontWeight: '700' }}>
                 +0.76 LIQUIDITY SPONGE
               </span>
             </div>

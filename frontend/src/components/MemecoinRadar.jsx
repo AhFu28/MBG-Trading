@@ -28,7 +28,7 @@ function fmtAge(min) {
 const VERDICT = {
   HIGH_RISK: { color: '#fb7185', bg: 'rgba(244,63,94,0.14)', border: 'rgba(244,63,94,0.4)', label: '🚨 RISIKO TINGGI' },
   CAUTION: { color: '#fbbf24', bg: 'rgba(245,158,11,0.14)', border: 'rgba(245,158,11,0.4)', label: '⚠️ WASPADA' },
-  CLEAN: { color: '#34d399', bg: 'rgba(16,185,129,0.14)', border: 'rgba(16,185,129,0.4)', label: '✅ RELATIF BERSIH' },
+  CLEAN: { color: 'var(--accent-mint)', bg: 'rgba(16,185,129,0.14)', border: 'rgba(16,185,129,0.4)', label: '✅ RELATIF BERSIH' },
 };
 
 /**
@@ -126,7 +126,7 @@ export default function MemecoinRadar() {
           </span>
           <span style={{
             fontSize: '9.5px', fontWeight: '800', padding: '3px 8px', borderRadius: '6px',
-            background: 'rgba(56,189,248,0.15)', color: '#38bdf8', border: '1px solid rgba(56,189,248,0.35)'
+            background: 'rgba(56,189,248,0.15)', color: 'var(--accent-sky)', border: '1px solid rgba(56,189,248,0.35)'
           }}>
             BUKAN PREDIKSI
           </span>
@@ -141,9 +141,9 @@ export default function MemecoinRadar() {
         </div>
         <div style={{ display: 'flex', gap: '6px', marginTop: '8px', flexWrap: 'wrap' }}>
           {[
-            ['DexScreener', 'harga · volume · beli/jual', '#38bdf8'],
+            ['DexScreener', 'harga · volume · beli/jual', 'var(--accent-sky)'],
             ['Jupiter', 'holder · organik · audit', '#c084fc'],
-            ['pump.fun', 'bonding curve', '#f59e0b'],
+            ['pump.fun', 'bonding curve', 'var(--accent-gold)'],
           ].map(([name, desc, color]) => (
             <span key={name} style={{
               fontSize: '9.5px', padding: '3px 8px', borderRadius: '6px',
@@ -175,7 +175,7 @@ export default function MemecoinRadar() {
         background: 'rgba(56,189,248,0.07)', border: '1px solid rgba(56,189,248,0.3)',
         borderRadius: '10px', padding: '12px 16px', fontSize: '11px', lineHeight: 1.7, color: 'var(--text-secondary)'
       }}>
-        <strong style={{ color: '#38bdf8' }}>📐 KENAPA FILTER "MCAP KECIL / LP KECIL / VOLUME KECIL" ITU BERBAHAYA:</strong>
+        <strong style={{ color: 'var(--accent-sky)' }}>📐 KENAPA FILTER "MCAP KECIL / LP KECIL / VOLUME KECIL" ITU BERBAHAYA:</strong>
         <div style={{ marginTop: '5px' }}>
           Saya uji saran itu ke data live dan hasilnya berlawanan:
         </div>
@@ -200,7 +200,7 @@ export default function MemecoinRadar() {
 
       {/* ===== CONTROLS ===== */}
       <div className="telemetry-panel" style={{ padding: '10px 16px', borderRadius: '12px', display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '800', color: '#38bdf8' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '800', color: 'var(--accent-sky)' }}>
           📊 Jumlah token dipindai
           <select
             value={scanPages}
@@ -225,7 +225,7 @@ export default function MemecoinRadar() {
         </label>
         <label style={{
           display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '800', cursor: 'pointer',
-          color: onlyQualified ? '#34d399' : 'var(--text-secondary)'
+          color: onlyQualified ? 'var(--accent-mint)' : 'var(--text-secondary)'
         }}>
           <input type="checkbox" checked={onlyQualified} onChange={e => setOnlyQualified(e.target.checked)} />
           HANYA yang lolos 9 kriteria ({qualifiedCount})
@@ -252,7 +252,7 @@ export default function MemecoinRadar() {
               📡 HASIL PEMINDAIAN : menampilkan {Math.min(visible.length, 200)} dari {visible.length} token
               {noPair.length > 0 && ` (+${noPair.length} tanpa pair DEX)`}
             </span>
-            {loading && <span style={{ color: '#38bdf8', fontSize: '10px' }}>memindai {scanPages}×{PUMPFUN_PAGE_SIZE} token…</span>}
+            {loading && <span style={{ color: 'var(--accent-sky)', fontSize: '10px' }}>memindai {scanPages}×{PUMPFUN_PAGE_SIZE} token…</span>}
           </div>
           <div style={{ overflowX: 'auto' }}>
             <table className="telemetry-table" style={{ minWidth: '820px' }}>
@@ -307,7 +307,7 @@ export default function MemecoinRadar() {
                           display: 'inline-block', minWidth: '38px', padding: '3px 7px', borderRadius: '6px',
                           fontFamily: 'var(--font-mono)', fontWeight: '900', fontSize: '13px',
                           background: a.score >= 55 ? 'rgba(16,185,129,0.18)' : a.score >= 30 ? 'rgba(245,158,11,0.16)' : 'rgba(255,255,255,0.06)',
-                          color: a.score >= 55 ? '#34d399' : a.score >= 30 ? '#fbbf24' : 'var(--text-muted)'
+                          color: a.score >= 55 ? 'var(--accent-mint)' : a.score >= 30 ? '#fbbf24' : 'var(--text-muted)'
                         }}>
                           {a.score}
                         </span>
@@ -318,13 +318,13 @@ export default function MemecoinRadar() {
                       <td style={{
                         textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11.5px', fontWeight: '700',
                         color: a.metrics.holderChange1h === null ? 'var(--text-muted)'
-                          : a.metrics.holderChange1h > 0 ? '#34d399'
+                          : a.metrics.holderChange1h > 0 ? 'var(--accent-mint)'
                           : a.metrics.holderChange1h < 0 ? '#fb7185' : 'var(--text-muted)'
                       }}>
                         {a.metrics.holderChange1h === null ? '—'
                           : `${a.metrics.holderChange1h > 0 ? '+' : ''}${a.metrics.holderChange1h}%`}
                       </td>
-                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11.5px', fontWeight: '700', color: a.metrics.ratio1h >= 1.5 ? '#34d399' : a.metrics.ratio1h !== null && a.metrics.ratio1h < 0.7 ? '#fb7185' : undefined }}>
+                      <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11.5px', fontWeight: '700', color: a.metrics.ratio1h >= 1.5 ? 'var(--accent-mint)' : a.metrics.ratio1h !== null && a.metrics.ratio1h < 0.7 ? '#fb7185' : undefined }}>
                         {a.metrics.ratio1h === null ? '∞' : `${a.metrics.ratio1h}x`}
                       </td>
                       <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11.5px', color: a.metrics.liquidityUsd < 10000 ? '#fb7185' : undefined }}>
@@ -334,7 +334,7 @@ export default function MemecoinRadar() {
                         textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11.5px',
                         color: a.metrics.topHoldersPct === null ? 'var(--text-muted)'
                           : a.metrics.topHoldersPct >= 50 ? '#fb7185'
-                          : a.metrics.topHoldersPct >= 35 ? '#fbbf24' : '#34d399'
+                          : a.metrics.topHoldersPct >= 35 ? '#fbbf24' : 'var(--accent-mint)'
                       }}>
                         {a.metrics.topHoldersPct === null ? '—' : `${a.metrics.topHoldersPct.toFixed(1)}%`}
                       </td>
@@ -359,7 +359,7 @@ export default function MemecoinRadar() {
                             <span title="Freeze authority aktif, dompet bisa dibekukan" style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(244,63,94,0.2)', color: '#fb7185', fontWeight: '800' }}>FREEZE!</span>
                           )}
                           {a.metrics.mintAuthDisabled === true && a.metrics.freezeAuthDisabled === true && (
-                            <span title="Mint & freeze authority sudah dimatikan" style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(16,185,129,0.18)', color: '#34d399', fontWeight: '800' }}>SAFE</span>
+                            <span title="Mint & freeze authority sudah dimatikan" style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(16,185,129,0.18)', color: 'var(--accent-mint)', fontWeight: '800' }}>SAFE</span>
                           )}
                           {a.metrics.mintAuthDisabled === null && (
                             <span style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>—</span>
@@ -369,7 +369,7 @@ export default function MemecoinRadar() {
                       <td style={{ textAlign: 'center' }}>
                         <span style={{
                           fontSize: '9.5px', fontWeight: '800', fontFamily: 'var(--font-mono)',
-                          color: row.launchWindow.qualified ? '#34d399'
+                          color: row.launchWindow.qualified ? 'var(--accent-mint)'
                             : row.launchWindow.passed >= 7 ? '#fbbf24' : '#fb7185'
                         }}>
                           {row.launchWindow.passed}/{row.launchWindow.total}
@@ -424,7 +424,7 @@ export default function MemecoinRadar() {
               }}>
                 <div style={{
                   fontSize: '11px', fontWeight: '900', marginBottom: '6px',
-                  color: selected.launchWindow.qualified ? '#34d399' : '#fbbf24'
+                  color: selected.launchWindow.qualified ? 'var(--accent-mint)' : '#fbbf24'
                 }}>
                   {selected.launchWindow.qualified ? '✅ LOLOS SEMUA KRITERIA' : `⚠️ LOLOS ${selected.launchWindow.passed}/${selected.launchWindow.total} KRITERIA`}
                   {selected.boostAmount > 0 && (
@@ -436,7 +436,7 @@ export default function MemecoinRadar() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                   {selected.launchWindow.checks.map(c => (
                     <div key={c.key} style={{ display: 'flex', gap: '6px', fontSize: '10px', lineHeight: 1.45 }}>
-                      <span style={{ color: c.pass ? '#34d399' : '#fb7185', flexShrink: 0 }}>{c.pass ? '✓' : '✗'}</span>
+                      <span style={{ color: c.pass ? 'var(--accent-mint)' : '#fb7185', flexShrink: 0 }}>{c.pass ? '✓' : '✗'}</span>
                       <span style={{ color: c.pass ? 'var(--text-muted)' : 'var(--text-secondary)' }}>{c.label}</span>
                     </div>
                   ))}
@@ -459,7 +459,7 @@ export default function MemecoinRadar() {
                     border: `1px solid ${f.points > 0 ? 'rgba(16,185,129,0.2)' : 'rgba(244,63,94,0.2)'}`
                   }}>
                     <span style={{ color: 'var(--text-secondary)' }}>{f.label}</span>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontWeight: '800', color: f.points > 0 ? '#34d399' : '#fb7185', flexShrink: 0 }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontWeight: '800', color: f.points > 0 ? 'var(--accent-mint)' : '#fb7185', flexShrink: 0 }}>
                       {f.points > 0 ? '+' : ''}{f.points}
                     </span>
                   </div>
@@ -520,7 +520,7 @@ export default function MemecoinRadar() {
 
               <a
                 href={selected.pair.url} target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-block', marginTop: '10px', fontSize: '10.5px', color: '#38bdf8', fontWeight: '700', textDecoration: 'none' }}
+                style={{ display: 'inline-block', marginTop: '10px', fontSize: '10.5px', color: 'var(--accent-sky)', fontWeight: '700', textDecoration: 'none' }}
               >
                 Verifikasi sendiri di DexScreener ↗
               </a>
@@ -553,7 +553,7 @@ export default function MemecoinRadar() {
                   <table className="telemetry-table" style={{ fontSize: '11px' }}>
                     <tbody>
                       <tr>
-                        <td style={{ color: '#38bdf8', fontWeight: '700' }}>Entry</td>
+                        <td style={{ color: 'var(--accent-sky)', fontWeight: '700' }}>Entry</td>
                         <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '800' }}>{fmtPrice(plan.entry)}</td>
                       </tr>
                       <tr>
@@ -563,12 +563,12 @@ export default function MemecoinRadar() {
                         </td>
                       </tr>
                       <tr>
-                        <td style={{ color: '#34d399', fontWeight: '700' }}>Target 1 (1.5R)</td>
-                        <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '800', color: '#34d399' }}>{fmtPrice(plan.takeProfit1)}</td>
+                        <td style={{ color: 'var(--accent-mint)', fontWeight: '700' }}>Target 1 (1.5R)</td>
+                        <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--accent-mint)' }}>{fmtPrice(plan.takeProfit1)}</td>
                       </tr>
                       <tr>
-                        <td style={{ color: '#34d399', fontWeight: '700' }}>Target 2 (3R)</td>
-                        <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '800', color: '#34d399' }}>{fmtPrice(plan.takeProfit2)}</td>
+                        <td style={{ color: 'var(--accent-mint)', fontWeight: '700' }}>Target 2 (3R)</td>
+                        <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--accent-mint)' }}>{fmtPrice(plan.takeProfit2)}</td>
                       </tr>
                       <tr style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
                         <td style={{ color: 'var(--text-muted)' }}>Ukuran posisi</td>
@@ -584,7 +584,7 @@ export default function MemecoinRadar() {
                       </tr>
                       <tr>
                         <td style={{ color: 'var(--text-muted)' }}>Potensi cuan TP1 / TP2</td>
-                        <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: '#34d399' }}>
+                        <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700', color: 'var(--accent-mint)' }}>
                           {fmtUsd(plan.gainAtTp1Usd)} / {fmtUsd(plan.gainAtTp2Usd)}
                         </td>
                       </tr>

@@ -81,7 +81,7 @@ export default function ChangelogTab() {
           <h4 key={idx} style={{
             fontSize: '13px',
             fontWeight: '800',
-            color: '#38bdf8',
+            color: 'var(--accent-sky)',
             marginTop: '12px',
             marginBottom: '6px',
             fontFamily: 'var(--font-mono)',
@@ -116,7 +116,7 @@ export default function ChangelogTab() {
           <h2 key={idx} style={{
             fontSize: '15.5px',
             fontWeight: '800',
-            color: '#38bdf8',
+            color: 'var(--accent-sky)',
             marginTop: '18px',
             marginBottom: '8px',
             borderBottom: 'var(--border-muted)',
@@ -152,7 +152,7 @@ export default function ChangelogTab() {
                     padding: '2px 5px',
                     borderRadius: '4px',
                     fontSize: '11px',
-                    color: '#38bdf8'
+                    color: 'var(--accent-sky)'
                   }}>
                     {part.slice(1, -1)}
                   </code>
@@ -258,7 +258,7 @@ export default function ChangelogTab() {
             textAlign: 'center'
           }}>
             <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>FORMAT BACA</div>
-            <div style={{ fontSize: '13px', fontWeight: '800', color: '#38bdf8' }}>Runtut & Terpadu</div>
+            <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-sky)' }}>Runtut & Terpadu</div>
           </div>
         </div>
       </div>
@@ -503,7 +503,7 @@ export default function ChangelogTab() {
               <h3 style={{
                 fontSize: '13px',
                 fontWeight: '800',
-                color: '#38bdf8',
+                color: 'var(--accent-sky)',
                 marginBottom: '8px',
                 fontFamily: 'var(--font-mono)'
               }}>
@@ -542,7 +542,7 @@ export default function ChangelogTab() {
                             fontSize: '9px',
                             fontWeight: '800',
                             background: row.status === 'PROD' ? 'rgba(0, 208, 132, 0.15)' : 'rgba(56, 189, 248, 0.15)',
-                            color: row.status === 'PROD' ? 'var(--accent-green)' : '#38bdf8',
+                            color: row.status === 'PROD' ? 'var(--accent-green)' : 'var(--accent-sky)',
                             border: `1px solid ${row.status === 'PROD' ? 'rgba(0, 208, 132, 0.4)' : 'rgba(56, 189, 248, 0.4)'}`
                           }}>
                             {row.status}

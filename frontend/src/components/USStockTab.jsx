@@ -73,7 +73,7 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
               <h2 style={{ fontSize: '18px', fontWeight: '800', margin: 0, letterSpacing: '0.04em' }}>
                 US STOCK INTELLIGENCE
               </h2>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 10px', borderRadius: '12px', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', fontSize: '11px', color: '#38bdf8', fontWeight: '700' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 10px', borderRadius: '12px', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', fontSize: '11px', color: 'var(--accent-sky)', fontWeight: '700' }}>
                 <span className="pulse-dot-green" />
                 <span>WALL STREET 30 RADAR</span>
               </div>
@@ -446,7 +446,7 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                     padding: '3px 8px', 
                     borderRadius: '6px', 
                     background: 'rgba(56, 189, 248, 0.1)', 
-                    color: '#38bdf8',
+                    color: 'var(--accent-sky)',
                     border: '1px solid rgba(56, 189, 248, 0.25)' 
                   }}>
                     {s.setup_type}
@@ -498,7 +498,7 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                   background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(56, 189, 248, 0.05))', 
                   border: '1px solid rgba(56, 189, 248, 0.3)', 
                   borderRadius: '6px', 
-                  color: '#38bdf8', 
+                  color: 'var(--accent-sky)', 
                   fontWeight: '700', 
                   fontSize: '12px',
                   cursor: 'pointer',

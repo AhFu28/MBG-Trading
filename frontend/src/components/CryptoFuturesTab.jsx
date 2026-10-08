@@ -496,7 +496,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
   const getChainBadgeColor = (chainId) => {
     const c = chainId?.toLowerCase() || '';
     if (c === 'solana') return { bg: 'rgba(168, 85, 247, 0.15)', text: '#c084fc', border: 'rgba(168, 85, 247, 0.3)' };
-    if (c === 'base') return { bg: 'rgba(59, 130, 246, 0.15)', text: '#60a5fa', border: 'rgba(59, 130, 246, 0.3)' };
+    if (c === 'base') return { bg: 'rgba(59, 130, 246, 0.15)', text: 'var(--accent-sky-soft)', border: 'rgba(59, 130, 246, 0.3)' };
     if (c === 'ethereum') return { bg: 'rgba(99, 102, 241, 0.15)', text: '#818cf8', border: 'rgba(99, 102, 241, 0.3)' };
     if (c === 'bsc') return { bg: 'rgba(234, 179, 8, 0.15)', text: '#facc15', border: 'rgba(234, 179, 8, 0.3)' };
     return { bg: 'rgba(255, 255, 255, 0.05)', text: 'var(--text-secondary)', border: 'var(--border-hairline)' };
@@ -652,7 +652,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
             className={`quant-pill-btn ${activeTab === 'orderbook' ? 'active' : ''}`}
             style={{
               borderColor: activeTab === 'orderbook' ? 'rgba(16, 185, 129, 0.45)' : undefined,
-              color: activeTab === 'orderbook' ? '#34d399' : undefined
+              color: activeTab === 'orderbook' ? 'var(--accent-mint)' : undefined
             }}
           >
             <span>⚡</span>
@@ -1074,7 +1074,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                                 background: 'rgba(16, 185, 129, 0.12)',
                                 border: '1px solid rgba(16, 185, 129, 0.35)',
                                 borderRadius: '4px',
-                                color: '#34d399',
+                                color: 'var(--accent-mint)',
                                 padding: '4px 8px',
                                 fontSize: '11px',
                                 fontWeight: '700',
@@ -1244,9 +1244,9 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                       fontFamily: 'var(--font-mono)',
                       fontWeight: 700,
                       borderRadius: '4px',
-                      border: selectedBookCoin === sym ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.08)',
+                      border: selectedBookCoin === sym ? '1px solid var(--accent-emerald)' : '1px solid rgba(255,255,255,0.08)',
                       background: selectedBookCoin === sym ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255,255,255,0.03)',
-                      color: selectedBookCoin === sym ? '#34d399' : 'var(--text-muted)',
+                      color: selectedBookCoin === sym ? 'var(--accent-mint)' : 'var(--text-muted)',
                       cursor: 'pointer'
                     }}
                   >
@@ -1256,7 +1256,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
               </div>
 
               <div style={{ fontSize: '10.5px', color: '#64748b' }}>
-                Klik tombol <strong style={{ color: '#34d399' }}>📖 Book</strong> di tabel Kontrak Perpetual untuk membuka instrumen lainnya.
+                Klik tombol <strong style={{ color: 'var(--accent-mint)' }}>📖 Book</strong> di tabel Kontrak Perpetual untuk membuka instrumen lainnya.
               </div>
             </div>
 

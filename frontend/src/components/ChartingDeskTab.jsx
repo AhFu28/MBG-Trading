@@ -52,13 +52,13 @@ function ExecutionHudOverlay({ symbol, market, currentPrice, plan, isCrypto }) {
           alignItems: 'center',
           gap: '4px',
           background: 'rgba(16, 185, 129, 0.15)',
-          color: '#10b981',
+          color: 'var(--accent-emerald)',
           padding: '2px 6px',
           borderRadius: '4px',
           fontWeight: 700,
           border: '1px solid rgba(16, 185, 129, 0.3)'
         }}>
-          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-emerald)', display: 'inline-block' }} />
           LIVE EXECUTION
         </span>
         <span style={{ color: '#93c5fd', fontWeight: 600 }}>{botName}</span>
@@ -77,8 +77,8 @@ function ExecutionHudOverlay({ symbol, market, currentPrice, plan, isCrypto }) {
 
         {/* Upper Barrier (TP) */}
         <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '2px 5px', borderRadius: '4px', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
-          <span style={{ color: '#10b981', fontSize: '9px' }}>🎯 Barrier 1 (TP): </span>
-          <strong style={{ color: '#34d399' }}>{isIdx ? `Rp ${tp.toLocaleString()}` : `$${tp}`} (+{tpPct}%)</strong>
+          <span style={{ color: 'var(--accent-emerald)', fontSize: '9px' }}>🎯 Barrier 1 (TP): </span>
+          <strong style={{ color: 'var(--accent-mint)' }}>{isIdx ? `Rp ${tp.toLocaleString()}` : `$${tp}`} (+{tpPct}%)</strong>
         </div>
 
         {/* Lower Barrier (SL) */}
@@ -89,7 +89,7 @@ function ExecutionHudOverlay({ symbol, market, currentPrice, plan, isCrypto }) {
 
         {/* Vertical Barrier (Time Horizon) */}
         <div style={{ background: 'rgba(245, 158, 11, 0.08)', padding: '2px 5px', borderRadius: '4px', border: '1px solid rgba(245, 158, 11, 0.25)' }}>
-          <span style={{ color: '#f59e0b', fontSize: '9px' }}>⏱️ Barrier 3 (Time): </span>
+          <span style={{ color: 'var(--accent-gold)', fontSize: '9px' }}>⏱️ Barrier 3 (Time): </span>
           <strong style={{ color: '#fbbf24' }}>Bar 14/24 (H+3)</strong>
         </div>
 
@@ -99,10 +99,10 @@ function ExecutionHudOverlay({ symbol, market, currentPrice, plan, isCrypto }) {
             Trailing: <strong>{isIdx ? `Rp ${trailing.toLocaleString()}` : `$${trailing}`}</strong>
           </span>
           <span style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '10px' }}>
-            Slip: <span style={{ color: '#10b981' }}>0.08% (TWAP)</span>
+            Slip: <span style={{ color: 'var(--accent-emerald)' }}>0.08% (TWAP)</span>
           </span>
           <span style={{
-            color: isProfit ? '#34d399' : '#f87171',
+            color: isProfit ? 'var(--accent-mint)' : '#f87171',
             background: isProfit ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
             padding: '1px 5px',
             borderRadius: '3px',
@@ -206,7 +206,7 @@ function ChartPane({
           <span style={{
             fontFamily: 'var(--font-mono)',
             fontWeight: 800,
-            color: isActive ? '#60a5fa' : 'var(--text-primary)',
+            color: isActive ? 'var(--accent-sky-soft)' : 'var(--text-primary)',
             background: 'rgba(255, 255, 255, 0.06)',
             padding: '1px 5px',
             borderRadius: '3px'
@@ -228,7 +228,7 @@ function ChartPane({
             title="Toggle Triple-Barrier Execution HUD Overlay"
             style={{
               background: showHud ? 'rgba(59, 130, 246, 0.25)' : 'rgba(255, 255, 255, 0.05)',
-              color: showHud ? '#60a5fa' : 'var(--text-muted)',
+              color: showHud ? 'var(--accent-sky-soft)' : 'var(--text-muted)',
               border: '1px solid ' + (showHud ? 'rgba(59, 130, 246, 0.4)' : 'rgba(255, 255, 255, 0.1)'),
               borderRadius: '3px',
               padding: '1px 6px',
@@ -364,7 +364,7 @@ export default function ChartingDeskTab({
     },
     MEAN: {
       badge: 'MEAN REVERSION',
-      badgeColor: 'var(--accent-amber, #f59e0b)',
+      badgeColor: 'var(--accent-amber, var(--accent-gold))',
       studies: ["BollingerBands@tv-basicstudies", "RSI@tv-basicstudies"],
       indicators: [
         '• Bollinger Bands (20, 2.0 Deviation)',
@@ -491,7 +491,7 @@ export default function ChartingDeskTab({
             <button
               onClick={() => setDeskMode('PRO')}
               style={{
-                background: 'linear-gradient(135deg, #10b981, #059669)',
+                background: 'linear-gradient(135deg, var(--accent-emerald), #059669)',
                 color: '#022c22',
                 border: 'none',
                 padding: '2px 8px',
@@ -600,7 +600,7 @@ export default function ChartingDeskTab({
                   border: 'none',
                   cursor: 'pointer',
                   background: layoutMode === l.mode ? 'rgba(59, 130, 246, 0.25)' : 'transparent',
-                  color: layoutMode === l.mode ? '#60a5fa' : 'var(--text-muted)'
+                  color: layoutMode === l.mode ? 'var(--accent-sky-soft)' : 'var(--text-muted)'
                 }}
               >
                 {l.label}
@@ -626,7 +626,7 @@ export default function ChartingDeskTab({
                   borderRadius: '4px',
                   border: activePreset === p.id ? '1px solid var(--accent-blue)' : '1px solid rgba(255, 255, 255, 0.08)',
                   background: activePreset === p.id ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
-                  color: activePreset === p.id ? '#60a5fa' : 'var(--text-muted)',
+                  color: activePreset === p.id ? 'var(--accent-sky-soft)' : 'var(--text-muted)',
                   cursor: 'pointer'
                 }}
               >
@@ -643,7 +643,7 @@ export default function ChartingDeskTab({
             style={{
               background: showCompanion ? 'rgba(59, 130, 246, 0.15)' : 'rgba(255, 255, 255, 0.05)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              color: showCompanion ? '#60a5fa' : 'var(--text-muted)',
+              color: showCompanion ? 'var(--accent-sky-soft)' : 'var(--text-muted)',
               padding: '3px 8px',
               fontSize: '10px',
               fontWeight: 700,
@@ -811,10 +811,10 @@ export default function ChartingDeskTab({
                 gap: '5px'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '9px', fontWeight: 800, color: '#60a5fa', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <span style={{ fontSize: '9px', fontWeight: 800, color: 'var(--accent-sky-soft)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                     TRIPLE-BARRIER CONTRACT
                   </span>
-                  <span style={{ fontSize: '8px', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', padding: '1px 4px', borderRadius: '3px', fontWeight: 700 }}>
+                  <span style={{ fontSize: '8px', color: 'var(--accent-emerald)', background: 'rgba(16, 185, 129, 0.1)', padding: '1px 4px', borderRadius: '3px', fontWeight: 700 }}>
                     ACTIVE
                   </span>
                 </div>
@@ -823,7 +823,7 @@ export default function ChartingDeskTab({
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#10b981' }}>▲ Target (+{(((target1Price - entryPrice) / entryPrice) * 100).toFixed(1)}%):</span>
+                    <span style={{ color: 'var(--accent-emerald)' }}>▲ Target (+{(((target1Price - entryPrice) / entryPrice) * 100).toFixed(1)}%):</span>
                     <strong>{formatPriceVal(target1Price)}</strong>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -831,7 +831,7 @@ export default function ChartingDeskTab({
                     <strong>{formatPriceVal(stopLossPrice)}</strong>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#f59e0b' }}>⏱️ Max Horizon:</span>
+                    <span style={{ color: 'var(--accent-gold)' }}>⏱️ Max Horizon:</span>
                     <strong>24 Bars (EOD Exit)</strong>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '3px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
@@ -871,7 +871,7 @@ export default function ChartingDeskTab({
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '4px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
                   <span style={{ color: 'var(--text-muted)' }}>R:R Rasio:</span>
-                  <strong style={{ color: 'var(--accent-orange, #f59e0b)' }}>
+                  <strong style={{ color: 'var(--accent-orange, var(--accent-gold))' }}>
                     1 : {activePlan?.risk_reward_ratio ? Number(activePlan.risk_reward_ratio).toFixed(1) : '2.0+'}
                   </strong>
                 </div>

@@ -30,8 +30,8 @@ function fmtWhen(iso) {
 }
 
 const DIRECTION_STYLE = {
-  LONG: { color: '#34d399', bg: 'rgba(16,185,129,0.14)', border: 'rgba(16,185,129,0.4)', label: '▲ LONG' },
-  BUY: { color: '#34d399', bg: 'rgba(16,185,129,0.14)', border: 'rgba(16,185,129,0.4)', label: '▲ BUY' },
+  LONG: { color: 'var(--accent-mint)', bg: 'rgba(16,185,129,0.14)', border: 'rgba(16,185,129,0.4)', label: '▲ LONG' },
+  BUY: { color: 'var(--accent-mint)', bg: 'rgba(16,185,129,0.14)', border: 'rgba(16,185,129,0.4)', label: '▲ BUY' },
   SHORT: { color: '#fb7185', bg: 'rgba(244,63,94,0.14)', border: 'rgba(244,63,94,0.4)', label: '▼ SHORT' },
   SELL: { color: '#fb7185', bg: 'rgba(244,63,94,0.14)', border: 'rgba(244,63,94,0.4)', label: '▼ SELL' },
 };
@@ -96,7 +96,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
               {features.note}
             </div>
             <div style={{ display: 'flex', gap: '14px', marginTop: '8px', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
-              <span style={{ color: '#34d399' }}>● {view.totalVisible} terlihat</span>
+              <span style={{ color: 'var(--accent-mint)' }}>● {view.totalVisible} terlihat</span>
               {view.totalLocked > 0 && (
                 <span style={{ color: '#fbbf24' }}>🔒 {view.totalLocked} terkunci</span>
               )}
@@ -127,7 +127,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
                 onClick={() => onNavigateTab && onNavigateTab('CHANGELOG')}
                 style={{
                   marginTop: '10px', width: '100%', padding: '7px 12px', borderRadius: '7px',
-                  background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                  background: 'linear-gradient(135deg, var(--accent-gold) 0%, #d97706 100%)',
                   color: '#000', border: 'none', fontSize: '10.5px', fontWeight: '900', cursor: 'pointer',
                 }}
               >
@@ -141,7 +141,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
               background: 'rgba(16,185,129,0.10)', border: '1px solid rgba(16,185,129,0.35)',
               borderRadius: '10px', padding: '12px 14px', maxWidth: '250px',
             }}>
-              <div style={{ fontSize: '11px', fontWeight: '800', color: '#34d399', marginBottom: '4px' }}>
+              <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-mint)', marginBottom: '4px' }}>
                 ✅ Akses Penuh Aktif
               </div>
               <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
@@ -242,10 +242,10 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
                 ) : (
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '7px' }}>
                     {[
-                      ['ENTRY', row.entry_price, '#38bdf8'],
+                      ['ENTRY', row.entry_price, 'var(--accent-sky)'],
                       ['STOP LOSS', row.stop_loss, '#fb7185'],
-                      ['TARGET 1', row.target_1, '#34d399'],
-                      ['TARGET 2', row.target_2, '#34d399'],
+                      ['TARGET 1', row.target_1, 'var(--accent-mint)'],
+                      ['TARGET 2', row.target_2, 'var(--accent-mint)'],
                     ].map(([label, value, color]) => (
                       <div key={label} style={{
                         background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.06)',
@@ -266,7 +266,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
                 {!row.masked && row.risk_reward_ratio != null && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10.5px' }}>
                     <span style={{ color: 'var(--text-muted)' }}>Risk / Reward</span>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontWeight: '800', color: '#34d399' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--accent-mint)' }}>
                       1:{Number(row.risk_reward_ratio).toFixed(1)}
                     </span>
                   </div>

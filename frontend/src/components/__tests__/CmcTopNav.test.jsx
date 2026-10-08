@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, fireEvent } from '@testing-library/react';
 import React from 'react';
 import CmcTopNav, { NAV_GROUPS } from '../CmcTopNav.jsx';
 import { __resetWatchlistMemory } from '../../hooks/useWatchlist.js';
@@ -132,6 +132,40 @@ describe('rendering', () => {
     act(() => { accountMenu.click(); });
     expect(screen.getByText('Flow Process')).toBeDefined();
     expect(screen.getByText('Changelog')).toBeDefined();
+  });
+
+  /**
+   * Click OPENS the panel; it does not toggle it closed.
+   *
+   * This was a real bug found by the E2E suite, not a test problem. On a real
+   * pointer, hover fires before the click lands: the pointer must arrive at the
+   * button to click it, and arriving opens the panel. A toggle then closed the
+   * panel hover had just opened, so clicking a menu did nothing at all.
+   *
+   * The failure was invisible in jsdom because a synthetic `.click()` carries no
+   * hover, which is exactly why the browser-level suite exists.
+   */
+  it('opens on click even when hover already opened it', () => {
+    renderNav();
+
+    const accountMenu = screen.getByRole('button', { name: /Account/i });
+
+    // Simulate the real pointer sequence: hover fires first, then click.
+    act(() => { fireEvent.mouseEnter(accountMenu.parentElement); });
+    expect(accountMenu.getAttribute('aria-expanded')).toBe('true');
+
+    act(() => { accountMenu.click(); });
+
+    // The click must leave it open, not close it.
+    expect(accountMenu.getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getByText('Setting')).toBeDefined();
+  });
+
+  it('opens on click with no hover at all, for touch devices', () => {
+    renderNav();
+    const accountMenu = screen.getByRole('button', { name: /Account/i });
+    act(() => { accountMenu.click(); });
+    expect(accountMenu.getAttribute('aria-expanded')).toBe('true');
   });
 
   it('shows the watchlist count badge when instruments are starred', () => {

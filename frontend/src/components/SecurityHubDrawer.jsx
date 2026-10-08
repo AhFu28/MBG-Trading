@@ -130,7 +130,7 @@ function MiniCandleChart({ symbol, currentPrice, entry, sl, tp1, isPositive, isI
       ctx.restore();
     };
 
-    if (tp1) drawRefLine(tp1, '#10b981', 'TP1');
+    if (tp1) drawRefLine(tp1, 'var(--accent-emerald)', 'TP1');
     if (entry) drawRefLine(entry, '#3b82f6', 'ENTRY');
     if (sl) drawRefLine(sl, '#ef4444', 'SL');
 
@@ -140,7 +140,7 @@ function MiniCandleChart({ symbol, currentPrice, entry, sl, tp1, isPositive, isI
     candles.forEach((c, idx) => {
       const x = padLeft + idx * spacing + spacing / 2;
       const isBull = c.close >= c.open;
-      const candleColor = isBull ? '#10b981' : '#ef4444';
+      const candleColor = isBull ? 'var(--accent-emerald)' : '#ef4444';
 
       const yOpen = getY(c.open);
       const yClose = getY(c.close);
@@ -370,7 +370,7 @@ export default function SecurityHubDrawer({
                 <span className="badge badge-alert" style={{ fontSize: '8px', padding: '1px 5px' }}>
                   {resolvedMarket}
                 </span>
-                <span style={{ fontSize: '9px', color: '#60a5fa', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ fontSize: '9px', color: 'var(--accent-sky-soft)', fontFamily: 'var(--font-mono)' }}>
                   SECURITY HUB
                 </span>
               </div>
@@ -467,7 +467,7 @@ export default function SecurityHubDrawer({
                 background: 'none',
                 border: 'none',
                 borderBottom: activeSubTab === tab.id ? '2px solid var(--accent-blue, #3b82f6)' : '2px solid transparent',
-                color: activeSubTab === tab.id ? '#60a5fa' : 'var(--text-muted)',
+                color: activeSubTab === tab.id ? 'var(--accent-sky-soft)' : 'var(--text-muted)',
                 fontWeight: activeSubTab === tab.id ? 800 : 600,
                 fontSize: '11px',
                 padding: '10px 4px',
@@ -505,7 +505,7 @@ export default function SecurityHubDrawer({
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                   <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '8px', borderRadius: '6px' }}>
                     <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>ENTRY ZONE</div>
-                    <div style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#60a5fa' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent-sky-soft)' }}>
                       {formatPrice(entry)}
                     </div>
                   </div>
@@ -563,7 +563,7 @@ export default function SecurityHubDrawer({
                   color: 'var(--text-muted)' 
                 }}>
                   <span>MINI CANDLESTICK OVERVIEW</span>
-                  <span style={{ fontSize: '9px', color: '#60a5fa', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ fontSize: '9px', color: 'var(--accent-sky-soft)', fontFamily: 'var(--font-mono)' }}>
                     TARGET TP1: {formatPrice(tp1)}
                   </span>
                 </div>
@@ -598,7 +598,7 @@ export default function SecurityHubDrawer({
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <span style={{ color: 'var(--text-muted)' }}>Top Buyer (Asing):</span>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: '#60a5fa' }}>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent-sky-soft)' }}>
                           {brokerSummary.top_buyers?.slice(0, 3).join(', ') || 'MS, JP, KZ'}
                         </span>
                       </div>
@@ -637,7 +637,7 @@ export default function SecurityHubDrawer({
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span style={{ color: 'var(--text-muted)' }}>Open Interest Signal:</span>
-                      <span style={{ fontWeight: 700, color: '#60a5fa' }}>
+                      <span style={{ fontWeight: 700, color: 'var(--accent-sky-soft)' }}>
                         {cryptoFutures?.oi?.oi_price_divergence || 'BULLISH_CONFIRMATION'}
                       </span>
                     </div>
@@ -709,7 +709,7 @@ export default function SecurityHubDrawer({
                           fontFamily: 'var(--font-mono)',
                           fontWeight: calcCapital === val ? 800 : 500,
                           background: calcCapital === val ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.04)',
-                          color: calcCapital === val ? '#60a5fa' : 'var(--text-muted)',
+                          color: calcCapital === val ? 'var(--accent-sky-soft)' : 'var(--text-muted)',
                           border: `1px solid ${calcCapital === val ? 'rgba(59, 130, 246, 0.4)' : 'transparent'}`,
                           borderRadius: '4px',
                           cursor: 'pointer'
@@ -784,7 +784,7 @@ export default function SecurityHubDrawer({
                           fontSize: '24px',
                           fontWeight: 900,
                           fontFamily: 'var(--font-mono)',
-                          color: '#60a5fa',
+                          color: 'var(--accent-sky-soft)',
                           margin: '4px 0'
                         }}>
                           {isIdx ? `${totalLots.toLocaleString('id-ID')} LOT` : `${actualShares.toLocaleString('en-US')} UNIT`}
@@ -849,7 +849,7 @@ export default function SecurityHubDrawer({
                             padding: '8px 12px',
                             fontSize: '10.5px',
                             fontWeight: 700,
-                            color: '#60a5fa',
+                            color: 'var(--accent-sky-soft)',
                             cursor: 'pointer'
                           }}
                           title="Buka kalkulator penuh di jendela modal terpisah"
@@ -921,7 +921,7 @@ export default function SecurityHubDrawer({
               background: 'rgba(59, 130, 246, 0.18)',
               border: '1px solid rgba(59, 130, 246, 0.4)',
               borderRadius: '6px',
-              color: '#60a5fa',
+              color: 'var(--accent-sky-soft)',
               padding: '8px 10px',
               fontSize: '11px',
               fontWeight: 800,

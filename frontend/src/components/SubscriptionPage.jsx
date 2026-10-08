@@ -185,7 +185,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '10px', marginBottom: '18px' }}>
               {proPlan.features.map(f => (
                 <div key={f} style={{ fontSize: '11.5px', display: 'flex', gap: '8px', lineHeight: 1.55 }}>
-                  <span style={{ color: '#34d399', flexShrink: 0 }}>✓</span>
+                  <span style={{ color: 'var(--accent-mint)', flexShrink: 0 }}>✓</span>
                   <span>{f}</span>
                 </div>
               ))}
@@ -263,7 +263,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
               border: '1px solid rgba(16,185,129,0.25)',
               borderRadius: '11px',
             }}>
-              <div style={{ fontSize: '12.5px', fontWeight: '800', color: '#34d399', marginBottom: '6px' }}>
+              <div style={{ fontSize: '12.5px', fontWeight: '800', color: 'var(--accent-mint)', marginBottom: '6px' }}>
                 📝 Formulir Konfirmasi Pembayaran
               </div>
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 14px' }}>
@@ -276,7 +276,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                   background: 'rgba(16,185,129,0.15)',
                   border: '1px solid rgba(16,185,129,0.4)',
                   borderRadius: '8px',
-                  color: '#34d399',
+                  color: 'var(--accent-mint)',
                   fontSize: '12px',
                   lineHeight: 1.6,
                 }}>
@@ -350,7 +350,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                         style={{
                           width: '100%', padding: '8px 10px', background: 'rgba(0,0,0,0.3)',
                           border: '1px solid rgba(255,255,255,0.15)', borderRadius: '7px',
-                          color: '#34d399', fontWeight: '700', fontSize: '11.5px', boxSizing: 'border-box',
+                          color: 'var(--accent-mint)', fontWeight: '700', fontSize: '11.5px', boxSizing: 'border-box',
                         }}
                       />
                     </div>
@@ -397,7 +397,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                       marginTop: '6px',
                       padding: '10px 18px',
                       borderRadius: '8px',
-                      background: 'linear-gradient(135deg, #10b981, #059669)',
+                      background: 'linear-gradient(135deg, var(--accent-emerald), #059669)',
                       border: 'none',
                       color: '#042f2e',
                       fontSize: '12px',
@@ -476,7 +476,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                 <tr key={label} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                   <td style={{ padding: '9px 8px', color: 'var(--text-secondary)' }}>{label}</td>
                   <td style={{ padding: '9px 8px', textAlign: 'center', color: free === '✕' ? 'var(--text-muted)' : 'var(--text-primary)' }}>{free}</td>
-                  <td style={{ padding: '9px 8px', textAlign: 'center', color: pro === '✕' ? 'var(--text-muted)' : '#34d399', fontWeight: '700' }}>{pro}</td>
+                  <td style={{ padding: '9px 8px', textAlign: 'center', color: pro === '✕' ? 'var(--text-muted)' : 'var(--accent-mint)', fontWeight: '700' }}>{pro}</td>
                 </tr>
               ))}
             </tbody>

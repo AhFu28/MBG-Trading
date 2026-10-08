@@ -70,37 +70,45 @@ test.describe('cockpit routes', () => {
 
 test.describe('navigation reaches every route by clicking, not by URL', () => {
   /**
-   * The URL tests above drive the router directly. This one drives the actual
-   * nav, because a menu entry pointing at an unrouted id is exactly the bug the
-   * owner reported for Live News Wire.
+   * The URL tests above drive the router directly. These drive the actual nav,
+   * because a menu entry pointing at an unrouted id is exactly the bug the owner
+   * reported for Live News Wire.
+   *
+   * WAIT FOR THE PANEL, DO NOT SLEEP. An earlier version clicked and then read
+   * the body text after a fixed timeout, which failed even though the panel was
+   * open — the assertion simply ran before React had committed. Waiting on the
+   * element that must appear is both faster and honest about what is being
+   * tested.
    */
   test('the Account menu reaches Legend Path and it renders', async ({ authedPage: page }) => {
     await gotoCockpitRoute(page, 'HOME');
 
-    const accountBtn = page.getByRole('button', { name: /Account/i }).first();
-    await accountBtn.click();
-    await page.waitForTimeout(300);
-    await page.getByRole('menuitem', { name: /Legend Path/i }).click();
-    await page.waitForTimeout(700);
+    await page.getByRole('button', { name: /Account/i }).first().click();
 
-    const text = await page.locator('body').innerText();
-    expect(text).toMatch(/legend path/i);
-    expect(text).toMatch(/achievement/i);
+    // The panel must actually open. If it does not, fail here with a clear
+    // message rather than continuing to a confusing text assertion.
+    const legendItem = page.getByRole('menuitem', { name: /Legend Path/i });
+    await expect(legendItem).toBeVisible({ timeout: 5000 });
+
+    await legendItem.click();
+
+    // The destination page, not the landing page and not the fallback desk.
+    await expect(page.getByRole('heading', { name: /Legend Path/i })).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText(/achievement/i).first()).toBeVisible();
   });
 
-  test('the Trade menu reaches Live News Wire and it renders content', async ({ authedPage: page }) => {
+  test('the Research menu reaches Live News Wire and it renders content', async ({ authedPage: page }) => {
     await gotoCockpitRoute(page, 'HOME');
 
-    // News lives under Research & Learn in the current nav model.
-    const researchBtn = page.getByRole('button', { name: /Research/i }).first();
-    await researchBtn.click();
-    await page.waitForTimeout(300);
-    await page.getByRole('menuitem', { name: /Live News Wire/i }).click();
-    await page.waitForTimeout(800);
+    await page.getByRole('button', { name: /Research/i }).first().click();
 
-    const text = await page.locator('body').innerText();
-    // The regression: this used to fall through to the fallback desk.
-    expect(text).not.toMatch(/modul tidak dikenal/i);
-    expect(text).toMatch(/berita|news|headline|wire/i);
+    const newsItem = page.getByRole('menuitem', { name: /Live News Wire/i });
+    await expect(newsItem).toBeVisible({ timeout: 5000 });
+    await newsItem.click();
+
+    // The regression this guards: the entry existed with no router branch, so
+    // clicking it fell through to the fallback desk.
+    await expect(page.getByText(/modul tidak dikenal/i)).toHaveCount(0);
+    await expect(page.getByText(/berita|news|headline/i).first()).toBeVisible({ timeout: 5000 });
   });
 });

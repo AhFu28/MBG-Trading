@@ -320,7 +320,7 @@ export default function NewsDetailModal({
               <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>
                 🗓️ {dtInfo.dateStr}
               </span>
-              <span style={{ color: 'var(--accent-blue, #60a5fa)', fontWeight: '600' }}>
+              <span style={{ color: 'var(--accent-blue, var(--accent-sky-soft))', fontWeight: '600' }}>
                 ⏰ {dtInfo.timeStr}
               </span>
               {originalSourceTime && (
@@ -582,10 +582,10 @@ export default function NewsDetailModal({
                   padding: '8px 10px',
                   borderRadius: '4px'
                 }}>
-                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: '#f59e0b', fontWeight: '700' }}>
+                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', fontWeight: '700' }}>
                     ⚠️ INVALIDATION (CUT LOSS)
                   </div>
-                  <div style={{ fontSize: '14px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: '#f59e0b', marginTop: '2px' }}>
+                  <div style={{ fontSize: '14px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--accent-gold)', marginTop: '2px' }}>
                     {techLevels.invalidation?.toLocaleString()}
                   </div>
                   <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -690,7 +690,7 @@ export default function NewsDetailModal({
                   <strong style={{ color: 'var(--accent-red)' }}>[🔴 Skenario Bearish]:</strong> {playbook.bear_scenario}
                 </div>
                 <div>
-                  <strong style={{ color: '#f59e0b' }}>[⚠️ Aturan Invalidation]:</strong> {playbook.invalidation_rule}
+                  <strong style={{ color: 'var(--accent-gold)' }}>[⚠️ Aturan Invalidation]:</strong> {playbook.invalidation_rule}
                 </div>
               </div>
             </div>

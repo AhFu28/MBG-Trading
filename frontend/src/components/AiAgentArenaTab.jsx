@@ -720,7 +720,7 @@ const BOT_STATUS_GUIDE = {
 };
 
 // Mini SVG Sparkline / Equity Curve Component (Accurate Green when in profit, Red when in drawdown)
-function SparklineChart({ data = [], isPositive, color = '#10b981', height = 34, width = 180 }) {
+function SparklineChart({ data = [], isPositive, color = 'var(--accent-emerald)', height = 34, width = 180 }) {
   const pointsData = data && data.length >= 2 ? data : (data && data.length === 1 ? [data[0], data[0]] : [100, 100]);
   const min = Math.min(...pointsData);
   const max = Math.max(...pointsData);
@@ -735,7 +735,7 @@ function SparklineChart({ data = [], isPositive, color = '#10b981', height = 34,
 
   // Strict check: if isPositive is supplied, use it; otherwise check end vs start
   const positive = isPositive !== undefined ? isPositive : (pointsData[pointsData.length - 1] >= pointsData[0]);
-  const strokeColor = positive ? '#10b981' : '#ef4444';
+  const strokeColor = positive ? 'var(--accent-emerald)' : '#ef4444';
   const instanceId = useId().replace(/[^a-zA-Z0-9]/g, '');
   const fillGradientId = `grad_${positive ? 'pos' : 'neg'}_${instanceId}`;
 
@@ -1022,7 +1022,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
           <span style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>| {conf.title}</span>
         </div>
         <div style={{ display: 'flex', gap: '8px', fontSize: '8.5px', fontFamily: 'var(--font-mono)' }}>
-          <span style={{ color: '#10b981' }}>● TP (Target Profit)</span>
+          <span style={{ color: 'var(--accent-emerald)' }}>● TP (Target Profit)</span>
           <span style={{ color: '#3b82f6' }}>● ENTRY Point</span>
           <span style={{ color: '#ef4444' }}>● SL (Stop Loss)</span>
         </div>
@@ -1034,15 +1034,15 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
         <rect x="30" y={yEntry} width={width - 230} height={Math.max(2, ySl - yEntry)} fill="rgba(239, 68, 68, 0.08)" rx="2" />
 
         {/* Level Lines */}
-        <line x1="30" y1={yTp} x2={width - 30} y2={yTp} stroke="#10b981" strokeWidth="1.6" strokeDasharray="4 2" />
-        <rect x={width - 200} y={yTp - 9} width="195" height="17" fill="rgba(16, 185, 129, 0.22)" rx="3" stroke="#10b981" strokeWidth="0.8" />
-        <text x={width - 192} y={yTp + 3} fill="#10b981" fontSize="8" fontFamily="var(--font-mono)" fontWeight="700">
+        <line x1="30" y1={yTp} x2={width - 30} y2={yTp} stroke="var(--accent-emerald)" strokeWidth="1.6" strokeDasharray="4 2" />
+        <rect x={width - 200} y={yTp - 9} width="195" height="17" fill="rgba(16, 185, 129, 0.22)" rx="3" stroke="var(--accent-emerald)" strokeWidth="0.8" />
+        <text x={width - 192} y={yTp + 3} fill="var(--accent-emerald)" fontSize="8" fontFamily="var(--font-mono)" fontWeight="700">
           🎯 {conf.tpLabel}
         </text>
 
         <line x1="30" y1={yEntry} x2={width - 30} y2={yEntry} stroke="#3b82f6" strokeWidth="1.6" strokeDasharray="4 2" />
         <rect x={width - 200} y={yEntry - 9} width="195" height="17" fill="rgba(59, 130, 246, 0.22)" rx="3" stroke="#3b82f6" strokeWidth="0.8" />
-        <text x={width - 192} y={yEntry + 3} fill="#60a5fa" fontSize="8" fontFamily="var(--font-mono)" fontWeight="700">
+        <text x={width - 192} y={yEntry + 3} fill="var(--accent-sky-soft)" fontSize="8" fontFamily="var(--font-mono)" fontWeight="700">
           ⚡ {conf.entryLabel}
         </text>
 
@@ -1061,7 +1061,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
           const yClose = toY(c.c);
           const top = Math.min(yOpen, yClose);
           const bodyHeight = Math.max(Math.abs(yClose - yOpen), 3);
-          const candleColor = c.isBull ? '#10b981' : '#ef4444';
+          const candleColor = c.isBull ? 'var(--accent-emerald)' : '#ef4444';
 
           return (
             <g key={idx}>
@@ -1088,8 +1088,8 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
 
               {c.isExit && (
                 <g>
-                  <circle cx={cx} cy={yClose} r="3.5" fill="#10b981" stroke="#ffffff" strokeWidth="1.5" />
-                  <rect x={cx - 30} y={yClose - 20} width="60" height="13" fill="#064e3b" rx="2" stroke="#10b981" strokeWidth="0.8" />
+                  <circle cx={cx} cy={yClose} r="3.5" fill="var(--accent-emerald)" stroke="#ffffff" strokeWidth="1.5" />
+                  <rect x={cx - 30} y={yClose - 20} width="60" height="13" fill="#064e3b" rx="2" stroke="var(--accent-emerald)" strokeWidth="0.8" />
                   <text x={cx} y={yClose - 11} fill="#6ee7b7" fontSize="7" fontWeight="800" textAnchor="middle" fontFamily="var(--font-mono)">
                     TP HIT
                   </text>
@@ -1101,7 +1101,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       </svg>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', fontSize: '8.5px', color: 'var(--text-muted)' }}>
-        <span>Rasio R:R Terencana: <strong style={{ color: '#10b981' }}>1 : 3.0+ (Positive Asymmetric Edge)</strong></span>
+        <span>Rasio R:R Terencana: <strong style={{ color: 'var(--accent-emerald)' }}>1 : 3.0+ (Positive Asymmetric Edge)</strong></span>
         <span>Eksekusi: <strong style={{ color: 'var(--text-primary)' }}>Limit Order + Dynamic Trailing Invalidation</strong></span>
       </div>
     </div>
@@ -1736,7 +1736,7 @@ const INITIAL_AGENTS = [
     description: 'Trend-following dinamis menunggangi hembusan tren panjang Donchian & ekspansi volatilitas ATR.',
     strategy: 'ORDER_FLOW_SCALPING',
     avatar: '🌪️',
-    color: '#10b981',
+    color: 'var(--accent-emerald)',
     tier: 'BASE',
     dnaBadge: 'BASE',
     dnaIcons: ['🌪️'],
@@ -1974,7 +1974,7 @@ const INITIAL_AGENTS = [
     description: 'Multi-Agent Consensus Citadel Style: Entry hanya dieksekusi jika minimal 3 dari 4 elemen sepakat pada arah yang sama.',
     strategy: 'SUPERMIND_ENSEMBLE',
     avatar: '🌟',
-    color: '#f59e0b',
+    color: 'var(--accent-gold)',
     tier: 'AVATAR',
     dnaBadge: 'ALL 4',
     dnaIcons: ['🌊', '🔥', '🌪️', '⛰️'],
@@ -4756,7 +4756,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               id="btn-agent-review"
               onClick={() => setAgentReviewModalOpen(true)}
               className="telemetry-btn"
-              style={{ fontSize: '8.5px', padding: '2px 5px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: '#60a5fa' }}
+              style={{ fontSize: '8.5px', padding: '2px 5px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-sky-soft)' }}
               title="Buka Analisis Kinerja & Review Sinyal"
             >
               <span>📊</span>
@@ -5222,7 +5222,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                       <SparklineChart 
                         data={botEquityCurves[ag.id] || [capitalPerBotIdr]} 
                         isPositive={isEquityProfit} 
-                        color={isEquityProfit ? '#10b981' : '#ef4444'} 
+                        color={isEquityProfit ? 'var(--accent-emerald)' : '#ef4444'} 
                         height={18} 
                       />
                     </div>
@@ -5506,9 +5506,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   fontWeight: reviewActiveTab === 'RECAP' ? '900' : '600',
                   fontFamily: 'var(--font-mono)',
                   cursor: 'pointer',
-                  border: reviewActiveTab === 'RECAP' ? '1px solid #60a5fa' : '1px solid rgba(255,255,255,0.08)',
+                  border: reviewActiveTab === 'RECAP' ? '1px solid var(--accent-sky-soft)' : '1px solid rgba(255,255,255,0.08)',
                   background: reviewActiveTab === 'RECAP' ? 'rgba(96, 165, 250, 0.18)' : 'transparent',
-                  color: reviewActiveTab === 'RECAP' ? '#60a5fa' : 'var(--text-secondary)',
+                  color: reviewActiveTab === 'RECAP' ? 'var(--accent-sky-soft)' : 'var(--text-secondary)',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
@@ -5977,8 +5977,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
                       {/* Best vs Avoided Instruments */}
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '8px', fontSize: '9.5px', lineHeight: '1.5' }}>
-                        <div style={{ background: 'rgba(56, 189, 248, 0.08)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid #38bdf8' }}>
-                          <strong style={{ color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <div style={{ background: 'rgba(56, 189, 248, 0.08)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid var(--accent-sky)' }}>
+                          <strong style={{ color: 'var(--accent-sky)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <span>💎</span> <span>Instrumen Terbaik (Optimal Universe):</span>
                           </strong>
                           <div style={{ color: 'var(--text-primary)', marginTop: '3px', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
@@ -6059,7 +6059,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                 <span style={{ color: 'var(--text-muted)' }}>Penyebab MC:</span> <strong style={{ color: 'var(--accent-green)' }}>N/A (Nol Kebangkrutan)</strong>
                               </div>
                               <div style={{ background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: '3px' }}>
-                                <span style={{ color: 'var(--text-muted)' }}>Protokol Preventif:</span> <strong style={{ color: '#60a5fa' }}>Circuit Breaker 15% + Multi-Stage SL</strong>
+                                <span style={{ color: 'var(--text-muted)' }}>Protokol Preventif:</span> <strong style={{ color: 'var(--accent-sky-soft)' }}>Circuit Breaker 15% + Multi-Stage SL</strong>
                               </div>
                               <div style={{ background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: '3px' }}>
                                 <span style={{ color: 'var(--text-muted)' }}>Pair Toxic:</span> <strong style={{ color: 'var(--text-muted)' }}>Tidak Ada (Eksposur Terfilter)</strong>
@@ -7184,7 +7184,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 onChange={e => setSelectedRecapSessionKey(e.target.value === 'LIVE' ? 'LIVE' : Number(e.target.value))}
                 style={{
                   background: 'var(--bg-panel-subtle, #161b22)',
-                  color: selectedRecapSessionKey === 'LIVE' ? '#38bdf8' : '#c084fc',
+                  color: selectedRecapSessionKey === 'LIVE' ? 'var(--accent-sky)' : '#c084fc',
                   border: '1px solid var(--border-subtle, #30363d)',
                   borderRadius: '4px',
                   padding: '4px 10px',
@@ -7195,7 +7195,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   minWidth: '240px'
                 }}
               >
-                <option value="LIVE" style={{ background: '#0d1117', color: '#38bdf8' }}>
+                <option value="LIVE" style={{ background: '#0d1117', color: 'var(--accent-sky)' }}>
                   {(() => {
                     const official = epochReports.filter(ep => ep.epochNumber !== 0 && !String(ep.epochNumber).startsWith('0.') && !String(ep.epochNumber).includes('test'));
                     return `● Season ${official.length + 1} (Aktif / Live)`;
@@ -7740,7 +7740,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           const isPositive = pnlToShow >= 0;
                           const tradesShown = pairDirFilter === 'LONG' ? p.longTrades : pairDirFilter === 'SHORT' ? p.shortTrades : p.totalTrades;
                           const wrShown = pairDirFilter === 'LONG' ? p.longWinRate : pairDirFilter === 'SHORT' ? p.shortWinRate : p.winRate;
-                          const mktColors = { 'FOREX': '#38bdf8', 'CRYPTO': '#fb923c', 'FUTURES': '#a78bfa', 'IDX': '#34d399' };
+                          const mktColors = { 'FOREX': 'var(--accent-sky)', 'CRYPTO': '#fb923c', 'FUTURES': '#a78bfa', 'IDX': 'var(--accent-mint)' };
                           const mktColor = mktColors[p.market] || '#94a3b8';
                           return (
                             <div key={p.symbol} style={{

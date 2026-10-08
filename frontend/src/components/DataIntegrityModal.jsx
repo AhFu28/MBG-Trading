@@ -22,7 +22,7 @@ export default function DataIntegrityModal({
   const isBundleFresh = bundleAgeMin < 60;
   const isBundleWarning = bundleAgeMin >= 60 && bundleAgeMin < 360;
   const bundleStatus = isBundleFresh ? 'HEALTHY' : (isBundleWarning ? 'DEGRADED' : 'STALE');
-  const bundleColor = isBundleFresh ? '#10b981' : (isBundleWarning ? '#f59e0b' : '#ef4444');
+  const bundleColor = isBundleFresh ? 'var(--accent-emerald)' : (isBundleWarning ? 'var(--accent-gold)' : '#ef4444');
 
   // 2. AI Multi-Agent Arena 24/7 State & Telemetry
   const [arenaData, setArenaData] = useState(null);
@@ -69,14 +69,14 @@ export default function DataIntegrityModal({
   const isArenaFresh = arenaAgeMin <= ARENA_FRESH_MIN;
   const isArenaWarning = arenaAgeMin > ARENA_FRESH_MIN && arenaAgeMin <= ARENA_DELAYED_MIN;
   const arenaStatus = isArenaFresh ? 'PERIODIC ACTIVE' : (isArenaWarning ? 'DELAYED' : 'OFFLINE');
-  const arenaColor = isArenaFresh ? '#10b981' : (isArenaWarning ? '#f59e0b' : '#ef4444');
+  const arenaColor = isArenaFresh ? 'var(--accent-emerald)' : (isArenaWarning ? 'var(--accent-gold)' : '#ef4444');
 
   // 3. IDX Feed Status
   const idxStatus = 'ACTIVE';
-  const idxColor = '#10b981';
+  const idxColor = 'var(--accent-emerald)';
 
   // 4. Binance Crypto WS
-  const wsColor = isWsConnected ? '#10b981' : '#f59e0b';
+  const wsColor = isWsConnected ? 'var(--accent-emerald)' : 'var(--accent-gold)';
   const wsStatusText = isWsConnected ? 'CONNECTED (REALTIME)' : 'FALLBACK POLLING (45S)';
 
   // 5. Gemini Model Info
@@ -182,7 +182,7 @@ export default function DataIntegrityModal({
       provider: 'TradingView CFD Multi-Asset Feed',
       lastUpdate: lastUpdateTime ? formatWib(new Date(lastUpdateTime)) : 'Polling teratur',
       status: 'SYNCED',
-      statusColor: '#10b981',
+      statusColor: 'var(--accent-emerald)',
       details: 'Gold Spot (XAUUSD), Minyak Brent (UKOIL), WTI, DXY Index, dan 38 Pasangan Forex Utama.'
     },
     {
@@ -191,7 +191,7 @@ export default function DataIntegrityModal({
       provider: 'Pasar Valuta USDT/IDR Live Liquidity',
       lastUpdate: usdToIdrTime ? `${formatWib(new Date(usdToIdrTime))}` : 'Real-time cache',
       status: 'VERIFIED',
-      statusColor: '#10b981',
+      statusColor: 'var(--accent-emerald)',
       details: `Kurs acuan kalkulasi lot: Rp ${Number(usdToIdrRate).toLocaleString('id-ID')} per USD.`
     },
     {
@@ -200,7 +200,7 @@ export default function DataIntegrityModal({
       provider: geminiModel,
       lastUpdate: bundleDate ? formatWib(bundleDate) : 'Sesuai jadwal pipeline',
       status: 'READY',
-      statusColor: '#38bdf8',
+      statusColor: 'var(--accent-sky)',
       details: `Model aktif: ${geminiModel}. Eksekusi server-side via GitHub Actions (Zero API leakage).`
     }
   ];
@@ -281,10 +281,10 @@ export default function DataIntegrityModal({
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              background: (!isBundleFresh || !isArenaFresh) ? '#f59e0b' : '#10b981',
-              boxShadow: `0 0 8px ${(!isBundleFresh || !isArenaFresh) ? '#f59e0b' : '#10b981'}`
+              background: (!isBundleFresh || !isArenaFresh) ? 'var(--accent-gold)' : 'var(--accent-emerald)',
+              boxShadow: `0 0 8px ${(!isBundleFresh || !isArenaFresh) ? 'var(--accent-gold)' : 'var(--accent-emerald)'}`
             }} />
-            <span style={{ fontSize: '11px', fontWeight: '700', color: (!isBundleFresh || !isArenaFresh) ? '#f59e0b' : '#10b981' }}>
+            <span style={{ fontSize: '11px', fontWeight: '700', color: (!isBundleFresh || !isArenaFresh) ? 'var(--accent-gold)' : 'var(--accent-emerald)' }}>
               {(isBundleFresh && isArenaFresh) ? 'STATUS KESELURUHAN: DATA SEHAT & TERVERIFIKASI' : 'STATUS KESELURUHAN: PERLU PERIKSA KEDALUWARSAN'}
             </span>
           </div>
@@ -322,11 +322,11 @@ export default function DataIntegrityModal({
             borderBottom: '1px solid rgba(56, 189, 248, 0.25)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-              <span style={{ fontSize: '10.5px', color: '#38bdf8', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '10.5px', color: 'var(--accent-sky)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span>⚡</span>
                 {syncStage}
               </span>
-              <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: '#38bdf8' }}>
+              <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--accent-sky)' }}>
                 {syncProgress}%
               </span>
             </div>
@@ -340,7 +340,7 @@ export default function DataIntegrityModal({
               <div style={{
                 width: `${syncProgress}%`,
                 height: '100%',
-                background: 'linear-gradient(90deg, #38bdf8, #10b981)',
+                background: 'linear-gradient(90deg, var(--accent-sky), var(--accent-emerald))',
                 transition: 'width 0.25s ease-out'
               }} />
             </div>
@@ -356,7 +356,7 @@ export default function DataIntegrityModal({
             alignItems: 'center',
             justifyContent: 'space-between',
             fontSize: '10px',
-            color: '#10b981',
+            color: 'var(--accent-emerald)',
             fontWeight: 600
           }}>
             <span>✅ Verifikasi seluruh feed bursa & AI Arena baru saja selesai ({formatWib(lastForcedSync)})</span>
@@ -421,7 +421,7 @@ export default function DataIntegrityModal({
           color: 'var(--text-muted)'
         }}>
           <div>
-            Biaya Operasional Bulanan: <strong style={{ color: '#10b981' }}>Rp 0 (100% Free / Public Tier)</strong>
+            Biaya Operasional Bulanan: <strong style={{ color: 'var(--accent-emerald)' }}>Rp 0 (100% Free / Public Tier)</strong>
           </div>
           <button
             onClick={onClose}

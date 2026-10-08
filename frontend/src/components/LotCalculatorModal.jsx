@@ -235,7 +235,7 @@ export default function LotCalculatorModal({
               style={{
                 flex: 1,
                 padding: '8px 12px',
-                background: isCrypto ? 'var(--accent-orange, #f59e0b)' : 'transparent',
+                background: isCrypto ? 'var(--accent-orange, var(--accent-gold))' : 'transparent',
                 color: isCrypto ? '#ffffff' : 'var(--text-muted)',
                 border: 'none',
                 borderRadius: '4px',
@@ -479,7 +479,7 @@ export default function LotCalculatorModal({
                 background: 'rgba(56, 189, 248, 0.1)', 
                 border: '1px solid rgba(56, 189, 248, 0.4)',
                 borderRadius: '4px',
-                color: '#38bdf8',
+                color: 'var(--accent-sky)',
                 fontWeight: '600',
                 fontSize: '10.5px',
                 textAlign: 'center'

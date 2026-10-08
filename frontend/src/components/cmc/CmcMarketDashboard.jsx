@@ -206,7 +206,7 @@ function StarButton({ symbol, market, watchlist, size = 14 }) {
         padding: '2px 3px',
         fontSize: `${size}px`,
         lineHeight: 1,
-        color: active ? '#f59e0b' : 'var(--text-muted)',
+        color: active ? 'var(--accent-gold)' : 'var(--text-muted)',
         opacity: active ? 1 : 0.45,
         transition: 'opacity 0.15s ease, color 0.15s ease',
       }}
@@ -348,7 +348,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
             </span>
           )}
           {error && (
-            <span style={{ fontSize: '10px', color: '#f59e0b' }}>
+            <span style={{ fontSize: '10px', color: 'var(--accent-gold)' }}>
               ⚠️ sebagian data gagal dimuat
             </span>
           )}

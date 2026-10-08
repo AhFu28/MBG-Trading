@@ -856,7 +856,7 @@ export default function EconomicCalendarTab() {
             <h2 style={{ fontSize: '18px', margin: 0, fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
               KALENDER MAKRO EKONOMI GLOBAL
             </h2>
-            <span style={{ fontSize: '9px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '9px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
               {filteredEvents.length} EVENT TERJADWAL
             </span>
           </div>
@@ -884,7 +884,7 @@ export default function EconomicCalendarTab() {
             padding: '6px 12px',
             borderRadius: '6px',
             background: 'rgba(56, 189, 248, 0.12)',
-            color: '#38bdf8',
+            color: 'var(--accent-sky)',
             fontWeight: '700',
             fontFamily: 'var(--font-mono)',
             border: '1px solid rgba(56, 189, 248, 0.25)'
@@ -1103,8 +1103,8 @@ export default function EconomicCalendarTab() {
                           }}
                           style={{
                             background: isExpanded ? 'rgba(56, 189, 248, 0.2)' : 'var(--bg-panel-subtle)',
-                            border: isExpanded ? '1px solid #38bdf8' : 'var(--border-hairline)',
-                            color: isExpanded ? '#38bdf8' : 'var(--text-primary)',
+                            border: isExpanded ? '1px solid var(--accent-sky)' : 'var(--border-hairline)',
+                            color: isExpanded ? 'var(--accent-sky)' : 'var(--text-primary)',
                             padding: '4px 10px',
                             borderRadius: '5px',
                             fontSize: '11px',

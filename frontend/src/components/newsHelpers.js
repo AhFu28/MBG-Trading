@@ -125,8 +125,8 @@ export function getIntelligenceArtifact(newsItem = {}) {
 
   const drivers = [
     { factor: isCrypto ? 'Katalis ETF & Makro' : (['METALS', 'ENERGY'].includes(tag) ? 'Harga Komoditas Acuan' : 'Katalis Makro & Sektor'), weight_pct: macroWeight, color: 'var(--accent-blue, #3b82f6)' },
-    { factor: isCrypto ? 'Whale / Exchange Flow' : 'Arus Institusi / Bandar', weight_pct: bandarWeight, color: 'var(--accent-gold, #f59e0b)' },
-    { factor: 'Momentum Teknikal', weight_pct: techWeight, color: 'var(--accent-green, #10b981)' }
+    { factor: isCrypto ? 'Whale / Exchange Flow' : 'Arus Institusi / Bandar', weight_pct: bandarWeight, color: 'var(--accent-gold, var(--accent-gold))' },
+    { factor: 'Momentum Teknikal', weight_pct: techWeight, color: 'var(--accent-green, var(--accent-emerald))' }
   ];
 
   // [3] WHAT MATTERS (Signal vs Noise)
@@ -273,8 +273,8 @@ export function newsFreshness(newsItem = {}) {
   const ts = newsItem.timestamp_ms || (newsItem.pub_date ? new Date(newsItem.pub_date).getTime() : 0);
   if (!ts || isNaN(ts)) return null;
   const ageMin = Math.max(0, Math.round((Date.now() - ts) / 60000));
-  if (ageMin < 60) return { label: 'FRESH', color: 'var(--accent-green, #10b981)', ageMin };
-  if (ageMin < 360) return { label: 'TERLAMBAT', color: 'var(--accent-gold, #f59e0b)', ageMin };
+  if (ageMin < 60) return { label: 'FRESH', color: 'var(--accent-green, var(--accent-emerald))', ageMin };
+  if (ageMin < 360) return { label: 'TERLAMBAT', color: 'var(--accent-gold, var(--accent-gold))', ageMin };
   return { label: 'STALE', color: 'var(--accent-rust, #ef4444)', ageMin };
 }
 

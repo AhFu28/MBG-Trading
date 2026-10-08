@@ -81,7 +81,7 @@ export default function PearsonCorrelationWidget({ correlationData }) {
 
     return (
         <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', padding: '16px', fontFamily: 'var(--font-mono)' }}>
-            {!correlationData && <div style={{fontSize:11,color:'#f59e0b',marginBottom:8}}>📊 Showing demo correlation data</div>}
+            {!correlationData && <div style={{fontSize:11,color:'var(--accent-gold)',marginBottom:8}}>📊 Showing demo correlation data</div>}
             
             {/* Header Controls */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>

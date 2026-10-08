@@ -218,7 +218,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
 
   const getStyleForSharpe = (sharpe) => {
     if (sharpe > 1.8) return { color: '#00FF00', fontWeight: 'bold' };
-    if (sharpe > 1.2) return { color: '#38bdf8' };
+    if (sharpe > 1.2) return { color: 'var(--accent-sky)' };
     return { color: '#ffffff' };
   };
 
@@ -254,7 +254,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
 
     const range = (maxEquity - minEquity) || 1;
     const stepX = maxLen > 1 ? (width - 2 * padding) / (maxLen - 1) : 0;
-    const colors = ['#00FF00', '#38bdf8', '#f59e0b', '#ec4899', '#a855f7'];
+    const colors = ['#00FF00', 'var(--accent-sky)', 'var(--accent-gold)', '#ec4899', '#a855f7'];
 
     return (
       <svg width="100%" height="100%" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" style={{ background: '#0a0a0a', border: '1px solid #333' }}>
@@ -326,7 +326,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
               onClick={() => setShowSpecContract(!showSpecContract)}
               style={{
                 background: showSpecContract ? 'rgba(56, 189, 248, 0.2)' : '#111',
-                color: showSpecContract ? '#38bdf8' : '#888',
+                color: showSpecContract ? 'var(--accent-sky)' : '#888',
                 border: '1px solid rgba(56, 189, 248, 0.4)',
                 padding: '6px 12px',
                 fontFamily: 'monospace',
@@ -350,7 +350,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
         <div style={{
           backgroundColor: '#0c1017',
           border: '1px solid #1f293d',
-          borderLeft: '4px solid #38bdf8',
+          borderLeft: '4px solid var(--accent-sky)',
           padding: '14px 18px',
           borderRadius: '4px',
           marginBottom: '20px',
@@ -361,10 +361,10 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dashed #223048', paddingBottom: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '13px' }}>📄</span>
-              <span style={{ color: '#38bdf8', fontWeight: 'bold', fontSize: '12px' }}>
+              <span style={{ color: 'var(--accent-sky)', fontWeight: 'bold', fontSize: '12px' }}>
                 STRATEGY BEHAVIORAL CONTRACT // strategy_spec.json (v{activeSpec.spec_version || '2.1'})
               </span>
-              <span style={{ fontSize: '9px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '1px 6px', borderRadius: '2px' }}>
+              <span style={{ fontSize: '9px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', padding: '1px 6px', borderRadius: '2px' }}>
                 SPEC AS SINGLE SOURCE OF TRUTH
               </span>
             </div>
@@ -376,13 +376,13 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
               <div style={{ color: '#888', fontWeight: 'bold' }}>🎯 OBJECTIVE & HIPOTESIS:</div>
               <div style={{ color: '#eee', marginTop: '2px', lineHeight: 1.4 }}>{activeSpec.objective}</div>
               <div style={{ color: '#888', fontWeight: 'bold', marginTop: '8px' }}>🌐 SEMESTA INSTRUMEN (UNIVERSE):</div>
-              <div style={{ color: '#38bdf8', marginTop: '2px' }}>{activeSpec.universe}</div>
+              <div style={{ color: 'var(--accent-sky)', marginTop: '2px' }}>{activeSpec.universe}</div>
             </div>
 
             <div>
               <div style={{ color: '#888', fontWeight: 'bold' }}>⚡ TRIGGER & LOGIKA KONFIRMASI:</div>
               <div style={{ color: '#00FF00', marginTop: '2px' }}>• {activeSpec.entry_trigger}</div>
-              <div style={{ color: '#f59e0b', marginTop: '2px' }}>• {activeSpec.confirmation_filter}</div>
+              <div style={{ color: 'var(--accent-gold)', marginTop: '2px' }}>• {activeSpec.confirmation_filter}</div>
               <div style={{ color: '#888', fontWeight: 'bold', marginTop: '8px' }}>📏 SIZING & ATURAN RISIKO:</div>
               <div style={{ color: '#ddd', marginTop: '2px' }}>{activeSpec.risk_sizing}</div>
             </div>
@@ -392,8 +392,8 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
               <div style={{ color: '#ddd', marginTop: '4px', lineHeight: 1.5, fontSize: '10.5px' }}>
                 • Profit Target: <strong style={{ color: '#00FF00' }}>+{activeSpec.execution_barriers?.profit_target_pct || 8.5}%</strong><br/>
                 • Stop Loss Keras: <strong style={{ color: '#FF4444' }}>-{activeSpec.execution_barriers?.hard_stop_loss_pct || 3.0}%</strong><br/>
-                • Time Barrier: <strong style={{ color: '#38bdf8' }}>{activeSpec.execution_barriers?.time_barrier_bars || 15} Candle Bars</strong><br/>
-                • Trailing Activation: <strong style={{ color: '#f59e0b' }}>+{activeSpec.execution_barriers?.trailing_stop_trigger_pct || 4.0}%</strong>
+                • Time Barrier: <strong style={{ color: 'var(--accent-sky)' }}>{activeSpec.execution_barriers?.time_barrier_bars || 15} Candle Bars</strong><br/>
+                • Trailing Activation: <strong style={{ color: 'var(--accent-gold)' }}>+{activeSpec.execution_barriers?.trailing_stop_trigger_pct || 4.0}%</strong>
               </div>
               <div style={{ color: '#888', fontSize: '9.5px', marginTop: '6px' }}>
                 Kriteria Lolos: {activeSpec.acceptance_criteria}
@@ -494,7 +494,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
 
                   <td style={{ padding: '8px', ...getStyleForMDD(s.maxDrawdown) }}>{s.maxDrawdown}%</td>
                   <td style={{ padding: '8px' }}>{s.expectancy}</td>
-                  <td style={{ padding: '8px', color: '#38bdf8' }}>#{s.quantRank || s.exp3Rank}</td>
+                  <td style={{ padding: '8px', color: 'var(--accent-sky)' }}>#{s.quantRank || s.exp3Rank}</td>
                 </tr>
               ))}
             </tbody>

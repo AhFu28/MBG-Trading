@@ -662,7 +662,7 @@ export default function MasterQuantLeaderboard({
                   borderRadius: '3px', 
                   background: 'rgba(16, 185, 129, 0.12)', 
                   border: '1px solid rgba(16, 185, 129, 0.35)',
-                  color: '#10b981',
+                  color: 'var(--accent-emerald)',
                   fontWeight: '800',
                   letterSpacing: '0.3px'
                 }}
@@ -1130,7 +1130,7 @@ export default function MasterQuantLeaderboard({
                             <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', color: item.dynamic?.isTrailingActive ? 'var(--accent-green)' : 'var(--accent-rust-text, #ff3b30)' }}>
                               <code>{formatFinancialPrice(item.dynamic?.effectiveSl || item.stopLoss, item.market)}</code>
                               {item.dynamic?.isTrailingActive && (
-                                <div style={{ fontSize: '8.5px', color: '#10b981', fontWeight: '800' }}>
+                                <div style={{ fontSize: '8.5px', color: 'var(--accent-emerald)', fontWeight: '800' }}>
                                   🛡️ BE LOCKED
                                 </div>
                               )}

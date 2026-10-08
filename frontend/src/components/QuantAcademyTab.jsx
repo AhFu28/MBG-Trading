@@ -392,7 +392,7 @@ function SvgDamSimulator() {
       <div style={{ background: 'rgba(0, 0, 0, 0.45)', borderRadius: '8px', padding: '16px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
         <svg viewBox="0 0 800 200" preserveAspectRatio="xMidYMid meet" style={{ width: '100%', height: 'auto', display: 'block' }}>
           <rect x="20" y="20" width="160" height="90" fill="#1e293b" stroke="#334155" strokeWidth="2" rx="4" />
-          <text x="100" y="45" fill="#38bdf8" fontSize="11" fontWeight="800" textAnchor="middle">THE FED & BI</text>
+          <text x="100" y="45" fill="var(--accent-sky)" fontSize="11" fontWeight="800" textAnchor="middle">THE FED & BI</text>
           <text x="100" y="62" fill="#94a3b8" fontSize="9" textAnchor="middle">Waduk Likuiditas Global</text>
           
           <rect x="70" y="75" width="60" height="30" fill="#0f172a" stroke="#475569" strokeWidth="1" />
@@ -724,7 +724,7 @@ function BalanceScaleSimulator() {
           <rect x="50" y={90 + (netIncome - cashFlow) * 0.02} width="60" height="20" fill="#0284c7" rx="3" />
           <text x="80" y={104 + (netIncome - cashFlow) * 0.02} fill="#fff" fontSize="8" fontWeight="800" textAnchor="middle">LABA KERTAS</text>
 
-          <rect x="290" y={90 - (netIncome - cashFlow) * 0.02} width="60" height="20" fill="#10b981" rx="3" />
+          <rect x="290" y={90 - (netIncome - cashFlow) * 0.02} width="60" height="20" fill="var(--accent-emerald)" rx="3" />
           <text x="320" y={104 - (netIncome - cashFlow) * 0.02} fill="#fff" fontSize="8" fontWeight="800" textAnchor="middle">KAS RIIL</text>
         </svg>
 
