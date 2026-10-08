@@ -20,6 +20,7 @@ const OrderExecutionModal = lazy(() => import('./components/OrderExecutionModal.
 const ChartPredictionModal = lazy(() => import('./components/ChartPredictionModal.jsx'));
 import { institutionalPaperBroker } from './services/brokerGateway.js';
 const FlowProcessTab = lazy(() => import('./components/FlowProcessTab.jsx'));
+const ResearchDeskTab = lazy(() => import('./components/ResearchDeskTab.jsx'));
 const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
 const ChartingDeskTab = lazy(() => import('./components/ChartingDeskTab.jsx'));
 const WhaleIntelligenceTab = lazy(() => import('./components/WhaleIntelligenceTab.jsx'));
@@ -987,6 +988,13 @@ export default function App() {
                   onSelectTicker={handleOpenSecurityHub}
                   onSelectNews={handleOpenNews}
                 />
+              </main>
+            ) : activeTab === 'RESEARCH' ? (
+              /* RESEARCH DESK (P-8 P0c): the journal-style paper reader. Reads
+                 /api/research/reports - session-gated; before the Supabase
+                 schema runs it honestly serves the bundled sample paper. */
+              <main>
+                <ResearchDeskTab />
               </main>
             ) : activeTab === 'WHALES' ? (
               /* v3.0 WHALE INTELLIGENCE HUB */

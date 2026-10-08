@@ -63,6 +63,7 @@ export const NAV_GROUPS = [
     label: 'Research & Learn',
     items: [
       { id: 'NEWS', label: 'Live News Wire', desc: 'Berita pasar real-time' },
+      { id: 'RESEARCH', label: 'Research Desk', desc: 'Paper riset bergaya jurnal - bukti dengan locator' },
       { id: 'WHALES', label: 'Whales Tracker', desc: 'Aliran dana pemain besar' },
       { id: 'ECONOMIC_CALENDAR', label: 'Macro Calendar', desc: 'Jadwal data ekonomi' },
       { id: 'AI_SENTINEL', label: 'AI Sentiment DEFCON', desc: 'Analisa risiko & sentimen AI' },
