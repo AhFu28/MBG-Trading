@@ -210,7 +210,7 @@ function ProductPreview() {
         <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#f59e0b', opacity: 0.75 }} />
         <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#22c55e', opacity: 0.75 }} />
         <span style={{ marginLeft: '8px', fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-          mbg-trading — market overview
+          mbg-trading : market overview
         </span>
         <span style={{ marginLeft: 'auto', fontSize: '9px', fontWeight: 800, color: '#fbbf24', border: '1px solid rgba(245,158,11,0.4)', background: 'rgba(245,158,11,0.12)', borderRadius: '9999px', padding: '1px 8px' }}>
           ILUSTRASI
@@ -330,7 +330,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
             <MbgLogo size={26} />
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
               <span style={{ fontWeight: 900, fontSize: '14px', letterSpacing: '-0.01em' }}>MBG TRADING</span>
-              <span style={{ fontSize: '8.5px', color: 'var(--text-muted)', letterSpacing: '0.08em', fontWeight: 700 }}>MARKET BRAIN GRID</span>
+              <span style={{ fontSize: '9.5px', color: 'var(--text-muted)', letterSpacing: '0.08em', fontWeight: 700 }}>MARKET BRAIN GRID</span>
             </span>
           </div>
 
@@ -433,7 +433,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                 Screening harian untuk <strong style={{ color: 'var(--text-primary)' }}>saham IDX</strong>,{' '}
                 <strong style={{ color: 'var(--text-primary)' }}>kripto</strong>,{' '}
                 <strong style={{ color: 'var(--text-primary)' }}>forex</strong> dan{' '}
-                <strong style={{ color: 'var(--text-primary)' }}>komoditas</strong> — lengkap dengan level
+                <strong style={{ color: 'var(--text-primary)' }}>komoditas</strong>, lengkap dengan level
                 entry, stop loss, target, dan alasan di balik setiap setup. Ditambah 16 bot AI
                 otonom yang menguji strategi tanpa henti.
               </p>
@@ -451,7 +451,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                     background: 'linear-gradient(135deg,#6366f1,#4f46e5)',
                   }}
                 >
-                  Mulai Gratis →
+                  Daftar Gratis
                 </button>
                 <button
                   onClick={() => open('login')}
@@ -461,7 +461,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                     border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', fontFamily: 'inherit',
                   }}
                 >
-                  Sudah punya akun
+                  Masuk ke Akun
                 </button>
               </div>
             </Reveal>
@@ -476,7 +476,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                   ['5', 'Kelas aset terpantau'],
                   ['16', 'Bot AI otonom'],
                   ['24 jam', 'Jendela sinyal (Free)'],
-                  ['0', 'Jam (Pro — real-time)'],
+                  ['0', 'Jam (Pro: real-time)'],
                 ].map(([value, text]) => (
                   <div key={text} className="lp-stat" style={{
                     background: 'rgba(255,255,255,0.035)', border: '1px solid rgba(255,255,255,0.08)',
@@ -517,7 +517,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
             <ProductPreview />
           </Reveal>
           <div style={{ textAlign: 'center', fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '11px' }}>
-            Ilustrasi tampilan terminal — bukan tangkapan layar dan bukan data live.
+            Ilustrasi tampilan terminal (bukan tangkapan layar dan bukan data live).
           </div>
         </section>
       )}
@@ -537,7 +537,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
           {[
             {
               n: '01', icon: '🛰️', title: 'Pemindaian otomatis',
-              body: 'Terminal memindai saham IDX, kripto, forex dan komoditas setiap hari, lalu menyaring hanya setup yang lolos aturan kuantitatif — bukan daftar panjang yang harus Anda saring sendiri.',
+              body: 'Terminal memindai saham IDX, kripto, forex dan komoditas setiap hari, lalu menyaring hanya setup yang lolos aturan kuantitatif, bukan daftar panjang yang harus Anda saring sendiri.',
             },
             {
               n: '02', icon: '📐', title: 'Rencana yang terukur',
@@ -545,7 +545,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
             },
             {
               n: '03', icon: '🤖', title: 'Diuji tanpa henti',
-              body: '16 bot AI otonom menjalankan strategi di pasar nyata secara terus-menerus, sehingga kelemahan sebuah pendekatan muncul sebagai data — bukan sebagai kerugian Anda.',
+              body: '16 bot AI otonom menjalankan strategi di pasar nyata secara terus-menerus, sehingga kelemahan sebuah pendekatan muncul sebagai data, bukan sebagai kerugian Anda.',
             },
           ].map((step, i) => (
             <Reveal key={step.n} delay={i * 90}>
@@ -704,7 +704,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
             borderRadius: '14px', padding: '19px 23px', lineHeight: 1.8,
           }}>
             <div style={{ fontSize: '12.5px', fontWeight: 900, color: '#fb7185', marginBottom: '7px' }}>
-              ⚠️ PENTING — BACA SEBELUM BERLANGGANAN
+              ⚠️ PENTING : BACA SEBELUM BERLANGGANAN
             </div>
             <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)' }}>
               MBG Trading adalah <strong>alat bantu screening dan analisis</strong>, bukan penasihat investasi.
@@ -724,7 +724,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
         fontSize: '11px', color: 'var(--text-muted)',
       }}>
         <div style={{ ...section, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
-          <span>MBG Trading — Market Brain Grid · Terminal Kuantitatif</span>
+          <span>MBG Trading : Market Brain Grid · Terminal Kuantitatif</span>
           <span>{t('settings.saved', 'Preferensi tersimpan otomatis di perangkat ini.')}</span>
         </div>
       </footer>

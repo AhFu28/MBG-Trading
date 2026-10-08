@@ -1662,7 +1662,15 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                       return (
                         <tr
                           key={w.hash || idx}
+                          tabIndex={0}
+                          role="button"
                           onClick={() => setSelectedPlaybookTab(w.signal)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setSelectedPlaybookTab(w.signal);
+                            }
+                          }}
                           style={{
                             borderBottom: 'var(--border-hairline)',
                             background: w.isNew ? 'rgba(56, 189, 248, 0.08)' : 'transparent',

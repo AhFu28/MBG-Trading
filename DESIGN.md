@@ -18,6 +18,16 @@ Bahasa visualnya "Bloomberg meets SpaceX": density tinggi yang tetap terbaca, ha
 - Tanpa glassmorphism/gradien dekoratif di surface terminal
 - Hairline borders (8–10% opacity) — bukan border tebal
 
+### Antislop Dials
+- **Terminal Cockpit:** `Dial: ENERGY 2 / RHYTHM 2 / MOTION 1`
+  - *Energy 2:* Tegas dan profesional seperti Bloomberg Terminal; tidak berisik, berfokus pada data kuantitatif.
+  - *Rhythm 2:* Konsisten dengan layout terstruktur (Bento & 3-kolom pro desk) dan ritme kerja terprediksi.
+  - *Motion 1:* Tenang, hanya transisi state fungsional, ticker flash dan hover; bebas animasi hiasan.
+- **Marketing / Landing Page:** `Dial: ENERGY 3 / RHYTHM 2 / MOTION 2`
+  - *Energy 3:* Percaya diri dan hidup; memvisualisasikan data bursa live untuk calon pengguna.
+  - *Rhythm 2:* Komposisi terarah dari hero, ticker bar, fitur, hingga paket harga.
+  - *Motion 2:* Scroll-reveal dan marquee interaktif dengan tetap menghormati `prefers-reduced-motion`.
+
 ## 2. Color Palette & Roles
 
 ### Primary / Accent
@@ -53,6 +63,10 @@ Bahasa visualnya "Bloomberg meets SpaceX": density tinggi yang tetap terbaca, ha
 ### Font Family
 - **UI/Sans:** Barlow, Plus Jakarta Sans, system-ui stack
 - **Data/Mono:** JetBrains Mono, DM Mono, ui-monospace — semua angka wajib mono + `font-variant-numeric: tabular-nums`
+
+### Rasionalitas Pemilihan Typeface
+- **UI/Sans (Barlow & Plus Jakarta Sans):** Dipilih karena karakter semi-condensed yang hemat ruang horizontal dan keterbacaan tinggi pada antarmuka padat (Bloomberg-grade density) tanpa mengorbankan kejelasan label huruf kapital.
+- **Data/Mono (JetBrains Mono & DM Mono):** Dipilih karena proporsi tabular-nums presisi, pembedaan kontras antara angka '0' dan huruf 'O', serta kestabilan visual kolom tabel saat angka bergerak berfluktuasi secara real-time.
 
 ### Hierarchy
 | Role | Size | Weight | Notes |

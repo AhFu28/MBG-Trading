@@ -337,19 +337,19 @@ export default function HyperliquidProDesk({
       flexDirection: 'column',
       height: 'calc(100vh - 120px)',
       minHeight: '750px',
-      background: '#090d15',
-      color: '#e2e8f0',
+      background: 'var(--bg-canvas, #000000)',
+      color: 'var(--text-primary)',
       fontFamily: 'var(--font-sans, system-ui, sans-serif)',
       borderRadius: '8px',
       overflow: 'hidden',
-      border: '1px solid rgba(255, 255, 255, 0.08)'
+      border: 'var(--border-hairline)'
     }}>
       {/* ── TOP RIBBON HUD (Exact Hyperliquid Style) ── */}
       <div style={{
         height: '46px',
         padding: '0 16px',
-        background: '#0c111c',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        background: 'var(--bg-panel, #0a0d12)',
+        borderBottom: 'var(--border-hairline)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -540,15 +540,15 @@ export default function HyperliquidProDesk({
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          borderRight: '1px solid rgba(255, 255, 255, 0.08)',
-          background: '#090d15'
+          borderRight: 'var(--border-hairline)',
+          background: 'var(--bg-canvas, #000000)'
         }}>
           {/* Chart Header Bar: Timeframes & Sub-tabs */}
           <div style={{
             height: '34px',
             padding: '0 12px',
-            background: '#0c101a',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+            background: 'var(--bg-panel-subtle, #0e1219)',
+            borderBottom: 'var(--border-hairline)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
@@ -637,15 +637,15 @@ export default function HyperliquidProDesk({
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          borderRight: '1px solid rgba(255, 255, 255, 0.08)',
-          background: '#0a0e17'
+          borderRight: 'var(--border-hairline)',
+          background: 'var(--bg-panel, #0a0d12)'
         }}>
           {/* Orderbook Header */}
           <div style={{
             height: '34px',
             padding: '0 12px',
-            background: '#0c101a',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+            background: 'var(--bg-panel-subtle, #0e1219)',
+            borderBottom: 'var(--border-hairline)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
@@ -810,7 +810,7 @@ export default function HyperliquidProDesk({
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          background: '#0b1019',
+          background: 'var(--bg-panel, #0a0d12)',
           padding: '12px',
           overflowY: 'auto'
         }}>
@@ -1148,8 +1148,8 @@ export default function HyperliquidProDesk({
       {/* ── BOTTOM DOCK: POSITIONS & ORDERS LEDGER ── */}
       <div style={{
         height: showLedger ? '160px' : '30px',
-        background: '#090d15',
-        borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+        background: 'var(--bg-canvas, #000000)',
+        borderTop: 'var(--border-hairline)',
         display: 'flex',
         flexDirection: 'column',
         flexShrink: 0,
@@ -1159,8 +1159,8 @@ export default function HyperliquidProDesk({
         <div style={{
           height: '30px',
           padding: '0 12px',
-          background: '#0c101a',
-          borderBottom: showLedger ? '1px solid rgba(255, 255, 255, 0.06)' : 'none',
+          background: 'var(--bg-panel-subtle, #0e1219)',
+          borderBottom: showLedger ? 'var(--border-hairline)' : 'none',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between'

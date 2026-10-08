@@ -155,8 +155,8 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
           height: '92vh',
           display: 'flex',
           flexDirection: 'column',
-          background: '#0c101a',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
+          background: 'var(--bg-panel, #0a0d12)',
+          border: 'var(--border-hairline)',
           borderRadius: '10px',
           overflow: 'hidden',
           boxShadow: '0 30px 80px -15px rgba(0, 0, 0, 0.95)'
@@ -164,7 +164,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
       >
         
         {/* Modal Topbar */}
-        <div className="telemetry-header" style={{ background: '#0e1422', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+        <div className="telemetry-header" style={{ background: 'var(--bg-panel-subtle, #0e1219)', color: 'var(--text-primary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', borderBottom: 'var(--border-hairline)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ color: 'var(--accent-orange)', fontWeight: '800', fontSize: '12px' }}>TRADINGVIEW CHART WORKSTATION</span>
             <span className="badge badge-alert" style={{ fontFamily: 'var(--font-mono)' }}>{getTvSymbol(currentSymbol, market)}</span>

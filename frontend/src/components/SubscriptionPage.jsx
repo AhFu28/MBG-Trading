@@ -176,7 +176,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
         <>
           <div style={panel}>
             <div style={{ fontSize: '16px', fontWeight: '900', marginBottom: '5px' }}>
-              👑 Upgrade ke Pro — {proPlan.price} <span style={{ fontSize: '11.5px', color: 'var(--text-muted)', fontWeight: '400' }}>{proPlan.period}</span>
+              👑 Upgrade ke Pro : {proPlan.price} <span style={{ fontSize: '11.5px', color: 'var(--text-muted)', fontWeight: '400' }}>{proPlan.period}</span>
             </div>
             <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
               Sinyal real-time, notifikasi Telegram, dan seluruh modul analitik terbuka.
@@ -439,7 +439,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
               padding: '12px 15px', fontSize: '11.5px', color: '#fbbf24', lineHeight: 1.65,
             }}>
               ⏱ <strong>Aktivasi manual.</strong> Setelah bukti transfer diterima, admin mengaktifkan
-              akun Anda. Biasanya dalam beberapa jam pada hari kerja. Anda tidak perlu membayar dua kali —
+              akun Anda. Biasanya dalam beberapa jam pada hari kerja. Anda tidak perlu membayar dua kali,
               sampaikan email akun saat menghubungi admin.
             </div>
           </div>

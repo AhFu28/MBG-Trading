@@ -117,7 +117,7 @@ export default function FlowProcessTab() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {/* Main Visual Stepper */}
           <div style={{
-            background: '#0d1117',
+            background: 'var(--bg-panel-subtle)',
             border: '1px solid #30363d',
             borderRadius: '8px',
             padding: '24px'
@@ -236,21 +236,21 @@ export default function FlowProcessTab() {
               ⏰ ARSITEKTUR OTOMASI PENGUMPULAN DATA (CRON & GITHUB ACTIONS)
             </h4>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
-              <div style={{ background: '#0d1117', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
+              <div style={{ background: 'var(--bg-panel-subtle)', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
                 <div style={{ fontSize: '12.5px', fontWeight: '700', color: '#38bdf8', marginBottom: '4px' }}>Hourly Crypto & Macro Runner (`0 * * * *`)</div>
                 <div style={{ fontSize: '12px', color: '#8b949e', lineHeight: 1.5 }}>
                   Setiap jam (24/7), GitHub Actions mengeksekusi <code>py engine/run_pipeline.py --mode hourly_crypto_macro</code> untuk merefresh harga Spot Crypto Top 10, data makro DXY/Gold/Oil, dan Whale Tracker. Hasilnya di-commit otomatis ke repo.
                 </div>
               </div>
 
-              <div style={{ background: '#0d1117', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
+              <div style={{ background: 'var(--bg-panel-subtle)', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
                 <div style={{ fontSize: '12.5px', fontWeight: '700', color: '#38bdf8', marginBottom: '4px' }}>Daily IDX Morning Runner (`0 1 * * 1-5`)</div>
                 <div style={{ fontSize: '12px', color: '#8b949e', lineHeight: 1.5 }}>
                   Pukul 08:00 WIB (01:00 UTC) setiap hari kerja bursa, engine mengeksekusi pemindaian konglomerasi BEI, foreign flow, dan LLM Brain menghasilkan <b>Astra Daily Trade Plans</b> untuk hari tersebut sebelum bursa buka.
                 </div>
               </div>
 
-              <div style={{ background: '#0d1117', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
+              <div style={{ background: 'var(--bg-panel-subtle)', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
                 <div style={{ fontSize: '12.5px', fontWeight: '700', color: '#38bdf8', marginBottom: '4px' }}>Client-Side Reactive Polling (Edge Worker 5s)</div>
                 <div style={{ fontSize: '12px', color: '#8b949e', lineHeight: 1.5 }}>
                   Ketika tab browser terbuka, hook <code>useLivePrices.js</code> menembak Cloudflare Functions reverse-proxy (<code>/api/scanner</code>) untuk memperbarui harga tick emiten aktif secara langsung tanpa delay.
@@ -287,7 +287,7 @@ export default function FlowProcessTab() {
                 textAlign: 'left'
               }}>
                 <thead>
-                  <tr style={{ background: '#0d1117', borderBottom: '2px solid #30363d' }}>
+                  <tr style={{ background: 'var(--bg-panel-subtle)', borderBottom: '2px solid #30363d' }}>
                     <th style={{ padding: '10px 12px', color: '#58a6ff' }}>Data Point</th>
                     <th style={{ padding: '10px 12px', color: '#58a6ff' }}>Sumber Literal</th>
                     <th style={{ padding: '10px 12px', color: '#58a6ff' }}>Status Data</th>
@@ -377,7 +377,7 @@ export default function FlowProcessTab() {
               DNA 4 ELEMEN DASAR & HIPOTESIS KUANTITATIF
             </h4>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px', marginBottom: '24px' }}>
-              <div style={{ background: '#0d1117', border: '1px solid rgba(56, 189, 248, 0.4)', borderRadius: '6px', padding: '16px' }}>
+              <div style={{ background: 'var(--bg-panel-subtle)', border: '1px solid rgba(56, 189, 248, 0.4)', borderRadius: '6px', padding: '16px' }}>
                 <div style={{ color: '#38bdf8', fontWeight: '800', fontSize: '14px', marginBottom: '4px' }}>💧 WATER // Smart Money Concepts (SMC)</div>
                 <div style={{ fontSize: '12px', color: '#8b949e', lineHeight: 1.5 }}>
                   <b>Logika:</b> Menunggu liquidity sweep di extreme range (&lt; 28% atau &gt; 72%) dan RSI recovery.<br/>
@@ -385,7 +385,7 @@ export default function FlowProcessTab() {
                 </div>
               </div>
 
-              <div style={{ background: '#0d1117', border: '1px solid rgba(248, 113, 113, 0.4)', borderRadius: '6px', padding: '16px' }}>
+              <div style={{ background: 'var(--bg-panel-subtle)', border: '1px solid rgba(248, 113, 113, 0.4)', borderRadius: '6px', padding: '16px' }}>
                 <div style={{ color: '#f87171', fontWeight: '800', fontSize: '14px', marginBottom: '4px' }}>🔥 FIRE // Volatility Momentum Expansion</div>
                 <div style={{ fontSize: '12px', color: '#8b949e', lineHeight: 1.5 }}>
                   <b>Logika:</b> Candle body eksplosif &gt; 1.2x ATR dengan konfirmasi volume tinggi.<br/>
@@ -393,7 +393,7 @@ export default function FlowProcessTab() {
                 </div>
               </div>
 
-              <div style={{ background: '#0d1117', border: '1px solid rgba(167, 139, 250, 0.4)', borderRadius: '6px', padding: '16px' }}>
+              <div style={{ background: 'var(--bg-panel-subtle)', border: '1px solid rgba(167, 139, 250, 0.4)', borderRadius: '6px', padding: '16px' }}>
                 <div style={{ color: '#a78bfa', fontWeight: '800', fontSize: '14px', marginBottom: '4px' }}>💨 AIR // Donchian Channel High/Low Breakout</div>
                 <div style={{ fontSize: '12px', color: '#8b949e', lineHeight: 1.5 }}>
                   <b>Logika:</b> Turtle Trading system — eksekusi breakout di atas highest high 14 bar.<br/>
@@ -401,7 +401,7 @@ export default function FlowProcessTab() {
                 </div>
               </div>
 
-              <div style={{ background: '#0d1117', border: '1px solid rgba(52, 211, 153, 0.4)', borderRadius: '6px', padding: '16px' }}>
+              <div style={{ background: 'var(--bg-panel-subtle)', border: '1px solid rgba(52, 211, 153, 0.4)', borderRadius: '6px', padding: '16px' }}>
                 <div style={{ color: '#34d399', fontWeight: '800', fontSize: '14px', marginBottom: '4px' }}>🌍 EARTH // Mean Reversion Equilibrium</div>
                 <div style={{ fontSize: '12px', color: '#8b949e', lineHeight: 1.5 }}>
                   <b>Logika:</b> Beli saat RSI &lt; 30 dan harga menyentuh lower Bollinger Band, jual saat equilibrium tercapai.<br/>
@@ -411,7 +411,7 @@ export default function FlowProcessTab() {
             </div>
 
             {/* Turnamen 1 Bulan Checklist */}
-            <div style={{ background: '#0d1117', border: '1px solid #30363d', borderRadius: '6px', padding: '16px' }}>
+            <div style={{ background: 'var(--bg-panel-subtle)', border: '1px solid #30363d', borderRadius: '6px', padding: '16px' }}>
               <div style={{ fontSize: '13px', fontWeight: '700', color: '#f0f6fc', marginBottom: '8px' }}>
                 📊 MATRIKS EVALUASI SELEKSI AKHIR (HARI KE-30):
               </div>
@@ -488,7 +488,7 @@ export default function FlowProcessTab() {
 
             {/* Supported Instruments on Bitget MT5 */}
             <div style={{
-              background: '#0d1117',
+              background: 'var(--bg-panel-subtle)',
               border: '1px solid #30363d',
               borderRadius: '6px',
               padding: '16px',
@@ -519,7 +519,7 @@ export default function FlowProcessTab() {
 
             {/* How to Install on Bitget MT5 */}
             <div style={{
-              background: '#0d1117',
+              background: 'var(--bg-panel-subtle)',
               border: '1px solid #30363d',
               borderRadius: '6px',
               padding: '16px'
@@ -560,22 +560,22 @@ export default function FlowProcessTab() {
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '12.5px', color: '#8b949e' }}>
-              <div style={{ background: '#0d1117', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
+              <div style={{ background: 'var(--bg-panel-subtle)', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
                 <b style={{ color: '#58a6ff' }}>1. Verifikasi Nol Mutasi Acak (Zero-Random Check):</b><br/>
                 Periksa direktori <code>engine/fetchers/</code>. Seluruh data tick harga bursa wajib bersumber dari endpoint publik scanner riil. Tidak diperkenankan menggunakan <code>random.uniform()</code> atau mock acak tanpa penanda status eksplisit.
               </div>
 
-              <div style={{ background: '#0d1117', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
+              <div style={{ background: 'var(--bg-panel-subtle)', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
                 <b style={{ color: '#58a6ff' }}>2. Verifikasi Batas Risiko Portofolio (Risk Governance):</b><br/>
                 Periksa <code>frontend/src/services/brokerGateway.js</code>. Modul wajib mematuhi aturan Citadel: risiko maksimal 2% per transaksi, batas konsentrasi 25% modal per posisi, dan Kill Switch darurat yang dapat menghentikan seluruh transaksi dalam 1 klik.
               </div>
 
-              <div style={{ background: '#0d1117', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
+              <div style={{ background: 'var(--bg-panel-subtle)', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
                 <b style={{ color: '#58a6ff' }}>3. Verifikasi Logika Trailing Stop Breakeven:</b><br/>
                 Periksa <code>frontend/src/utils/dynamicStrategy.js</code>. Ketika Target 1 (TP1) tersentuh, Stop Loss wajib terkunci ke harga Entry (Breakeven) dan tidak boleh kembali turun meski harga melakukan koreksi teknikal (*pullback latching*).
               </div>
 
-              <div style={{ background: '#0d1117', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
+              <div style={{ background: 'var(--bg-panel-subtle)', padding: '14px', borderRadius: '6px', border: '1px solid #21262d' }}>
                 <b style={{ color: '#58a6ff' }}>4. Verifikasi Integritas MQL5 EA:</b><br/>
                 Periksa <code>engine/mt5/MBG_Institutional_Apex_EA.mq5</code>. Formula lot sizing wajib menggunakan normalisasi step volume broker (<code>SYMBOL_VOLUME_STEP</code>) dan menghitung eksposur modal berdasarkan jarak pips Stop Loss terhadap ekuitas akun riil.
               </div>

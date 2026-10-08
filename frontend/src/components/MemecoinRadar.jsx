@@ -279,7 +279,15 @@ export default function MemecoinRadar() {
                   return (
                     <tr
                       key={row.token.mint}
+                      tabIndex={0}
+                      role="button"
                       onClick={() => setSelected(row)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setSelected(row);
+                        }
+                      }}
                       style={{ cursor: 'pointer', background: isSel ? 'rgba(99,102,241,0.12)' : undefined }}
                     >
                       <td>

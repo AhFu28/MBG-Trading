@@ -811,7 +811,15 @@ export default function MasterQuantLeaderboard({
                       return (
                         <React.Fragment key={d.ticker}>
                           <tr
+                            tabIndex={0}
+                            role="button"
                             onClick={() => toggleExpand('div-' + d.ticker)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                toggleExpand('div-' + d.ticker);
+                              }
+                            }}
                             style={{
                               cursor: 'pointer',
                               background: isExpanded ? 'var(--bg-panel-subtle)' : 'transparent',
@@ -1018,7 +1026,15 @@ export default function MasterQuantLeaderboard({
                       return (
                         <React.Fragment key={item.id}>
                           <tr
+                            tabIndex={0}
+                            role="button"
                             onClick={() => toggleExpand(item.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                toggleExpand(item.id);
+                              }
+                            }}
                             style={{
                               cursor: 'pointer',
                               background: isExpanded ? 'var(--bg-panel-subtle)' : 'transparent',

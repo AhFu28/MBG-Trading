@@ -147,10 +147,10 @@ export default function DataIntegrityModal({
       lastUpdate: bundleDate ? `${formatWib(bundleDate)} (${bundleAgeMin} mnt lalu)` : 'Menunggu sync...',
       status: bundleStatus,
       statusColor: bundleColor,
-      details: `222 Berita Terverifikasi, Klaster Konglomerasi, & Trade Plans. ${bundleAgeMin > 360 ? '⚠️ Data > 6 jam — harap jalankan pipeline EOD.' : 'Pipeline sinkron.'}`
+      details: `222 Berita Terverifikasi, Klaster Konglomerasi, & Trade Plans. ${bundleAgeMin > 360 ? '⚠️ Data > 6 jam : harap jalankan pipeline EOD.' : 'Pipeline sinkron.'}`
     },
     {
-      name: 'AI Multi-Agent Arena — Periodic Engine',
+      name: 'AI Multi-Agent Arena : Periodic Engine',
       endpoint: '/api/arena-state (session-gated)',
       provider: 'GitHub Actions Scheduled Sessions (4×/hari × ~5,5 jam, tick 60 detik)',
       lastUpdate: isArenaLoading ? 'Menyinkronkan...' : (arenaDate ? `${formatWib(arenaDate)} (${arenaAgeMin} mnt lalu)` : 'Menunggu sync...'),

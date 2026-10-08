@@ -671,7 +671,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
               <div>
                 <strong style={{ fontSize: '14px' }}>🔥 UANG SEDANG KE MANA</strong>
                 <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '3px', lineHeight: 1.6 }}>
-                  Diurutkan dari yang paling banyak menyerap uang baru — bukan sekadar volume terbesar.
+                  Diurutkan dari yang paling banyak menyerap uang baru, bukan sekadar volume terbesar.
                 </div>
               </div>
               {regimeBadge && (

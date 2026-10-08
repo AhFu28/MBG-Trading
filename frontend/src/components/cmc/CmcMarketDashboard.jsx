@@ -389,7 +389,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
               <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-muted)' }}>Fear &amp; Greed</span>
               <FearGreedGauge score={fng?.score} label={fng?.classification} size={124} />
               {fng?.source && (
-                <span style={{ fontSize: '8.5px', color: 'var(--text-muted)', textAlign: 'center' }}>
+                <span style={{ fontSize: '10px', color: 'var(--text-muted)', textAlign: 'center' }}>
                   Sumber: {fng.source}
                 </span>
               )}
@@ -623,7 +623,15 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
                   {assetRows.map(row => (
                     <tr
                       key={row.key}
+                      tabIndex={0}
+                      role="button"
                       onClick={() => openAsset && openAsset(row.symbol, row.market)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          openAsset && openAsset(row.symbol, row.market);
+                        }
+                      }}
                       style={{ borderTop: 'var(--border-hairline)', cursor: 'pointer' }}
                       onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-panel-subtle)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
@@ -747,8 +755,8 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
         <strong style={{ color: 'var(--text-secondary)' }}>Sumber data:</strong> CoinMarketCap Data API (market cap, dominasi, tabel koin, trending, altcoin season) ·
         Binance Vision (harga &amp; grafik koin utama) · Hyperliquid (open interest &amp; funding) · alternative.me (Fear &amp; Greed).
         <br />
-        <strong style={{ color: 'var(--text-secondary)' }}>Tidak ditampilkan:</strong> ETF Flows, Likuidasi 24 Jam, dan Community Posts — belum ada sumber data publik gratis,
-        jadi panel tersebut dikosongkan daripada diisi angka perkiraan.
+        <strong style={{ color: 'var(--text-secondary)' }}>Tidak ditampilkan:</strong> ETF Flows, Likuidasi 24 Jam, dan Community Posts (belum ada sumber data publik gratis,
+        jadi panel tersebut dikosongkan daripada diisi angka perkiraan).
       </div>
     </div>
   );

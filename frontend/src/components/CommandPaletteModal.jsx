@@ -108,7 +108,7 @@ export default function CommandPaletteModal({
           id: `IDX_${s.symbol}`,
           symbol: s.symbol,
           market: 'IDX',
-          label: `${s.symbol} — ${s.name || 'Saham BEI'}`,
+          label: `${s.symbol} (${s.name || 'Saham BEI'})`,
           desc: `Saham BEI · ${s.sector || 'Ekuitas Terdaftar'}`,
           category: 'IDX',
           icon: '📈',

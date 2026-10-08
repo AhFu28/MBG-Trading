@@ -381,7 +381,7 @@ export default function HomeDashboardTab({
 
       {dataStatus === 'fallback' && (
         <div style={{ background: '#d97706', color: '#fff', padding: '6px 12px', borderRadius: '4px', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 600 }}>
-          📡 OFFLINE MODE — Menjalankan data fallback/cache. Koneksi bursa sedang disinkronkan ulang.
+          📡 OFFLINE MODE : Menjalankan data fallback/cache. Koneksi bursa sedang disinkronkan ulang.
         </div>
       )}
 
@@ -428,13 +428,11 @@ export default function HomeDashboardTab({
           Sleek Glassmorphic Bento HUD: Net Valuation, 24h Alpha, Quick Actions & Macro Stats
           ========================================================================= */}
       <div className="telemetry-panel home-hero-grid" style={{
-        background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.88) 0%, rgba(24, 33, 53, 0.72) 100%)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
+        background: 'var(--bg-panel)',
+        border: 'var(--border-hairline)',
         borderRadius: '16px',
         padding: '16px 20px',
         boxShadow: 'var(--shadow-md)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
         boxSizing: 'border-box'
       }}>
         {/* Left: Portfolio Valuation & Quick Trade Actions */}
@@ -671,7 +669,7 @@ export default function HomeDashboardTab({
                 {arenaStats ? `${arenaStats.roiPct >= 0 ? '+' : ''}${arenaStats.roiPct.toFixed(1)}% ROI` : '—'}
               </span>
               <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
-                {arenaStats?.winRate != null ? `Win Rate ${arenaStats.winRate.toFixed(1)}% (engine)` : 'Arena engine stats — awaiting sync'}
+                {arenaStats?.winRate != null ? `Win Rate ${arenaStats.winRate.toFixed(1)}% (engine)` : 'Arena engine stats : awaiting sync'}
               </span>
             </div>
           </div>

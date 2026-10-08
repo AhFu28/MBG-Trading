@@ -291,8 +291,8 @@ const OrderBookSimulator = ({
     <div 
       onClick={(e) => e.stopPropagation()}
       style={{
-        background: '#0c101a',
-        border: '1px solid rgba(255, 255, 255, 0.12)',
+        background: 'var(--bg-panel, #0a0d12)',
+        border: 'var(--border-hairline)',
         borderRadius: '14px',
         boxShadow: embedded ? 'none' : '0 30px 80px -15px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.08)',
         width: embedded ? '100%' : 'min(1140px, 95vw)',

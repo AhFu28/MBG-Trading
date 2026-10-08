@@ -638,7 +638,7 @@ function SparklineChart({ data = [], isPositive, color = '#10b981', height = 34,
 function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, height = 210 }) {
   const configs = {
     WATER: {
-      title: 'XAU/USD H4 — WATER: Smart Money Concepts (SMC) & Liquidity Flow',
+      title: 'XAU/USD H4  (WATER): Smart Money Concepts (SMC) & Liquidity Flow',
       entryLabel: 'Entry Buy @ 2,908.40 (Order Block Retest)',
       tpLabel: 'Target TP @ 2,945.00 (+3.5R Liquidity Sweep)',
       slLabel: 'Hard SL @ 2,898.00 (-1.0R Swing Low)',
@@ -654,7 +654,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 2908.40, tp: 2945.00, sl: 2898.00, min: 2892, max: 2952 }
     },
     FIRE: {
-      title: 'EUR/USD M15 — FIRE: Macro & News Event Volatility Momentum Breakout',
+      title: 'EUR/USD M15  (FIRE): Macro & News Event Volatility Momentum Breakout',
       entryLabel: 'Breakout Entry @ 1.0845 (Post-CPI Spike)',
       tpLabel: 'Fast TP @ 1.0920 (+2.5R Trailing Surge)',
       slLabel: 'Hard SL @ 1.0815 (-1.0R Pre-News Base)',
@@ -669,7 +669,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 1.0845, tp: 1.0920, sl: 1.0815, min: 1.0805, max: 1.0935 }
     },
     AIR: {
-      title: 'BTC/USDT H1 — AIR: 20-Day Donchian Channel Trend Wave Riding',
+      title: 'BTC/USDT H1  (AIR): 20-Day Donchian Channel Trend Wave Riding',
       entryLabel: 'Breakout Buy @ $91,800 (Upper Donchian)',
       tpLabel: 'Multi-Stage TP @ $96,000 (+4.0R Trend Ride)',
       slLabel: 'ATR Trailing SL @ $90,500 (-1.2R Baseline)',
@@ -684,7 +684,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 91800, tp: 96000, sl: 90500, min: 89000, max: 97000 }
     },
     EARTH: {
-      title: 'BBCA Daily — EARTH: Mean Reversion & Solid Support Rebound',
+      title: 'BBCA Daily (EARTH): Mean Reversion & Solid Support Rebound',
       entryLabel: 'Spot Long Buy @ Rp 6.350 (Lower BB + RSI < 30)',
       tpLabel: 'Target TP @ Rp 6.650 (+3.0R Mid-Band Mean)',
       slLabel: 'Hard SL @ Rp 6.225 (-1.0R Support Breach)',
@@ -699,7 +699,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 6350, tp: 6650, sl: 6225, min: 6180, max: 6720 }
     },
     STEAM: {
-      title: 'GBP/USD M30 — STEAM [W+F]: Liquidity Sweep + Flash News Surge Sniper',
+      title: 'GBP/USD M30  (STEAM [W+F]): Liquidity Sweep + Flash News Surge Sniper',
       entryLabel: 'Sniper Entry @ 1.2940 (FVG + News Volume)',
       tpLabel: 'Target TP @ 1.3060 (+3.0R Fast Expansion)',
       slLabel: 'Hard SL @ 1.2905 (-0.85R Sweep Tail)',
@@ -714,7 +714,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 1.2940, tp: 1.3060, sl: 1.2905, min: 1.2890, max: 1.3080 }
     },
     STORM: {
-      title: 'SOL/USDT H1 — STORM [W+A]: BOS Swing High & Donchian Breakout Expansion',
+      title: 'SOL/USDT H1  (STORM [W+A]): BOS Swing High & Donchian Breakout Expansion',
       entryLabel: 'BOS Entry @ $186.50 (Upper Channel + Structural BOS)',
       tpLabel: 'Pyramid TP @ $214.00 (+4.5R Wave Rider)',
       slLabel: 'Trailing SL @ $180.00 (-1.0R Higher Low)',
@@ -729,7 +729,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 186.50, tp: 214.00, sl: 180.00, min: 174, max: 220 }
     },
     MUD: {
-      title: 'AAPL H4 — MUD [W+E]: Dual Support Buffer & Fair Value Gap (FVG) Mitigation',
+      title: 'AAPL H4  (MUD [W+E]): Dual Support Buffer & Fair Value Gap (FVG) Mitigation',
       entryLabel: 'Discount Buy @ $224.50 (Support S/R + FVG Fill)',
       tpLabel: 'Target TP @ $235.00 (+2.5R Mean Recovery)',
       slLabel: 'Hard SL @ $220.50 (-0.9R Support Floor)',
@@ -744,7 +744,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 224.50, tp: 235.00, sl: 220.50, min: 218, max: 238 }
     },
     LIGHTNING: {
-      title: 'TSLA M15 — LIGHTNING [F+A]: Flash Momentum Post-News Breakout Runner',
+      title: 'TSLA M15  (LIGHTNING [F+A]): Flash Momentum Post-News Breakout Runner',
       entryLabel: 'Flash Breakout @ $338.00 (Volume Surge + ATR Spike)',
       tpLabel: 'Parabolic TP @ $362.00 (+3.5R Fast Surge)',
       slLabel: 'Trailing SL @ $331.00 (-1.0R Momentum Base)',
@@ -758,7 +758,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 338.00, tp: 362.00, sl: 331.00, min: 325, max: 368 }
     },
     LAVA: {
-      title: 'USOIL M30 — LAVA [F+E]: Post-News Exhaustion Fade outside 3.0 SD',
+      title: 'USOIL M30  (LAVA [F+E]): Post-News Exhaustion Fade outside 3.0 SD',
       entryLabel: 'Exhaustion Sell/Fade @ $74.80 (Bollinger 3 SD Rejection)',
       tpLabel: 'Target TP @ $71.20 (+2.8R Mid-Band Mean)',
       slLabel: 'Hard SL @ $76.10 (-1.0R Exhaustion Wick)',
@@ -773,7 +773,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 74.80, tp: 71.20, sl: 76.10, min: 70.0, max: 77.0 }
     },
     SANDSTORM: {
-      title: 'NVDA H2 — SANDSTORM [A+E]: Trend Pullback Buy on Solid MA 50 Support',
+      title: 'NVDA H2  (SANDSTORM [A+E]): Trend Pullback Buy on Solid MA 50 Support',
       entryLabel: 'Pullback Buy @ $137.50 (MA 50 + Fibo 61.8% Retest)',
       tpLabel: 'Target TP @ $148.00 (+3.0R Trend Continuation)',
       slLabel: 'Hard SL @ $134.00 (-1.0R Swing Low Support)',
@@ -788,7 +788,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 137.50, tp: 148.00, sl: 134.00, min: 132, max: 151 }
     },
     TEMPEST: {
-      title: 'BTC/USDT H4 — TEMPEST [W+F+A]: Triple-Engine Alpha (Liquidity + News + Parabolic Trend)',
+      title: 'BTC/USDT H4  (TEMPEST [W+F+A]): Triple-Engine Alpha (Liquidity + News + Parabolic Trend)',
       entryLabel: 'Alpha Entry @ $92,200 (SMC Sweep + FOMC Volume + Donchian)',
       tpLabel: 'Alpha Harvest @ $102,000 (+5.5R Super-Trend)',
       slLabel: 'Trailing SL @ $90,400 (-1.0R Dynamic Base)',
@@ -803,7 +803,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 92200, tp: 102000, sl: 90400, min: 89000, max: 104000 }
     },
     OCEANIC: {
-      title: 'BBRI Daily — OCEANIC [W+A+E]: All-Weather Wealth Anchor (Spot Cash Preservation)',
+      title: 'BBRI Daily (OCEANIC [W+A+E]): All-Weather Wealth Anchor (Spot Cash Preservation)',
       entryLabel: 'Spot Long Buy @ Rp 3.320 (Institutional Discount Order Block)',
       tpLabel: 'Target TP @ Rp 3.650 (+3.5R Valuation Mean)',
       slLabel: 'Hard SL @ Rp 3.230 (-0.9R Historic Support)',
@@ -818,7 +818,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 3320, tp: 3650, sl: 3230, min: 3180, max: 3720 }
     },
     GEOTHERMAL: {
-      title: 'TLKM H4 — GEOTHERMAL [W+F+E]: News Panic Discount at Historic Fundamental Order Block',
+      title: 'TLKM H4  (GEOTHERMAL [W+F+E]): News Panic Discount at Historic Fundamental Order Block',
       entryLabel: 'Panic Buy @ Rp 2.700 (Valuation Floor + Order Block)',
       tpLabel: 'Target TP @ Rp 2.980 (+3.2R Fair Value Rebound)',
       slLabel: 'Hard SL @ Rp 2.610 (-1.0R Dividend Base)',
@@ -833,7 +833,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 2700, tp: 2980, sl: 2610, min: 2560, max: 3040 }
     },
     CYCLONE: {
-      title: 'XAU/USD M15 — CYCLONE [F+A+E]: Dynamic Market Regime Transition Engine (Hurst Switch)',
+      title: 'XAU/USD M15  (CYCLONE [F+A+E]): Dynamic Market Regime Transition Engine (Hurst Switch)',
       entryLabel: 'Regime Entry @ 2,914.00 (Hurst > 0.6 Trend Ignition Confirmed)',
       tpLabel: 'Harvest TP @ 2,952.00 (+3.8R Adaptive Expansion)',
       slLabel: 'Dynamic SL @ 2,904.00 (-1.0R Regime Boundary)',
@@ -847,7 +847,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
       levels: { entry: 2914.00, tp: 2952.00, sl: 2904.00, min: 2898, max: 2960 }
     },
     AVATAR: {
-      title: 'CROSS-ASSET H4 — AVATAR [4-E]: Supreme 4-Element Multi-Ensemble Consensus',
+      title: 'CROSS-ASSET H4 (AVATAR [4-E]): Supreme 4-Element Multi-Ensemble Consensus',
       entryLabel: 'Consensus Entry @ Dynamic Level (Ensemble Score >= 3/4)',
       tpLabel: 'Supreme Harvest @ Multi-Target (+4.0R Consensus Hold)',
       slLabel: 'Master Parity SL (-1.0R Risk-Weighted)',
@@ -5617,7 +5617,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ fontSize: '15px', fontWeight: '900', color: 'var(--text-primary)' }}>
-                              {targetAg.name} — {targetAg.role}
+                              {targetAg.name} : {targetAg.role}
                             </span>
                             <span style={{
                               fontSize: '9px',
@@ -5835,7 +5835,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                 <span style={{ fontSize: '16px' }}>🛡️</span>
                                 <strong style={{ color: 'var(--accent-green)', fontSize: '11px' }}>
-                                  Status Generasi Prima: Gen 0 (Genesis Origin — Belum Pernah Margin Call)
+                                  Status Generasi Prima: Gen 0 (Genesis Origin, Belum Pernah Margin Call)
                                 </strong>
                               </div>
                               <span style={{ fontSize: '8px', padding: '1px 6px', borderRadius: '3px', background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
@@ -5950,7 +5950,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
                                     <div style={{ fontSize: '9.5px', fontWeight: '900', color: '#d8b4fe', display: 'flex', alignItems: 'center', gap: '5px' }}>
                                       <span style={{ fontSize: '12px' }}>🤖</span>
-                                      <span>Refleksi Diri & Introspeksi AI ({targetAg.name} — Pasca-MC Gen {latestRh.fromGen})</span>
+                                      <span>Refleksi Diri & Introspeksi AI ({targetAg.name}, Pasca-MC Gen {latestRh.fromGen})</span>
                                     </div>
                                     <span style={{
                                       fontSize: '7.5px',
@@ -6160,8 +6160,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Hard SL dipasang ketat tepat di luar swing low Order Block (-1.0R risk unit). Invalidation terjadi jika candle close menembus level batas ini.',
                     tpRule: 'Target TP1 diambil pada swing liquidity berikutnya (+2.5R) dan TP2 pada level ekstrim (+4.0R). Saat profit mencapai 1.2R, stop loss otomatis BEP.',
                     markets: 'XAUUSD (Gold), EURUSD, GBPUSD, BTCUSDT (Forex & Crypto Perp 1:20).',
-                    technicalRef: 'Tsinaslanidis & Zapranis (2016) — Technical Analysis for Algorithmic Pattern Recognition',
-                    fundamentalRef: 'Maurice Levi — International Finance (Institutional Foreign Flow & FX Equilibrium)',
+                    technicalRef: 'Tsinaslanidis & Zapranis (2016) : Technical Analysis for Algorithmic Pattern Recognition',
+                    fundamentalRef: 'Maurice Levi : International Finance (Institutional Foreign Flow & FX Equilibrium)',
                     coreFormula: 'Extremum ZigZag Liquidity Sweep + Cumulative Foreign Net Flow Gating'
                   },
                   FIRE: {
@@ -6170,8 +6170,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Hard SL dipasang di batas konsolidasi pre-news candle (-1.0R). Proteksi slippage aktif dengan limit order execution.',
                     tpRule: 'Fast Target Take Profit (+2.5R) dengan agresif Trailing Stop. Bot tidak menahan posisi lebih dari 4 jam setelah news selesai dicerna pasar.',
                     markets: 'EURUSD, GBPUSD, USOIL, NAS100 (Pasangan mata uang, komoditas, dan indeks paling sensitif sentimen global).',
-                    technicalRef: 'Kathy Lien (2015) — Day & Swing Trading the Currency Market (News Volatility Tactics)',
-                    fundamentalRef: 'N. Gregory Mankiw — Macroeconomics (Economic Surprise Index & Monetary Shocks)',
+                    technicalRef: 'Kathy Lien (2015) : Day & Swing Trading the Currency Market (News Volatility Tactics)',
+                    fundamentalRef: 'N. Gregory Mankiw : Macroeconomics (Economic Surprise Index & Monetary Shocks)',
                     coreFormula: 'Economic Surprise |Actual - Forecast| >= 1.5σ + 2Y US Yield Concurrence'
                   },
                   AIR: {
@@ -6180,8 +6180,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Trailing Stop berbasis 2.0x ATR (Average True Range). Stop loss terus bergerak naik mengunci profit seiring harga mencetak rekor baru.',
                     tpRule: 'Multi-stage TP pada ekspansi ekstensi Fibonacci (+3.0R s/d +5.0R). Piramida posisi ditambah saat profit (+0.8%).',
                     markets: 'BTCUSDT, SOLUSDT, NVDA, TSLA, SPY (Aset berkarakter tren panjang dan volatilitas tinggi).',
-                    technicalRef: 'Steven B. Achelis (2000) — Technical Analysis from A to Z (Donchian 20 Channel)',
-                    fundamentalRef: 'William J. O\'Neil (2013) — How to Make Money in Stocks (CAN SLIM & EPS Growth > 20%)',
+                    technicalRef: 'Steven B. Achelis (2000) : Technical Analysis from A to Z (Donchian 20 Channel)',
+                    fundamentalRef: 'William J. O\'Neil (2013) : How to Make Money in Stocks (CAN SLIM & EPS Growth > 20%)',
                     coreFormula: 'Highest High (20) Breakout + 2.0x ATR Ratchet + Inverted Pyramiding (100% -> 50% -> 25%)'
                   },
                   EARTH: {
@@ -6190,8 +6190,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Hard Stop Loss ketat di bawah support swing low terdekat (-1.0R). Khusus saham BEI spot (BBCA/BBRI), bot 100% LONG-only (0% risiko likuidasi).',
                     tpRule: 'Target TP1 dipasang pada garis tengah Bollinger Bands (SMA 20) dan TP2 pada batas pita atas (+2.0R s/d +3.0R).',
                     markets: 'BBCA, BBRI, BMRI (Saham Blue-Chip BEI Spot 1:1) dan USDJPY pada sesi Asia.',
-                    technicalRef: 'Steven B. Achelis (2000) — Technical Analysis from A to Z (Bollinger Bands 2.5σ Deviation)',
-                    fundamentalRef: 'Thomas N. Bulkowski (2013) — Fundamental & Position Trading (P/E & PBV Diskon)',
+                    technicalRef: 'Steven B. Achelis (2000) : Technical Analysis from A to Z (Bollinger Bands 2.5σ Deviation)',
+                    fundamentalRef: 'Thomas N. Bulkowski (2013) : Fundamental & Position Trading (P/E & PBV Diskon)',
                     coreFormula: 'Lower Band (2.5σ) Bounce + Piotroski F-Score >= 6 + DER < 1.0 (Zero Value Trap)'
                   },
                   STEAM: {
@@ -6200,8 +6200,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Hard SL ketat di ujung ekor candle manipulasi berita (-0.85R risk unit). Cut loss instan jika harga gagal bertahan.',
                     tpRule: 'Fast Expansion TP (+3.0R) dengan auto-breakeven ratchet saat posisi mencapai +1.0R profit.',
                     markets: 'XAUUSD, GBPUSD, BTCUSDT, NAS100 (Pasar berlikuiditas tinggi dengan katalis berita aktif).',
-                    technicalRef: 'Ed Ponsi (2016) — Chart Interpretations (Breakout vs Fakeout Liquidity Sweep)',
-                    fundamentalRef: 'N. Gregory Mankiw — Macroeconomics (Central Bank Monetary Shocks & Liquidity Influx)',
+                    technicalRef: 'Ed Ponsi (2016) : Chart Interpretations (Breakout vs Fakeout Liquidity Sweep)',
+                    fundamentalRef: 'N. Gregory Mankiw : Macroeconomics (Central Bank Monetary Shocks & Liquidity Influx)',
                     coreFormula: 'SMC Order Block Retest + Flash Post-News Volume Surge Spike'
                   },
                   STORM: {
@@ -6211,7 +6211,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     tpRule: 'Riding Trend bertahap (+3.5R s/d +6.0R) dengan penambahan layer piramida saat posisi berjalan profit > 0.8%.',
                     markets: 'SOLUSDT, ETHUSDT, NVDA, QQQ (Aset momentum kuat dengan tren ekspansi tinggi).',
                     technicalRef: 'Tsinaslanidis & Zapranis (2016) & Achelis (2000) (Structural BOS + Donchian Channel)',
-                    fundamentalRef: 'William J. O\'Neil (2013) — Top-line Revenue & Margin Expansion (> 15% YoY)',
+                    fundamentalRef: 'William J. O\'Neil (2013) : Top-line Revenue & Margin Expansion (> 15% YoY)',
                     coreFormula: 'Higher-Timeframe BOS + 20-Day Donchian Breakout + Profit-Locked Scale-In'
                   },
                   MUD: {
@@ -6220,8 +6220,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'SL sangat konservatif di bawah zona bantalan support ganda (-0.9R). 100% Spot cash safe holding.',
                     tpRule: 'Target konservatif Mean Reversion pada Mid-Band SMA 20 / Equal Highs (+2.2R s/d +3.0R).',
                     markets: 'BBCA, BMRI, AAPL, MSFT, BTCUSDT (Saham bluechip dan crypto berkapitalisasi mega).',
-                    technicalRef: 'Tsinaslanidis & Zapranis (2016) — Algorithmic Fair Value Gap (FVG) Imbalance Detection',
-                    fundamentalRef: 'Thomas N. Bulkowski (2013) — Free Cash Flow (FCF) Yield & Solvency Cushion',
+                    technicalRef: 'Tsinaslanidis & Zapranis (2016) : Algorithmic Fair Value Gap (FVG) Imbalance Detection',
+                    fundamentalRef: 'Thomas N. Bulkowski (2013) : Free Cash Flow (FCF) Yield & Solvency Cushion',
                     coreFormula: 'FVG 3-Candle Imbalance Mitigation + Historical Static Support Floor + Cash Spot 1:1'
                   },
                   LIGHTNING: {
@@ -6230,8 +6230,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Trailing Stop ketat 1.2x ATR; bot otomatis memotong posisi jika momentum mereda dalam 3 bar lilin.',
                     tpRule: 'Parabolic Expansion TP (+3.5R s/d +5.0R) dengan penambahan layer instan pada breakout kedua.',
                     markets: 'DOGEUSDT, PEPEUSDT, TSLA, SMCI, USOIL (Aset high-beta dengan pergerakan eksplosif).',
-                    technicalRef: 'Ed Ponsi (2016) — Technical Analysis (High-Velocity Candle Momentum & Breakouts)',
-                    fundamentalRef: 'N. Gregory Mankiw — Macroeconomics (Interest Rate Expectation Shift Surprises)',
+                    technicalRef: 'Ed Ponsi (2016) : Technical Analysis (High-Velocity Candle Momentum & Breakouts)',
+                    fundamentalRef: 'N. Gregory Mankiw : Macroeconomics (Interest Rate Expectation Shift Surprises)',
                     coreFormula: 'Momentum Surge > 1.5x ATR + Donchian Band Expansion + Fast Trailing 1.2x ATR'
                   },
                   LAVA: {
@@ -6240,8 +6240,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'SL ketat di ujung ekor candle spike ekstrem (-0.9R). Invalidation cepat jika volume pembelian berlanjut.',
                     tpRule: 'Target pembalikan cepat (mean reversion fade) menuju SMA 20 (+2.5R s/d +3.5R).',
                     markets: 'EURUSD, XAUUSD, SUIUSDT, INTC (Pasangan dengan kecenderungan overextension tinggi).',
-                    technicalRef: 'Steven B. Achelis (2000) — Technical Analysis from A to Z (Bollinger 3.0σ Reversal)',
-                    fundamentalRef: 'N. Gregory Mankiw — Macroeconomics (Market Transitory Overreaction to Noise)',
+                    technicalRef: 'Steven B. Achelis (2000) : Technical Analysis from A to Z (Bollinger 3.0σ Reversal)',
+                    fundamentalRef: 'N. Gregory Mankiw : Macroeconomics (Market Transitory Overreaction to Noise)',
                     coreFormula: 'Post-News Wick Rejection Pinbar Outside 3.0σ Band + Mean Reversion to SMA 20'
                   },
                   SANDSTORM: {
@@ -6250,8 +6250,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Hard SL dipasang di bawah swing low retracement (-1.0R). Aman untuk akumulasi spot kas tanpa utang margin.',
                     tpRule: 'Target TP pada retest rekor tertinggi sebelumnya (Previous High) (+2.8R s/d +4.0R).',
                     markets: 'BBRI, ASII, AMMN, QQQ, LINKUSDT (Saham dividen & indeks tren stabil).',
-                    technicalRef: 'Mario Singh (2013) — 17 Proven Currency Trading Strategies (Trend Pullback S/R)',
-                    fundamentalRef: 'Thomas N. Bulkowski (2013) — Dividend Yield Floor Support (Yield >= 4.5%)',
+                    technicalRef: 'Mario Singh (2013) : 17 Proven Currency Trading Strategies (Trend Pullback S/R)',
+                    fundamentalRef: 'Thomas N. Bulkowski (2013) : Dividend Yield Floor Support (Yield >= 4.5%)',
                     coreFormula: 'Macro Bullish Trend (MA50 > MA200) Pullback Buy on Key Support + Spot Accumulation'
                   },
                   TEMPEST: {
@@ -6260,7 +6260,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Hybrid Trailing SL yang menggabungkan batas Order Block dengan ratchet dinamis 1.5x ATR.',
                     tpRule: 'Maximal Alpha Harvest (+4.0R s/d +8.0R) dengan alokasi piramida bertingkat hingga 3 posisi profit.',
                     markets: 'BTCUSDT, SOLUSDT, NVDA, XAUUSD, NAS100 (Instrumen alpha utama multi-aset).',
-                    technicalRef: 'Mark Andrew Lim (2016) — The Handbook of Technical Analysis (Multi-System Synergies)',
+                    technicalRef: 'Mark Andrew Lim (2016) : The Handbook of Technical Analysis (Multi-System Synergies)',
                     fundamentalRef: 'William J. O\'Neil & N. Gregory Mankiw (Macro Tailwind + Institutional High Volume)',
                     coreFormula: 'Triple-Engine Consensus (Liquidity Sweep + News Catalyst + Trend Ride) + Pyramiding'
                   },
@@ -6270,8 +6270,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Proteksi struktural berlapis (-1.0R); drawdown terjaga sangat minimal pada kondisi pasar apapun.',
                     tpRule: 'Target bertahap konservatif hingga apresiasi modal jangka panjang (+2.5R s/d +4.5R).',
                     markets: 'BBCA, BBRI, SPY, IWM, ETHUSDT, AAPL (Fokus pada Spot & Keamanan Modal Jangka Panjang).',
-                    technicalRef: 'Steven B. Achelis (2000) & Ed Ponsi (2016) — Institutional Range & Volatility Bounds',
-                    fundamentalRef: 'Ray Dalio / Mankiw — Macro All-Weather Quadrants (Growth vs Inflation Equilibrium)',
+                    technicalRef: 'Steven B. Achelis (2000) & Ed Ponsi (2016) : Institutional Range & Volatility Bounds',
+                    fundamentalRef: 'Ray Dalio / Mankiw : Macro All-Weather Quadrants (Growth vs Inflation Equilibrium)',
                     coreFormula: 'SMC Order Block Anchor + Long-Term Trend Riding + Low-Drawdown Balance (Spot Long Only)'
                   },
                   GEOTHERMAL: {
@@ -6280,8 +6280,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Hard SL di bawah level valuasi batas institusi (-0.9R) dengan perlindungan spot cash.',
                     tpRule: 'Target pemulihan valuasi wajar (fair value rebound) (+3.0R s/d +5.0R).',
                     markets: 'TLKM, ASII, JPM, GOOGL, BNBUSDT (Aset bernilai fundamental tinggi saat diskon pasar).',
-                    technicalRef: 'Tsinaslanidis & Zapranis (2016) — Order Block Mitigated Rebound Level',
-                    fundamentalRef: 'Thomas N. Bulkowski (2013) — Piotroski F-Score >= 6 + High Operating Cash Flow',
+                    technicalRef: 'Tsinaslanidis & Zapranis (2016) : Order Block Mitigated Rebound Level',
+                    fundamentalRef: 'Thomas N. Bulkowski (2013) : Piotroski F-Score >= 6 + High Operating Cash Flow',
                     coreFormula: 'News Panic Sell-Off Absorption on Major Order Block + Blue-Chip Valuation Discount'
                   },
                   CYCLONE: {
@@ -6290,8 +6290,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Adaptive SL menyesuaikan rezim yang sedang aktif (ATR trailing untuk tren, hard band untuk sideways).',
                     tpRule: 'Fleksibel 1:2.0 hingga 1:5.0 R:R tergantung kekuatan momentum rezim yang terdeteksi.',
                     markets: 'XAUUSD, BTCUSDT, TSLA, EURUSD, DAX40 (Pasar dengan variasi rezim dinamis).',
-                    technicalRef: 'Abdulkader Aljandali (2016) — Quantitative Analysis, Statistics & Econometrics (GARCH Models)',
-                    fundamentalRef: 'N. Gregory Mankiw — Macroeconomics (Business Cycle Regime Switching: Expansion to Slump)',
+                    technicalRef: 'Abdulkader Aljandali (2016) : Quantitative Analysis, Statistics & Econometrics (GARCH Models)',
+                    fundamentalRef: 'N. Gregory Mankiw : Macroeconomics (Business Cycle Regime Switching: Expansion to Slump)',
                     coreFormula: 'Dynamic Regime Switcher: Hurst Exponent & ATR Ratio toggles Trend-Ignition vs Mean-Reversion'
                   },
                   AVATAR: {
@@ -6300,7 +6300,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Master Risk Parity SL (-1.0R) dengan trailing stop bertahap yang paling disiplin di seluruh arena.',
                     tpRule: 'Supreme Multi-Target (+3.0R s/d +6.0R) dengan eksekusi exit segera jika terjadi perpecahan divergensi antar elemen.',
                     markets: 'Seluruh universe instrumen (Cross-Asset Master: Saham BEI, Saham US, Crypto, Forex, Komoditas).',
-                    technicalRef: 'Thomas W. Malone (2018) — Superminds (Ensemble Quorum & Collective Intelligence)',
+                    technicalRef: 'Thomas W. Malone (2018) : Superminds (Ensemble Quorum & Collective Intelligence)',
                     fundamentalRef: 'Fama-French Multi-Factor Asset Pricing (Value, Momentum, Quality & Size Premiums)',
                     coreFormula: '4-Factor Weighted Consensus Score >= +1.5 for Long, <= -1.5 for Short (EXP3 Weighted Voting)'
                   },
@@ -6310,7 +6310,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     slRule: 'Dynamic volatility stop loss berbasis volatilitas candle entri (-1.2R). Cut loss cepat jika anomali mereda.',
                     tpRule: 'Aggressive multi-layer TP (+3.0R s/d +7.0R) dengan trailing ratchet ketat.',
                     markets: 'SOXL, TQQQ, BTCUSDT, ETHUSDT, SMCI, TSLA (Aset volatilitas dan beta tertinggi).',
-                    technicalRef: 'Kevin Dowd (2005) — Measuring Market Risk (Fat-Tail Extremes & Kurtosis Exploitation)',
+                    technicalRef: 'Kevin Dowd (2005) : Measuring Market Risk (Fat-Tail Extremes & Kurtosis Exploitation)',
                     fundamentalRef: 'Behavioral Finance & Noise Trader Risk Theory (Shleifer, Summers, Vishny)',
                     coreFormula: 'Unbound Machine-Gun Volatility Scalping + Auto-Rebirth DNA Mutation Mechanism'
                   }
@@ -6362,14 +6362,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
                         <strong style={{ color: 'var(--accent-blue)', fontSize: '10.5px' }}>📖 Literatur Teknikal (Buku Offline):</strong>
                         <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '10px', lineHeight: '1.4', fontWeight: '600' }}>
-                          {meta.technicalRef || 'Tsinaslanidis & Zapranis (2016) — Algorithmic Pattern Recognition'}
+                          {meta.technicalRef || 'Tsinaslanidis & Zapranis (2016) : Algorithmic Pattern Recognition'}
                         </p>
                       </div>
 
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
                         <strong style={{ color: 'var(--accent-green)', fontSize: '10.5px' }}>🏛️ Literatur Fundamental (Buku Offline):</strong>
                         <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '10px', lineHeight: '1.4', fontWeight: '600' }}>
-                          {meta.fundamentalRef || 'N. Gregory Mankiw — Macroeconomics / Maurice Levi — International Finance'}
+                          {meta.fundamentalRef || 'N. Gregory Mankiw : Macroeconomics / Maurice Levi : International Finance'}
                         </p>
                       </div>
 
@@ -7709,7 +7709,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <h3 id="evolution-modal-title" style={{ margin: 0, fontSize: '14px', fontWeight: '900', color: 'var(--text-primary)' }}>
-                      {evolutionModal.agent.name} — Silsilah Generasi & Mutasi DNA
+                      {evolutionModal.agent.name} : Silsilah Generasi & Mutasi DNA
                     </h3>
                     <span className="badge" style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.4)', fontSize: '9px', fontWeight: '800' }}>
                       🧬 GEN {evolutionModal.agent.generation ?? 0}

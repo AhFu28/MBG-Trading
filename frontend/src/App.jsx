@@ -472,7 +472,7 @@ export default function App() {
       case 'ACADEMY': return '🎓 Quant Academy';
       case 'WHALES': return '🐋 Whale Intelligence Hub';
       case 'FUTURES': return '⚡ Crypto Desk (Perp & Spot)';
-      case 'SIGNALS': return '📡 Sinyal Trading — Entry, SL & TP';
+      case 'SIGNALS': return '📡 Sinyal Trading (Entry, SL & TP)';
       case 'SUBSCRIPTION': return '👑 Akun & Langganan';
       case 'SETTINGS': return '⚙️ Pengaturan';
       case 'ADMIN_APPROVAL': return '⚡ Admin Approval Desk';
@@ -555,8 +555,6 @@ export default function App() {
             borderRadius: '12px',
             background: 'var(--bg-panel)',
             boxShadow: 'var(--shadow-md)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
             overflowX: 'auto',
             boxSizing: 'border-box'
           }}>

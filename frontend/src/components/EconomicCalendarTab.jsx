@@ -1016,7 +1016,15 @@ export default function EconomicCalendarTab() {
                 return (
                   <React.Fragment key={evt.id}>
                     <tr 
+                      tabIndex={0}
+                      role="button"
                       onClick={() => toggleExpand(evt.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          toggleExpand(evt.id);
+                        }
+                      }}
                       style={{ 
                         borderBottom: 'var(--border-hairline)', 
                         cursor: 'pointer',

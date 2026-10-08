@@ -59,12 +59,12 @@ export default function NewsTab({
       if (synced) {
         setToastMsg('Riset AI berhasil disinkronkan dengan intelijen pasar terkini.');
       } else {
-        setToastMsg('Sinkron riset gagal (HTTP ' + resArchive.status + ') — coba lagi nanti.');
+        setToastMsg('Sinkron riset gagal (HTTP ' + resArchive.status + '), coba lagi nanti.');
       }
       setTimeout(() => setToastMsg(null), 3000);
     } catch (err) {
       console.warn('Refresh failed:', err);
-      setToastMsg('Sinkron riset gagal — jaringan atau server bermasalah.');
+      setToastMsg('Sinkron riset gagal: jaringan atau server bermasalah.');
       setTimeout(() => setToastMsg(null), 3000);
     } finally {
       setIsRefreshingAi(false);
@@ -318,7 +318,7 @@ export default function NewsTab({
     const oilChg = macro?.brent_oil_change_pct ? `${macro.brent_oil_change_pct > 0 ? '+' : ''}${macro.brent_oil_change_pct}%` : '';
     const affected = (macro?.idx_affected_stocks || []).map(s => `• $${s.ticker} (${s.impact}: ${s.reason})`).join('\n');
 
-    return `📊 [MBG TRADING — INSTITUTIONAL DAILY SNIPS]
+    return `📊 [MBG TRADING : INSTITUTIONAL DAILY SNIPS]
 Edisi: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}
 
 1. GLOBAL MACRO PULSE:
@@ -337,7 +337,7 @@ ${affected || '• Belum ada deviasi ekstrem'}
 4. ACTIONABLE GUIDANCE:
 ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trailing ratchet 1.0x.'}
 
-(Sumber: MBG Trading Terminal — Institutional Research Desk)`;
+(Sumber: MBG Trading Terminal : Institutional Research Desk)`;
   }, [macro]);
 
   return (
@@ -738,7 +738,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                             ⏰ {dt.timeStr}
                           </span>
                           {fresh && (
-                            <span style={{ fontSize: '9px', fontWeight: '800', color: fresh.color, fontFamily: 'var(--font-mono)' }} title="Umur berita sejak rilis sumber — FRESH < 1 jam, TERLAMBAT < 6 jam, STALE lebih tua">
+                            <span style={{ fontSize: '9px', fontWeight: '800', color: fresh.color, fontFamily: 'var(--font-mono)' }} title="Umur berita sejak rilis sumber: FRESH < 1 jam, TERLAMBAT < 6 jam, STALE lebih tua">
                               {fresh.label} {formatAge(fresh.ageMin)}
                             </span>
                           )}

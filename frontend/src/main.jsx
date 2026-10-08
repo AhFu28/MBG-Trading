@@ -90,7 +90,7 @@ class ErrorBoundary extends React.Component {
               {this.state.retrying
                 ? 'Koneksi terputus saat memuat komponen. Memuat ulang otomatis...'
                 : isChunkLoadFailure(this.state.error)
-                  ? 'Gagal memuat satu komponen antarmuka. Coba muat ulang dulu — biasanya hanya gangguan jaringan sebentar.'
+                  ? 'Gagal memuat satu komponen antarmuka. Coba muat ulang dulu, biasanya hanya gangguan jaringan sebentar.'
                   : 'Terdeteksi pengecualian runtime saat memuat komponen antarmuka.'}
             </div>
             <pre style={{

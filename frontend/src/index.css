@@ -39,6 +39,16 @@
   --accent-green-text: #0e9f6e;
   --accent-gold: #d97706;
   --accent-gold-text: #b45309;
+  --accent-amber: #d97706;
+  --accent-cyan: #0284c7;
+  --accent-purple: #7c3aed;
+  --accent-red: #dc2626;
+  --bg-card: #ffffff;
+  --bg-main: #f7f8fa;
+  --border-medium: 1px solid rgba(15, 23, 42, 0.16);
+  --border-subtle: 1px solid rgba(15, 23, 42, 0.06);
+  --color-bear: #dc2626;
+  --color-bull: #0e9f6e;
 
   --shadow-sm: 0 2px 6px -1px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
@@ -56,6 +66,12 @@
 /* ── V4 smoothness: calm transitions everywhere ─────────────────── */
 body {
   transition: background-color 0.28s ease, color 0.28s ease;
+}
+
+/* Accessibility: global focus indicator for keyboard users (R-32 / H-6) */
+:focus-visible {
+  outline: 2px solid var(--accent-blue) !important;
+  outline-offset: 2px;
 }
 
 .telemetry-panel {
@@ -693,6 +709,16 @@ th.sticky-col-num, th.sticky-col-ticker {
   --accent-mint: #2ee6a8;
   --accent-gold: #ffb454;
   --accent-gold-text: #ffb454;
+  --accent-amber: #ffb454;
+  --accent-cyan: #38bdf8;
+  --accent-purple: #a855f7;
+  --accent-red: #ff5c5c;
+  --bg-card: #0a0d12;
+  --bg-main: #000000;
+  --border-medium: 1px solid rgba(255, 255, 255, 0.14);
+  --border-subtle: 1px solid rgba(255, 255, 255, 0.06);
+  --color-bear: #ff5c5c;
+  --color-bull: #2ee6a8;
 
   --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.5);
   --shadow-md: 0 8px 24px -6px rgba(0, 0, 0, 0.55);
@@ -1671,7 +1697,7 @@ body[data-theme="dark"],
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 480px) {
   .cmc-hide-narrow {
     display: none;
   }
@@ -1681,8 +1707,8 @@ body[data-theme="dark"],
   }
 }
 
-/* Two-column dashboard rows stack on narrow viewports. */
-@media (max-width: 900px) {
+/* Two-column dashboard rows stack on tablet/mobile (<= 768px). */
+@media (max-width: 768px) {
   .cmc-two-col {
     grid-template-columns: 1fr !important;
   }
@@ -1798,8 +1824,8 @@ body[data-theme="dark"],
   box-shadow: 0 34px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.16) inset;
 }
 
-/* --- Narrow screens --- */
-@media (max-width: 880px) {
+/* --- Narrow screens (Tablet & Mobile <= 768px) --- */
+@media (max-width: 768px) {
   .lp-nav-links {
     display: none !important;
   }

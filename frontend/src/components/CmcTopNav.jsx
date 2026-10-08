@@ -296,7 +296,7 @@ export default function CmcTopNav({
             >
               {group.label}
               {hasPanel && (
-                <span style={{ fontSize: '8px', opacity: 0.6, transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.14s ease' }}>
+                <span style={{ fontSize: '9.5px', opacity: 0.6, transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.14s ease' }}>
                   ▼
                 </span>
               )}
@@ -341,7 +341,7 @@ export default function CmcTopNav({
           <span style={{ fontSize: '12.5px', fontWeight: 900, letterSpacing: '-0.01em', color: 'var(--text-primary)' }}>
             MBG QUANT
           </span>
-          <span style={{ fontSize: '8px', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+          <span style={{ fontSize: '9.5px', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
             Market Terminal
           </span>
         </span>
@@ -371,7 +371,7 @@ export default function CmcTopNav({
         >
           ★
           {watchlist.count > 0 && (
-            <span style={{ position: 'absolute', top: '-5px', right: '-5px', background: '#f59e0b', color: '#000', borderRadius: '9px', fontSize: '8.5px', fontWeight: 900, padding: '0 4px', lineHeight: '13px', minWidth: '13px' }}>
+            <span style={{ position: 'absolute', top: '-5px', right: '-5px', background: '#f59e0b', color: '#000', borderRadius: '9px', fontSize: '9.5px', fontWeight: 900, padding: '0 4px', lineHeight: '13px', minWidth: '13px' }}>
               {watchlist.count}
             </span>
           )}

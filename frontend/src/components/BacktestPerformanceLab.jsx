@@ -304,7 +304,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ fontSize: '14px' }}>⚠️</span>
           <span style={{ fontSize: '11px', color: '#fca5a5', fontWeight: 'bold' }}>
-            HASIL PENGUJIAN HISTORIS HIPOTETIS (SIMULATED BACKTEST) — BUKAN REKAM JEJAK TRADING UANG ASLI.
+            HASIL PENGUJIAN HISTORIS HIPOTETIS (SIMULATED BACKTEST) : BUKAN REKAM JEJAK TRADING UANG ASLI.
           </span>
         </div>
         <span style={{ fontSize: '10px', color: '#888', fontFamily: 'monospace' }}>
@@ -430,7 +430,15 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
               {strategies.map(s => (
                 <tr 
                   key={s.id} 
+                  tabIndex={0}
+                  role="button"
                   onClick={() => handleRowClick(s.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleRowClick(s.id);
+                    }
+                  }}
                   style={{ 
                     cursor: 'pointer', 
                     borderBottom: '1px solid #222',
