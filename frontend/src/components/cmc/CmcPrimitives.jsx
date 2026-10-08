@@ -19,8 +19,8 @@ export const DASH = '—';
 export function changeColor(value) {
   if (value === null || value === undefined || !Number.isFinite(Number(value))) return 'var(--text-muted)';
   const n = Number(value);
-  if (n > 0) return '#16c784';
-  if (n < 0) return '#ea3943';
+  if (n > 0) return 'var(--cmc-up)';
+  if (n < 0) return 'var(--cmc-down)';
   return 'var(--text-muted)';
 }
 
@@ -46,7 +46,7 @@ export function Sparkline({ data = [], isUp = true, width = 132, height = 38 }) 
   const points = (Array.isArray(data) ? data : []).filter(v => Number.isFinite(Number(v))).map(Number);
   if (points.length < 2) {
     return (
-      <div style={{ width, height, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', color: 'var(--text-muted)' }}>
+      <div style={{ width, height, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: 'var(--text-muted)' }}>
         no chart
       </div>
     );
@@ -64,7 +64,7 @@ export function Sparkline({ data = [], isUp = true, width = 132, height = 38 }) 
     return `${x.toFixed(2)},${y.toFixed(2)}`;
   });
 
-  const stroke = isUp ? '#16c784' : '#ea3943';
+  const stroke = isUp ? 'var(--cmc-up)' : 'var(--cmc-down)';
   const linePath = `M${coords.join(' L')}`;
   const areaPath = `${linePath} L${width},${height} L0,${height} Z`;
 
@@ -99,11 +99,11 @@ export function FearGreedGauge({ score, label, size = 132 }) {
   const filled = value === null ? 0 : (value / 100) * circumference;
 
   const bands = [
-    { from: 0, to: 20, color: '#ea3943' },
+    { from: 0, to: 20, color: 'var(--cmc-down)' },
     { from: 20, to: 40, color: 'var(--accent-gold)' },
     { from: 40, to: 60, color: '#eab308' },
     { from: 60, to: 80, color: '#84cc16' },
-    { from: 80, to: 100, color: '#16c784' },
+    { from: 80, to: 100, color: 'var(--cmc-up)' },
   ];
 
   return (
@@ -145,7 +145,7 @@ export function FearGreedGauge({ score, label, size = 132 }) {
         <div style={{ fontSize: '26px', fontWeight: 900, fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', lineHeight: 1 }}>
           {value === null ? DASH : Math.round(value)}
         </div>
-        <div style={{ fontSize: '10.5px', fontWeight: 800, color: changeColor(value === null ? null : value - 50), marginTop: '3px' }}>
+        <div style={{ fontSize: '12px', fontWeight: 800, color: changeColor(value === null ? null : value - 50), marginTop: '3px' }}>
           {label || (value === null ? 'Data tidak tersedia' : '')}
         </div>
       </div>
@@ -184,7 +184,7 @@ export function AltcoinSeasonScale({ value, dialConfigs = [], fallbackHigh = 75,
               top: '-3px',
               width: '3px',
               height: '15px',
-              background: '#ffffff',
+              background: 'var(--text-inverse)',
               boxShadow: '0 0 6px rgba(255,255,255,0.9)',
               transform: 'translateX(-50%)',
               borderRadius: '2px',
@@ -194,7 +194,7 @@ export function AltcoinSeasonScale({ value, dialConfigs = [], fallbackHigh = 75,
         )}
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px', fontSize: '9px', color: 'var(--text-muted)', fontWeight: 700 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px', fontSize: '12px', color: 'var(--text-muted)', fontWeight: 700 }}>
         <span>Bitcoin Season</span>
         <span>Altcoin Season</span>
       </div>
@@ -209,7 +209,7 @@ export function DominanceBar({ btc, eth, height = 12 }) {
 
   if (b === null && e === null) {
     return (
-      <div style={{ height, borderRadius: '4px', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', color: 'var(--text-muted)' }}>
+      <div style={{ height, borderRadius: '4px', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: 'var(--text-muted)' }}>
         Data dominasi tidak tersedia
       </div>
     );
@@ -223,7 +223,7 @@ export function DominanceBar({ btc, eth, height = 12 }) {
   const segments = [
     { label: 'Bitcoin', pct: btcPct, color: '#f7931a' },
     { label: 'Ethereum', pct: ethPct, color: '#627eea' },
-    { label: 'Others', pct: othersPct, color: '#64748b' },
+    { label: 'Others', pct: othersPct, color: 'var(--slate-500)' },
   ];
 
   return (
@@ -237,7 +237,7 @@ export function DominanceBar({ btc, eth, height = 12 }) {
       </div>
       <div style={{ display: 'flex', gap: '13px', marginTop: '8px', flexWrap: 'wrap' }}>
         {segments.map(s => (
-          <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '10.5px' }}>
+          <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px' }}>
             <span style={{ width: '9px', height: '9px', borderRadius: '2px', background: s.color, display: 'inline-block' }} />
             <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>{s.label}</span>
             <strong style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>{s.pct.toFixed(1)}%</strong>
@@ -253,12 +253,12 @@ export function MetricTile({ label, value, change, changeSuffix = '%', hint }) {
   const color = change === null || change === undefined ? 'var(--text-muted)' : changeColor(change);
   return (
     <div title={hint || undefined} style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: 0 }}>
-      <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{label}</span>
+      <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{label}</span>
       <span style={{ fontSize: '17px', fontWeight: 900, fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', lineHeight: 1.1 }}>
         {value}
       </span>
       {change !== null && change !== undefined && (
-        <span style={{ fontSize: '11px', fontWeight: 800, color, fontFamily: 'var(--font-mono)' }}>
+        <span style={{ fontSize: '12px', fontWeight: 800, color, fontFamily: 'var(--font-mono)' }}>
           {formatPct(change)}{changeSuffix === '%' ? '' : ` ${changeSuffix}`}
         </span>
       )}
@@ -277,10 +277,10 @@ export function MarketStatusRow({ status }) {
   if (!status) return null;
 
   const palette = {
-    OPEN: { dot: '#16c784', text: '#16c784', label: 'BUKA' },
+    OPEN: { dot: 'var(--cmc-up)', text: 'var(--cmc-up)', label: 'BUKA' },
     BREAK: { dot: 'var(--accent-gold)', text: 'var(--accent-gold)', label: 'ISTIRAHAT' },
-    CLOSED: { dot: '#ea3943', text: '#ea3943', label: 'TUTUP' },
-  }[status.state] || { dot: '#64748b', text: 'var(--text-muted)', label: '—' };
+    CLOSED: { dot: 'var(--cmc-down)', text: 'var(--cmc-down)', label: 'TUTUP' },
+  }[status.state] || { dot: 'var(--slate-500)', text: 'var(--text-muted)', label: '—' };
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '9px', padding: '6px 0' }}>
@@ -292,14 +292,14 @@ export function MarketStatusRow({ status }) {
         }}
       />
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', flex: 1, minWidth: 0 }}>
-        <span style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {status.name}
         </span>
-        <span style={{ fontSize: '9.5px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <span style={{ fontSize: '12px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {status.detail}
         </span>
       </div>
-      <span style={{ fontSize: '9.5px', fontWeight: 800, color: palette.text, fontFamily: 'var(--font-mono)', flexShrink: 0 }}>
+      <span style={{ fontSize: '12px', fontWeight: 800, color: palette.text, fontFamily: 'var(--font-mono)', flexShrink: 0 }}>
         {palette.label}
       </span>
     </div>
@@ -322,7 +322,7 @@ export function MarketPills({ markets, active, onChange }) {
               border: on ? '1px solid var(--accent-blue)' : 'var(--border-hairline)',
               borderRadius: '6px',
               padding: '3px 10px',
-              fontSize: '10.5px',
+              fontSize: '12px',
               fontWeight: 700,
               cursor: 'pointer',
               fontFamily: 'inherit',
@@ -348,18 +348,18 @@ export function EmptyState({ message, hint, onRetry, compact = false }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: compact ? '18px 10px' : '30px 14px', textAlign: 'center' }}>
       <span style={{ fontSize: '19px', opacity: 0.5 }}>⚠️</span>
-      <span style={{ fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.6, maxWidth: '380px' }}>
+      <span style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.6, maxWidth: '380px' }}>
         {message}
       </span>
       {hint && (
-        <span style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.6, maxWidth: '400px' }}>
+        <span style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.6, maxWidth: '400px' }}>
           {hint}
         </span>
       )}
       {onRetry && (
         <button
           onClick={onRetry}
-          style={{ marginTop: '3px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--accent-blue)', borderRadius: '6px', padding: '4px 12px', fontSize: '10.5px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+          style={{ marginTop: '3px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--accent-blue)', borderRadius: '6px', padding: '4px 12px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
         >
           ↻ Coba lagi
         </button>
@@ -393,7 +393,7 @@ export function DashPanel({ title, subtitle, right, children, minHeight, style }
               </h3>
             )}
             {subtitle && (
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{subtitle}</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{subtitle}</span>
             )}
           </div>
           {right}

@@ -270,7 +270,7 @@ export default function CmcTopNav({
                 {item.label}
               </span>
               {item.desc && (
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
                   {item.desc}
                 </span>
               )}
@@ -372,7 +372,7 @@ export default function CmcTopNav({
             >
               {group.label}
               {hasPanel && (
-                <span style={{ fontSize: '9.5px', opacity: 0.6, transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.14s ease' }}>
+                <span style={{ fontSize: '12px', opacity: 0.6, transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.14s ease' }}>
                   ▼
                 </span>
               )}
@@ -411,7 +411,7 @@ export default function CmcTopNav({
           <span style={{ fontSize: '12.5px', fontWeight: 900, letterSpacing: '-0.01em', color: 'var(--text-primary)' }}>
             MBG QUANT
           </span>
-          <span style={{ fontSize: '9.5px', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+          <span style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
             Market Terminal
           </span>
         </span>
@@ -428,7 +428,7 @@ export default function CmcTopNav({
           <button
             onClick={onOpenCommandPalette}
             title="Cari aset (Ctrl+K)"
-            style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '5px 9px', fontSize: '11px', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: '5px' }}
+            style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '5px 9px', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: '5px' }}
           >
             🔍<span className="cmc-hide-narrow">Cari</span>
           </button>
@@ -441,7 +441,7 @@ export default function CmcTopNav({
         >
           ★
           {watchlist.count > 0 && (
-            <span style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--accent-gold)', color: '#000', borderRadius: '9px', fontSize: '9.5px', fontWeight: 900, padding: '0 4px', lineHeight: '13px', minWidth: '13px' }}>
+            <span style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--accent-gold)', color: '#000', borderRadius: '9px', fontSize: '12px', fontWeight: 900, padding: '0 4px', lineHeight: '13px', minWidth: '13px' }}>
               {watchlist.count}
             </span>
           )}
@@ -451,7 +451,7 @@ export default function CmcTopNav({
           <button
             onClick={onToggleTheme}
             title={theme === 'dark' ? 'Mode terang' : 'Mode gelap'}
-            style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '5px 9px', fontSize: '11px', cursor: 'pointer', fontFamily: 'inherit' }}
+            style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '5px 9px', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}
           >
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
@@ -460,7 +460,7 @@ export default function CmcTopNav({
         <button
           onClick={() => handleNavigate('SUBSCRIPTION')}
           title={account?.email ? `Masuk sebagai ${account.email}` : 'Akun'}
-          style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '5px 10px', fontSize: '11px', cursor: 'pointer', fontFamily: 'inherit' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '5px 10px', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}
         >
           <span>{isAdmin ? '👑' : account?.isPro ? '⭐' : '👤'}</span>
           <span className="cmc-hide-narrow">{isAdmin ? 'ADMIN' : account?.isPro ? 'PRO' : 'AKUN'}</span>
@@ -506,7 +506,7 @@ export default function CmcTopNav({
                   style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', padding: '9px 11px', background: 'none', border: 'none', color: 'var(--text-primary)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
                 >
                   <span>{group.label}</span>
-                  <span style={{ fontSize: '9px' }}>{open ? '▲' : '▼'}</span>
+                  <span style={{ fontSize: '12px' }}>{open ? '▲' : '▼'}</span>
                 </button>
                 {open && items.map(item => (
                   <button

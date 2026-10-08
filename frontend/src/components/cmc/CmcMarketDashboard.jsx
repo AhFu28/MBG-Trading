@@ -77,7 +77,7 @@ function MarketCapChart({ series, height = 210 }) {
   const points = (series || []).filter(p => Number.isFinite(p?.marketCap));
   if (points.length < 2) {
     return (
-      <div style={{ height, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '11.5px', textAlign: 'center', padding: '0 16px' }}>
+      <div style={{ height, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '12px', textAlign: 'center', padding: '0 16px' }}>
         Grafik kapitalisasi pasar BTC belum tersedia
       </div>
     );
@@ -103,7 +103,7 @@ function MarketCapChart({ series, height = 210 }) {
   const first = values[0];
   const last = values[values.length - 1];
   const isUp = last >= first;
-  const stroke = isUp ? '#16c784' : '#ea3943';
+  const stroke = isUp ? 'var(--cmc-up)' : 'var(--cmc-down)';
 
   // Four horizontal gridlines with real value labels, like CMC's chart.
   const gridValues = [0, 1, 2, 3].map(i => max - ((max - min) / 3) * i);
@@ -115,7 +115,7 @@ function MarketCapChart({ series, height = 210 }) {
         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', pointerEvents: 'none' }}>
           {gridValues.map((gv, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', minWidth: '46px' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', minWidth: '46px' }}>
                 {formatUsdCompact(gv)}
               </span>
               <span style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.05)' }} />
@@ -135,7 +135,7 @@ function MarketCapChart({ series, height = 210 }) {
         </svg>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', paddingLeft: '52px', marginTop: '5px', fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', paddingLeft: '52px', marginTop: '5px', fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
         <span>{new Date(points[0].t).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</span>
         <span>{new Date(points[points.length - 1].t).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</span>
       </div>
@@ -169,7 +169,7 @@ function MajorCard({ coin, onOpen }) {
         <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {coin.symbol}
         </span>
-        <span style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginLeft: 'auto', whiteSpace: 'nowrap' }}>7d</span>
+        <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginLeft: 'auto', whiteSpace: 'nowrap' }}>7d</span>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '8px' }}>
@@ -177,7 +177,7 @@ function MajorCard({ coin, onOpen }) {
           <span style={{ fontSize: '16.5px', fontWeight: 900, fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', lineHeight: 1.1 }}>
             {formatPrice(coin.price)}
           </span>
-          <span style={{ fontSize: '11.5px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: changeColor(coin.change24h) }}>
+          <span style={{ fontSize: '12px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: changeColor(coin.change24h) }}>
             {formatPct(coin.change24h)}
           </span>
         </div>
@@ -338,24 +338,24 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
           <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)' }}>
             Market Overview
           </h2>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '9.5px', fontWeight: 800, color: '#16c784', background: 'rgba(22,199,132,0.12)', border: '1px solid rgba(22,199,132,0.3)', padding: '2px 7px', borderRadius: '20px' }}>
-            <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#16c784', boxShadow: '0 0 6px #16c784' }} />
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', fontWeight: 800, color: 'var(--cmc-up)', background: 'rgba(22,199,132,0.12)', border: '1px solid rgba(22,199,132,0.3)', padding: '2px 7px', borderRadius: '20px' }}>
+            <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--cmc-up)', boxShadow: '0 0 6px var(--cmc-up)' }} />
             LIVE
           </span>
           {data?.fetchedAt && (
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
               diperbarui {new Date(data.fetchedAt).toLocaleTimeString('id-ID')}
             </span>
           )}
           {error && (
-            <span style={{ fontSize: '10px', color: 'var(--accent-gold)' }}>
+            <span style={{ fontSize: '12px', color: 'var(--accent-gold)' }}>
               ⚠️ sebagian data gagal dimuat
             </span>
           )}
         </div>
         <button
           onClick={refresh}
-          style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '7px', padding: '5px 11px', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+          style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '7px', padding: '5px 11px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
         >
           ↻ Segarkan
         </button>
@@ -392,10 +392,10 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
           <div style={{ borderTop: 'var(--border-hairline)', paddingTop: '11px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(148px, 1fr))', gap: '15px', alignItems: 'start' }}>
             {/* Fear & Greed */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-muted)' }}>Fear &amp; Greed</span>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)' }}>Fear &amp; Greed</span>
               <FearGreedGauge score={fng?.score} label={fng?.classification} size={124} />
               {fng?.source && (
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', textAlign: 'center' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center' }}>
                   Sumber: {fng.source}
                 </span>
               )}
@@ -414,7 +414,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
                 value={formatUsdCompact(global?.totalVolume24h)}
               />
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-muted)' }}>Koin Aktif</span>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)' }}>Koin Aktif</span>
                 <span style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                   {global?.activeCryptocurrencies?.toLocaleString('id-ID') ?? DASH}
                 </span>
@@ -425,7 +425,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-muted)' }}>Altcoin Season</span>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)' }}>Altcoin Season</span>
                   <strong style={{ fontSize: '19px', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                     {season?.value ?? DASH}
                   </strong>
@@ -434,7 +434,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-muted)' }}>Dominasi</span>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)' }}>Dominasi</span>
                 <DominanceBar btc={global?.btcDominance} eth={global?.ethDominance} />
               </div>
             </div>
@@ -449,7 +449,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
             watched.length > 0 ? (
               <button
                 onClick={watchlist.clear}
-                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '10px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700 }}
+                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700 }}
               >
                 Kosongkan
               </button>
@@ -459,7 +459,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
           {watched.length === 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '26px 12px', textAlign: 'center' }}>
               <span style={{ fontSize: '22px', opacity: 0.5 }}>☆</span>
-              <span style={{ fontSize: '11.5px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
                 Klik ikon bintang di tabel koin untuk menambahkan instrumen ke sini.
               </span>
             </div>
@@ -479,13 +479,13 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
                     onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                   >
                     <StarButton symbol={item.symbol} market={item.market} watchlist={watchlist} size={13} />
-                    <span style={{ fontSize: '11.5px', fontWeight: 800, color: 'var(--text-primary)', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {item.symbol}
                     </span>
-                    <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                    <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                       {price === undefined || price === null ? DASH : formatPrice(price)}
                     </span>
-                    <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: changeColor(change), minWidth: '54px', textAlign: 'right' }}>
+                    <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: changeColor(change), minWidth: '54px', textAlign: 'right' }}>
                       {change === undefined || change === null ? DASH : formatPct(change)}
                     </span>
                   </div>
@@ -512,7 +512,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
                     style={{
                       background: view === v ? 'var(--accent-blue)' : 'transparent',
                       color: view === v ? '#fff' : 'var(--text-muted)',
-                      border: 'none', borderRadius: '4px', padding: '3px 9px', fontSize: '10px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', textTransform: 'capitalize',
+                      border: 'none', borderRadius: '4px', padding: '3px 9px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', textTransform: 'capitalize',
                     }}
                   >
                     {v}
@@ -527,7 +527,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
                     style={{
                       background: range === r.id ? 'var(--accent-blue)' : 'transparent',
                       color: range === r.id ? '#fff' : 'var(--text-muted)',
-                      border: 'none', borderRadius: '4px', padding: '3px 8px', fontSize: '10px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                      border: 'none', borderRadius: '4px', padding: '3px 8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
                     }}
                   >
                     {r.label}
@@ -571,9 +571,9 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
             <MetricTile label="Volume (24h)" value={formatUsdCompact(deriv?.totalVolume24hUsd)} />
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-muted)' }}>Open Interest Terbesar</span>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)' }}>Open Interest Terbesar</span>
               {(deriv?.topByOpenInterest || []).map(a => (
-                <div key={a.symbol} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', fontSize: '11px' }}>
+                <div key={a.symbol} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', fontSize: '12px' }}>
                   <span style={{ fontWeight: 800, color: 'var(--text-primary)' }}>{a.symbol}</span>
                   <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{formatUsdCompact(a.openInterestUsd)}</span>
                   <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color: changeColor(a.funding), minWidth: '52px', textAlign: 'right' }}>
@@ -582,7 +582,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
                 </div>
               ))}
               {(!deriv || !deriv.topByOpenInterest?.length) && (
-                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Data derivatif belum tersedia</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Data derivatif belum tersedia</span>
               )}
             </div>
           </div>
@@ -600,7 +600,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari aset..."
-              style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', borderRadius: '6px', padding: '4px 9px', fontSize: '11px', color: 'var(--text-primary)', fontFamily: 'inherit', outline: 'none', width: '140px' }}
+              style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', borderRadius: '6px', padding: '4px 9px', fontSize: '12px', color: 'var(--text-primary)', fontFamily: 'inherit', outline: 'none', width: '140px' }}
             />
           }
         >
@@ -614,9 +614,9 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
             />
           ) : (
             <div style={{ overflowX: 'auto', maxHeight: '430px', overflowY: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11.5px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                 <thead>
-                  <tr style={{ position: 'sticky', top: 0, background: 'var(--bg-panel)', zIndex: 2, color: 'var(--text-muted)', fontSize: '10px' }}>
+                  <tr style={{ position: 'sticky', top: 0, background: 'var(--bg-panel)', zIndex: 2, color: 'var(--text-muted)', fontSize: '12px' }}>
                     <th style={{ textAlign: 'left', padding: '6px 5px', fontWeight: 700, width: '94px' }}>Pasar</th>
                     <th style={{ textAlign: 'left', padding: '6px 5px', fontWeight: 700 }}>Nama</th>
                     <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>Harga</th>
@@ -644,7 +644,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
                       onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                       title={`Buka chart ${row.symbol}`}
                     >
-                      <td style={{ padding: '7px 5px', fontSize: '9.5px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                      <td style={{ padding: '7px 5px', fontSize: '12px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                         {MARKET_BADGE[row.market] || row.market}
                       </td>
                       <td style={{ padding: '7px 5px' }}>
@@ -654,7 +654,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
                             ? <CryptoIcon symbol={row.symbol} size={17} />
                             : <span style={{ width: 17, textAlign: 'center', fontSize: '13px' }}>{MARKET_GLYPH[row.market] || '•'}</span>}
                           <span style={{ fontWeight: 800, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.symbol}</span>
-                          <span style={{ color: 'var(--text-muted)', fontSize: '10.5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.name}</span>
+                          <span style={{ color: 'var(--text-muted)', fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.name}</span>
                         </div>
                       </td>
                       <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: 700, whiteSpace: 'nowrap' }}>{formatPrice(row.price)}</td>
@@ -664,7 +664,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
                       <td style={{ padding: '7px 5px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                         <button
                           onClick={() => onOpenChart && onOpenChart(row.symbol, row.market)}
-                          style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--accent-blue)', borderRadius: '5px', padding: '3px 8px', fontSize: '10px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
+                          style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--accent-blue)', borderRadius: '5px', padding: '3px 8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
                         >
                           📈 Chart
                         </button>
@@ -703,16 +703,16 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
                 onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-panel-subtle)'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
               >
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', width: '13px' }}>{i + 1}</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', width: '13px' }}>{i + 1}</span>
                 <StarButton symbol={t.symbol} market="CRYPTO" watchlist={watchlist} size={13} />
                 <CryptoIcon symbol={t.symbol} size={16} />
                 <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, flex: 1 }}>
-                  <span style={{ fontSize: '11.5px', fontWeight: 800, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.symbol}</span>
-                  <span style={{ fontSize: '9.5px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.name}</span>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.symbol}</span>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.name}</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                  <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>{formatPrice(t.price)}</span>
-                  <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: changeColor(t.change24h) }}>{formatPct(t.change24h)}</span>
+                  <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>{formatPrice(t.price)}</span>
+                  <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: changeColor(t.change24h) }}>{formatPct(t.change24h)}</span>
                 </div>
               </div>
             ))}
@@ -725,29 +725,29 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
               HONEST LABEL: this counts headlines in our own news wire. It is
               NOT X/Twitter or Threads; neither has a free public API. */}
           <div style={{ borderTop: 'var(--border-hairline)', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '9.5px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+            <span style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
               Jumlah berita per topik dari Live News Wire (bukan media sosial)
             </span>
             {(data?.topics || []).map(topic => (
               <div key={topic.id} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-primary)', flex: 1, minWidth: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', flex: 1, minWidth: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {topic.label}
                 </span>
                 <span style={{ flex: '0 0 60px', height: '5px', borderRadius: '3px', background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
                   <span style={{ display: 'block', height: '100%', width: `${Math.min(100, (topic.count / (data?.topics?.[0]?.count || 1)) * 100)}%`, background: 'var(--accent-blue)' }} />
                 </span>
-                <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', minWidth: '18px', textAlign: 'right' }}>{topic.count}</span>
+                <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', minWidth: '18px', textAlign: 'right' }}>{topic.count}</span>
               </div>
             ))}
             {(data?.topics || []).length === 0 && !loading && (
-              <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 Belum ada berita yang bisa dikelompokkan.
               </span>
             )}
             {(data?.keywords || []).length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '2px' }}>
                 {data.keywords.slice(0, 10).map(k => (
-                  <span key={k.word} style={{ fontSize: '9.5px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)' }}>
+                  <span key={k.word} style={{ fontSize: '12px', padding: '2px 6px', borderRadius: '4px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)' }}>
                     {k.word} <strong style={{ color: 'var(--text-muted)' }}>{k.count}</strong>
                   </span>
                 ))}
@@ -758,7 +758,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
       </div>
 
       {/* ---------- FOOTER: honest disclosure of what is NOT shown ---------- */}
-      <div className="telemetry-panel" style={{ padding: '9px 13px', borderRadius: '9px', fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.7 }}>
+      <div className="telemetry-panel" style={{ padding: '9px 13px', borderRadius: '9px', fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.7 }}>
         <strong style={{ color: 'var(--text-secondary)' }}>Sumber data:</strong> Binance Vision (tabel koin, top gainers, grafik BTC) ·
         CoinGecko (market cap global, dominasi, trending) · Hyperliquid (open interest &amp; funding) ·
         TradingView (saham US, forex, komoditas) · alternative.me (Fear &amp; Greed).
