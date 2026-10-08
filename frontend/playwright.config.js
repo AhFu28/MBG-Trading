@@ -42,11 +42,24 @@ export default defineConfig({
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
   ],
-  // `vite preview` serves the production build, which is what users get.
+  /**
+   * `vite preview` serves the production build, which is what users get.
+   *
+   * `reuseExistingServer: false` is deliberate, and it fixed a real flake. With
+   * reuse enabled, a preview server left running from an earlier session keeps
+   * serving the OLD build — so the suite silently tests stale assets. That
+   * produced a run where two tests failed and the next five passed, with no code
+   * change in between: the first run had raced a rebuild.
+   *
+   * The cost is a cold start per run, which is a few seconds. The benefit is that
+   * a green run always describes the code currently on disk.
+   */
   webServer: {
-    command: 'npm run preview -- --port 4173 --strictPort',
+    command: 'npm run build && npm run preview -- --port 4173 --strictPort',
     url: BASE_URL,
-    reuseExistingServer: true,
-    timeout: 60_000,
+    reuseExistingServer: false,
+    timeout: 120_000,
+    stdout: 'ignore',
+    stderr: 'pipe',
   },
 });

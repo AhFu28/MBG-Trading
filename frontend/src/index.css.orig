@@ -309,11 +309,7 @@ body {
 
 
 /* =====================================================
-   APP LAYOUT
-   The left-sidebar rules that used to live here were removed
-   on 2026-10-08 along with the deleted Sidebar component
-   (26 dead rules, 220 lines). What remains is the shell the
-   top-nav layout actually uses.
+   SIDEBAR LAYOUT — SoSoValue Style
    ===================================================== */
 
 .app-layout {
@@ -322,16 +318,179 @@ body {
   background: var(--bg-canvas);
 }
 
+/* Fixed left sidebar (Clean Dribbble Glass) */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 236px;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--bg-panel);
+  border-right: var(--border-hairline);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow: hidden;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Logo / Brand section (Zero-Scroll Compact) */
+.sidebar-logo {
+  padding: 8px 12px;
+  border-bottom: var(--border-hairline);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.sidebar-logo-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 6px var(--accent-green);
+  flex-shrink: 0;
+}
+
+.sidebar-logo-text {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.sidebar-logo-sub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* Nav section */
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2px 0;
+  scrollbar-width: none;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar-nav-section-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 5px 11px 2px;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  margin: 1px 8px;
+  width: calc(100% - 16px);
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: var(--radius-sm);
+  position: relative;
+  min-height: 32px;
+  box-sizing: border-box;
+}
+
 /* WCAG 2.5.5 (AAA): 44px minimum touch targets on touch devices */
 @media (pointer: coarse) {
   .telemetry-btn,
-  .quant-pill-btn {
+  .quant-pill-btn,
+  .sidebar-nav-item,
+  .sidebar-footer button {
     min-height: 44px;
   }
 }
 
-/* Kept for any surface that still centres content in a column, now that the
-   sidebar is gone. The 236px was its width. */
+.sidebar-nav-item:hover {
+  background: var(--bg-panel-subtle);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-nav-item.active {
+  background: color-mix(in srgb, var(--text-primary) 8%, transparent);
+  color: var(--text-primary);
+  font-weight: 700;
+  border-color: var(--border-color);
+  box-shadow: none;
+}
+
+.sidebar-nav-icon {
+  font-size: 13px;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.sidebar-nav-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-nav-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  background: var(--bg-panel-subtle);
+  border: var(--border-hairline);
+  border-radius: var(--radius-full);
+  padding: 0 4px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.sidebar-nav-item.active .sidebar-nav-badge {
+  background: color-mix(in srgb, var(--text-primary) 8%, transparent);
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* Sidebar divider */
+.sidebar-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 3px 11px;
+  opacity: 0.4;
+}
+
+/* Sidebar footer — settings + logout */
+.sidebar-footer {
+  padding: 6px 0;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+  border-top: var(--border-hairline);
+  flex-shrink: 0;
+  background: var(--bg-panel);
+}
+
+/* Main content area shifts right of sidebar */
 .main-content {
   margin-left: 236px;
   flex: 1;
@@ -342,8 +501,9 @@ body {
 
 /* =====================================================
    TOP-NAV LAYOUT (CoinMarketCap-style horizontal nav)
-   The top-nav shell overrides the left offset above, so the
-   content spans the full width.
+   When the left sidebar is not rendered, the content must
+   span the full width — otherwise it keeps a 236px hole
+   where the sidebar used to be.
    ===================================================== */
 
 .app-layout-topnav {
@@ -357,6 +517,33 @@ body {
   padding: 0;
   min-height: 0;
   width: 100%;
+}
+
+/* Base hamburger hidden on desktop */
+.sidebar-hamburger {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 250;
+  width: 40px;
+  height: 40px;
+  background: var(--bg-panel);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text-primary);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.sidebar-hamburger:hover {
+  background: var(--bg-panel-subtle);
+  border-color: var(--accent-blue);
 }
 
 .mobile-header-hamburger {
@@ -382,6 +569,9 @@ body {
 
 /* Tablet (769px - 1024px) */
 @media (min-width: 769px) and (max-width: 1024px) {
+  .sidebar {
+    width: 200px;
+  }
   .main-content {
     margin-left: 200px;
     padding: 10px 12px;
@@ -390,9 +580,21 @@ body {
 
 /* Mobile (< 768px): clean drawer, full width content, touch-friendly */
 @media (max-width: 768px) {
+  .sidebar {
+    width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 8px 0 24px rgba(0, 0, 0, 0.6);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
   .main-content {
     margin-left: 0 !important;
     padding: 6px 8px 60px 8px !important;
+  }
+  .sidebar-hamburger {
+    display: none !important;
   }
   .mobile-header-hamburger {
     display: inline-flex !important;
@@ -475,6 +677,15 @@ th.sticky-col-num, th.sticky-col-ticker {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+/* Dark mode sidebar tweaks */
+[data-theme="dark"] .sidebar {
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .sidebar-nav-item.active {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Modern Dribbble Crypto Dark Theme */
@@ -1209,6 +1420,10 @@ body[data-theme="dark"],
 }
 
 @media (max-width: 768px) {
+  .sidebar.open .sidebar-nav {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 @media (max-width: 480px) {
