@@ -169,6 +169,13 @@ Tidak ada paket V2 yang di-drop; satu di-reframe (P-2), empat menyusut/rebase ke
 
 **VERDICT N-2 (8 Okt — SEBAGIAN BESAR TERTUTUP):** session `wa_auth/` gitignored ✓ (tidak bocor); reconnect backoff eksponensial (1.5^n, cap 15s) ✓; jeda antar pesan ada ("Small pause ... to prevent spam triggers") ✓; whitelist membatasi ke satu nomor partner ✓. Sisa: verifikasi magnitude jeda + aturan anti-spam AGENTS.md diterapkan konsisten di kode kirim (bukan hanya dokumen). Review ops lanjutan tidak menghalangi apa pun.
 
+**[INCIDEN PRODUKSI 8 Okt ~21:50 WIB] SITUS LIVE MACET + CHUNK HILANG:**
+- Situs = macet di deploy era gelombang-2 (entry `index-RyyitXwc.js` ≠ build lokal `index-BwMuBEpR.js`); **6/7 chunk lazy yang dirujuk entry = 404** (CF balas index.html — SPA rewrite) → **kebanyakan tab pecah untuk pengguna SEKARANG** (HARD CHART ✓ satu-satunya chunk sampel yang hidup; FLOW/HOME/ARENA/Market dll = 404).
+- **Kabar baik (terverifikasi dari header respons): CSP fix SUDAH LIVE** ✓ — `script-src +s3.tradingview.com, frame-src +s +www` di header produksi.
+- **Kabar baik 2: CSS gelombang 1-2 LIVE** ✓ (focus-visible, reduced-motion, accent-mint, home-hero-grid semua ada di `index-BFXRXOIl.css`).
+- **Akar (dugaan, butuh dashboard):** deploy sejak P-6 (`48159d4`) tidak mendarat — build gagal/antre/stuck. Tersangka: (a) functions build esbuild pada import `.txt` dari P-2 (terverifikasi bundel OK lokal, tapi versi wrangler bisa beda); (b) konfigurasi dua `wrangler.toml` (root `frontend/dist` vs frontend `dist` — ambigu); (c) cache rule edge 7 hari (`s-maxage=604800` di entry JS — bukan default CF Pages, dari setelan dashboard).
+- **LANGKAH (tangan owner, dashboard Cloudflare → Pages → mbg-trading → Deployments):** 1) cek status deploy terakhir (failed? baca build log-nya — sebut penyebabnya); 2) **Retry deployment** (build baru = semua chunk terunggah atomik); 3) kalau build log menunjuk import `.txt` → revert `/api/ea` ke env-only (saya siapkan); 4) kalau menunjuk wrangler.toml → putuskan satu file config.
+
 ### N-2 — WhatsApp daemon ops review (0.5–1 PD)
 
 - Baileys unattended session (`wa_daemon.mjs`, 591 baris): di mana file session disimpan, perilaku restart, risiko ban, batas rate, kirim gambar.
