@@ -197,12 +197,40 @@ Dan di `MasterQuantLeaderboard`, guard-nya `dynamicRR !== undefined` — yang **
 
 Saya tidak menyelesaikannya karena setiap sisa warna butuh keputusan **per permukaan** tentang token mana yang semantis benar. Mengganti asal-asalan hanya menukar satu nilai salah dengan nilai salah yang lain. Butuh sesi tersendiri dengan mata di setiap layar.
 
-### 3. M-3, M-4, M-5, L-1, L-2, L-3 belum tersentuh
+### 3. M-3 sebagian, L-1 selesai
 
-- **M-3** glassmorphism — 33 `backdrop-filter`, target 1-2
+| Item | Status |
+|---|---|
+| **L-1** 8 npm package nganggur | ✅ **Sudah bersih** — cuma `react` + `react-dom` |
+| **M-3** glassmorphism | 🟡 30 → 28. Yang mati sudah dibuang |
+| **CSS mati** | ✅ **220 baris dihapus** (26 aturan `.sidebar*`) |
+
+**Temuan M-3 yang lebih penting dari angka:** dari 30 `backdrop-filter`, satu ada di CSS komponen yang **sudah dihapus**. Jadi sebagian "glassmorphism berlebih" itu sebenarnya **CSS mati**, bukan pilihan desain.
+
+Sisanya (28) tersebar di modal dan panel — dan sebagian besar **berguna**: modal yang buram membuat latarnya tetap terbaca. Saya tidak menghapusnya karena angkanya harus turun; itu akan menukar keterbacaan dengan kepatuhan aturan.
+
+---
+
+### 4. Temuan proses: tes yang lulus sambil menguji hal yang salah
+
+Dua kali di sesi ini, suite memberi hasil menyesatkan:
+
+1. **E2E pertama: 23 lulus, menguji nol.** Semua route menampilkan Landing Page yang sama.
+2. **`reuseExistingServer: true`.** Server preview dari sesi lama tetap menyajikan **build lama**. Hasilnya: 2 gagal, lalu 5 lulus berturut-turut **tanpa perubahan kode apa pun**.
+
+Keduanya sudah diperbaiki, dan keduanya punya pelajaran sama: **suite hijau tidak otomatis berarti kode benar.** Yang membuatnya bisa dipercaya adalah tes yang **gagal ketika seharusnya gagal** — dan saya membuktikannya dengan sengaja merusak kode (revoke owner) untuk memastikan tesnya menangkap.
+
+---
+
+### 5. Yang belum tersentuh
+
 - **M-4** font mikro — 1.675 dari 2.282 deklarasi di bawah 12px
 - **M-5** 14 breakpoint → 3
-- **L-1** 8 dependensi npm tak terpakai
+- **L-2** label CTA belum seragam
+- **L-3** panah `→` belum dipangkas
+- **H-2** sisa ~1.100 hex (60,7% sudah pakai token)
+
+---
 - **L-2** label CTA belum seragam
 - **L-3** panah `→` belum dipangkas
 
