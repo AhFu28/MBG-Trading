@@ -84,3 +84,11 @@ frontend/*.txt
 
 # Local backups made before scripted rewrites (remove after verifying the result).
 *.orig
+
+# Archive dumps, session exports & diagnostic bundles (prevent secret leaks)
+*.zip
+*.tar.gz
+*.7z
+*.rar
+dsh-session-*
+*-session-log*
