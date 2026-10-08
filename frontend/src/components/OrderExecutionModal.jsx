@@ -310,7 +310,7 @@ export default function OrderExecutionModal({
           {/* Binance credential entry.
               binanceConfig was read at submit time (line ~163) and its keys were
               required before a live order could be placed, but nothing ever
-              called setBinanceConfig — so the live broker was unreachable by
+              called setBinanceConfig; so the live broker was unreachable by
               design. The fields now exist and persist to the same localStorage
               key the initialiser already reads. */}
           {brokerType === 'BINANCE' && (
@@ -319,7 +319,7 @@ export default function OrderExecutionModal({
               borderRadius: '6px', padding: '12px',
             }}>
               <div style={{ fontSize: '11px', fontWeight: '800', color: '#fbbf24', marginBottom: '8px' }}>
-                🔑 API Binance {binanceConfig.isTestnet ? '(TESTNET)' : '(LIVE — dana nyata)'}
+                🔑 API Binance {binanceConfig.isTestnet ? '(TESTNET)' : '(LIVE : dana nyata)'}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                 <input
@@ -343,7 +343,7 @@ export default function OrderExecutionModal({
                   checked={binanceConfig.isTestnet}
                   onChange={(e) => updateBinanceConfig({ isTestnet: e.target.checked })}
                 />
-                Pakai Testnet (disaranake — dana nyata ora kena)
+                Pakai Testnet (disarankan, dana nyata Anda tidak tersentuh)
               </label>
             </div>
           )}
@@ -388,7 +388,7 @@ export default function OrderExecutionModal({
             {/* Risk per trade.
                 This was hardwired to 1.5% with no way to change it, yet the
                 rupiah amount it produces is displayed to the user below. A
-                risk-sized order the trader cannot size is not a risk tool — so
+                risk-sized order the trader cannot size is not a risk tool, so
                 the input now exists and drives the lot maths at line ~94. */}
             <div>
               <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>

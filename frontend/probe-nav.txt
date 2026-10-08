@@ -1,0 +1,51 @@
+﻿node.exe : [WebServer] (node:17352) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:11552) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+=== ELEMENT AT ACCOUNT BUTTON CENTER ===
+{
+  "isInsideNav": false,
+  "chain": [
+    {
+      "tag": "DIV",
+      "cls": "",
+      "id": "",
+      "z": "999999",
+      "pos": "fixed"
+    },
+    {
+      "tag": "DIV",
+      "cls": "",
+      "id": "root",
+      "z": "auto",
+      "pos": "static"
+    },
+    {
+      "tag": "BODY",
+      "cls": "",
+      "id": "",
+      "z": "auto",
+      "pos": "static"
+    },
+    {
+      "tag": "HTML",
+      "cls": "",
+      "id": "",
+      "z": "auto",
+      "pos": "static"
+    }
+  ]
+}
+  ok 1 [chromium] › e2e\_probe-nav.spec.js:11:1 › probe: what covers the nav (4.1s)
+
+  1 passed (6.0s)

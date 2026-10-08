@@ -113,7 +113,7 @@ export function computeRugChecks(token) {
   else if (progress > 60) flags.push({ level: 'warn', text: `Bonding curve ${progress}% — belum lulus` });
 
   if (token.complete === true && progress < 50) {
-    flags.push({ level: 'warn', text: 'Ditandai complete tapi likuiditas rendah — verifikasi manual' });
+    flags.push({ level: 'warn', text: 'Ditandai complete tapi likuiditas rendah, verifikasi manual' });
   }
   if (!token.twitter && !token.website) {
     flags.push({ level: 'danger', text: 'Tanpa sosial media / website terdaftar' });

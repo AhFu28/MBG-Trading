@@ -222,7 +222,7 @@ export const PLANS = [
     features: [
       'Sinyal REAL-TIME (tanpa jeda 24 jam)',
       'Notifikasi langsung ke Telegram',
-      'AI Multi-Agent Arena — 16 bot otonom',
+      'AI Multi-Agent Arena, 16 bot otonom',
       'Charting Desk, Whale Tracker & Heatmap',
       'Forex, US Stocks & Crypto Futures',
       'AI Sentinel Desk (makro & geopolitik)',
@@ -241,7 +241,7 @@ export const PLANS = [
     locked: true,
     unlockHint: 'Terbuka setelah semua achievement Pro terpenuhi.',
     features: [
-      'Trading Bot Otonom — eksekusi order otomatis',
+      'Trading Bot Otonom, eksekusi order otomatis',
       'Jev Execution HUD (TWAP / VWAP / POV)',
       'Semua fitur Pro tetap terbuka',
       'Prioritas bantuan & konsultasi',

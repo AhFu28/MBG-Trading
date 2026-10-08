@@ -1,0 +1,115 @@
+﻿node.exe : [WebServer] (node:5108) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 20 tests using 1 worker
+
+(node:23580) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › HOME mounts and shows its own content (1.5s)
+  ok  2 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › SIGNALS mounts and shows its own content (1.9s)
+  ok  3 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › AI_AGENTS mounts and shows its own content (1.8s)
+  ok  4 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › CHARTING mounts and shows its own content (1.8s)
+  ok  5 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › HEATMAP mounts and shows its own content (1.9s)
+  ok  6 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › CRYPTO mounts and shows its own content (1.3s)
+  ok  7 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › STOCK mounts and shows its own content (1.9s)
+  ok  8 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › FOREX mounts and shows its own content (1.8s)
+  ok  9 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › NEWS mounts and shows its own content (1.8s)
+  ok 10 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › WHALES mounts and shows its own content (1.9s)
+  ok 11 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › ECONOMIC_CALENDAR mounts and shows its own content (1.9s)
+  ok 12 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › ACADEMY mounts and shows its own content (1.3s)
+  ok 13 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › PEARSON_CORRELATION mounts and shows its own content (1.8s)
+  ok 14 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › TESTING mounts and shows its own content (1.1s)
+  ok 15 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › WATCHLIST mounts and shows its own content (1.1s)
+  ok 16 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › SETTINGS mounts and shows its own content (1.3s)
+  ok 17 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › ACHIEVEMENTS mounts and shows its own content (1.9s)
+  ok 18 [chromium] › e2e\routes.spec.js:42:5 › cockpit routes › SUBSCRIPTION mounts and shows its own content (2.1s)
+  x  19 [chromium] › e2e\routes.spec.js:77:3 › navigation reaches every route by clicking, not by URL › the Account menu reaches Legend Path and it renders (45.6s)
+(node:21436) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  20 [chromium] › e2e\routes.spec.js:91:3 › navigation reaches every route by clicking, not by URL › the Trade menu reaches Live News Wire and it renders content (45.7s)
+
+
+  1) [chromium] › e2e\routes.spec.js:77:3 › navigation reaches every route by clicking, not by URL › the Account menu reaches Legend Path and it renders 
+
+    Test timeout of 45000ms exceeded.
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\routes-navigation-reaches--50e2d--Legend-Path-and-it-renders-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\routes-navigation-reaches--50e2d--Legend-Path-and-it-renders-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\routes-navigation-reaches--50e2d--Legend-Path-and-it-renders-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\routes-navigation-reaches--50e2d--Legend-Path-and-it-renders-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › e2e\routes.spec.js:91:3 › navigation reaches every route by clicking, not by URL › the Trade menu reaches Live News Wire and it renders content 
+
+    Test timeout of 45000ms exceeded.
+
+    Error: locator.click: Test timeout of 45000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: /Research/i }).first()
+        - locator resolved to <button aria-haspopup="true" aria-expanded="false">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div>…</div> intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div>…</div> intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        83 × waiting for element to be visible, enabled and stable
+           - element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <div>…</div> intercepts pointer events
+         - retrying click action
+           - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+      94 |     // News lives under Research & Learn in the current nav model.
+      95 |     const researchBtn = page.getByRole('button', { name: /Research/i }).first();
+    > 96 |     await researchBtn.click();
+         |                       ^
+      97 |     await page.waitForTimeout(300);
+      98 |     await page.getByRole('menuitem', { name: /Live News Wire/i }).click();
+      99 |     await page.waitForTimeout(800);
+        at C:\Users\NAUFAL ARIB\Documents\5. Big Project\MBG-Trading\frontend\e2e\routes.spec.js:96:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\routes-navigation-reaches--57e47-Wire-and-it-renders-content-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\routes-navigation-reaches--57e47-Wire-and-it-renders-content-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\routes-navigation-reaches--57e47-Wire-and-it-renders-content-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\routes-navigation-reaches--57e47-Wire-and-it-renders-content-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › e2e\routes.spec.js:77:3 › navigation reaches every route by clicking, not by URL › the Account menu reaches Legend Path and it renders 
+    [chromium] › e2e\routes.spec.js:91:3 › navigation reaches every route by clicking, not by URL › the Trade menu reaches Live News Wire and it renders content 
+  18 passed (2.1m)

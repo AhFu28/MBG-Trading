@@ -1,0 +1,51 @@
+﻿node.exe : [WebServer] (node:8828) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:4640) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+=== HIT TEST AT BUTTON CENTRE ===
+{
+  "box": {
+    "x": 517.8125,
+    "y": 16,
+    "width": 80.4375,
+    "height": 30
+  },
+  "top": {
+    "tag": "DIV",
+    "cls": "",
+    "text": "⚠️PERNYATAAN KEPATUHAN & PENGUNGKAPAN RI",
+    "parentCls": ""
+  }
+}
+
+=== CLICK RESULT ===
+locator.click: Timeout 4000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: /Account/i }).first()
+    - locator resolved to <button aria-haspopup="true" aria-expanded="false">…</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <div>…</div> intercepts pointer events
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+
+=== MENU OPEN? ===
+menu items NOT visible
+  ok 1 [chromium] › e2e\_probe-nav.spec.js:10:1 › probe: attempt the account click (5.4s)
+
+  1 passed (7.3s)

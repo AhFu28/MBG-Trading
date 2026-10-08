@@ -64,7 +64,7 @@ function AchievementRow({ item }) {
         </div>
 
         {/* Progress bar. The numbers come from the real counter, so a user who
-            has done nothing sees 0 — not a flattering placeholder. */}
+            has done nothing sees 0; not a flattering placeholder. */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
           <div style={{
             flex: 1, height: '5px', borderRadius: '3px',
@@ -125,7 +125,7 @@ export default function AchievementsPage({ account = {}, userTier = TIER.GUEST, 
             </h2>
             <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.6, maxWidth: '640px' }}>
               Legend adalah satu-satunya paket yang bisa mengeksekusi order memakai API key Anda.
-              Karena itu tidak bisa dibeli langsung — harus dibuka lewat kemampuan yang terbukti.
+              Karena itu tidak bisa dibeli langsung, harus dibuka lewat kemampuan yang terbukti.
             </div>
           </div>
 

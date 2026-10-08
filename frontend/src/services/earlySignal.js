@@ -235,12 +235,12 @@ export function analyzeToken(pair, curve = null, jupiter = null) {
   if (accumulationBeforeMove) factors.push({ key: 'early', points: 20, label: 'Akumulasi terdeteksi SEBELUM harga bergerak' });
 
   if (curveProgress !== null) {
-    if (curveProgress >= 100) factors.push({ key: 'curve', points: 15, label: 'Bonding curve LULUS — siap listing DEX' });
+    if (curveProgress >= 100) factors.push({ key: 'curve', points: 15, label: 'Bonding curve LULUS : siap listing DEX' });
     else if (curveProgress >= 60) factors.push({ key: 'curve', points: 10, label: `Bonding curve ${curveProgress}% (mendekati lulus)` });
     else if (curveProgress < 10) factors.push({ key: 'curve', points: -10, label: `Bonding curve baru ${curveProgress}%` });
   }
 
-  if (overheated) factors.push({ key: 'turnover', points: -15, label: `Turnover ${turnover.toFixed(1)}x — churn tinggi, bukan akumulasi` });
+  if (overheated) factors.push({ key: 'turnover', points: -15, label: `Turnover ${turnover.toFixed(1)}x, churn tinggi, bukan akumulasi` });
 
   // ===== Jupiter-derived factors: holders, organic demand and token audit =====
   // These are the signals DexScreener cannot provide at all.
@@ -286,8 +286,8 @@ export function analyzeToken(pair, curve = null, jupiter = null) {
   }
 
   // Audit: authority still enabled means the dev can mint or freeze at will.
-  if (mintAuthDisabled === false) factors.push({ key: 'audit', points: -25, label: 'BAHAYA: mint authority MASIH AKTIF — dev bisa cetak token tanpa batas' });
-  if (freezeAuthDisabled === false) factors.push({ key: 'audit', points: -20, label: 'BAHAYA: freeze authority MASIH AKTIF — dompet kamu bisa dibekukan' });
+  if (mintAuthDisabled === false) factors.push({ key: 'audit', points: -25, label: 'BAHAYA: mint authority MASIH AKTIF, dev bisa cetak token tanpa batas' });
+  if (freezeAuthDisabled === false) factors.push({ key: 'audit', points: -20, label: 'BAHAYA: freeze authority MASIH AKTIF, dompet kamu bisa dibekukan' });
 
   if (topHoldersPct !== null) {
     if (topHoldersPct >= DANGEROUS_TOP_HOLDERS_PCT) factors.push({ key: 'concentration', points: -25, label: `Konsentrasi ekstrem: top holder pegang ${topHoldersPct.toFixed(1)}% supply` });
@@ -296,7 +296,7 @@ export function analyzeToken(pair, curve = null, jupiter = null) {
   }
 
   if (devBalancePct !== null && devBalancePct >= DANGEROUS_DEV_BALANCE_PCT) {
-    factors.push({ key: 'dev_balance', points: -25, label: `Dev masih pegang ${devBalancePct.toFixed(2)}% supply — risiko dump` });
+    factors.push({ key: 'dev_balance', points: -25, label: `Dev masih pegang ${devBalancePct.toFixed(2)}% supply, risiko dump` });
   }
 
   const rawScore = factors.reduce((sum, f) => sum + f.points, 0);
@@ -304,14 +304,14 @@ export function analyzeToken(pair, curve = null, jupiter = null) {
 
   // Risk is deliberately computed separately: a token can be "early" AND a scam.
   const riskFlags = [];
-  if (liquidityThin) riskFlags.push('Likuiditas tipis — sulit keluar, rawan rug');
+  if (liquidityThin) riskFlags.push('Likuiditas tipis, sulit keluar, rawan rug');
   if (ratio1h > 0 && ratio1h < 0.7) riskFlags.push('Penjual lebih banyak dari pembeli');
   if (overheated) riskFlags.push('Volume berputar terlalu cepat (churn)');
-  if (ageMinutes !== null && ageMinutes < 5) riskFlags.push('Token berumur < 5 menit — sangat spekulatif');
-  if (curveProgress !== null && curveProgress < 10) riskFlags.push('Bonding curve hampir kosong — bisa gagal total');
-  if (liq === 0) riskFlags.push('Likuiditas tidak terdeteksi — tidak bisa diverifikasi');
-  if (mintAuthDisabled === false) riskFlags.push('Mint authority aktif — supply bisa ditambah kapan saja');
-  if (freezeAuthDisabled === false) riskFlags.push('Freeze authority aktif — token kamu bisa dibekukan dev');
+  if (ageMinutes !== null && ageMinutes < 5) riskFlags.push('Token berumur < 5 menit, sangat spekulatif');
+  if (curveProgress !== null && curveProgress < 10) riskFlags.push('Bonding curve hampir kosong, bisa gagal total');
+  if (liq === 0) riskFlags.push('Likuiditas tidak terdeteksi, tidak bisa diverifikasi');
+  if (mintAuthDisabled === false) riskFlags.push('Mint authority aktif, supply bisa ditambah kapan saja');
+  if (freezeAuthDisabled === false) riskFlags.push('Freeze authority aktif, token kamu bisa dibekukan dev');
   if (topHoldersPct !== null && topHoldersPct >= DANGEROUS_TOP_HOLDERS_PCT) riskFlags.push(`Top holder pegang ${topHoldersPct.toFixed(1)}% — beberapa wallet bisa menjatuhkan harga`);
   if (devBalancePct !== null && devBalancePct >= DANGEROUS_DEV_BALANCE_PCT) riskFlags.push(`Dev pegang ${devBalancePct.toFixed(2)}% supply`);
   if (holderChange1h !== null && holderChange1h * 100 <= -1) riskFlags.push(`Holder menyusut ${(holderChange1h * 100).toFixed(1)}% — distribusi sedang terjadi`);

@@ -723,7 +723,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
 
           {/* Topic coverage from the live news feed.
               HONEST LABEL: this counts headlines in our own news wire. It is
-              NOT X/Twitter or Threads — neither has a free public API. */}
+              NOT X/Twitter or Threads; neither has a free public API. */}
           <div style={{ borderTop: 'var(--border-hairline)', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <span style={{ fontSize: '9.5px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
               Jumlah berita per topik dari Live News Wire (bukan media sosial)

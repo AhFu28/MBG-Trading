@@ -122,7 +122,7 @@ export default function MemecoinRadar() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '20px' }}>🎯</span>
           <span style={{ fontSize: '15px', fontWeight: '900', letterSpacing: '-0.01em' }}>
-            EARLY SIGNAL RADAR — DETEKSI DINI BERBASIS BUKTI
+            EARLY SIGNAL RADAR : DETEKSI DINI BERBASIS BUKTI
           </span>
           <span style={{
             fontSize: '9.5px', fontWeight: '800', padding: '3px 8px', borderRadius: '6px',
@@ -161,7 +161,7 @@ export default function MemecoinRadar() {
       }}>
         <strong>⚠️ BACA INI SEBELUM MEMAKAI ANGKA APA PUN DI HALAMAN INI:</strong>
         <div style={{ marginTop: '4px' }}>
-          Tidak ada sistem mana pun — termasuk ini — yang bisa memprediksi memecoin akan naik puluhan ribu persen.
+          Tidak ada sistem mana pun (termasuk ini) yang bisa memprediksi memecoin akan naik puluhan ribu persen.
           Yang diukur di sini adalah <strong>bukti aktivitas nyata saat ini</strong>: tekanan beli, pertumbuhan holder,
           volume organik, kedalaman likuiditas, dan <strong>audit keamanan token</strong> (mint/freeze authority, konsentrasi holder, saldo dev).
           Skor tinggi berarti <em>"ada bukti akumulasi terukur"</em>, <strong>BUKAN</strong> <em>"harga akan naik"</em>.
@@ -249,7 +249,7 @@ export default function MemecoinRadar() {
         <div className="telemetry-panel" style={{ borderRadius: '14px', overflow: 'hidden' }}>
           <div className="telemetry-header">
             <span>
-              📡 HASIL PEMINDAIAN — menampilkan {Math.min(visible.length, 200)} dari {visible.length} token
+              📡 HASIL PEMINDAIAN : menampilkan {Math.min(visible.length, 200)} dari {visible.length} token
               {noPair.length > 0 && ` (+${noPair.length} tanpa pair DEX)`}
             </span>
             {loading && <span style={{ color: '#38bdf8', fontSize: '10px' }}>memindai {scanPages}×{PUMPFUN_PAGE_SIZE} token…</span>}
@@ -353,10 +353,10 @@ export default function MemecoinRadar() {
                       <td>
                         <div style={{ display: 'flex', gap: '3px', flexWrap: 'wrap' }}>
                           {a.metrics.mintAuthDisabled === false && (
-                            <span title="Mint authority aktif — dev bisa cetak token tanpa batas" style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(244,63,94,0.2)', color: '#fb7185', fontWeight: '800' }}>MINT!</span>
+                            <span title="Mint authority aktif, dev bisa cetak token tanpa batas" style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(244,63,94,0.2)', color: '#fb7185', fontWeight: '800' }}>MINT!</span>
                           )}
                           {a.metrics.freezeAuthDisabled === false && (
-                            <span title="Freeze authority aktif — dompet bisa dibekukan" style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(244,63,94,0.2)', color: '#fb7185', fontWeight: '800' }}>FREEZE!</span>
+                            <span title="Freeze authority aktif, dompet bisa dibekukan" style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(244,63,94,0.2)', color: '#fb7185', fontWeight: '800' }}>FREEZE!</span>
                           )}
                           {a.metrics.mintAuthDisabled === true && a.metrics.freezeAuthDisabled === true && (
                             <span title="Mint & freeze authority sudah dimatikan" style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(16,185,129,0.18)', color: '#34d399', fontWeight: '800' }}>SAFE</span>
@@ -388,7 +388,7 @@ export default function MemecoinRadar() {
                     <td colSpan={11} style={{ textAlign: 'center', padding: '26px', color: 'var(--text-muted)', fontSize: '11.5px' }}>
                       Tidak ada token yang lolos filter. Pindai ulang, atau turunkan skor minimum.
                       <div style={{ marginTop: '6px', fontSize: '10.5px' }}>
-                        Ini normal — mayoritas token baru memang tidak punya bukti akumulasi apa pun.
+                        Ini normal: mayoritas token baru memang tidak punya bukti akumulasi apa pun.
                       </div>
                     </td>
                   </tr>
@@ -515,7 +515,7 @@ export default function MemecoinRadar() {
 
               <div style={{ marginTop: '8px', fontSize: '9.5px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
                 Sumber: DexScreener (harga/volume/txns) + Jupiter lite-api (holder, organik, audit).
-                Jupiter tidak menyediakan identitas pemilik wallet top holder — hanya persentase agregatnya.
+                Jupiter tidak menyediakan identitas pemilik wallet top holder, hanya persentase agregatnya.
               </div>
 
               <a

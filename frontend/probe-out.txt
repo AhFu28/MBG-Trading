@@ -1,0 +1,133 @@
+﻿node.exe : [WebServer] (node:18748) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:5824) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+=== ROUTE PROBE ===
+{
+  "__ROOT__": {
+    "length": 3809,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true
+  },
+  "HOME": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "SIGNALS": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "AI_AGENTS": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "CHARTING": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "HEATMAP": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "CRYPTO": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "STOCK": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "FOREX": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "NEWS": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "WHALES": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "ECONOMIC_CALENDAR": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "ACADEMY": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "PEARSON_CORRELATION": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "TESTING": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "WATCHLIST": {
+    "length": 4084,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "SETTINGS": {
+    "length": 4158,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "ACHIEVEMENTS": {
+    "length": 4158,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  },
+  "SUBSCRIPTION": {
+    "length": 4158,
+    "firstLine": "MBG TRADING",
+    "looksLikeLanding": true,
+    "hash": ""
+  }
+}
+  ok 1 [chromium] › e2e\_probe.spec.js:22:1 › probe: what does each route actually render (50.3s)
+
+  1 passed (52.3s)

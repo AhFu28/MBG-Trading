@@ -93,7 +93,7 @@ export default function DegenDesk({ onOpenSwap }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '18px' }}>🎰</span>
             <span style={{ fontSize: '14px', fontWeight: '900', letterSpacing: '-0.01em' }}>
-              DEGEN DESK — MULTI-CHAIN MEMECOIN RADAR
+              DEGEN DESK : MULTI-CHAIN MEMECOIN RADAR
             </span>
           </div>
           <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '3px' }}>
@@ -316,7 +316,7 @@ export default function DegenDesk({ onOpenSwap }) {
             <tr>
               <td>🟣 Solana</td>
               <td>Jupiter Aggregator</td>
-              <td><span className="badge badge-alert" style={{ fontSize: '9px' }}>DEMO — belum menandatangani tx</span></td>
+              <td><span className="badge badge-alert" style={{ fontSize: '9px' }}>DEMO : belum menandatangani tx</span></td>
             </tr>
             <tr>
               <td>🪶 Robinhood Chain</td>
@@ -332,7 +332,7 @@ export default function DegenDesk({ onOpenSwap }) {
         </table>
         <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '8px', lineHeight: 1.6 }}>
           Eksekusi nyata di Solana memerlukan server penandatanganan (private key tidak boleh ada di browser)
-          atau persetujuan dompet lewat Jupiter. Robinhood Chain dan Aster belum punya adapter — keduanya
+          atau persetujuan dompet lewat Jupiter. Robinhood Chain dan Aster belum punya adapter; keduanya
           masih radar pasif sampai adapter dan izin API-nya dibangun.
         </div>
       </div>

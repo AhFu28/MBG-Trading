@@ -63,8 +63,8 @@ export default function DataIntegrityModal({
   // only committed at the END of each session. So a healthy committed state can
   // legitimately be up to ~6.5h old. Thresholds tighter than this would report
   // OFFLINE on a perfectly healthy engine.
-  const ARENA_FRESH_MIN = 400;    // ~6h40m — within the expected session window
-  const ARENA_DELAYED_MIN = 800;  // ~13h20m — one full session appears missed
+  const ARENA_FRESH_MIN = 400;    // ~6h40m; within the expected session window
+  const ARENA_DELAYED_MIN = 800;  // ~13h20m; one full session appears missed
 
   const isArenaFresh = arenaAgeMin <= ARENA_FRESH_MIN;
   const isArenaWarning = arenaAgeMin > ARENA_FRESH_MIN && arenaAgeMin <= ARENA_DELAYED_MIN;

@@ -1721,7 +1721,7 @@ export default function AiIntelligenceDrawer({
                     }}>
                       {hasGeoFeed
                         ? `DEFCON ${defcon ?? '—'} // WASPADA TERUKUR`
-                        : 'DEFCON — BELUM DIASESMEN'}
+                        : 'DEFCON : BELUM DIASESMEN'}
                     </span>
                     {/* The old badge read "LIVE COMPUTED LEVEL" unconditionally,
                         which made an empty panel look like a measured one. It is
@@ -1763,7 +1763,7 @@ export default function AiIntelligenceDrawer({
               {/* 5-Segment Institutional Barometer Gauge.
                   THE `active: true` ON LVL 4 IS GONE. It was hardcoded, so the
                   gauge always highlighted "LVL 4 // GUARDED" and stamped it
-                  ACTIVE — an assessed threat level displayed on a panel with no
+                  ACTIVE; an assessed threat level displayed on a panel with no
                   feed behind it. The level is now derived from the composite
                   score and simply does not light up when there is no data. */}
               <div style={{ marginTop: '12px' }}>

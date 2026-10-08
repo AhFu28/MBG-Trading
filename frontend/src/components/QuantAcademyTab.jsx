@@ -1187,7 +1187,7 @@ function VisualExecutionBracket() {
         </div>
 
         {/* Capital and risk were fixed constants driving the lot maths, with no
-            way to set them — so the calculator could only ever answer for one
+            way to set them; so the calculator could only ever answer for one
             hypothetical account. Both are now inputs. */}
         <div>
           <label style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Total Modal (Rp)</label>

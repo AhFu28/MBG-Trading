@@ -698,7 +698,7 @@ export default function MasterQuantLeaderboard({
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px', padding: '2px 2px 8px', fontSize: '10px', color: 'var(--text-muted)' }}>
               <span>
                 <strong style={{ color: 'var(--text-secondary)' }}>Q-Score</strong>
-                {' '}= skor kuantitatif 0-100 dari momentum, likuiditas, valuasi & arus dana institusi — makin tinggi = makin kuat. Klik header kolom (▲/▼) untuk urutkan, klik baris untuk detail lengkap.
+                {' '}= skor kuantitatif 0-100 dari momentum, likuiditas, valuasi & arus dana institusi, makin tinggi = makin kuat. Klik header kolom (▲/▼) untuk urutkan, klik baris untuk detail lengkap.
               </span>
               <span title="Sinyal adalah hasil skrining algoritmik, bukan ajakan investasi">⚠️ Sinyal bukan ajakan investasi</span>
             </div>
@@ -1000,7 +1000,7 @@ export default function MasterQuantLeaderboard({
                     <th style={{ width: '10%', textAlign: 'right' }} title="Zona beli terencana berdasarkan setup teknikal quant">Entry Plan</th>
                     <th style={{ width: '9%', textAlign: 'right' }} title="Hard Stop Loss: level keluar wajib jika harga bergerak melawan posisi">Hard SL</th>
                     <th style={{ width: '9%', textAlign: 'right' }} title="Target Profit pertama (Take Profit 1) berdasarkan setup quant">TP1</th>
-                    <th style={{ width: '7%', textAlign: 'right', cursor: 'pointer' }} onClick={() => handleSort('riskReward')} title="Risk:Reward — rasio potensi untung terhadap risiko. 1:2 artinya potensi untung 2x dari risiko yang diambil">
+                    <th style={{ width: '7%', textAlign: 'right', cursor: 'pointer' }} onClick={() => handleSort('riskReward')} title="Risk:Reward, rasio potensi untung terhadap risiko. 1:2 artinya potensi untung 2x dari risiko yang diambil">
                       R:R{getSortIcon('riskReward')}
                     </th>
                     <th style={{ width: '70px', textAlign: 'center' }}>Aksi</th>

@@ -176,7 +176,7 @@ export default function HomeDashboardTab({
   const netForeignFlowIdr = useMemo(() => {
     if (foreignFlow && typeof foreignFlow.total_net === 'number') return foreignFlow.total_net;
     if (foreignFlow && typeof foreignFlow.net_buy_idr === 'number') return foreignFlow.net_buy_idr;
-    return null; // unknown — display em-dash
+    return null; // unknown; display em-dash
   }, [foreignFlow]);
 
   useEffect(() => {
@@ -1339,7 +1339,7 @@ export default function HomeDashboardTab({
               </div>
 
             {/* Conflict headline watch.
-                Driven by real matched headlines in the live feed — see the
+                Driven by real matched headlines in the live feed; see the
                 comment on `hasGeoHeadlines` for why the old DEFCON gate was
                 removed rather than repaired. */}
             {showGeoBanner && !dismissDefenseAlert && (

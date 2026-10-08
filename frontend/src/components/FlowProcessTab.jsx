@@ -28,18 +28,18 @@ const STAGES = [
     subtitle: 'hanya dipakai manual',
     nodes: [
       { id: 'engine', label: 'Engine Python', status: 'ok', detail: 'Fetcher & analyzer lokal: engine/ + scripts/refresh_crypto_futures.py + scripts/refresh_forex.py. Sumber data: Gate.io, TradingView (28 pair + CFD untuk emas/perak/DXY), mempool.space (paus on-chain nyata).' },
-      { id: 'jadwal', label: 'Jadwal Windows — DIHAPUS', status: 'removed', detail: 'Penjadwal laptop dipensiunkan (d071418 + e041862): cloud run sudah mencakup forex, jadi tugas lokal tidak perlu. Installer disimpan dengan pengaman: scripts/install_forex_task.ps1 + install_futures_task.ps1 menolak jalan tanpa -Force — tidak bisa dihidupkan tak sengaja.' },
+      { id: 'jadwal', label: 'Jadwal Windows, DIHAPUS', status: 'removed', detail: 'Penjadwal laptop dipensiunkan (d071418 + e041862): cloud run sudah mencakup forex, jadi tugas lokal tidak perlu. Installer disimpan dengan pengaman: scripts/install_forex_task.ps1 + install_futures_task.ps1 menolak jalan tanpa -Force, tidak bisa dihidupkan tak sengaja.' },
     ],
   },
   {
     id: 'cloud',
     title: '2 · PIPELINE CLOUD',
-    subtitle: 'pemilik data — GitHub Actions',
+    subtitle: 'pemilik data, GitHub Actions',
     nodes: [
-      { id: 'hourly', label: 'Jadwal jam (:00)', status: 'ok', detail: '.github/workflows/hourly_crypto_macro.yml — mode hourly_crypto_macro: crypto_futures · whale · forex · macro. Bug "sukses 10 hari tanpa commit/push" ditutup: bundle kini di-commit DAN di-push (352cd07 + push_bundle_to_edge.py).' },
-      { id: 'daily', label: 'Jadwal harian (22:30 UTC)', status: 'ok', detail: '.github/workflows/daily_idx_eod.yml — us_stocks + kalender + earnings, mode us_stocks (BARU, e97031e). Nama mode asli disebut di pesan commit (d347473).' },
-      { id: 'validate', label: 'Validasi bundle', status: 'ok', detail: 'scripts/push_bundle_to_edge.py — menolak penanda konflik dan JSON rusak/terpotong sebelum commit; gagal bersuara kalau bundle kosong. Gerbang ini menangkap bundle rusak pada 6 Oktober sebelum sempat ter-push.' },
-      { id: 'commit', label: 'Commit + push', status: 'ok', detail: 'Verifikasi run 37437433618: bundle valid & publishable, 25 sections, SEGAR 6 / BASI 0 — crypto 15 pair, whale 5 ekor, forex 33 pair.' },
+      { id: 'hourly', label: 'Jadwal jam (:00)', status: 'ok', detail: '.github/workflows/hourly_crypto_macro.yml, mode hourly_crypto_macro: crypto_futures · whale · forex · macro. Bug "sukses 10 hari tanpa commit/push" ditutup: bundle kini di-commit DAN di-push (352cd07 + push_bundle_to_edge.py).' },
+      { id: 'daily', label: 'Jadwal harian (22:30 UTC)', status: 'ok', detail: '.github/workflows/daily_idx_eod.yml, us_stocks + kalender + earnings, mode us_stocks (BARU, e97031e). Nama mode asli disebut di pesan commit (d347473).' },
+      { id: 'validate', label: 'Validasi bundle', status: 'ok', detail: 'scripts/push_bundle_to_edge.py, menolak penanda konflik dan JSON rusak/terpotong sebelum commit; gagal bersuara kalau bundle kosong. Gerbang ini menangkap bundle rusak pada 6 Oktober sebelum sempat ter-push.' },
+      { id: 'commit', label: 'Commit + push', status: 'ok', detail: 'Verifikasi run 37437433618: bundle valid & publishable, 25 sections, SEGAR 6 / BASI 0, crypto 15 pair, whale 5 ekor, forex 33 pair.' },
     ],
   },
   {
@@ -49,9 +49,9 @@ const STAGES = [
     nodes: [
       { id: 'qa-ps', label: 'Sintaks PowerShell (2 installer)', status: 'ok', detail: 'Gerbang 1 dari 5: kedua installer .ps1 dicek sintaksnya sebelum push.' },
       { id: 'qa-yaml', label: 'Workflow YAML + sintaks Python', status: 'ok', detail: 'Gerbang 2: YAML workflow + sintaks Python engine dicek.' },
-      { id: 'qa-engine', label: 'Tes engine (130+)', status: 'ok', detail: 'Gerbang 3: npm run test:engine — unittest suite engine (crypto_futures, liquidity_heat, forex_scanner, whale_tracker, vip_signal_router, send_wa_fuad).' },
-      { id: 'qa-frontend', label: 'Tes frontend (396)', status: 'ok', detail: 'Gerbang 4: vitest run — 396 tes (honestData, dataEndpoint, account, paymentAndAdmin, signalTiers, chunkLoadRetry, dst.). Termasuk secret-guard: repo gagal push kalau membawa nilai kredensial (JWT_SECRET / COCKPIT_PASSWORD / PASSWORD_HASH / ADMIN_TOKEN / sb_secret_) — guard dibenahi 8 Okt setelah kunci lolos.' },
-      { id: 'qa-build', label: 'Build produksi', status: 'ok', detail: 'Gerbang 5: vite build — bundle produksi harus bersih sebelum push.' },
+      { id: 'qa-engine', label: 'Tes engine (130+)', status: 'ok', detail: 'Gerbang 3: npm run test:engine, unittest suite engine (crypto_futures, liquidity_heat, forex_scanner, whale_tracker, vip_signal_router, send_wa_fuad).' },
+      { id: 'qa-frontend', label: 'Tes frontend (396)', status: 'ok', detail: 'Gerbang 4: vitest run, 396 tes (honestData, dataEndpoint, account, paymentAndAdmin, signalTiers, chunkLoadRetry, dst.). Termasuk secret-guard: repo gagal push kalau membawa nilai kredensial (JWT_SECRET / COCKPIT_PASSWORD / PASSWORD_HASH / ADMIN_TOKEN / sb_secret_) — guard dibenahi 8 Okt setelah kunci lolos.' },
+      { id: 'qa-build', label: 'Build produksi', status: 'ok', detail: 'Gerbang 5: vite build, bundle produksi harus bersih sebelum push.' },
     ],
   },
   {
@@ -59,8 +59,8 @@ const STAGES = [
     title: '4 · WEB (Cloudflare Pages)',
     subtitle: 'mbg-trading.pages.dev',
     nodes: [
-      { id: 'web-prices', label: 'Harga pasar (CORS langsung)', status: 'ok', detail: 'SUDAH JALAN: saham, crypto, forex, emas — TradingView scanner + fallback langsung + Binance WS/REST. CSP fix (8 Okt) membuka TradingView widget di Charting Desk (script-src + frame-src).' },
-      { id: 'web-data', label: 'Data engine → web', status: 'ok', detail: '/api/data kini SESSION-GATED (401 untuk tamu): rantai session → edge KV → bundled snapshot yang selalu ada. Tamu mendapat snapshot build-time dengan header X-Data-Source/X-Data-Age-Hours jujur — tidak disamarkan segar.' },
+      { id: 'web-prices', label: 'Harga pasar (CORS langsung)', status: 'ok', detail: 'SUDAH JALAN: saham, crypto, forex, emas, TradingView scanner + fallback langsung + Binance WS/REST. CSP fix (8 Okt) membuka TradingView widget di Charting Desk (script-src + frame-src).' },
+      { id: 'web-data', label: 'Data engine → web', status: 'ok', detail: '/api/data kini SESSION-GATED (401 untuk tamu): rantai session → edge KV → bundled snapshot yang selalu ada. Tamu mendapat snapshot build-time dengan header X-Data-Source/X-Data-Age-Hours jujur, tidak disamarkan segar.' },
       { id: 'web-ea', label: '/api/ea (EA MT5)', status: 'blocked', detail: 'Masih placeholder-200 kecuali env MT5_EA_SOURCE di-set. EA riil ada di engine/mt5/ — penyajian EA terverifikasi = paket P-2 (rencana).' },
       { id: 'web-account', label: 'Daftar akun + pembayaran', status: 'pending', detail: 'Kode sudah ada (signup/login, payment-confirm, admin approve/reject, tabel subscription_requests) — butuh schema Supabase dijalankan di dashboard + env Supabase di Cloudflare (aksi owner).' },
     ],
@@ -70,7 +70,7 @@ const STAGES = [
     title: '5 · YANG MASIH DIBUTUHKAN',
     subtitle: 'aksi owner',
     nodes: [
-      { id: 'rotate', label: 'ROTASI kredensial', status: 'pending', detail: 'WAJIB sekarang: kunci JWT + password cockpit sempat ter-commit ke repo publik (7b5d3f4). Menghapus dari file TIDAK menutup bocornya — riwayat git tetap memuatnya. Buat yang baru, set di Cloudflare dashboard (encrypted env), BUKAN di file repo.' },
+      { id: 'rotate', label: 'ROTASI kredensial', status: 'pending', detail: 'WAJIB sekarang: kunci JWT + password cockpit sempat ter-commit ke repo publik (7b5d3f4). Menghapus dari file TIDAK menutup bocornya, riwayat git tetap memuatnya. Buat yang baru, set di Cloudflare dashboard (encrypted env), BUKAN di file repo.' },
       { id: 'infra', label: 'Repo private + env + schema', status: 'pending', detail: 'Repo → private (menutup unduhan VIP bundle) + otorisasi ulang CF Pages setelahnya; env Supabase di Cloudflare; jalankan supabase/schema.sql, verifikasi rls_aktif = true sebelum lanjut.' },
     ],
   },
@@ -165,7 +165,7 @@ export default function FlowProcessTab() {
           <span style={{ fontSize: '24px' }}>⚡</span>
           <div>
             <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
-              ALUR PROSES & QA — PETA PROYEK
+              ALUR PROSES &amp; QA : PETA PROYEK
             </div>
             <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
               Scroll = zoom · drag = geser · klik node = detail file & aturan · fakta per 8 Okt 2026

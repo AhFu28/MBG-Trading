@@ -54,7 +54,10 @@ describe('analyzeToken — buy/sell pressure', () => {
     expect(r.metrics.ratio1h).toBe(0);
     expect(Number.isFinite(r.score)).toBe(true);
     expect(r.score).toBeGreaterThanOrEqual(0);
-    expect(r.riskFlags).toContain('Likuiditas tidak terdeteksi — tidak bisa diverifikasi');
+    // Text updated 2026-10-08: the em dash was replaced by a comma across
+    // user-facing prose (anti-slop R-02). The assertion is on the message the
+    // user actually sees, so it tracks the source string.
+    expect(r.riskFlags).toContain('Likuiditas tidak terdeteksi, tidak bisa diverifikasi');
   });
 });
 

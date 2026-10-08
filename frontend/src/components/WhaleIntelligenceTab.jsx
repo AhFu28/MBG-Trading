@@ -471,7 +471,7 @@ function generateInitialCryptoWhales(count = 35) {
     }
 
     list.unshift({
-      hash: null, // simulated row — no fabricated txid
+      hash: null, // simulated row; no fabricated txid
       hash_short: `SIM-${chainObj.symbol}-${Math.abs(Math.round(amountUsd)).toLocaleString('en-US')} USD`,
       blockchain: chainObj.chain,
       blockchain_name: chainObj.name,
@@ -485,7 +485,7 @@ function generateInitialCryptoWhales(count = 35) {
       timestamp: txTime.toISOString(),
       signal: signal,
       sentiment: sentiment,
-      explorer_url: null, // simulated row — no real txid, never link to an explorer
+      explorer_url: null, // simulated row; no real txid, never link to an explorer
       impact_thesis: thesis,
       data_source: 'simulated_microstructure',
       isNew: false,
@@ -629,7 +629,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
         }
 
         const newWhaleTx = {
-          hash: null, // simulated row — no fabricated txid
+          hash: null, // simulated row; no fabricated txid
           hash_short: `SIM-${chainObj.symbol}-${Math.abs(Math.round(amountUsd)).toLocaleString('en-US')} USD`,
           blockchain: chainObj.chain,
           blockchain_name: chainObj.name,
@@ -643,7 +643,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
           timestamp: new Date().toISOString(),
           signal: signal,
           sentiment: sentiment,
-          explorer_url: null, // simulated row — no real txid, never link to an explorer
+          explorer_url: null, // simulated row; no real txid, never link to an explorer
           impact_thesis: thesis,
           data_source: 'simulated_microstructure',
           isNew: true,
