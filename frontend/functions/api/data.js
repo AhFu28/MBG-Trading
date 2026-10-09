@@ -192,15 +192,27 @@ export async function onRequestGet(context) {
       if (sResp.ok) {
         const records = await sResp.json();
         if (Array.isArray(records) && records.length > 0 && records[0].val) {
-          return new Response(JSON.stringify(records[0].val), {
-            status: 200,
-            headers: {
-              'Content-Type': 'application/json',
-              'Cache-Control': 'public, max-age=30, s-maxage=60, stale-while-revalidate=120',
-              'X-Data-Source': 'supabase-live',
-              'X-Bundle-Updated-At': records[0].updated_at || new Date().toISOString()
-            }
-          });
+          const supabasePayload = records[0].val;
+          const rawSupabaseTime = supabasePayload.last_updated || records[0].updated_at;
+          const parsedSupabaseTime = rawSupabaseTime ? new Date(rawSupabaseTime).getTime() : NaN;
+          const bundledTime = new Date(bundledSnapshot?.last_updated || 0).getTime();
+
+          // If Supabase payload timestamp is valid and explicitly older by >24h than the bundled snapshot,
+          // treat Supabase as stale and fall back to the newer bundled snapshot.
+          const isStale = !isNaN(parsedSupabaseTime) && !isNaN(bundledTime) && (parsedSupabaseTime < bundledTime - 86400000);
+
+          if (!isStale) {
+            return new Response(JSON.stringify(supabasePayload), {
+              status: 200,
+              headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'public, max-age=30, s-maxage=60, stale-while-revalidate=120',
+                'X-Data-Source': 'supabase-live',
+                'X-Bundle-Updated-At': records[0].updated_at || new Date().toISOString()
+              }
+            });
+          }
+          console.warn(`Supabase bundle is stale (${rawSupabaseTime}) compared to bundled snapshot. Falling back to fresher bundled snapshot.`);
         }
       }
     } catch (e) {

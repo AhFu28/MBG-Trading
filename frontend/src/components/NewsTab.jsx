@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   extractTickers,
   generateSmartBulletPoints,
@@ -35,6 +35,45 @@ export default function NewsTab({
   const [archiveDateFilter, setArchiveDateFilter] = useState('ALL');
   const [archiveLoading, setArchiveLoading] = useState(false);
   const [isRefreshingAi, setIsRefreshingAi] = useState(false);
+
+  // Real-time live RSS news ingestion state
+  const [dynamicArticles, setDynamicArticles] = useState([]);
+  const [isLiveSyncing, setIsLiveSyncing] = useState(false);
+  const [countdownSec, setCountdownSec] = useState(60);
+
+  const fetchLiveRssNews = useCallback(async (silent = false) => {
+    if (!silent) setIsLiveSyncing(true);
+    try {
+      const res = await fetch(`/api/news?category=${newsFilter}&limit=40&_v=${Date.now()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.articles) && data.articles.length > 0) {
+          setDynamicArticles(data.articles);
+          if (!silent) showToast(`⚡ ${data.articles.length} berita menit ini berhasil diperbarui!`);
+        }
+      }
+    } catch (e) {
+      console.warn('Live RSS fetch error:', e);
+    } finally {
+      if (!silent) setIsLiveSyncing(false);
+      setCountdownSec(60);
+    }
+  }, [newsFilter]);
+
+  // Periodic poller: fetches fresh RSS every 60s, updates countdown every 1s
+  useEffect(() => {
+    fetchLiveRssNews(true);
+    const interval = setInterval(() => {
+      fetchLiveRssNews(true);
+    }, 60000);
+    const countdown = setInterval(() => {
+      setCountdownSec(prev => (prev <= 1 ? 60 : prev - 1));
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+      clearInterval(countdown);
+    };
+  }, [fetchLiveRssNews]);
 
   const handleRefreshAiResearch = async () => {
     setIsRefreshingAi(true);
@@ -120,7 +159,27 @@ export default function NewsTab({
     }, 2400);
   };
 
-  const items = Array.isArray(liveNews) ? liveNews : [];
+  const baseItems = Array.isArray(liveNews) ? liveNews : [];
+  const items = useMemo(() => {
+    if (!dynamicArticles || dynamicArticles.length === 0) return baseItems;
+    const seen = new Set();
+    const merged = [];
+    for (const a of dynamicArticles) {
+      const key = (a.title || '').trim().toLowerCase();
+      if (key && !seen.has(key)) {
+        seen.add(key);
+        merged.push(a);
+      }
+    }
+    for (const b of baseItems) {
+      const key = (b.title || '').trim().toLowerCase();
+      if (key && !seen.has(key)) {
+        seen.add(key);
+        merged.push(b);
+      }
+    }
+    return merged;
+  }, [dynamicArticles, baseItems]);
 
   const categories = [
     { id: 'ALL', label: '📰 SEMUA BERITA DUNIA' },
@@ -411,6 +470,28 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
           >
             <span>{isRefreshingAi ? '⏳' : '🔄'}</span>
             <span>{isRefreshingAi ? 'Mensintesis...' : 'Refresh Riset AI'}</span>
+          </button>
+          <button
+            onClick={() => fetchLiveRssNews(false)}
+            disabled={isLiveSyncing}
+            className="telemetry-btn"
+            style={{
+              padding: '2px 8px',
+              fontSize: '10px',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: '800',
+              color: '#34d399',
+              background: 'rgba(16, 185, 129, 0.15)',
+              borderColor: 'rgba(16, 185, 129, 0.4)',
+              cursor: isLiveSyncing ? 'wait' : 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+            title="Tarik berita langsung detik & menit ini dari RSS feed pasar real-time"
+          >
+            <span>{isLiveSyncing ? '⚡⏳' : '⚡'}</span>
+            <span>{isLiveSyncing ? 'Menarik Feed...' : `Live Feed (${countdownSec}s)`}</span>
           </button>
           <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: '6px' }}>
             // IDX Equities &amp; Global Crypto ETF Intelligence

@@ -57,6 +57,70 @@ function devBundlePlugin() {
       server.middlewares.use('/api/auth', (req, res) => {
         send(res, JSON.stringify({ authenticated: true, tier: 'PRO' }));
       });
+
+      // Dev-only live RSS news feed proxy
+      server.middlewares.use('/api/news', async (req, res) => {
+        try {
+          const reqUrl = new URL(req.url, 'http://localhost');
+          const category = (reqUrl.searchParams.get('category') || 'ALL').toUpperCase();
+          let query = 'IHSG+OR+saham+Indonesia+OR+kripto+OR+bitcoin';
+          if (category === 'IDX') query = 'IHSG+OR+"saham+Indonesia"+OR+"Bursa+Efek+Indonesia"+OR+BBCA+OR+BBRI';
+          else if (category === 'CRYPTO') query = 'bitcoin+OR+crypto+OR+ethereum+OR+kripto+OR+altcoin';
+          else if (category === 'MACRO') query = '"Bank+Indonesia"+OR+"Federal+Reserve"+OR+inflasi+OR+rupiah';
+
+          const rssUrl = `https://news.google.com/rss/search?q=${query}+when:1d&hl=id&gl=ID&ceid=ID:id`;
+          const resp = await fetch(rssUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+          });
+          if (resp.ok) {
+            const xml = await resp.text();
+            const itemMatches = xml.match(/<item>[\s\S]*?<\/item>/g) || [];
+            const articles = [];
+            for (let i = 0; i < Math.min(itemMatches.length, 35); i++) {
+              const itemXml = itemMatches[i];
+              const rawTitle = (itemXml.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
+              const link = (itemXml.match(/<link>([\s\S]*?)<\/link>/) || [])[1] || '';
+              const pubDate = (itemXml.match(/<pubDate>([\s\S]*?)<\/pubDate>/) || [])[1] || '';
+              let sourceName = (itemXml.match(/<source[^>]*>([\s\S]*?)<\/source>/) || [])[1] || '';
+              let title = rawTitle.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').replace(/&amp;/g, '&').replace(/<[^>]*>/g, '').trim();
+              if (!sourceName && title.includes(' - ')) {
+                const parts = title.split(' - ');
+                sourceName = parts.pop().trim();
+                title = parts.join(' - ').trim();
+              }
+              const dt = new Date(pubDate);
+              const ts = isNaN(dt.getTime()) ? Date.now() : dt.getTime();
+              const wib = new Date(ts + 7 * 3600 * 1000);
+              const day = String(wib.getUTCDate()).padStart(2, '0');
+              const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+              const dateStr = `${day} ${months[wib.getUTCMonth()]} ${wib.getUTCFullYear()}`;
+              const timeStr = `${String(wib.getUTCHours()).padStart(2, '0')}:${String(wib.getUTCMinutes()).padStart(2, '0')} WIB`;
+              articles.push({
+                id: `dev-live-rss-${ts}-${i}`,
+                title: title,
+                source: sourceName || 'Warta Pasar',
+                link: link,
+                pub_date: dt.toUTCString(),
+                timestamp_ms: ts,
+                published_str: `${dateStr} • ${timeStr}`,
+                published_date: dateStr,
+                published_time: timeStr,
+                sentiment: 'NEUTRAL',
+                sentiment_score: 0.0,
+                related_tickers: ['IHSG'],
+                primary_ticker: 'IHSG',
+                summary: title
+              });
+            }
+            return send(res, JSON.stringify({ status: 'ok', articles, total: articles.length }));
+          }
+        } catch (e) {
+          // fallback to empty
+        }
+        send(res, JSON.stringify({ status: 'ok', articles: [] }));
+      });
     },
   };
 }

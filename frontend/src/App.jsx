@@ -487,6 +487,40 @@ export default function App() {
         }
 
         if (json) {
+          try {
+            const newsRes = await fetch(`/api/news?limit=30&_v=${Date.now()}`);
+            if (newsRes.ok) {
+              const newsPayload = await newsRes.json();
+              if (Array.isArray(newsPayload?.articles) && newsPayload.articles.length > 0) {
+                const existing = json.macro_telemetry?.live_news || [];
+                const seen = new Set();
+                const merged = [];
+                for (const a of newsPayload.articles) {
+                  const key = (a.title || '').trim().toLowerCase();
+                  if (key && !seen.has(key)) {
+                    seen.add(key);
+                    merged.push(a);
+                  }
+                }
+                for (const b of existing) {
+                  const key = (b.title || '').trim().toLowerCase();
+                  if (key && !seen.has(key)) {
+                    seen.add(key);
+                    merged.push(b);
+                  }
+                }
+                json = {
+                  ...json,
+                  macro_telemetry: {
+                    ...(json.macro_telemetry || {}),
+                    live_news: merged
+                  }
+                };
+              }
+            }
+          } catch (e) {
+            // non-blocking
+          }
           setData(json);
         } else {
           console.error('Failed to load cockpit bundle from any source');
@@ -502,7 +536,7 @@ export default function App() {
 
     const intervalId = setInterval(() => {
       loadBundle(true);
-    }, 300000);
+    }, 60000); // Auto-refresh every 60 seconds (1 minute)
 
     return () => clearInterval(intervalId);
   }, [syncTrigger]);
