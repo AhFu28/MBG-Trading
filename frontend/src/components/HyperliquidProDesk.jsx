@@ -104,7 +104,12 @@ export default function HyperliquidProDesk({
    * ponytail: last-resort value is the live L2 mid, not a guess.
    */
   const markPrice = useMemo(() => {
-    const live = livePrices[selectedPair] || livePrices[`${baseCoin}/USDT`] || livePrices[`${baseCoin}USDT`] || livePrices[baseCoin];
+    const live = livePrices[selectedPair] || 
+                 livePrices[cleanSym] || 
+                 livePrices[`${cleanSym}.JK`] || 
+                 livePrices[`${baseCoin}/USDT`] || 
+                 livePrices[`${baseCoin}USDT`] || 
+                 livePrices[baseCoin];
     if (live?.price && live.price > 0) return live.price;
     const bid = parseFloat(l2Depth?.bids?.[0]?.px);
     const ask = parseFloat(l2Depth?.asks?.[0]?.px);
@@ -112,7 +117,7 @@ export default function HyperliquidProDesk({
     if (Number.isFinite(bid) && bid > 0) return bid;
     if (assetCtx?.markPx && assetCtx.markPx > 0) return assetCtx.markPx;
     return null;
-  }, [livePrices, selectedPair, baseCoin, l2Depth, assetCtx]);
+  }, [livePrices, selectedPair, cleanSym, baseCoin, l2Depth, assetCtx]);
 
   /**
    * Oracle price comes from Hyperliquid's own `oraclePx`, not a 0.015% fudge on
@@ -334,14 +339,23 @@ export default function HyperliquidProDesk({
     return `${h}:${m}:${s}`;
   }, [nextFundingMs]);
 
-  // Dynamic tick options based on asset price tier
+  // Dynamic tick options based on asset price tier & market rules
   const bookTickOptions = useMemo(() => {
     const p = markPrice || 0;
+    if (!isCrypto) {
+      // IDX Equities official fraksi OJK
+      if (p >= 5000) return ['25', '50', '100'];
+      if (p >= 2000) return ['10', '20', '50'];
+      if (p >= 500) return ['5', '10', '25'];
+      if (p >= 200) return ['2', '4', '10'];
+      return ['1', '2', '5'];
+    }
+    // Crypto tick options
     if (p > 10000) return ['0.1', '1', '5', '10'];
     if (p > 500) return ['0.01', '0.05', '0.1', '0.5', '1'];
     if (p > 10) return ['0.005', '0.01', '0.05', '0.1'];
     return ['0.0001', '0.001', '0.01', '0.1'];
-  }, [markPrice]);
+  }, [markPrice, isCrypto]);
 
   useEffect(() => {
     if (bookTickOptions.length > 0 && !bookTickOptions.includes(bookTickSize)) {
@@ -372,14 +386,26 @@ export default function HyperliquidProDesk({
           isBookLoading: true,
         };
       }
-      const tick = p > 10000 ? 1 : (p > 1000 ? 0.5 : (p > 100 ? 0.05 : 0.001));
+      
+      // OJK IDX fraksi calculation vs Crypto tick
+      const getIdxTick = (px) => {
+        if (px >= 5000) return 25;
+        if (px >= 2000) return 10;
+        if (px >= 500) return 5;
+        if (px >= 200) return 2;
+        return 1;
+      };
+      const tick = !isCrypto ? getIdxTick(p) : (p > 10000 ? 1 : (p > 1000 ? 0.5 : (p > 100 ? 0.05 : 0.001)));
+      
       const b = [];
       const a = [];
       let cumB = 0;
       let cumA = 0;
+      const baseLots = p > 5000 ? 5200 : 18500;
+
       for (let i = 0; i < 7; i++) {
-        const szB = Number((1.5 + i * 0.8).toFixed(2));
-        const szA = Number((1.2 + i * 0.9).toFixed(2));
+        const szB = !isCrypto ? Math.round(baseLots * (1.2 + (i * 0.4))) : Number((1.5 + i * 0.8).toFixed(2));
+        const szA = !isCrypto ? Math.round(baseLots * (0.9 + (i * 0.5))) : Number((1.2 + i * 0.9).toFixed(2));
         cumB += szB;
         cumA += szA;
         b.push({ px: p - (i + 1) * tick, sz: szB, cum: cumB });
@@ -388,8 +414,8 @@ export default function HyperliquidProDesk({
       return {
         processedAsks: a.reverse(),
         processedBids: b,
-        spreadVal: (tick * 2).toFixed(tick < 1 ? 3 : 2),
-        spreadPct: '0.02%',
+        spreadVal: !isCrypto ? String(tick) : (tick * 2).toFixed(tick < 1 ? 3 : 2),
+        spreadPct: !isCrypto ? `${((tick / p) * 100).toFixed(2)}%` : '0.02%',
         maxDepthCum: Math.max(cumA, cumB, 1),
         isBookLoading: false,
       };
@@ -929,7 +955,7 @@ export default function HyperliquidProDesk({
             borderBottom: '1px solid rgba(255, 255, 255, 0.04)'
           }}>
             <span>Price ({isCrypto ? 'USDC' : 'IDR'})</span>
-            <span style={{ textAlign: 'right' }}>Size ({baseCoin})</span>
+            <span style={{ textAlign: 'right' }}>Size ({isCrypto ? baseCoin : 'LOT'})</span>
             <span style={{ textAlign: 'right' }}>Total</span>
           </div>
 
