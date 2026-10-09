@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense, lazy } from 'react';
 import PasswordGate from './components/PasswordGate.jsx';
 import { fetchMe } from './services/accountClient.js';
 import { endSession } from './services/sessionCleanup.js';
