@@ -135,3 +135,26 @@ test.describe('admin bypass', () => {
     expect(body, 'admin was shown the LEGEND lock screen').not.toMatch(/khusus legend/i);
   });
 });
+
+test.describe('PRO modules are locked to free accounts', () => {
+  const PRO_DESKS = ['CHARTING', 'CRYPTO', 'WHALES', 'SENTINEL', 'WATCHLIST'];
+  for (const desk of PRO_DESKS) {
+    test(`${desk} shows the Pro lock screen to a free account`, async ({ page }) => {
+      await installSession(page, { tier: 'free' });
+      await gotoCockpitRoute(page, desk);
+
+      const body = await page.locator('body').innerText();
+      expect(body, `${desk} did not lock a free account`).toMatch(/khusus pro/i);
+    });
+  }
+});
+
+test.describe('ADMIN modules are locked to non-admin accounts', () => {
+  test('ADMIN_APPROVAL shows lock screen to a pro account', async ({ page }) => {
+    await installSession(page, { tier: 'pro', isAdmin: false });
+    await gotoCockpitRoute(page, 'ADMIN_APPROVAL');
+
+    const body = await page.locator('body').innerText();
+    expect(body, 'ADMIN_APPROVAL did not lock a non-admin account').toMatch(/khusus administrator/i);
+  });
+});

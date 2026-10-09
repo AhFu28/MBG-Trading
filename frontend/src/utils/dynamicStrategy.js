@@ -118,9 +118,18 @@ export function evaluateDynamicStrategy({
   // the literal 2.0, which displayed a confident "1 : 2.0" for a position whose
   // stop loss sits exactly at entry — a case with no measurable risk at all.
   // Callers must treat null as "not computable", not as a number.
-  const initialRisk = Math.abs(entry - sl);
-  const initialReward = Math.abs(tp1 - entry);
-  const initialRR = initialRisk > 0 ? Number((initialReward / initialRisk).toFixed(2)) : null;
+  // Directional Geometry Validation:
+  // For Long: Stop Loss must be strictly below Entry, and TP1 strictly above Entry.
+  // For Short: Stop Loss must be strictly above Entry, and TP1 strictly below Entry.
+  const isGeometryValid = isShort
+    ? (sl > entry && tp1 < entry)
+    : (sl < entry && tp1 > entry);
+
+  const initialRisk = isShort ? (sl - entry) : (entry - sl);
+  const initialReward = isShort ? (entry - tp1) : (tp1 - entry);
+  const initialRR = (isGeometryValid && initialRisk > 0 && initialReward > 0)
+    ? Number((initialReward / initialRisk).toFixed(2))
+    : null;
 
   // Floating R:R relative to current distance to target vs current distance to SL
   const currentRiskDist = Math.abs(price - effectiveSl);
@@ -128,7 +137,9 @@ export function evaluateDynamicStrategy({
   const currentRewardDist = Math.abs(targetForReward - price);
 
   let dynamicRR = initialRR;
-  if (isEffectiveStoppedOut) {
+  if (!isGeometryValid) {
+    dynamicRR = null;
+  } else if (isEffectiveStoppedOut) {
     dynamicRR = 0.0;
   } else if (currentRiskDist <= entry * 0.003) {
     // Within 0.3% of stop loss: risk is exhausted; don't return an exploding ratio

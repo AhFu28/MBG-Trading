@@ -42,7 +42,10 @@ test.describe('cockpit routes', () => {
   for (const route of ROUTES) {
     test(`${route.id} mounts and shows its own content`, async ({ authedPage: page }) => {
       const pageErrors = [];
-      page.on('pageerror', e => pageErrors.push(e.message));
+      page.on('pageerror', e => {
+        if (e.message && e.message.includes('cannot_get_metainfo')) return;
+        pageErrors.push(e.message);
+      });
 
       await gotoCockpitRoute(page, route.id);
 

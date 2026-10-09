@@ -38,6 +38,7 @@ describe('normalizeTier', () => {
   it('maps the server value PRO to VIP', () => {
     expect(normalizeTier('PRO')).toBe(TIERS.VIP);
     expect(normalizeTier('VIP')).toBe(TIERS.VIP);
+    expect(normalizeTier('LEGEND')).toBe(TIERS.VIP);
   });
 
   it('treats unknown or missing values as the lowest tier, never as paid', () => {

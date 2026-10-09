@@ -417,15 +417,15 @@ export default function CmcTopNav({
       <button
         onClick={() => handleNavigate('HOME')}
         style={{ display: 'flex', alignItems: 'center', gap: '9px', background: 'none', border: 'none', cursor: 'pointer', padding: 0, flexShrink: 0 }}
-        title="MBG Quant Terminal"
+        title="MBG Trading Terminal"
       >
         <MbgLogo size={27} />
         <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1.15 }}>
           <span style={{ fontSize: '12.5px', fontWeight: 900, letterSpacing: '-0.01em', color: 'var(--text-primary)' }}>
-            MBG QUANT
+            MBG TRADING
           </span>
           <span style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-            Market Terminal
+            Market Brain Grid
           </span>
         </span>
       </button>

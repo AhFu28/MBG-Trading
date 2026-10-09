@@ -72,7 +72,7 @@ export async function requireSession(context) {
   const JWT_SECRET = env.JWT_SECRET || (await deriveJwtSecret(PASSWORD_HASH));
 
   const cookies = parseCookies(request.headers.get('Cookie'));
-  const token = cookies['mbg_jwt'];
+  const token = cookies['mbg_jwt'] || cookies['mbg_session'];
 
   const unauthorized = (msg) => ({
     ok: false,
@@ -84,7 +84,10 @@ export async function requireSession(context) {
 
   if (!token) return unauthorized('Unauthorized');
 
-  const payload = await verifyJWT(token, JWT_SECRET);
+  let payload = env.JWT_SECRET ? await verifyJWT(token, env.JWT_SECRET) : null;
+  if (!payload) {
+    payload = await verifyJWT(token, JWT_SECRET);
+  }
   if (!payload || (payload.expiresAt && Date.now() > payload.expiresAt)) {
     return unauthorized('Unauthorized or token expired');
   }

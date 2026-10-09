@@ -45,9 +45,10 @@ const DIRECTION_STYLE = {
  * many signals are waiting, so the upgrade reason is visible rather than hidden.
  */
 export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavigateTab, onOpenExecution }) {
-  const tier = String(userTier || '').toUpperCase() === 'PRO' || String(userTier || '').toUpperCase() === 'VIP'
+  const tierUpper = String(userTier || '').toUpperCase();
+  const tier = (tierUpper === 'PRO' || tierUpper === 'VIP' || tierUpper === 'LEGEND' || tierUpper === 'ADMIN')
     ? TIERS.VIP
-    : String(userTier || '').toUpperCase() === 'FREE' ? TIERS.FREE : TIERS.GUEST;
+    : tierUpper === 'FREE' ? TIERS.FREE : TIERS.GUEST;
 
   const [now] = useState(() => new Date());
   const [filter, setFilter] = useState('ALL');

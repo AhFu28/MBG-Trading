@@ -129,7 +129,7 @@ export async function onRequestGet(context) {
   const { jwtSecret: JWT_SECRET } = await resolveAuthConfig(env);
 
   const cookies = parseCookies(request.headers.get('Cookie'));
-  const token = cookies['mbg_jwt'];
+  const token = cookies['mbg_jwt'] || cookies['mbg_session'];
 
   if (!token) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
@@ -138,7 +138,10 @@ export async function onRequestGet(context) {
     });
   }
 
-  const payload = await verifyJWT(token, JWT_SECRET);
+  let payload = env.JWT_SECRET ? await verifyJWT(token, env.JWT_SECRET) : null;
+  if (!payload) {
+    payload = await verifyJWT(token, JWT_SECRET);
+  }
   if (!payload || (payload.expiresAt && Date.now() > payload.expiresAt)) {
     return new Response(JSON.stringify({ error: 'Unauthorized or token expired' }), {
       status: 401,

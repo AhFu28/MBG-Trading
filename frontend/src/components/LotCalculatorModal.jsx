@@ -6,7 +6,8 @@ export default function LotCalculatorModal({
   prefillEntry = '',
   prefillSL = '',
   initialMarket = 'IDX',
-  initialSymbol = ''
+  initialSymbol = '',
+  onOpenExecution
 }) {
   const [assetMode, setAssetMode] = useState(initialMarket === 'CRYPTO' ? 'CRYPTO' : 'IDX');
   const [modalAmount, setModalAmount] = useState(initialMarket === 'CRYPTO' ? 1000 : 10000000);
@@ -536,20 +537,52 @@ export default function LotCalculatorModal({
               </div>
             )}
 
-            {/* Copy Execution Plan Button */}
+            {/* Action Buttons: Execute in Paper Broker or Copy */}
             {entry > 0 && sl > 0 && maxLots > 0 && (
-              <div style={{ marginTop: '14px' }}>
+              <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {onOpenExecution && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onOpenExecution({
+                        symbol: initialSymbol || (assetMode === 'CRYPTO' ? 'BTCUSDT' : 'BBCA'),
+                        market: assetMode,
+                        entryPrice: entry,
+                        stopLoss: sl,
+                        targetPrice: tp1,
+                        lotSize: maxLots,
+                      });
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      fontSize: '12.5px',
+                      fontWeight: '800',
+                      background: 'linear-gradient(135deg, var(--accent-gold), #d97706)',
+                      color: '#000',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    🧪 Uji Rencana di Paper Broker
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={handleCopyExecution}
                   style={{
                     width: '100%',
-                    padding: '9px',
-                    fontSize: '12px',
-                    fontWeight: '800',
-                    background: isCopied ? 'var(--accent-green)' : 'var(--text-primary)',
-                    color: 'var(--bg-canvas)',
-                    border: 'none',
+                    padding: '8px',
+                    fontSize: '11px',
+                    fontWeight: '700',
+                    background: isCopied ? 'var(--accent-green)' : 'var(--bg-panel-subtle)',
+                    color: isCopied ? '#fff' : 'var(--text-secondary)',
+                    border: 'var(--border-hairline)',
                     borderRadius: '4px',
                     cursor: 'pointer',
                     display: 'flex',
@@ -559,7 +592,7 @@ export default function LotCalculatorModal({
                     transition: 'all 0.15s ease'
                   }}
                 >
-                  {isCopied ? '✓ Rencana Eksekusi Berhasil Disalin!' : '📋 Salin Parameter Eksekusi (Lot, Entry, SL, TP)'}
+                  {isCopied ? '✓ Rencana Eksekusi Berhasil Disalin!' : '📋 Salin Parameter ke Clipboard'}
                 </button>
               </div>
             )}

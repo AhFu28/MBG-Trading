@@ -838,17 +838,19 @@ export default function App() {
             </div>
           )}
 
-          {/* AI MULTI-AGENT ARENA (Mounted persistently so 24/7 background autonomous loop never stops) */}
-          <div style={{ display: activeTab === 'AI_AGENTS' ? 'block' : 'none' }}>
-            <main>
-              <AiAgentArenaTab
-                data={data}
-                livePrices={livePrices}
-                onOpenChart={handleOpenSecurityHub}
-                onOpenExecution={handleOpenExecution}
-              />
-            </main>
-          </div>
+          {/* AI MULTI-AGENT ARENA (Mounted persistently so 24/7 background autonomous loop runs only if entitled) */}
+          {canAccess('AI_AGENTS', userTier, isAdmin) && (
+            <div style={{ display: activeTab === 'AI_AGENTS' ? 'block' : 'none' }}>
+              <main>
+                <AiAgentArenaTab
+                  data={data}
+                  livePrices={livePrices}
+                  onOpenChart={handleOpenSecurityHub}
+                  onOpenExecution={handleOpenExecution}
+                />
+              </main>
+            </div>
+          )}
 
           {/* 2. Main Content View Routing with Suspense fallback */}
           <Suspense fallback={
@@ -857,7 +859,120 @@ export default function App() {
               <div style={{ fontWeight: '700', fontFamily: 'var(--font-mono)' }}>MEMUAT MODUL KUANTITATIF...</div>
             </div>
           }>
-            {activeTab === 'AI_AGENTS' ? null :
+            {/* GLOBAL ACCESS GATE: Evaluated FIRST so no protected tab leaks to unentitled tiers */}
+            {!isAdmin && !canAccess(activeTab, userTier, isAdmin) ? (
+              requiredTierFor(activeTab) === TIER.ADMIN ? (
+                <main>
+                  <div className="telemetry-panel" style={{
+                    borderRadius: '16px', padding: '52px 28px', textAlign: 'center', maxWidth: '560px', margin: '40px auto',
+                  }}>
+                    <div style={{ fontSize: '38px', marginBottom: '16px' }}>🔒</div>
+                    <div style={{ fontSize: '18px', fontWeight: '900', marginBottom: '10px' }}>
+                      Modul Khusus Administrator
+                    </div>
+                    <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '22px' }}>
+                      <strong>{getTabLabel(activeTab)}</strong> hanya dapat diakses oleh administrator sistem.
+                    </div>
+                    <button
+                      onClick={() => setActiveTab('HOME')}
+                      style={{
+                        padding: '10px 22px', borderRadius: '8px', fontSize: '12px', fontWeight: '700',
+                        background: 'var(--accent-blue)', color: '#fff', border: 'none', cursor: 'pointer'
+                      }}
+                    >
+                      ← Kembali ke Home
+                    </button>
+                  </div>
+                </main>
+              ) : requiredTierFor(activeTab) === TIER.LEGEND ? (
+                <main>
+                  <div className="telemetry-panel" style={{
+                    borderRadius: '16px', padding: '52px 28px', textAlign: 'center', maxWidth: '600px', margin: '40px auto',
+                  }}>
+                    <div style={{ fontSize: '38px', marginBottom: '16px' }}>👑</div>
+                    <div style={{ fontSize: '18px', fontWeight: '900', marginBottom: '10px' }}>
+                      Modul Ini Khusus Legend
+                    </div>
+                    <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '8px' }}>
+                      <strong>{getTabLabel(activeTab)}</strong> adalah modul yang bisa
+                      mengirim order ke akun bursa Anda.
+                    </div>
+                    <div style={{
+                      fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8,
+                      marginBottom: '22px', padding: '12px 16px', borderRadius: '10px',
+                      background: 'rgba(255,180,84,0.08)', border: '1px solid rgba(255,180,84,0.30)',
+                    }}>
+                      Karena itu LEGEND <strong>tidak bisa dibeli langsung</strong>.
+                      Selesaikan seluruh achievement sambil berlangganan Pro, lalu
+                      tier ini terbuka sendiri.
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                      <button
+                        onClick={() => setActiveTab('ACHIEVEMENTS')}
+                        style={{
+                          padding: '11px 24px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '900',
+                          background: 'linear-gradient(135deg,var(--accent-gold),#d97706)', color: '#000',
+                          border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+                        }}
+                      >
+                        👑 Lihat Legend Path
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('ACHIEVEMENTS')}
+                        style={{
+                          padding: '11px 22px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '700',
+                          background: 'rgba(255,255,255,0.06)', color: 'var(--text-primary)',
+                          border: '1px solid rgba(255,255,255,0.14)', cursor: 'pointer', fontFamily: 'inherit',
+                        }}
+                      >
+                        Lihat Achievement
+                      </button>
+                    </div>
+                  </div>
+                </main>
+              ) : (
+                /* PRO MODULE — a straightforward purchase path */
+                <main>
+                  <div className="telemetry-panel" style={{
+                    borderRadius: '16px', padding: '52px 28px', textAlign: 'center', maxWidth: '560px', margin: '40px auto',
+                  }}>
+                    <div style={{ fontSize: '38px', marginBottom: '16px' }}>🔒</div>
+                    <div style={{ fontSize: '18px', fontWeight: '900', marginBottom: '10px' }}>
+                      Modul Ini Khusus Pro
+                    </div>
+                    <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '22px' }}>
+                      <strong>{getTabLabel(activeTab)}</strong> memerlukan
+                      paket <strong>{requiredTierFor(activeTab) === TIER.PRO ? 'Pro' : 'Free'}</strong>.
+                      {userTier === 'GUEST'
+                        ? ' Buat akun gratis untuk membuka lebih banyak fitur.'
+                        : ' Upgrade untuk membuka seluruh alat analitik dan sinyal real-time.'}
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                      <button
+                        onClick={() => setActiveTab('SUBSCRIPTION')}
+                        style={{
+                          padding: '11px 24px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '900',
+                          background: 'linear-gradient(135deg,var(--accent-gold),#d97706)', color: '#000',
+                          border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+                        }}
+                      >
+                        👑 Lihat Paket Pro
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('SIGNALS')}
+                        style={{
+                          padding: '11px 22px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '700',
+                          background: 'rgba(255,255,255,0.06)', color: 'var(--text-primary)',
+                          border: '1px solid rgba(255,255,255,0.14)', cursor: 'pointer', fontFamily: 'inherit',
+                        }}
+                      >
+                        ← Kembali ke Sinyal
+                      </button>
+                    </div>
+                  </div>
+                </main>
+              )
+            ) : activeTab === 'AI_AGENTS' ? null :
             activeTab === 'AI_SENTINEL' || activeTab === 'AI_SENTINEL_DEFCON' || activeTab === 'AI_SENTINEL_DEBATE' || activeTab === 'SENTINEL' ? (
               /* AI SENTINEL EMBEDDED DESK VIEW */
               <main style={{ padding: '12px 0' }}>
@@ -1064,108 +1179,6 @@ export default function App() {
                   onRefreshUser={refreshAccount}
                 />
               </main>
-            ) : (!isAdmin && !canAccess(activeTab, userTier, isAdmin)) ? (
-              /**
-               * LOCKED MODULE.
-               *
-               * Two DIFFERENT lock screens, because the two cases need opposite
-               * messages. A Pro desk says "upgrade and you get this". A LEGEND
-               * desk must NOT say that, because LEGEND cannot be bought — showing
-               * a price would promise something the product will not honour, and
-               * the user would pay and still be locked out.
-               *
-               * The LEGEND screen therefore explains what has to be EARNED and
-               * sends the user to the achievement board, which is the only path
-               * that actually opens these two modules.
-               */
-              requiredTierFor(activeTab) === TIER.LEGEND ? (
-                <main>
-                  <div className="telemetry-panel" style={{
-                    borderRadius: '16px', padding: '52px 28px', textAlign: 'center', maxWidth: '600px', margin: '40px auto',
-                  }}>
-                    <div style={{ fontSize: '38px', marginBottom: '16px' }}>👑</div>
-                    <div style={{ fontSize: '18px', fontWeight: '900', marginBottom: '10px' }}>
-                      Modul Ini Khusus Legend
-                    </div>
-                    <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '8px' }}>
-                      <strong>{getTabLabel(activeTab)}</strong> adalah modul yang bisa
-                      mengirim order ke akun bursa Anda.
-                    </div>
-                    <div style={{
-                      fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8,
-                      marginBottom: '22px', padding: '12px 16px', borderRadius: '10px',
-                      background: 'rgba(255,180,84,0.08)', border: '1px solid rgba(255,180,84,0.30)',
-                    }}>
-                      Karena itu LEGEND <strong>tidak bisa dibeli langsung</strong>.
-                      Selesaikan seluruh achievement sambil berlangganan Pro, lalu
-                      tier ini terbuka sendiri.
-                    </div>
-                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                      <button
-                        onClick={() => setActiveTab('ACHIEVEMENTS')}
-                        style={{
-                          padding: '11px 24px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '900',
-                          background: 'linear-gradient(135deg,var(--accent-gold),#d97706)', color: '#000',
-                          border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-                        }}
-                      >
-                        👑 Lihat Legend Path
-                      </button>
-                      <button
-                        onClick={() => setActiveTab('ACHIEVEMENTS')}
-                        style={{
-                          padding: '11px 22px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '700',
-                          background: 'rgba(255,255,255,0.06)', color: 'var(--text-primary)',
-                          border: '1px solid rgba(255,255,255,0.14)', cursor: 'pointer', fontFamily: 'inherit',
-                        }}
-                      >
-                        Lihat Achievement
-                      </button>
-                    </div>
-                  </div>
-                </main>
-              ) : (
-              /* PRO MODULE — a straightforward purchase path */
-              <main>
-                <div className="telemetry-panel" style={{
-                  borderRadius: '16px', padding: '52px 28px', textAlign: 'center', maxWidth: '560px', margin: '40px auto',
-                }}>
-                  <div style={{ fontSize: '38px', marginBottom: '16px' }}>🔒</div>
-                  <div style={{ fontSize: '18px', fontWeight: '900', marginBottom: '10px' }}>
-                    Modul Ini Khusus Pro
-                  </div>
-                  <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '22px' }}>
-                    <strong>{getTabLabel(activeTab)}</strong> memerlukan
-                    paket <strong>{requiredTierFor(activeTab) === TIER.PRO ? 'Pro' : 'Free'}</strong>.
-                    {userTier === 'GUEST'
-                      ? ' Buat akun gratis untuk membuka lebih banyak fitur.'
-                      : ' Upgrade untuk membuka seluruh alat analitik dan sinyal real-time.'}
-                  </div>
-                  <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                    <button
-                      onClick={() => setActiveTab('SUBSCRIPTION')}
-                      style={{
-                        padding: '11px 24px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '900',
-                        background: 'linear-gradient(135deg,var(--accent-gold),#d97706)', color: '#000',
-                        border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-                      }}
-                    >
-                      👑 Lihat Paket Pro
-                    </button>
-                    <button
-                      onClick={() => setActiveTab('SIGNALS')}
-                      style={{
-                        padding: '11px 22px', borderRadius: '9px', fontSize: '12.5px', fontWeight: '700',
-                        background: 'rgba(255,255,255,0.06)', color: 'var(--text-primary)',
-                        border: '1px solid rgba(255,255,255,0.14)', cursor: 'pointer', fontFamily: 'inherit',
-                      }}
-                    >
-                      ← Kembali ke Sinyal
-                    </button>
-                  </div>
-                </div>
-              </main>
-              )
             ) : (activeTab === 'TRADING_BOT' || activeTab === 'JEV_EXECUTION') ? (
               /**
                * THE LEGEND DESKS — placed AFTER the canAccess gate on purpose.
@@ -1253,6 +1266,8 @@ export default function App() {
                 initialSymbol={chartModal.symbol}
                 market={chartModal.market}
                 onClose={handleCloseChart}
+                onOpenLotCalc={handleOpenLotCalc}
+                onOpenExecution={handleOpenExecution}
               />
             )}
 
@@ -1264,6 +1279,10 @@ export default function App() {
               prefillSL={lotCalcModal.sl}
               initialMarket={lotCalcModal.market}
               initialSymbol={lotCalcModal.symbol}
+              onOpenExecution={(params) => {
+                handleCloseLotCalc();
+                handleOpenExecution(params);
+              }}
             />
 
             {/* 4b. Institutional Order Execution Modal (Paper Sandbox & Live Broker) */}

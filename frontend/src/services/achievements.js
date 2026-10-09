@@ -150,12 +150,12 @@ export const ACHIEVEMENTS = [
   },
   {
     id: 'MANUAL_ORDER',
-    name: 'Eksekusi Pertama',
-    desc: 'Kirim order manual dengan API key Anda sendiri.',
+    name: 'Eksekusi Tertib',
+    desc: 'Kirim order terukur dengan parameter risiko di Paper Broker.',
     category: ACHIEVEMENT_CATEGORY.MILESTONE,
     icon: '⚡',
-    target: 1,
-    progress: ctx => ctx.manualOrdersPlaced,
+    target: 5,
+    progress: ctx => Math.max(Number(ctx.manualOrdersPlaced) || 0, Number(ctx.paperTradesClosed) || 0),
     unit: 'order',
   },
 ];

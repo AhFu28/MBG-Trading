@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { getTvSymbol } from '../data/tv-helpers.js';
 import HyperliquidProDesk from './HyperliquidProDesk.jsx';
 
-export default function TradingViewModal({ initialSymbol, market = 'IDX', onClose }) {
+export default function TradingViewModal({ initialSymbol, market = 'IDX', onClose, onOpenLotCalc, onOpenExecution }) {
   const containerRef = useRef(null);
 
   // Helper to identify if symbol belongs to Crypto or IDX
@@ -236,21 +236,44 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
             </button>
           </div>
 
-          <button 
-            onClick={onClose}
-            style={{
-              background: 'rgba(239, 68, 68, 0.15)',
-              border: '1px solid rgba(239, 68, 68, 0.35)',
-              color: '#f87171',
-              padding: '4px 10px',
-              borderRadius: '6px',
-              fontSize: '11px',
-              fontWeight: 800,
-              cursor: 'pointer'
-            }}
-          >
-            ✕ CLOSE
-          </button>
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            {onOpenLotCalc && (
+              <button
+                onClick={() => onOpenLotCalc('', '', isCurrentCrypto ? 'CRYPTO' : 'IDX', currentSymbol)}
+                className="telemetry-btn"
+                style={{ fontSize: '10px', padding: '3px 8px', background: 'rgba(255,180,84,0.12)', color: 'var(--accent-gold)', border: '1px solid rgba(255,180,84,0.3)' }}
+                title="Buka kalkulator ukuran lot & manajemen risiko"
+              >
+                💰 Sizing / Lot
+              </button>
+            )}
+            {onOpenExecution && (
+              <button
+                onClick={() => onOpenExecution({ symbol: currentSymbol, market: isCurrentCrypto ? 'CRYPTO' : 'IDX' })}
+                className="telemetry-btn"
+                style={{ fontSize: '10px', padding: '3px 8px', background: 'rgba(59,130,246,0.15)', color: 'var(--accent-blue)', border: '1px solid rgba(59,130,246,0.3)' }}
+                title="Buka tiket eksekusi order paper"
+              >
+                ⚡ Tiket Order
+              </button>
+            )}
+
+            <button 
+              onClick={onClose}
+              style={{
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.35)',
+                color: '#f87171',
+                padding: '4px 10px',
+                borderRadius: '6px',
+                fontSize: '11px',
+                fontWeight: 800,
+                cursor: 'pointer'
+              }}
+            >
+              ✕ CLOSE
+            </button>
+          </div>
         </div>
 
         {/* Quick Ticker Switcher */}

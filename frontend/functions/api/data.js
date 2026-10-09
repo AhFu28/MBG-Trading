@@ -150,13 +150,16 @@ export async function onRequestGet(context) {
   const JWT_SECRET = env.JWT_SECRET || (await deriveJwtSecret(PASSWORD_HASH));
 
   const cookies = parseCookies(request.headers.get('Cookie'));
-  const token = cookies['mbg_jwt'];
+  const token = cookies['mbg_jwt'] || cookies['mbg_session'];
 
   if (!token) {
     return jsonResponse({ error: 'Unauthorized' }, 401);
   }
 
-  const payload = await verifyJWT(token, JWT_SECRET);
+  let payload = env.JWT_SECRET ? await verifyJWT(token, env.JWT_SECRET) : null;
+  if (!payload) {
+    payload = await verifyJWT(token, JWT_SECRET);
+  }
   if (!payload || (payload.expiresAt && Date.now() > payload.expiresAt)) {
     return jsonResponse({ error: 'Unauthorized or token expired' }, 401);
   }

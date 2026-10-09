@@ -70,7 +70,7 @@ export const TIER_FEATURES = {
 /** Normalise whatever the server sends into a known tier. */
 export function normalizeTier(raw) {
   const value = String(raw || '').toUpperCase();
-  if (value === 'VIP' || value === 'PRO') return TIERS.VIP;
+  if (value === 'VIP' || value === 'PRO' || value === 'LEGEND') return TIERS.VIP;
   if (value === 'FREE') return TIERS.FREE;
   return TIERS.GUEST;
 }
