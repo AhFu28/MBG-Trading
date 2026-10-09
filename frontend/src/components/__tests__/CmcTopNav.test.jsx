@@ -77,10 +77,11 @@ describe('navigation structure', () => {
     expect(ids).toEqual(['HEATMAP', 'CRYPTO', 'STOCK', 'FOREX']);
   });
 
-  it('Research & Learn carries all seven requested desks', () => {
+  it('Research & Learn carries all requested desks', () => {
     const ids = NAV_GROUPS.find(g => g.id === 'RESEARCH').items.map(i => i.id);
     expect(ids).toEqual([
       'NEWS',
+      'RESEARCH',
       'WHALES',
       'ECONOMIC_CALENDAR',
       'AI_SENTINEL',

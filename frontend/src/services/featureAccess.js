@@ -25,6 +25,7 @@ export const MODULES = {
   HOME: 'HOME',
   SIGNALS: 'SIGNALS',
   NEWS: 'NEWS',
+  RESEARCH: 'RESEARCH',
   STOCK: 'STOCK',
   CRYPTO: 'CRYPTO',
   CHANGELOG: 'CHANGELOG',
@@ -83,6 +84,7 @@ export const MODULE_TIER = {
 
   // --- Free account: a little more, still not enough to run a business ------
   [MODULES.NEWS]: TIER.FREE,
+  [MODULES.RESEARCH]: TIER.FREE,
 
   // --- Pro: the desks that actually make money ------------------------------
   [MODULES.STOCK]: TIER.PRO,

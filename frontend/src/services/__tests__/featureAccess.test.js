@@ -67,7 +67,7 @@ describe('free tier is deliberately limited', () => {
     // what the tier is for.
     expect(new Set(freeModules)).toEqual(
       new Set([
-        MODULES.HOME, MODULES.SIGNALS, MODULES.NEWS,
+        MODULES.HOME, MODULES.SIGNALS, MODULES.NEWS, MODULES.RESEARCH,
         MODULES.SUBSCRIPTION, MODULES.SETTINGS, MODULES.ACHIEVEMENTS,
       ]),
     );
