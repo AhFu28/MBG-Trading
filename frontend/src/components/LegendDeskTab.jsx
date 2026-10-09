@@ -2,7 +2,168 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { TIER } from '../services/featureAccess.js';
 import { legendEligible, eligibilityMessage, loadAchievementContext } from '../services/achievements.js';
 
-// The 6 Groktagon Autonomous Agents (Modeled after xAI / Groktagon command floor)
+const KEY_ENABLED = 'mbg_audio_alert_enabled';
+const KEY_CHIME = 'mbg_audio_chime_type';
+const KEY_VOLUME = 'mbg_audio_volume';
+
+const DEFAULT_CHIME = 'radar';
+const DEFAULT_VOLUME = 0.7;
+
+let audioCtx = null;
+let ctxPromise = null;
+
+/** Read volume, distinguishing "absent" from a deliberate 0 (the old `|| 0.7` bug). */
+function readVolume() {
+  const raw = localStorage.getItem(KEY_VOLUME);
+  if (raw === null || raw === '') return DEFAULT_VOLUME;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed)) return DEFAULT_VOLUME;
+  return Math.min(Math.max(parsed, 0), 1);
+}
+
+export function isAlertSoundEnabled() {
+  try {
+    return localStorage.getItem(KEY_ENABLED) !== 'false';
+  } catch {
+    return true;
+  }
+}
+
+export function getChimeType() {
+  try {
+    return localStorage.getItem(KEY_CHIME) || DEFAULT_CHIME;
+  } catch {
+    return DEFAULT_CHIME;
+  }
+}
+
+export function getAlertVolume() {
+  try {
+    return readVolume();
+  } catch {
+    return DEFAULT_VOLUME;
+  }
+}
+
+/**
+ * Single shared AudioContext, created lazily and reused forever.
+ *
+ * The previous inline implementation built a new AudioContext per call and never
+ * closed it. Browsers cap concurrent contexts (~6 in Chrome); past that the
+ * constructor throws, the catch swallowed it, and the chime went permanently
+ * silent for the session. One context, cached, ends that failure mode.
+ */
+function getContext() {
+  if (audioCtx) return Promise.resolve(audioCtx);
+  if (ctxPromise) return ctxPromise;
+  ctxPromise = new Promise((resolve) => {
+    try {
+      const Ctor = window.AudioContext || window.webkitAudioContext;
+      if (!Ctor) {
+        resolve(null);
+        return;
+      }
+      audioCtx = new Ctor();
+      resolve(audioCtx);
+    } catch {
+      ctxPromise = null;
+      resolve(null);
+    }
+  });
+  return ctxPromise;
+}
+
+/** Arm audio on the first real user gesture (autoplay policy). */
+export async function unlockAlertAudio() {
+  const ctx = await getContext();
+  if (!ctx) return false;
+  try {
+    if (ctx.state === 'suspended') await ctx.resume();
+    return ctx.state === 'running';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Play an alert. Returns true only when a sound was actually emitted, so callers
+ * can tell "played" from "silently skipped" instead of assuming success.
+ */
+export async function playSignalChime(chimeType, volumeOverride) {
+  if (!isAlertSoundEnabled()) return false;
+
+  const type = chimeType || getChimeType();
+  const volume = typeof volumeOverride === 'number' ? volumeOverride : getAlertVolume();
+  if (volume <= 0) return false;
+
+  const ctx = await getContext();
+  if (!ctx) return false;
+
+  try {
+    if (ctx.state === 'suspended') {
+      await ctx.resume();
+      if (ctx.state !== 'running') return false;
+    }
+  } catch {
+    return false;
+  }
+
+  const now = ctx.currentTime;
+  const note = (freq, start, dur, wave, peak) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(Math.max(peak, 0.0001), start);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+    osc.type = wave;
+    osc.frequency.setValueAtTime(freq, start);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start + dur + 0.02);
+  };
+
+  try {
+    if (type === 'chime') {
+      [587.33, 880].forEach((f, i) => note(f, now + i * 0.1, 0.3, 'triangle', volume * 0.25));
+    } else if (type === 'kaching') {
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => note(f, now + i * 0.06, 0.25, 'sine', volume * 0.2));
+    } else {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(Math.max(volume * 0.3, 0.0001), now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, now);
+      osc.frequency.exponentialRampToValueAtTime(1760, now + 0.15);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    }
+  } catch {
+    return false;
+  }
+  return true;
+}
+
+/* ---------------------------------------------------------------------------
+ * HONESTY NOTICE, and it is not decoration.
+ *
+ * The figures on this page are a DESIGN MOCK. They were removed once already and
+ * then reinstated by a redesign that dropped the disclaimer while keeping the
+ * numbers — the exact combination that makes an operator believe six bots are
+ * trading their money. Nothing here is connected to an exchange, no order is
+ * routed, and every P&L figure is a constant in this file.
+ *
+ * `SIMULATION_BADGE` and `HONESTY_NOTICE` are rendered unconditionally at the
+ * top of the desk so that no future edit can show the numbers without the label.
+ * ------------------------------------------------------------------------- */
+export const SIMULATION_BADGE = 'SIMULASI — BELUM TERSAMBUNG BURSA';
+export const HONESTY_NOTICE =
+  'Angka di halaman ini adalah contoh rancangan, bukan hasil trading nyata. ' +
+  'Tidak ada order yang dikirim ke bursa mana pun, dan tidak ada bot yang berjalan di akun Anda.';
+
+/** Every numeric field below is a hardcoded placeholder, not telemetry. */
 const GROKTAGON_AGENTS = [
   {
     id: 'BRAM',
@@ -247,6 +408,37 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', paddingBottom: '30px' }}>
+
+      {/*
+        HONESTY BANNER — rendered before anything else, unconditionally.
+        Deliberately placed above the metrics so a screenshot of this page always
+        carries the label. See the notice above GROKTAGON_AGENTS for why.
+      */}
+      <div style={{
+        padding: '12px 16px',
+        borderRadius: '12px',
+        background: 'rgba(245, 158, 11, 0.10)',
+        border: '1px solid rgba(245, 158, 11, 0.42)',
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: '10px'
+      }}>
+        <span style={{ fontSize: '17px', lineHeight: 1.2 }}>⚠️</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+          <span style={{
+            fontSize: '11.5px',
+            fontWeight: 900,
+            color: '#fbbf24',
+            fontFamily: 'var(--font-mono)',
+            letterSpacing: '0.04em'
+          }}>
+            {SIMULATION_BADGE}
+          </span>
+          <span style={{ fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+            {HONESTY_NOTICE}
+          </span>
+        </div>
+      </div>
       
       {/* ── TOP ARENA COMMAND BAR ── */}
       <div style={{

@@ -1,83 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { usePreferences, LANGUAGES } from '../context/PreferencesContext.jsx';
-
-function playSoundChime(chimeType = 'radar', volume = 0.6) {
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const now = ctx.currentTime;
-
-    if (chimeType === 'radar') {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      gain.gain.setValueAtTime(volume * 0.3, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, now);
-      osc.frequency.exponentialRampToValueAtTime(1760, now + 0.15);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.35);
-    } else if (chimeType === 'chime') {
-      [587.33, 880].forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const g = ctx.createGain();
-        const start = now + idx * 0.1;
-        g.gain.setValueAtTime(volume * 0.25, start);
-        g.gain.exponentialRampToValueAtTime(0.001, start + 0.3);
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, start);
-        osc.connect(g);
-        g.connect(ctx.destination);
-        osc.start(start);
-        osc.stop(start + 0.35);
-      });
-    } else if (chimeType === 'kaching') {
-      [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const g = ctx.createGain();
-        const start = now + idx * 0.06;
-        g.gain.setValueAtTime(volume * 0.2, start);
-        g.gain.exponentialRampToValueAtTime(0.001, start + 0.25);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, start);
-        osc.connect(g);
-        g.connect(ctx.destination);
-        osc.start(start);
-        osc.stop(start + 0.3);
-      });
-    }
-  } catch (err) {
-    console.warn('AudioContext playback error:', err);
-  }
-}
+import {
+  playSignalChime,
+  getChimeType,
+  getAlertVolume,
+  isAlertSoundEnabled,
+  unlockAlertAudio,
+} from '../services/alertAudio.js';
 
 export default function SettingsPage({ account = {} }) {
   const { language, setLanguage, t } = usePreferences();
 
-  // Audio Notification Settings (Persisted in localStorage)
-  const [audioEnabled, setAudioEnabled] = useState(() => {
-    return localStorage.getItem('mbg_audio_alert_enabled') !== 'false';
-  });
-  const [chimeType, setChimeType] = useState(() => {
-    return localStorage.getItem('mbg_audio_chime_type') || 'radar';
-  });
-  const [volume, setVolume] = useState(() => {
-    return Number(localStorage.getItem('mbg_audio_volume')) || 0.7;
-  });
+  // Audio settings come from the shared service so the values the user picks
+  // here are the exact values the signal path reads at play time.
+  const [audioEnabled, setAudioEnabled] = useState(() => isAlertSoundEnabled());
+  const [chimeType, setChimeType] = useState(() => getChimeType());
+  const [volume, setVolume] = useState(() => getAlertVolume());
 
   const handleToggleAudio = (val) => {
     setAudioEnabled(val);
     localStorage.setItem('mbg_audio_alert_enabled', String(val));
-    if (val) playSoundChime(chimeType, volume);
+    // Preview only when switching ON. Audio must be armed from a gesture, and
+    // this click is that gesture.
+    if (val) {
+      unlockAlertAudio();
+      playSignalChime(chimeType, volume);
+    }
   };
 
   const handleChangeChime = (type) => {
     setChimeType(type);
     localStorage.setItem('mbg_audio_chime_type', type);
-    playSoundChime(type, volume);
+    playSignalChime(type, volume);
   };
 
   const handleChangeVolume = (v) => {
@@ -87,7 +41,8 @@ export default function SettingsPage({ account = {} }) {
   };
 
   const handleTestSound = () => {
-    playSoundChime(chimeType, volume);
+    unlockAlertAudio();
+    playSignalChime(chimeType, volume);
   };
 
   return (
@@ -254,7 +209,7 @@ export default function SettingsPage({ account = {} }) {
           }}>
             💡 <strong>Apakah semua user dapat sound notif ini?</strong>
             <br />
-            <strong>YA, SEMUA USER</strong> (Tamu, Free, & VIP) yang membuka terminal web ini otomatis mendengar audio chime saat ada pergerakan sinyal di browser. Notifikasi push pesan HP (Telegram) terhubung khusus untuk member <strong>VIP Pro</strong>.
+            <strong>YA, SEMUA USER</strong> (Tamu, Free, & VIP) yang membuka terminal di browser ini dapat mengaktifkan audio chime. Bunyinya berbunyi di perangkat Anda saat sinyal baru masuk ke layar. Syaratnya: tab harus dalam keadaan terbuka (boleh di latar belakang) dan Anda sudah pernah berinteraksi dengan halaman ini — browser memblokir suara sebelum ada klik pertama. Notifikasi push ke HP (Telegram) tetap khusus member <strong>VIP Pro</strong>.
           </div>
         </div>
 

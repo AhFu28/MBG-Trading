@@ -23,7 +23,17 @@ beforeEach(() => {
 });
 
 describe('CryptoDeskTab', () => {
-  it('offers a Perpetual / Spot contract switch', () => {
+  /**
+   * NOTE ON SCOPE — corrected 2026-10-09 after an audit.
+   *
+   * This test was previously named "offers a Perpetual / Spot contract switch",
+   * which was misleading: it renders CryptoDeskTab and matches that component's
+   * own VIEW tabs (CryptoDeskTab.jsx `{ id: 'PERP', label: 'Perpetual' }`), not a
+   * contract-type toggle. The real PERP/SPOT toggle lives in HyperliquidProDesk
+   * and is covered by HyperliquidProDesk.test.jsx. The old name created a false
+   * impression of coverage for a feature it never touched.
+   */
+  it('exposes Perpetual and Spot as view tabs', () => {
     render(<CryptoDeskTab livePrices={{}} allCryptoSpot={[]} />);
     expect(screen.getByRole('button', { name: 'Perpetual' })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Spot' })).toBeDefined();

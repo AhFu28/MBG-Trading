@@ -265,11 +265,24 @@ export default function HyperliquidProDesk({
   const isCrypto = activeInstrument.market === 'CRYPTO';
   const baseCoin = (activeInstrument.coin || cleanSym.replace('USDT', '').replace('USDC', '') || 'BTC').toUpperCase();
 
-  // Auto-adapt orderbook visibility for assets without L2 depth feed
+  /**
+   * Auto-adapt order book visibility to whether a real L2 feed exists.
+   *
+   * Only Hyperliquid crypto perps have a depth feed. The L2 fetcher and the
+   * websocket both bail out early for everything else, so IDX/US/COMMODITY/FOREX
+   * were previously granted a book they have no data for — and the renderer
+   * beneath synthesised 7 levels from the mark price. Showing an invented book
+   * on a trading terminal is worse than showing none.
+   *
+   * The user's manual toggle wins: `userToggledBook` latches on first click, so
+   * this effect never slams the panel shut under someone who opened it by hand.
+   */
+  const userToggledBook = useRef(false);
+  const hasRealL2 = isCrypto;
   useEffect(() => {
-    const hasL2 = isCrypto || activeInstrument.market === 'IDX';
-    setShowOrderBook(hasL2);
-  }, [isCrypto, activeInstrument.market]);
+    if (userToggledBook.current) return;
+    setShowOrderBook(hasRealL2);
+  }, [hasRealL2]);
 
   /**
    * Live mark price.

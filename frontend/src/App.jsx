@@ -289,9 +289,18 @@ export default function App() {
       const cleanTicker = pair.replace('/USDT', '').replace('USDT', '').replace('/', '');
       const direction = (c.setup_type && c.setup_type.includes('SHORT')) ? 'SHORT' : 'LONG';
       const basePrice = c.entry_price || c.entry_low || c.current_price || 100;
-      const sl = c.stop_loss || (direction === 'LONG' ? +(basePrice * 0.96).toFixed(2) : +(basePrice * 1.04).toFixed(2));
-      const tp1 = c.take_profit_1 || (direction === 'LONG' ? +(basePrice * 1.06).toFixed(2) : +(basePrice * 0.94).toFixed(2));
-      const tp2 = c.take_profit_2 || (direction === 'LONG' ? +(basePrice * 1.12).toFixed(2) : +(basePrice * 0.88).toFixed(2));
+      /*
+       * SL/TP are NOT synthesised.
+       *
+       * These previously fell back to +/-4%/6%/12% of the base price, so a plan
+       * with no published levels still rendered confident-looking numbers that
+       * nobody computed. Null renders as "—" in SignalsTab; a guess reads as
+       * analysis. `plan_quality` tells the UI how complete the row is.
+       */
+      const sl = c.stop_loss ?? null;
+      const tp1 = c.take_profit_1 ?? null;
+      const tp2 = c.take_profit_2 ?? null;
+      const hasLevels = sl !== null && tp1 !== null;
 
       return {
         id: `crypto-plan-${cleanTicker}-${i}`,
@@ -308,10 +317,22 @@ export default function App() {
         stop_loss: sl,
         target_1: tp1,
         target_2: tp2,
-        risk_reward_ratio: c.risk_reward_ratio ? `1:${c.risk_reward_ratio}` : '1:2.4',
-        facts_summary: c.catalyst_thesis || 'Pola akumulasi volume Smart Money terdeteksi di level support kunci.',
-        opinion_thesis: c.catalyst_thesis || 'Pola akumulasi volume Smart Money terdeteksi di level support kunci.',
-        three_invalidations: c.invalidation_rule ? [c.invalidation_rule] : ['Candle 4H break di bawah level Stop Loss.']
+        plan_quality: hasLevels ? 'COMPLETE' : 'LEVELS_MISSING',
+        /*
+         * Bare NUMBER, not "1:2.4".
+         *
+         * SignalsTab renders it as `1:{Number(row.risk_reward_ratio).toFixed(1)}`,
+         * so a pre-formatted string produced the literal text "1:NaN" on every
+         * crypto card. The fallback is null, not a fabricated 1:2.4 — an unknown
+         * ratio must render "—" rather than an invented number (master plan §7.2).
+         */
+        risk_reward_ratio: Number.isFinite(Number(c.risk_reward_ratio)) ? Number(c.risk_reward_ratio) : null,
+        // Only carry through what the engine actually published. Null means "no
+        // rationale available", which the UI hides; inventing one would present
+        // a made-up thesis as analysis.
+        facts_summary: c.catalyst_thesis || null,
+        opinion_thesis: c.catalyst_thesis || null,
+        three_invalidations: c.invalidation_rule ? [c.invalidation_rule] : null
       };
     });
     return [...stockPlans, ...cryptoPlans];
