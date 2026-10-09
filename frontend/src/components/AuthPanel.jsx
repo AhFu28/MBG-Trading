@@ -98,7 +98,7 @@ export default function AuthPanel({
     color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box',
   };
   const label = {
-    display: 'block', fontSize: '10.5px', fontWeight: '800', letterSpacing: '0.06em',
+    display: 'block', fontSize: '12px', fontWeight: '800', letterSpacing: '0.06em',
     color: 'var(--text-muted)', marginBottom: '5px', textTransform: 'uppercase',
   };
 
@@ -122,7 +122,7 @@ export default function AuthPanel({
           {titles[mode]}
         </div>
         {headline && (
-          <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginTop: '6px', lineHeight: 1.6 }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '6px', lineHeight: 1.6 }}>
             {headline}
           </div>
         )}
@@ -135,7 +135,7 @@ export default function AuthPanel({
         <div style={{
           background: 'rgba(245,158,11,0.10)', border: '1px solid rgba(245,158,11,0.38)',
           borderRadius: '10px', padding: '13px 15px', marginBottom: '18px',
-          fontSize: '11.5px', color: '#fbbf24', lineHeight: 1.7,
+          fontSize: '12px', color: 'var(--accent-gold-bright)', lineHeight: 1.7,
         }}>
           <strong>🔧 Pendaftaran akun belum diaktifkan</strong><br />
           Database akun belum disiapkan, jadi pendaftaran email belum bisa dipakai.
@@ -199,7 +199,7 @@ export default function AuthPanel({
                   onClick={() => { setMode('forgot'); setError(''); setNotice(''); setEmptyFieldError(''); }}
                   style={{
                     background: 'none', border: 'none', padding: 0,
-                    fontSize: '11px', color: 'var(--accent-primary, #6366f1)',
+                    fontSize: '12px', color: 'var(--accent-primary, #6366f1)',
                     cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'underline',
                   }}
                 >
@@ -231,7 +231,7 @@ export default function AuthPanel({
               </button>
             </div>
             {mode === 'signup' && (
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '5px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '5px' }}>
                 Minimal 8 karakter. Gunakan yang tidak Anda pakai di tempat lain.
               </div>
             )}
@@ -242,7 +242,7 @@ export default function AuthPanel({
             native tooltip, so the reason is always visible and testable. */}
         {emptyFieldError && (
           <div role="alert" style={{
-            fontSize: '11.5px', color: '#fb7185', background: 'rgba(244,63,94,0.10)',
+            fontSize: '12px', color: '#fb7185', background: 'rgba(244,63,94,0.10)',
             border: '1px solid rgba(244,63,94,0.32)', borderRadius: '8px', padding: '9px 11px', lineHeight: 1.5,
           }}>
             {emptyFieldError}
@@ -251,7 +251,7 @@ export default function AuthPanel({
 
         {error && (
           <div role="alert" style={{
-            fontSize: '11.5px', color: '#fb7185', background: 'rgba(244,63,94,0.10)',
+            fontSize: '12px', color: '#fb7185', background: 'rgba(244,63,94,0.10)',
             border: '1px solid rgba(244,63,94,0.32)', borderRadius: '8px', padding: '9px 11px', lineHeight: 1.5,
           }}>
             {error}
@@ -259,7 +259,7 @@ export default function AuthPanel({
         )}
         {notice && (
           <div role="status" style={{
-            fontSize: '11.5px', color: 'var(--accent-mint)', background: 'rgba(16,185,129,0.10)',
+            fontSize: '12px', color: 'var(--accent-mint)', background: 'rgba(16,185,129,0.10)',
             border: '1px solid rgba(16,185,129,0.32)', borderRadius: '8px', padding: '9px 11px', lineHeight: 1.5,
           }}>
             {notice}
@@ -287,7 +287,7 @@ export default function AuthPanel({
             onClick={() => { setMode('login'); setError(''); setNotice(''); }}
             style={{
               background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-              fontSize: '11.5px', color: 'var(--accent-primary, #6366f1)', fontWeight: '700',
+              fontSize: '12px', color: 'var(--accent-primary, #6366f1)', fontWeight: '700',
             }}
           >
             ← Kembali ke Halaman Masuk
@@ -296,7 +296,7 @@ export default function AuthPanel({
       )}
 
       {mode === 'signup' && (
-        <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '14px', lineHeight: 1.65, textAlign: 'center' }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '14px', lineHeight: 1.65, textAlign: 'center' }}>
           Akun gratis memberi Anda sinyal tertunda 24 jam.<br />
           Untuk sinyal real-time, lihat paket di bawah.
         </div>
@@ -304,7 +304,7 @@ export default function AuthPanel({
 
       {mode === 'owner' && (
         <div style={{
-          marginTop: '14px', fontSize: '11px', color: 'var(--text-secondary)',
+          marginTop: '14px', fontSize: '12px', color: 'var(--text-secondary)',
           background: 'rgba(0,0,0,0.26)', borderRadius: '9px', padding: '12px 14px', lineHeight: 1.7,
         }}>
           <strong style={{ color: 'var(--text-primary)' }}>Halaman ini untuk pemilik sistem.</strong><br />
@@ -320,7 +320,7 @@ export default function AuthPanel({
             onClick={() => { setMode(mode === 'owner' ? 'login' : 'owner'); setError(''); setNotice(''); }}
             style={{
               background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-              fontSize: '10.5px', color: 'var(--text-muted)', textDecoration: 'underline',
+              fontSize: '12px', color: 'var(--text-muted)', textDecoration: 'underline',
             }}
           >
             {mode === 'owner' ? '← Kembali' : 'Akses pemilik (kata sandi sistem)'}

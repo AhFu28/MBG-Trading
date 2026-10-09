@@ -424,7 +424,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
           <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
             MBG LIVE RESEARCH &amp; MACRO WIRE
           </span>
-          <span className="badge badge-bull" style={{ fontSize: '9px', padding: '1px 6px' }}>
+          <span className="badge badge-bull" style={{ fontSize: '12px', padding: '1px 6px' }}>
             24/7 DUAL-STREAM
           </span>
           <button
@@ -432,7 +432,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
             className={`telemetry-btn ${newsFilter === 'ARCHIVE' ? 'active' : ''}`}
             style={{
               padding: '2px 8px',
-              fontSize: '10px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               fontWeight: '800',
               color: newsFilter === 'ARCHIVE' ? '#fff' : 'var(--accent-blue)',
@@ -455,7 +455,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
             className="telemetry-btn"
             style={{
               padding: '2px 8px',
-              fontSize: '10px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               fontWeight: '800',
               color: 'var(--accent-gold-text, var(--accent-gold))',
@@ -477,10 +477,10 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
             className="telemetry-btn"
             style={{
               padding: '2px 8px',
-              fontSize: '10px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               fontWeight: '800',
-              color: '#34d399',
+              color: 'var(--accent-mint)',
               background: 'rgba(16, 185, 129, 0.15)',
               borderColor: 'rgba(16, 185, 129, 0.4)',
               cursor: isLiveSyncing ? 'wait' : 'pointer',
@@ -493,14 +493,14 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
             <span>{isLiveSyncing ? '⚡⏳' : '⚡'}</span>
             <span>{isLiveSyncing ? 'Menarik Feed...' : `Live Feed (${countdownSec}s)`}</span>
           </button>
-          <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: '6px' }}>
+          <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginLeft: '6px' }}>
             // IDX Equities &amp; Global Crypto ETF Intelligence
           </span>
         </div>
 
         {/* Compact Inline Sentiment Meter */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '240px' }}>
-          <div style={{ display: 'flex', gap: '8px', fontSize: '10px', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+          <div style={{ display: 'flex', gap: '8px', fontSize: '12px', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
             <span style={{ color: 'var(--accent-green)' }}>▲ {sentimentStats.bullPct}%</span>
             <span style={{ color: 'var(--text-muted)' }}>● {sentimentStats.neutPct}%</span>
             <span style={{ color: 'var(--accent-rust)' }}>▼ {sentimentStats.bearPct}%</span>
@@ -549,7 +549,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     onClick={() => setNewsFilter(cat.id)}
                     className={`telemetry-btn ${newsFilter === cat.id ? 'active' : ''}`}
                     style={{
-                      fontSize: '10px',
+                      fontSize: '12px',
                       padding: '4px 9px',
                       borderRadius: 'var(--radius-xs)',
                       letterSpacing: '0.03em'
@@ -572,7 +572,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                       width: '100%',
                       padding: '5px 24px 5px 8px',
                       fontFamily: 'var(--font-mono)',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       border: 'var(--border-hairline)',
                       background: 'var(--bg-canvas)',
                       color: 'var(--text-primary)',
@@ -592,7 +592,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                         border: 'none',
                         color: 'var(--text-muted)',
                         cursor: 'pointer',
-                        fontSize: '11px'
+                        fontSize: '12px'
                       }}
                       title='Bersihkan pencarian'
                     >
@@ -600,7 +600,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     </button>
                   )}
                 </div>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                   ({filteredNews.length})
                 </span>
               </div>
@@ -627,14 +627,14 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     HISTORICAL RESEARCH ARCHIVE DESK (14 HARI)
                   </span>
                 </div>
-                <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '3px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '3px' }}>
                   Histori riset &amp; daily brief tersimpan aman (Kapasitas FIFO 14 hari terkelola, bebas memory leak).
                 </div>
               </div>
 
               {/* Date Filter Dropdown */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                   PILIH TANGGAL:
                 </span>
                 <select
@@ -642,7 +642,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                   onChange={e => setArchiveDateFilter(e.target.value)}
                   style={{
                     padding: '5px 10px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: '700',
                     background: 'var(--bg-panel-dark)',
@@ -674,7 +674,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
             <div style={{ fontWeight: '700', fontSize: '13px', color: 'var(--text-primary)' }}>
               Tidak ada berita yang sesuai dengan filter atau kata kunci
             </div>
-            <div style={{ fontSize: '11px', marginTop: '4px' }}>
+            <div style={{ fontSize: '12px', marginTop: '4px' }}>
               Coba gunakan filter 'SEMUA WIRE' atau ubah kata kunci pencarian.
             </div>
           </div>
@@ -723,7 +723,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                     {/* Source */}
                     <span className='badge' style={{
-                      fontSize: '9px',
+                      fontSize: '12px',
                       background: 'var(--bg-panel-subtle)',
                       color: 'var(--text-primary)',
                       border: 'var(--border-hairline)'
@@ -733,7 +733,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
 
                     {/* Tag */}
                     <span style={{
-                      fontSize: '9px',
+                      fontSize: '12px',
                       fontWeight: '700',
                       color: 'var(--accent-blue)',
                       fontFamily: 'var(--font-mono)'
@@ -744,7 +744,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     {/* AI Synthesized Badge */}
                     {news.ai_generated && (
                       <span style={{
-                        fontSize: '8.5px',
+                        fontSize: '12px',
                         fontWeight: '800',
                         color: 'var(--accent-gold-text, var(--accent-gold))',
                         background: 'rgba(234, 179, 8, 0.12)',
@@ -763,13 +763,13 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     {/* Sentiment Badge */}
                     <span className={`badge ${
                       sentiment === 'BULLISH' ? 'badge-bull' : sentiment === 'BEARISH' ? 'badge-bear' : ''
-                    }`} style={{ fontSize: '8px', padding: '1px 5px' }}>
+                    }`} style={{ fontSize: '12px', padding: '1px 5px' }}>
                       {sentiment === 'BULLISH' ? '▲ BULLISH' : sentiment === 'BEARISH' ? '▼ BEARISH' : '● NEUTRAL'}
                     </span>
 
                     {/* Signal-to-Noise Ratio (SNR) Gauge */}
                     <span style={{
-                      fontSize: '8px',
+                      fontSize: '12px',
                       fontFamily: 'var(--font-mono)',
                       fontWeight: '800',
                       padding: '1px 6px',
@@ -786,7 +786,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     </span>
 
                     {/* Reading Time */}
-                    <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                       ⏱ ~{news.reading_time_sec || 45}s
                     </span>
                   </div>
@@ -812,14 +812,14 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                           }}
                           title={originalTooltip}
                         >
-                          <span style={{ fontSize: '10px', color: 'var(--text-primary)', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
+                          <span style={{ fontSize: '12px', color: 'var(--text-primary)', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
                             🗓️ {dt.dateStr}
                           </span>
-                          <span style={{ fontSize: '10px', color: 'var(--accent-blue, var(--accent-sky-soft))', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
+                          <span style={{ fontSize: '12px', color: 'var(--accent-blue, var(--accent-sky-soft))', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
                             ⏰ {dt.timeStr}
                           </span>
                           {fresh && (
-                            <span style={{ fontSize: '9px', fontWeight: '800', color: fresh.color, fontFamily: 'var(--font-mono)' }} title="Umur berita sejak rilis sumber: FRESH < 1 jam, TERLAMBAT < 6 jam, STALE lebih tua">
+                            <span style={{ fontSize: '12px', fontWeight: '800', color: fresh.color, fontFamily: 'var(--font-mono)' }} title="Umur berita sejak rilis sumber: FRESH < 1 jam, TERLAMBAT < 6 jam, STALE lebih tua">
                               {fresh.label} {formatAge(fresh.ageMin)}
                             </span>
                           )}
@@ -869,7 +869,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     alignItems: 'center',
                     gap: '8px',
                     flexWrap: 'wrap',
-                    fontSize: '10px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)',
                     background: 'rgba(59, 130, 246, 0.08)',
                     border: '1px solid rgba(59, 130, 246, 0.25)',
@@ -885,7 +885,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     <span>R1: <strong style={{ color: 'var(--accent-red)' }}>{news.technical_levels.r1?.toLocaleString()}</strong></span>
                     <span>•</span>
                     <span>Cut Loss: <strong style={{ color: 'var(--accent-gold)' }}>&lt; {news.technical_levels.invalidation?.toLocaleString()}</strong></span>
-                    <span style={{ marginLeft: 'auto', fontSize: '9px', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: '700' }} onClick={() => onSelectNews && onSelectNews(news)}>
+                    <span style={{ marginLeft: 'auto', fontSize: '12px', color: 'var(--accent-blue)', cursor: 'pointer', fontWeight: '700' }} onClick={() => onSelectNews && onSelectNews(news)}>
                       Lihat Chart &amp; S/R Lengkap ↗
                     </span>
                   </div>
@@ -912,7 +912,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     gap: '4px'
                   }}>
                     <div style={{
-                      fontSize: '9px',
+                      fontSize: '12px',
                       fontWeight: '800',
                       fontFamily: 'var(--font-mono)',
                       color: 'var(--accent-blue, #3b82f6)',
@@ -924,14 +924,14 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                       <span>📊</span>
                       <span>[1] WHAT CHANGED</span>
                     </div>
-                    <div style={{ fontSize: '11px', color: 'var(--text-primary)', lineHeight: 1.45 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.45 }}>
                       {intel.what_changed?.summary}
                     </div>
                     {Array.isArray(intel.what_changed?.metrics) && intel.what_changed.metrics.length > 0 && (
                       <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: 'auto', paddingTop: '4px' }}>
                         {intel.what_changed.metrics.map((m, mIdx) => (
                           <span key={mIdx} style={{
-                            fontSize: '8.5px',
+                            fontSize: '12px',
                             fontFamily: 'var(--font-mono)',
                             fontWeight: '700',
                             background: 'rgba(59, 130, 246, 0.15)',
@@ -958,7 +958,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     gap: '5px'
                   }}>
                     <div style={{
-                      fontSize: '9px',
+                      fontSize: '12px',
                       fontWeight: '800',
                       fontFamily: 'var(--font-mono)',
                       color: 'var(--accent-gold, var(--accent-gold))',
@@ -969,9 +969,9 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     }}>
                       <span>🔍</span>
                       <span>[2] WHY IT CHANGED</span>
-                      <span style={{ fontSize: '7.5px', color: 'var(--text-muted)', marginLeft: 'auto' }}>DRIVER DECOMPOSITION</span>
+                      <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginLeft: 'auto' }}>DRIVER DECOMPOSITION</span>
                     </div>
-                    <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                       {intel.why_it_changed?.primary_driver}
                     </div>
                     {/* Micro Stacked Driver Waterfall Bar */}
@@ -997,7 +997,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                             />
                           ))}
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '8px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                           {intel.why_it_changed.drivers.map((d, dIdx) => (
                             <span key={dIdx} style={{ color: d.color }}>
                               {d.weight_pct}% {d.factor.split(' ')[0]}
@@ -1019,10 +1019,10 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     gap: '4px'
                   }}>
                     <div style={{
-                      fontSize: '9px',
+                      fontSize: '12px',
                       fontWeight: '800',
                       fontFamily: 'var(--font-mono)',
-                      color: '#c084fc',
+                      color: 'var(--accent-purple-light)',
                       letterSpacing: '0.04em',
                       display: 'flex',
                       alignItems: 'center',
@@ -1030,9 +1030,9 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     }}>
                       <span>🎯</span>
                       <span>[3] WHAT MATTERS</span>
-                      <span style={{ fontSize: '7.5px', color: 'var(--text-muted)', marginLeft: 'auto' }}>SIGNAL VS NOISE</span>
+                      <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginLeft: 'auto' }}>SIGNAL VS NOISE</span>
                     </div>
-                    <div style={{ fontSize: '10.5px', color: 'var(--text-primary)', lineHeight: 1.45 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.45 }}>
                       {intel.what_matters?.signal_vs_noise}
                     </div>
                   </div>
@@ -1048,7 +1048,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     gap: '4px'
                   }}>
                     <div style={{
-                      fontSize: '9px',
+                      fontSize: '12px',
                       fontWeight: '800',
                       fontFamily: 'var(--font-mono)',
                       color: 'var(--accent-green, var(--accent-emerald))',
@@ -1060,7 +1060,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                       <span>⚡</span>
                       <span>[4] WHAT'S NEXT</span>
                       <span style={{
-                        fontSize: '7.5px',
+                        fontSize: '12px',
                         fontWeight: '800',
                         padding: '1px 5px',
                         borderRadius: '2px',
@@ -1074,7 +1074,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <span style={{
-                        fontSize: '8.5px',
+                        fontSize: '12px',
                         fontWeight: '800',
                         fontFamily: 'var(--font-mono)',
                         color: '#fff',
@@ -1085,7 +1085,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                         {intel.whats_next?.action || 'ACTION'}
                       </span>
                     </div>
-                    <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                       {intel.whats_next?.guidance}
                     </div>
                   </div>
@@ -1106,7 +1106,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                     {detectedTickers.length > 0 ? (
                       <>
-                        <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
+                        <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
                           ASSET:
                         </span>
                         {detectedTickers.map(ticker => {
@@ -1121,7 +1121,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                               className='telemetry-btn ticker-chip-interactive'
                               style={{
                                 padding: '2px 7px',
-                                fontSize: '9px',
+                                fontSize: '12px',
                                 color: isCryptoTicker ? 'var(--accent-orange, var(--accent-gold))' : 'var(--accent-blue)',
                                 borderColor: isCryptoTicker ? 'rgba(245, 158, 11, 0.3)' : 'rgba(0, 102, 204, 0.3)',
                                 fontFamily: 'var(--font-mono)',
@@ -1136,7 +1136,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                         })}
                       </>
                     ) : (
-                      <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>
+                      <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                         Klaster #{news.tag || 'MARKET'}
                       </span>
                     )}
@@ -1148,7 +1148,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                       onClick={() => handleTTS(newsId, textToSpeak)}
                       className='telemetry-btn'
                       style={{
-                        fontSize: '9px',
+                        fontSize: '12px',
                         padding: '2px 7px',
                         display: 'inline-flex',
                         alignItems: 'center',
@@ -1163,7 +1163,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                       onClick={() => handleCopy(`${news.title}\n${bullets.map(b => '• ' + b).join('\n')}\nSumber: ${news.source}`, newsId, 'Poin ringkasan disalin!')}
                       className='telemetry-btn'
                       style={{
-                        fontSize: '9px',
+                        fontSize: '12px',
                         padding: '2px 7px',
                         display: 'inline-flex',
                         alignItems: 'center',
@@ -1179,7 +1179,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                         onClick={() => onSelectNews(news)}
                         className='telemetry-btn'
                         style={{
-                          fontSize: '9px',
+                          fontSize: '12px',
                           padding: '2px 7px',
                           display: 'inline-flex',
                           alignItems: 'center',
@@ -1201,7 +1201,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                         rel='noopener noreferrer'
                         className='telemetry-btn'
                         style={{
-                          fontSize: '9px',
+                          fontSize: '12px',
                           padding: '2px 7px',
                           textDecoration: 'none',
                           display: 'inline-flex',
@@ -1240,11 +1240,11 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', paddingBottom: '6px', borderBottom: 'var(--border-muted)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span style={{ fontSize: '12px' }}>📊</span>
-                <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--accent-blue)', letterSpacing: '0.04em' }}>
+                <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--accent-blue)', letterSpacing: '0.04em' }}>
                   SPOT ETF FLOW &amp; GLOBAL PULSE
                 </span>
               </div>
-              <span className="badge badge-bull" style={{ fontSize: '8px', padding: '1px 5px' }}>LIVE</span>
+              <span className="badge badge-bull" style={{ fontSize: '12px', padding: '1px 5px' }}>LIVE</span>
             </div>
 
             {/* Quick Turnover Stats */}
@@ -1254,7 +1254,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
               background: 'var(--bg-canvas)',
               padding: '5px 8px',
               borderRadius: 'var(--radius-xs)',
-              fontSize: '9.5px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               marginBottom: '8px',
               border: 'var(--border-muted)'
@@ -1289,19 +1289,19 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                   >
                     <div>
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                        <strong style={{ fontSize: '11px', color: 'var(--text-primary)' }}>${etf.symbol}</strong>
-                        <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Vol: ${etf.turnover_m}M</span>
+                        <strong style={{ fontSize: '12px', color: 'var(--text-primary)' }}>${etf.symbol}</strong>
+                        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Vol: ${etf.turnover_m}M</span>
                       </div>
-                      <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '140px' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '140px' }}>
                         {etf.name}
                       </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                      <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
                         ${etf.price?.toFixed(2)}
                       </div>
                       <span style={{
-                        fontSize: '9px',
+                        fontSize: '12px',
                         fontWeight: 700,
                         color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)'
                       }}>
@@ -1322,28 +1322,28 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
               paddingTop: '8px',
               borderTop: 'var(--border-muted)'
             }}>
-              <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>XAU/USD: </span>
                 <strong style={{ color: 'var(--text-primary)' }}>${macro?.gold_price || '2750'}</strong>
                 <span style={{ color: (macro?.gold_change_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginLeft: '3px' }}>
                   {(macro?.gold_change_pct || 0) >= 0 ? '+' : ''}{macro?.gold_change_pct || '+0.39'}%
                 </span>
               </div>
-              <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>BRENT: </span>
                 <strong style={{ color: 'var(--text-primary)' }}>${macro?.brent_oil_price || '74.2'}</strong>
                 <span style={{ color: (macro?.brent_oil_change_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginLeft: '3px' }}>
                   {(macro?.brent_oil_change_pct || 0) >= 0 ? '+' : ''}{macro?.brent_oil_change_pct || '+2.03'}%
                 </span>
               </div>
-              <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>DXY: </span>
                 <strong style={{ color: 'var(--text-primary)' }}>{macro?.dxy_index || '99.65'}</strong>
                 <span style={{ color: (macro?.dxy_change_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginLeft: '3px' }}>
                   {(macro?.dxy_change_pct || 0) >= 0 ? '+' : ''}{macro?.dxy_change_pct || '+0.19'}%
                 </span>
               </div>
-              <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>US10Y: </span>
                 <strong style={{ color: 'var(--text-primary)' }}>{macro?.us10y_yield || '4.94'}%</strong>
                 <span style={{ color: 'var(--accent-green)', marginLeft: '3px' }}>+2bp</span>
@@ -1361,14 +1361,14 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
             {/* Header with TTS & Copy */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', paddingBottom: '6px', borderBottom: 'var(--border-muted)' }}>
               <div>
-                <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-primary)' }}>⚡ MBG DAILY SNIPS</span>
-                <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Rekap Pasar &amp; Analisa Saham</div>
+                <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)' }}>⚡ MBG DAILY SNIPS</span>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Rekap Pasar &amp; Analisa Saham</div>
               </div>
               <div style={{ display: 'flex', gap: '4px' }}>
                 <button
                   onClick={() => handleTTS('snips-daily', `${macro?.daily_snips?.market_verdict?.narrative || macro?.full_narrative || ''}`)}
                   className='telemetry-btn'
-                  style={{ fontSize: '9px', padding: '2px 6px' }}
+                  style={{ fontSize: '12px', padding: '2px 6px' }}
                   title='Putar Audio Intisari'
                 >
                   {ttsState.isPlaying && ttsState.activeId === 'snips-daily' ? '⏹ Stop' : '🔊 Audio'}
@@ -1376,7 +1376,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                 <button
                   onClick={() => handleCopy(snipsExportText, 'snips-daily', 'Rekap Snips disalin!')}
                   className='telemetry-btn'
-                  style={{ fontSize: '9px', padding: '2px 6px' }}
+                  style={{ fontSize: '12px', padding: '2px 6px' }}
                   title='Salin untuk Telegram/WA'
                 >
                   {copiedId === 'snips-daily' ? '✓' : '📋 Salin'}
@@ -1386,13 +1386,13 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
 
             {/* Verdict Badge & Headline */}
             <div style={{ marginBottom: '8px' }}>
-              <span className='badge badge-bull' style={{ fontSize: '8.5px', padding: '1px 5px', display: 'inline-block', marginBottom: '4px' }}>
+              <span className='badge badge-bull' style={{ fontSize: '12px', padding: '1px 5px', display: 'inline-block', marginBottom: '4px' }}>
                 {macro?.daily_snips?.market_verdict?.badge || '🟢 VOLATILITAS ENERGI TINGGI'}
               </span>
-              <div style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.35 }}>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.35 }}>
                 {macro?.headline || 'Middle East Supply Tensions Drive Crude Oil Spike'}
               </div>
-              <p style={{ fontSize: '10.5px', color: 'var(--text-muted)', margin: '4px 0 0 0', lineHeight: 1.45 }}>
+              <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '4px 0 0 0', lineHeight: 1.45 }}>
                 {macro?.daily_snips?.market_verdict?.narrative || macro?.full_narrative || 'Lonjakan harga minyak mentah menguntungkan emiten hulu migas, namun menekan margin sektor transportasi.'}
               </p>
             </div>
@@ -1400,7 +1400,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
             {/* Impacted Stocks */}
             {macro?.idx_affected_stocks && macro.idx_affected_stocks.length > 0 && (
               <div style={{ paddingTop: '6px', borderTop: 'var(--border-muted)' }}>
-                <div style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                <div style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '4px' }}>
                   🎯 EMITEN PALING TERDAMPAK:
                 </div>
                 <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
@@ -1411,7 +1411,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                       className='telemetry-btn'
                       style={{
                         padding: '2px 6px',
-                        fontSize: '10px',
+                        fontSize: '12px',
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '4px',
@@ -1431,7 +1431,7 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
             {macro?.daily_snips?.actionable_guidance && (
               <div style={{
                 marginTop: '8px',
-                fontSize: '9.5px',
+                fontSize: '12px',
                 color: 'var(--text-muted)',
                 background: 'var(--bg-canvas)',
                 padding: '5px 8px',
@@ -1454,10 +1454,10 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
           bottom: '24px',
           right: '24px',
           background: 'var(--accent-blue)',
-          color: '#ffffff',
+          color: 'var(--text-inverse)',
           padding: '8px 14px',
           borderRadius: 'var(--radius-sm)',
-          fontSize: '11px',
+          fontSize: '12px',
           fontWeight: '700',
           boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
           zIndex: 9999,

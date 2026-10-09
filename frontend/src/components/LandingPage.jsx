@@ -116,7 +116,7 @@ function LiveTickerStrip() {
         borderBottom: '1px solid #2F3A49',
         padding: '11px 0',
         textAlign: 'center',
-        fontSize: '11.5px',
+        fontSize: '12px',
         color: '#A7B0BD',
         background: '#0B0E14'
       }}>
@@ -132,7 +132,7 @@ function LiveTickerStrip() {
         borderBottom: '1px solid #2F3A49',
         padding: '11px 0',
         textAlign: 'center',
-        fontSize: '11.5px',
+        fontSize: '12px',
         color: '#A7B0BD',
         background: '#0B0E14'
       }}>
@@ -165,7 +165,7 @@ function LiveTickerStrip() {
       </div>
 
       {global?.totalMarketCap ? (
-        <div style={{ textAlign: 'center', fontSize: '10px', color: '#A7B0BD', paddingBottom: '5px' }}>
+        <div style={{ textAlign: 'center', fontSize: '12px', color: '#A7B0BD', paddingBottom: '5px' }}>
           Kapitalisasi pasar global {formatUsdCompact(global.totalMarketCap)} · Realtime Market Engine
         </div>
       ) : null}
@@ -204,12 +204,12 @@ function ProductPreview() {
         <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#FF6B75' }} />
         <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#F3C969' }} />
         <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#3BC78A' }} />
-        <span style={{ marginLeft: '10px', fontSize: '10.5px', color: '#A7B0BD', fontFamily: 'var(--font-mono)' }}>
+        <span style={{ marginLeft: '10px', fontSize: '12px', color: '#A7B0BD', fontFamily: 'var(--font-mono)' }}>
           mbg-trading : cockpit v5.0 · live market view
         </span>
         <span style={{
           marginLeft: 'auto',
-          fontSize: '9px',
+          fontSize: '12px',
           fontWeight: 800,
           color: '#F3C969',
           border: '1px solid rgba(243, 201, 105, 0.4)',
@@ -234,9 +234,9 @@ function ProductPreview() {
             padding: '10px 12px',
             background: '#1B2431'
           }}>
-            <div style={{ fontSize: '10.5px', fontWeight: 800, color: '#A7B0BD' }}>{c.s}</div>
+            <div style={{ fontSize: '12px', fontWeight: 800, color: '#A7B0BD' }}>{c.s}</div>
             <div style={{ fontSize: '13.5px', fontWeight: 900, fontFamily: 'var(--font-mono)', color: '#F3F5F7', marginTop: '2px' }}>{c.p}</div>
-            <div style={{ fontSize: '10px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: c.up ? '#3BC78A' : '#FF6B75' }}>{c.c}</div>
+            <div style={{ fontSize: '12px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: c.up ? '#3BC78A' : '#FF6B75' }}>{c.c}</div>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: '20px', marginTop: '6px' }}>
               {c.h.map((v, i) => (
                 <span key={i} style={{ flex: 1, height: `${v}%`, background: '#3BC78A', opacity: 0.6, borderRadius: '1px' }} />
@@ -249,7 +249,7 @@ function ProductPreview() {
       {/* Split preview desk */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px', padding: '0 14px 14px' }}>
         <div style={{ border: '1px solid #2F3A49', borderRadius: '10px', padding: '12px 14px', background: '#1B2431' }}>
-          <div style={{ fontSize: '10px', fontWeight: 800, color: '#A7B0BD', marginBottom: '8px', letterSpacing: '0.04em' }}>STATUS BURSA &amp; LIKUIDITAS</div>
+          <div style={{ fontSize: '12px', fontWeight: 800, color: '#A7B0BD', marginBottom: '8px', letterSpacing: '0.04em' }}>STATUS BURSA &amp; LIKUIDITAS</div>
           {[
             ['Bursa Efek Indonesia (IDX)', 100, '#3BC78A'],
             ['Crypto Derivatives (24/7)', 100, '#3BC78A'],
@@ -257,9 +257,9 @@ function ProductPreview() {
             ['Global Forex Command', 70, '#F3C969'],
           ].map(([name, pct, color]) => (
             <div key={name} style={{ marginBottom: '8px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#A7B0BD', marginBottom: '3px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#A7B0BD', marginBottom: '3px' }}>
                 <span>{name}</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9px' }}>{pct}%</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px' }}>{pct}%</span>
               </div>
               {bar(pct, color)}
             </div>
@@ -267,14 +267,14 @@ function ProductPreview() {
         </div>
 
         <div style={{ border: '1px solid #2F3A49', borderRadius: '10px', padding: '12px 14px', background: '#1B2431' }}>
-          <div style={{ fontSize: '10px', fontWeight: 800, color: '#A7B0BD', marginBottom: '8px', letterSpacing: '0.04em' }}>RADAR EKSEKUSI TERKINI</div>
+          <div style={{ fontSize: '12px', fontWeight: 800, color: '#A7B0BD', marginBottom: '8px', letterSpacing: '0.04em' }}>RADAR EKSEKUSI TERKINI</div>
           {[
             ['BBRI', 'Rp 4.950', '#3BC78A', '+2.1%'],
             ['ANTM', 'Rp 1.580', '#3BC78A', '+3.9%'],
             ['SOL', '$168.4', '#3BC78A', '+4.5%'],
             ['MEDC', 'Rp 1.320', '#FF6B75', '-0.8%'],
           ].map(([sym, px, color, chg]) => (
-            <div key={sym} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '10px', padding: '4px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+            <div key={sym} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', padding: '4px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
               <span style={{ fontWeight: 800, color: '#F3F5F7' }}>{sym}</span>
               <span style={{ fontFamily: 'var(--font-mono)', color: '#A7B0BD' }}>{px}</span>
               <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color }}>{chg}</span>
@@ -334,7 +334,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
             <MbgLogo size={28} />
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
               <span style={{ fontWeight: 900, fontSize: '15px', letterSpacing: '-0.01em', color: '#F3F5F7' }}>MBG TRADING</span>
-              <span style={{ fontSize: '9px', color: '#A7B0BD', letterSpacing: '0.08em', fontWeight: 700 }}>MARKET BRAIN GRID</span>
+              <span style={{ fontSize: '12px', color: '#A7B0BD', letterSpacing: '0.08em', fontWeight: 700 }}>MARKET BRAIN GRID</span>
             </span>
           </div>
 
@@ -432,7 +432,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: 800,
                 padding: '6px 14px',
                 borderRadius: '9999px',
@@ -544,7 +544,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                     padding: '14px 16px',
                   }}>
                     <div style={{ fontSize: '22px', fontWeight: 900, color: '#78A9FF', fontFamily: 'var(--font-mono)' }}>{value}</div>
-                    <div style={{ fontSize: '11px', color: '#A7B0BD', marginTop: '3px', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: '12px', color: '#A7B0BD', marginTop: '3px', lineHeight: 1.4 }}>
                       {text}
                     </div>
                   </div>
@@ -626,7 +626,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                   <span style={{ fontSize: '28px' }}>{pillar.icon}</span>
                   <span style={{
-                    fontSize: '9px',
+                    fontSize: '12px',
                     fontWeight: 900,
                     letterSpacing: '0.06em',
                     color: '#78A9FF',
@@ -750,7 +750,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                     {MODULE_LABEL[id] || id}
                   </span>
                   <span style={{
-                    fontSize: '9px',
+                    fontSize: '12px',
                     fontWeight: 900,
                     padding: '3px 8px',
                     borderRadius: '9999px',
@@ -800,7 +800,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                     position: 'absolute',
                     top: '-11px',
                     left: '24px',
-                    fontSize: '9.5px',
+                    fontSize: '12px',
                     fontWeight: 900,
                     padding: '4px 12px',
                     borderRadius: '9999px',
@@ -859,7 +859,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                 </button>
 
                 {plan.highlight && (
-                  <div style={{ fontSize: '10.5px', color: '#A7B0BD', marginTop: '12px', lineHeight: 1.6, textAlign: 'center' }}>
+                  <div style={{ fontSize: '12px', color: '#A7B0BD', marginTop: '12px', lineHeight: 1.6, textAlign: 'center' }}>
                     Pembayaran mudah via Transfer Bank (BCA) atau QRIS. Aktivasi cepat setelah konfirmasi bukti transfer.
                   </div>
                 )}
@@ -898,7 +898,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
       <footer style={{
         borderTop: '1px solid #2F3A49',
         padding: '24px 0',
-        fontSize: '11px',
+        fontSize: '12px',
         color: '#A7B0BD',
         background: '#0B0E14'
       }}>

@@ -172,7 +172,7 @@ const GROKTAGON_AGENTS = [
     role: 'PERPETUALS / VOLATILITY',
     market: 'CRYPTO PERPS',
     avatar: '⚡',
-    color: '#38bdf8',
+    color: 'var(--accent-sky)',
     status: 'EXECUTING',
     winRate: 76.4,
     profitFactor: 2.82,
@@ -193,7 +193,7 @@ const GROKTAGON_AGENTS = [
     role: 'SMC / ORDER BLOCKS',
     market: 'CRYPTO PERPS',
     avatar: '🎯',
-    color: '#10b981',
+    color: 'var(--accent-emerald)',
     status: 'MONITORING',
     winRate: 81.2,
     profitFactor: 3.14,
@@ -214,7 +214,7 @@ const GROKTAGON_AGENTS = [
     role: 'SAHAM IDX / VWAP',
     market: 'BURSA EFEK BEI',
     avatar: '🏛️',
-    color: '#f59e0b',
+    color: 'var(--accent-gold)',
     status: 'ACCUMULATING',
     winRate: 73.8,
     profitFactor: 2.45,
@@ -426,15 +426,15 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
         <span style={{ fontSize: '17px', lineHeight: 1.2 }}>⚠️</span>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
           <span style={{
-            fontSize: '11.5px',
+            fontSize: '12px',
             fontWeight: 900,
-            color: '#fbbf24',
+            color: 'var(--accent-gold-bright)',
             fontFamily: 'var(--font-mono)',
             letterSpacing: '0.04em'
           }}>
             {SIMULATION_BADGE}
           </span>
-          <span style={{ fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+          <span style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
             {HONESTY_NOTICE}
           </span>
         </div>
@@ -472,19 +472,19 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                 THE GROKTAGON // AUTONOMOUS BOT ARENA
               </span>
               <span style={{
-                fontSize: '9.5px',
+                fontSize: '12px',
                 fontWeight: 800,
                 padding: '2px 8px',
                 borderRadius: '4px',
                 background: isHalted ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)',
                 color: isHalted ? '#f87171' : 'var(--accent-mint)',
-                border: isHalted ? '1px solid #ef4444' : '1px solid rgba(16, 185, 129, 0.4)',
+                border: isHalted ? '1px solid var(--accent-red)' : '1px solid rgba(16, 185, 129, 0.4)',
                 fontFamily: 'var(--font-mono)'
               }}>
                 {isHalted ? '● SYSTEM HALTED' : '● 6 AGENTS ACTIVE'}
               </span>
             </div>
-            <div style={{ fontSize: '11px', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ fontSize: '12px', color: 'var(--slate-500)', fontFamily: 'var(--font-mono)' }}>
               Autonomous trading floor executing quantitative strategies across Hyperliquid & BEI
             </div>
           </div>
@@ -507,7 +507,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                 border: 'none',
                 padding: '5px 12px',
                 borderRadius: '6px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: 800,
                 cursor: 'pointer'
               }}
@@ -522,7 +522,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                 border: 'none',
                 padding: '5px 12px',
                 borderRadius: '6px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: 800,
                 cursor: 'pointer'
               }}
@@ -539,7 +539,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
               color: isHalted ? 'var(--accent-mint)' : '#f87171',
               padding: '6px 14px',
               borderRadius: '8px',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: 900,
               cursor: 'pointer'
             }}
@@ -572,13 +572,13 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
             flexDirection: 'column',
             gap: '2px'
           }}>
-            <span style={{ fontSize: '9.5px', color: '#64748b', textTransform: 'uppercase', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+            <span style={{ fontSize: '12px', color: 'var(--slate-500)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
               {m.label}
             </span>
             <span style={{ fontSize: '16px', fontWeight: 900, color: m.col, fontFamily: 'var(--font-mono)' }}>
               {m.val}
             </span>
-            <span style={{ fontSize: '9.5px', color: '#94a3b8' }}>
+            <span style={{ fontSize: '12px', color: '#94a3b8' }}>
               {m.sub}
             </span>
           </div>
@@ -622,7 +622,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                             {agent.name}
                           </span>
                           <span style={{
-                            fontSize: '9px',
+                            fontSize: '12px',
                             fontWeight: 800,
                             padding: '1px 6px',
                             borderRadius: '3px',
@@ -634,7 +634,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                             {agent.role}
                           </span>
                         </div>
-                        <div style={{ fontSize: '10px', color: '#94a3b8' }}>
+                        <div style={{ fontSize: '12px', color: '#94a3b8' }}>
                           {agent.codename}
                         </div>
                       </div>
@@ -643,7 +643,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                     {/* Status Pill & Toggle */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <span style={{
-                        fontSize: '9px',
+                        fontSize: '12px',
                         fontWeight: 800,
                         padding: '2px 6px',
                         borderRadius: '4px',
@@ -662,7 +662,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                           color: '#cbd5e1',
                           padding: '2px 6px',
                           borderRadius: '4px',
-                          fontSize: '10px',
+                          fontSize: '12px',
                           cursor: 'pointer'
                         }}
                         title={isPaused ? "Nyalakan bot ini" : "Jeda bot ini"}
@@ -673,7 +673,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                   </div>
 
                   {/* Strategy Description */}
-                  <div style={{ fontSize: '10.5px', color: '#64748b', lineHeight: 1.5, background: 'rgba(0, 0, 0, 0.25)', padding: '6px 8px', borderRadius: '6px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--slate-500)', lineHeight: 1.5, background: 'rgba(0, 0, 0, 0.25)', padding: '6px 8px', borderRadius: '6px' }}>
                     {agent.strategy}
                   </div>
 
@@ -687,17 +687,17 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                     flexDirection: 'column',
                     gap: '4px'
                   }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
-                      <span style={{ color: '#64748b', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>Target Pair</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+                      <span style={{ color: 'var(--slate-500)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>Target Pair</span>
                       <span style={{ color: '#f8fafc', fontWeight: 800, fontFamily: 'var(--font-mono)' }}>{agent.activePair}</span>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10.5px' }}>
-                      <span style={{ color: '#64748b' }}>Posisi Terbuka</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+                      <span style={{ color: 'var(--slate-500)' }}>Posisi Terbuka</span>
                       <span style={{ color: agent.currentPosition.includes('LONG') ? 'var(--accent-mint)' : agent.currentPosition.includes('SHORT') ? '#f87171' : 'var(--accent-gold)', fontWeight: 800, fontFamily: 'var(--font-mono)' }}>
                         {agent.currentPosition}
                       </span>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: '#94a3b8', fontFamily: 'var(--font-mono)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#94a3b8', fontFamily: 'var(--font-mono)' }}>
                       <span>SL: {agent.sl}</span>
                       <span>TP: {agent.tp}</span>
                     </div>
@@ -710,19 +710,19 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                     gap: '6px',
                     borderTop: '1px solid rgba(255, 255, 255, 0.06)',
                     paddingTop: '8px',
-                    fontSize: '10px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)'
                   }}>
                     <div>
-                      <div style={{ color: '#64748b' }}>Win Rate</div>
+                      <div style={{ color: 'var(--slate-500)' }}>Win Rate</div>
                       <div style={{ fontWeight: 800, color: 'var(--accent-mint)' }}>{agent.winRate}%</div>
                     </div>
                     <div>
-                      <div style={{ color: '#64748b' }}>Profit Factor</div>
+                      <div style={{ color: 'var(--slate-500)' }}>Profit Factor</div>
                       <div style={{ fontWeight: 800, color: '#f8fafc' }}>{agent.profitFactor}</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ color: '#64748b' }}>24h Net PnL</div>
+                      <div style={{ color: 'var(--slate-500)' }}>24h Net PnL</div>
                       <div style={{ fontWeight: 800, color: 'var(--accent-mint)' }}>+${agent.pnl24h.toLocaleString()}</div>
                     </div>
                   </div>
@@ -761,7 +761,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                       border: 'none',
                       borderRadius: '4px',
                       padding: '2px 6px',
-                      fontSize: '9.5px',
+                      fontSize: '12px',
                       fontFamily: 'var(--font-mono)',
                       fontWeight: 700,
                       cursor: 'pointer'
@@ -781,20 +781,20 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
               flexDirection: 'column',
               gap: '6px',
               fontFamily: 'var(--font-mono)',
-              fontSize: '11px'
+              fontSize: '12px'
             }}>
               {filteredLogs.map((log, idx) => (
                 <div key={idx} style={{ display: 'flex', gap: '8px', alignItems: 'baseline' }}>
-                  <span style={{ color: '#64748b' }}>[{log.time}]</span>
+                  <span style={{ color: 'var(--slate-500)' }}>[{log.time}]</span>
                   <span style={{
-                    color: log.agent === 'BRAM' ? '#38bdf8' : log.agent === 'KETT' ? '#10b981' : log.agent === 'RIGO' ? '#f59e0b' : log.agent === 'TESS' ? '#a855f7' : log.agent === 'HOLT' ? '#ec4899' : '#06b6d4',
+                    color: log.agent === 'BRAM' ? 'var(--accent-sky)' : log.agent === 'KETT' ? 'var(--accent-emerald)' : log.agent === 'RIGO' ? 'var(--accent-gold)' : log.agent === 'TESS' ? '#a855f7' : log.agent === 'HOLT' ? '#ec4899' : '#06b6d4',
                     fontWeight: 800,
                     minWidth: '45px'
                   }}>
                     {log.agent}
                   </span>
                   <span style={{
-                    fontSize: '9px',
+                    fontSize: '12px',
                     padding: '1px 4px',
                     borderRadius: '3px',
                     background: 'rgba(255, 255, 255, 0.06)',
@@ -829,14 +829,14 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
               <div style={{ fontSize: '15px', fontWeight: 900, color: '#f8fafc' }}>
                 ⚡ Jev Institutional Algorithmic Slicer
               </div>
-              <div style={{ fontSize: '11px', color: '#64748b', marginTop: '3px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--slate-500)', marginTop: '3px' }}>
                 Memecah pesanan volume institusi besar menjadi sub-order mikro untuk meminimalkan dampak harga (market impact & slippage).
               </div>
             </div>
 
             {/* Algorithm Choice */}
             <div>
-              <label style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>
+              <label style={{ fontSize: '12px', color: 'var(--slate-500)', fontWeight: 700, textTransform: 'uppercase' }}>
                 Algoritma Pemotongan:
               </label>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px', marginTop: '6px' }}>
@@ -861,10 +861,10 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                       gap: '2px'
                     }}
                   >
-                    <span style={{ fontSize: '11px', fontWeight: 800, color: slicerAlgo === algo.id ? 'var(--accent-sky)' : '#cbd5e1' }}>
+                    <span style={{ fontSize: '12px', fontWeight: 800, color: slicerAlgo === algo.id ? 'var(--accent-sky)' : '#cbd5e1' }}>
                       {algo.label}
                     </span>
-                    <span style={{ fontSize: '9px', color: '#64748b', textAlign: 'center' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--slate-500)', textAlign: 'center' }}>
                       {algo.desc}
                     </span>
                   </button>
@@ -875,7 +875,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
             {/* Inputs: Asset & Size */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               <div>
-                <label style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 700 }}>Simbol Aset:</label>
+                <label style={{ fontSize: '12px', color: 'var(--slate-500)', fontWeight: 700 }}>Simbol Aset:</label>
                 <select
                   value={slicerSymbol}
                   onChange={(e) => setSlicerSymbol(e.target.value)}
@@ -899,7 +899,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
               </div>
 
               <div>
-                <label style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 700 }}>Nominal Order ($):</label>
+                <label style={{ fontSize: '12px', color: 'var(--slate-500)', fontWeight: 700 }}>Nominal Order ($):</label>
                 <input
                   type="number"
                   value={slicerAmount}
@@ -921,7 +921,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
 
             {/* Duration */}
             <div>
-              <label style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 700 }}>Durasi Pembagian:</label>
+              <label style={{ fontSize: '12px', color: 'var(--slate-500)', fontWeight: 700 }}>Durasi Pembagian:</label>
               <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
                 {['15m', '30m', '1h', '2h', '4h'].map(dur => (
                   <button
@@ -935,7 +935,7 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
                       background: slicerInterval === dur ? 'var(--accent-sky)' : 'rgba(255, 255, 255, 0.04)',
                       color: slicerInterval === dur ? '#000' : '#94a3b8',
                       border: 'none',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       fontWeight: 800,
                       cursor: 'pointer'
                     }}
@@ -981,8 +981,8 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
 
             {/* Progress bar */}
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '6px' }}>
-                <span style={{ color: '#64748b' }}>Progres Eksekusi Chunk:</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
+                <span style={{ color: 'var(--slate-500)' }}>Progres Eksekusi Chunk:</span>
                 <span style={{ color: 'var(--accent-mint)', fontWeight: 800, fontFamily: 'var(--font-mono)' }}>{slicerProgress}% Selesai</span>
               </div>
               <div style={{ width: '100%', height: '8px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '4px', overflow: 'hidden' }}>
@@ -993,21 +993,21 @@ export default function LegendDeskTab({ moduleId, userTier = TIER.GUEST, isAdmin
             {/* Slicing statistics cards */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                <div style={{ fontSize: '10px', color: '#64748b' }}>Sub-order Terbagi</div>
+                <div style={{ fontSize: '12px', color: 'var(--slate-500)' }}>Sub-order Terbagi</div>
                 <div style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', fontFamily: 'var(--font-mono)' }}>24 Potongan</div>
-                <div style={{ fontSize: '9px', color: '#94a3b8' }}>Rata-rata $4,166 per fill</div>
+                <div style={{ fontSize: '12px', color: '#94a3b8' }}>Rata-rata $4,166 per fill</div>
               </div>
               <div style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                <div style={{ fontSize: '10px', color: 'var(--accent-mint)' }}>Penghematan Slippage</div>
+                <div style={{ fontSize: '12px', color: 'var(--accent-mint)' }}>Penghematan Slippage</div>
                 <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--accent-mint)', fontFamily: 'var(--font-mono)' }}>+$240.50</div>
-                <div style={{ fontSize: '9px', color: '#94a3b8' }}>Dibandingkan market dump biasa</div>
+                <div style={{ fontSize: '12px', color: '#94a3b8' }}>Dibandingkan market dump biasa</div>
               </div>
             </div>
 
             {/* Algorithmic safety note */}
             <div style={{
-              fontSize: '10.5px',
-              color: '#64748b',
+              fontSize: '12px',
+              color: 'var(--slate-500)',
               lineHeight: 1.6,
               background: 'rgba(0, 0, 0, 0.25)',
               padding: '10px 12px',

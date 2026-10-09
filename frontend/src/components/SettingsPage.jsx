@@ -63,14 +63,14 @@ export default function SettingsPage({ account = {} }) {
             <div style={{ fontSize: '15px', fontWeight: 900, color: '#f8fafc', letterSpacing: '-0.01em' }}>
               PENGATURAN TERMINAL & SUARA
             </div>
-            <div style={{ fontSize: '10px', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ fontSize: '12px', color: 'var(--slate-500)', fontFamily: 'var(--font-mono)' }}>
               Konfigurasi personalisasi, audio chime sinyal & preferensi bahasa
             </div>
           </div>
         </div>
         {account?.email && (
           <span style={{
-            fontSize: '11px',
+            fontSize: '12px',
             fontFamily: 'var(--font-mono)',
             color: 'var(--accent-sky)',
             background: 'rgba(56, 189, 248, 0.1)',
@@ -103,26 +103,26 @@ export default function SettingsPage({ account = {} }) {
               </span>
             </div>
             {/* Toggle switch */}
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
               <input
                 type="checkbox"
                 checked={audioEnabled}
                 onChange={(e) => handleToggleAudio(e.target.checked)}
                 style={{ cursor: 'pointer' }}
               />
-              <span style={{ color: audioEnabled ? 'var(--accent-mint)' : '#64748b', fontWeight: 700 }}>
+              <span style={{ color: audioEnabled ? 'var(--accent-mint)' : 'var(--slate-500)', fontWeight: 700 }}>
                 {audioEnabled ? 'AKTIF' : 'SENYAP'}
               </span>
             </label>
           </div>
 
-          <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8', lineHeight: 1.5 }}>
+          <p style={{ margin: 0, fontSize: '12px', color: '#94a3b8', lineHeight: 1.5 }}>
             Mainkan nada lonceng akustik seketika saat ada sinyal kuantitatif baru, breakout, atau eksekusi order di layar.
           </p>
 
           {/* Chime Preset Picker */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '10.5px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>
+            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--slate-500)', textTransform: 'uppercase' }}>
               Pilihan Nada Suara:
             </span>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px' }}>
@@ -150,10 +150,10 @@ export default function SettingsPage({ account = {} }) {
                       transition: 'all 0.15s ease'
                     }}
                   >
-                    <span style={{ fontSize: '11px', fontWeight: 800, color: active ? 'var(--accent-sky)' : '#cbd5e1' }}>
+                    <span style={{ fontSize: '12px', fontWeight: 800, color: active ? 'var(--accent-sky)' : '#cbd5e1' }}>
                       {c.label}
                     </span>
-                    <span style={{ fontSize: '9px', color: '#64748b' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--slate-500)' }}>
                       {c.desc}
                     </span>
                   </button>
@@ -165,7 +165,7 @@ export default function SettingsPage({ account = {} }) {
           {/* Volume Control & Test Button */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', background: 'rgba(255, 255, 255, 0.02)', padding: '8px 12px', borderRadius: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
-              <span style={{ fontSize: '11px', color: '#64748b' }}>Volume:</span>
+              <span style={{ fontSize: '12px', color: 'var(--slate-500)' }}>Volume:</span>
               <input
                 type="range"
                 min="0.1"
@@ -175,7 +175,7 @@ export default function SettingsPage({ account = {} }) {
                 onChange={(e) => handleChangeVolume(e.target.value)}
                 style={{ flex: 1, cursor: 'pointer' }}
               />
-              <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)', color: '#94a3b8', width: '28px' }}>
+              <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: '#94a3b8', width: '28px' }}>
                 {Math.round(volume * 100)}%
               </span>
             </div>
@@ -186,7 +186,7 @@ export default function SettingsPage({ account = {} }) {
                 background: 'rgba(16, 185, 129, 0.15)',
                 border: '1px solid rgba(16, 185, 129, 0.35)',
                 color: 'var(--accent-mint)',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: 800,
                 padding: '5px 12px',
                 borderRadius: '6px',
@@ -199,8 +199,8 @@ export default function SettingsPage({ account = {} }) {
 
           {/* Penjelasan Transparan Akses Suara */}
           <div style={{
-            fontSize: '10px',
-            color: '#64748b',
+            fontSize: '12px',
+            color: 'var(--slate-500)',
             background: 'rgba(15, 23, 42, 0.6)',
             padding: '8px 10px',
             borderRadius: '6px',
@@ -230,7 +230,7 @@ export default function SettingsPage({ account = {} }) {
             </span>
           </div>
 
-          <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8' }}>
+          <p style={{ margin: 0, fontSize: '12px', color: '#94a3b8' }}>
             Pilih bahasa utama untuk navigasi antarmuka dan laporan.
           </p>
 
@@ -250,8 +250,8 @@ export default function SettingsPage({ account = {} }) {
                     borderRadius: '8px',
                     border: active ? '1px solid var(--accent-sky)' : '1px solid rgba(255, 255, 255, 0.06)',
                     background: active ? 'rgba(56, 189, 248, 0.12)' : 'rgba(255, 255, 255, 0.02)',
-                    color: active ? '#ffffff' : '#94a3b8',
-                    fontSize: '11.5px',
+                    color: active ? 'var(--text-inverse)' : '#94a3b8',
+                    fontSize: '12px',
                     fontWeight: active ? 800 : 600,
                     cursor: 'pointer',
                     textAlign: 'left'
@@ -259,7 +259,7 @@ export default function SettingsPage({ account = {} }) {
                 >
                   <span style={{ fontSize: '14px' }}>{lang.flag}</span>
                   <span style={{ flex: 1 }}>{lang.label}</span>
-                  {active && <span style={{ color: 'var(--accent-sky)', fontSize: '11px' }}>✓</span>}
+                  {active && <span style={{ color: 'var(--accent-sky)', fontSize: '12px' }}>✓</span>}
                 </button>
               );
             })}
@@ -273,9 +273,9 @@ export default function SettingsPage({ account = {} }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            fontSize: '11px'
+            fontSize: '12px'
           }}>
-            <span style={{ color: '#64748b' }}>Tema Antarmuka:</span>
+            <span style={{ color: 'var(--slate-500)' }}>Tema Antarmuka:</span>
             <span style={{
               color: 'var(--accent-mint)',
               fontFamily: 'var(--font-mono)',

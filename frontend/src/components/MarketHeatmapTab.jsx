@@ -56,11 +56,11 @@ const IDX_SECTORS = [
 
 function getChangeColor(pct) {
   if (pct >= 4) return '#059669';
-  if (pct >= 1.5) return '#10b981';
+  if (pct >= 1.5) return 'var(--accent-emerald)';
   if (pct >= 0) return '#047857';
   if (pct > -1.5) return '#b91c1c';
   if (pct > -4) return '#dc2626';
-  return '#ef4444';
+  return 'var(--accent-red)';
 }
 
 function TradingViewCryptoHeatmap() {
@@ -229,7 +229,7 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
             <div style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', letterSpacing: '-0.01em' }}>
               MARKET HEATMAP INTERAKTIF
             </div>
-            <div style={{ fontSize: '10px', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ fontSize: '12px', color: 'var(--slate-500)', fontFamily: 'var(--font-mono)' }}>
               Pemetaan visual bobot kapitalisasi pasar & perubahan harga real-time
             </div>
           </div>
@@ -249,7 +249,7 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
               onClick={() => setActiveMarket(tab.id)}
               style={{
                 padding: '6px 14px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: activeMarket === tab.id ? 800 : 600,
                 background: activeMarket === tab.id ? 'var(--accent-sky)' : 'transparent',
                 color: activeMarket === tab.id ? '#000000' : '#94a3b8',
@@ -286,13 +286,13 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
             background: 'rgba(255, 255, 255, 0.02)',
             borderRadius: '8px',
             border: '1px solid rgba(255, 255, 255, 0.05)',
-            fontSize: '11px',
+            fontSize: '12px',
             fontFamily: 'var(--font-mono)'
           }}>
             <span style={{ color: '#94a3b8' }}>📊 24 Emiten Unggulan</span>
             <span style={{ color: 'var(--accent-mint)' }}>▲ {idxStats.gainers} Naik</span>
             <span style={{ color: '#f87171' }}>▼ {idxStats.losers} Turun</span>
-            <span style={{ color: Number(idxStats.avg) >= 0 ? 'var(--accent-emerald)' : '#ef4444', fontWeight: 800 }}>
+            <span style={{ color: Number(idxStats.avg) >= 0 ? 'var(--accent-emerald)' : 'var(--accent-red)', fontWeight: 800 }}>
               Rata-rata: {Number(idxStats.avg) >= 0 ? '+' : ''}{idxStats.avg}%
             </span>
           </div>
@@ -317,7 +317,7 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
                 }}
               >
                 <div style={{
-                  fontSize: '11.5px',
+                  fontSize: '12px',
                   fontWeight: 800,
                   color: 'var(--accent-sky)',
                   fontFamily: 'var(--font-mono)',
@@ -354,15 +354,15 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <AssetIcon symbol={st.symbol} market="IDX" size={14} />
-                          <span style={{ fontSize: '12.5px', fontWeight: 900, color: '#ffffff', fontFamily: 'var(--font-mono)' }}>
+                          <span style={{ fontSize: '12.5px', fontWeight: 900, color: 'var(--text-inverse)', fontFamily: 'var(--font-mono)' }}>
                             {st.symbol}
                           </span>
                         </div>
-                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#ffffff', fontFamily: 'var(--font-mono)' }}>
+                        <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-inverse)', fontFamily: 'var(--font-mono)' }}>
                           {chg >= 0 ? '+' : ''}{chg.toFixed(2)}%
                         </span>
                         {px && (
-                          <span style={{ fontSize: '9px', color: 'rgba(255,255,255,0.85)', fontFamily: 'var(--font-mono)' }}>
+                          <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.85)', fontFamily: 'var(--font-mono)' }}>
                             Rp {Math.round(px).toLocaleString('id-ID')}
                           </span>
                         )}

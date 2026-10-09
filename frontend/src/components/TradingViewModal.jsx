@@ -193,7 +193,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
                 border: 'none',
                 padding: '3px 9px',
                 borderRadius: '4px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: 800,
                 cursor: 'pointer',
                 marginLeft: '6px'
@@ -222,10 +222,10 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
                   onClick={() => setChartInterval(tf.val)}
                   style={{
                     background: chartInterval === tf.val ? 'var(--accent-blue)' : 'transparent',
-                    color: chartInterval === tf.val ? '#ffffff' : '#94a3b8',
+                    color: chartInterval === tf.val ? 'var(--text-inverse)' : '#94a3b8',
                     border: 'none',
                     padding: '2px 7px',
-                    fontSize: '10px',
+                    fontSize: '12px',
                     fontWeight: '700',
                     borderRadius: '3px',
                     cursor: 'pointer'
@@ -236,7 +236,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
                 </button>
               ))}
               {!isCurrentCrypto && (
-                <span style={{ fontSize: '9px', color: '#8e8e93', padding: '0 4px', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ fontSize: '12px', color: '#8e8e93', padding: '0 4px', fontFamily: 'var(--font-mono)' }}>
                   IDX EOD Feed
                 </span>
               )}
@@ -245,7 +245,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
             <button
               onClick={() => setRefreshKey(k => k + 1)}
               className="telemetry-btn"
-              style={{ fontSize: '10px', padding: '3px 8px', background: 'rgba(255,255,255,0.05)', color: 'var(--accent-mint)', border: '1px solid rgba(255,255,255,0.1)' }}
+              style={{ fontSize: '12px', padding: '3px 8px', background: 'rgba(255,255,255,0.05)', color: 'var(--accent-mint)', border: '1px solid rgba(255,255,255,0.1)' }}
               title="Reload Chart Data"
             >
               🔄 REFRESH
@@ -257,7 +257,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
               <button
                 onClick={() => onOpenLotCalc('', '', isCurrentCrypto ? 'CRYPTO' : 'IDX', currentSymbol)}
                 className="telemetry-btn"
-                style={{ fontSize: '10px', padding: '3px 8px', background: 'rgba(255,180,84,0.12)', color: 'var(--accent-gold)', border: '1px solid rgba(255,180,84,0.3)' }}
+                style={{ fontSize: '12px', padding: '3px 8px', background: 'rgba(255,180,84,0.12)', color: 'var(--accent-gold)', border: '1px solid rgba(255,180,84,0.3)' }}
                 title="Buka kalkulator ukuran lot & manajemen risiko"
               >
                 💰 Sizing / Lot
@@ -267,7 +267,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
               <button
                 onClick={() => onOpenExecution({ symbol: currentSymbol, market: isCurrentCrypto ? 'CRYPTO' : 'IDX' })}
                 className="telemetry-btn"
-                style={{ fontSize: '10px', padding: '3px 8px', background: 'rgba(59,130,246,0.15)', color: 'var(--accent-blue)', border: '1px solid rgba(59,130,246,0.3)' }}
+                style={{ fontSize: '12px', padding: '3px 8px', background: 'rgba(59,130,246,0.15)', color: 'var(--accent-blue)', border: '1px solid rgba(59,130,246,0.3)' }}
                 title="Buka tiket eksekusi order paper"
               >
                 ⚡ Tiket Order
@@ -282,7 +282,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
                 color: '#f87171',
                 padding: '4px 10px',
                 borderRadius: '6px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: 800,
                 cursor: 'pointer'
               }}
@@ -295,7 +295,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
         {/* Quick Ticker Switcher */}
         <div style={{ padding: '8px 14px', background: 'rgba(11, 16, 26, 0.7)', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-            <span style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8' }}>CARI TICKER:</span>
+            <span style={{ fontSize: '12px', fontWeight: '700', color: '#94a3b8' }}>CARI TICKER:</span>
             <input 
               type="text" 
               placeholder="e.g. BTC, ETH, SOL, BBCA, NVDA..."
@@ -331,7 +331,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
                   border: '1px solid rgba(255, 255, 255, 0.08)',
                   padding: '2px 8px',
                   borderRadius: '4px',
-                  fontSize: '10px',
+                  fontSize: '12px',
                   fontWeight: '700',
                   fontFamily: 'var(--font-mono)',
                   cursor: 'pointer'
@@ -353,7 +353,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: '12px',
-            fontSize: '11.5px',
+            fontSize: '12px',
             flexWrap: 'wrap'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
@@ -363,7 +363,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
                 fontWeight: '900',
                 padding: '2px 7px',
                 borderRadius: '4px',
-                fontSize: '10px',
+                fontSize: '12px',
                 letterSpacing: '0.04em'
               }}>
                 🎯 SETUP AI: {matchedPlan.direction} {matchedPlan.clean_ticker || cleanSym}
@@ -386,7 +386,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
                 R:R {matchedPlan.risk_reward_ratio || '1:2.0'}x
               </span>
               {matchedPlan.technical_signal && (
-                <span style={{ color: '#A7B0BD', fontSize: '10.5px' }}>
+                <span style={{ color: '#A7B0BD', fontSize: '12px' }}>
                   ({matchedPlan.technical_signal})
                 </span>
               )}
@@ -399,11 +399,11 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
                   onClick={() => onOpenLotCalc(matchedPlan.entry_price, matchedPlan.stop_loss, matchedPlan.market || (isCurrentCrypto ? 'CRYPTO' : 'IDX'), matchedPlan.clean_ticker || cleanSym)}
                   style={{
                     background: 'linear-gradient(135deg, #2457D6, #1d46b3)',
-                    color: '#ffffff',
+                    color: 'var(--text-inverse)',
                     border: 'none',
                     padding: '5px 12px',
                     borderRadius: '6px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: '800',
                     cursor: 'pointer',
                     display: 'inline-flex',
@@ -428,12 +428,12 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
                     takeProfit: matchedPlan.target_1
                   })}
                   style={{
-                    background: 'linear-gradient(135deg, #3BC78A, #10b981)',
+                    background: 'linear-gradient(135deg, #3BC78A, var(--accent-emerald))',
                     color: '#0B0E14',
                     border: 'none',
                     padding: '5px 12px',
                     borderRadius: '6px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: '900',
                     cursor: 'pointer',
                     display: 'inline-flex',
@@ -456,7 +456,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            fontSize: '11px',
+            fontSize: '12px',
             color: '#A7B0BD'
           }}>
             <span>
@@ -473,7 +473,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
                     border: '1px solid rgba(243, 201, 105, 0.3)',
                     padding: '3px 8px',
                     borderRadius: '4px',
-                    fontSize: '10.5px',
+                    fontSize: '12px',
                     fontWeight: '700',
                     cursor: 'pointer'
                   }}

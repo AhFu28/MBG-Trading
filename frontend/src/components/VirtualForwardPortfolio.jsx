@@ -6,9 +6,9 @@ import TradervueCalendarAndEquity from './TradervueCalendarAndEquity.jsx';
 const JOURNAL_STORAGE_KEY = 'mbg_user_trade_journal_v1';
 
 const EMOTIONAL_STATES = [
-  { id: 'ZEN', label: '🧘 Disiplin Zen (Sesuai Rencana)', color: 'var(--accent-green, #10b981)' },
-  { id: 'FOMO', label: '⚡ FOMO (Mengejar Lilin Hijau)', color: 'var(--accent-orange, #f59e0b)' },
-  { id: 'FEAR', label: '😰 Takut / Cutloss Dini', color: 'var(--accent-red, #ef4444)' },
+  { id: 'ZEN', label: '🧘 Disiplin Zen (Sesuai Rencana)', color: 'var(--accent-green, var(--accent-emerald))' },
+  { id: 'FOMO', label: '⚡ FOMO (Mengejar Lilin Hijau)', color: 'var(--accent-orange, var(--accent-gold))' },
+  { id: 'FEAR', label: '😰 Takut / Cutloss Dini', color: 'var(--accent-red, var(--accent-red))' },
   { id: 'GREED', label: '🤑 Serakah (Tidak Pasang TP)', color: 'var(--accent-purple, #a855f7)' },
   { id: 'PATIENT', label: '⏳ Sabar Menunggu Konfirmasi', color: 'var(--accent-cyan, #06b6d4)' }
 ];
@@ -339,7 +339,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
   const winRate = (wins + losses) > 0 ? (wins / (wins + losses)) * 100 : 0;
   const avgRR = rrCount > 0 ? (totalRR / rrCount) : 0;
 
-  const getPnLColor = (val) => val > 0 ? 'var(--accent-green, #10b981)' : val < 0 ? 'var(--accent-red, #ef4444)' : 'var(--text-primary)';
+  const getPnLColor = (val) => val > 0 ? 'var(--accent-green, var(--accent-emerald))' : val < 0 ? 'var(--accent-red, var(--accent-red))' : 'var(--text-primary)';
 
   return (
     <div style={{ padding: '20px', backgroundColor: 'var(--bg-main, #0a0a0a)', color: 'var(--text-primary, #e0e0e0)', fontFamily: 'inherit' }}>
@@ -347,7 +347,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
       {/* HUD Bar */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '20px' }}>
         <div style={{ backgroundColor: 'var(--bg-panel, #1a1a1a)', padding: '15px', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted, #888)', textTransform: 'uppercase', fontWeight: '800' }}>Modal Virtual (IDR)</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted, #888)', textTransform: 'uppercase', fontWeight: '800' }}>Modal Virtual (IDR)</div>
           <div style={{ fontSize: '19px', fontWeight: '900', marginTop: '4px' }}>{formatIDR(currentEquity)}</div>
           <div style={{ color: getPnLColor(totalPnLPercent), fontSize: '12px', fontWeight: '700', marginTop: '2px' }}>
             {totalPnLPercent > 0 ? '+' : ''}{totalPnLPercent.toFixed(2)}% ROI
@@ -355,7 +355,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
         </div>
         
         <div style={{ backgroundColor: 'var(--bg-panel, #1a1a1a)', padding: '15px', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted, #888)', textTransform: 'uppercase', fontWeight: '800' }}>Tingkat Menang (Win Rate)</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted, #888)', textTransform: 'uppercase', fontWeight: '800' }}>Tingkat Menang (Win Rate)</div>
           <div style={{ fontSize: '19px', fontWeight: '900', marginTop: '4px', color: winRate >= 50 ? 'var(--accent-green)' : 'var(--text-primary)' }}>
             {winRate.toFixed(1)}%
           </div>
@@ -363,13 +363,13 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
         </div>
         
         <div style={{ backgroundColor: 'var(--bg-panel, #1a1a1a)', padding: '15px', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted, #888)', textTransform: 'uppercase', fontWeight: '800' }}>Posisi Terbuka</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted, #888)', textTransform: 'uppercase', fontWeight: '800' }}>Posisi Terbuka</div>
           <div style={{ fontSize: '19px', fontWeight: '900', marginTop: '4px' }}>{activePositions.length}</div>
           <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>Sedang Berjalan</div>
         </div>
         
         <div style={{ backgroundColor: 'var(--bg-panel, #1a1a1a)', padding: '15px', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted, #888)', textTransform: 'uppercase', fontWeight: '800' }}>Rasio Risk/Reward Rata-rata</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted, #888)', textTransform: 'uppercase', fontWeight: '800' }}>Rasio Risk/Reward Rata-rata</div>
           <div style={{ fontSize: '19px', fontWeight: '900', marginTop: '4px' }}>1 : {avgRR.toFixed(2)}</div>
           <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>Disiplin Geometri</div>
         </div>
@@ -406,14 +406,14 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
             type="button"
             onClick={handleAutoPickAI}
             style={{ 
-              backgroundColor: 'var(--accent-orange, #f59e0b)', 
+              backgroundColor: 'var(--accent-orange, var(--accent-gold))', 
               color: '#000', 
               border: 'none', 
               padding: '7px 12px', 
               cursor: 'pointer', 
               borderRadius: '5px',
               fontWeight: '800',
-              fontSize: '11px',
+              fontSize: '12px',
               display: 'flex',
               alignItems: 'center',
               gap: '4px'
@@ -425,7 +425,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
           <button 
             type="button"
             onClick={() => setShowOrderForm(!showOrderForm)}
-            style={{ backgroundColor: 'rgba(255,255,255,0.08)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', padding: '7px 12px', cursor: 'pointer', borderRadius: '5px', fontSize: '11px', fontWeight: '700' }}
+            style={{ backgroundColor: 'rgba(255,255,255,0.08)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', padding: '7px 12px', cursor: 'pointer', borderRadius: '5px', fontSize: '12px', fontWeight: '700' }}
           >
             {showOrderForm ? 'Tutup Formulir' : '+ Uji Beli Virtual'}
           </button>
@@ -437,7 +437,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
                 refreshBroker();
               }
             }}
-            style={{ backgroundColor: 'transparent', color: 'var(--text-muted)', border: '1px solid rgba(255,255,255,0.1)', padding: '7px 10px', cursor: 'pointer', borderRadius: '5px', fontSize: '11px' }}
+            style={{ backgroundColor: 'transparent', color: 'var(--text-muted)', border: '1px solid rgba(255,255,255,0.1)', padding: '7px 10px', cursor: 'pointer', borderRadius: '5px', fontSize: '12px' }}
             title="Reset portofolio simulasi ke Rp 100 Juta"
           >
             🔄 Reset Saldo
@@ -451,33 +451,33 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
           <h4 style={{ margin: '0 0 14px 0', fontSize: '14px', fontWeight: '800' }}>Formulir Eksekusi Paper Order (Simulasi Disiplin)</h4>
           <form onSubmit={handleOrderSubmit} style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700' }}>Simbol Ticker</label>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700' }}>Simbol Ticker</label>
               <input value={orderForm.ticker} onChange={e => setOrderForm({...orderForm, ticker: e.target.value})} style={{ backgroundColor: '#000', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 10px', borderRadius: '4px', fontSize: '13px' }} placeholder="Contoh: BBCA" required />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700' }}>Pasar</label>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700' }}>Pasar</label>
               <select value={orderForm.market} onChange={e => setOrderForm({...orderForm, market: e.target.value})} style={{ backgroundColor: '#000', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 10px', borderRadius: '4px', fontSize: '13px' }}>
                 <option value="IDX">IDX (Saham BEI)</option>
                 <option value="CRYPTO">Crypto (Binance)</option>
               </select>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700' }}>Modal Alokasi (Rp)</label>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700' }}>Modal Alokasi (Rp)</label>
               <input type="number" value={orderForm.allocation} onChange={e => setOrderForm({...orderForm, allocation: e.target.value})} style={{ backgroundColor: '#000', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 10px', borderRadius: '4px', fontSize: '13px' }} placeholder="10000000" required />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700' }}>Harga Masuk (Entry)</label>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700' }}>Harga Masuk (Entry)</label>
               <input type="number" value={orderForm.entryPrice} onChange={e => setOrderForm({...orderForm, entryPrice: e.target.value})} style={{ backgroundColor: '#000', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 10px', borderRadius: '4px', fontSize: '13px' }} placeholder="8500" required />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700' }}>Stop Loss (SL Wajib)</label>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700' }}>Stop Loss (SL Wajib)</label>
               <input type="number" value={orderForm.sl} onChange={e => setOrderForm({...orderForm, sl: e.target.value})} style={{ backgroundColor: '#000', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 10px', borderRadius: '4px', fontSize: '13px' }} placeholder="8100" />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700' }}>Target Profit (TP1)</label>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700' }}>Target Profit (TP1)</label>
               <input type="number" value={orderForm.tp1} onChange={e => setOrderForm({...orderForm, tp1: e.target.value})} style={{ backgroundColor: '#000', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 10px', borderRadius: '4px', fontSize: '13px' }} placeholder="9200" />
             </div>
-            <button type="submit" style={{ backgroundColor: 'var(--accent-green, #10b981)', color: '#000', fontWeight: '800', border: 'none', padding: '9px 18px', cursor: 'pointer', borderRadius: '4px', fontSize: '13px' }}>
+            <button type="submit" style={{ backgroundColor: 'var(--accent-green, var(--accent-emerald))', color: '#000', fontWeight: '800', border: 'none', padding: '9px 18px', cursor: 'pointer', borderRadius: '4px', fontSize: '13px' }}>
               Kirim Order Paper
             </button>
           </form>
@@ -512,14 +512,14 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
                   <tr key={p.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                     <td style={{ padding: '12px 10px', fontWeight: '900', color: '#fff' }}>{p.ticker}</td>
                     <td style={{ padding: '12px 10px', color: 'var(--text-secondary)' }}>
-                      <span style={{ fontSize: '11px', padding: '2px 6px', borderRadius: '3px', background: 'rgba(255,255,255,0.06)' }}>
+                      <span style={{ fontSize: '12px', padding: '2px 6px', borderRadius: '3px', background: 'rgba(255,255,255,0.06)' }}>
                         {p.market} · {p.side}
                       </span>
                     </td>
                     <td style={{ padding: '12px 10px', fontFamily: 'monospace' }}>{p.entryPrice}</td>
                     <td style={{ padding: '12px 10px', fontFamily: 'monospace' }}>{currentPrice}</td>
-                    <td style={{ padding: '12px 10px', color: 'var(--accent-red, #ef4444)', fontFamily: 'monospace' }}>{p.sl || '—'}</td>
-                    <td style={{ padding: '12px 10px', color: 'var(--accent-green, #10b981)', fontFamily: 'monospace' }}>{p.tp1 || '—'}</td>
+                    <td style={{ padding: '12px 10px', color: 'var(--accent-red, var(--accent-red))', fontFamily: 'monospace' }}>{p.sl || '—'}</td>
+                    <td style={{ padding: '12px 10px', color: 'var(--accent-green, var(--accent-emerald))', fontFamily: 'monospace' }}>{p.tp1 || '—'}</td>
                     <td style={{ padding: '12px 10px', color: getPnLColor(pnl), fontWeight: '700', fontFamily: 'monospace' }}>
                       {formatIDR(pnl)} ({pnlPct >= 0 ? '+' : ''}{pnlPct.toFixed(2)}%)
                     </td>
@@ -527,10 +527,10 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
                       <span style={{ 
                         padding: '3px 8px', 
                         borderRadius: '4px', 
-                        fontSize: '11px',
+                        fontSize: '12px',
                         fontWeight: '800',
                         backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                        color: 'var(--accent-green, #10b981)',
+                        color: 'var(--accent-green, var(--accent-emerald))',
                         border: '1px solid rgba(16, 185, 129, 0.3)'
                       }}>
                         {p.status}
@@ -542,7 +542,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
                           <button
                             type="button"
                             onClick={() => onSelectTicker(p.ticker, p.market || 'IDX')}
-                            style={{ backgroundColor: 'rgba(99,102,241,0.2)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '11px', fontWeight: '700' }}
+                            style={{ backgroundColor: 'rgba(99,102,241,0.2)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}
                             title="Buka Chart TradingView"
                           >
                             Chart
@@ -551,7 +551,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
                         <button 
                           type="button"
                           onClick={() => handleClosePosition(p)}
-                          style={{ backgroundColor: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '11px', fontWeight: '700' }}
+                          style={{ backgroundColor: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}
                         >
                           Tutup
                         </button>
@@ -603,7 +603,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
                       <span style={{
                         padding: '3px 8px',
                         borderRadius: '4px',
-                        fontSize: '11px',
+                        fontSize: '12px',
                         fontWeight: '800',
                         background: p.result === 'WIN' ? 'rgba(16,185,129,0.2)' : p.result === 'LOSS' ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.1)',
                         color: p.result === 'WIN' ? 'var(--accent-green)' : p.result === 'LOSS' ? 'var(--accent-red)' : '#fff'
@@ -680,7 +680,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
             <form onSubmit={handleSaveJournal} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
                     SIMBOL TICKER
                   </label>
                   <input
@@ -694,7 +694,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
                     ARAH POSISI
                   </label>
                   <select
@@ -708,7 +708,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
                     HASIL AKHIR
                   </label>
                   <select
@@ -723,7 +723,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
                     KONDISI PSIKOLOGI SAAT EKSEKUSI
                   </label>
                   <select
@@ -739,7 +739,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
                   TESIS TRANSAKSI & ALASAN MASUK (ENTRY THESIS)
                 </label>
                 <textarea
@@ -753,7 +753,7 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
                   EVALUASI & PEMBELAJARAN (LESSON LEARNED)
                 </label>
                 <textarea
@@ -802,19 +802,19 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <span style={{ fontSize: '16px', fontWeight: '900', color: '#fff' }}>{j.symbol}</span>
-                        <span style={{ fontSize: '11px', fontWeight: '800', padding: '2px 7px', borderRadius: '4px', background: j.result === 'WIN' ? 'rgba(16,185,129,0.2)' : j.result === 'LOSS' ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.1)', color: j.result === 'WIN' ? 'var(--accent-green)' : j.result === 'LOSS' ? 'var(--accent-red)' : '#fff' }}>
+                        <span style={{ fontSize: '12px', fontWeight: '800', padding: '2px 7px', borderRadius: '4px', background: j.result === 'WIN' ? 'rgba(16,185,129,0.2)' : j.result === 'LOSS' ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.1)', color: j.result === 'WIN' ? 'var(--accent-green)' : j.result === 'LOSS' ? 'var(--accent-red)' : '#fff' }}>
                           {j.result} ({j.tradeType})
                         </span>
-                        <span style={{ fontSize: '11px', fontWeight: '700', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.06)', color: emo.color }}>
+                        <span style={{ fontSize: '12px', fontWeight: '700', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.06)', color: emo.color }}>
                           {emo.label}
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{new Date(j.date).toLocaleString('id-ID')}</span>
+                        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{new Date(j.date).toLocaleString('id-ID')}</span>
                         <button
                           type="button"
                           onClick={() => handleDeleteJournal(j.id)}
-                          style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '12px' }}
+                          style={{ background: 'none', border: 'none', color: 'var(--accent-red)', cursor: 'pointer', fontSize: '12px' }}
                           title="Hapus jurnal"
                         >
                           ✕
@@ -823,13 +823,13 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
                     </div>
 
                     <div style={{ fontSize: '12.5px', color: '#e2e8f0', lineHeight: 1.5 }}>
-                      <strong style={{ color: 'var(--text-muted)', display: 'block', fontSize: '10.5px', marginBottom: '2px' }}>TESIS MASUK:</strong>
+                      <strong style={{ color: 'var(--text-muted)', display: 'block', fontSize: '12px', marginBottom: '2px' }}>TESIS MASUK:</strong>
                       {j.thesis}
                     </div>
 
                     {j.lessonLearned && (
                       <div style={{ fontSize: '12px', color: '#a5b4fc', background: 'rgba(99,102,241,0.08)', padding: '8px 12px', borderRadius: '6px', borderLeft: '3px solid #6366f1' }}>
-                        <strong style={{ display: 'block', fontSize: '10px', textTransform: 'uppercase', marginBottom: '2px' }}>Pelajaran yang Dipetik:</strong>
+                        <strong style={{ display: 'block', fontSize: '12px', textTransform: 'uppercase', marginBottom: '2px' }}>Pelajaran yang Dipetik:</strong>
                         {j.lessonLearned}
                       </div>
                     )}

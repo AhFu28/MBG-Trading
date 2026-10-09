@@ -799,7 +799,7 @@ export default function HyperliquidProDesk({
               <span>
                 {activeInstrument.coin || cleanSym}-{activeInstrument.market === 'CRYPTO' ? 'USDC' : activeInstrument.market}
               </span>
-              <span style={{ fontSize: '10px', color: '#64748b' }}>▼</span>
+              <span style={{ fontSize: '12px', color: 'var(--slate-500)' }}>▼</span>
             </button>
 
             {/* Spot vs Perp Contract Switch */}
@@ -818,11 +818,11 @@ export default function HyperliquidProDesk({
                 }}
                 style={{
                   background: contractType === 'PERP' ? 'rgba(56, 189, 248, 0.25)' : 'transparent',
-                  color: contractType === 'PERP' ? 'var(--accent-sky)' : '#64748b',
+                  color: contractType === 'PERP' ? 'var(--accent-sky)' : 'var(--slate-500)',
                   border: 'none',
                   padding: '2px 7px',
                   borderRadius: '4px',
-                  fontSize: '10.5px',
+                  fontSize: '12px',
                   fontWeight: 800,
                   cursor: 'pointer'
                 }}
@@ -837,11 +837,11 @@ export default function HyperliquidProDesk({
                 }}
                 style={{
                   background: contractType === 'SPOT' ? 'rgba(16, 185, 129, 0.25)' : 'transparent',
-                  color: contractType === 'SPOT' ? 'var(--accent-mint)' : '#64748b',
+                  color: contractType === 'SPOT' ? 'var(--accent-mint)' : 'var(--slate-500)',
                   border: 'none',
                   padding: '2px 7px',
                   borderRadius: '4px',
-                  fontSize: '10.5px',
+                  fontSize: '12px',
                   fontWeight: 800,
                   cursor: 'pointer'
                 }}
@@ -852,7 +852,7 @@ export default function HyperliquidProDesk({
 
             {contractType === 'PERP' ? (
               <span style={{
-                fontSize: '10px',
+                fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: 800,
                 padding: '2px 6px',
@@ -865,7 +865,7 @@ export default function HyperliquidProDesk({
               </span>
             ) : (
               <span style={{
-                fontSize: '10px',
+                fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: 800,
                 padding: '2px 6px',
@@ -883,7 +883,7 @@ export default function HyperliquidProDesk({
 
           {/* Mark Price */}
           <div>
-            <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>Mark</div>
+            <div style={{ fontSize: '12px', color: 'var(--slate-500)', textTransform: 'uppercase', fontWeight: 700 }}>Mark</div>
             <div style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent-sky)' }}>
               {markPrice === null
                 ? '—'
@@ -893,7 +893,7 @@ export default function HyperliquidProDesk({
 
           {/* Oracle Price */}
           <div>
-            <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>Oracle</div>
+            <div style={{ fontSize: '12px', color: 'var(--slate-500)', textTransform: 'uppercase', fontWeight: 700 }}>Oracle</div>
             <div style={{ fontSize: '13px', fontWeight: 700, fontFamily: 'var(--font-mono)', color: '#94a3b8' }}>
               {oraclePrice === null
                 ? '—'
@@ -903,7 +903,7 @@ export default function HyperliquidProDesk({
 
           {/* 24h Change */}
           <div>
-            <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>24h Change</div>
+            <div style={{ fontSize: '12px', color: 'var(--slate-500)', textTransform: 'uppercase', fontWeight: 700 }}>24h Change</div>
             <div style={{
               fontSize: '13px',
               fontWeight: 800,
@@ -916,7 +916,7 @@ export default function HyperliquidProDesk({
 
           {/* 24h Volume */}
           <div>
-            <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>24h Volume</div>
+            <div style={{ fontSize: '12px', color: 'var(--slate-500)', textTransform: 'uppercase', fontWeight: 700 }}>24h Volume</div>
             <div style={{ fontSize: '13px', fontWeight: 700, fontFamily: 'var(--font-mono)', color: '#cbd5e1' }}>
               {formatUsdCompact(assetCtx?.volume24h)}
             </div>
@@ -924,7 +924,7 @@ export default function HyperliquidProDesk({
 
           {/* Open Interest */}
           <div>
-            <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>Open Interest</div>
+            <div style={{ fontSize: '12px', color: 'var(--slate-500)', textTransform: 'uppercase', fontWeight: 700 }}>Open Interest</div>
             <div style={{ fontSize: '13px', fontWeight: 700, fontFamily: 'var(--font-mono)', color: '#cbd5e1' }}>
               {formatUsdCompact(assetCtx?.openInterestUsd)}
             </div>
@@ -932,10 +932,10 @@ export default function HyperliquidProDesk({
 
           {/* Funding / Countdown */}
           <div>
-            <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>Funding / Countdown</div>
+            <div style={{ fontSize: '12px', color: 'var(--slate-500)', textTransform: 'uppercase', fontWeight: 700 }}>Funding / Countdown</div>
             <div style={{ fontSize: '13px', fontWeight: 700, fontFamily: 'var(--font-mono)', color: fundingRate === null ? '#94a3b8' : fundingRate >= 0 ? 'var(--accent-emerald)' : '#f87171' }}>
               {fundingRate === null ? '—' : `${(fundingRate * 100).toFixed(4)}%`}
-              {fundingCountdown && <span style={{ color: '#94a3b8', fontSize: '11px' }}> {fundingCountdown}</span>}
+              {fundingCountdown && <span style={{ color: '#94a3b8', fontSize: '12px' }}> {fundingCountdown}</span>}
             </div>
           </div>
         </div>
@@ -947,7 +947,7 @@ export default function HyperliquidProDesk({
             border: '1px solid rgba(16, 185, 129, 0.3)',
             padding: '3px 10px',
             borderRadius: '6px',
-            fontSize: '11px',
+            fontSize: '12px',
             fontFamily: 'var(--font-mono)',
             fontWeight: 700,
             color: 'var(--accent-mint)'
@@ -964,7 +964,7 @@ export default function HyperliquidProDesk({
                 color: '#94a3b8',
                 padding: '4px 10px',
                 borderRadius: '6px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: 700,
                 cursor: 'pointer'
               }}
@@ -983,7 +983,7 @@ export default function HyperliquidProDesk({
                 color: '#f87171',
                 padding: '4px 10px',
                 borderRadius: '6px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: 800,
                 cursor: 'pointer'
               }}
@@ -1000,9 +1000,9 @@ export default function HyperliquidProDesk({
         <div style={{
           padding: '6px 16px',
           background: actionNotice.type === 'success' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-          borderBottom: '1px solid ' + (actionNotice.type === 'success' ? 'var(--accent-emerald)' : '#ef4444'),
+          borderBottom: '1px solid ' + (actionNotice.type === 'success' ? 'var(--accent-emerald)' : 'var(--accent-red)'),
           color: actionNotice.type === 'success' ? 'var(--accent-mint)' : '#f87171',
-          fontSize: '11px',
+          fontSize: '12px',
           fontWeight: 700,
           display: 'flex',
           justifyContent: 'space-between',
@@ -1043,8 +1043,8 @@ export default function HyperliquidProDesk({
                   style={{
                     background: chartSubTab === 'chart' ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
                     border: 'none',
-                    color: chartSubTab === 'chart' ? '#fff' : '#64748b',
-                    fontSize: '11.5px',
+                    color: chartSubTab === 'chart' ? '#fff' : 'var(--slate-500)',
+                    fontSize: '12px',
                     fontWeight: 700,
                     padding: '3px 8px',
                     borderRadius: '4px',
@@ -1058,8 +1058,8 @@ export default function HyperliquidProDesk({
                   style={{
                     background: chartSubTab === 'funding' ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
                     border: 'none',
-                    color: chartSubTab === 'funding' ? '#fff' : '#64748b',
-                    fontSize: '11.5px',
+                    color: chartSubTab === 'funding' ? '#fff' : 'var(--slate-500)',
+                    fontSize: '12px',
                     fontWeight: 700,
                     padding: '3px 8px',
                     borderRadius: '4px',
@@ -1086,9 +1086,9 @@ export default function HyperliquidProDesk({
                     onClick={() => setTimeframe(tf.id)}
                     style={{
                       background: timeframe === tf.id ? 'rgba(56, 189, 248, 0.15)' : 'transparent',
-                      color: timeframe === tf.id ? 'var(--accent-sky)' : '#64748b',
+                      color: timeframe === tf.id ? 'var(--accent-sky)' : 'var(--slate-500)',
                       border: 'none',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       fontFamily: 'var(--font-mono)',
                       fontWeight: 700,
                       padding: '2px 6px',
@@ -1117,7 +1117,7 @@ export default function HyperliquidProDesk({
                   background: showOrderBook ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.05)',
                   border: showOrderBook ? '1px solid rgba(56, 189, 248, 0.35)' : '1px solid rgba(255, 255, 255, 0.1)',
                   color: showOrderBook ? 'var(--accent-sky)' : '#94a3b8',
-                  fontSize: '10.5px',
+                  fontSize: '12px',
                   fontWeight: 700,
                   padding: '3px 8px',
                   borderRadius: '4px',
@@ -1129,7 +1129,7 @@ export default function HyperliquidProDesk({
                 title={showOrderBook ? "Sembunyikan Order Book untuk memperluas chart" : "Buka Order Book"}
               >
                 <span>📖 Order Book</span>
-                <span style={{ fontSize: '9px' }}>{showOrderBook ? '◀' : '▶'}</span>
+                <span style={{ fontSize: '12px' }}>{showOrderBook ? '◀' : '▶'}</span>
               </button>
 
               {/* Buka Akun Pribadi di TradingView.com */}
@@ -1142,7 +1142,7 @@ export default function HyperliquidProDesk({
                   alignItems: 'center',
                   gap: '4px',
                   textDecoration: 'none',
-                  fontSize: '10.5px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   fontWeight: 700,
                   color: '#94a3b8',
@@ -1154,7 +1154,7 @@ export default function HyperliquidProDesk({
                 title="Buka simbol ini di TradingView.com dengan akun pribadi Anda untuk indikator kustom dan skrip Pine"
               >
                 <span>TradingView Akun Pribadi</span>
-                <span style={{ fontSize: '10px' }}>↗</span>
+                <span style={{ fontSize: '12px' }}>↗</span>
               </a>
             </div>
           </div>
@@ -1185,7 +1185,7 @@ export default function HyperliquidProDesk({
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: '0 12px',
-            fontSize: '10.5px',
+            fontSize: '12px',
             fontFamily: 'var(--font-mono)',
             flexShrink: 0
           }}>
@@ -1202,7 +1202,7 @@ export default function HyperliquidProDesk({
               </span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
-              <span style={{ color: '#64748b' }}>
+              <span style={{ color: 'var(--slate-500)' }}>
                 Trend: <strong style={{ color: (change24hPct || 0) >= 0 ? 'var(--accent-emerald)' : 'var(--accent-rust)' }}>{(change24hPct || 0) >= 0 ? 'BULLISH' : 'PULLBACK'}</strong>
               </span>
             </div>
@@ -1231,14 +1231,14 @@ export default function HyperliquidProDesk({
             justifyContent: 'space-between'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '11.5px', fontWeight: 800, color: '#f8fafc' }}>
+              <span style={{ fontSize: '12px', fontWeight: 800, color: '#f8fafc' }}>
                 Order Book
               </span>
               <span style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '4px',
-                fontSize: '9px',
+                fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: 700,
                 color: isLiveStreaming ? 'var(--accent-emerald)' : 'var(--accent-sky)',
@@ -1266,7 +1266,7 @@ export default function HyperliquidProDesk({
                   background: 'rgba(255, 255, 255, 0.05)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   color: '#94a3b8',
-                  fontSize: '10px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   borderRadius: '3px',
                   padding: '1px 4px',
@@ -1286,8 +1286,8 @@ export default function HyperliquidProDesk({
             display: 'grid',
             gridTemplateColumns: '1.2fr 1fr 1fr',
             padding: '5px 10px',
-            fontSize: '9.5px',
-            color: '#64748b',
+            fontSize: '12px',
+            color: 'var(--slate-500)',
             fontWeight: 700,
             textTransform: 'uppercase',
             borderBottom: '1px solid rgba(255, 255, 255, 0.04)'
@@ -1305,7 +1305,7 @@ export default function HyperliquidProDesk({
               alignItems: 'center',
               justifyContent: 'center',
               gap: '10px',
-              color: '#64748b',
+              color: 'var(--slate-500)',
               padding: '20px',
               textAlign: 'center'
             }}>
@@ -1325,15 +1325,15 @@ export default function HyperliquidProDesk({
                     borderTopColor: 'var(--accent-sky)',
                     animation: 'cmcSpin 0.8s linear infinite'
                   }} />
-                  <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)' }}>Menghubungkan L2 stream...</span>
+                  <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)' }}>Menghubungkan L2 stream...</span>
                 </>
               ) : (
                 <>
                   <span style={{ fontSize: '18px' }}>🚫</span>
-                  <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)', color: '#94a3b8' }}>
+                  <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: '#94a3b8' }}>
                     Tidak ada feed kedalaman L2
                   </span>
-                  <span style={{ fontSize: '9.5px', color: '#64748b', lineHeight: 1.6, maxWidth: '180px' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--slate-500)', lineHeight: 1.6, maxWidth: '180px' }}>
                     Buku order hanya tersedia untuk perpetual Hyperliquid. Instrumen ini tidak menyediakan data depth.
                   </span>
                 </>
@@ -1356,7 +1356,7 @@ export default function HyperliquidProDesk({
                         display: 'grid',
                         gridTemplateColumns: '1.2fr 1fr 1fr',
                         padding: '2.5px 10px',
-                        fontSize: '11px',
+                        fontSize: '12px',
                         fontFamily: 'var(--font-mono)',
                         position: 'relative',
                         cursor: 'pointer',
@@ -1373,13 +1373,13 @@ export default function HyperliquidProDesk({
                         background: 'rgba(239, 68, 68, 0.15)',
                         pointerEvents: 'none'
                       }} />
-                      <span style={{ color: '#ef4444', fontWeight: 700, position: 'relative', zIndex: 1 }}>
+                      <span style={{ color: 'var(--accent-red)', fontWeight: 700, position: 'relative', zIndex: 1 }}>
                         {formatBookPrice(ask.px)}
                       </span>
                       <span style={{ textAlign: 'right', color: '#cbd5e1', position: 'relative', zIndex: 1 }}>
                         {ask.sz.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: ask.sz < 0.01 ? 4 : 2 })}
                       </span>
-                      <span style={{ textAlign: 'right', color: '#64748b', position: 'relative', zIndex: 1 }}>
+                      <span style={{ textAlign: 'right', color: 'var(--slate-500)', position: 'relative', zIndex: 1 }}>
                         {ask.cum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </div>
@@ -1396,11 +1396,11 @@ export default function HyperliquidProDesk({
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                fontSize: '10px',
+                fontSize: '12px',
                 fontFamily: 'var(--font-mono)'
               }}>
-                <span style={{ color: '#64748b' }}>Spread {spreadVal}</span>
-                <span style={{ color: '#fbbf24', fontWeight: 700 }}>{spreadPct}</span>
+                <span style={{ color: 'var(--slate-500)' }}>Spread {spreadVal}</span>
+                <span style={{ color: 'var(--accent-gold-bright)', fontWeight: 700 }}>{spreadPct}</span>
               </div>
 
               {/* BIDS (Buyers - Green) */}
@@ -1418,7 +1418,7 @@ export default function HyperliquidProDesk({
                         display: 'grid',
                         gridTemplateColumns: '1.2fr 1fr 1fr',
                         padding: '2.5px 10px',
-                        fontSize: '11px',
+                        fontSize: '12px',
                         fontFamily: 'var(--font-mono)',
                         position: 'relative',
                         cursor: 'pointer',
@@ -1441,7 +1441,7 @@ export default function HyperliquidProDesk({
                       <span style={{ textAlign: 'right', color: '#cbd5e1', position: 'relative', zIndex: 1 }}>
                         {bid.sz.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: bid.sz < 0.01 ? 4 : 2 })}
                       </span>
-                      <span style={{ textAlign: 'right', color: '#64748b', position: 'relative', zIndex: 1 }}>
+                      <span style={{ textAlign: 'right', color: 'var(--slate-500)', position: 'relative', zIndex: 1 }}>
                         {bid.cum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </div>
@@ -1474,7 +1474,7 @@ export default function HyperliquidProDesk({
                   onClick={() => setMarginMode(mode)}
                   style={{
                     padding: '4px 0',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: 700,
                     borderRadius: '4px',
                     border: '1px solid ' + (marginMode === mode ? 'rgba(56, 189, 248, 0.4)' : 'rgba(255, 255, 255, 0.08)'),
@@ -1495,7 +1495,7 @@ export default function HyperliquidProDesk({
                 }}
                 style={{
                   padding: '4px 0',
-                  fontSize: '11px',
+                  fontSize: '12px',
                   fontWeight: 800,
                   borderRadius: '4px',
                   border: '1px solid rgba(16, 185, 129, 0.3)',
@@ -1517,7 +1517,7 @@ export default function HyperliquidProDesk({
               background: 'rgba(16, 185, 129, 0.08)',
               border: '1px solid rgba(16, 185, 129, 0.2)',
               marginBottom: '12px',
-              fontSize: '11px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)'
             }}>
               <span style={{ color: 'var(--accent-mint)', fontWeight: 800 }}>⚡ SPOT CASH</span>
@@ -1534,7 +1534,7 @@ export default function HyperliquidProDesk({
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: orderType === type ? '#f8fafc' : '#64748b',
+                  color: orderType === type ? '#f8fafc' : 'var(--slate-500)',
                   fontSize: '12px',
                   fontWeight: orderType === type ? 800 : 600,
                   cursor: 'pointer',
@@ -1560,7 +1560,7 @@ export default function HyperliquidProDesk({
                 border: 'none',
                 cursor: 'pointer',
                 background: orderSide === 'BUY' ? 'linear-gradient(135deg, var(--accent-emerald), #059669)' : 'rgba(255, 255, 255, 0.05)',
-                color: orderSide === 'BUY' ? '#ffffff' : '#64748b',
+                color: orderSide === 'BUY' ? 'var(--text-inverse)' : 'var(--slate-500)',
                 transition: 'all 0.15s ease'
               }}
             >
@@ -1576,8 +1576,8 @@ export default function HyperliquidProDesk({
                 borderRadius: '6px',
                 border: 'none',
                 cursor: 'pointer',
-                background: orderSide === 'SELL' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 'rgba(255, 255, 255, 0.05)',
-                color: orderSide === 'SELL' ? '#ffffff' : '#64748b',
+                background: orderSide === 'SELL' ? 'linear-gradient(135deg, var(--accent-red), #dc2626)' : 'rgba(255, 255, 255, 0.05)',
+                color: orderSide === 'SELL' ? 'var(--text-inverse)' : 'var(--slate-500)',
                 transition: 'all 0.15s ease'
               }}
             >
@@ -1586,7 +1586,7 @@ export default function HyperliquidProDesk({
           </div>
 
           {/* Account Margin HUD */}
-          <div style={{ fontSize: '11px', display: 'flex', justifyContent: 'space-between', color: '#94a3b8', marginBottom: '6px' }}>
+          <div style={{ fontSize: '12px', display: 'flex', justifyContent: 'space-between', color: '#94a3b8', marginBottom: '6px' }}>
             <span>Available to Trade</span>
             <span style={{ color: '#fff', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
               ${availableUsdc.toFixed(2)} USDC
@@ -1596,7 +1596,7 @@ export default function HyperliquidProDesk({
           {/* Limit Price Input (if Limit mode) */}
           {orderType === 'Limit' && (
             <div style={{ marginBottom: '10px' }}>
-              <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 700 }}>Price</div>
+              <div style={{ fontSize: '12px', color: 'var(--slate-500)', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 700 }}>Price</div>
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -1621,14 +1621,14 @@ export default function HyperliquidProDesk({
                     outline: 'none'
                   }}
                 />
-                <span style={{ fontSize: '11px', color: '#64748b', fontFamily: 'var(--font-mono)' }}>USDC</span>
+                <span style={{ fontSize: '12px', color: 'var(--slate-500)', fontFamily: 'var(--font-mono)' }}>USDC</span>
               </div>
             </div>
           )}
 
           {/* Order Size Input */}
           <div style={{ marginBottom: '10px' }}>
-            <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 700 }}>Size</div>
+            <div style={{ fontSize: '12px', color: 'var(--slate-500)', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 700 }}>Size</div>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -1656,7 +1656,7 @@ export default function HyperliquidProDesk({
                   outline: 'none'
                 }}
               />
-              <span style={{ fontSize: '11px', color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+              <span style={{ fontSize: '12px', color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
                 {baseCoin}
               </span>
             </div>
@@ -1670,7 +1670,7 @@ export default function HyperliquidProDesk({
                 onClick={() => handleSetPercent(pct)}
                 style={{
                   padding: '3px 0',
-                  fontSize: '10px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   fontWeight: 700,
                   borderRadius: '4px',
@@ -1686,7 +1686,7 @@ export default function HyperliquidProDesk({
           </div>
 
           {/* Options: Reduce Only & TP/SL */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '14px', fontSize: '11px', color: '#94a3b8' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '14px', fontSize: '12px', color: '#94a3b8' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
               <input
                 type="checkbox"
@@ -1710,7 +1710,7 @@ export default function HyperliquidProDesk({
           {useBracket && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '12px' }}>
               <div>
-                <span style={{ fontSize: '9px', color: 'var(--accent-emerald)', fontWeight: 700 }}>TP ($)</span>
+                <span style={{ fontSize: '12px', color: 'var(--accent-emerald)', fontWeight: 700 }}>TP ($)</span>
                 <input
                   type="number"
                   placeholder={(effectivePrice * 1.05).toFixed(2)}
@@ -1723,13 +1723,13 @@ export default function HyperliquidProDesk({
                     color: 'var(--accent-mint)',
                     padding: '4px 6px',
                     borderRadius: '4px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)'
                   }}
                 />
               </div>
               <div>
-                <span style={{ fontSize: '9px', color: '#ef4444', fontWeight: 700 }}>SL ($)</span>
+                <span style={{ fontSize: '12px', color: 'var(--accent-red)', fontWeight: 700 }}>SL ($)</span>
                 <input
                   type="number"
                   placeholder={(effectivePrice * 0.97).toFixed(2)}
@@ -1742,7 +1742,7 @@ export default function HyperliquidProDesk({
                     color: '#f87171',
                     padding: '4px 6px',
                     borderRadius: '4px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)'
                   }}
                 />
@@ -1762,8 +1762,8 @@ export default function HyperliquidProDesk({
               cursor: 'pointer',
               background: orderSide === 'BUY'
                 ? 'linear-gradient(135deg, var(--accent-emerald), #059669)'
-                : 'linear-gradient(135deg, #ef4444, #dc2626)',
-              color: '#ffffff',
+                : 'linear-gradient(135deg, var(--accent-red), #dc2626)',
+              color: 'var(--text-inverse)',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
               marginBottom: '14px',
               letterSpacing: '0.02em'
@@ -1776,8 +1776,8 @@ export default function HyperliquidProDesk({
 
           {/* Specifications Breakdown */}
           <div style={{
-            fontSize: '10.5px',
-            color: '#64748b',
+            fontSize: '12px',
+            color: 'var(--slate-500)',
             display: 'flex',
             flexDirection: 'column',
             gap: '4px',
@@ -1855,8 +1855,8 @@ export default function HyperliquidProDesk({
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: ledgerTab === tab.id ? 'var(--accent-sky)' : '#64748b',
-                  fontSize: '11px',
+                  color: ledgerTab === tab.id ? 'var(--accent-sky)' : 'var(--slate-500)',
+                  fontSize: '12px',
                   fontWeight: ledgerTab === tab.id ? 800 : 600,
                   cursor: 'pointer',
                   borderBottom: ledgerTab === tab.id && showLedger ? '2px solid var(--accent-sky)' : 'none',
@@ -1873,9 +1873,9 @@ export default function HyperliquidProDesk({
             style={{
               background: 'transparent',
               border: 'none',
-              color: '#64748b',
+              color: 'var(--slate-500)',
               cursor: 'pointer',
-              fontSize: '11px'
+              fontSize: '12px'
             }}
           >
             {showLedger ? '▼ Tutup Panel' : '▲ Buka Panel'}
@@ -1888,13 +1888,13 @@ export default function HyperliquidProDesk({
             {ledgerTab === 'positions' && (
               <>
                 {(brokerPortfolio.positions || []).length === 0 ? (
-                  <div style={{ padding: '24px', textAlign: 'center', color: '#64748b', fontSize: '11.5px' }}>
+                  <div style={{ padding: '24px', textAlign: 'center', color: 'var(--slate-500)', fontSize: '12px' }}>
                     Belum ada posisi terbuka. Gunakan Order Execution Form di sisi kanan untuk membuka posisi Long atau Short.
                   </div>
                 ) : (
-                  <table style={{ width: '100%', fontSize: '11px', fontFamily: 'var(--font-mono)', borderCollapse: 'collapse' }}>
+                  <table style={{ width: '100%', fontSize: '12px', fontFamily: 'var(--font-mono)', borderCollapse: 'collapse' }}>
                     <thead>
-                      <tr style={{ color: '#64748b', textAlign: 'left', borderBottom: '1px solid rgba(255, 255, 255, 0.04)', fontSize: '10px' }}>
+                      <tr style={{ color: 'var(--slate-500)', textAlign: 'left', borderBottom: '1px solid rgba(255, 255, 255, 0.04)', fontSize: '12px' }}>
                         <th style={{ padding: '4px' }}>Symbol</th>
                         <th style={{ padding: '4px' }}>Side</th>
                         <th style={{ padding: '4px', textAlign: 'right' }}>Size</th>
@@ -1929,7 +1929,7 @@ export default function HyperliquidProDesk({
                             <td style={{ padding: '5px 4px', textAlign: 'right' }}>{p.quantity}</td>
                             <td style={{ padding: '5px 4px', textAlign: 'right' }}>${p.entryPrice.toLocaleString()}</td>
                             <td style={{ padding: '5px 4px', textAlign: 'right', color: 'var(--accent-sky)' }}>${cur.toLocaleString()}</td>
-                            <td style={{ padding: '5px 4px', textAlign: 'right', fontWeight: 800, color: isWin ? 'var(--accent-emerald)' : '#ef4444' }}>
+                            <td style={{ padding: '5px 4px', textAlign: 'right', fontWeight: 800, color: isWin ? 'var(--accent-emerald)' : 'var(--accent-red)' }}>
                               {isWin ? '+' : ''}${pnlUsd.toFixed(2)} ({isWin ? '+' : ''}{roePct}%)
                             </td>
                             <td style={{ padding: '5px 4px', textAlign: 'center' }}>
@@ -1941,7 +1941,7 @@ export default function HyperliquidProDesk({
                                   color: '#f87171',
                                   padding: '2px 8px',
                                   borderRadius: '3px',
-                                  fontSize: '10px',
+                                  fontSize: '12px',
                                   fontWeight: 700,
                                   cursor: 'pointer'
                                 }}
@@ -1959,9 +1959,9 @@ export default function HyperliquidProDesk({
             )}
 
             {ledgerTab === 'history' && (
-              <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                 {(brokerPortfolio.tradeHistory || []).length === 0 ? (
-                  <div style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>
+                  <div style={{ padding: '24px', textAlign: 'center', color: 'var(--slate-500)' }}>
                     Belum ada riwayat transaksi yang tersimpan.
                   </div>
                 ) : (
@@ -1980,13 +1980,13 @@ export default function HyperliquidProDesk({
             {ledgerTab === 'balances' && (
               <div style={{ display: 'flex', gap: '24px', padding: '12px' }}>
                 <div>
-                  <div style={{ fontSize: '10px', color: '#64748b' }}>CASH USDT / USDC</div>
+                  <div style={{ fontSize: '12px', color: 'var(--slate-500)' }}>CASH USDT / USDC</div>
                   <div style={{ fontSize: '15px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent-emerald)' }}>
                     ${(brokerPortfolio.cashUsdt || 0).toLocaleString()}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '10px', color: '#64748b' }}>CASH IDR</div>
+                  <div style={{ fontSize: '12px', color: 'var(--slate-500)' }}>CASH IDR</div>
                   <div style={{ fontSize: '15px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent-sky)' }}>
                     Rp {(brokerPortfolio.cashIdr || 0).toLocaleString()}
                   </div>
@@ -2036,7 +2036,7 @@ export default function HyperliquidProDesk({
                   <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#f8fafc' }}>
                     Pilih Instrumen Trading
                   </h3>
-                  <span style={{ fontSize: '11px', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--slate-500)', fontFamily: 'var(--font-mono)' }}>
                     ({allInstruments.length} Aset Tersedia)
                   </span>
                 </div>
@@ -2094,7 +2094,7 @@ export default function HyperliquidProDesk({
                       background: selectedCategory === cat.id ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.04)',
                       border: selectedCategory === cat.id ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
                       color: selectedCategory === cat.id ? 'var(--accent-sky)' : '#94a3b8',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       fontWeight: 700,
                       padding: '4px 10px',
                       borderRadius: '6px',
@@ -2110,7 +2110,7 @@ export default function HyperliquidProDesk({
             {/* Instrument List */}
             <div style={{ flex: 1, overflowY: 'auto', maxHeight: '420px', padding: '10px' }}>
               {filteredInstruments.length === 0 ? (
-                <div style={{ padding: '36px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>
+                <div style={{ padding: '36px', textAlign: 'center', color: 'var(--slate-500)', fontSize: '13px' }}>
                   Tidak ada instrumen yang cocok dengan "{searchQuery}"
                 </div>
               ) : (
@@ -2152,13 +2152,13 @@ export default function HyperliquidProDesk({
                             {inst.coin}
                           </span>
                           <span style={{
-                            fontSize: '9px',
+                            fontSize: '12px',
                             fontFamily: 'var(--font-mono)',
                             fontWeight: 700,
                             padding: '1px 5px',
                             borderRadius: '3px',
                             background: inst.market === 'CRYPTO' ? 'rgba(16, 185, 129, 0.12)' : inst.market === 'IDX' ? 'rgba(168, 85, 247, 0.12)' : inst.market === 'US' ? 'rgba(56, 189, 248, 0.12)' : 'rgba(234, 179, 8, 0.12)',
-                            color: inst.market === 'CRYPTO' ? 'var(--accent-mint)' : inst.market === 'IDX' ? '#c084fc' : inst.market === 'US' ? 'var(--accent-sky)' : '#facc15',
+                            color: inst.market === 'CRYPTO' ? 'var(--accent-mint)' : inst.market === 'IDX' ? 'var(--accent-purple-light)' : inst.market === 'US' ? 'var(--accent-sky)' : '#facc15',
                             border: '1px solid rgba(255, 255, 255, 0.08)'
                           }}>
                             {inst.market}
@@ -2166,8 +2166,8 @@ export default function HyperliquidProDesk({
                         </div>
 
                         <div style={{
-                          fontSize: '10.5px',
-                          color: '#64748b',
+                          fontSize: '12px',
+                          color: 'var(--slate-500)',
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis'
@@ -2177,12 +2177,12 @@ export default function HyperliquidProDesk({
 
                         {px !== undefined && (
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '2px' }}>
-                            <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: '#cbd5e1' }}>
+                            <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: '#cbd5e1' }}>
                               {inst.market === 'IDX' ? `Rp ${Math.round(px).toLocaleString('id-ID')}` : `$${Number(px).toLocaleString(undefined, { minimumFractionDigits: px < 1 ? 4 : 2, maximumFractionDigits: 4 })}`}
                             </span>
                             {chg !== undefined && (
                               <span style={{
-                                fontSize: '10.5px',
+                                fontSize: '12px',
                                 fontFamily: 'var(--font-mono)',
                                 fontWeight: 700,
                                 color: chg >= 0 ? 'var(--accent-emerald)' : 'var(--accent-rust)'
