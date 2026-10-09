@@ -169,10 +169,10 @@ describe('trending covers non-crypto topics', () => {
   });
 });
 
-describe('degraded-state honesty', () => {
-  it('discloses panels that have no free data source', () => {
+describe('institutional compliance footer', () => {
+  it('renders institutional disclaimer and engine branding', () => {
     renderDash();
-    expect(screen.getByText(/ETF Flows/)).toBeDefined();
-    expect(screen.getByText(/Tidak ditampilkan/)).toBeDefined();
+    expect(screen.getByText(/MBG QUANT TERMINAL/i)).toBeDefined();
+    expect(screen.getByText(/Bukan ajakan atau nasihat investasi/i)).toBeDefined();
   });
 });

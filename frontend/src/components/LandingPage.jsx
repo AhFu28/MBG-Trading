@@ -172,7 +172,7 @@ function LiveTickerStrip() {
 
       {global?.totalMarketCap ? (
         <div style={{ textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)', paddingBottom: '5px' }}>
-          Kapitalisasi pasar global {formatUsdCompact(global.totalMarketCap)} · sumber: CoinMarketCap &amp; Binance Vision
+          Kapitalisasi pasar global {formatUsdCompact(global.totalMarketCap)} · Realtime Market Engine
         </div>
       ) : null}
     </div>

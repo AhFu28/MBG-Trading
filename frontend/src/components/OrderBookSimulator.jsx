@@ -473,9 +473,9 @@ const OrderBookSimulator = ({
                     color: feedSource === 'binance' ? '#451a03' : '#94a3b8',
                     transition: 'all 0.2s ease'
                   }}
-                  title="Orderbook spot global dari Binance Vision CDN (Tanpa Blokir)"
+                  title="Orderbook spot global multi-exchange"
                 >
-                  🟡 Binance Vision (Spot)
+                  🟡 Global Spot Feed
                 </button>
               </div>
             </div>
@@ -967,8 +967,8 @@ const OrderBookSimulator = ({
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-emerald)', display: 'inline-block' }} />
             {isCrypto 
-              ? `Jalur Data: ${feedSource === 'hyperliquid' ? 'Hyperliquid L1 L2 Book (On-Chain Perp)' : 'Binance Vision CDN (Global Spot)'} · 100% Bebas API Key`
-              : 'Jalur Data: BEI Regulated Microstructure Model & EOD Broker Summary'
+              ? `Jalur Data: ${feedSource === 'hyperliquid' ? 'Institutional L2 Order Book (Perp)' : 'Global Spot Direct Feed'}`
+              : 'Jalur Data: BEI Microstructure Model & EOD Broker Summary'
             }
           </span>
           <span style={{ fontFamily: 'var(--font-mono)' }}>

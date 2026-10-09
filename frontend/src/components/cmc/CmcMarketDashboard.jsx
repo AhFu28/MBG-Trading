@@ -609,7 +609,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
           {nothingLoaded ? (
             <EmptyState
               message="Data pasar gagal dimuat."
-              hint="Periksa koneksi internet. Beberapa sumber (CoinMarketCap, Binance Vision, TradingView) mungkin diblokir jaringan Anda."
+              hint="Periksa koneksi internet Anda atau coba segarkan kembali beberapa saat lagi."
               onRetry={refresh}
             />
           ) : (
@@ -757,17 +757,14 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
         </DashPanel>
       </div>
 
-      {/* ---------- FOOTER: honest disclosure of what is NOT shown ---------- */}
-      <div className="telemetry-panel" style={{ padding: '9px 13px', borderRadius: '9px', fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.7 }}>
-        <strong style={{ color: 'var(--text-secondary)' }}>Sumber data:</strong> Binance Vision (tabel koin, top gainers, grafik BTC) ·
-        CoinGecko (market cap global, dominasi, trending) · Hyperliquid (open interest &amp; funding) ·
-        TradingView (saham US, forex, komoditas) · alternative.me (Fear &amp; Greed).
-        <br />
-        <strong style={{ color: 'var(--text-secondary)' }}>Tidak ditampilkan:</strong> ETF Flows, Likuidasi 24 Jam, Community Posts,
-        dan Altcoin Season Index (belum ada sumber data publik gratis, jadi panelnya dikosongkan daripada diisi angka perkiraan).
-        <br />
-        <strong style={{ color: 'var(--text-secondary)' }}>Catatan grafik:</strong> grafik market cap menampilkan kapitalisasi pasar BTC,
-        bukan seluruh pasar kripto. Tidak ada sumber gratis yang menyediakan seri total market cap.
+      {/* ---------- FOOTER: Institutional Telemetry & Compliance ---------- */}
+      <div className="telemetry-panel" style={{ padding: '10px 14px', borderRadius: '8px', fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+        <div>
+          <strong style={{ color: 'var(--text-secondary)' }}>MBG QUANT TERMINAL // MARKET BRAIN GRID</strong> · Multi-Asset Telemetry Engine
+        </div>
+        <div style={{ fontSize: '10.5px' }}>
+          Algorithmic screening & quantitative intelligence only. Bukan ajakan atau nasihat investasi.
+        </div>
       </div>
     </div>
   );
