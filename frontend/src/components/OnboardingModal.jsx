@@ -106,7 +106,7 @@ export default function OnboardingModal({ isOpen, onClose }) {
                     </span>
                     <span
                       style={{
-                        fontSize: '9.5px',
+                        fontSize: '12px',
                         fontWeight: '700',
                         padding: '2px 6px',
                         borderRadius: '4px',
@@ -117,7 +117,7 @@ export default function OnboardingModal({ isOpen, onClose }) {
                       {opt.badge}
                     </span>
                   </div>
-                  <div style={{ fontSize: '11.5px', color: '#94a3b8', lineHeight: 1.4 }}>
+                  <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.4 }}>
                     {opt.desc}
                   </div>
                 </div>
@@ -145,7 +145,7 @@ export default function OnboardingModal({ isOpen, onClose }) {
           >
             Mulai Masuk ke Terminal →
           </button>
-          <div style={{ textAlign: 'center', fontSize: '11px', color: '#64748b' }}>
+          <div style={{ textAlign: 'center', fontSize: '12px', color: 'var(--slate-500)' }}>
             Preferensi fokus pasar dapat diubah sewaktu-waktu di menu Pengaturan.
           </div>
         </div>

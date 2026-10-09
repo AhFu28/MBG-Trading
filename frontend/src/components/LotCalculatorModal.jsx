@@ -578,7 +578,7 @@ export default function LotCalculatorModal({
                   style={{
                     width: '100%',
                     padding: '8px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: '700',
                     background: isCopied ? 'var(--accent-green)' : 'var(--bg-panel-subtle)',
                     color: isCopied ? '#fff' : 'var(--text-secondary)',

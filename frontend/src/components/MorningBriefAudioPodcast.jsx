@@ -184,7 +184,7 @@ Ingat pesan disiplin: batasi risiko maksimal satu hingga dua persen modal per po
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{
-                fontSize: '9.5px',
+                fontSize: '12px',
                 fontWeight: 900,
                 letterSpacing: '0.06em',
                 background: 'rgba(36, 87, 214, 0.2)',
@@ -195,7 +195,7 @@ Ingat pesan disiplin: batasi risiko maksimal satu hingga dua persen modal per po
               }}>
                 AUDIO MORNING BRIEF
               </span>
-              <span style={{ fontSize: '11px', color: '#A7B0BD', fontFamily: 'var(--font-mono)' }}>
+              <span style={{ fontSize: '12px', color: '#A7B0BD', fontFamily: 'var(--font-mono)' }}>
                 {fmtTime(playbackSeconds)} / 2:00
               </span>
             </div>
@@ -279,37 +279,37 @@ Ingat pesan disiplin: batasi risiko maksimal satu hingga dua persen modal per po
         borderTop: '1px solid rgba(255, 255, 255, 0.06)'
       }}>
         <div style={{ background: '#0B0E14', padding: '8px 12px', borderRadius: '8px', border: '1px solid #2F3A49' }}>
-          <div style={{ fontSize: '10px', fontWeight: '800', color: '#78A9FF', letterSpacing: '0.04em' }}>
+          <div style={{ fontSize: '12px', fontWeight: '800', color: '#78A9FF', letterSpacing: '0.04em' }}>
             🎯 PIVOT KUNCI IHSG
           </div>
           <div style={{ fontSize: '13px', fontWeight: '900', color: '#F3F5F7', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
             {Math.round(ihsgVal).toLocaleString('id-ID')} ({ihsgChange >= 0 ? '+' : ''}{ihsgChange.toFixed(2)}%)
           </div>
-          <div style={{ fontSize: '10px', color: '#A7B0BD', marginTop: '1px' }}>
+          <div style={{ fontSize: '12px', color: '#A7B0BD', marginTop: '1px' }}>
             Pivot 6.041 · Support 5.992
           </div>
         </div>
 
         <div style={{ background: '#0B0E14', padding: '8px 12px', borderRadius: '8px', border: '1px solid #2F3A49' }}>
-          <div style={{ fontSize: '10px', fontWeight: '800', color: '#3BC78A', letterSpacing: '0.04em' }}>
+          <div style={{ fontSize: '12px', fontWeight: '800', color: '#3BC78A', letterSpacing: '0.04em' }}>
             🪙 ENERGI &amp; LOGAM MULIA
           </div>
           <div style={{ fontSize: '13px', fontWeight: '900', color: '#F3F5F7', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
             XAU ${Math.round(goldVal).toLocaleString()} · Oil ${Number(brentVal).toFixed(1)}
           </div>
-          <div style={{ fontSize: '10px', color: '#A7B0BD', marginTop: '1px' }}>
+          <div style={{ fontSize: '12px', color: '#A7B0BD', marginTop: '1px' }}>
             Emas safe-haven stabil di atas $4.190
           </div>
         </div>
 
         <div style={{ background: '#0B0E14', padding: '8px 12px', borderRadius: '8px', border: '1px solid #2F3A49' }}>
-          <div style={{ fontSize: '10px', fontWeight: '800', color: '#F3C969', letterSpacing: '0.04em' }}>
+          <div style={{ fontSize: '12px', fontWeight: '800', color: '#F3C969', letterSpacing: '0.04em' }}>
             🧭 RADAR SAHAM HARI INI
           </div>
           <div style={{ fontSize: '13px', fontWeight: '900', color: '#F3F5F7', marginTop: '2px' }}>
             {tickerListStr}
           </div>
-          <div style={{ fontSize: '10px', color: '#A7B0BD', marginTop: '1px' }}>
+          <div style={{ fontSize: '12px', color: '#A7B0BD', marginTop: '1px' }}>
             Setup terkonfirmasi breakout &amp; momentum
           </div>
         </div>

@@ -121,7 +121,7 @@ export function HeaderClock() {
       className="cmc-clock-pill cmc-hide-narrow"
       title="Waktu Jakarta (WIB)"
     >
-      <span style={{ fontSize: '10px' }}>🕒</span>
+      <span style={{ fontSize: '12px' }}>🕒</span>
       <span>{jakartaTimeFormatter.format(now)} WIB</span>
     </div>
   );

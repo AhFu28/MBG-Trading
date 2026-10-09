@@ -311,7 +311,7 @@ export default function NewsDetailModal({
               title={isBookmarked ? 'Hapus dari Simpanan' : 'Simpan Berita'}
               style={{
                 padding: '3px 8px',
-                fontSize: '10px',
+                fontSize: '12px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -338,7 +338,7 @@ export default function NewsDetailModal({
                 title="Buka Chart emiten di TradingView"
                 style={{
                   padding: '3px 8px',
-                  fontSize: '10px',
+                  fontSize: '12px',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '4px',

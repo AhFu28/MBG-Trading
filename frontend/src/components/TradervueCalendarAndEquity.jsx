@@ -247,7 +247,7 @@ export default function TradervueCalendarAndEquity({
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '16px' }}>
           <div>
-            <div style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '0.06em', color: '#78A9FF', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '0.06em', color: '#78A9FF', textTransform: 'uppercase' }}>
               📈 KURVA PERTUMBUHAN MODAL (VISUAL EQUITY CURVE)
             </div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', marginTop: '4px' }}>
@@ -267,19 +267,19 @@ export default function TradervueCalendarAndEquity({
 
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             <div style={{ background: '#1B2431', padding: '8px 14px', borderRadius: '8px', border: '1px solid #2F3A49' }}>
-              <div style={{ fontSize: '10px', color: '#A7B0BD', fontWeight: '700' }}>MODAL AWAL</div>
+              <div style={{ fontSize: '12px', color: '#A7B0BD', fontWeight: '700' }}>MODAL AWAL</div>
               <div style={{ fontSize: '12.5px', fontWeight: '800', color: '#F3F5F7', fontFamily: 'var(--font-mono)' }}>
                 Rp {startingCapital.toLocaleString('id-ID')}
               </div>
             </div>
             <div style={{ background: '#1B2431', padding: '8px 14px', borderRadius: '8px', border: '1px solid #2F3A49' }}>
-              <div style={{ fontSize: '10px', color: '#A7B0BD', fontWeight: '700' }}>HIGH-WATER MARK</div>
+              <div style={{ fontSize: '12px', color: '#A7B0BD', fontWeight: '700' }}>HIGH-WATER MARK</div>
               <div style={{ fontSize: '12.5px', fontWeight: '800', color: '#3BC78A', fontFamily: 'var(--font-mono)' }}>
                 Rp {equityPoints.highWaterMark.toLocaleString('id-ID')}
               </div>
             </div>
             <div style={{ background: '#1B2431', padding: '8px 14px', borderRadius: '8px', border: '1px solid #2F3A49' }}>
-              <div style={{ fontSize: '10px', color: '#A7B0BD', fontWeight: '700' }}>MAX DRAWDOWN</div>
+              <div style={{ fontSize: '12px', color: '#A7B0BD', fontWeight: '700' }}>MAX DRAWDOWN</div>
               <div style={{ fontSize: '12.5px', fontWeight: '800', color: '#FF6B75', fontFamily: 'var(--font-mono)' }}>
                 -{equityPoints.maxDrawdown.toFixed(2)}%
               </div>
@@ -352,7 +352,7 @@ export default function TradervueCalendarAndEquity({
         {/* Calendar Header with Navigation */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '18px' }}>
           <div>
-            <div style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '0.06em', color: '#78A9FF', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '0.06em', color: '#78A9FF', textTransform: 'uppercase' }}>
               📅 KALENDER HASIL TRADING BULANAN (TRADERVUE HEATMAP)
             </div>
             <div style={{ fontSize: '18px', fontWeight: '900', color: '#F3F5F7', marginTop: '2px', textTransform: 'capitalize' }}>
@@ -396,7 +396,7 @@ export default function TradervueCalendarAndEquity({
         {/* Calendar Day Labels */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '6px', textAlign: 'center', marginBottom: '6px' }}>
           {['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB'].map(day => (
-            <div key={day} style={{ fontSize: '10.5px', fontWeight: '800', color: '#A7B0BD', padding: '4px 0' }}>
+            <div key={day} style={{ fontSize: '12px', fontWeight: '800', color: '#A7B0BD', padding: '4px 0' }}>
               {day}
             </div>
           ))}
@@ -460,12 +460,12 @@ export default function TradervueCalendarAndEquity({
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '11px', fontWeight: '800', color: isGreen ? '#3BC78A' : isRed ? '#FF6B75' : '#F3F5F7' }}>
+                  <span style={{ fontSize: '12px', fontWeight: '800', color: isGreen ? '#3BC78A' : isRed ? '#FF6B75' : '#F3F5F7' }}>
                     {d.dayNumber}
                   </span>
                   {hasTrades && (
                     <span style={{
-                      fontSize: '9px',
+                      fontSize: '12px',
                       fontWeight: '800',
                       padding: '1px 5px',
                       borderRadius: '4px',
@@ -480,7 +480,7 @@ export default function TradervueCalendarAndEquity({
                 {hasTrades ? (
                   <div>
                     <div style={{
-                      fontSize: '11.5px',
+                      fontSize: '12px',
                       fontWeight: '900',
                       fontFamily: 'var(--font-mono)',
                       color: isGreen ? '#3BC78A' : isRed ? '#FF6B75' : '#F3F5F7'
@@ -488,13 +488,13 @@ export default function TradervueCalendarAndEquity({
                       {formatIdrCompact(stat.pnl)}
                     </div>
                     {stat.emotions.size > 0 && (
-                      <div style={{ fontSize: '10px', marginTop: '2px' }}>
+                      <div style={{ fontSize: '12px', marginTop: '2px' }}>
                         {Array.from(stat.emotions).map(e => e === 'ZEN' ? '🧘' : e === 'FOMO' ? '⚡' : e === 'FEAR' ? '😰' : e === 'GREED' ? '🤑' : '⏳').join(' ')}
                       </div>
                     )}
                   </div>
                 ) : (
-                  <div style={{ fontSize: '9px', color: '#657286', fontStyle: 'italic' }}>
+                  <div style={{ fontSize: '12px', color: '#657286', fontStyle: 'italic' }}>
                     Libur / flat
                   </div>
                 )}
@@ -542,10 +542,10 @@ export default function TradervueCalendarAndEquity({
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <strong style={{ color: '#F3F5F7' }}>{ev.symbol}</strong>
-                    <span style={{ fontSize: '10px', padding: '1px 5px', borderRadius: '3px', background: ev.result === 'WIN' ? 'rgba(59,199,138,0.2)' : 'rgba(255,107,117,0.2)', color: ev.result === 'WIN' ? '#3BC78A' : '#FF6B75', fontWeight: '800' }}>
+                    <span style={{ fontSize: '12px', padding: '1px 5px', borderRadius: '3px', background: ev.result === 'WIN' ? 'rgba(59,199,138,0.2)' : 'rgba(255,107,117,0.2)', color: ev.result === 'WIN' ? '#3BC78A' : '#FF6B75', fontWeight: '800' }}>
                       {ev.result}
                     </span>
-                    {ev.thesis && <span style={{ color: '#A7B0BD', fontSize: '11px' }}>{ev.thesis.slice(0, 50)}...</span>}
+                    {ev.thesis && <span style={{ color: '#A7B0BD', fontSize: '12px' }}>{ev.thesis.slice(0, 50)}...</span>}
                   </div>
                   <div style={{ fontFamily: 'var(--font-mono)', fontWeight: '800', color: ev.pnl >= 0 ? '#3BC78A' : '#FF6B75' }}>
                     {formatIdrCompact(ev.pnl)}

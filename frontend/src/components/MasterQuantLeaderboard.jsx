@@ -1058,7 +1058,7 @@ export default function MasterQuantLeaderboard({
                                   style={{
                                     background: 'transparent',
                                     border: 'none',
-                                    color: watchlist.has(item.ticker, item.market === 'CRYPTO' ? 'CRYPTO' : 'IDX') ? '#f59e0b' : 'rgba(255, 255, 255, 0.25)',
+                                    color: watchlist.has(item.ticker, item.market === 'CRYPTO' ? 'CRYPTO' : 'IDX') ? 'var(--accent-gold)' : 'rgba(255, 255, 255, 0.25)',
                                     cursor: 'pointer',
                                     fontSize: '13px',
                                     padding: '0 2px',
@@ -1145,10 +1145,10 @@ export default function MasterQuantLeaderboard({
                             }}>
                               {Number(item.changePct) >= 0 ? '+' + Number(item.changePct).toFixed(2) + '%' : Number(item.changePct).toFixed(2) + '%'}
                             </td>
-                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', fontWeight: '700', fontSize: '11.5px', color: '#cbd5e1' }}>
+                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', fontWeight: '700', fontSize: '12px', color: '#cbd5e1' }}>
                               <span>{item.entryRange ? item.entryRange : formatFinancialPrice(item.entry, item.market)}</span>
                             </td>
-                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', fontWeight: '700', fontSize: '11.5px', color: item.dynamic?.isTrailingActive ? 'var(--accent-green)' : 'var(--accent-rust-text, #ff3b30)' }}>
+                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', fontWeight: '700', fontSize: '12px', color: item.dynamic?.isTrailingActive ? 'var(--accent-green)' : 'var(--accent-rust-text, #ff3b30)' }}>
                               <span>{formatFinancialPrice(item.dynamic?.effectiveSl || item.stopLoss, item.market)}</span>
                               {item.dynamic?.isTrailingActive && (
                                 <div style={{ fontSize: '12px', color: 'var(--accent-emerald)', fontWeight: '800' }}>
@@ -1156,7 +1156,7 @@ export default function MasterQuantLeaderboard({
                                 </div>
                               )}
                             </td>
-                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', color: 'var(--accent-green-text, #10b981)', fontWeight: '800', fontSize: '11.5px' }}>
+                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', color: 'var(--accent-green-text, var(--accent-emerald))', fontWeight: '800', fontSize: '12px' }}>
                               <span>{formatFinancialPrice(item.target1, item.market)}</span>
                             </td>
                             <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}>
