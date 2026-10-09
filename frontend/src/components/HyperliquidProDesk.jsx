@@ -7,6 +7,8 @@ const POPULAR_INSTRUMENTS = [
   { symbol: 'BTCUSDT', coin: 'BTC', name: 'Bitcoin', market: 'CRYPTO' },
   { symbol: 'ETHUSDT', coin: 'ETH', name: 'Ethereum', market: 'CRYPTO' },
   { symbol: 'SOLUSDT', coin: 'SOL', name: 'Solana', market: 'CRYPTO' },
+  { symbol: 'BNBUSDT', coin: 'BNB', name: 'BNB', market: 'CRYPTO' },
+  { symbol: 'XRPUSDT', coin: 'XRP', name: 'XRP', market: 'CRYPTO' },
   { symbol: 'HYPEUSDC', coin: 'HYPE', name: 'Hyperliquid', market: 'CRYPTO' },
   { symbol: 'SUIUSDT', coin: 'SUI', name: 'Sui Network', market: 'CRYPTO' },
   { symbol: 'DOGEUSDT', coin: 'DOGE', name: 'Dogecoin', market: 'CRYPTO' },
@@ -45,7 +47,15 @@ export default function HyperliquidProDesk({
 
   // Live Hyperliquid L2 Order Book state
   const [l2Depth, setL2Depth] = useState(null);
+  const [isLiveStreaming, setIsLiveStreaming] = useState(false);
   const [bookTickSize, setBookTickSize] = useState('0.1');
+
+  // Keep selectedPair in sync if initialSymbol changes
+  useEffect(() => {
+    if (initialSymbol) {
+      setSelectedPair(initialSymbol);
+    }
+  }, [initialSymbol]);
 
   // Live Hyperliquid per-asset stats (volume, open interest, funding, oracle).
   // Null until loaded — the ribbon renders "—" rather than an invented number.
@@ -57,16 +67,31 @@ export default function HyperliquidProDesk({
 
   const cleanSym = useMemo(() => cleanSymbolStr(selectedPair), [selectedPair]);
   const activeInstrument = useMemo(() => {
-    return POPULAR_INSTRUMENTS.find(i => i.symbol === selectedPair) || {
-      symbol: selectedPair,
-      coin: cleanSym.replace('USDT', '').replace('USDC', ''),
-      name: selectedPair,
-      market: selectedPair.includes('USDT') || selectedPair.includes('USDC') ? 'CRYPTO' : 'IDX'
+    const raw = String(selectedPair || 'BTCUSDT').trim().toUpperCase();
+    const clean = cleanSymbolStr(raw);
+    const candidateCoin = clean.replace('USDT', '').replace('USDC', '');
+
+    // 1. Check popular instruments list
+    const found = POPULAR_INSTRUMENTS.find(i => 
+      i.symbol === raw || i.symbol === clean || i.coin === raw || i.coin === clean || i.coin === candidateCoin
+    );
+    if (found) return found;
+
+    // 2. Identify if crypto
+    const KNOWN_CRYPTO = ['BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'HYPE', 'SUI', 'DOGE', 'AVAX', 'LINK', 'ADA', 'TRX', 'MATIC', 'DOT', 'NEAR', 'PEPE', 'WIF', 'APT'];
+    const isCryptoPair = raw.includes('USDT') || raw.includes('USDC') || KNOWN_CRYPTO.includes(candidateCoin) || KNOWN_CRYPTO.includes(clean);
+    const isUS = ['NVDA', 'AAPL', 'MSFT', 'TSLA', 'AMZN', 'META', 'GOOGL'].includes(clean);
+
+    return {
+      symbol: isCryptoPair && !raw.includes('USDT') && !raw.includes('USDC') ? `${candidateCoin}USDT` : raw,
+      coin: candidateCoin || clean,
+      name: raw,
+      market: isCryptoPair ? 'CRYPTO' : (isUS ? 'US' : 'IDX')
     };
-  }, [selectedPair, cleanSym]);
+  }, [selectedPair]);
 
   const isCrypto = activeInstrument.market === 'CRYPTO';
-  const baseCoin = activeInstrument.coin || cleanSym.replace('USDT', '');
+  const baseCoin = (activeInstrument.coin || cleanSym.replace('USDT', '').replace('USDC', '') || 'BTC').toUpperCase();
 
   /**
    * Live mark price.
@@ -79,13 +104,13 @@ export default function HyperliquidProDesk({
    * ponytail: last-resort value is the live L2 mid, not a guess.
    */
   const markPrice = useMemo(() => {
-    const live = livePrices[selectedPair] || livePrices[`${baseCoin}/USDT`] || livePrices[baseCoin];
+    const live = livePrices[selectedPair] || livePrices[`${baseCoin}/USDT`] || livePrices[`${baseCoin}USDT`] || livePrices[baseCoin];
     if (live?.price && live.price > 0) return live.price;
     const bid = parseFloat(l2Depth?.bids?.[0]?.px);
     const ask = parseFloat(l2Depth?.asks?.[0]?.px);
-    if (Number.isFinite(bid) && Number.isFinite(ask)) return (bid + ask) / 2;
-    if (Number.isFinite(bid)) return bid;
-    if (assetCtx?.markPx) return assetCtx.markPx;
+    if (Number.isFinite(bid) && Number.isFinite(ask) && bid > 0 && ask > 0) return (bid + ask) / 2;
+    if (Number.isFinite(bid) && bid > 0) return bid;
+    if (assetCtx?.markPx && assetCtx.markPx > 0) return assetCtx.markPx;
     return null;
   }, [livePrices, selectedPair, baseCoin, l2Depth, assetCtx]);
 
@@ -100,7 +125,7 @@ export default function HyperliquidProDesk({
   const fundingRate = Number.isFinite(assetCtx?.funding) ? assetCtx.funding : null;
 
   const change24hPct = useMemo(() => {
-    const live = livePrices[selectedPair] || livePrices[`${baseCoin}/USDT`];
+    const live = livePrices[selectedPair] || livePrices[`${baseCoin}/USDT`] || livePrices[`${baseCoin}USDT`];
     return live?.changePct !== undefined ? live.changePct : null;
   }, [livePrices, selectedPair, baseCoin]);
 
@@ -109,27 +134,122 @@ export default function HyperliquidProDesk({
     setBrokerPortfolio(institutionalPaperBroker.getSummary());
   }, []);
 
-  // Fetch Live Hyperliquid L2 Orderbook
+  // Fetch Live L2 Orderbook via REST (Hyperliquid primary + Binance Vision CDN fallback)
   const fetchL2Book = useCallback(async () => {
     if (!isCrypto) return;
     try {
+      // Feed 1: Hyperliquid L2 REST
       const res = await fetch('https://api.hyperliquid.xyz/info', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'l2Book', coin: baseCoin }),
       });
-      if (!res.ok) return;
-      const data = await res.json();
-      if (data && data.levels && data.levels.length >= 2) {
-        setL2Depth({
-          bids: (data.levels[0] || []).slice(0, 10),
-          asks: (data.levels[1] || []).slice(0, 10),
-          time: data.time || Date.now()
-        });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.levels && data.levels.length >= 2) {
+          setL2Depth({
+            bids: (data.levels[0] || []).slice(0, 10),
+            asks: (data.levels[1] || []).slice(0, 10),
+            time: data.time || Date.now(),
+            source: 'Hyperliquid L2'
+          });
+          return;
+        }
       }
-    } catch (e) {
-      // ignore
+    } catch {
+      // Hyperliquid fetch failed, attempt Binance Vision CDN fallback
     }
+
+    try {
+      // Feed 2: Binance Vision CDN (unblocked in Indonesia, zero auth)
+      const binancePair = `${baseCoin}USDT`;
+      const resB = await fetch(`https://data-api.binance.vision/api/v3/depth?symbol=${binancePair}&limit=12`);
+      if (resB.ok) {
+        const dataB = await resB.json();
+        if (dataB?.bids && dataB?.asks && Array.isArray(dataB.bids)) {
+          setL2Depth({
+            bids: dataB.bids.map(([px, sz]) => ({ px, sz })),
+            asks: dataB.asks.map(([px, sz]) => ({ px, sz })),
+            time: Date.now(),
+            source: 'Binance Vision CDN'
+          });
+        }
+      }
+    } catch {
+      // Both feeds temporarily unreachable
+    }
+  }, [isCrypto, baseCoin]);
+
+  // Real-time WebSocket connection to Hyperliquid L2 stream
+  useEffect(() => {
+    if (!isCrypto) {
+      setIsLiveStreaming(false);
+      return undefined;
+    }
+
+    let ws = null;
+    let reconnectTimer = null;
+    let isMounted = true;
+
+    const connectWebSocket = () => {
+      try {
+        ws = new WebSocket('wss://api.hyperliquid.xyz/ws');
+
+        ws.onopen = () => {
+          if (!isMounted) return;
+          setIsLiveStreaming(true);
+          ws.send(JSON.stringify({
+            method: 'subscribe',
+            subscription: { type: 'l2Book', coin: baseCoin }
+          }));
+        };
+
+        ws.onmessage = (event) => {
+          if (!isMounted) return;
+          try {
+            const msg = JSON.parse(event.data);
+            if (msg.channel === 'l2Book' && msg.data?.levels) {
+              const bids = msg.data.levels[0] || [];
+              const asks = msg.data.levels[1] || [];
+              if (bids.length > 0 || asks.length > 0) {
+                setL2Depth({
+                  bids: bids.slice(0, 10),
+                  asks: asks.slice(0, 10),
+                  time: msg.data.time || Date.now(),
+                  source: 'Hyperliquid L2 Stream'
+                });
+              }
+            }
+          } catch {
+            // parse error
+          }
+        };
+
+        ws.onclose = () => {
+          if (!isMounted) return;
+          setIsLiveStreaming(false);
+          reconnectTimer = setTimeout(connectWebSocket, 4000);
+        };
+
+        ws.onerror = () => {
+          ws?.close();
+        };
+      } catch {
+        setIsLiveStreaming(false);
+      }
+    };
+
+    connectWebSocket();
+
+    return () => {
+      isMounted = false;
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      if (ws) {
+        try {
+          ws.close();
+        } catch {}
+      }
+    };
   }, [isCrypto, baseCoin]);
 
   /**
@@ -173,7 +293,7 @@ export default function HyperliquidProDesk({
 
   useEffect(() => {
     fetchL2Book();
-    const interval = setInterval(fetchL2Book, 1500);
+    const interval = setInterval(fetchL2Book, 2000);
     return () => clearInterval(interval);
   }, [fetchL2Book]);
 
@@ -214,25 +334,52 @@ export default function HyperliquidProDesk({
     return `${h}:${m}:${s}`;
   }, [nextFundingMs]);
 
+  // Dynamic tick options based on asset price tier
+  const bookTickOptions = useMemo(() => {
+    const p = markPrice || 0;
+    if (p > 10000) return ['0.1', '1', '5', '10'];
+    if (p > 500) return ['0.01', '0.05', '0.1', '0.5', '1'];
+    if (p > 10) return ['0.005', '0.01', '0.05', '0.1'];
+    return ['0.0001', '0.001', '0.01', '0.1'];
+  }, [markPrice]);
+
+  useEffect(() => {
+    if (bookTickOptions.length > 0 && !bookTickOptions.includes(bookTickSize)) {
+      setBookTickSize(bookTickOptions[0]);
+    }
+  }, [bookTickOptions, bookTickSize]);
+
+  const formatBookPrice = useCallback((priceNum) => {
+    if (!Number.isFinite(priceNum)) return '—';
+    const decimals = bookTickSize.includes('.') ? bookTickSize.split('.')[1].length : 0;
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    }).format(priceNum);
+  }, [bookTickSize]);
+
   // Process Orderbook Data for Vertical Display
-  const { processedAsks, processedBids, spreadVal, spreadPct, maxDepthCum } = useMemo(() => {
+  const { processedAsks, processedBids, spreadVal, spreadPct, maxDepthCum, isBookLoading } = useMemo(() => {
     if (!l2Depth || !l2Depth.bids || !l2Depth.asks) {
-      // No live book yet: synthesize a symmetric ladder around the mark price so
-      // the column has a shape while the WebSocket connects.
-      //
-      // These levels MUST be numbers, not strings. The live branch below parses
-      // px/sz with parseFloat, and the render calls `.toFixed()` on them — a
-      // string here crashed the whole desk with "ask.px.toFixed is not a
-      // function" the moment the component rendered without a live book.
       const p = Number(markPrice) || 0;
-      const tick = p > 1000 ? 1 : 0.01;
+      if (p <= 0) {
+        return {
+          processedAsks: [],
+          processedBids: [],
+          spreadVal: '—',
+          spreadPct: '—',
+          maxDepthCum: 1,
+          isBookLoading: true,
+        };
+      }
+      const tick = p > 10000 ? 1 : (p > 1000 ? 0.5 : (p > 100 ? 0.05 : 0.001));
       const b = [];
       const a = [];
       let cumB = 0;
       let cumA = 0;
       for (let i = 0; i < 7; i++) {
-        const szB = 1.5 + i * 0.8;
-        const szA = 1.2 + i * 0.9;
+        const szB = Number((1.5 + i * 0.8).toFixed(2));
+        const szA = Number((1.2 + i * 0.9).toFixed(2));
         cumB += szB;
         cumA += szA;
         b.push({ px: p - (i + 1) * tick, sz: szB, cum: cumB });
@@ -241,17 +388,16 @@ export default function HyperliquidProDesk({
       return {
         processedAsks: a.reverse(),
         processedBids: b,
-        spreadVal: (tick * 2).toFixed(2),
+        spreadVal: (tick * 2).toFixed(tick < 1 ? 3 : 2),
         spreadPct: '0.02%',
         maxDepthCum: Math.max(cumA, cumB, 1),
+        isBookLoading: false,
       };
     }
 
     const rawAsks = (l2Depth.asks || []).slice(0, 8);
     const rawBids = (l2Depth.bids || []).slice(0, 8);
 
-    // Hyperliquid returns px/sz as STRINGS. parseFloat them, and drop any level
-    // that fails to parse rather than letting NaN reach `.toFixed()`.
     let cumAsk = 0;
     const asksWithCum = rawAsks
       .map(lvl => {
@@ -275,23 +421,19 @@ export default function HyperliquidProDesk({
       .filter(Boolean);
 
     const maxCum = Math.max(cumAsk, cumBid, 1);
-    // Guard the spread maths: an empty or fully-unparseable book must not
-    // produce NaN in the ribbon.
     const safeMark = Number.isFinite(Number(markPrice)) ? Number(markPrice) : 0;
     const bestAsk = asksWithCum[0]?.px || safeMark;
     const bestBid = bidsWithCum[0]?.px || safeMark;
     const sp = Math.max(0.0001, bestAsk - bestBid);
     const spP = bestAsk > 0 ? ((sp / bestAsk) * 100).toFixed(3) : '0.000';
 
-    // Asks are displayed top-to-bottom descending to spread
-    const displayAsks = [...asksWithCum].reverse();
-
     return {
-      processedAsks: displayAsks,
+      processedAsks: [...asksWithCum].reverse(),
       processedBids: bidsWithCum,
-      spreadVal: sp.toFixed(sp < 1 ? 4 : 2),
+      spreadVal: sp < 1 ? sp.toFixed(4) : sp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       spreadPct: `${spP}%`,
-      maxDepthCum: maxCum
+      maxDepthCum: maxCum,
+      isBookLoading: false,
     };
   }, [l2Depth, markPrice]);
 
@@ -724,9 +866,33 @@ export default function HyperliquidProDesk({
             alignItems: 'center',
             justifyContent: 'space-between'
           }}>
-            <span style={{ fontSize: '11.5px', fontWeight: 800, color: '#f8fafc' }}>
-              Order Book
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '11.5px', fontWeight: 800, color: '#f8fafc' }}>
+                Order Book
+              </span>
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                fontSize: '9px',
+                fontFamily: 'var(--font-mono)',
+                fontWeight: 700,
+                color: isLiveStreaming ? 'var(--accent-emerald)' : 'var(--accent-sky)',
+                background: isLiveStreaming ? 'rgba(16, 185, 129, 0.12)' : 'rgba(56, 189, 248, 0.12)',
+                padding: '1px 5px',
+                borderRadius: '3px',
+                border: isLiveStreaming ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid rgba(56, 189, 248, 0.25)'
+              }}>
+                <span style={{
+                  width: 5,
+                  height: 5,
+                  borderRadius: '50%',
+                  background: isLiveStreaming ? 'var(--accent-emerald)' : 'var(--accent-sky)',
+                  boxShadow: `0 0 6px ${isLiveStreaming ? 'var(--accent-emerald)' : 'var(--accent-sky)'}`
+                }} />
+                {isLiveStreaming ? 'LIVE' : (l2Depth?.source ? 'L2' : 'SYNC')}
+              </span>
+            </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <select
@@ -744,10 +910,9 @@ export default function HyperliquidProDesk({
                   outline: 'none'
                 }}
               >
-                <option value="0.001">0.001</option>
-                <option value="0.01">0.01</option>
-                <option value="0.1">0.1</option>
-                <option value="1">1</option>
+                {bookTickOptions.map(opt => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -768,113 +933,138 @@ export default function HyperliquidProDesk({
             <span style={{ textAlign: 'right' }}>Total</span>
           </div>
 
-          {/* ASKS (Sellers - Red) */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', overflowY: 'hidden' }}>
-            {processedAsks.map((ask, idx) => {
-              const depthPct = Math.min(100, ((ask.cum / maxDepthCum) * 100)).toFixed(0);
-              return (
-                <div
-                  key={`ask-${idx}-${ask.px}`}
-                  onClick={() => {
-                    setOrderType('Limit');
-                    setLimitPrice(ask.px.toString());
-                  }}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1.2fr 1fr 1fr',
-                    padding: '2.5px 10px',
-                    fontSize: '11px',
-                    fontFamily: 'var(--font-mono)',
-                    position: 'relative',
-                    cursor: 'pointer',
-                    userSelect: 'none'
-                  }}
-                  title="Klik untuk mengisi harga Limit"
-                >
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    bottom: 0,
-                    right: 0,
-                    width: `${depthPct}%`,
-                    background: 'rgba(239, 68, 68, 0.15)',
-                    pointerEvents: 'none'
-                  }} />
-                  <span style={{ color: '#ef4444', fontWeight: 700, position: 'relative', zIndex: 1 }}>
-                    {ask.px.toFixed(bookTickSize.includes('.') ? bookTickSize.split('.')[1].length : 0)}
-                  </span>
-                  <span style={{ textAlign: 'right', color: '#cbd5e1', position: 'relative', zIndex: 1 }}>
-                    {ask.sz.toFixed(2)}
-                  </span>
-                  <span style={{ textAlign: 'right', color: '#64748b', position: 'relative', zIndex: 1 }}>
-                    {ask.cum.toFixed(2)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+          {isBookLoading || (processedAsks.length === 0 && processedBids.length === 0) ? (
+            <div style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              color: '#64748b',
+              padding: '20px'
+            }}>
+              <div style={{
+                width: 20,
+                height: 20,
+                borderRadius: '50%',
+                border: '2px solid rgba(255, 255, 255, 0.08)',
+                borderTopColor: 'var(--accent-sky)',
+                animation: 'cmcSpin 0.8s linear infinite'
+              }} />
+              <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)' }}>Menghubungkan L2 stream...</span>
+            </div>
+          ) : (
+            <>
+              {/* ASKS (Sellers - Red) */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', overflowY: 'hidden' }}>
+                {processedAsks.map((ask, idx) => {
+                  const depthPct = Math.min(100, ((ask.cum / maxDepthCum) * 100)).toFixed(0);
+                  return (
+                    <div
+                      key={`ask-${idx}-${ask.px}`}
+                      onClick={() => {
+                        setOrderType('Limit');
+                        setLimitPrice(ask.px.toString());
+                      }}
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1.2fr 1fr 1fr',
+                        padding: '2.5px 10px',
+                        fontSize: '11px',
+                        fontFamily: 'var(--font-mono)',
+                        position: 'relative',
+                        cursor: 'pointer',
+                        userSelect: 'none'
+                      }}
+                      title="Klik untuk mengisi harga Limit"
+                    >
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        bottom: 0,
+                        right: 0,
+                        width: `${depthPct}%`,
+                        background: 'rgba(239, 68, 68, 0.15)',
+                        pointerEvents: 'none'
+                      }} />
+                      <span style={{ color: '#ef4444', fontWeight: 700, position: 'relative', zIndex: 1 }}>
+                        {formatBookPrice(ask.px)}
+                      </span>
+                      <span style={{ textAlign: 'right', color: '#cbd5e1', position: 'relative', zIndex: 1 }}>
+                        {ask.sz.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: ask.sz < 0.01 ? 4 : 2 })}
+                      </span>
+                      <span style={{ textAlign: 'right', color: '#64748b', position: 'relative', zIndex: 1 }}>
+                        {ask.cum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
 
-          {/* SPREAD BAR (Center Divider) */}
-          <div style={{
-            padding: '5px 10px',
-            background: 'rgba(255, 255, 255, 0.03)',
-            borderTop: '1px solid rgba(255, 255, 255, 0.06)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            fontSize: '10px',
-            fontFamily: 'var(--font-mono)'
-          }}>
-            <span style={{ color: '#64748b' }}>Spread {spreadVal}</span>
-            <span style={{ color: '#fbbf24', fontWeight: 700 }}>{spreadPct}</span>
-          </div>
+              {/* SPREAD BAR (Center Divider) */}
+              <div style={{
+                padding: '5px 10px',
+                background: 'rgba(255, 255, 255, 0.03)',
+                borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                fontSize: '10px',
+                fontFamily: 'var(--font-mono)'
+              }}>
+                <span style={{ color: '#64748b' }}>Spread {spreadVal}</span>
+                <span style={{ color: '#fbbf24', fontWeight: 700 }}>{spreadPct}</span>
+              </div>
 
-          {/* BIDS (Buyers - Green) */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', overflowY: 'hidden' }}>
-            {processedBids.map((bid, idx) => {
-              const depthPct = Math.min(100, ((bid.cum / maxDepthCum) * 100)).toFixed(0);
-              return (
-                <div
-                  key={`bid-${idx}-${bid.px}`}
-                  onClick={() => {
-                    setOrderType('Limit');
-                    setLimitPrice(bid.px.toString());
-                  }}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1.2fr 1fr 1fr',
-                    padding: '2.5px 10px',
-                    fontSize: '11px',
-                    fontFamily: 'var(--font-mono)',
-                    position: 'relative',
-                    cursor: 'pointer',
-                    userSelect: 'none'
-                  }}
-                  title="Klik untuk mengisi harga Limit"
-                >
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    bottom: 0,
-                    right: 0,
-                    width: `${depthPct}%`,
-                    background: 'rgba(16, 185, 129, 0.15)',
-                    pointerEvents: 'none'
-                  }} />
-                  <span style={{ color: 'var(--accent-emerald)', fontWeight: 700, position: 'relative', zIndex: 1 }}>
-                    {bid.px.toFixed(bookTickSize.includes('.') ? bookTickSize.split('.')[1].length : 0)}
-                  </span>
-                  <span style={{ textAlign: 'right', color: '#cbd5e1', position: 'relative', zIndex: 1 }}>
-                    {bid.sz.toFixed(2)}
-                  </span>
-                  <span style={{ textAlign: 'right', color: '#64748b', position: 'relative', zIndex: 1 }}>
-                    {bid.cum.toFixed(2)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+              {/* BIDS (Buyers - Green) */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', overflowY: 'hidden' }}>
+                {processedBids.map((bid, idx) => {
+                  const depthPct = Math.min(100, ((bid.cum / maxDepthCum) * 100)).toFixed(0);
+                  return (
+                    <div
+                      key={`bid-${idx}-${bid.px}`}
+                      onClick={() => {
+                        setOrderType('Limit');
+                        setLimitPrice(bid.px.toString());
+                      }}
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1.2fr 1fr 1fr',
+                        padding: '2.5px 10px',
+                        fontSize: '11px',
+                        fontFamily: 'var(--font-mono)',
+                        position: 'relative',
+                        cursor: 'pointer',
+                        userSelect: 'none'
+                      }}
+                      title="Klik untuk mengisi harga Limit"
+                    >
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        bottom: 0,
+                        right: 0,
+                        width: `${depthPct}%`,
+                        background: 'rgba(16, 185, 129, 0.15)',
+                        pointerEvents: 'none'
+                      }} />
+                      <span style={{ color: 'var(--accent-emerald)', fontWeight: 700, position: 'relative', zIndex: 1 }}>
+                        {formatBookPrice(bid.px)}
+                      </span>
+                      <span style={{ textAlign: 'right', color: '#cbd5e1', position: 'relative', zIndex: 1 }}>
+                        {bid.sz.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: bid.sz < 0.01 ? 4 : 2 })}
+                      </span>
+                      <span style={{ textAlign: 'right', color: '#64748b', position: 'relative', zIndex: 1 }}>
+                        {bid.cum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
 
         {/* ── COLUMN 3: ORDER EXECUTION DECK (Exact Hyperliquid Form) ── */}

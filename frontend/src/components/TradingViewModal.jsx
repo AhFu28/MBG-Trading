@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { getTvSymbol } from '../data/tv-helpers.js';
 import HyperliquidProDesk from './HyperliquidProDesk.jsx';
 
-export default function TradingViewModal({ initialSymbol, market = 'IDX', onClose, onOpenLotCalc, onOpenExecution, tradePlans = [] }) {
+export default function TradingViewModal({ initialSymbol, market = 'IDX', onClose, onOpenLotCalc, onOpenExecution, tradePlans = [], livePrices = {} }) {
   const containerRef = useRef(null);
 
   // Helper to identify if symbol belongs to Crypto or IDX
@@ -15,6 +15,12 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
   const initialIsCrypto = isCryptoSymbol(initialSymbol, market);
   const [modalMode, setModalMode] = useState('PRO'); // 'PRO' (Hyperliquid Pro Desk) | 'STANDARD'
   const [currentSymbol, setCurrentSymbol] = useState(initialSymbol || (initialIsCrypto ? 'ETHUSDT' : 'BBCA'));
+
+  useEffect(() => {
+    if (initialSymbol) {
+      setCurrentSymbol(initialSymbol);
+    }
+  }, [initialSymbol]);
   const [searchInput, setSearchInput] = useState('');
   // Default to 'D' (Day) for IDX stocks because TradingView free IDX feed only supports D, W, M.
   const [chartInterval, setChartInterval] = useState(initialIsCrypto ? '15' : 'D');
@@ -132,6 +138,7 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
         >
           <HyperliquidProDesk
             initialSymbol={currentSymbol}
+            livePrices={livePrices}
             onClose={onClose}
             onSwitchToGrid={() => setModalMode('STANDARD')}
           />

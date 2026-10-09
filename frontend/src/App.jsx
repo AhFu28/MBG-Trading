@@ -272,11 +272,19 @@ export default function App() {
     market: 'IDX'
   });
 
-  const handleOpenChart = useCallback((symbol = 'AMMN', market = 'IDX') => {
+  const handleOpenChart = useCallback((symbol = 'AMMN', marketOrPair = 'IDX') => {
+    const isPair = typeof marketOrPair === 'string' && (marketOrPair.includes('USDT') || marketOrPair.includes('USDC'));
+    const isCryptoSym = typeof symbol === 'string' && (
+      symbol.toUpperCase().endsWith('USDT') || symbol.toUpperCase().endsWith('USDC') ||
+      ['BTC', 'ETH', 'SOL', 'HYPE', 'SUI', 'DOGE', 'AVAX', 'LINK', 'XRP', 'BNB'].includes(symbol.toUpperCase())
+    );
+    const resolvedSymbol = isPair ? marketOrPair : (isCryptoSym && !symbol.toUpperCase().endsWith('USDT') ? `${symbol.toUpperCase()}USDT` : symbol);
+    const resolvedMarket = (isPair || isCryptoSym) ? 'CRYPTO' : (marketOrPair === 'CRYPTO' || marketOrPair === 'IDX' || marketOrPair === 'US' ? marketOrPair : 'IDX');
+
     setChartModal({
       isOpen: true,
-      symbol: symbol,
-      market: market
+      symbol: resolvedSymbol,
+      market: resolvedMarket
     });
   }, []);
 
@@ -1074,6 +1082,7 @@ export default function App() {
                 onOpenLotCalc={handleOpenLotCalc}
                 onOpenExecution={handleOpenExecution}
                 tradePlans={data?.daily_trade_plans || []}
+                livePrices={livePrices}
               />
             )}
 
