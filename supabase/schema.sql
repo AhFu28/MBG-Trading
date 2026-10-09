@@ -28,8 +28,10 @@ create table if not exists public.profiles (
   display_name  text,
 
   -- Tier menentukan fitur mana yang terbuka.
-  --   free = fitur terbatas (sinyal tertunda 24 jam, tab dasar)
-  --   pro  = semua fitur + sinyal real-time + notifikasi
+  --   free   = fitur terbatas (sinyal tertunda 24 jam, tab dasar)
+  --   pro    = semua fitur + sinyal real-time + notifikasi
+  --   legend = quant strategist master yang membuka seluruh lab & prediction
+  --   admin  = kontrol penuh operasional & review payment
   -- Nilai lain ditolak oleh constraint di bawah.
   tier          text not null default 'free',
 
@@ -44,7 +46,7 @@ create table if not exists public.profiles (
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now(),
 
-  constraint profiles_tier_valid check (tier in ('free', 'pro'))
+  constraint profiles_tier_valid check (tier in ('free', 'pro', 'legend', 'admin'))
 );
 
 -- Cari cepat berdasarkan email (untuk bantuan pelanggan).
@@ -199,6 +201,26 @@ begin
          expires_at = now()
    where lower(profiles.email) = lower(p_email)
   returning profiles.email, profiles.tier;
+end;
+$$;
+
+create or replace function public.activate_legend(
+  p_email text,
+  p_note text default 'Legend Quant Strategist unlocked'
+)
+returns table (email text, tier text, expires_at timestamptz)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  return query
+  update public.profiles
+     set tier = 'legend',
+         expires_at = null,
+         payment_note = coalesce(p_note, payment_note)
+   where lower(profiles.email) = lower(p_email)
+  returning profiles.email, profiles.tier, profiles.expires_at;
 end;
 $$;
 
