@@ -1337,6 +1337,11 @@ export default function App() {
         data={data}
         isWsConnected={isWsConnected}
         lastUpdateTime={lastUpdateTime}
+        /* H-08: the live USDT/IDR rate from useLivePrices (localStorage-backed)
+           - the audit B finding: the modal never received the real rate and
+           displayed an invented 16350 as verified. */
+        usdToIdrRate={Number(localStorage.getItem('mbg_usd_idr_rate')) || undefined}
+        usdToIdrTime={Number(localStorage.getItem('mbg_usd_idr_ts')) || null}
         onRefetchAll={() => {
           refetchAll();
           setSyncTrigger(prev => prev + 1);

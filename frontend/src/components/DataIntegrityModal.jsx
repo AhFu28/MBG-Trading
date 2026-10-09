@@ -12,7 +12,7 @@ export default function DataIntegrityModal({
   isWsConnected,
   lastUpdateTime,
   onRefetchAll,
-  usdToIdrRate = 16350,
+  usdToIdrRate = null,
   usdToIdrTime = null
 }) {
   if (!isOpen) return null;
@@ -99,8 +99,9 @@ export default function DataIntegrityModal({
     ? 'var(--accent-gold)'
     : (cfdAgeSec != null && cfdAgeSec < 120 ? 'var(--accent-emerald)' : 'var(--accent-amber)');
 
-  // 6. Gemini Model Info
-  const geminiModel = data?.model_used || data?.daily_snips?.model_used || 'gemini-3.8-flash (Auto-Discovered)';
+  // 6. Gemini Model Info — honest: no invented model name; the bundle's
+  // model_used is the only source of truth for which model actually ran.
+  const geminiModel = data?.model_used || data?.daily_snips?.model_used || null;
 
   // Kurs USD/IDR — COMPUTED from the real fetch time (usdToIdrTime prop)
   const fxTime = usdToIdrTime ? new Date(usdToIdrTime) : null;
@@ -115,46 +116,33 @@ export default function DataIntegrityModal({
     : 'MENUNGGU PIPELINE';
   const llmColor = data?.model_used ? (bundleAgeMin < 400 ? 'var(--accent-sky)' : 'var(--accent-amber)') : 'var(--accent-gold)';
 
-  // 8. Force Update Interactive Telemetry State
+  // 8. Force Update — HONEST progress: the timer-based 15→45→70→90→100% bar was
+  // fake (the audit A6 finding); the real action is onRefetchAll + fetchArena,
+  // so the indicator is a spinner and the stage text says what was requested.
   const [isSyncing, setIsSyncing] = useState(false);
-  const [syncProgress, setSyncProgress] = useState(0);
   const [syncStage, setSyncStage] = useState('');
   const [lastForcedSync, setLastForcedSync] = useState(null);
 
   const handleForceUpdate = useCallback(async () => {
     if (isSyncing) return;
     setIsSyncing(true);
-    setSyncProgress(15);
-    setSyncStage('Menghubungkan ke gateway TradingView & Bursa Efek Indonesia...');
+    setSyncStage('Meminta refresh ulang semua feed bursa & AI Arena...');
 
     try {
-      await new Promise(r => setTimeout(r, 280));
       if (onRefetchAll) onRefetchAll();
-      setSyncProgress(45);
-      setSyncStage('Verifikasi live stream WebSocket Binance & pasar valuta USD/IDR...');
-
-      await new Promise(r => setTimeout(r, 320));
-      setSyncProgress(70);
-      setSyncStage('Mengunduh paket data Macro Intelligence Bundle (cache-buster)...');
-
-      await new Promise(r => setTimeout(r, 320));
-      setSyncProgress(90);
-      setSyncStage('Menyinkronkan status 16 Bot AI Multi-Agent Arena 24/7...');
       await fetchArena();
-
-      await new Promise(r => setTimeout(r, 280));
-      setSyncProgress(100);
       setSyncStage('Sinkronisasi selesai — semua feed diminta menyegarkan ulang.');
       setLastForcedSync(new Date());
 
       setTimeout(() => {
         setIsSyncing(false);
-        setSyncProgress(0);
         setSyncStage('');
       }, 1600);
     } catch (err) {
       console.error('Error during force update:', err);
       setIsSyncing(false);
+      setSyncStage('Sinkronisasi gagal — lihat console untuk detailnya.');
+      setTimeout(() => setSyncStage(''), 3000);
     }
   }, [isSyncing, onRefetchAll, fetchArena]);
 
@@ -225,12 +213,14 @@ export default function DataIntegrityModal({
       lastUpdate: usdToIdrTime ? `${formatWib(new Date(usdToIdrTime))}` : 'Real-time cache',
       status: fxStatus,
       statusColor: fxColor,
-      details: `Kurs acuan kalkulasi lot: Rp ${Number(usdToIdrRate).toLocaleString('id-ID')} per USD.`
+      details: usdToIdrRate == null
+        ? 'Kurs acuan belum tersambung dari live ticker — kalkulasi lot memakai default internal yang TIDAK terverifikasi.'
+        : `Kurs acuan kalkulasi lot: Rp ${Number(usdToIdrRate).toLocaleString('id-ID')} per USD (dari live ticker).`
     },
     {
       name: 'Mesin Sintesis AI Kuantitatif (Gemini LLM)',
       endpoint: 'Google Generative Language API (v1beta)',
-      provider: geminiModel,
+      provider: geminiModel || 'TIDAK TERCATAT pada cutoff ini',
       lastUpdate: bundleDate ? formatWib(bundleDate) : 'Sesuai jadwal pipeline',
       status: llmStatus,
       statusColor: llmColor,
@@ -343,40 +333,25 @@ export default function DataIntegrityModal({
               display: 'inline-block',
               animation: isSyncing ? 'spin 1s linear infinite' : 'none'
             }}>🔄</span>
-            <span>{isSyncing ? `Sinkronisasi (${syncProgress}%)...` : 'Force Update & Sinkronisasi Semua Feed'}</span>
+            <span>{isSyncing ? 'Sinkronisasi...' : 'Force Update & Sinkronisasi Semua Feed'}</span>
           </button>
         </div>
 
-        {/* Real-time Force Update Progress Bar */}
+        {/* Honest sync indicator: the stage text says what was requested; the
+            spinner shows it is running. No invented percentages. */}
         {isSyncing && (
           <div style={{
             padding: '8px 18px',
             background: 'rgba(56, 189, 248, 0.08)',
-            borderBottom: '1px solid rgba(56, 189, 248, 0.25)'
+            borderBottom: '1px solid rgba(56, 189, 248, 0.25)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-              <span style={{ fontSize: '12px', color: 'var(--accent-sky)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span>⚡</span>
-                {syncStage}
-              </span>
-              <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--accent-sky)' }}>
-                {syncProgress}%
-              </span>
-            </div>
-            <div style={{
-              width: '100%',
-              height: '4px',
-              background: 'rgba(255, 255, 255, 0.1)',
-              borderRadius: '2px',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                width: `${syncProgress}%`,
-                height: '100%',
-                background: 'linear-gradient(90deg, var(--accent-sky), var(--accent-emerald))',
-                transition: 'width 0.25s ease-out'
-              }} />
-            </div>
+            <span style={{ display: 'inline-block', animation: 'spin 1s linear infinite' }}>⚡</span>
+            <span style={{ fontSize: '12px', color: 'var(--accent-sky)', fontWeight: 600 }}>
+              {syncStage}
+            </span>
           </div>
         )}
 
