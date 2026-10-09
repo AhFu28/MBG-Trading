@@ -1,0 +1,455 @@
+{
+  "audit": "MBG-Trading data integrity & provenance",
+  "audited_at": "2026-10-08T19:35:17+07:00",
+  "remeasured_at": "2026-10-09T06:08:35+07:00",
+  "timezone": "Asia/Jakarta (UTC+7)",
+  "taxonomy": [
+    "REALTIME",
+    "NEAR-REALTIME",
+    "PERIODIK-CEPAT",
+    "PERIODIK-JADWAL",
+    "BATCH-MANUAL",
+    "STATIS",
+    "SINTETIK",
+    "STALE",
+    "MATI/OFFLINE",
+    "PALSU (klaim tidak didukung kode)"
+  ],
+  "summary": {
+    "total_streams": 28,
+    "realtime": 3,
+    "near_realtime": 5,
+    "periodic": 6,
+    "stale": 2,
+    "static_archive": 4,
+    "dead": 5,
+    "synthetic_or_fake": 4
+  },
+  "streams": [
+    {
+      "id": "S01",
+      "stream": "Crypto spot (700+ pasangan)",
+      "source": "wss://data-stream.binance.vision/ws/!miniTicker@arr",
+      "mechanism": "WebSocket push",
+      "cadence_claimed": "Realtime 1 detik",
+      "cadence_real": "Sub-detik, kontinu",
+      "age_at_audit": "live",
+      "classification": "REALTIME",
+      "evidence": [
+        "frontend/src/hooks/useLivePrices.js:564",
+        "frontend/src/hooks/useLivePrices.js:638"
+      ],
+      "priority": "-"
+    },
+    {
+      "id": "S02",
+      "stream": "Crypto 24h summary",
+      "source": "data-api.binance.vision/api/v3/ticker/24hr",
+      "mechanism": "Poll",
+      "cadence_claimed": "-",
+      "cadence_real": "45.000 ms",
+      "age_at_audit": "<1 mnt",
+      "classification": "NEAR-REALTIME",
+      "evidence": [
+        "frontend/src/hooks/useLivePrices.js:302",
+        "frontend/src/hooks/useLivePrices.js:671"
+      ],
+      "priority": "-"
+    },
+    {
+      "id": "S03",
+      "stream": "Crypto futures desk",
+      "source": "Binance Vision WS + REST",
+      "mechanism": "WS + poll",
+      "cadence_claimed": "Realtime",
+      "cadence_real": "WS live; 20 s; 30 s",
+      "age_at_audit": "live",
+      "classification": "REALTIME",
+      "evidence": [
+        "frontend/src/components/CryptoFuturesTab.jsx:330",
+        "frontend/src/components/CryptoFuturesTab.jsx:180",
+        "frontend/src/components/CryptoFuturesTab.jsx:366"
+      ],
+      "priority": "-"
+    },
+    {
+      "id": "S04",
+      "stream": "IDX / US / Forex / Komoditas",
+      "source": "/api/scanner -> scanner.tradingview.com",
+      "mechanism": "Poll via proxy + edge cache",
+      "cadence_claimed": "Realtime / 12 detik",
+      "cadence_real": "12.000 ms, HANYA saat pasar buka; cache edge 10-15 s",
+      "age_at_audit": "<=12 s (buka); membeku saat tutup",
+      "classification": "NEAR-REALTIME (buka) / BEKAS (tutup)",
+      "evidence": [
+        "frontend/src/hooks/useLivePrices.js:57",
+        "frontend/src/hooks/useLivePrices.js:674-686",
+        "frontend/functions/api/scanner.js:120",
+        "frontend/functions/api/scanner.js:144"
+      ],
+      "priority": "P1"
+    },
+    {
+      "id": "S05",
+      "stream": "Hyperliquid L2 book",
+      "source": "Hyperliquid API",
+      "mechanism": "Poll",
+      "cadence_claimed": "Realtime",
+      "cadence_real": "1.500 ms; ctx 30.000 ms",
+      "age_at_audit": "~1,5 s",
+      "classification": "NEAR-REALTIME",
+      "evidence": [
+        "frontend/src/components/HyperliquidProDesk.jsx:176",
+        "frontend/src/components/HyperliquidProDesk.jsx:182"
+      ],
+      "priority": "-"
+    },
+    {
+      "id": "S06",
+      "stream": "Bitcoin mempool recent",
+      "source": "mempool.space REST + WS",
+      "mechanism": "Poll + WS",
+      "cadence_claimed": "Realtime",
+      "cadence_real": "12.000 ms + WS",
+      "age_at_audit": "~12 s",
+      "classification": "NEAR-REALTIME",
+      "evidence": [
+        "frontend/src/components/WhaleIntelligenceTab.jsx:679",
+        "frontend/src/components/WhaleIntelligenceTab.jsx:734",
+        "frontend/src/components/WhaleIntelligenceTab.jsx:744"
+      ],
+      "priority": "-"
+    },
+    {
+      "id": "S07",
+      "stream": "Mega whale tape (on-chain)",
+      "source": "Generator internal Math.random()",
+      "mechanism": "Dibangkitkan",
+      "cadence_claimed": "Real-time radar",
+      "cadence_real": "Sintetis",
+      "age_at_audit": "n/a",
+      "classification": "SINTETIK",
+      "evidence": [
+        "frontend/src/components/WhaleIntelligenceTab.jsx:407-582",
+        "frontend/src/components/WhaleIntelligenceTab.jsx:936"
+      ],
+      "priority": "P2"
+    },
+    {
+      "id": "S08",
+      "stream": "Order book crypto",
+      "source": "data-api.binance.vision/api/v3/depth",
+      "mechanism": "Fetch saat dibuka",
+      "cadence_claimed": "Real",
+      "cadence_real": "on-demand",
+      "age_at_audit": "~1 s",
+      "classification": "NEAR-REALTIME",
+      "evidence": [
+        "frontend/src/components/OrderBookSimulator.jsx:115",
+        "frontend/src/components/OrderBookSimulator.jsx:148"
+      ],
+      "priority": "-"
+    },
+    {
+      "id": "S09",
+      "stream": "Order book IDX + broker summary",
+      "source": "Depth dibangkitkan dari last price + daftar broker hardcoded",
+      "mechanism": "Dibangkitkan",
+      "cadence_claimed": "100% Real Data Pipeline",
+      "cadence_real": "Sintetis/statis",
+      "age_at_audit": "n/a",
+      "classification": "SINTETIK / STATIS",
+      "evidence": [
+        "frontend/src/components/OrderBookSimulator.jsx:5",
+        "frontend/src/components/OrderBookSimulator.jsx:203-214",
+        "frontend/src/components/OrderBookSimulator.jsx:271-286"
+      ],
+      "priority": "P0"
+    },
+    {
+      "id": "S10",
+      "stream": "Global metrics (mcap, dominasi)",
+      "source": "CMC (CORS gagal) -> CoinGecko",
+      "mechanism": "Poll",
+      "cadence_claimed": "-",
+      "cadence_real": "on-mount/periodik",
+      "age_at_audit": "~1-2 mnt",
+      "classification": "PERIODIK-CEPAT",
+      "evidence": [
+        "frontend/src/services/marketOverview.js:126-156"
+      ],
+      "priority": "P2"
+    },
+    {
+      "id": "S11",
+      "stream": "Macro Intelligence Bundle",
+      "source": "engine/cache/latest_cockpit_bundle.json (git commit)",
+      "mechanism": "GitHub Actions commit + deploy Pages",
+      "cadence_claimed": "Hourly",
+      "cadence_real": "3-4x/hari (jeda 3,7-7,5 jam)",
+      "age_at_audit": "~0,3 j",
+      "classification": "PERIODIK-JADWAL",
+      "evidence": [
+        ".github/workflows/hourly_crypto_macro.yml:6",
+        "engine/cache/latest_cockpit_bundle.json last_updated 2026-10-08T22:48Z"
+      ],
+      "priority": "P0"
+    },
+    {
+      "id": "S12",
+      "stream": "AI Multi-Agent Arena",
+      "source": "engine/cache/latest_arena_state.json (arena_runner_247)",
+      "mechanism": "Commit akhir sesi",
+      "cadence_claimed": "4 sesi/hari, tick 60 s",
+      "cadence_real": "3-4x/hari",
+      "age_at_audit": "~4,7 j",
+      "classification": "PERIODIK-JADWAL",
+      "evidence": [
+        ".github/workflows/arena_247_engine.yml:20",
+        ".github/workflows/arena_247_engine.yml:51"
+      ],
+      "priority": "-"
+    },
+    {
+      "id": "S13",
+      "stream": "IDX categorized + trade plans",
+      "source": "engine/cache/idx_categorized.json, daily_trade_plans.json",
+      "mechanism": "Workflow manual",
+      "cadence_claimed": "Harian",
+      "cadence_real": "manual (terakhir 2026-10-07 05:43)",
+      "age_at_audit": "48,4 j",
+      "classification": "STALE / BATCH-MANUAL",
+      "evidence": [
+        ".github/workflows/daily_idx_morning.yml:4",
+        "engine/cache/idx_categorized.json mtime"
+      ],
+      "priority": "P0"
+    },
+    {
+      "id": "S14",
+      "stream": "Arena state lama (arsip)",
+      "source": "engine/cache/arena_state.json",
+      "mechanism": "Tidak lagi ditulis",
+      "cadence_claimed": "-",
+      "cadence_real": "berhenti",
+      "age_at_audit": "mtime 48,4 j; isi 2026-10-05",
+      "classification": "STATIS / ARSIP",
+      "evidence": [
+        "engine/cache/arena_state.json last_evaluated"
+      ],
+      "priority": "P1"
+    },
+    {
+      "id": "S15",
+      "stream": "Macro telemetry",
+      "source": "engine/cache/macro_telemetry.json",
+      "mechanism": "Tidak lagi ditulis",
+      "cadence_claimed": "hourly",
+      "cadence_real": "berhenti 2026-09-30",
+      "age_at_audit": "205,7 j (~8,6 hari)",
+      "classification": "MATI",
+      "evidence": [
+        "engine/cache/macro_telemetry.json updated_at 2026-09-27T14:26Z"
+      ],
+      "priority": "P0"
+    },
+    {
+      "id": "S16",
+      "stream": "Crypto spot top-10",
+      "source": "engine/cache/crypto_spot_10.json",
+      "mechanism": "Tidak lagi ditulis",
+      "cadence_claimed": "hourly",
+      "cadence_real": "berhenti 2026-09-30",
+      "age_at_audit": "205,7 j",
+      "classification": "MATI",
+      "evidence": [
+        "engine/cache/crypto_spot_10.json mtime"
+      ],
+      "priority": "P0"
+    },
+    {
+      "id": "S17",
+      "stream": "Research archive",
+      "source": "engine/cache/research_archive.json",
+      "mechanism": "Tidak lagi ditulis",
+      "cadence_claimed": "-",
+      "cadence_real": "berhenti 2026-09-30",
+      "age_at_audit": "205,7 j",
+      "classification": "MATI",
+      "evidence": [
+        "engine/cache/research_archive.json mtime"
+      ],
+      "priority": "P1"
+    },
+    {
+      "id": "S18",
+      "stream": "Paper portfolio",
+      "source": "engine/cache/paper_portfolio.json",
+      "mechanism": "Tidak lagi ditulis",
+      "cadence_claimed": "-",
+      "cadence_real": "berhenti 2026-09-30",
+      "age_at_audit": "205,7 j",
+      "classification": "MATI",
+      "evidence": [
+        "engine/cache/paper_portfolio.json mtime"
+      ],
+      "priority": "P1"
+    },
+    {
+      "id": "S19",
+      "stream": "Last known macro (fallback)",
+      "source": "engine/cache/last_known_macro.json",
+      "mechanism": "Tidak lagi ditulis",
+      "cadence_claimed": "-",
+      "cadence_real": "berhenti 2026-09-30",
+      "age_at_audit": "205,7 j",
+      "classification": "MATI",
+      "evidence": [
+        "engine/cache/last_known_macro.json mtime"
+      ],
+      "priority": "P1"
+    },
+    {
+      "id": "S20",
+      "stream": "USD/IDR di modal provenance",
+      "source": "Default hardcoded 16350 (prop tidak dikirim)",
+      "mechanism": "Statis",
+      "cadence_claimed": "VERIFIED / Real-time cache",
+      "cadence_real": "tidak pernah",
+      "age_at_audit": "selamanya",
+      "classification": "STATIS",
+      "evidence": [
+        "frontend/src/components/DataIntegrityModal.jsx:14-15",
+        "frontend/src/components/DataIntegrityModal.jsx:192-195",
+        "frontend/src/App.jsx:1248-1258"
+      ],
+      "priority": "P0"
+    },
+    {
+      "id": "S21",
+      "stream": "Status feed di modal provenance",
+      "source": "String literal di komponen",
+      "mechanism": "Hardcoded",
+      "cadence_claimed": "ACTIVE/SYNCED/VERIFIED/READY",
+      "cadence_real": "tidak dihitung",
+      "age_at_audit": "n/a",
+      "classification": "STATIS (klaim palsu)",
+      "evidence": [
+        "frontend/src/components/DataIntegrityModal.jsx:75-76",
+        "frontend/src/components/DataIntegrityModal.jsx:184-186",
+        "frontend/src/components/DataIntegrityModal.jsx:193-194",
+        "frontend/src/components/DataIntegrityModal.jsx:202-203"
+      ],
+      "priority": "P0"
+    },
+    {
+      "id": "S22",
+      "stream": "Progress Force Update + klaim 0ms latency",
+      "source": "setTimeout + string tetap",
+      "mechanism": "Animasi",
+      "cadence_claimed": "All Feeds Refreshed",
+      "cadence_real": "tidak mengukur",
+      "age_at_audit": "n/a",
+      "classification": "PALSU",
+      "evidence": [
+        "frontend/src/components/DataIntegrityModal.jsx:91-126",
+        "frontend/src/components/DataIntegrityModal.jsx:363"
+      ],
+      "priority": "P0"
+    },
+    {
+      "id": "S23",
+      "stream": "IDX broker summary",
+      "source": "api.indexalpha.id (kuota 5/hari)",
+      "mechanism": "Fetch + fallback sintetik",
+      "cadence_claimed": "Live",
+      "cadence_real": "harian; fallback SINTETIK diberi label",
+      "age_at_audit": "ikut pipeline",
+      "classification": "PERIODIK-JADWAL + SINTETIK (berlabel)",
+      "evidence": [
+        "engine/fetchers/broker_summary_fetcher.py:77",
+        "engine/fetchers/broker_summary_fetcher.py:88",
+        "engine/fetchers/broker_summary_fetcher.py:112"
+      ],
+      "priority": "P1"
+    },
+    {
+      "id": "S24",
+      "stream": "Foreign flow IDX",
+      "source": "api.goapi.io / api.indexalpha.id",
+      "mechanism": "Fetch + fallback estimasi",
+      "cadence_claimed": "Net foreign flow",
+      "cadence_real": "harian; fallback data_source=estimated",
+      "age_at_audit": "ikut pipeline",
+      "classification": "PERIODIK-JADWAL + SINTETIK (berlabel)",
+      "evidence": [
+        "engine/fetchers/foreign_flow_fetcher.py:80",
+        "engine/fetchers/foreign_flow_fetcher.py:114",
+        "engine/fetchers/foreign_flow_fetcher.py:142"
+      ],
+      "priority": "P1"
+    },
+    {
+      "id": "S25",
+      "stream": "News & sentimen",
+      "source": "Google News RSS + 4 media (news_macro.py) -> bundle",
+      "mechanism": "Ikut bundle",
+      "cadence_claimed": "-",
+      "cadence_real": "3-4x/hari",
+      "age_at_audit": "ikut bundle",
+      "classification": "PERIODIK-JADWAL",
+      "evidence": [
+        "engine/fetchers/news_macro.py:315",
+        "engine/fetchers/news_macro.py:653-672"
+      ],
+      "priority": "-"
+    },
+    {
+      "id": "S26",
+      "stream": "Sinyal VIP",
+      "source": "vip_signal_router (gerbang provenance)",
+      "mechanism": "Dispatch + gate",
+      "cadence_claimed": "LIVE hanya jika source+observed_at ada",
+      "cadence_real": "ditolak bila provenance hilang",
+      "age_at_audit": "n/a",
+      "classification": "JUJUR (kontrol benar)",
+      "evidence": [
+        "engine/notifiers/vip_signal_router.py:37-38",
+        "engine/notifiers/vip_signal_router.py:235"
+      ],
+      "priority": "-"
+    },
+    {
+      "id": "S27",
+      "stream": "Akun, sesi, pembayaran, admin",
+      "source": "Supabase via /api/account/*",
+      "mechanism": "Tulis/baca runtime",
+      "cadence_claimed": "-",
+      "cadence_real": "per request",
+      "age_at_audit": "live",
+      "classification": "REALTIME",
+      "evidence": [
+        "frontend/functions/api/account/_shared.js",
+        "frontend/functions/api/account/payment-confirm.js",
+        "engine/database/schema.sql:83"
+      ],
+      "priority": "-"
+    },
+    {
+      "id": "S28",
+      "stream": "Bundle snapshot di edge",
+      "source": "import inline latest_cockpit_bundle.json",
+      "mechanism": "Build-time inline",
+      "cadence_claimed": "sesegar deploy (~1 jam)",
+      "cadence_real": "bergantung rebuild Pages; commit pakai [skip ci]",
+      "age_at_audit": "header X-Data-Live=false",
+      "classification": "PERIODIK-JADWAL (risiko tertinggal)",
+      "evidence": [
+        "frontend/functions/api/data.js:55",
+        "frontend/functions/api/data.js:239-257",
+        ".github/workflows/hourly_crypto_macro.yml:159"
+      ],
+      "priority": "P0"
+    }
+  ]
+}
