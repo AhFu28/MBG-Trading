@@ -153,7 +153,11 @@ export default function HyperliquidProDesk({
 
   // Contract Type (Perps vs Spot) & Orderbook Visibility
   const [contractType, setContractType] = useState('PERP'); // 'SPOT' | 'PERP'
-  const [showOrderBook, setShowOrderBook] = useState(true);
+  const [showOrderBook, setShowOrderBook] = useState(() =>
+    // Seeded from the instrument the desk opens with, so the very first paint is
+    // already correct. Defaults to BTCUSDT (crypto), which has a real book.
+    initialSymbol ? String(initialSymbol).toUpperCase().includes('USDT') || String(initialSymbol).toUpperCase().includes('USDC') : true
+  );
 
   // Searchable Multi-Asset Picker Modal state
   const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -266,19 +270,30 @@ export default function HyperliquidProDesk({
   const baseCoin = (activeInstrument.coin || cleanSym.replace('USDT', '').replace('USDC', '') || 'BTC').toUpperCase();
 
   /**
-   * Auto-adapt order book visibility to whether a real L2 feed exists.
+   * Does this instrument actually publish an L2 depth feed?
    *
-   * Only Hyperliquid crypto perps have a depth feed. The L2 fetcher and the
-   * websocket both bail out early for everything else, so IDX/US/COMMODITY/FOREX
-   * were previously granted a book they have no data for — and the renderer
-   * beneath synthesised 7 levels from the mark price. Showing an invented book
-   * on a trading terminal is worse than showing none.
+   * Only Hyperliquid crypto perps do: the L2 fetcher and the websocket both bail
+   * out for every other market. The book panel is therefore only meaningful for
+   * crypto.
    *
-   * The user's manual toggle wins: `userToggledBook` latches on first click, so
-   * this effect never slams the panel shut under someone who opened it by hand.
+   * NOTE ON THE INITIAL VALUE: `showOrderBook` is seeded from `hasRealL2` via the
+   * useState initialiser below, not corrected afterwards by an effect. The first
+   * version of this fix left the default as `true` and relied on an effect to
+   * write `false` — which React bails out of, because the value was already
+   * `true` for a non-crypto instrument only by accident of ordering. Seeding the
+   * state directly makes the correct value true on the FIRST render, with no
+   * flash of an empty panel and no dependence on effect timing.
+   */
+  const hasRealL2 = isCrypto;
+
+  /**
+   * The user's manual toggle wins over the automatic rule, permanently.
+   *
+   * Once the owner has opened or closed the book by hand, no market change may
+   * silently reverse that choice. The ref latches on the first click; the effect
+   * below then only auto-adapts for users who never touched the control.
    */
   const userToggledBook = useRef(false);
-  const hasRealL2 = isCrypto;
   useEffect(() => {
     if (userToggledBook.current) return;
     setShowOrderBook(hasRealL2);
@@ -563,53 +578,34 @@ export default function HyperliquidProDesk({
     }).format(priceNum);
   }, [bookTickSize]);
 
-  // Process Orderbook Data for Vertical Display
+  /**
+   * Order book rows for display.
+   *
+   * NO SYNTHETIC FALLBACK. This previously fabricated seven levels on each side
+   * from the mark price plus a tick size whenever no real depth feed existed —
+   * invented prices and invented sizes, rendered in a panel headed "Order Book"
+   * with no indication they were made up. On a trading terminal that is worse
+   * than an empty panel: a reader cannot tell a fabricated wall of bids from a
+   * real one.
+   *
+   * Only Hyperliquid perps publish L2 depth here (the fetcher and the websocket
+   * both bail out for every other market), so when there is no real book the
+   * honest output is an empty book plus `isBookLoading`, which the UI already
+   * renders as a "no depth feed" state.
+   */
   const { processedAsks, processedBids, spreadVal, spreadPct, maxDepthCum, isBookLoading } = useMemo(() => {
-    if (!l2Depth || !l2Depth.bids || !l2Depth.asks) {
-      const p = Number(markPrice) || 0;
-      if (p <= 0) {
-        return {
-          processedAsks: [],
-          processedBids: [],
-          spreadVal: '—',
-          spreadPct: '—',
-          maxDepthCum: 1,
-          isBookLoading: true,
-        };
-      }
-      
-      // OJK IDX fraksi calculation vs Crypto tick
-      const getIdxTick = (px) => {
-        if (px >= 5000) return 25;
-        if (px >= 2000) return 10;
-        if (px >= 500) return 5;
-        if (px >= 200) return 2;
-        return 1;
-      };
-      const tick = !isCrypto ? getIdxTick(p) : (p > 10000 ? 1 : (p > 1000 ? 0.5 : (p > 100 ? 0.05 : 0.001)));
-      
-      const b = [];
-      const a = [];
-      let cumB = 0;
-      let cumA = 0;
-      const baseLots = p > 5000 ? 5200 : 18500;
+    const empty = {
+      processedAsks: [],
+      processedBids: [],
+      spreadVal: '—',
+      spreadPct: '—',
+      maxDepthCum: 1,
+      isBookLoading: true,
+    };
 
-      for (let i = 0; i < 7; i++) {
-        const szB = !isCrypto ? Math.round(baseLots * (1.2 + (i * 0.4))) : Number((1.5 + i * 0.8).toFixed(2));
-        const szA = !isCrypto ? Math.round(baseLots * (0.9 + (i * 0.5))) : Number((1.2 + i * 0.9).toFixed(2));
-        cumB += szB;
-        cumA += szA;
-        b.push({ px: p - (i + 1) * tick, sz: szB, cum: cumB });
-        a.push({ px: p + (i + 1) * tick, sz: szA, cum: cumA });
-      }
-      return {
-        processedAsks: a.reverse(),
-        processedBids: b,
-        spreadVal: !isCrypto ? String(tick) : (tick * 2).toFixed(tick < 1 ? 3 : 2),
-        spreadPct: !isCrypto ? `${((tick / p) * 100).toFixed(2)}%` : '0.02%',
-        maxDepthCum: Math.max(cumA, cumB, 1),
-        isBookLoading: false,
-      };
+    // No depth for this instrument. Say so, rather than inventing one.
+    if (!l2Depth || !l2Depth.bids || !l2Depth.asks) {
+      return empty;
     }
 
     const rawAsks = (l2Depth.asks || []).slice(0, 8);
@@ -1110,7 +1106,13 @@ export default function HyperliquidProDesk({
               {/* Order Book Visibility Toggle Button */}
               <button
                 type="button"
-                onClick={() => setShowOrderBook(prev => !prev)}
+                onClick={() => {
+                  // Latch first, then flip. Without this the effect below would
+                  // immediately overwrite the user's choice on the next market
+                  // or instrument change, which is the bug this ref exists for.
+                  userToggledBook.current = true;
+                  setShowOrderBook(prev => !prev);
+                }}
                 style={{
                   background: showOrderBook ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.05)',
                   border: showOrderBook ? '1px solid rgba(56, 189, 248, 0.35)' : '1px solid rgba(255, 255, 255, 0.1)',
@@ -1304,17 +1306,38 @@ export default function HyperliquidProDesk({
               justifyContent: 'center',
               gap: '10px',
               color: '#64748b',
-              padding: '20px'
+              padding: '20px',
+              textAlign: 'center'
             }}>
-              <div style={{
-                width: 20,
-                height: 20,
-                borderRadius: '50%',
-                border: '2px solid rgba(255, 255, 255, 0.08)',
-                borderTopColor: 'var(--accent-sky)',
-                animation: 'cmcSpin 0.8s linear infinite'
-              }} />
-              <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)' }}>Menghubungkan L2 stream...</span>
+              {/*
+                Distinguish "still loading" from "this market has no depth feed".
+                A spinner that never resolves reads as a slow connection; for
+                Forex/Commodities/US stocks there is nothing to wait for, and the
+                user should be told that instead of watching it spin.
+              */}
+              {hasRealL2 ? (
+                <>
+                  <div style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: '50%',
+                    border: '2px solid rgba(255, 255, 255, 0.08)',
+                    borderTopColor: 'var(--accent-sky)',
+                    animation: 'cmcSpin 0.8s linear infinite'
+                  }} />
+                  <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)' }}>Menghubungkan L2 stream...</span>
+                </>
+              ) : (
+                <>
+                  <span style={{ fontSize: '18px' }}>🚫</span>
+                  <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)', color: '#94a3b8' }}>
+                    Tidak ada feed kedalaman L2
+                  </span>
+                  <span style={{ fontSize: '9.5px', color: '#64748b', lineHeight: 1.6, maxWidth: '180px' }}>
+                    Buku order hanya tersedia untuk perpetual Hyperliquid. Instrumen ini tidak menyediakan data depth.
+                  </span>
+                </>
+              )}
             </div>
           ) : (
             <>

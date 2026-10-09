@@ -154,7 +154,21 @@ export function rankOf(tier) {
   return RANK[normalizeTier(tier)] ?? 0;
 }
 
-/** Does this tier unlock this module? */
+/**
+ * Does this tier unlock this module?
+ *
+ * ADMIN BYPASS IS ABSOLUTE, AND MUST STAY FIRST.
+ *
+ * The owner's requirement (2026-10-09): "jangan sampe admin gabisa buka fitur2".
+ * An administrator who cannot open a desk cannot support the customers stuck in
+ * it, so `isAdmin` short-circuits before ANY other rule below — including the
+ * `required === TIER.ADMIN` check further down, which would otherwise look like
+ * it applied to admins too.
+ *
+ * ORDER IS LOAD-BEARING. If a future edit moves the `isAdmin` line below the
+ * MODULE_TIER lookup, an unknown module id starts returning false for the owner.
+ * `featureAccess.test.js` asserts the ordering so that edit fails loudly.
+ */
 export function canAccess(moduleId, tier, isAdmin = false) {
   if (isAdmin) return true; // Admin has unrestricted access to all desks and tools
   const required = MODULE_TIER[moduleId];

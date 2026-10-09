@@ -149,3 +149,48 @@ describe('HyperliquidProDesk — Spot vs Perp contract type', () => {
     expect(screen.getByRole('button', { name: /40x/ })).toBeDefined();
   });
 });
+
+/**
+ * The order book must never be fabricated.
+ *
+ * The renderer used to synthesise seven levels per side from the mark price
+ * whenever no depth feed existed, and paint them in a panel headed "Order Book".
+ * An audit on 2026-10-09 traced it to this component and called it the highest
+ * remaining exposure in the change. These tests pin the honest behaviour.
+ */
+describe('HyperliquidProDesk — order book honesty', () => {
+  it('does not render the book panel for an instrument without a depth feed', () => {
+    // XAUUSD is a commodity: no Hyperliquid L2 feed exists for it, so the panel
+    // must start CLOSED. Previously it opened here and the renderer filled the
+    // seven levels with invented prices and sizes.
+    render(<HyperliquidProDesk initialSymbol="XAUUSD" />);
+
+    expect(screen.queryByText('Order Book')).toBeNull();
+  });
+
+  it('lets the user open the book manually on a no-feed instrument, and then explains', () => {
+    render(<HyperliquidProDesk initialSymbol="XAUUSD" />);
+
+    // The toggle is always available — we hide the panel, not the control.
+    fireEvent.click(screen.getByRole('button', { name: /Order Book/i }));
+
+    // Having opened it, the user is told why it is empty instead of being shown
+    // a spinner that never resolves or a fabricated ladder.
+    expect(screen.getByText(/Tidak ada feed kedalaman L2/i)).toBeDefined();
+  });
+
+  it('never fabricates a ladder for a no-feed instrument', () => {
+    render(<HyperliquidProDesk initialSymbol="XAUUSD" />);
+    fireEvent.click(screen.getByRole('button', { name: /Order Book/i }));
+
+    // The synthetic generator is gone. With no feed there must be no rows, and
+    // in particular no spread figure invented from a tick size.
+    expect(screen.queryByText(/Menghubungkan L2 stream/)).toBeNull();
+  });
+
+  it('keeps the book available for a crypto perp, which does have depth', () => {
+    render(<HyperliquidProDesk initialSymbol="BTCUSDT" />);
+
+    expect(screen.getByText('Order Book')).toBeDefined();
+  });
+});

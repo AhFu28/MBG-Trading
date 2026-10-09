@@ -80,16 +80,48 @@ export function featuresFor(tier) {
 }
 
 /**
+ * Parse a plan timestamp as an absolute instant.
+ *
+ * WHY THIS IS NOT `new Date(text)`.
+ *
+ * The engine writes ISO strings with no trailing offset — e.g.
+ * "2026-10-09T09:57:06.830765" — and `new Date()` interprets an offset-less
+ * date-time as BROWSER-LOCAL. The same plan therefore had a different age in
+ * every timezone: a user in Jakarta (UTC+7) and a user in London (UTC+0)
+ * disagreed by seven hours about whether a plan had cleared its 24h delay. On a
+ * 24h gate that is the difference between "visible" and "still locked", decided
+ * by the reader's clock settings rather than by when the plan was published.
+ *
+ * `updated_at` in the bundle is UTC, so an offset-less string is treated as UTC.
+ * An explicit offset (Z, +07:00) is honoured verbatim — never re-interpreted.
+ */
+function parseInstant(raw) {
+  if (raw == null) return null;
+
+  // An explicit UTC marker or numeric offset means the author already told us
+  // the zone. Trust it.
+  const text = String(raw).trim();
+  const hasExplicitZone = /(?:Z|[+-]\d{2}:?\d{2})$/i.test(text);
+
+  const iso = hasExplicitZone ? text : `${text}Z`;
+  const parsed = new Date(iso);
+  if (!Number.isNaN(parsed.getTime())) return parsed;
+
+  // Last resort: let the engine try the original text. Returning null here
+  // means the plan is withheld rather than guessed at, which is the safe side
+  // of a freshness gate.
+  const fallback = new Date(text);
+  return Number.isNaN(fallback.getTime()) ? null : fallback;
+}
+
+/**
  * When does this plan become visible to this tier?
  * Returns a Date, or null when the plan has no readable timestamp.
  */
 export function visibleAt(plan, tier) {
   const features = featuresFor(tier);
-  const raw = plan?.observed_at || plan?.created_at;
-  if (!raw) return null;
-  const text = String(raw).trim().replace('Z', '+00:00');
-  const published = new Date(text);
-  if (Number.isNaN(published.getTime())) return null;
+  const published = parseInstant(plan?.observed_at || plan?.created_at);
+  if (!published) return null;
   return new Date(published.getTime() + features.delayHours * 3600 * 1000);
 }
 
@@ -140,8 +172,11 @@ export function buildTierView(plans, tier, now = new Date()) {
   }
 
   const byNewest = (a, b) => {
-    const ta = new Date(String(a.observed_at || a.created_at || 0).replace('Z', '+00:00')).getTime();
-    const tb = new Date(String(b.observed_at || b.created_at || 0).replace('Z', '+00:00')).getTime();
+    // Reuse parseInstant so sorting and gating agree on what a timestamp means.
+    // Using `new Date()` here while visibleAt() used UTC made the list order
+    // disagree with the visibility decision for offset-less strings.
+    const ta = parseInstant(a?.observed_at || a?.created_at)?.getTime() ?? 0;
+    const tb = parseInstant(b?.observed_at || b?.created_at)?.getTime() ?? 0;
     return tb - ta;
   };
 
