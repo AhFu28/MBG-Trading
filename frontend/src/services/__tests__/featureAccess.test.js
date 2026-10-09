@@ -65,6 +65,9 @@ describe('free tier is deliberately limited', () => {
     // ACHIEVEMENTS is the Legend roadmap. Hiding it would hide the only
     // explanation of how to reach the earned tier, which is the opposite of
     // what the tier is for.
+    // RESEARCH is included on purpose: the featureAccess comment already placed
+    // the daily news/riset desk at Free, and the Research Desk reader serves the
+    // session-gated sample paper in the pilot - the same tier as NEWS.
     expect(new Set(freeModules)).toEqual(
       new Set([
         MODULES.HOME, MODULES.SIGNALS, MODULES.NEWS, MODULES.RESEARCH,
