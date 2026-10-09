@@ -13,16 +13,31 @@
   --radius-full: 9999px;
 
   /* Universal Pure Dark Theme default (SpaceX-grade / Zero White Flash) */
-  --bg-canvas: #000000;
-  --bg-panel: #0a0d12;
-  --bg-panel-subtle: #0e1219;
-  --bg-panel-dark: #05070a;
-  --bg-strip-wire: #0a0d12;
-  --bg-ticker-pill: #0e1219;
-  --text-ticker-label: #7a8798;
-  --border-color: rgba(255, 255, 255, 0.10);
-  --border-hairline: 1px solid rgba(255, 255, 255, 0.08);
-  --border-muted: 1px solid rgba(255, 255, 255, 0.05);
+  --bg-canvas: #0B0E14;
+  --bg-panel: #131923;
+  --bg-panel-subtle: #1B2431;
+  --bg-panel-dark: #070A0F;
+  --bg-strip-wire: #0B0E14;
+  --bg-ticker-pill: #131923;
+  --text-ticker-label: #A7B0BD;
+  --border-color: #2F3A49;
+  --border-hairline: 1px solid #2F3A49;
+  --border-muted: 1px solid rgba(255, 255, 255, 0.07);
+
+  /* Section 19.2 Blueprint Canonical Design Tokens (xAI + Samsung Benchmark) */
+  --xai-canvas: #0B0E14;
+  --xai-surface: #131923;
+  --xai-elevated: #1B2431;
+  --xai-text-primary: #F3F5F7;
+  --xai-text-secondary: #A7B0BD;
+  --xai-border-decorative: #2F3A49;
+  --xai-border-control: #657286;
+  --xai-action-primary: #2457D6;
+  --xai-action-primary-hover: #1d46b3;
+  --xai-link: #78A9FF;
+  --xai-positive: #3BC78A;
+  --xai-negative: #FF6B75;
+  --xai-warning: #F3C969;
   
   --text-primary: #f5f7fa;
   --text-secondary: #aab3c0;
