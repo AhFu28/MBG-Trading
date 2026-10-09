@@ -97,7 +97,7 @@ export default function AdminApprovalDesk({ account = {}, onRefreshUser }) {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <div style={{ fontSize: '10px', fontWeight: '800', letterSpacing: '0.1em', color: 'var(--accent-emerald)', textTransform: 'uppercase', marginBottom: '4px' }}>
+            <div style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '0.1em', color: 'var(--accent-emerald)', textTransform: 'uppercase', marginBottom: '4px' }}>
               👑 GOVERNANCE DESK
             </div>
             <h2 style={{ fontSize: '18px', fontWeight: '800', margin: 0, color: '#f8fafc' }}>
@@ -128,15 +128,15 @@ export default function AdminApprovalDesk({ account = {}, onRefreshUser }) {
         {/* Stats Row */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginTop: '16px' }}>
           <div style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '10px', padding: '12px 14px' }}>
-            <div style={{ fontSize: '10px', color: '#fbbf24', fontWeight: '800' }}>MENUNGGU VERIFIKASI</div>
+            <div style={{ fontSize: '12px', color: 'var(--accent-gold-bright)', fontWeight: '800' }}>MENUNGGU VERIFIKASI</div>
             <div style={{ fontSize: '20px', fontWeight: '900', color: '#fef3c7', marginTop: '4px' }}>{pendingCount} Permintaan</div>
           </div>
           <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '10px', padding: '12px 14px' }}>
-            <div style={{ fontSize: '10px', color: 'var(--accent-mint)', fontWeight: '800' }}>TOTAL DISETUJUI</div>
+            <div style={{ fontSize: '12px', color: 'var(--accent-mint)', fontWeight: '800' }}>TOTAL DISETUJUI</div>
             <div style={{ fontSize: '20px', fontWeight: '900', color: '#d1fae5', marginTop: '4px' }}>{approvedCount} Akun</div>
           </div>
           <div style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.3)', borderRadius: '10px', padding: '12px 14px' }}>
-            <div style={{ fontSize: '10px', color: '#818cf8', fontWeight: '800' }}>TOTAL OMZET TERCATAT</div>
+            <div style={{ fontSize: '12px', color: '#818cf8', fontWeight: '800' }}>TOTAL OMZET TERCATAT</div>
             <div style={{ fontSize: '20px', fontWeight: '900', color: '#e0e7ff', marginTop: '4px' }}>
               Rp {totalRevenue.toLocaleString('id-ID')}
             </div>
@@ -172,7 +172,7 @@ export default function AdminApprovalDesk({ account = {}, onRefreshUser }) {
             style={{
               padding: '7px 14px',
               borderRadius: '8px',
-              fontSize: '11.5px',
+              fontSize: '12px',
               fontWeight: '700',
               cursor: 'pointer',
               background: filter === t.id ? 'var(--accent-emerald)' : 'rgba(255,255,255,0.06)',
@@ -197,7 +197,7 @@ export default function AdminApprovalDesk({ account = {}, onRefreshUser }) {
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11.5px' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', textAlign: 'left' }}>
                   <th style={{ padding: '10px 8px', color: 'var(--text-muted)' }}>WAKTU</th>
@@ -223,7 +223,7 @@ export default function AdminApprovalDesk({ account = {}, onRefreshUser }) {
                       <td style={{ padding: '10px 8px', fontWeight: '700', color: '#f8fafc' }}>{r.email}</td>
                       <td style={{ padding: '10px 8px', color: 'var(--text-secondary)' }}>
                         <div style={{ fontWeight: '600' }}>{r.sender_name}</div>
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{r.payment_method}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{r.payment_method}</div>
                       </td>
                       <td style={{ padding: '10px 8px', color: 'var(--accent-mint)', fontWeight: '800' }}>
                         Rp {Number(r.amount).toLocaleString('id-ID')}
@@ -231,19 +231,19 @@ export default function AdminApprovalDesk({ account = {}, onRefreshUser }) {
                       <td style={{ padding: '10px 8px', color: 'var(--text-muted)', maxWidth: '180px' }}>
                         <div>{r.notes || '—'}</div>
                         {r.proof_url && (
-                          <a href={r.proof_url} target="_blank" rel="noreferrer" style={{ fontSize: '10px', color: 'var(--accent-sky)' }}>
+                          <a href={r.proof_url} target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: 'var(--accent-sky)' }}>
                             Lihat Bukti ↗
                           </a>
                         )}
                       </td>
                       <td style={{ padding: '10px 8px' }}>
                         <span style={{
-                          fontSize: '10px',
+                          fontSize: '12px',
                           fontWeight: '800',
                           padding: '3px 8px',
                           borderRadius: '999px',
                           background: isPending ? 'rgba(245,158,11,0.2)' : isApproved ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)',
-                          color: isPending ? '#fbbf24' : isApproved ? 'var(--accent-mint)' : '#f87171',
+                          color: isPending ? 'var(--accent-gold-bright)' : isApproved ? 'var(--accent-mint)' : '#f87171',
                           border: `1px solid ${isPending ? 'rgba(245,158,11,0.4)' : isApproved ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)'}`,
                         }}>
                           {r.status.toUpperCase()}
@@ -261,7 +261,7 @@ export default function AdminApprovalDesk({ account = {}, onRefreshUser }) {
                                 background: 'var(--accent-emerald)',
                                 border: 'none',
                                 color: '#042f2e',
-                                fontSize: '11px',
+                                fontSize: '12px',
                                 fontWeight: '800',
                                 cursor: 'pointer',
                               }}
@@ -277,7 +277,7 @@ export default function AdminApprovalDesk({ account = {}, onRefreshUser }) {
                                 background: 'rgba(239,68,68,0.2)',
                                 border: '1px solid rgba(239,68,68,0.4)',
                                 color: '#f87171',
-                                fontSize: '11px',
+                                fontSize: '12px',
                                 fontWeight: '700',
                                 cursor: 'pointer',
                               }}
@@ -286,7 +286,7 @@ export default function AdminApprovalDesk({ account = {}, onRefreshUser }) {
                             </button>
                           </div>
                         ) : (
-                          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                             {isApproved ? `✓ Oleh ${r.reviewed_by?.split('@')[0] || 'Admin'}` : 'Ditolak'}
                           </span>
                         )}

@@ -169,7 +169,7 @@ export default function ChartPredictionModal({
                 ARENA PREDIKSI CHART & SKOR STRATEGI
               </h2>
               <span style={{
-                fontSize: '9.5px',
+                fontSize: '12px',
                 fontWeight: 800,
                 padding: '2px 6px',
                 borderRadius: '4px',
@@ -180,7 +180,7 @@ export default function ChartPredictionModal({
                 PATH TO LEGEND
               </span>
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted, #94a3b8)', marginTop: '2px' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted, #94a3b8)', marginTop: '2px' }}>
               Tebak arah chart dengan strategi tepat untuk meraih poin Mastery & unlock tier LEGEND.
             </div>
           </div>
@@ -208,27 +208,27 @@ export default function ChartPredictionModal({
           padding: '10px 18px',
           background: 'rgba(0, 0, 0, 0.25)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-          fontSize: '11px',
+          fontSize: '12px',
         }}>
           <div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '9px', textTransform: 'uppercase' }}>Total Prediksi</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '12px', textTransform: 'uppercase' }}>Total Prediksi</div>
             <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)' }}>{stats.total}</div>
           </div>
           <div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '9px', textTransform: 'uppercase' }}>Win Rate</div>
-            <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: stats.winRate !== '—' ? 'var(--accent-green, #10b981)' : 'var(--text-muted)' }}>
+            <div style={{ color: 'var(--text-muted)', fontSize: '12px', textTransform: 'uppercase' }}>Win Rate</div>
+            <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: stats.winRate !== '—' ? 'var(--accent-green, var(--accent-emerald))' : 'var(--text-muted)' }}>
               {stats.winRate}% ({stats.won}/{stats.resolved})
             </div>
           </div>
           <div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '9px', textTransform: 'uppercase' }}>Total Skor Quant</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '12px', textTransform: 'uppercase' }}>Total Skor Quant</div>
             <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent-gold, #facc15)' }}>
               {stats.totalPoints} PTS
             </div>
           </div>
           <div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '9px', textTransform: 'uppercase' }}>Peringkat Analis</div>
-            <div style={{ fontWeight: 800, fontSize: '10.5px' }}>{stats.rank}</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '12px', textTransform: 'uppercase' }}>Peringkat Analis</div>
+            <div style={{ fontWeight: 800, fontSize: '12px' }}>{stats.rank}</div>
           </div>
         </div>
 
@@ -243,7 +243,7 @@ export default function ChartPredictionModal({
               border: 'none',
               borderBottom: activeTab === 'FORM' ? '2px solid var(--accent-gold, #facc15)' : '2px solid transparent',
               color: activeTab === 'FORM' ? 'var(--text-primary)' : 'var(--text-muted)',
-              fontSize: '11.5px',
+              fontSize: '12px',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -259,7 +259,7 @@ export default function ChartPredictionModal({
               border: 'none',
               borderBottom: activeTab === 'HISTORY' ? '2px solid var(--accent-gold, #facc15)' : '2px solid transparent',
               color: activeTab === 'HISTORY' ? 'var(--text-primary)' : 'var(--text-muted)',
-              fontSize: '11.5px',
+              fontSize: '12px',
               fontWeight: 700,
               cursor: 'pointer',
             }}
@@ -275,7 +275,7 @@ export default function ChartPredictionModal({
               {/* Asset & Direction */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label htmlFor="input-pred-symbol" style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                  <label htmlFor="input-pred-symbol" style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
                     Simbol Instrumen
                   </label>
                   <input
@@ -299,7 +299,7 @@ export default function ChartPredictionModal({
                 </div>
 
                 <div>
-                  <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                  <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
                     Arah Proyeksi Chart
                   </label>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
@@ -310,11 +310,11 @@ export default function ChartPredictionModal({
                       style={{
                         padding: '7px',
                         background: direction === 'BULLISH' ? 'rgba(16, 185, 129, 0.25)' : 'var(--bg-canvas)',
-                        border: direction === 'BULLISH' ? '1px solid var(--accent-emerald, #10b981)' : '1px solid rgba(255,255,255,0.1)',
-                        color: direction === 'BULLISH' ? '#10b981' : 'var(--text-muted)',
+                        border: direction === 'BULLISH' ? '1px solid var(--accent-emerald, var(--accent-emerald))' : '1px solid rgba(255,255,255,0.1)',
+                        color: direction === 'BULLISH' ? 'var(--accent-emerald)' : 'var(--text-muted)',
                         borderRadius: '4px',
                         fontWeight: 800,
-                        fontSize: '11px',
+                        fontSize: '12px',
                         cursor: 'pointer',
                       }}
                     >
@@ -327,11 +327,11 @@ export default function ChartPredictionModal({
                       style={{
                         padding: '7px',
                         background: direction === 'BEARISH' ? 'rgba(239, 68, 68, 0.25)' : 'var(--bg-canvas)',
-                        border: direction === 'BEARISH' ? '1px solid #ef4444' : '1px solid rgba(255,255,255,0.1)',
-                        color: direction === 'BEARISH' ? '#ef4444' : 'var(--text-muted)',
+                        border: direction === 'BEARISH' ? '1px solid var(--accent-red)' : '1px solid rgba(255,255,255,0.1)',
+                        color: direction === 'BEARISH' ? 'var(--accent-red)' : 'var(--text-muted)',
                         borderRadius: '4px',
                         fontWeight: 800,
-                        fontSize: '11px',
+                        fontSize: '12px',
                         cursor: 'pointer',
                       }}
                     >
@@ -344,7 +344,7 @@ export default function ChartPredictionModal({
               {/* Price Levels Grid */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
                 <div>
-                  <label htmlFor="input-pred-entry" style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                  <label htmlFor="input-pred-entry" style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
                     Harga Entri / Saat Ini
                   </label>
                   <input
@@ -369,7 +369,7 @@ export default function ChartPredictionModal({
                 </div>
 
                 <div>
-                  <label htmlFor="input-pred-stop-loss" style={{ fontSize: '10px', color: 'var(--accent-rust, #f87171)', display: 'block', marginBottom: '3px' }}>
+                  <label htmlFor="input-pred-stop-loss" style={{ fontSize: '12px', color: 'var(--accent-rust, #f87171)', display: 'block', marginBottom: '3px' }}>
                     Stop Loss (Proteksi)
                   </label>
                   <input
@@ -394,7 +394,7 @@ export default function ChartPredictionModal({
                 </div>
 
                 <div>
-                  <label htmlFor="input-pred-target" style={{ fontSize: '10px', color: 'var(--accent-emerald, #34d399)', display: 'block', marginBottom: '3px' }}>
+                  <label htmlFor="input-pred-target" style={{ fontSize: '12px', color: 'var(--accent-emerald, var(--accent-mint))', display: 'block', marginBottom: '3px' }}>
                     Target Take Profit
                   </label>
                   <input
@@ -411,7 +411,7 @@ export default function ChartPredictionModal({
                       background: 'var(--bg-canvas)',
                       border: '1px solid rgba(255,255,255,0.12)',
                       borderRadius: '4px',
-                      color: 'var(--accent-emerald, #34d399)',
+                      color: 'var(--accent-emerald, var(--accent-mint))',
                       fontFamily: 'var(--font-mono)',
                       fontWeight: 700,
                     }}
@@ -422,7 +422,7 @@ export default function ChartPredictionModal({
               {/* Strategy & Timeframe */}
               <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '10px' }}>
                 <div>
-                  <label htmlFor="select-pred-strategy" style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                  <label htmlFor="select-pred-strategy" style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
                     Pondasi Strategi & Metodologi
                   </label>
                   <select
@@ -436,7 +436,7 @@ export default function ChartPredictionModal({
                       border: '1px solid rgba(255,255,255,0.12)',
                       borderRadius: '4px',
                       color: 'var(--text-primary)',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       fontWeight: 700,
                     }}
                   >
@@ -447,7 +447,7 @@ export default function ChartPredictionModal({
                 </div>
 
                 <div>
-                  <label htmlFor="select-pred-timeframe" style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+                  <label htmlFor="select-pred-timeframe" style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
                     Horizon Waktu
                   </label>
                   <select
@@ -461,7 +461,7 @@ export default function ChartPredictionModal({
                       border: '1px solid rgba(255,255,255,0.12)',
                       borderRadius: '4px',
                       color: 'var(--text-primary)',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       fontWeight: 700,
                     }}
                   >
@@ -475,10 +475,10 @@ export default function ChartPredictionModal({
               {/* Rationale Textarea */}
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '3px' }}>
-                  <label htmlFor="textarea-pred-rationale" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                  <label htmlFor="textarea-pred-rationale" style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                     Alasan & Analisa Kuantitatif
                   </label>
-                  <span style={{ fontSize: '9.5px', color: rationale.length >= 20 ? 'var(--accent-emerald)' : 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '12px', color: rationale.length >= 20 ? 'var(--accent-emerald)' : 'var(--text-muted)' }}>
                     {rationale.length}/20 Karakter {rationale.length >= 20 ? '✓ (+25 Poin Bonus!)' : '(Minimal 20 kar untuk bonus analisa)'}
                   </span>
                 </div>
@@ -495,7 +495,7 @@ export default function ChartPredictionModal({
                     border: '1px solid rgba(255,255,255,0.12)',
                     borderRadius: '4px',
                     color: 'var(--text-primary)',
-                    fontSize: '11.5px',
+                    fontSize: '12px',
                     lineHeight: '1.4',
                     resize: 'vertical',
                   }}
@@ -512,7 +512,7 @@ export default function ChartPredictionModal({
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   💎 Potensi Hadiah Poin Bila Analisa Benar:
                 </div>
                 <div style={{ fontSize: '13px', fontWeight: 900, fontFamily: 'var(--font-mono)', color: 'var(--accent-gold, #facc15)' }}>
@@ -521,13 +521,13 @@ export default function ChartPredictionModal({
               </div>
 
               {feedbackError && (
-                <div style={{ padding: '8px 12px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', borderRadius: '4px', color: '#fca5a5', fontSize: '11px', fontWeight: 700 }}>
+                <div style={{ padding: '8px 12px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid var(--accent-red)', borderRadius: '4px', color: 'var(--accent-softred)', fontSize: '12px', fontWeight: 700 }}>
                   ⚠️ {feedbackError}
                 </div>
               )}
 
               {feedbackSuccess && (
-                <div style={{ padding: '8px 12px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid #10b981', borderRadius: '4px', color: '#6ee7b7', fontSize: '11px', fontWeight: 700 }}>
+                <div style={{ padding: '8px 12px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid var(--accent-emerald)', borderRadius: '4px', color: '#6ee7b7', fontSize: '12px', fontWeight: 700 }}>
                   {feedbackSuccess}
                 </div>
               )}
@@ -580,45 +580,45 @@ export default function ChartPredictionModal({
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <span style={{ fontWeight: 900, fontSize: '13px', fontFamily: 'var(--font-mono)' }}>{p.symbol}</span>
                           <span style={{
-                            fontSize: '9.5px',
+                            fontSize: '12px',
                             fontWeight: 800,
                             padding: '2px 5px',
                             borderRadius: '3px',
                             background: p.direction === 'BULLISH' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                            color: p.direction === 'BULLISH' ? '#10b981' : '#ef4444',
+                            color: p.direction === 'BULLISH' ? 'var(--accent-emerald)' : 'var(--accent-red)',
                           }}>
                             {p.direction}
                           </span>
-                          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{p.timeframe}</span>
+                          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{p.timeframe}</span>
                         </div>
 
                         <div>
                           {isWon && (
-                            <span style={{ fontSize: '10.5px', fontWeight: 800, color: '#10b981', background: 'rgba(16, 185, 129, 0.15)', padding: '3px 7px', borderRadius: '4px' }}>
+                            <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--accent-emerald)', background: 'rgba(16, 185, 129, 0.15)', padding: '3px 7px', borderRadius: '4px' }}>
                               ✅ BENAR (+{p.pointsAwarded} Poin)
                             </span>
                           )}
                           {isLost && (
-                            <span style={{ fontSize: '10.5px', fontWeight: 800, color: '#ef4444', background: 'rgba(239, 68, 68, 0.15)', padding: '3px 7px', borderRadius: '4px' }}>
+                            <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--accent-red)', background: 'rgba(239, 68, 68, 0.15)', padding: '3px 7px', borderRadius: '4px' }}>
                               ❌ MELESET (0 Poin)
                             </span>
                           )}
                           {isPending && (
-                            <span style={{ fontSize: '10.5px', fontWeight: 800, color: 'var(--accent-gold, #facc15)', background: 'rgba(234, 179, 8, 0.15)', padding: '3px 7px', borderRadius: '4px' }}>
+                            <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--accent-gold, #facc15)', background: 'rgba(234, 179, 8, 0.15)', padding: '3px 7px', borderRadius: '4px' }}>
                               ⏳ AKTIF (+{p.potentialPoints} Potensi)
                             </span>
                           )}
                         </div>
                       </div>
 
-                      <div style={{ display: 'flex', gap: '14px', fontSize: '10.5px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                      <div style={{ display: 'flex', gap: '14px', fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                         <span>Entri: <strong style={{ color: 'var(--text-primary)' }}>{p.entryPrice}</strong></span>
                         <span>Target: <strong style={{ color: 'var(--accent-emerald)' }}>{p.targetPrice}</strong></span>
                         <span>Stop: <strong style={{ color: 'var(--accent-rust)' }}>{p.stopLoss}</strong></span>
                       </div>
 
                       {p.rationale && (
-                        <div style={{ fontSize: '10.5px', color: 'var(--text-secondary, #cbd5e1)', fontStyle: 'italic', background: 'rgba(0,0,0,0.2)', padding: '5px 8px', borderRadius: '4px' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary, #cbd5e1)', fontStyle: 'italic', background: 'rgba(0,0,0,0.2)', padding: '5px 8px', borderRadius: '4px' }}>
                           "{p.rationale}"
                         </div>
                       )}
@@ -626,17 +626,17 @@ export default function ChartPredictionModal({
                       {/* Interactive testing / simulation trigger for pending forecasts */}
                       {isPending && (
                         <div style={{ display: 'flex', gap: '8px', marginTop: '4px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '6px' }}>
-                          <span style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>Simulasi Verifikasi:</span>
+                          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Simulasi Verifikasi:</span>
                           <button
                             type="button"
                             onClick={() => handleSimulateResolve(p.id, true)}
                             style={{
                               padding: '2px 8px',
                               background: 'rgba(16, 185, 129, 0.2)',
-                              border: '1px solid #10b981',
+                              border: '1px solid var(--accent-emerald)',
                               color: '#6ee7b7',
                               borderRadius: '3px',
-                              fontSize: '9.5px',
+                              fontSize: '12px',
                               fontWeight: 700,
                               cursor: 'pointer',
                             }}
@@ -649,10 +649,10 @@ export default function ChartPredictionModal({
                             style={{
                               padding: '2px 8px',
                               background: 'rgba(239, 68, 68, 0.2)',
-                              border: '1px solid #ef4444',
-                              color: '#fca5a5',
+                              border: '1px solid var(--accent-red)',
+                              color: 'var(--accent-softred)',
                               borderRadius: '3px',
-                              fontSize: '9.5px',
+                              fontSize: '12px',
                               fontWeight: 700,
                               cursor: 'pointer',
                             }}

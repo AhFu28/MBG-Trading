@@ -266,10 +266,10 @@ export default function FlowProcessTab() {
         {selected ? (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '6px' }}>
-              <span style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>{selected.stage}</span>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>{selected.stage}</span>
               <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>{selected.label}</span>
               {selected.status !== 'ok' && (
-                <span style={{ fontSize: '10px', fontWeight: '800', padding: '1px 6px', borderRadius: '4px', background: STATUS_STYLE[selected.status].bg, color: STATUS_STYLE[selected.status].color }}>
+                <span style={{ fontSize: '12px', fontWeight: '800', padding: '1px 6px', borderRadius: '4px', background: STATUS_STYLE[selected.status].bg, color: STATUS_STYLE[selected.status].color }}>
                   {STATUS_STYLE[selected.status].label}
                 </span>
               )}

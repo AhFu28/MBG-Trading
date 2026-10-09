@@ -317,13 +317,13 @@ const OrderBookSimulator = ({
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           <span style={{
-            fontSize: '11px',
+            fontSize: '12px',
             fontFamily: 'var(--font-mono)',
             fontWeight: 800,
             padding: '3px 8px',
             borderRadius: '4px',
             background: isCrypto ? 'rgba(16, 185, 129, 0.15)' : 'rgba(168, 85, 247, 0.15)',
-            color: isCrypto ? 'var(--accent-mint)' : '#c084fc',
+            color: isCrypto ? 'var(--accent-mint)' : 'var(--accent-purple-light)',
             border: '1px solid ' + (isCrypto ? 'rgba(16, 185, 129, 0.3)' : 'rgba(168, 85, 247, 0.3)')
           }}>
             {isCrypto ? '⚡ LEVEL-2 MARKET DEPTH' : '🏛️ IDX OFFICIAL FEED'}
@@ -346,7 +346,7 @@ const OrderBookSimulator = ({
             Ref: {formatPrice(currentPrice)}
           </span>
 
-          <span style={{ fontSize: '10.5px', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+          <span style={{ fontSize: '12px', color: 'var(--slate-500)', fontFamily: 'var(--font-mono)' }}>
             Tick Size: {formatPrice(tickSize)}
           </span>
         </div>
@@ -365,7 +365,7 @@ const OrderBookSimulator = ({
                 onClick={() => setActiveView('ORDERBOOK')}
                 style={{
                   padding: '4px 10px',
-                  fontSize: '11px',
+                  fontSize: '12px',
                   fontWeight: 700,
                   borderRadius: '4px',
                   border: 'none',
@@ -380,7 +380,7 @@ const OrderBookSimulator = ({
                 onClick={() => setActiveView('BROKER_SUMMARY')}
                 style={{
                   padding: '4px 10px',
-                  fontSize: '11px',
+                  fontSize: '12px',
                   fontWeight: 700,
                   borderRadius: '4px',
                   border: 'none',
@@ -433,7 +433,7 @@ const OrderBookSimulator = ({
         }}>
           {isCrypto ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <span style={{ fontSize: '12px', color: 'var(--slate-500)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Bursa Feed:
               </span>
               <div style={{
@@ -447,7 +447,7 @@ const OrderBookSimulator = ({
                   onClick={() => setFeedSource('hyperliquid')}
                   style={{
                     padding: '5px 12px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: 700,
                     borderRadius: '4px',
                     border: 'none',
@@ -464,7 +464,7 @@ const OrderBookSimulator = ({
                   onClick={() => setFeedSource('binance')}
                   style={{
                     padding: '5px 12px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: 700,
                     borderRadius: '4px',
                     border: 'none',
@@ -480,7 +480,7 @@ const OrderBookSimulator = ({
               </div>
             </div>
           ) : (
-            <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>
+            <div style={{ fontSize: '12px', color: 'var(--slate-500)', fontWeight: 600 }}>
               BEI REGULATED TICK RULES & EOD BROKER SUMMARY
             </div>
           )}
@@ -491,7 +491,7 @@ const OrderBookSimulator = ({
                 onClick={() => setAutoRefresh(r => !r)}
                 style={{
                   padding: '5px 12px',
-                  fontSize: '10.5px',
+                  fontSize: '12px',
                   fontWeight: 700,
                   borderRadius: '6px',
                   border: '1px solid ' + (autoRefresh ? 'rgba(16,185,129,0.35)' : 'rgba(255,255,255,0.1)'),
@@ -512,7 +512,7 @@ const OrderBookSimulator = ({
               }}
               style={{
                 padding: '5px 12px',
-                fontSize: '10.5px',
+                fontSize: '12px',
                 fontWeight: 700,
                 borderRadius: '6px',
                 background: 'rgba(255, 255, 255, 0.06)',
@@ -531,7 +531,7 @@ const OrderBookSimulator = ({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '5px',
-                fontSize: '10px',
+                fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
                 color: 'var(--accent-sky)',
                 background: 'rgba(56, 189, 248, 0.1)',
@@ -565,11 +565,11 @@ const OrderBookSimulator = ({
                 borderRadius: '8px',
                 padding: '10px 14px'
               }}>
-                <div style={{ fontSize: '9.5px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                <div style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                   SPREAD PASAR
                 </div>
                 <div style={{ fontSize: '15px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)' }}>
-                  {formatPrice(spread)} <span style={{ fontSize: '11px', color: '#fbbf24', fontWeight: 600 }}>({spreadPercent}%)</span>
+                  {formatPrice(spread)} <span style={{ fontSize: '12px', color: 'var(--accent-gold-bright)', fontWeight: 600 }}>({spreadPercent}%)</span>
                 </div>
               </div>
 
@@ -580,7 +580,7 @@ const OrderBookSimulator = ({
                 borderRadius: '8px',
                 padding: '10px 14px'
               }}>
-                <div style={{ fontSize: '9.5px', color: 'var(--accent-mint)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--accent-mint)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                   BEST BID (PEMBELI)
                 </div>
                 <div style={{ fontSize: '15px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent-emerald)' }}>
@@ -595,10 +595,10 @@ const OrderBookSimulator = ({
                 borderRadius: '8px',
                 padding: '10px 14px'
               }}>
-                <div style={{ fontSize: '9.5px', color: '#f87171', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                <div style={{ fontSize: '12px', color: '#f87171', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                   BEST ASK (PENJUAL)
                 </div>
-                <div style={{ fontSize: '15px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#ef4444' }}>
+                <div style={{ fontSize: '15px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent-red)' }}>
                   {formatPrice(asksWithCumulative[0]?.price || currentPrice)}
                 </div>
               </div>
@@ -611,10 +611,10 @@ const OrderBookSimulator = ({
                 padding: '10px 14px'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '9.5px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     IMBALANCE ALIRAN
                   </span>
-                  <span style={{ fontSize: '10px', fontWeight: 700, color: buyerRatio >= 50 ? 'var(--accent-mint)' : '#f87171', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: buyerRatio >= 50 ? 'var(--accent-mint)' : '#f87171', fontFamily: 'var(--font-mono)' }}>
                     {buyerRatio >= 50 ? `BUY BIAS (+${buyerRatio - 50}%)` : `SELL BIAS (+${50 - buyerRatio}%)`}
                   </span>
                 </div>
@@ -640,7 +640,7 @@ const OrderBookSimulator = ({
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '0 6px',
-                    fontSize: '8.5px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: 800,
                     color: '#fff'
@@ -669,7 +669,7 @@ const OrderBookSimulator = ({
                     padding: '8px 14px',
                     background: 'rgba(16, 185, 129, 0.08)',
                     borderBottom: '1px solid rgba(16, 185, 129, 0.2)',
-                    fontSize: '10px',
+                    fontSize: '12px',
                     fontWeight: 800,
                     textTransform: 'uppercase',
                     color: '#94a3b8',
@@ -709,13 +709,13 @@ const OrderBookSimulator = ({
                               pointerEvents: 'none'
                             }} 
                           />
-                          <span style={{ color: '#64748b', position: 'relative', zIndex: 1 }}>
+                          <span style={{ color: 'var(--slate-500)', position: 'relative', zIndex: 1 }}>
                             {Math.round(bid.cumulative).toLocaleString()}
                           </span>
                           <span style={{ textAlign: 'right', fontWeight: 600, color: '#f8fafc', position: 'relative', zIndex: 1 }}>
                             {formatLots(bid.lotQuantity)}
                           </span>
-                          <span style={{ textAlign: 'center', fontSize: '10px', color: '#94a3b8', position: 'relative', zIndex: 1 }}>
+                          <span style={{ textAlign: 'center', fontSize: '12px', color: '#94a3b8', position: 'relative', zIndex: 1 }}>
                             {bid.orderCount != null ? `${bid.orderCount} ord` : '—'}
                           </span>
                           <span style={{ textAlign: 'right', fontWeight: 800, color: 'var(--accent-emerald)', position: 'relative', zIndex: 1 }}>
@@ -740,13 +740,13 @@ const OrderBookSimulator = ({
                     padding: '8px 14px',
                     background: 'rgba(239, 68, 68, 0.08)',
                     borderBottom: '1px solid rgba(239, 68, 68, 0.2)',
-                    fontSize: '10px',
+                    fontSize: '12px',
                     fontWeight: 800,
                     textTransform: 'uppercase',
                     color: '#94a3b8',
                     letterSpacing: '0.04em'
                   }}>
-                    <span style={{ color: '#ef4444' }}>Harga Ask</span>
+                    <span style={{ color: 'var(--accent-red)' }}>Harga Ask</span>
                     <span style={{ textAlign: 'center' }}>Antrean</span>
                     <span style={{ textAlign: 'right' }}>Ukuran Ask</span>
                     <span style={{ textAlign: 'right' }}>Cum Vol</span>
@@ -780,16 +780,16 @@ const OrderBookSimulator = ({
                               pointerEvents: 'none'
                             }} 
                           />
-                          <span style={{ fontWeight: 800, color: '#ef4444', position: 'relative', zIndex: 1 }}>
+                          <span style={{ fontWeight: 800, color: 'var(--accent-red)', position: 'relative', zIndex: 1 }}>
                             {formatPrice(ask.price)}
                           </span>
-                          <span style={{ textAlign: 'center', fontSize: '10px', color: '#94a3b8', position: 'relative', zIndex: 1 }}>
+                          <span style={{ textAlign: 'center', fontSize: '12px', color: '#94a3b8', position: 'relative', zIndex: 1 }}>
                             {ask.orderCount != null ? `${ask.orderCount} ord` : '—'}
                           </span>
                           <span style={{ textAlign: 'right', fontWeight: 600, color: '#f8fafc', position: 'relative', zIndex: 1 }}>
                             {formatLots(ask.lotQuantity)}
                           </span>
-                          <span style={{ textAlign: 'right', color: '#64748b', position: 'relative', zIndex: 1 }}>
+                          <span style={{ textAlign: 'right', color: 'var(--slate-500)', position: 'relative', zIndex: 1 }}>
                             {Math.round(ask.cumulative).toLocaleString()}
                           </span>
                         </div>
@@ -815,31 +815,31 @@ const OrderBookSimulator = ({
               marginBottom: '16px'
             }}>
               <div style={{ background: 'rgba(0, 0, 0, 0.4)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block' }}>BANDAR ACCUMULATION</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block' }}>BANDAR ACCUMULATION</span>
                 <span style={{ fontSize: '14px', fontWeight: 800, color: '#00d084' }}>
                   {activeBrokerSummary.bandar_accumulation_grade.replace('_', ' ')}
                 </span>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginTop: '2px' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginTop: '2px' }}>
                   CR3 Concentration: {activeBrokerSummary.cr3_percentage}%
                 </span>
               </div>
 
               <div style={{ background: 'rgba(0, 0, 0, 0.4)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block' }}>NET FOREIGN FLOW (ASING)</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block' }}>NET FOREIGN FLOW (ASING)</span>
                 <span style={{ fontSize: '14px', fontWeight: 800, color: activeBrokerSummary.foreign_net_value_idr >= 0 ? '#00d084' : '#ff4d4d' }}>
                   {activeBrokerSummary.foreign_net_value_idr >= 0 ? '+' : ''}Rp {(activeBrokerSummary.foreign_net_value_idr / 1e9).toFixed(1)} Miliar
                 </span>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginTop: '2px' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginTop: '2px' }}>
                   Net Accumulation Asing
                 </span>
               </div>
 
               <div style={{ background: 'rgba(0, 0, 0, 0.4)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block' }}>MODAL RATA-RATA BANDAR</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block' }}>MODAL RATA-RATA BANDAR</span>
                 <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--accent-orange)' }}>
                   Rp {activeBrokerSummary.bandar_avg_price?.toLocaleString()}
                 </span>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginTop: '2px' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginTop: '2px' }}>
                   Buyer Dominance: {activeBrokerSummary.buyer_dominance_ratio}x
                 </span>
               </div>
@@ -852,11 +852,11 @@ const OrderBookSimulator = ({
               <div style={{ background: 'rgba(13, 20, 32, 0.7)', borderRadius: '8px', border: '1px solid rgba(0, 208, 132, 0.25)', padding: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '6px' }}>
                   <span style={{ fontSize: '12px', fontWeight: 800, color: '#00d084' }}>🟢 TOP BUYERS (AKUMULATOR)</span>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Lot · Avg · Nilai</span>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Lot · Avg · Nilai</span>
                 </div>
-                <table style={{ width: '100%', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
+                <table style={{ width: '100%', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                   <thead>
-                    <tr style={{ fontSize: '9px', color: 'var(--text-muted)', textAlign: 'left' }}>
+                    <tr style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'left' }}>
                       <th>Broker</th>
                       <th>Tipe</th>
                       <th style={{ textAlign: 'right' }}>Lot</th>
@@ -871,10 +871,10 @@ const OrderBookSimulator = ({
                           <span style={{ background: 'rgba(0, 208, 132, 0.15)', color: '#00d084', padding: '1px 4px', borderRadius: '3px', marginRight: '4px' }}>
                             {b.broker}
                           </span>
-                          <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)' }}>{b.name}</span>
+                          <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)' }}>{b.name}</span>
                         </td>
                         <td>
-                          <span style={{ fontSize: '9px', padding: '1px 3px', borderRadius: '3px', background: b.type === 'F' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(59, 130, 246, 0.2)', color: b.type === 'F' ? 'var(--accent-gold)' : 'var(--accent-sky-soft)' }}>
+                          <span style={{ fontSize: '12px', padding: '1px 3px', borderRadius: '3px', background: b.type === 'F' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(59, 130, 246, 0.2)', color: b.type === 'F' ? 'var(--accent-gold)' : 'var(--accent-sky-soft)' }}>
                             {b.type === 'F' ? 'Asing' : 'Lokal'}
                           </span>
                         </td>
@@ -893,11 +893,11 @@ const OrderBookSimulator = ({
               <div style={{ background: 'rgba(24, 15, 22, 0.7)', borderRadius: '8px', border: '1px solid rgba(255, 77, 77, 0.25)', padding: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '6px' }}>
                   <span style={{ fontSize: '12px', fontWeight: 800, color: '#ff4d4d' }}>🔴 TOP SELLERS (DISTRIBUTOR)</span>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Lot · Avg · Nilai</span>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Lot · Avg · Nilai</span>
                 </div>
-                <table style={{ width: '100%', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
+                <table style={{ width: '100%', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                   <thead>
-                    <tr style={{ fontSize: '9px', color: 'var(--text-muted)', textAlign: 'left' }}>
+                    <tr style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'left' }}>
                       <th>Broker</th>
                       <th>Tipe</th>
                       <th style={{ textAlign: 'right' }}>Lot</th>
@@ -912,10 +912,10 @@ const OrderBookSimulator = ({
                           <span style={{ background: 'rgba(255, 77, 77, 0.15)', color: '#ff4d4d', padding: '1px 4px', borderRadius: '3px', marginRight: '4px' }}>
                             {s.broker}
                           </span>
-                          <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)' }}>{s.name}</span>
+                          <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)' }}>{s.name}</span>
                         </td>
                         <td>
-                          <span style={{ fontSize: '9px', padding: '1px 3px', borderRadius: '3px', background: s.type === 'F' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(59, 130, 246, 0.2)', color: s.type === 'F' ? 'var(--accent-gold)' : 'var(--accent-sky-soft)' }}>
+                          <span style={{ fontSize: '12px', padding: '1px 3px', borderRadius: '3px', background: s.type === 'F' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(59, 130, 246, 0.2)', color: s.type === 'F' ? 'var(--accent-gold)' : 'var(--accent-sky-soft)' }}>
                             {s.type === 'F' ? 'Asing' : 'Lokal'}
                           </span>
                         </td>
@@ -939,7 +939,7 @@ const OrderBookSimulator = ({
               background: 'rgba(0, 0, 0, 0.5)',
               borderRadius: '8px',
               border: '1px solid rgba(255, 255, 255, 0.06)',
-              fontSize: '11.5px',
+              fontSize: '12px',
               display: 'flex',
               alignItems: 'center',
               gap: '8px'
@@ -958,8 +958,8 @@ const OrderBookSimulator = ({
           padding: '10px 22px',
           background: 'rgba(8, 12, 20, 0.95)',
           borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-          fontSize: '10.5px',
-          color: '#64748b',
+          fontSize: '12px',
+          color: 'var(--slate-500)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'

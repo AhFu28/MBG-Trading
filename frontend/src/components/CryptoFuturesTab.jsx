@@ -495,7 +495,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
 
   const getChainBadgeColor = (chainId) => {
     const c = chainId?.toLowerCase() || '';
-    if (c === 'solana') return { bg: 'rgba(168, 85, 247, 0.15)', text: '#c084fc', border: 'rgba(168, 85, 247, 0.3)' };
+    if (c === 'solana') return { bg: 'rgba(168, 85, 247, 0.15)', text: 'var(--accent-purple-light)', border: 'rgba(168, 85, 247, 0.3)' };
     if (c === 'base') return { bg: 'rgba(59, 130, 246, 0.15)', text: 'var(--accent-sky-soft)', border: 'rgba(59, 130, 246, 0.3)' };
     if (c === 'ethereum') return { bg: 'rgba(99, 102, 241, 0.15)', text: '#818cf8', border: 'rgba(99, 102, 241, 0.3)' };
     if (c === 'bsc') return { bg: 'rgba(234, 179, 8, 0.15)', text: '#facc15', border: 'rgba(234, 179, 8, 0.3)' };
@@ -505,7 +505,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
   /** Colour + wording for the market-wide liquidity regime. */
   const regimeBadge = (() => {
     switch (initialLiquidityHeat.regime) {
-      case 'EAGER_LONGS':       return { label: 'LONG AGAK PADAT', color: '#fbbf24' };
+      case 'EAGER_LONGS':       return { label: 'LONG AGAK PADAT', color: 'var(--accent-gold-bright)' };
       case 'POSITION_BUILDING': return { label: 'POSISI BERTAMBAH', color: '#4ade80' };
       case 'DELEVERAGING':      return { label: 'POSISI DITUTUP', color: '#fb7185' };
       case 'MIXED':             return { label: 'CAMPURAN', color: 'var(--text-secondary)' };
@@ -524,7 +524,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
             <h2 style={{ fontSize: '18px', margin: 0, fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
               CRYPTO FUTURES INTELLIGENCE
             </h2>
-            <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(234, 179, 8, 0.15)', color: '#fbbf24', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '12px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(234, 179, 8, 0.15)', color: 'var(--accent-gold-bright)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
               PERPETUAL SWAPS
             </span>
           </div>
@@ -536,7 +536,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           {/* Countdown Next Settlement */}
           <div style={{
-            fontSize: '11px',
+            fontSize: '12px',
             fontFamily: 'var(--font-mono)',
             padding: '5px 10px',
             borderRadius: '6px',
@@ -552,7 +552,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
 
           {/* Binance Stream Status */}
           <div style={{
-            fontSize: '11px',
+            fontSize: '12px',
             padding: '5px 10px',
             borderRadius: '6px',
             background: wsStatus === 'LIVE' ? 'rgba(0, 208, 132, 0.12)' : 'rgba(234, 179, 8, 0.12)',
@@ -575,23 +575,23 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
         <>
           <>
             <div className="quant-card" style={{ padding: '14px 16px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
                 Total Open Interest (Futures)
               </div>
               <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: 'var(--text-primary)' }}>
                 ${(totalOI / 1e9).toFixed(2)}B
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Kontrak Terbuka CEX Aktif</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Kontrak Terbuka CEX Aktif</div>
             </div>
 
             <div className="quant-card" style={{ padding: '14px 16px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
                 Avg Funding Rate (8h Live)
               </div>
               <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: avgFunding == null ? 'var(--text-muted)' : avgFunding < -0.01 ? 'var(--accent-green)' : avgFunding > 0.05 ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
                 {fmtPct(avgFunding, 4)}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
                 {avgFunding == null ? 'Belum ada data funding'
                   : avgFunding > 0.03 ? '⚠️ Long Overleveraged'
                     : avgFunding < -0.01 ? '🚀 Squeeze Potential'
@@ -600,23 +600,23 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
             </div>
 
             <div className="quant-card" style={{ padding: '14px 16px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
                 Top 24h Futures Turnover
               </div>
               <div style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: 'var(--accent-gold)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {topFuturesVolume ? `${topFuturesVolume.pair || topFuturesVolume.symbol} (${formatVolSmart(topFuturesVolume.volume_24h_usd)})` : 'Loading...'}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Turnover Tertinggi Pasar Derivatif</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Turnover Tertinggi Pasar Derivatif</div>
             </div>
 
             <div className="quant-card" style={{ padding: '14px 16px' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '800' }}>
                 Top 24h Perp Gainer
               </div>
               <div style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '6px 0', color: topFuturesGainer?.change_24h_pct == null ? 'var(--text-muted)' : topFuturesGainer.change_24h_pct >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                 {topFuturesGainer ? fmtPct(topFuturesGainer.change_24h_pct, 2) : '—'}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
                 {topFuturesGainer ? `${topFuturesGainer.pair} · Max ${getLeverageTier(topFuturesGainer.symbol)}` : 'Scanning...'}
               </div>
             </div>
@@ -670,13 +670,13 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
               <div>
                 <strong style={{ fontSize: '14px' }}>🔥 UANG SEDANG KE MANA</strong>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '3px', lineHeight: 1.6 }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '3px', lineHeight: 1.6 }}>
                   Diurutkan dari yang paling banyak menyerap uang baru, bukan sekadar volume terbesar.
                 </div>
               </div>
               {regimeBadge && (
                 <div style={{
-                  fontSize: '10.5px', fontWeight: '800', fontFamily: 'var(--font-mono)',
+                  fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)',
                   padding: '5px 11px', borderRadius: '6px',
                   color: regimeBadge.color, border: `1px solid ${regimeBadge.color}44`,
                   background: `${regimeBadge.color}18`,
@@ -692,7 +692,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                 <div style={{
                   background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)',
                   borderRadius: 'var(--radius-sm)', padding: '11px 14px', marginBottom: '14px',
-                  fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.7,
+                  fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.7,
                 }}>
                   <strong style={{ color: 'var(--text-primary)' }}>Cara membaca:</strong>{' '}
                   <span style={{ color: '#4ade80' }}>Open Interest naik + harga bergerak</span> = uang baru masuk, ada yang serius.
@@ -712,7 +712,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                         border: idx === 0 ? '1px solid rgba(251, 191, 36, 0.35)' : 'var(--border-hairline)',
                       }}>
                         <span style={{
-                          fontSize: '11px', fontWeight: '900', fontFamily: 'var(--font-mono)',
+                          fontSize: '12px', fontWeight: '900', fontFamily: 'var(--font-mono)',
                           color: 'var(--text-muted)', minWidth: '20px',
                         }}>
                           {idx + 1}
@@ -720,35 +720,35 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
 
                         <div style={{ minWidth: '104px' }}>
                           <div style={{ fontWeight: '800', fontSize: '13px' }}>{row.pair}</div>
-                          <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                             {row.flow_label}
                           </div>
                         </div>
 
                         {/* Skor panas */}
                         <div style={{ minWidth: '78px' }}>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '800' }}>SKOR PANAS</div>
-                          <div style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#fbbf24' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>SKOR PANAS</div>
+                          <div style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold-bright)' }}>
                             {Number(row.heat_score || 0).toFixed(1)}
                           </div>
                         </div>
 
                         <div style={{ minWidth: '86px' }}>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '800' }}>OI 1 JAM</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>OI 1 JAM</div>
                           <div style={{ fontSize: '13px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: oiUp ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                             {fmtPct(row.oi_change_1h_pct, 2)}
                           </div>
                         </div>
 
                         <div style={{ minWidth: '80px' }}>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '800' }}>HARGA 24 JAM</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>HARGA 24 JAM</div>
                           <div style={{ fontSize: '13px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: up ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                             {fmtPct(row.change_24h_pct, 2)}
                           </div>
                         </div>
 
                         <div style={{ minWidth: '92px' }}>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '800' }}>TURNOVER 24 JAM</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>TURNOVER 24 JAM</div>
                           <div style={{ fontSize: '13px', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
                             ${formatVolSmart(row.volume_24h_usd)}
                           </div>
@@ -757,7 +757,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                         {/* Alasan — ini yang membuat skornya bisa dipercaya */}
                         <div style={{ flex: 1, minWidth: '210px' }}>
                           {(row.reasons || []).slice(0, 2).map((r, i) => (
-                            <div key={i} style={{ fontSize: '10.5px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                            <div key={i} style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                               • {r}
                             </div>
                           ))}
@@ -767,7 +767,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                   })}
                 </div>
 
-                <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '12px', lineHeight: 1.6 }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '12px', lineHeight: 1.6 }}>
                   Skor = 40% kenaikan Open Interest + 25% turnover + 20% keyakinan arah + 15% funding ekstrem.
                   Dihitung dari data bursa, bukan perkiraan. Diperbarui tiap pipeline berjalan.
                 </div>
@@ -775,7 +775,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
             ) : (
               <div style={{ padding: '24px', background: 'var(--bg-panel-subtle)', borderRadius: 'var(--radius-sm)', textAlign: 'center', color: 'var(--text-muted)' }}>
                 <div style={{ fontSize: '20px', marginBottom: '8px' }}>🔥 Belum ada data likuiditas</div>
-                <div style={{ fontSize: '11px', lineHeight: 1.7 }}>
+                <div style={{ fontSize: '12px', lineHeight: 1.7 }}>
                   Jalankan pipeline untuk menghitung aliran uang terbaru.
                 </div>
               </div>
@@ -821,7 +821,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                     style={{
                       padding: '4px 10px',
                       borderRadius: '4px',
-                      fontSize: '10px',
+                      fontSize: '12px',
                       fontWeight: '800',
                       cursor: 'pointer',
                       border: futuresFilter === tab.id ? '1px solid var(--accent-gold)' : 'var(--border-hairline)',
@@ -846,7 +846,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                     border: 'var(--border-hairline)',
                     background: 'var(--bg-panel-subtle)',
                     color: 'var(--text-primary)',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     width: '260px'
                   }}
                 />
@@ -859,7 +859,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                       borderRadius: '4px',
                       color: 'var(--text-muted)',
                       padding: '4px 8px',
-                      fontSize: '10px',
+                      fontSize: '12px',
                       cursor: 'pointer'
                     }}
                   >
@@ -947,10 +947,10 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                             >
                               {f.pair || `${base}/USDT`}
                             </button>
-                            <span style={{ fontSize: '8px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(234, 179, 8, 0.15)', color: 'var(--accent-gold)', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
+                            <span style={{ fontSize: '12px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(234, 179, 8, 0.15)', color: 'var(--accent-gold)', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
                               PERP
                             </span>
-                            <span style={{ fontSize: '8px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-secondary)', fontWeight: '700', fontFamily: 'var(--font-mono)', border: 'var(--border-hairline)' }}>
+                            <span style={{ fontSize: '12px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-secondary)', fontWeight: '700', fontFamily: 'var(--font-mono)', border: 'var(--border-hairline)' }}>
                               {getLeverageTier(f.symbol)}
                             </span>
                           </div>
@@ -973,7 +973,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                                 <span style={{
                                   display: 'inline-block',
                                   width: '12px',
-                                  fontSize: '10px',
+                                  fontSize: '12px',
                                   textAlign: 'center',
                                   color: flash === 'up' ? 'var(--accent-green)' : flash === 'down' ? 'var(--accent-rust)' : 'transparent',
                                   visibility: flash ? 'visible' : 'hidden'
@@ -986,7 +986,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                             )}
                           </div>
                           {f.index_price > 0 && (
-                            <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                            <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                               Index: {formatPriceSmart(f.index_price)}
                             </div>
                           )}
@@ -998,7 +998,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                               display: 'inline-block',
                               padding: '2px 6px',
                               borderRadius: '4px',
-                              fontSize: '11px',
+                              fontSize: '12px',
                               fontWeight: '800',
                               background: isUp24 ? 'rgba(0, 208, 132, 0.12)' : 'rgba(239, 68, 68, 0.12)',
                               color: isUp24 ? 'var(--accent-green)' : 'var(--accent-rust)',
@@ -1009,13 +1009,13 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                           </span>
                         </td>
 
-                        <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11px' }}>
+                        <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '12px' }}>
                           <div style={{ color: 'var(--text-secondary)' }}>
-                            <span style={{ color: 'var(--text-muted)', fontSize: '9px', marginRight: '3px' }}>H:</span>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '12px', marginRight: '3px' }}>H:</span>
                             {f.high_24h != null && f.high_24h > 0 ? formatPriceSmart(f.high_24h) : '-'}
                           </div>
                           <div style={{ color: 'var(--text-secondary)', marginTop: '2px' }}>
-                            <span style={{ color: 'var(--text-muted)', fontSize: '9px', marginRight: '3px' }}>L:</span>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '12px', marginRight: '3px' }}>L:</span>
                             {f.low_24h != null && f.low_24h > 0 ? formatPriceSmart(f.low_24h) : '-'}
                           </div>
                         </td>
@@ -1024,7 +1024,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                           <div style={{ fontWeight: '700', fontSize: '12px', color: 'var(--text-primary)' }}>
                             {formatVolSmart(f.volume_24h_usd)}
                           </div>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                             Turnover USDT
                           </div>
                         </td>
@@ -1039,7 +1039,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                           }}>
                             {fmtPct(f.funding_rate_pct, 4)}
                           </div>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                             Settle: <span style={{ color: 'var(--accent-gold)' }}>{countdown || (f.funding_rate_pct == null ? '—' : '08:00:00')}</span>
                             {f.funding_next_pct != null && (
                               <span style={{ marginLeft: '4px' }}>
@@ -1076,7 +1076,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                                 borderRadius: '4px',
                                 color: 'var(--accent-mint)',
                                 padding: '4px 8px',
-                                fontSize: '11px',
+                                fontSize: '12px',
                                 fontWeight: '700',
                                 cursor: 'pointer'
                               }}
@@ -1092,7 +1092,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                                 borderRadius: '4px',
                                 color: 'var(--accent-blue)',
                                 padding: '4px 8px',
-                                fontSize: '11px',
+                                fontSize: '12px',
                                 fontWeight: '700',
                                 cursor: 'pointer'
                               }}
@@ -1117,15 +1117,15 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
               <div key={idx} style={{ display: 'grid', gridTemplateColumns: '120px 1fr 140px', alignItems: 'center', gap: '16px' }}>
                 <div style={{ fontWeight: 'bold', fontSize: '13px' }}>{ls.pair}</div>
                 <div style={{ height: '24px', background: 'var(--bg-panel-subtle)', borderRadius: 'var(--radius-sm)', display: 'flex', overflow: 'hidden', border: 'var(--border-hairline)' }}>
-                  <div style={{ width: `${ls.long_pct * 100}%`, background: 'rgba(0, 208, 132, 0.85)', color: '#fff', fontSize: '10px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: `${ls.long_pct * 100}%`, background: 'rgba(0, 208, 132, 0.85)', color: '#fff', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {(ls.long_pct * 100).toFixed(1)}% Long
                   </div>
-                  <div style={{ width: `${ls.short_pct * 100}%`, background: 'rgba(239, 68, 68, 0.85)', color: '#fff', fontSize: '10px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: `${ls.short_pct * 100}%`, background: 'rgba(239, 68, 68, 0.85)', color: '#fff', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {(ls.short_pct * 100).toFixed(1)}% Short
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-muted)' }}>{ls.long_short_ratio}x</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-muted)' }}>{ls.long_short_ratio}x</span>
                   <span className={`badge ${ls.bias === 'LONG_HEAVY' ? 'badge-bull' : ls.bias === 'SHORT_HEAVY' ? 'badge-bear' : ''}`} style={{ fontWeight: 'bold' }}>
                     {ls.bias}
                   </span>
@@ -1141,11 +1141,11 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
               <div>
                 <strong style={{ fontSize: '14px' }}>💀 LIKUIDASI 24 JAM</strong>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   Nilai posisi yang dipaksa tutup bursa dalam 24 jam terakhir
                 </div>
               </div>
-              <div style={{ fontSize: '11px', color: 'var(--accent-rust)', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--accent-rust)', fontFamily: 'var(--font-mono)' }}>
                 Terbesar: ${(initialLiq.largest_single || 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}
               </div>
             </div>
@@ -1155,19 +1155,19 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                 {/* Total ringkasan long vs short */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '10px', marginBottom: '16px' }}>
                   <div style={{ padding: '12px 14px', background: 'var(--bg-panel-subtle)', borderRadius: 'var(--radius-sm)', border: 'var(--border-hairline)' }}>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: '800', letterSpacing: '0.06em' }}>TOTAL 24 JAM</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800', letterSpacing: '0.06em' }}>TOTAL 24 JAM</div>
                     <div style={{ fontSize: '18px', fontWeight: '800', fontFamily: 'var(--font-mono)', marginTop: '4px' }}>
                       ${formatVolSmart(initialLiq.total_usd)}
                     </div>
                   </div>
                   <div style={{ padding: '12px 14px', background: 'rgba(239, 68, 68, 0.08)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(239, 68, 68, 0.25)' }}>
-                    <div style={{ fontSize: '10px', color: 'var(--accent-rust)', fontWeight: '800', letterSpacing: '0.06em' }}>LONG TERLIKUIDASI</div>
+                    <div style={{ fontSize: '12px', color: 'var(--accent-rust)', fontWeight: '800', letterSpacing: '0.06em' }}>LONG TERLIKUIDASI</div>
                     <div style={{ fontSize: '18px', fontWeight: '800', fontFamily: 'var(--font-mono)', marginTop: '4px', color: 'var(--accent-rust)' }}>
                       ${formatVolSmart(initialLiq.long_usd)}
                     </div>
                   </div>
                   <div style={{ padding: '12px 14px', background: 'rgba(0, 208, 132, 0.08)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(0, 208, 132, 0.25)' }}>
-                    <div style={{ fontSize: '10px', color: 'var(--accent-green)', fontWeight: '800', letterSpacing: '0.06em' }}>SHORT TERLIKUIDASI</div>
+                    <div style={{ fontSize: '12px', color: 'var(--accent-green)', fontWeight: '800', letterSpacing: '0.06em' }}>SHORT TERLIKUIDASI</div>
                     <div style={{ fontSize: '18px', fontWeight: '800', fontFamily: 'var(--font-mono)', marginTop: '4px', color: 'var(--accent-green)' }}>
                       ${formatVolSmart(initialLiq.short_usd)}
                     </div>
@@ -1178,7 +1178,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                 <div style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                     <thead>
-                      <tr style={{ borderBottom: '1px solid var(--border-hairline)', color: 'var(--text-muted)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                      <tr style={{ borderBottom: '1px solid var(--border-hairline)', color: 'var(--text-muted)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                         <th style={{ padding: '8px 10px', textAlign: 'left' }}>Pair</th>
                         <th style={{ padding: '8px 10px', textAlign: 'right' }}>Long</th>
                         <th style={{ padding: '8px 10px', textAlign: 'right' }}>Short</th>
@@ -1204,7 +1204,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                   </table>
                 </div>
 
-                <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '12px', lineHeight: 1.6 }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '12px', lineHeight: 1.6 }}>
                   Sumber: {initialLiq.source || 'bursa'} &middot; jendela {initialLiq.window_hours || 24} jam.
                   Data diperbarui setiap kali pipeline berjalan, bukan streaming per detik.
                 </div>
@@ -1212,7 +1212,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
             ) : (
               <div style={{ padding: '24px', background: 'var(--bg-panel-subtle)', borderRadius: 'var(--radius-sm)', textAlign: 'center', color: 'var(--text-muted)' }}>
                 <div style={{ fontSize: '20px', marginBottom: '8px' }}>💀 Belum ada data likuidasi</div>
-                <div style={{ fontSize: '11px', lineHeight: 1.7 }}>
+                <div style={{ fontSize: '12px', lineHeight: 1.7 }}>
                   Data likuidasi diambil saat pipeline berjalan.<br />
                   Jalankan pipeline untuk mengisi angka terbaru.
                 </div>
@@ -1227,7 +1227,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
             {/* Quick Coin Selector Bar */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700 }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 700 }}>
                   PILIH PAIR:
                 </span>
                 {['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'SUIUSDT', 'DOGEUSDT', 'AVAXUSDT', 'LINKUSDT', 'NEARUSDT', 'APTUSDT', 'RENDERUSDT', 'PEPEUSDT', 'WIFUSDT'].map(sym => (
@@ -1240,7 +1240,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                     }}
                     style={{
                       padding: '4px 10px',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       fontFamily: 'var(--font-mono)',
                       fontWeight: 700,
                       borderRadius: '4px',
@@ -1255,7 +1255,7 @@ export default function CryptoFuturesTab({ data, onOpenChart, livePrices = {}, f
                 ))}
               </div>
 
-              <div style={{ fontSize: '10.5px', color: '#64748b' }}>
+              <div style={{ fontSize: '12px', color: 'var(--slate-500)' }}>
                 Klik tombol <strong style={{ color: 'var(--accent-mint)' }}>📖 Book</strong> di tabel Kontrak Perpetual untuk membuka instrumen lainnya.
               </div>
             </div>

@@ -193,7 +193,7 @@ export default function LotCalculatorModal({
                 KALKULATOR RISIKO & POSITION SIZING
               </div>
               {initialSymbol && (
-                <div style={{ fontSize: '11px', color: 'var(--accent-blue)', fontWeight: '700', marginTop: '1px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--accent-blue)', fontWeight: '700', marginTop: '1px' }}>
                   Target Emiten: ${initialSymbol}
                 </div>
               )}
@@ -234,11 +234,11 @@ export default function LotCalculatorModal({
                 flex: 1,
                 padding: '8px 12px',
                 background: !isCrypto ? 'var(--accent-blue)' : 'transparent',
-                color: !isCrypto ? '#ffffff' : 'var(--text-muted)',
+                color: !isCrypto ? 'var(--text-inverse)' : 'var(--text-muted)',
                 border: 'none',
                 borderRadius: '4px',
                 fontWeight: 800,
-                fontSize: '11.5px',
+                fontSize: '12px',
                 cursor: 'pointer',
                 transition: 'all 0.15s'
               }}
@@ -254,11 +254,11 @@ export default function LotCalculatorModal({
                 flex: 1,
                 padding: '8px 12px',
                 background: isCrypto ? 'var(--accent-orange, var(--accent-gold))' : 'transparent',
-                color: isCrypto ? '#ffffff' : 'var(--text-muted)',
+                color: isCrypto ? 'var(--text-inverse)' : 'var(--text-muted)',
                 border: 'none',
                 borderRadius: '4px',
                 fontWeight: 800,
-                fontSize: '11.5px',
+                fontSize: '12px',
                 cursor: 'pointer',
                 transition: 'all 0.15s'
               }}
@@ -292,7 +292,7 @@ export default function LotCalculatorModal({
                   outline: 'none'
                 }}
               />
-              <div style={{ fontSize: '10px', color: 'var(--accent-blue)', marginTop: '4px', fontWeight: '700' }}>
+              <div style={{ fontSize: '12px', color: 'var(--accent-blue)', marginTop: '4px', fontWeight: '700' }}>
                 {!isCrypto ? formatRupiahWords(modalAmount) : `$${Number(modalAmount || 0).toLocaleString('en-US')} USD`}
               </div>
 
@@ -306,7 +306,7 @@ export default function LotCalculatorModal({
                     onClick={() => setModalAmount(amt)}
                     style={{
                       padding: '2px 6px',
-                      fontSize: '9px',
+                      fontSize: '12px',
                       fontWeight: '700',
                       background: Number(modalAmount) === amt ? 'var(--accent-blue)' : 'var(--bg-panel)',
                       color: Number(modalAmount) === amt ? '#fff' : 'var(--text-muted)',
@@ -343,7 +343,7 @@ export default function LotCalculatorModal({
                   outline: 'none'
                 }}
               />
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
                 Alokasi resiko: {!isCrypto ? `Rp ${Math.round(riskAmount).toLocaleString('id-ID')}` : `$${riskAmount.toFixed(2)}`}
               </div>
 
@@ -357,7 +357,7 @@ export default function LotCalculatorModal({
                     onClick={() => setRiskPercent(r)}
                     style={{
                       padding: '2px 6px',
-                      fontSize: '9px',
+                      fontSize: '12px',
                       fontWeight: '700',
                       background: Number(riskPercent) === r ? 'var(--accent-blue)' : 'var(--bg-panel)',
                       color: Number(riskPercent) === r ? '#fff' : 'var(--text-muted)',
@@ -395,7 +395,7 @@ export default function LotCalculatorModal({
                   outline: 'none'
                 }}
               />
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
                 Level beli rencana
               </div>
             </div>
@@ -424,7 +424,7 @@ export default function LotCalculatorModal({
                   outline: 'none'
                 }}
               />
-              <div style={{ fontSize: '10px', color: 'var(--accent-rust-text, var(--accent-rust))', marginTop: '4px', fontWeight: '700' }}>
+              <div style={{ fontSize: '12px', color: 'var(--accent-rust-text, var(--accent-rust))', marginTop: '4px', fontWeight: '700' }}>
                 {entry > 0 && sl > 0 ? `Resiko: ${(((entry - sl) / entry) * 100).toFixed(1)}%` : 'Batas cut loss'}
               </div>
             </div>
@@ -434,7 +434,7 @@ export default function LotCalculatorModal({
           <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', borderRadius: '6px', padding: '16px' }}>
             
             <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '800', letterSpacing: '0.06em' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800', letterSpacing: '0.06em' }}>
                 UKURAN POSISI MAKSIMAL:
               </div>
               <div style={{ fontSize: '36px', fontWeight: '900', color: 'var(--accent-green-text, var(--accent-green))', lineHeight: '1.1', fontFamily: 'var(--font-mono)' }}>
@@ -462,7 +462,7 @@ export default function LotCalculatorModal({
                 <div style={{ fontSize: '17px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust-text, var(--accent-rust))' }}>
                   {isCrypto ? `$${riskAmount.toFixed(2)}` : `Rp ${Math.round(riskAmount).toLocaleString('id-ID')}`}
                 </div>
-                <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   Jika kena Stop Loss
                 </div>
               </div>
@@ -472,7 +472,7 @@ export default function LotCalculatorModal({
                 <div style={{ fontSize: '17px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                   {isCrypto ? `$${totalPositionValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `Rp ${Math.round(totalPositionValue).toLocaleString('id-ID')}`}
                 </div>
-                <div style={{ fontSize: '10px', color: isWarning ? 'var(--accent-rust-text, var(--accent-rust))' : 'var(--text-muted)' }}>
+                <div style={{ fontSize: '12px', color: isWarning ? 'var(--accent-rust-text, var(--accent-rust))' : 'var(--text-muted)' }}>
                   {positionPercent.toFixed(1)}% dari Total Porto
                 </div>
               </div>
@@ -482,7 +482,7 @@ export default function LotCalculatorModal({
                 <div style={{ fontSize: '17px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green-text, var(--accent-green))' }}>
                   {isCrypto ? `$${targetPrice > 0 ? (targetPrice < 1 ? targetPrice.toFixed(6) : targetPrice.toFixed(4)) : '-'}` : `Rp ${targetPrice > 0 ? Math.round(targetPrice).toLocaleString('id-ID') : '-'}`}
                 </div>
-                <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   R:R Rasio {rrRatioDisplay}
                 </div>
               </div>
@@ -499,7 +499,7 @@ export default function LotCalculatorModal({
                 borderRadius: '4px',
                 color: 'var(--accent-sky)',
                 fontWeight: '600',
-                fontSize: '10.5px',
+                fontSize: '12px',
                 textAlign: 'center'
               }}>
                 ℹ️ Ukuran posisi dibatasi 100% saldo kas tunai portofolio (Batas akun cash reguler).
@@ -514,7 +514,7 @@ export default function LotCalculatorModal({
                 borderRadius: '4px',
                 color: 'var(--accent-rust-text, var(--accent-rust))',
                 fontWeight: '700',
-                fontSize: '11px',
+                fontSize: '12px',
                 textAlign: 'center'
               }}>
                 ⚠️ PERINGATAN: Posisi melebihi 25% dari total portfolio. Jaga diversifikasi aset!
@@ -530,7 +530,7 @@ export default function LotCalculatorModal({
                 borderRadius: '4px',
                 color: 'var(--accent-rust-text, var(--accent-rust))',
                 fontWeight: '700',
-                fontSize: '11px',
+                fontSize: '12px',
                 textAlign: 'center'
               }}>
                 ⚠️ PERINGATAN: Harga Stop Loss ({sl}) harus lebih rendah dari Entry ({entry}) untuk posisi Long.

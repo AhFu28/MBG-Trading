@@ -92,21 +92,21 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
                 SINYAL TRADING
               </span>
               <span style={{
-                fontSize: '9.5px', fontWeight: '800', padding: '3px 9px', borderRadius: '9999px',
+                fontSize: '12px', fontWeight: '800', padding: '3px 9px', borderRadius: '9999px',
                 background: tier === TIERS.VIP ? 'rgba(245,158,11,0.18)' : 'rgba(99,102,241,0.18)',
-                color: tier === TIERS.VIP ? '#fbbf24' : '#818cf8',
+                color: tier === TIERS.VIP ? 'var(--accent-gold-bright)' : '#818cf8',
                 border: `1px solid ${tier === TIERS.VIP ? 'rgba(245,158,11,0.45)' : 'rgba(99,102,241,0.45)'}`,
               }}>
                 {features.icon} {features.label}
               </span>
             </div>
-            <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
               {features.note}
             </div>
-            <div style={{ display: 'flex', gap: '14px', marginTop: '8px', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ display: 'flex', gap: '14px', marginTop: '8px', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
               <span style={{ color: 'var(--accent-mint)' }}>● {view.totalVisible} terlihat</span>
               {view.totalLocked > 0 && (
-                <span style={{ color: '#fbbf24' }}>🔒 {view.totalLocked} terkunci</span>
+                <span style={{ color: 'var(--accent-gold-bright)' }}>🔒 {view.totalLocked} terkunci</span>
               )}
             </div>
           </div>
@@ -117,10 +117,10 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
               background: 'rgba(0,0,0,0.28)', border: '1px solid rgba(245,158,11,0.35)',
               borderRadius: '10px', padding: '12px 14px', minWidth: '230px', maxWidth: '290px',
             }}>
-              <div style={{ fontSize: '11px', fontWeight: '800', color: '#fbbf24', marginBottom: '6px' }}>
+              <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-gold-bright)', marginBottom: '6px' }}>
                 👑 Upgrade ke VIP Pro
               </div>
-              <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
                 {tier === TIERS.GUEST ? (
                   <>• Sinyal <strong>real-time</strong> (bukan 48 jam)<br />
                     • Level presisi Entry / SL / TP<br />
@@ -136,7 +136,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
                 style={{
                   marginTop: '10px', width: '100%', padding: '7px 12px', borderRadius: '7px',
                   background: 'linear-gradient(135deg, var(--accent-gold) 0%, #d97706 100%)',
-                  color: '#000', border: 'none', fontSize: '10.5px', fontWeight: '900', cursor: 'pointer',
+                  color: '#000', border: 'none', fontSize: '12px', fontWeight: '900', cursor: 'pointer',
                 }}
               >
                 Lihat Paket VIP
@@ -149,10 +149,10 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
               background: 'rgba(16,185,129,0.10)', border: '1px solid rgba(16,185,129,0.35)',
               borderRadius: '10px', padding: '12px 14px', maxWidth: '250px',
             }}>
-              <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-mint)', marginBottom: '4px' }}>
+              <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-mint)', marginBottom: '4px' }}>
                 ✅ Akses Penuh Aktif
               </div>
-              <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                 Sinyal baru juga dikirim otomatis ke Telegram Anda.
               </div>
             </div>
@@ -171,7 +171,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
             key={key}
             onClick={() => setFilter(key)}
             style={{
-              padding: '5px 12px', borderRadius: '9999px', fontSize: '11px', fontWeight: '700', cursor: 'pointer',
+              padding: '5px 12px', borderRadius: '9999px', fontSize: '12px', fontWeight: '700', cursor: 'pointer',
               background: filter === key ? 'linear-gradient(135deg,#6366f1,#4f46e5)' : 'var(--bg-panel-subtle)',
               color: filter === key ? '#fff' : 'var(--text-secondary)',
               border: filter === key ? '1px solid #6366f1' : '1px solid rgba(255,255,255,0.08)',
@@ -180,7 +180,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
             {label}
           </button>
         ))}
-        <span style={{ marginLeft: 'auto', fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+        <span style={{ marginLeft: 'auto', fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
           Jam: {now.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB
         </span>
       </div>
@@ -192,7 +192,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
           <div style={{ fontSize: '13px', fontWeight: '700', marginBottom: '6px' }}>
             Belum ada sinyal yang bisa Anda lihat
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', maxWidth: '440px', margin: '0 auto', lineHeight: 1.7 }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', maxWidth: '440px', margin: '0 auto', lineHeight: 1.7 }}>
             {view.totalLocked > 0
               ? `${view.totalLocked} sinyal sedang menunggu masa tayang untuk tier ${features.label}. Sinyal VIP tampil seketika.`
               : 'Pipeline belum menghasilkan rencana trading. Sinyal akan muncul otomatis setelah pipeline berjalan.'}
@@ -214,19 +214,19 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
                     <div style={{ fontSize: '15px', fontWeight: '900', letterSpacing: '-0.01em' }}>
                       ${row.clean_ticker}
                     </div>
-                    <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                       {row.market} · {fmtWhen(row.observed_at)}
                     </div>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
                     <span style={{
-                      fontSize: '10px', fontWeight: '900', padding: '3px 9px', borderRadius: '6px',
+                      fontSize: '12px', fontWeight: '900', padding: '3px 9px', borderRadius: '6px',
                       background: dir.bg, color: dir.color, border: `1px solid ${dir.border}`,
                     }}>
                       {dir.label}
                     </span>
                     {row.technical_signal && (
-                      <span style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                      <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                         {row.technical_signal}
                       </span>
                     )}
@@ -240,10 +240,10 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
                     borderRadius: '8px', padding: '12px', textAlign: 'center',
                   }}>
                     <div style={{ fontSize: '16px', marginBottom: '4px' }}>🔒</div>
-                    <div style={{ fontSize: '10.5px', color: '#fbbf24', fontWeight: '700' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--accent-gold-bright)', fontWeight: '700' }}>
                       Level presisi terkunci
                     </div>
-                    <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginTop: '3px' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '3px' }}>
                       Entry, Stop Loss &amp; Target hanya untuk member
                     </div>
                   </div>
@@ -259,7 +259,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
                         background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.06)',
                         borderRadius: '8px', padding: '7px 10px',
                       }}>
-                        <div style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
+                        <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
                           {label}
                         </div>
                         <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color, marginTop: '2px' }}>
@@ -272,7 +272,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
 
                 {/* R:R */}
                 {!row.masked && row.risk_reward_ratio != null && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10.5px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
                     <span style={{ color: 'var(--text-muted)' }}>Risk / Reward</span>
                     <span style={{ fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--accent-mint)' }}>
                       1:{Number(row.risk_reward_ratio).toFixed(1)}
@@ -283,7 +283,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
                 {/* Rationale — VIP only */}
                 {row.masked === false && row.opinion_thesis && (
                   <div style={{
-                    fontSize: '10.5px', color: 'var(--text-secondary)', lineHeight: 1.6,
+                    fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.6,
                     background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.2)',
                     borderRadius: '8px', padding: '9px 11px',
                   }}>
@@ -293,7 +293,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
 
                 {/* Locked rationale teaser for non-VIP */}
                 {row.masked === false && !row.opinion_thesis && (
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
                     🔒 Alasan lengkap hanya untuk VIP Pro
                   </div>
                 )}
@@ -314,7 +314,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
                       width: '100%',
                       padding: '7px 10px',
                       borderRadius: '6px',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       fontWeight: 800,
                       background: 'rgba(59, 130, 246, 0.12)',
                       border: '1px solid rgba(59, 130, 246, 0.3)',
@@ -339,20 +339,20 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
           <div style={{ fontSize: '12px', fontWeight: '800', marginBottom: '8px' }}>
             🔒 {view.totalLocked} Sinyal Baru Menunggu Masa Tayang
           </div>
-          <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', marginBottom: '10px', lineHeight: 1.6 }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '10px', lineHeight: 1.6 }}>
             Sinyal ini sudah keluar untuk member VIP, tapi baru bisa Anda lihat setelah masa tayang tier {features.label} selesai.
           </div>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {view.locked.slice(0, 8).map((l, i) => (
               <span key={i} style={{
-                fontSize: '10px', fontFamily: 'var(--font-mono)', padding: '4px 10px', borderRadius: '6px',
-                background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', color: '#fbbf24',
+                fontSize: '12px', fontFamily: 'var(--font-mono)', padding: '4px 10px', borderRadius: '6px',
+                background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', color: 'var(--accent-gold-bright)',
               }}>
                 {l.plan.clean_ticker || '?'} · {l.hoursUntil}h lagi
               </span>
             ))}
             {view.locked.length > 8 && (
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)', alignSelf: 'center' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', alignSelf: 'center' }}>
                 +{view.locked.length - 8} lainnya
               </span>
             )}
@@ -363,7 +363,7 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
       {/* ===== HONESTY FOOTER ===== */}
       <div style={{
         background: 'rgba(244,63,94,0.07)', border: '1px solid rgba(244,63,94,0.28)',
-        borderRadius: '10px', padding: '12px 16px', fontSize: '10.5px', color: '#fb7185', lineHeight: 1.7,
+        borderRadius: '10px', padding: '12px 16px', fontSize: '12px', color: '#fb7185', lineHeight: 1.7,
       }}>
         <strong>⚠️ PERINGATAN:</strong> Sinyal di halaman ini adalah <strong>hasil screening algoritmik</strong>,
         bukan nasihat investasi dan bukan ajakan membeli. Semua trading mengandung risiko kehilangan modal.

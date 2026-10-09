@@ -204,7 +204,7 @@ export default function PersonalWatchlistTab({
         gap: '10px'
       }}>
         <form onSubmit={handleAddTicker} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)' }}>
+          <span style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-primary)' }}>
             + TAMBAH EMITEN / PAIR:
           </span>
           <input
@@ -218,7 +218,7 @@ export default function PersonalWatchlistTab({
             style={{
               padding: '6px 10px',
               fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
+              fontSize: '12px',
               border: 'var(--border-muted)',
               background: 'var(--bg-canvas)',
               color: 'var(--text-primary)',
@@ -230,18 +230,18 @@ export default function PersonalWatchlistTab({
           <button
             type='submit'
             className='telemetry-btn active'
-            style={{ padding: '6px 12px', fontSize: '11px' }}
+            style={{ padding: '6px 12px', fontSize: '12px' }}
           >
             + SIMPAN
           </button>
           {errorMessage && (
-            <span style={{ fontSize: '11px', color: '#ff3b30' }}>
+            <span style={{ fontSize: '12px', color: '#ff3b30' }}>
               {errorMessage}
             </span>
           )}
         </form>
 
-        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
           💾 TERSIMPAN OTOMATIS DI BROWSER LOCALSTORAGE · {watchlist.length} TIKER
         </div>
       </div>
@@ -281,7 +281,7 @@ export default function PersonalWatchlistTab({
                   </td>
                   <td>
                     <span className='badge' style={{
-                      fontSize: '9px',
+                      fontSize: '12px',
                       background: item.market === 'IDX' ? 'var(--bg-panel-subtle)' : '#fff8e1',
                       color: 'var(--text-primary)'
                     }}>
@@ -289,7 +289,7 @@ export default function PersonalWatchlistTab({
                     </span>
                   </td>
                   <td>
-                    <span className='badge badge-blue' style={{ fontSize: '9px' }}>
+                    <span className='badge badge-blue' style={{ fontSize: '12px' }}>
                       {item.signal}
                     </span>
                   </td>
@@ -319,14 +319,14 @@ export default function PersonalWatchlistTab({
                     <button
                       className='telemetry-btn'
                       onClick={() => (onSelectTicker || onOpenChart)?.(item.ticker, item.market)}
-                      style={{ padding: '3px 8px', fontSize: '10px', marginRight: '6px' }}
+                      style={{ padding: '3px 8px', fontSize: '12px', marginRight: '6px' }}
                     >
                       📈 CHART
                     </button>
                     <button
                       className='telemetry-btn'
                       onClick={() => handleRemoveTicker(item.ticker)}
-                      style={{ padding: '3px 8px', fontSize: '10px', color: '#ff3b30', borderColor: '#ff3b30' }}
+                      style={{ padding: '3px 8px', fontSize: '12px', color: '#ff3b30', borderColor: '#ff3b30' }}
                       title='Hapus dari Watchlist'
                     >
                       ✕ HAPUS

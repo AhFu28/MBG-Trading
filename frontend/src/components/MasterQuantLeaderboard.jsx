@@ -518,7 +518,7 @@ export default function MasterQuantLeaderboard({
       <div className='telemetry-panel' style={{ border: 'var(--border-hairline)' }}>
       {/* Sub-filter context bar for STOCK/CRYPTO tabs */}
       {(activeMainTab === 'STOCK' || activeMainTab === 'CRYPTO') && (
-        <div className='telemetry-header' style={{ background: 'var(--bg-panel-subtle)', borderBottom: 'var(--border-hairline)', fontSize: '10px', color: 'var(--text-muted)' }}>
+        <div className='telemetry-header' style={{ background: 'var(--bg-panel-subtle)', borderBottom: 'var(--border-hairline)', fontSize: '12px', color: 'var(--text-muted)' }}>
           <span>
             {activeMainTab === 'STOCK'
               ? `📈 Saham IDX · ${allStockItems.length} emiten aktif BEI · SCANNER TRADINGVIEW REALTIME · KLIK BARIS UNTUK CHART & ORDER BOOK`
@@ -629,7 +629,7 @@ export default function MasterQuantLeaderboard({
                     key={btn.id}
                     onClick={() => setStockSubFilter(btn.id)}
                     className={'telemetry-btn ' + (stockSubFilter === btn.id ? 'active' : '')}
-                    style={{ fontSize: '10px', padding: '3px 8px' }}
+                    style={{ fontSize: '12px', padding: '3px 8px' }}
                   >
                     {btn.label}
                   </button>
@@ -646,7 +646,7 @@ export default function MasterQuantLeaderboard({
                     key={btn.id}
                     onClick={() => setCryptoSubFilter(btn.id)}
                     className={'telemetry-btn ' + (cryptoSubFilter === btn.id ? 'active' : '')}
-                    style={{ fontSize: '10px', padding: '3px 8px' }}
+                    style={{ fontSize: '12px', padding: '3px 8px' }}
                   >
                     {btn.label}
                   </button>
@@ -658,7 +658,7 @@ export default function MasterQuantLeaderboard({
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
               <span 
                 style={{ 
-                  fontSize: '9px', 
+                  fontSize: '12px', 
                   fontFamily: 'var(--font-mono)', 
                   padding: '3px 6px', 
                   borderRadius: '3px', 
@@ -680,7 +680,7 @@ export default function MasterQuantLeaderboard({
                 style={{
                   padding: '5px 8px',
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
+                  fontSize: '12px',
                   border: 'var(--border-muted)',
                   background: 'var(--bg-canvas)',
                   color: 'var(--text-primary)',
@@ -689,7 +689,7 @@ export default function MasterQuantLeaderboard({
                   textTransform: 'uppercase'
                 }}
               />
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 ({stockSubFilter === 'DIVIDEND' ? filteredDividends.length : currentDataset.length} Hasil)
               </span>
             </div>
@@ -697,7 +697,7 @@ export default function MasterQuantLeaderboard({
 
           {/* Q-Score legend for newcomers (hidden on the dividend sub-view) */}
           {!(activeMainTab === 'STOCK' && stockSubFilter === 'DIVIDEND') && (
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px', padding: '2px 2px 8px', fontSize: '10px', color: 'var(--text-muted)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px', padding: '2px 2px 8px', fontSize: '12px', color: 'var(--text-muted)' }}>
               <span>
                 <strong style={{ color: 'var(--text-secondary)' }}>Q-Score</strong>
                 {' '}= skor kuantitatif 0-100 dari momentum, likuiditas, valuasi & arus dana institusi, makin tinggi = makin kuat. Klik header kolom (▲/▼) untuk urutkan, klik baris untuk detail lengkap.
@@ -718,11 +718,11 @@ export default function MasterQuantLeaderboard({
                 alignItems: 'center',
                 flexWrap: 'wrap',
                 gap: '8px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontFamily: 'var(--font-mono)'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                  <span style={{ color: 'var(--accent-gold, #fbbf24)', fontWeight: '700' }}>
+                  <span style={{ color: 'var(--accent-gold, var(--accent-gold-bright))', fontWeight: '700' }}>
                     📅 KALENDER DIVIDEN BEI (1 BULAN TERAKHIR & 3-6 BULAN KEDEPAN)
                   </span>
                   
@@ -737,11 +737,11 @@ export default function MasterQuantLeaderboard({
                         key={w.id}
                         onClick={() => setDividendWindow(w.id)}
                         style={{
-                          background: dividendWindow === w.id ? 'var(--accent-gold, #fbbf24)' : 'transparent',
+                          background: dividendWindow === w.id ? 'var(--accent-gold, var(--accent-gold-bright))' : 'transparent',
                           color: dividendWindow === w.id ? '#000000' : 'var(--text-muted)',
                           border: 'none',
                           padding: '2px 8px',
-                          fontSize: '10px',
+                          fontSize: '12px',
                           fontWeight: '800',
                           borderRadius: '3px',
                           cursor: 'pointer'
@@ -753,7 +753,7 @@ export default function MasterQuantLeaderboard({
                   </div>
                 </div>
 
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   KLIK BARIS UNTUK RADAR DIVIDEND TRAP & METRIK LENGKAP
                 </span>
               </div>
@@ -792,19 +792,19 @@ export default function MasterQuantLeaderboard({
                       let countdownBadge = null;
                       if (d.days_to_cum === 0) {
                         countdownBadge = (
-                          <span className="badge badge-warn" style={{ fontSize: '9px', marginTop: '2px', background: '#dc2626', color: '#ffffff' }}>
+                          <span className="badge badge-warn" style={{ fontSize: '12px', marginTop: '2px', background: '#dc2626', color: 'var(--text-inverse)' }}>
                             🔴 HARI INI (CUM DATE)
                           </span>
                         );
                       } else if (d.days_to_cum > 0) {
                         countdownBadge = (
-                          <span className="badge badge-gold" style={{ fontSize: '9px', marginTop: '2px' }}>
+                          <span className="badge badge-gold" style={{ fontSize: '12px', marginTop: '2px' }}>
                             H-{d.days_to_cum} HARI
                           </span>
                         );
                       } else {
                         countdownBadge = (
-                          <span className="badge badge-neutral" style={{ fontSize: '9px', marginTop: '2px', color: 'var(--text-muted)' }}>
+                          <span className="badge badge-neutral" style={{ fontSize: '12px', marginTop: '2px', color: 'var(--text-muted)' }}>
                             PASCA EX (H+{Math.abs(d.days_to_cum)})
                           </span>
                         );
@@ -840,7 +840,7 @@ export default function MasterQuantLeaderboard({
                                     </span>
                                     {dPrice > 0 && (
                                       <span style={{
-                                        fontSize: '10px',
+                                        fontSize: '12px',
                                         fontWeight: '800',
                                         fontFamily: 'var(--font-mono)',
                                         color: dChg >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)'
@@ -849,12 +849,12 @@ export default function MasterQuantLeaderboard({
                                       </span>
                                     )}
                                   </div>
-                                  <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{d.company_name}</div>
+                                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{d.company_name}</div>
                                 </div>
                               </div>
                             </td>
                             <td>
-                              <span className="badge badge-neutral" style={{ fontSize: '9px', fontWeight: '700' }}>
+                              <span className="badge badge-neutral" style={{ fontSize: '12px', fontWeight: '700' }}>
                                 {grp}
                               </span>
                             </td>
@@ -868,15 +868,15 @@ export default function MasterQuantLeaderboard({
                             <td style={{ textAlign: 'right', fontWeight: '800', color: 'var(--accent-green)', fontSize: '12px' }}>
                               {d.dividend_yield_pct}%
                             </td>
-                            <td style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                            <td style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                               <div>Ex: {d.ex_date}</div>
                               <div>Pay: {d.payment_date}</div>
                             </td>
                             <td style={{ textAlign: 'center' }}>
-                              <span className={`badge ${bColor}`} style={{ fontSize: '9px', fontWeight: '800', display: 'inline-block' }}>
+                              <span className={`badge ${bColor}`} style={{ fontSize: '12px', fontWeight: '800', display: 'inline-block' }}>
                                 {d.verdict}
                               </span>
-                              <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px', maxWidth: '160px', margin: '2px auto 0' }}>
+                              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px', maxWidth: '160px', margin: '2px auto 0' }}>
                                 {d.verdict_badge === 'YELLOW' ? 'Jual H-1 Cum Date' : d.verdict_badge === 'GREEN' ? 'Aman Hold Lewat Ex' : 'Risiko Drop > Yield'}
                               </div>
                             </td>
@@ -884,7 +884,7 @@ export default function MasterQuantLeaderboard({
                               <div style={{ fontWeight: '700', color: 'var(--accent-green)' }}>
                                 {Number(d.buy_zone_low).toLocaleString()} - {Number(d.buy_zone_high).toLocaleString()}
                               </div>
-                              <div style={{ fontSize: '9px', color: 'var(--accent-rust)' }}>
+                              <div style={{ fontSize: '12px', color: 'var(--accent-rust)' }}>
                                 SL: {Number(d.sl).toLocaleString()}
                               </div>
                             </td>
@@ -893,14 +893,14 @@ export default function MasterQuantLeaderboard({
                                 <button
                                   className="telemetry-btn"
                                   onClick={() => onSelectTicker(d.ticker, 'IDX')}
-                                  style={{ fontSize: '9px', padding: '3px 6px', color: 'var(--accent-blue)' }}
+                                  style={{ fontSize: '12px', padding: '3px 6px', color: 'var(--accent-blue)' }}
                                 >
                                   CHART ↗
                                 </button>
                                 <button
                                   className="telemetry-btn"
                                   onClick={() => onOpenLotCalc?.(d.buy_zone_low || d.price, d.sl)}
-                                  style={{ fontSize: '9px', padding: '3px 6px' }}
+                                  style={{ fontSize: '12px', padding: '3px 6px' }}
                                 >
                                   LOT 💰
                                 </button>
@@ -915,8 +915,8 @@ export default function MasterQuantLeaderboard({
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
                                   
                                   {/* Box 1: Fundamental Facts */}
-                                  <div style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', fontSize: '11px' }}>
-                                    <div style={{ fontWeight: '700', color: 'var(--accent-blue)', marginBottom: '6px', fontSize: '10px' }}>
+                                  <div style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', fontSize: '12px' }}>
+                                    <div style={{ fontWeight: '700', color: 'var(--accent-blue)', marginBottom: '6px', fontSize: '12px' }}>
                                       📊 FAKTA FUNDAMENTAL DIVIDEN:
                                     </div>
                                     <div style={{ color: 'var(--text-primary)', marginBottom: '4px' }}>
@@ -934,8 +934,8 @@ export default function MasterQuantLeaderboard({
                                   </div>
 
                                   {/* Box 2: Radar Dividend Trap */}
-                                  <div style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', fontSize: '11px' }}>
-                                    <div style={{ fontWeight: '700', color: 'var(--accent-gold, #fbbf24)', marginBottom: '6px', fontSize: '10px' }}>
+                                  <div style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', fontSize: '12px' }}>
+                                    <div style={{ fontWeight: '700', color: 'var(--accent-gold, var(--accent-gold-bright))', marginBottom: '6px', fontSize: '12px' }}>
                                       ⚠️ RADAR DIVIDEND TRAP:
                                     </div>
                                     <div style={{ color: 'var(--text-primary)', marginBottom: '4px' }}>
@@ -947,20 +947,20 @@ export default function MasterQuantLeaderboard({
                                     <div style={{ color: 'var(--text-primary)', marginBottom: '4px' }}>
                                       • <strong>Net Gain vs Ex Drop:</strong> {(Number(d.dividend_yield_pct) - Number(d.historical_drop_pct)).toFixed(1)}%
                                     </div>
-                                    <div style={{ color: 'var(--text-muted)', fontSize: '10px' }}>
+                                    <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>
                                       • Estimasi pemulihan harga rata-rata 10-30 hari bursa.
                                     </div>
                                   </div>
 
                                   {/* Box 3: Trader Playbook */}
-                                  <div style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', fontSize: '11px' }}>
-                                    <div style={{ fontWeight: '700', color: 'var(--accent-green)', marginBottom: '6px', fontSize: '10px' }}>
+                                  <div style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', fontSize: '12px' }}>
+                                    <div style={{ fontWeight: '700', color: 'var(--accent-green)', marginBottom: '6px', fontSize: '12px' }}>
                                       🎯 PLAYBOOK EKSEKUSI (WORTH TO BUY?):
                                     </div>
                                     <div style={{ color: 'var(--text-primary)', marginBottom: '6px', lineHeight: 1.4 }}>
                                       {d.summary}
                                     </div>
-                                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                                       Ideal Entry: <strong>Rp {formatIdNumber(d.buy_zone_low)} - Rp {formatIdNumber(d.buy_zone_high)}</strong> | Hard SL: <strong>Rp {formatIdNumber(d.sl)}</strong>
                                     </div>
                                   </div>
@@ -1043,7 +1043,7 @@ export default function MasterQuantLeaderboard({
                               transition: 'background 0.15s ease'
                             }}
                           >
-                            <td className="sticky-col-num" style={{ textAlign: 'center', fontWeight: '700', color: 'var(--text-muted)', fontSize: '11px' }}>
+                            <td className="sticky-col-num" style={{ textAlign: 'center', fontWeight: '700', color: 'var(--text-muted)', fontSize: '12px' }}>
                               {idx + 1}
                             </td>
                             <td className="sticky-col-ticker" style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '13px' }}>
@@ -1073,7 +1073,7 @@ export default function MasterQuantLeaderboard({
                             </td>
                             <td>
                               <span className='badge' style={{
-                                fontSize: '9px',
+                                fontSize: '12px',
                                 background: 'var(--bg-panel-subtle)',
                                 color: 'var(--text-primary)',
                                 border: '1px solid var(--border-muted)'
@@ -1085,10 +1085,10 @@ export default function MasterQuantLeaderboard({
                               <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
                                 {item.dynamic?.statusLabel ? (
                                   <>
-                                    <span className={'badge ' + (item.dynamic.badgeClass || 'badge')} style={{ fontSize: '9px', whiteSpace: 'nowrap' }}>
+                                    <span className={'badge ' + (item.dynamic.badgeClass || 'badge')} style={{ fontSize: '12px', whiteSpace: 'nowrap' }}>
                                       {item.dynamic.statusLabel}
                                     </span>
-                                    <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '600', whiteSpace: 'nowrap' }}>
+                                    <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '600', whiteSpace: 'nowrap' }}>
                                       {item.signal}
                                     </span>
                                   </>
@@ -1097,13 +1097,13 @@ export default function MasterQuantLeaderboard({
                                     item.signal === 'BREAKOUT' || item.signal === 'HIGH YIELD SAFE' || item.signal === 'FOREIGN BUY' ? 'badge-bull' :
                                     item.signal === 'ACCUMULATION' || item.signal === 'SPOT_LONG' ? 'badge-blue' :
                                     item.signal === 'TRAP RISK' || item.signal === 'FOREIGN SELL' ? 'badge-bear' : 'badge'
-                                  )} style={{ fontSize: '9px', whiteSpace: 'nowrap' }}>
+                                  )} style={{ fontSize: '12px', whiteSpace: 'nowrap' }}>
                                     {item.signal}
                                   </span>
                                 )}
                                 {item.qScore !== undefined && (
                                   <span style={{
-                                    fontSize: '9px',
+                                    fontSize: '12px',
                                     fontFamily: 'var(--font-mono)',
                                     fontWeight: '800',
                                     padding: '1px 5px',
@@ -1131,7 +1131,7 @@ export default function MasterQuantLeaderboard({
                             }}>
                               <div>{formatFinancialPrice(item.price, item.market)}</div>
                               {distToSl !== null && (
-                                <div style={{ fontSize: '8.5px', fontWeight: '700', color: distToSl <= 3 ? 'var(--accent-rust-text, #ff3b30)' : 'var(--text-muted)' }}>
+                                <div style={{ fontSize: '12px', fontWeight: '700', color: distToSl <= 3 ? 'var(--accent-rust-text, #ff3b30)' : 'var(--text-muted)' }}>
                                   {distToSl >= 0 ? `-${distToSl.toFixed(1)}% ke SL` : 'SL HIT'}
                                 </div>
                               )}
@@ -1151,7 +1151,7 @@ export default function MasterQuantLeaderboard({
                             <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', fontWeight: '700', fontSize: '11.5px', color: item.dynamic?.isTrailingActive ? 'var(--accent-green)' : 'var(--accent-rust-text, #ff3b30)' }}>
                               <span>{formatFinancialPrice(item.dynamic?.effectiveSl || item.stopLoss, item.market)}</span>
                               {item.dynamic?.isTrailingActive && (
-                                <div style={{ fontSize: '8.5px', color: 'var(--accent-emerald)', fontWeight: '800' }}>
+                                <div style={{ fontSize: '12px', color: 'var(--accent-emerald)', fontWeight: '800' }}>
                                   🛡️ BE LOCKED
                                 </div>
                               )}
@@ -1177,7 +1177,7 @@ export default function MasterQuantLeaderboard({
                                 );
                               })()}
                               {item.dynamic?.floatingPnLPct !== undefined && (
-                                <div style={{ fontSize: '8.5px', color: item.dynamic.floatingPnLPct >= 0 ? 'var(--accent-green-text, var(--accent-green))' : 'var(--accent-rust-text, var(--accent-rust))', fontWeight: '700' }}>
+                                <div style={{ fontSize: '12px', color: item.dynamic.floatingPnLPct >= 0 ? 'var(--accent-green-text, var(--accent-green))' : 'var(--accent-rust-text, var(--accent-rust))', fontWeight: '700' }}>
                                   {item.dynamic.floatingPnLPct >= 0 ? `+${item.dynamic.floatingPnLPct}%` : `${item.dynamic.floatingPnLPct}%`} PnL
                                 </div>
                               )}
@@ -1189,7 +1189,7 @@ export default function MasterQuantLeaderboard({
                                 e.stopPropagation();
                                 onSelectTicker(item.ticker, item.market);
                               }}
-                              style={{ padding: '2px 8px', fontSize: '10px', background: 'var(--text-primary)', color: 'var(--bg-canvas)', marginRight: '4px' }}
+                              style={{ padding: '2px 8px', fontSize: '12px', background: 'var(--text-primary)', color: 'var(--bg-canvas)', marginRight: '4px' }}
                             >
                               📈 CHART
                             </button>
@@ -1199,7 +1199,7 @@ export default function MasterQuantLeaderboard({
                                 e.stopPropagation();
                                 toggleExpand(item.id);
                               }}
-                              style={{ padding: '2px 6px', fontSize: '10px' }}
+                              style={{ padding: '2px 6px', fontSize: '12px' }}
                             >
                               {isExpanded ? '▲' : '▼'}
                             </button>
@@ -1210,11 +1210,11 @@ export default function MasterQuantLeaderboard({
                         {isExpanded && (
                           <tr className='drawer-content' style={{ background: 'var(--bg-panel-subtle)' }}>
                             <td colSpan='11' style={{ padding: '12px 16px', borderBottom: 'var(--border-hairline)', whiteSpace: 'normal' }}>
-                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px', fontSize: '11px' }}>
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px', fontSize: '12px' }}>
                                 
                                 {/* Drawer Box 1: Facts & Metrics */}
                                 <div className='drawer-box' style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                                  <div style={{ fontWeight: '700', color: 'var(--accent-blue)', marginBottom: '6px', fontSize: '10px', letterSpacing: '0.04em' }}>
+                                  <div style={{ fontWeight: '700', color: 'var(--accent-blue)', marginBottom: '6px', fontSize: '12px', letterSpacing: '0.04em' }}>
                                     📊 VERIFIED FACTS &amp; METRICS:
                                   </div>
                                   {p && (
@@ -1234,10 +1234,10 @@ export default function MasterQuantLeaderboard({
                                   )}
                                   {item.dynamic?.actionAdvice && (
                                     <div style={{ marginTop: '8px', padding: '6px 8px', borderRadius: '4px', background: 'rgba(6, 182, 212, 0.08)', border: '1px solid rgba(6, 182, 212, 0.25)' }}>
-                                      <div style={{ fontWeight: '800', color: '#06b6d4', fontSize: '9px', marginBottom: '2px' }}>
+                                      <div style={{ fontWeight: '800', color: '#06b6d4', fontSize: '12px', marginBottom: '2px' }}>
                                         ⚡ REAKTIF LIVE ADVICE:
                                       </div>
-                                      <div style={{ color: 'var(--text-primary)', fontSize: '10px', lineHeight: 1.4 }}>
+                                      <div style={{ color: 'var(--text-primary)', fontSize: '12px', lineHeight: 1.4 }}>
                                         {item.dynamic.actionAdvice}
                                       </div>
                                     </div>
@@ -1247,7 +1247,7 @@ export default function MasterQuantLeaderboard({
                                 {/* Drawer Box 2: Opinion & Sizing Math */}
                                 <div className='drawer-box' style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', whiteSpace: 'normal', wordBreak: 'break-word' }}>
                                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                                    <div style={{ fontWeight: '700', color: 'var(--accent-orange)', fontSize: '10px', letterSpacing: '0.04em' }}>
+                                    <div style={{ fontWeight: '700', color: 'var(--accent-orange)', fontSize: '12px', letterSpacing: '0.04em' }}>
                                       💡 THESIS &amp; POSITION SIZING MATH:
                                     </div>
                                     <div>
@@ -1257,7 +1257,7 @@ export default function MasterQuantLeaderboard({
                                           e.stopPropagation();
                                           if (onOpenLotCalc) onOpenLotCalc(item.entry, item.stopLoss);
                                         }}
-                                        style={{ padding: '2px 8px', fontSize: '10px', background: 'var(--accent-green)', color: '#fff' }}
+                                        style={{ padding: '2px 8px', fontSize: '12px', background: 'var(--accent-green)', color: '#fff' }}
                                       >
                                         💰 Hitung Lot
                                       </button>
@@ -1272,7 +1272,7 @@ export default function MasterQuantLeaderboard({
                                              brokerData: brokerSummary[item.ticker] || brokerSummary[item.ticker?.replace('.JK', '')]
                                            });
                                          }}
-                                         style={{ padding: '2px 8px', fontSize: '10px', background: '#0066cc', color: '#fff', marginLeft: '6px' }}
+                                         style={{ padding: '2px 8px', fontSize: '12px', background: '#0066cc', color: '#fff', marginLeft: '6px' }}
                                        >
                                          📊 Order Book
                                        </button>
@@ -1288,7 +1288,7 @@ export default function MasterQuantLeaderboard({
                                                brokerData: brokerSummary[item.ticker] || brokerSummary[item.ticker?.replace('.JK', '')]
                                              });
                                            }}
-                                           style={{ padding: '2px 8px', fontSize: '10px', background: '#7c3aed', color: '#fff', marginLeft: '6px' }}
+                                           style={{ padding: '2px 8px', fontSize: '12px', background: '#7c3aed', color: '#fff', marginLeft: '6px' }}
                                            title="Radar Uang Bandar & Broker Summary ala Stockbit"
                                          >
                                            🕵️ Broker Flow
@@ -1301,7 +1301,7 @@ export default function MasterQuantLeaderboard({
                                       <p style={{ color: 'var(--text-primary)', marginBottom: '6px', lineHeight: 1.45 }}>
                                         <strong>Thesis:</strong> {p.opinion_thesis}
                                       </p>
-                                      <div style={{ background: 'var(--bg-panel-subtle)', border: '1px solid var(--border-muted)', padding: '6px 8px', fontSize: '10px', color: 'var(--accent-orange)', fontWeight: '700' }}>
+                                      <div style={{ background: 'var(--bg-panel-subtle)', border: '1px solid var(--border-muted)', padding: '6px 8px', fontSize: '12px', color: 'var(--accent-orange)', fontWeight: '700' }}>
                                         {p.position_size_math}
                                       </div>
                                     </>
@@ -1320,24 +1320,24 @@ export default function MasterQuantLeaderboard({
 
                                 {/* Drawer Box 3: Invalidation Rules (Cleaned Bullets) */}
                                 <div className='drawer-box' style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                                  <div style={{ fontWeight: '700', color: '#ff3b30', marginBottom: '6px', fontSize: '10px', letterSpacing: '0.04em' }}>
+                                  <div style={{ fontWeight: '700', color: '#ff3b30', marginBottom: '6px', fontSize: '12px', letterSpacing: '0.04em' }}>
                                     ⛔ {p?.three_invalidations?.length ? '3 INVALIDATION (CUT RULES):' : 'INVALIDATION (CUT RULES):'}
                                   </div>
                                   {p && Array.isArray(p.three_invalidations) && p.three_invalidations.map((inv, i) => {
                                     const cleanText = inv.replace(/^\d+[\.\)]\s*/, '');
                                     return (
-                                      <div key={i} style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '10px', lineHeight: 1.4 }}>
+                                      <div key={i} style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '12px', lineHeight: 1.4 }}>
                                         • {cleanText}
                                       </div>
                                     );
                                   })}
                                   {c && (
-                                    <div style={{ color: '#ff3b30', fontSize: '10px', lineHeight: 1.4 }}>
+                                    <div style={{ color: '#ff3b30', fontSize: '12px', lineHeight: 1.4 }}>
                                       • {c.invalidation_rule}
                                     </div>
                                   )}
                                   {(!p && !c) && (
-                                    <div style={{ color: 'var(--text-muted)', fontSize: '10px', lineHeight: 1.4 }}>
+                                    <div style={{ color: 'var(--text-muted)', fontSize: '12px', lineHeight: 1.4 }}>
                                       • Penutupan candle harian di bawah level Hard SL Rp {item.stopLoss} atau MA20.
                                     </div>
                                   )}
@@ -1347,11 +1347,11 @@ export default function MasterQuantLeaderboard({
                                 {p?.technicals && (
                                   <div className='drawer-box' style={{ background: 'var(--bg-panel)', padding: '10px', border: 'var(--border-muted)', whiteSpace: 'normal', wordBreak: 'break-word' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                                      <div style={{ fontWeight: '700', color: 'var(--accent-green)', fontSize: '10px', letterSpacing: '0.04em' }}>
+                                      <div style={{ fontWeight: '700', color: 'var(--accent-green)', fontSize: '12px', letterSpacing: '0.04em' }}>
                                         📈 TEKNIKAL &amp; CONFLUENCE SCORE:
                                       </div>
                                       <span style={{
-                                        fontSize: '10px',
+                                        fontSize: '12px',
                                         fontFamily: 'var(--font-mono)',
                                         fontWeight: '800',
                                         padding: '2px 6px',
@@ -1362,19 +1362,19 @@ export default function MasterQuantLeaderboard({
                                         {p.technicals.confluence_score}/100 CONF
                                       </span>
                                     </div>
-                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '10px' }}>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '12px' }}>
                                       • <strong>RSI (14):</strong> {p.technicals.rsi_14} ({p.technicals.rsi_14 >= 70 ? 'Overbought' : p.technicals.rsi_14 <= 30 ? 'Oversold' : 'Zona Akumulasi Sehat'})
                                     </div>
-                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '10px' }}>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '12px' }}>
                                       • <strong>MACD Status:</strong> <span style={{ fontWeight: '700', color: p.technicals.macd_status === 'GOLDEN_CROSS' || p.technicals.macd_status === 'BULLISH' ? 'var(--accent-green)' : '#ff3b30' }}>{p.technicals.macd_status}</span>
                                     </div>
-                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '10px' }}>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '12px' }}>
                                       • <strong>EMA Alignment:</strong> {p.technicals.ema_alignment} (EMA 20/50/200)
                                     </div>
-                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '10px' }}>
+                                    <div style={{ color: 'var(--text-primary)', marginBottom: '4px', fontSize: '12px' }}>
                                       • <strong>Bollinger Bands:</strong> {p.technicals.bollinger_squeeze ? '⚠️ SQUEEZE (Setup Ledakan Volatilitas)' : 'Band Normal'}
                                     </div>
-                                    <div style={{ color: 'var(--text-primary)', fontSize: '10px' }}>
+                                    <div style={{ color: 'var(--text-primary)', fontSize: '12px' }}>
                                       • <strong>ATR (14) Volatilitas:</strong> {p.technicals.atr_14 > 0 ? (item.market === 'IDX' ? `Rp ${Number(p.technicals.atr_14).toLocaleString()}` : `$${p.technicals.atr_14}`) : 'N/A'}
                                     </div>
                                   </div>
@@ -1401,7 +1401,7 @@ export default function MasterQuantLeaderboard({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            fontSize: '10px',
+            fontSize: '12px',
             color: 'var(--text-muted)',
             flexWrap: 'wrap',
             gap: '8px'

@@ -59,7 +59,7 @@ export default function StockDeskTab({
                   background: market === m.id ? 'var(--accent-blue)' : 'transparent',
                   color: market === m.id ? '#fff' : 'var(--text-muted)',
                   border: 'none', borderRadius: '5px', padding: '4px 12px',
-                  fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                  fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
                 }}
               >
                 {m.label}
@@ -68,7 +68,7 @@ export default function StockDeskTab({
           </div>
         </div>
 
-        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
           {market === 'IDX'
             ? `${allIdxStocks.length} emiten live · jam bursa Asia/Jakarta`
             : 'Wall Street · jam bursa Amerika'}

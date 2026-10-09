@@ -26,14 +26,14 @@ export default function TestingHubTab({
         gap: '8px'
       }}>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <span style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-orange)', letterSpacing: '0.05em' }}>
+          <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-orange)', letterSpacing: '0.05em' }}>
             STRATEGY TESTING LAB //
           </span>
 
           <button
             className={'telemetry-btn ' + (activeSubTab === 'PAPER' ? 'active' : '')}
             onClick={() => setActiveSubTab('PAPER')}
-            style={{ fontSize: '10px', padding: '5px 12px', fontWeight: '700' }}
+            style={{ fontSize: '12px', padding: '5px 12px', fontWeight: '700' }}
           >
             🧪 FORWARD PAPER TRADING
           </button>
@@ -41,13 +41,13 @@ export default function TestingHubTab({
           <button
             className={'telemetry-btn ' + (activeSubTab === 'BACKTEST' ? 'active' : '')}
             onClick={() => setActiveSubTab('BACKTEST')}
-            style={{ fontSize: '10px', padding: '5px 12px', fontWeight: '700' }}
+            style={{ fontSize: '12px', padding: '5px 12px', fontWeight: '700' }}
           >
             📊 HISTORICAL BACKTEST LAB
           </button>
         </div>
 
-        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
           {activeSubTab === 'PAPER' 
             ? 'Forward Simulation · Real-time Execution Math · Zero Capital Risk'
             : 'Monte Carlo & Historical Risk-Adjusted Returns · Max Drawdown Verification'}

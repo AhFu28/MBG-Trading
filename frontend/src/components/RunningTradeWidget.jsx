@@ -50,18 +50,18 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false, l
               RUNNING TRADE
             </span>
             <span style={{
-              fontSize: '9px',
+              fontSize: '12px',
               padding: '2px 6px',
               borderRadius: '4px',
               background: marketStatus.isOpen ? 'rgba(0, 208, 132, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-              color: marketStatus.isOpen ? 'var(--accent-green)' : '#ef4444',
+              color: marketStatus.isOpen ? 'var(--accent-green)' : 'var(--accent-red)',
               fontWeight: '800',
               fontFamily: 'var(--font-mono)'
             }}>
               {marketStatus.isOpen ? 'BURSA BUKA' : 'BURSA TUTUP · ' + marketStatus.status}
             </span>
           </div>
-          <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
             Pita transaksi per-emiten &bull; menunggu sambungan data riil
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function RunningTradeWidget({ onSelectTicker, embedded = false, l
         border: '1px solid rgba(234, 179, 8, 0.25)',
         borderRadius: '6px',
         padding: '10px 12px',
-        fontSize: '11px',
+        fontSize: '12px',
         color: 'var(--accent-gold)',
         display: 'flex',
         alignItems: 'center',

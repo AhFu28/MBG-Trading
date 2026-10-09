@@ -73,7 +73,7 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
               <h2 style={{ fontSize: '18px', fontWeight: '800', margin: 0, letterSpacing: '0.04em' }}>
                 US STOCK INTELLIGENCE
               </h2>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 10px', borderRadius: '12px', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', fontSize: '11px', color: 'var(--accent-sky)', fontWeight: '700' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 10px', borderRadius: '12px', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', fontSize: '12px', color: 'var(--accent-sky)', fontWeight: '700' }}>
                 <span className="pulse-dot-green" />
                 <span>WALL STREET 30 RADAR</span>
               </div>
@@ -86,14 +86,14 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             {bestSector && (
               <div style={{ background: 'rgba(255,255,255,0.03)', padding: '6px 14px', borderRadius: '8px', border: 'var(--border-hairline)', textAlign: 'right' }}>
-                <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Leading Sector</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Leading Sector</div>
                 <div style={{ fontSize: '13px', fontWeight: '700', color: bestSector[1] >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                   {bestSector[0]}: {bestSector[1] > 0 ? '+' : ''}{Number(bestSector[1] || 0).toFixed(2)}%
                 </div>
               </div>
             )}
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '6px 14px', borderRadius: '8px', border: 'var(--border-hairline)', textAlign: 'right' }}>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Active Coverage</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Active Coverage</div>
               <div style={{ fontSize: '13px', fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
                 {stocks.length} EQUITIES
               </div>
@@ -104,7 +104,7 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
 
       {/* Sector Performance Grid */}
       <div>
-        <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.06em' }}>
+        <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.06em' }}>
           S&P Sector Breadth
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
@@ -127,10 +127,10 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                  <span style={{ fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', color: isSelected ? 'var(--accent-blue)' : 'var(--text-secondary)' }}>
+                  <span style={{ fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', color: isSelected ? 'var(--accent-blue)' : 'var(--text-secondary)' }}>
                     {sec}
                   </span>
-                  <span style={{ fontSize: '8px', opacity: 0.7 }}>{isBull ? '▲' : '▼'}</span>
+                  <span style={{ fontSize: '12px', opacity: 0.7 }}>{isBull ? '▲' : '▼'}</span>
                 </div>
                 <div style={{ fontSize: '15px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: isBull ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                   {isBull ? '+' : ''}{numPerf.toFixed(2)}%
@@ -168,7 +168,7 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
         <div className="quant-card" style={{ padding: '0', overflow: 'hidden' }}>
           <div style={{ padding: '12px 16px', borderBottom: 'var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>SECTOR:</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>SECTOR:</span>
               <select 
                 value={sectorFilter} 
                 onChange={e => setSectorFilter(e.target.value)} 
@@ -219,7 +219,7 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                   <tr>
                     <td colSpan={10} style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--text-muted)', whiteSpace: 'normal' }}>
                       Tidak ada emiten yang cocok dengan filter sector atau pencarian "{search}".
-                      <div style={{ fontSize: '11px', marginTop: '4px' }}>Coba reset pencarian atau pilih sector: ALL.</div>
+                      <div style={{ fontSize: '12px', marginTop: '4px' }}>Coba reset pencarian atau pilih sector: ALL.</div>
                     </td>
                   </tr>
                 )}
@@ -251,7 +251,7 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                         {US_EQUITIES_METADATA[s.ticker]?.name || s.name}
                       </td>
                       <td>
-                        <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>
+                        <span style={{ fontSize: '12px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>
                           {s.sector}
                         </span>
                       </td>
@@ -285,14 +285,14 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                             background: rsiBg,
                             padding: '2px 6px',
                             borderRadius: '4px',
-                            fontSize: '11px'
+                            fontSize: '12px'
                           }}>
                           {hasRsi ? rsiVal.toFixed(1) : '—'}
                         </span>
                       </td>
                       <td style={{ textAlign: 'center' }}>
                         <span style={{ 
-                          fontSize: '11px', 
+                          fontSize: '12px', 
                           fontWeight: '700', 
                           padding: '3px 8px', 
                           borderRadius: '4px', 
@@ -315,7 +315,7 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                             border: '1px solid rgba(56, 189, 248, 0.25)',
                             borderRadius: '4px',
                             color: 'var(--accent-blue)',
-                            fontSize: '11px',
+                            fontSize: '12px',
                             fontWeight: '700',
                             cursor: 'pointer'
                           }}
@@ -355,19 +355,19 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
               <tbody>
                 {earnings_calendar.map((e, idx) => {
                   let badge = (
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 8px', borderRadius: '4px', background: 'rgba(34, 197, 94, 0.1)', color: 'var(--accent-green)', fontSize: '11px', fontWeight: '700' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 8px', borderRadius: '4px', background: 'rgba(34, 197, 94, 0.1)', color: 'var(--accent-green)', fontSize: '12px', fontWeight: '700' }}>
                       <span className="pulse-dot-green" /> SAFE TO TRADE
                     </span>
                   );
                   if (e.days_until <= 3) {
                     badge = (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 8px', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.15)', color: 'var(--accent-rust)', fontSize: '11px', fontWeight: '700', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 8px', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.15)', color: 'var(--accent-rust)', fontSize: '12px', fontWeight: '700', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
                         <span className="pulse-dot-red" /> 🔴 AVOID TRADING (HIGH RISK)
                       </span>
                     );
                   } else if (e.days_until <= 7) {
                     badge = (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 8px', borderRadius: '4px', background: 'rgba(234, 179, 8, 0.15)', color: 'var(--accent-gold)', fontSize: '11px', fontWeight: '700' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 8px', borderRadius: '4px', background: 'rgba(234, 179, 8, 0.15)', color: 'var(--accent-gold)', fontSize: '12px', fontWeight: '700' }}>
                         <span className="pulse-dot-amber" /> 🟡 CAUTION (APPROACHING)
                       </span>
                     );
@@ -400,7 +400,7 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                             border: '1px solid var(--border-hairline)',
                             borderRadius: '4px',
                             color: 'var(--text-primary)',
-                            fontSize: '11px',
+                            fontSize: '12px',
                             fontWeight: '600',
                             cursor: 'pointer'
                           }}
@@ -432,7 +432,7 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                       <span style={{ fontSize: '18px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
                         {s.ticker}
                       </span>
-                      <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)' }}>
+                      <span style={{ fontSize: '12px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)' }}>
                         {s.sector}
                       </span>
                     </div>
@@ -441,7 +441,7 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                     </div>
                   </div>
                   <span style={{ 
-                    fontSize: '10px', 
+                    fontSize: '12px', 
                     fontWeight: '800', 
                     padding: '3px 8px', 
                     borderRadius: '6px', 
@@ -464,25 +464,25 @@ export default function USStockTab({ data, onOpenChart, livePrices = {}, flashMa
                   border: '1px solid rgba(255,255,255,0.04)' 
                 }}>
                   <div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>LIVE / ENTRY ZONE</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>LIVE / ENTRY ZONE</div>
                     <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
-                      ${currentPrice.toFixed(2)} <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: '400' }}>(Entry: ${Number(s.entry_price || 0).toFixed(2)})</span>
+                      ${currentPrice.toFixed(2)} <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '400' }}>(Entry: ${Number(s.entry_price || 0).toFixed(2)})</span>
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>RISK / REWARD</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>RISK / REWARD</div>
                     <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)' }}>
                       1 : {Number(s.risk_reward_ratio || 2).toFixed(1)}
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>STOP LOSS</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>STOP LOSS</div>
                     <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>
                       ${Number(s.stop_loss || 0).toFixed(2)}
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>TARGET (TP1)</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>TARGET (TP1)</div>
                     <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
                       ${Number(s.take_profit_1 || 0).toFixed(2)}
                     </div>

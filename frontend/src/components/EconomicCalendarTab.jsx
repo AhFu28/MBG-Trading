@@ -840,7 +840,7 @@ export default function EconomicCalendarTab() {
         <div style={{
           background: 'rgba(245,158,11,0.10)', border: '1px solid rgba(245,158,11,0.38)',
           borderRadius: '10px', padding: '12px 16px', fontSize: '12px',
-          color: '#fbbf24', lineHeight: 1.7,
+          color: 'var(--accent-gold-bright)', lineHeight: 1.7,
         }}>
           {/* Warning text was Javanese ("dudu feed langsung", "aja dianggep asil
               rilis"). AGENTS.md requires plain Indonesian for all app text, and
@@ -860,7 +860,7 @@ export default function EconomicCalendarTab() {
             <h2 style={{ fontSize: '18px', margin: 0, fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
               KALENDER MAKRO EKONOMI GLOBAL
             </h2>
-            <span style={{ fontSize: '9px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
               {filteredEvents.length} EVENT TERJADWAL
             </span>
           </div>
@@ -872,7 +872,7 @@ export default function EconomicCalendarTab() {
         {/* Global Summary Badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <div style={{
-            fontSize: '11px',
+            fontSize: '12px',
             padding: '6px 12px',
             borderRadius: '6px',
             background: 'rgba(239, 68, 68, 0.12)',
@@ -884,7 +884,7 @@ export default function EconomicCalendarTab() {
             🔴 {events.filter(e => e.impact === 'HIGH').length} High Impact
           </div>
           <div style={{
-            fontSize: '11px',
+            fontSize: '12px',
             padding: '6px 12px',
             borderRadius: '6px',
             background: 'rgba(56, 189, 248, 0.12)',
@@ -903,7 +903,7 @@ export default function EconomicCalendarTab() {
         
         {/* Country Filter Pills */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', minWidth: '70px' }}>
+          <span style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', minWidth: '70px' }}>
             NEGARA:
           </span>
           <div className="quant-pill-nav" style={{ margin: 0 }}>
@@ -922,7 +922,7 @@ export default function EconomicCalendarTab() {
                 key={c.id}
                 onClick={() => setFilterCountry(c.id)}
                 className={`quant-pill-btn ${filterCountry === c.id ? 'active' : ''}`}
-                style={{ fontSize: '11px', padding: '5px 10px' }}
+                style={{ fontSize: '12px', padding: '5px 10px' }}
               >
                 {c.label}
               </button>
@@ -936,7 +936,7 @@ export default function EconomicCalendarTab() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
             {/* Impact Filter */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)' }}>IMPACT:</span>
+              <span style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)' }}>IMPACT:</span>
               <div className="quant-pill-nav" style={{ margin: 0 }}>
                 {[
                   { id: 'ALL', label: 'SEMUA' },
@@ -948,7 +948,7 @@ export default function EconomicCalendarTab() {
                     key={imp.id}
                     onClick={() => setFilterImpact(imp.id)}
                     className={`quant-pill-btn ${filterImpact === imp.id ? 'active' : ''}`}
-                    style={{ fontSize: '11px', padding: '4px 8px' }}
+                    style={{ fontSize: '12px', padding: '4px 8px' }}
                   >
                     {imp.label}
                   </button>
@@ -958,7 +958,7 @@ export default function EconomicCalendarTab() {
 
             {/* Status Filter */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)' }}>STATUS:</span>
+              <span style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)' }}>STATUS:</span>
               <div className="quant-pill-nav" style={{ margin: 0 }}>
                 {[
                   { id: 'ALL', label: 'SEMUA' },
@@ -969,7 +969,7 @@ export default function EconomicCalendarTab() {
                     key={st.id}
                     onClick={() => setFilterTimeframe(st.id)}
                     className={`quant-pill-btn ${filterTimeframe === st.id ? 'active' : ''}`}
-                    style={{ fontSize: '11px', padding: '4px 8px' }}
+                    style={{ fontSize: '12px', padding: '4px 8px' }}
                   >
                     {st.label}
                   </button>
@@ -1039,9 +1039,9 @@ export default function EconomicCalendarTab() {
                       {/* Waktu & Tanggal */}
                       <td style={{ padding: '12px 14px', fontFamily: 'var(--font-mono)' }}>
                         <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '13px' }}>
-                          {evt.time} <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>WIB</span>
+                          {evt.time} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>WIB</span>
                         </div>
-                        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
                           {evt.date}
                         </div>
                       </td>
@@ -1051,7 +1051,7 @@ export default function EconomicCalendarTab() {
                         <div style={{ fontSize: '20px', lineHeight: 1 }} title={evt.countryName}>
                           {evt.flag}
                         </div>
-                        <div style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '3px' }}>
+                        <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '3px' }}>
                           {evt.country}
                         </div>
                       </td>
@@ -1061,7 +1061,7 @@ export default function EconomicCalendarTab() {
                         <div style={{ fontWeight: '700', fontSize: '13px', color: 'var(--text-primary)', lineHeight: 1.3 }}>
                           {evt.name}
                         </div>
-                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                           {evt.countryName} &bull; {evt.status === 'RELEASED' ? '✅ Sudah Dirilis' : '⏳ Menunggu Rilis'}
                         </div>
                       </td>
@@ -1069,7 +1069,7 @@ export default function EconomicCalendarTab() {
                       {/* Impact Badge */}
                       <td style={{ padding: '12px 10px', textAlign: 'center' }}>
                         <span style={{
-                          fontSize: '10px',
+                          fontSize: '12px',
                           fontWeight: '800',
                           padding: '3px 8px',
                           borderRadius: '4px',
@@ -1111,7 +1111,7 @@ export default function EconomicCalendarTab() {
                             color: isExpanded ? 'var(--accent-sky)' : 'var(--text-primary)',
                             padding: '4px 10px',
                             borderRadius: '5px',
-                            fontSize: '11px',
+                            fontSize: '12px',
                             fontWeight: '700',
                             cursor: 'pointer'
                           }}
@@ -1129,25 +1129,25 @@ export default function EconomicCalendarTab() {
                             
                             {/* Card 1: Pengertian & Relevansi */}
                             <div style={{ background: 'var(--bg-panel)', padding: '14px 16px', borderRadius: 'var(--radius-xs)', border: 'var(--border-hairline)' }}>
-                              <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-gold)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                              <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-gold)', textTransform: 'uppercase', marginBottom: '6px' }}>
                                 💡 APA ITU & KENAPA PENTING?
                               </div>
                               <p style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.5, margin: '0 0 8px 0' }}>
                                 {evt.details?.apaItu}
                               </p>
-                              <div style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4, borderTop: 'var(--border-hairline)', paddingTop: '6px' }}>
+                              <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4, borderTop: 'var(--border-hairline)', paddingTop: '6px' }}>
                                 <strong>Implikasi Makro:</strong> {evt.details?.kenapaPenting}
                               </div>
                             </div>
 
                             {/* Card 2: Dampak Lintas Aset */}
                             <div style={{ background: 'var(--bg-panel)', padding: '14px 16px', borderRadius: 'var(--radius-xs)', border: 'var(--border-hairline)' }}>
-                              <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-blue)', textTransform: 'uppercase', marginBottom: '8px' }}>
+                              <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-blue)', textTransform: 'uppercase', marginBottom: '8px' }}>
                                 📊 DAMPAK TERHADAP KELAS ASET
                               </div>
                               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                                 {(evt.details?.dampakAset || []).map((da, idx) => (
-                                  <div key={idx} style={{ fontSize: '11px', lineHeight: 1.4 }}>
+                                  <div key={idx} style={{ fontSize: '12px', lineHeight: 1.4 }}>
                                     <strong style={{ color: 'var(--text-primary)' }}>{da.asset}: </strong>
                                     <span style={{ color: 'var(--text-secondary)' }}>{da.impact}</span>
                                   </div>
@@ -1157,13 +1157,13 @@ export default function EconomicCalendarTab() {
 
                             {/* Card 3: Tips Eksekusi & Manajemen Risiko */}
                             <div style={{ background: 'var(--bg-panel)', padding: '14px 16px', borderRadius: 'var(--radius-xs)', border: 'var(--border-hairline)' }}>
-                              <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-green)', textTransform: 'uppercase', marginBottom: '6px' }}>
+                              <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-green)', textTransform: 'uppercase', marginBottom: '6px' }}>
                                 🛡️ TIPS MANAJEMEN RISIKO TRADING
                               </div>
                               <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
                                 {evt.details?.tipsRisiko}
                               </p>
-                              <div style={{ marginTop: '10px', fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                              <div style={{ marginTop: '10px', fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                                 STATUS: {evt.status === 'RELEASED' ? 'Data final telah tercatat di bursa' : 'Menjelang rilis berita'}
                               </div>
                             </div>

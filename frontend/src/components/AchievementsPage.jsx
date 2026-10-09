@@ -54,12 +54,12 @@ function AchievementRow({ item }) {
           <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>
             {item.name}
           </span>
-          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
             {item.category}
           </span>
         </div>
 
-        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.5 }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.5 }}>
           {item.desc}
         </div>
 
@@ -77,7 +77,7 @@ function AchievementRow({ item }) {
             }} />
           </div>
           <span style={{
-            fontSize: '10px', fontFamily: 'var(--font-mono)', fontWeight: 700,
+            fontSize: '12px', fontFamily: 'var(--font-mono)', fontWeight: 700,
             color: item.unlocked ? 'var(--accent-green)' : 'var(--text-muted)',
             whiteSpace: 'nowrap',
           }}>
@@ -123,7 +123,7 @@ export default function AchievementsPage({ account = {}, userTier = TIER.GUEST, 
             <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 900, color: 'var(--text-primary)' }}>
               🏆 Legend Path
             </h2>
-            <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.6, maxWidth: '640px' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.6, maxWidth: '640px' }}>
               Legend adalah satu-satunya paket yang bisa mengeksekusi order memakai API key Anda.
               Karena itu tidak bisa dibeli langsung, harus dibuka lewat kemampuan yang terbukti.
             </div>
@@ -133,7 +133,7 @@ export default function AchievementsPage({ account = {}, userTier = TIER.GUEST, 
             <div style={{ fontSize: '28px', fontWeight: 900, fontFamily: 'var(--font-mono)', color: board.allUnlocked ? 'var(--accent-green)' : 'var(--accent-blue)' }}>
               {board.unlockedCount}/{board.total}
             </div>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>achievement selesai</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>achievement selesai</div>
           </div>
         </div>
 
@@ -165,7 +165,7 @@ export default function AchievementsPage({ account = {}, userTier = TIER.GUEST, 
             <div style={{ fontSize: '13.5px', fontWeight: 900, color: 'var(--accent-gold)' }}>
               Arena Tebak Chart & Uji Strategi
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
               Makin sering analisa chart Anda terverifikasi benar, makin tinggi poin kuantitatif Anda menuju LEGEND.
             </div>
           </div>
@@ -179,7 +179,7 @@ export default function AchievementsPage({ account = {}, userTier = TIER.GUEST, 
             color: '#000000',
             border: 'none',
             borderRadius: '6px',
-            fontSize: '11.5px',
+            fontSize: '12px',
             fontWeight: 900,
             cursor: 'pointer',
             letterSpacing: '0.03em',
@@ -201,7 +201,7 @@ export default function AchievementsPage({ account = {}, userTier = TIER.GUEST, 
             <div style={{ fontSize: '14px', fontWeight: 900, color: 'var(--text-primary)' }}>
               {alreadyLegend ? 'Legend sudah aktif' : gate.eligible ? 'Legend siap diaktifkan' : 'Legend belum terbuka'}
             </div>
-            <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.6 }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.6 }}>
               {alreadyLegend
                 ? 'Bot trading dan Jev Execution HUD terbuka untuk akun ini.'
                 : eligibilityMessage(gate)}
@@ -259,12 +259,12 @@ export default function AchievementsPage({ account = {}, userTier = TIER.GUEST, 
           </span>
           <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{legendPlan?.period}</span>
           {monthlyEquivalent(75000) && (
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
               (setara {`Rp ${monthlyEquivalent(75000).toLocaleString('id-ID')}`} per bulan)
             </span>
           )}
         </div>
-        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px', lineHeight: 1.7 }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px', lineHeight: 1.7 }}>
           Ditagih mingguan supaya bisa dicoba tanpa komitmen panjang.
         </div>
       </div>
@@ -277,7 +277,7 @@ export default function AchievementsPage({ account = {}, userTier = TIER.GUEST, 
         <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--accent-gold)', marginBottom: '5px' }}>
           ⚠️ Baca sebelum mengaktifkan
         </div>
-        <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
           Bot trading ini mengeksekusi order di akun bursa Anda memakai API key yang Anda berikan sendiri.
           Hasil masa lalu tidak menjamin hasil ke depan. Selalu uji di testnet lebih dulu, dan jangan
           aktifkan bot dengan dana yang tidak siap Anda risikokan.

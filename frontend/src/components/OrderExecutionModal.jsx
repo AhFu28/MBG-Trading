@@ -260,7 +260,7 @@ export default function OrderExecutionModal({
               <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
                 INSTITUTIONAL EXECUTION GATEWAY // {symbol}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 Verifikasi parameter risiko sebelum order ditransmisikan ke bursa
               </div>
             </div>
@@ -284,12 +284,12 @@ export default function OrderExecutionModal({
               style={{
                 flex: 1,
                 padding: '7px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: '800',
                 borderRadius: '4px',
                 border: 'none',
                 background: brokerType === 'PAPER' ? 'var(--accent-blue, #3b82f6)' : 'transparent',
-                color: brokerType === 'PAPER' ? '#ffffff' : 'var(--text-muted)',
+                color: brokerType === 'PAPER' ? 'var(--text-inverse)' : 'var(--text-muted)',
                 cursor: 'pointer'
               }}
             >
@@ -301,7 +301,7 @@ export default function OrderExecutionModal({
               style={{
                 flex: 1,
                 padding: '7px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: '800',
                 borderRadius: '4px',
                 border: 'none',
@@ -316,7 +316,7 @@ export default function OrderExecutionModal({
 
           {/* Balance Strip */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-panel-subtle)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid var(--accent-green)' }}>
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Saldo Kas Tersedia:</span>
+            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Saldo Kas Tersedia:</span>
             <span style={{ fontSize: '13px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
               {isIdr ? `Rp ${Math.round(availableCash).toLocaleString('id-ID')}` : `$${availableCash.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
             </span>
@@ -333,7 +333,7 @@ export default function OrderExecutionModal({
               background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.3)',
               borderRadius: '6px', padding: '12px',
             }}>
-              <div style={{ fontSize: '11px', fontWeight: '800', color: '#fbbf24', marginBottom: '8px' }}>
+              <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-gold-bright)', marginBottom: '8px' }}>
                 🔑 API Binance {binanceConfig.isTestnet ? '(TESTNET)' : '(LIVE : dana nyata)'}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
@@ -342,17 +342,17 @@ export default function OrderExecutionModal({
                   placeholder="API Key"
                   value={binanceConfig.apiKey}
                   onChange={(e) => updateBinanceConfig({ apiKey: e.target.value })}
-                  style={{ padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--text-primary)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '11px' }}
+                  style={{ padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--text-primary)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '12px' }}
                 />
                 <input
                   type="password"
                   placeholder="Secret Key"
                   value={binanceConfig.secretKey}
                   onChange={(e) => updateBinanceConfig({ secretKey: e.target.value })}
-                  style={{ padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--text-primary)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '11px' }}
+                  style={{ padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--text-primary)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '12px' }}
                 />
               </div>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '8px', fontSize: '10.5px', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '8px', fontSize: '12px', color: 'var(--text-secondary)', cursor: 'pointer' }}>
                 <input
                   type="checkbox"
                   checked={binanceConfig.isTestnet}
@@ -366,7 +366,7 @@ export default function OrderExecutionModal({
           {/* 2. Order Parameters Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px' }}>
             <div>
-              <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>Ticker Simbol</label>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>Ticker Simbol</label>
               <input
                 id="input-order-symbol"
                 type="text"
@@ -377,7 +377,7 @@ export default function OrderExecutionModal({
               />
             </div>
             <div>
-              <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>Arah Order</label>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>Arah Order</label>
               <select
                 value={orderSide}
                 onChange={(e) => setOrderSide(e.target.value)}
@@ -389,7 +389,7 @@ export default function OrderExecutionModal({
             </div>
 
             <div>
-              <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>Tipe Eksekusi</label>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>Tipe Eksekusi</label>
               <select
                 value={orderType}
                 onChange={(e) => setOrderType(e.target.value)}
@@ -401,7 +401,7 @@ export default function OrderExecutionModal({
             </div>
 
             <div>
-              <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>Harga Entri ({currencySymbol})</label>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>Harga Entri ({currencySymbol})</label>
               <input
                 id="input-order-entry"
                 type="number"
@@ -413,7 +413,7 @@ export default function OrderExecutionModal({
             </div>
 
             <div>
-              <label style={{ fontSize: '10px', color: 'var(--accent-rust)', display: 'block', marginBottom: '3px' }}>Stop Loss ({currencySymbol})</label>
+              <label style={{ fontSize: '12px', color: 'var(--accent-rust)', display: 'block', marginBottom: '3px' }}>Stop Loss ({currencySymbol})</label>
               <input
                 id="input-order-stop-loss"
                 type="number"
@@ -426,7 +426,7 @@ export default function OrderExecutionModal({
 
             {/* Target 1 */}
             <div>
-              <label style={{ fontSize: '10px', color: 'var(--accent-green)', display: 'block', marginBottom: '3px' }}>Target Profit 1 ({currencySymbol})</label>
+              <label style={{ fontSize: '12px', color: 'var(--accent-green)', display: 'block', marginBottom: '3px' }}>Target Profit 1 ({currencySymbol})</label>
               <input
                 id="input-order-target-1"
                 type="number"
@@ -439,7 +439,7 @@ export default function OrderExecutionModal({
 
             {/* Target 2 */}
             <div>
-              <label style={{ fontSize: '10px', color: 'var(--accent-blue)', display: 'block', marginBottom: '3px' }}>Target Profit 2 ({currencySymbol})</label>
+              <label style={{ fontSize: '12px', color: 'var(--accent-blue)', display: 'block', marginBottom: '3px' }}>Target Profit 2 ({currencySymbol})</label>
               <input
                 id="input-order-target-2"
                 type="number"
@@ -452,7 +452,7 @@ export default function OrderExecutionModal({
 
             {/* Risk per trade */}
             <div>
-              <label style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '3px' }}>
                 Risiko per Trade (%)
               </label>
               <input
@@ -465,7 +465,7 @@ export default function OrderExecutionModal({
                 onChange={(e) => setRiskPercent(e.target.value)}
                 style={{ width: '100%', padding: '6px', background: 'var(--bg-canvas)', border: 'var(--border-hairline)', color: 'var(--text-primary)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontWeight: '700' }}
               />
-              <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '3px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '3px' }}>
                 Batas kerugian bila stop tersentuh
               </div>
             </div>
@@ -473,40 +473,40 @@ export default function OrderExecutionModal({
 
           {/* 3. Mathematical Verification Summary Card */}
           <div style={{ background: 'var(--bg-panel-subtle)', padding: '12px', borderRadius: '6px', border: 'var(--border-hairline)' }}>
-            <div style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-muted)', letterSpacing: '0.05em', marginBottom: '8px' }}>
+            <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', letterSpacing: '0.05em', marginBottom: '8px' }}>
               KALKULASI RISIKO & NOTIONAL TERUKUR:
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
               <div>
-                <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Ukuran Eksekusi</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Ukuran Eksekusi</div>
                 <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                   {isIdr ? `${Math.floor(effectiveQuantity / 100)} Lot` : `${effectiveQuantity} Unit`}
                 </div>
               </div>
 
               <div>
-                <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Total Nilai Posisi</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Total Nilai Posisi</div>
                 <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                   {isIdr ? `Rp ${Math.round(notionalValue).toLocaleString('id-ID')}` : `$${notionalValue.toFixed(2)}`}
                 </div>
               </div>
 
               <div>
-                <div style={{ fontSize: '9px', color: 'var(--accent-rust)' }}>Max Risiko Nominal</div>
+                <div style={{ fontSize: '12px', color: 'var(--accent-rust)' }}>Max Risiko Nominal</div>
                 <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>
                   {isIdr ? `Rp ${Math.round(riskAmount).toLocaleString('id-ID')}` : `$${riskAmount.toFixed(2)}`}
                 </div>
               </div>
 
               <div>
-                <div style={{ fontSize: '9px', color: 'var(--accent-green)' }}>Rasio Risk-Reward</div>
+                <div style={{ fontSize: '12px', color: 'var(--accent-green)' }}>Rasio Risk-Reward</div>
                 <div style={{ fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: netRR === null ? 'var(--text-muted)' : 'var(--accent-green)' }}>
                   {netRR === null ? '—' : `1 : ${netRR}`}
                 </div>
               </div>
             </div>
 
-            <div style={{ marginTop: '8px', fontSize: '9.5px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '6px' }}>
+            <div style={{ marginTop: '8px', fontSize: '12px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '6px' }}>
               <span>Estimasi Biaya Transaksi: {isIdr ? `Rp ${Math.round(totalFee).toLocaleString('id-ID')}` : `$${totalFee.toFixed(2)}`}</span>
               <span>Alokasi Modal: {((notionalValue / (availableCash || 1)) * 100).toFixed(1)}%</span>
             </div>
@@ -514,14 +514,14 @@ export default function OrderExecutionModal({
 
           {/* Bracket validation error (shown live, blocks submit) */}
           {bracketError && (
-            <div style={{ padding: '8px 12px', background: 'rgba(245, 158, 11, 0.12)', border: '1px solid var(--accent-gold)', borderRadius: '4px', color: '#fcd34d', fontSize: '11px', fontWeight: '700' }}>
+            <div style={{ padding: '8px 12px', background: 'rgba(245, 158, 11, 0.12)', border: '1px solid var(--accent-gold)', borderRadius: '4px', color: '#fcd34d', fontSize: '12px', fontWeight: '700' }}>
               ⚠️ {bracketError}
             </div>
           )}
 
           {/* Feedback & Error alerts */}
           {errorMessage && (
-            <div style={{ padding: '8px 12px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', borderRadius: '4px', color: '#fca5a5', fontSize: '11px', fontWeight: '700' }}>
+            <div style={{ padding: '8px 12px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid var(--accent-red)', borderRadius: '4px', color: 'var(--accent-softred)', fontSize: '12px', fontWeight: '700' }}>
               ⚠️ {errorMessage}
             </div>
           )}
@@ -530,7 +530,7 @@ export default function OrderExecutionModal({
             <div
               id="order-success-banner"
               data-testid="order-success-banner"
-              style={{ padding: '8px 12px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid var(--accent-emerald)', borderRadius: '4px', color: '#6ee7b7', fontSize: '11px', fontWeight: '700' }}
+              style={{ padding: '8px 12px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid var(--accent-emerald)', borderRadius: '4px', color: '#6ee7b7', fontSize: '12px', fontWeight: '700' }}
             >
               {successMessage}
             </div>
@@ -550,7 +550,7 @@ export default function OrderExecutionModal({
               background: isOverAllocated 
                 ? 'var(--text-muted)' 
                 : (brokerType === 'PAPER' ? 'var(--accent-green, var(--accent-emerald))' : 'var(--accent-gold)'),
-              color: isOverAllocated ? '#ffffff' : '#000000',
+              color: isOverAllocated ? 'var(--text-inverse)' : '#000000',
               border: 'none',
               borderRadius: '6px',
               cursor: isOverAllocated ? 'not-allowed' : 'pointer',

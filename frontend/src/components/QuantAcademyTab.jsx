@@ -392,7 +392,7 @@ function SvgDamSimulator() {
 
       <div style={{ background: 'rgba(0, 0, 0, 0.45)', borderRadius: '8px', padding: '16px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
         <svg viewBox="0 0 800 200" preserveAspectRatio="xMidYMid meet" style={{ width: '100%', height: 'auto', display: 'block' }}>
-          <rect x="20" y="20" width="160" height="90" fill="#1e293b" stroke="#334155" strokeWidth="2" rx="4" />
+          <rect x="20" y="20" width="160" height="90" fill="#1e293b" stroke="var(--slate-700)" strokeWidth="2" rx="4" />
           <text x="100" y="45" fill="var(--accent-sky)" fontSize="11" fontWeight="800" textAnchor="middle">THE FED & BI</text>
           <text x="100" y="62" fill="#94a3b8" fontSize="9" textAnchor="middle">Waduk Likuiditas Global</text>
           
@@ -404,7 +404,7 @@ function SvgDamSimulator() {
 
           {/* POOL 1: SAHAM */}
           <g transform="translate(240, 50)">
-            <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="#334155" strokeWidth="1.5" rx="4" />
+            <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="var(--slate-700)" strokeWidth="1.5" rx="4" />
             <rect x="3" y={127 - stockHeight} width="99" height={stockHeight} fill="var(--accent-green)" opacity="0.65" rx="2" />
             <text x="52" y="24" fill="#fff" fontSize="11" fontWeight="800" textAnchor="middle">📈 SAHAM (BEI)</text>
             <text x="52" y="40" fill={stockHeight > 55 ? 'var(--accent-green)' : 'var(--accent-red)'} fontSize="12" fontWeight="900" textAnchor="middle">
@@ -415,7 +415,7 @@ function SvgDamSimulator() {
 
           {/* POOL 2: OBLIGASI */}
           <g transform="translate(370, 50)">
-            <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="#334155" strokeWidth="1.5" rx="4" />
+            <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="var(--slate-700)" strokeWidth="1.5" rx="4" />
             <rect x="3" y={127 - (100 - gateOpening * 0.7)} width="99" height={100 - gateOpening * 0.7} fill="var(--accent-blue)" opacity="0.65" rx="2" />
             <text x="52" y="24" fill="#fff" fontSize="11" fontWeight="800" textAnchor="middle">🏛️ OBLIGASI</text>
             <text x="52" y="40" fill="var(--accent-cyan)" fontSize="11" fontWeight="800" textAnchor="middle">
@@ -426,7 +426,7 @@ function SvgDamSimulator() {
 
           {/* POOL 3: KOMODITAS */}
           <g transform="translate(500, 50)">
-            <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="#334155" strokeWidth="1.5" rx="4" />
+            <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="var(--slate-700)" strokeWidth="1.5" rx="4" />
             <rect x="3" y={127 - goldHeight} width="99" height={goldHeight} fill="var(--accent-orange)" opacity="0.65" rx="2" />
             <text x="52" y="24" fill="#fff" fontSize="11" fontWeight="800" textAnchor="middle">⛏️ EMAS & MINYAK</text>
             <text x="52" y="40" fill="var(--accent-orange)" fontSize="11" fontWeight="800" textAnchor="middle">
@@ -437,7 +437,7 @@ function SvgDamSimulator() {
 
           {/* POOL 4: KRIPTO */}
           <g transform="translate(630, 50)">
-            <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="#334155" strokeWidth="1.5" rx="4" />
+            <rect x="0" y="0" width="105" height="130" fill="#0f172a" stroke="var(--slate-700)" strokeWidth="1.5" rx="4" />
             <rect x="3" y={127 - cryptoHeight} width="99" height={cryptoHeight} fill="var(--accent-purple)" opacity="0.65" rx="2" />
             <text x="52" y="24" fill="#fff" fontSize="11" fontWeight="800" textAnchor="middle">🪙 KRIPTO (BTC)</text>
             <text x="52" y="40" fill={cryptoHeight > 55 ? 'var(--accent-green)' : 'var(--accent-red)'} fontSize="12" fontWeight="900" textAnchor="middle">
@@ -483,14 +483,14 @@ function DominoStepper() {
           <button
             onClick={() => setActiveStep(prev => Math.max(0, prev - 1))}
             disabled={activeStep === 0}
-            style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '4px', cursor: activeStep === 0 ? 'not-allowed' : 'pointer', fontSize: '11px', fontWeight: '700' }}
+            style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '4px', cursor: activeStep === 0 ? 'not-allowed' : 'pointer', fontSize: '12px', fontWeight: '700' }}
           >
             ← Mundur
           </button>
           <button
             onClick={() => setActiveStep(prev => Math.min(steps.length - 1, prev + 1))}
             disabled={activeStep === steps.length - 1}
-            style={{ padding: '6px 12px', background: 'var(--accent-cyan)', border: 'none', color: '#000', borderRadius: '4px', cursor: activeStep === steps.length - 1 ? 'not-allowed' : 'pointer', fontSize: '11px', fontWeight: '800' }}
+            style={{ padding: '6px 12px', background: 'var(--accent-cyan)', border: 'none', color: '#000', borderRadius: '4px', cursor: activeStep === steps.length - 1 ? 'not-allowed' : 'pointer', fontSize: '12px', fontWeight: '800' }}
           >
             Langkah Selanjutnya →
           </button>
@@ -515,10 +515,10 @@ function DominoStepper() {
                 transition: 'all 0.2s'
               }}
             >
-              <div style={{ fontSize: '10px', fontWeight: '800', color: isCurrent ? 'var(--accent-cyan)' : isPassed ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+              <div style={{ fontSize: '12px', fontWeight: '800', color: isCurrent ? 'var(--accent-cyan)' : isPassed ? 'var(--accent-green)' : 'var(--text-muted)' }}>
                 TAHAP {idx + 1}
               </div>
-              <div style={{ fontSize: '11px', fontWeight: '700', color: isCurrent ? '#fff' : 'var(--text-secondary)', marginTop: '4px', lineHeight: '1.2' }}>
+              <div style={{ fontSize: '12px', fontWeight: '700', color: isCurrent ? '#fff' : 'var(--text-secondary)', marginTop: '4px', lineHeight: '1.2' }}>
                 {st.title.split('. ')[1]}
               </div>
             </div>
@@ -527,7 +527,7 @@ function DominoStepper() {
       </div>
 
       <div style={{ background: 'rgba(0, 0, 0, 0.4)', borderLeft: '4px solid var(--accent-cyan)', padding: '16px 20px', borderRadius: '0 8px 8px 0' }}>
-        <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-cyan)', marginBottom: '4px' }}>
+        <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-cyan)', marginBottom: '4px' }}>
           PENJELASAN TAHAP {activeStep + 1} DARI 8:
         </div>
         <div style={{ fontSize: '14px', fontWeight: '800', color: '#fff', marginBottom: '6px' }}>
@@ -604,7 +604,7 @@ function CrisisChartViewer() {
                 color: selectedCrisis === k ? '#fff' : 'var(--text-secondary)',
                 border: 'none',
                 cursor: 'pointer',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: '700'
               }}
             >
@@ -639,10 +639,10 @@ function CrisisChartViewer() {
         </svg>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '10px' }}>
-          <div style={{ background: 'rgba(239, 68, 68, 0.08)', padding: '8px 12px', borderRadius: '4px', fontSize: '11px', color: 'var(--text-primary)' }}>
+          <div style={{ background: 'rgba(239, 68, 68, 0.08)', padding: '8px 12px', borderRadius: '4px', fontSize: '12px', color: 'var(--text-primary)' }}>
             <strong style={{ color: 'var(--accent-red)' }}>Pemicu Krisis:</strong> {curr.trigger}
           </div>
-          <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '8px 12px', borderRadius: '4px', fontSize: '11px', color: 'var(--text-primary)' }}>
+          <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '8px 12px', borderRadius: '4px', fontSize: '12px', color: 'var(--text-primary)' }}>
             <strong style={{ color: 'var(--accent-green)' }}>Katalis Pemulihan:</strong> {curr.rebound}
           </div>
         </div>
@@ -679,7 +679,7 @@ function BalanceScaleSimulator() {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
         <div>
-          <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+          <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
             Laba Bersih Akuntansi: Rp {netIncome.toLocaleString()} Miliar
           </label>
           <input
@@ -693,7 +693,7 @@ function BalanceScaleSimulator() {
           />
         </div>
         <div>
-          <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+          <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
             Arus Kas Operasional Riil: Rp {cashFlow.toLocaleString()} Miliar
           </label>
           <input
@@ -776,7 +776,7 @@ function SupercycleSineWave() {
                 color: activePhase === idx ? '#000' : 'var(--text-secondary)',
                 border: 'none',
                 cursor: 'pointer',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: '800'
               }}
             >
@@ -862,14 +862,14 @@ function OrderBookDepthLadder() {
           <button
             onClick={handleSpoof}
             disabled={spoofActive}
-            style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid var(--accent-red)', color: 'var(--accent-red)', borderRadius: '4px', cursor: 'pointer', fontSize: '11px', fontWeight: '800' }}
+            style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid var(--accent-red)', color: 'var(--accent-red)', borderRadius: '4px', cursor: 'pointer', fontSize: '12px', fontWeight: '800' }}
           >
             {spoofActive ? '⏳ Spoofing Aktif (Menghilang dalam 3s)...' : '🔴 Pasang Spoofing 50.000 Lot'}
           </button>
           <button
             onClick={handleMarketBuy}
             disabled={marketBuyActive}
-            style={{ padding: '6px 12px', background: 'var(--accent-green)', border: 'none', color: '#000', borderRadius: '4px', cursor: 'pointer', fontSize: '11px', fontWeight: '800' }}
+            style={{ padding: '6px 12px', background: 'var(--accent-green)', border: 'none', color: '#000', borderRadius: '4px', cursor: 'pointer', fontSize: '12px', fontWeight: '800' }}
           >
             {marketBuyActive ? '💥 Paus Menyapu Offer!' : '🟢 Haka / Market Buy Paus 25.000 Lot'}
           </button>
@@ -878,7 +878,7 @@ function OrderBookDepthLadder() {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', background: 'rgba(0,0,0,0.3)', padding: '14px', borderRadius: '8px' }}>
         <div>
-          <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '8px', textAlign: 'center' }}>
+          <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '8px', textAlign: 'center' }}>
             ANTRIAN BELI (BID)
           </div>
           {[
@@ -898,7 +898,7 @@ function OrderBookDepthLadder() {
         </div>
 
         <div>
-          <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-red)', marginBottom: '8px', textAlign: 'center' }}>
+          <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-red)', marginBottom: '8px', textAlign: 'center' }}>
             ANTRIAN JUAL (OFFER / ASK)
           </div>
           {[
@@ -977,7 +977,7 @@ function DividendTrapSandbox() {
               color: buyTiming === k ? (scenarios[k].color === 'var(--accent-green)' ? '#000' : '#fff') : 'var(--text-secondary)',
               border: 'none',
               cursor: 'pointer',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: '800'
             }}
           >
@@ -1028,7 +1028,7 @@ function FvgSweepPlayground() {
 
         <button
           onClick={handleSweepPlay}
-          style={{ padding: '7px 14px', background: 'var(--accent-purple)', border: 'none', color: '#fff', borderRadius: '4px', cursor: 'pointer', fontSize: '11px', fontWeight: '800' }}
+          style={{ padding: '7px 14px', background: 'var(--accent-purple)', border: 'none', color: '#fff', borderRadius: '4px', cursor: 'pointer', fontSize: '12px', fontWeight: '800' }}
         >
           {sweepState === 0 ? '▶ Putar Rekonstruksi Sapuan Paus' : sweepState === 3 ? '🔄 Ulangi Rekonstruksi' : '⏳ Mensimulasikan Sapuan...'}
         </button>
@@ -1105,7 +1105,7 @@ function FvgSweepPlayground() {
           )}
         </svg>
 
-        <div style={{ fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '6px' }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '6px' }}>
           {sweepState === 0 && 'Kondisi netral: Ritel menunggu di support.'}
           {sweepState === 1 && 'Tahap 1: Harga mendekati support, ritel pasang stop loss di bawahnya.'}
           {sweepState === 2 && 'Tahap 2: Jarum panjang menusuk ke bawah support melahap stop loss ritel.'}
@@ -1158,17 +1158,17 @@ function VisualExecutionBracket() {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px', marginBottom: '16px' }}>
         <div>
-          <label style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Target Profit (TP Rp)</label>
+          <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Target Profit (TP Rp)</label>
           <input
             type="number"
             value={tpPrice}
             onChange={(e) => setTpPrice(Number(e.target.value))}
             style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--accent-green)', padding: '6px 10px', borderRadius: '4px', color: 'var(--accent-green)', fontWeight: '800' }}
           />
-          {safeTP <= safeEntry && <div style={{ fontSize: '10px', color: 'var(--accent-red)', marginTop: '2px' }}>TP harus di atas Entry!</div>}
+          {safeTP <= safeEntry && <div style={{ fontSize: '12px', color: 'var(--accent-red)', marginTop: '2px' }}>TP harus di atas Entry!</div>}
         </div>
         <div>
-          <label style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Harga Beli (Entry Rp)</label>
+          <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Harga Beli (Entry Rp)</label>
           <input
             type="number"
             value={entryPrice}
@@ -1177,31 +1177,31 @@ function VisualExecutionBracket() {
           />
         </div>
         <div>
-          <label style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Batas Cut-Loss (SL Rp)</label>
+          <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Batas Cut-Loss (SL Rp)</label>
           <input
             type="number"
             value={slPrice}
             onChange={(e) => setSlPrice(Number(e.target.value))}
             style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--accent-red)', padding: '6px 10px', borderRadius: '4px', color: 'var(--accent-red)', fontWeight: '800' }}
           />
-          {safeSL >= safeEntry && <div style={{ fontSize: '10px', color: 'var(--accent-red)', marginTop: '2px' }}>SL harus di bawah Entry!</div>}
+          {safeSL >= safeEntry && <div style={{ fontSize: '12px', color: 'var(--accent-red)', marginTop: '2px' }}>SL harus di bawah Entry!</div>}
         </div>
 
         {/* Capital and risk were fixed constants driving the lot maths, with no
             way to set them; so the calculator could only ever answer for one
             hypothetical account. Both are now inputs. */}
         <div>
-          <label style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Total Modal (Rp)</label>
+          <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Total Modal (Rp)</label>
           <input
             type="number"
             value={modal}
             onChange={(e) => setModal(Number(e.target.value))}
             style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--border-hairline)', padding: '6px 10px', borderRadius: '4px', color: 'var(--text-primary)', fontWeight: '800' }}
           />
-          {Number(modal) < 1000000 && <div style={{ fontSize: '10px', color: 'var(--accent-gold)', marginTop: '2px' }}>Minimum Rp 1.000.000</div>}
+          {Number(modal) < 1000000 && <div style={{ fontSize: '12px', color: 'var(--accent-gold)', marginTop: '2px' }}>Minimum Rp 1.000.000</div>}
         </div>
         <div>
-          <label style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Risiko per Trade (%)</label>
+          <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Risiko per Trade (%)</label>
           <input
             type="number"
             step="0.1"
@@ -1209,21 +1209,21 @@ function VisualExecutionBracket() {
             onChange={(e) => setRiskPct(Number(e.target.value))}
             style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--border-hairline)', padding: '6px 10px', borderRadius: '4px', color: 'var(--text-primary)', fontWeight: '800' }}
           />
-          {Number(riskPct) > 5 && <div style={{ fontSize: '10px', color: 'var(--accent-red)', marginTop: '2px' }}>Di atas 5% per trade terlalu agresif</div>}
+          {Number(riskPct) > 5 && <div style={{ fontSize: '12px', color: 'var(--accent-red)', marginTop: '2px' }}>Di atas 5% per trade terlalu agresif</div>}
         </div>
       </div>
 
       <div style={{ background: 'rgba(0,0,0,0.3)', padding: '16px', borderRadius: '8px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>
         <div>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Maksimal Boleh Dibeli</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Maksimal Boleh Dibeli</div>
           <div style={{ fontSize: '18px', fontWeight: '900', color: 'var(--accent-green)' }}>{calculatedLots.toLocaleString()} LOT</div>
         </div>
         <div>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Risiko Terkunci Jika SL Kena</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Risiko Terkunci Jika SL Kena</div>
           <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--accent-red)' }}>-Rp {riskRupiah.toLocaleString()}</div>
         </div>
         <div>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Potensi Cuan Jika TP Kena</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Potensi Cuan Jika TP Kena</div>
           <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--accent-green)' }}>+Rp {profitPotentialRupiah.toLocaleString()}</div>
         </div>
       </div>
@@ -1349,10 +1349,10 @@ export default function QuantAcademyTab() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-              <span style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-cyan)', padding: '3px 8px', borderRadius: '4px', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-cyan)', padding: '3px 8px', borderRadius: '4px', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
                 MBG QUANT ACADEMY // 6-LEVEL INTERACTIVE MASTERCLASS
               </span>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>• Visual, Diagram Interaktif, & Simulasi Riil</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>• Visual, Diagram Interaktif, & Simulasi Riil</span>
             </div>
             <h1 style={{ fontSize: '22px', fontWeight: '800', margin: '0 0 6px 0', letterSpacing: '-0.3px', color: '#fff' }}>
               Bagaimana Dunia Finansial Bekerja & Cara Bertahan di Pasar Modal
@@ -1363,7 +1363,7 @@ export default function QuantAcademyTab() {
           </div>
 
           <div style={{ background: 'rgba(0, 0, 0, 0.4)', padding: '12px 16px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)', textAlign: 'right' }}>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>PROGRESS KURIKULUM</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>PROGRESS KURIKULUM</div>
             <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--accent-green)' }}>
               {completedModules.length} / 20 MODUL ({Math.round((completedModules.length / 20) * 100)}%)
             </div>
@@ -1402,15 +1402,15 @@ export default function QuantAcademyTab() {
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '10px', fontWeight: '800', color: lvl.badgeColor }}>{lvl.levelCode}</span>
-                  <span style={{ fontSize: '10px', color: lvlDoneCount === lvl.moduleCount ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '12px', fontWeight: '800', color: lvl.badgeColor }}>{lvl.levelCode}</span>
+                  <span style={{ fontSize: '12px', color: lvlDoneCount === lvl.moduleCount ? 'var(--accent-green)' : 'var(--text-muted)' }}>
                     {lvlDoneCount}/{lvl.moduleCount} Selesai
                   </span>
                 </div>
                 <div style={{ fontSize: '12px', fontWeight: '700', color: isActive ? '#fff' : 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {lvl.title}
                 </div>
-                <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{lvl.readTime} • {lvl.moduleCount} Modul</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{lvl.readTime} • {lvl.moduleCount} Modul</div>
               </button>
             );
           })}
@@ -1430,11 +1430,11 @@ export default function QuantAcademyTab() {
               gap: '4px'
             }}
           >
-            <div style={{ fontSize: '10px', fontWeight: '800', color: 'var(--accent-orange)' }}>REFERENSI</div>
+            <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-orange)' }}>REFERENSI</div>
             <div style={{ fontSize: '12px', fontWeight: '700', color: activeLevelId === 'glossary' ? '#fff' : 'var(--text-secondary)' }}>
               Kamus 66 Istilah
             </div>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Pencarian Cepat</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Pencarian Cepat</div>
           </button>
         </div>
       </div>
@@ -1452,7 +1452,7 @@ export default function QuantAcademyTab() {
             top: '16px',
             height: 'fit-content'
           }}>
-            <div style={{ fontSize: '11px', fontWeight: '800', color: activeLevel.badgeColor, marginBottom: '4px' }}>
+            <div style={{ fontSize: '12px', fontWeight: '800', color: activeLevel.badgeColor, marginBottom: '4px' }}>
               {activeLevel.levelCode} // DAFTAR MODUL
             </div>
             <div style={{ fontSize: '14px', fontWeight: '800', color: '#fff', marginBottom: '14px' }}>
@@ -1481,14 +1481,14 @@ export default function QuantAcademyTab() {
                     }}
                   >
                     <div>
-                      <div style={{ fontSize: '10px', fontWeight: '800', color: isModActive ? 'var(--accent-cyan)' : 'var(--text-muted)' }}>
+                      <div style={{ fontSize: '12px', fontWeight: '800', color: isModActive ? 'var(--accent-cyan)' : 'var(--text-muted)' }}>
                         {mod.code}
                       </div>
                       <div style={{ fontSize: '12px', fontWeight: '700', color: isModActive ? '#fff' : 'var(--text-secondary)', lineHeight: '1.3' }}>
                         {mod.title.split(': ')[0]}
                       </div>
                     </div>
-                    {isModDone && <span style={{ fontSize: '11px', color: 'var(--accent-green)' }}>✓</span>}
+                    {isModDone && <span style={{ fontSize: '12px', color: 'var(--accent-green)' }}>✓</span>}
                   </button>
                 );
               })}
@@ -1505,10 +1505,10 @@ export default function QuantAcademyTab() {
               padding: '20px 24px'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ fontSize: '11px', fontWeight: '800', color: activeLevel.badgeColor, letterSpacing: '0.8px' }}>
+                <span style={{ fontSize: '12px', fontWeight: '800', color: activeLevel.badgeColor, letterSpacing: '0.8px' }}>
                   {activeLevel.levelCode} • {activeModule.code}
                 </span>
-                <span style={{ fontSize: '11px', color: 'var(--accent-green)', fontWeight: '700' }}>
+                <span style={{ fontSize: '12px', color: 'var(--accent-green)', fontWeight: '700' }}>
                   {completedModules.includes(activeModule.id) ? '✓ Telah Dipelajari' : '• Sedang Dipelajari'}
                 </span>
               </div>
@@ -1516,7 +1516,7 @@ export default function QuantAcademyTab() {
                 {activeModule.title}
               </h2>
               <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px 14px', borderRadius: '6px', borderLeft: '3px solid var(--accent-cyan)' }}>
-                <span style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-cyan)' }}>PERTANYAAN KUNCI: </span>
+                <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-cyan)' }}>PERTANYAAN KUNCI: </span>
                 <span style={{ fontSize: '13.5px', color: 'var(--text-primary)', lineHeight: '1.5' }}>{activeModule.keyQuestion}</span>
               </div>
             </div>
@@ -1528,7 +1528,7 @@ export default function QuantAcademyTab() {
               padding: '16px 20px',
               borderRadius: '0 8px 8px 0'
             }}>
-              <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-cyan)', marginBottom: '4px' }}>
+              <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-cyan)', marginBottom: '4px' }}>
                 💡 ANALOGI KEHIDUPAN NYATA (MENTAL MODEL):
               </div>
               <div style={{ fontSize: '13.5px', color: 'var(--text-primary)', lineHeight: '1.65' }}>
@@ -1575,7 +1575,7 @@ export default function QuantAcademyTab() {
                 borderRadius: '8px',
                 padding: '16px'
               }}>
-                <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-red)', marginBottom: '6px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-red)', marginBottom: '6px' }}>
                   ⚠️ JEBAKAN INVESTOR AWAM / RITEL:
                 </div>
                 <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: '1.5' }}>
@@ -1589,7 +1589,7 @@ export default function QuantAcademyTab() {
                 borderRadius: '8px',
                 padding: '16px'
               }}>
-                <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '6px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '6px' }}>
                   🛡️ TINDAKAN TAKTIS INVESTOR CERDAS (PLAYBOOK):
                 </div>
                 <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: '1.5' }}>
@@ -1717,7 +1717,7 @@ export default function QuantAcademyTab() {
               <div key={idx} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '6px', padding: '12px 14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                   <span style={{ fontSize: '13px', fontWeight: '800', color: '#fff' }}>{item.term}</span>
-                  <span style={{ fontSize: '10px', color: 'var(--accent-cyan)', background: 'rgba(56, 189, 248, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--accent-cyan)', background: 'rgba(56, 189, 248, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
                     {item.category}
                   </span>
                 </div>

@@ -288,7 +288,7 @@ export default function CommandPaletteModal({
           />
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span style={{
-              fontSize: '9px',
+              fontSize: '12px',
               fontWeight: 800,
               background: 'rgba(255, 255, 255, 0.08)',
               color: 'var(--text-muted, #94a3b8)',
@@ -326,7 +326,7 @@ export default function CommandPaletteModal({
                 border: activeCategory === c.id ? '1px solid rgba(59, 130, 246, 0.4)' : '1px solid transparent',
                 borderRadius: '4px',
                 padding: '2px 8px',
-                fontSize: '10px',
+                fontSize: '12px',
                 fontWeight: 700,
                 cursor: 'pointer'
               }}
@@ -347,7 +347,7 @@ export default function CommandPaletteModal({
           }}
         >
           {filteredItems.length === 0 ? (
-            <div style={{ padding: '36px 16px', textAlign: 'center', color: 'var(--text-muted, #94a3b8)', fontSize: '11px' }}>
+            <div style={{ padding: '36px 16px', textAlign: 'center', color: 'var(--text-muted, #94a3b8)', fontSize: '12px' }}>
               Tidak ditemukan instrumen atau perintah yang cocok dengan "<strong>{query}</strong>".
             </div>
           ) : (
@@ -376,9 +376,9 @@ export default function CommandPaletteModal({
                     <span style={{ fontSize: '14px', flexShrink: 0 }}>{item.icon}</span>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', overflow: 'hidden' }}>
                       <span style={{
-                        fontSize: '11.5px',
+                        fontSize: '12px',
                         fontWeight: 700,
-                        color: isSelected ? '#ffffff' : 'var(--text-primary, #f1f5f9)',
+                        color: isSelected ? 'var(--text-inverse)' : 'var(--text-primary, #f1f5f9)',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis'
@@ -386,7 +386,7 @@ export default function CommandPaletteModal({
                         {item.label}
                       </span>
                       <span style={{
-                        fontSize: '9.5px',
+                        fontSize: '12px',
                         color: isSelected ? '#93c5fd' : 'var(--text-muted, #94a3b8)',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
@@ -399,7 +399,7 @@ export default function CommandPaletteModal({
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
                     <span style={{
-                      fontSize: '8.5px',
+                      fontSize: '12px',
                       fontWeight: 800,
                       padding: '1px 5px',
                       borderRadius: '3px',
@@ -415,14 +415,14 @@ export default function CommandPaletteModal({
                         : item.category === 'CRYPTO'
                         ? 'var(--accent-gold)'
                         : item.category === 'ACTIONS'
-                        ? '#c084fc'
+                        ? 'var(--accent-purple-light)'
                         : 'var(--accent-sky-soft)',
                       border: '1px solid rgba(255,255,255,0.06)'
                     }}>
                       {item.category}
                     </span>
                     {isSelected && (
-                      <span style={{ fontSize: '10px', color: 'var(--accent-sky-soft)' }}>↵</span>
+                      <span style={{ fontSize: '12px', color: 'var(--accent-sky-soft)' }}>↵</span>
                     )}
                   </div>
                 </div>
@@ -439,7 +439,7 @@ export default function CommandPaletteModal({
           padding: '8px 14px',
           background: 'rgba(10, 14, 22, 0.95)',
           borderTop: 'var(--border-hairline, 1px solid rgba(255,255,255,0.08))',
-          fontSize: '9.5px',
+          fontSize: '12px',
           color: 'var(--text-muted, #94a3b8)'
         }}>
           <div style={{ display: 'flex', gap: '10px' }}>

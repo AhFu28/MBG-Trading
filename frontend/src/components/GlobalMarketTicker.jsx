@@ -70,7 +70,7 @@ export default function GlobalMarketTicker({ onNavigateGlobal }) {
       }}
     >
       <span style={{
-        fontSize: '8.5px',
+        fontSize: '12px',
         color: 'var(--text-muted)',
         fontWeight: '800',
         letterSpacing: '0.04em',
@@ -85,18 +85,18 @@ export default function GlobalMarketTicker({ onNavigateGlobal }) {
 
       {sessions.map((s, idx) => (
         <React.Fragment key={s.code}>
-          {idx > 0 && <span style={{ color: 'var(--border-color)', fontSize: '8px' }}>·</span>}
+          {idx > 0 && <span style={{ color: 'var(--border-color)', fontSize: '12px' }}>·</span>}
           <div
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '2px',
-              fontSize: '8.5px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               padding: '0 1px'
             }}
           >
-            <span style={{ fontSize: '9px' }}>{s.flag}</span>
+            <span style={{ fontSize: '12px' }}>{s.flag}</span>
             <span style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{s.name}</span>
             <span style={{ color: 'var(--text-muted)' }}>{s.time}</span>
             <span

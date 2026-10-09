@@ -367,12 +367,12 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
     <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', padding: '12px 14px', fontFamily: 'var(--font-mono)' }}>
       {/* 1. Global Session Clocks & Live Master Clock */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', padding: '5px 8px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: 'var(--text-muted)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-muted)' }}>
           <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-green)', display: 'inline-block' }}></span>
           <strong style={{ color: 'var(--text-primary)' }}>SINKRONISASI BURSA GLOBAL REAL-TIME</strong>
-          <span style={{ fontSize: '9px' }}>(STATUS PER DETIK)</span>
+          <span style={{ fontSize: '12px' }}>(STATUS PER DETIK)</span>
         </div>
-        <div style={{ fontSize: '10px', fontWeight: '700', color: 'var(--accent-orange)' }}>
+        <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--accent-orange)' }}>
           WIB CLOCK: {jktCurrent.timeStr} WIB
         </div>
       </div>
@@ -383,15 +383,15 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span style={{ fontSize: '16px' }}>{s.flag}</span>
               <div>
-                <div style={{ fontSize: '10px', fontWeight: '700', color: 'var(--text-primary)' }}>{s.name}</div>
-                <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>{s.hours}</div>
-                <div style={{ fontSize: '9px', color: 'var(--accent-green)', fontWeight: '700', marginTop: '1px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-primary)' }}>{s.name}</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{s.hours}</div>
+                <div style={{ fontSize: '12px', color: 'var(--accent-green)', fontWeight: '700', marginTop: '1px' }}>
                   🕒 {s.localTime}
                 </div>
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <span className={'badge ' + s.badge} style={{ fontSize: '8px', display: 'inline-block', padding: '2px 5px' }}>
+              <span className={'badge ' + s.badge} style={{ fontSize: '12px', display: 'inline-block', padding: '2px 5px' }}>
                 {s.note}
               </span>
             </div>
@@ -407,45 +407,45 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
         marginBottom: '10px'
       }}>
         <div style={{ padding: '6px 10px', background: 'var(--bg-panel-subtle)', borderLeft: '3px solid var(--accent-green)', border: 'var(--border-hairline)' }}>
-          <div style={{ fontSize: '8px', color: 'var(--text-muted)', fontWeight: '800' }}>GOLD SPOT BULLION</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>GOLD SPOT BULLION</div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
             <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>{liveGoldPrice}</span>
-            <span style={{ fontSize: '9px', fontWeight: '700', color: liveGoldChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+            <span style={{ fontSize: '12px', fontWeight: '700', color: liveGoldChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
               {liveGoldChange >= 0 ? '+' : ''}{liveGoldChange}%
             </span>
           </div>
-          <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>Safe haven / inflation hedge</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>Safe haven / inflation hedge</div>
         </div>
 
         <div style={{ padding: '6px 10px', background: 'var(--bg-panel-subtle)', borderLeft: '3px solid var(--accent-orange)', border: 'var(--border-hairline)' }}>
-          <div style={{ fontSize: '8px', color: 'var(--text-muted)', fontWeight: '800' }}>BRENT CRUDE OIL</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>BRENT CRUDE OIL</div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
             <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>{liveBrentPrice}</span>
-            <span style={{ fontSize: '9px', fontWeight: '700', color: liveBrentChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+            <span style={{ fontSize: '12px', fontWeight: '700', color: liveBrentChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
               {liveBrentChange >= 0 ? '+' : ''}{liveBrentChange}%
             </span>
           </div>
-          <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>Middle east supply tension risk</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>Middle east supply tension risk</div>
         </div>
 
         <div style={{ padding: '6px 10px', background: 'var(--bg-panel-subtle)', borderLeft: '3px solid var(--accent-blue)', border: 'var(--border-hairline)' }}>
-          <div style={{ fontSize: '8px', color: 'var(--text-muted)', fontWeight: '800' }}>US DOLLAR INDEX (DXY)</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>US DOLLAR INDEX (DXY)</div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
             <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>{liveDxyVal}</span>
-            <span style={{ fontSize: '9px', fontWeight: '700', color: liveDxyChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+            <span style={{ fontSize: '12px', fontWeight: '700', color: liveDxyChange >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
               {liveDxyChange >= 0 ? '+' : ''}{liveDxyChange}%
             </span>
           </div>
-          <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>USD global liquidity measure</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>USD global liquidity measure</div>
         </div>
 
         <div style={{ padding: '6px 10px', background: 'var(--bg-panel-subtle)', borderLeft: '3px solid #ff9500', border: 'var(--border-hairline)' }}>
-          <div style={{ fontSize: '8px', color: 'var(--text-muted)', fontWeight: '800' }}>US 10Y BENCHMARK YIELD</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>US 10Y BENCHMARK YIELD</div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
             <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>{liveUs10yYield}</span>
-            <span className="badge badge-bull" style={{ fontSize: '7px', padding: '1px 4px' }}>STABLE</span>
+            <span className="badge badge-bull" style={{ fontSize: '12px', padding: '1px 4px' }}>STABLE</span>
           </div>
-          <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>Risk-free cost of capital</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>Risk-free cost of capital</div>
         </div>
       </div>
 
@@ -460,14 +460,14 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ fontSize: '12px' }}>🔄</span>
-            <span style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.5px' }}>
+            <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '0.5px' }}>
               BLOOMBERG INTERMARKET CORRELATION & ROTATION MATRIX
             </span>
-            <span style={{ fontSize: '8px', padding: '1px 5px', borderRadius: '3px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-sky-soft)', fontWeight: '700' }}>
+            <span style={{ fontSize: '12px', padding: '1px 5px', borderRadius: '3px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-sky-soft)', fontWeight: '700' }}>
               CROSS-ASSET FLOWS
             </span>
           </div>
-          <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
             INSTITUTIONAL RELATIVE PRICING
           </span>
         </div>
@@ -488,15 +488,15 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
             gap: '3px'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>DXY ⇄ IHSG / EM</span>
-              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', fontWeight: '700' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)' }}>DXY ⇄ IHSG / EM</span>
+              <span style={{ fontSize: '12px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(239, 68, 68, 0.15)', color: 'var(--accent-red)', fontWeight: '700' }}>
                 -0.74 INVERSE
               </span>
             </div>
-            <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveDxyChange >= 0 ? '#ef4444' : 'var(--accent-green)' }}>
+            <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveDxyChange >= 0 ? 'var(--accent-red)' : 'var(--accent-green)' }}>
               {liveDxyChange >= 0 ? 'DXY ↑ ➔ Tekanan Valas BEI' : 'DXY ↓ ➔ Inflow Asing Terakselerasi'}
             </div>
-            <div style={{ fontSize: '8px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
               Dollar menguat memicu repatriasi modal; sebaliknya pelemahan DXY membuka pintu akumulasi BBCA & BBRI.
             </div>
           </div>
@@ -512,15 +512,15 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
             gap: '3px'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>GOLD ⇄ EMITEN LOGAM</span>
-              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-emerald)', fontWeight: '700' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)' }}>GOLD ⇄ EMITEN LOGAM</span>
+              <span style={{ fontSize: '12px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-emerald)', fontWeight: '700' }}>
                 +0.85 POSITIVE
               </span>
             </div>
-            <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveGoldChange >= 0 ? 'var(--accent-green)' : '#ef4444' }}>
+            <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveGoldChange >= 0 ? 'var(--accent-green)' : 'var(--accent-red)' }}>
               {liveGoldChange >= 0 ? 'Gold Rally ➔ Margin ANTM/BRMS' : 'Gold Koreksi ➔ Konsolidasi Mining'}
             </div>
-            <div style={{ fontSize: '8px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
               Kenaikan harga spot bullion mengangkat average selling price (ASP) emiten tambang emas & tembaga BEI.
             </div>
           </div>
@@ -536,15 +536,15 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
             gap: '3px'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>BRENT ⇄ ENERGI & LOGISTIK</span>
-              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-sky-soft)', fontWeight: '700' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)' }}>BRENT ⇄ ENERGI & LOGISTIK</span>
+              <span style={{ fontSize: '12px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-sky-soft)', fontWeight: '700' }}>
                 +0.82 SECTORIAL
               </span>
             </div>
-            <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveBrentChange >= 0 ? 'var(--accent-gold)' : 'var(--accent-green)' }}>
+            <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: liveBrentChange >= 0 ? 'var(--accent-gold)' : 'var(--accent-green)' }}>
               {liveBrentChange >= 0 ? 'Oil ↑ ➔ MEDC Cuan, Aviasi Tertekan' : 'Oil ↓ ➔ Tekanan Beban BBM Berkurang'}
             </div>
-            <div style={{ fontSize: '8px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
               Reli minyak mentah menguntungkan emiten hulu migas (MEDC, ENRG), namun menekan biaya aviasi (GIAA) & logistik.
             </div>
           </div>
@@ -560,15 +560,15 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
             gap: '3px'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>US 10Y ⇄ TECH / GROWTH</span>
-              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', fontWeight: '700' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)' }}>US 10Y ⇄ TECH / GROWTH</span>
+              <span style={{ fontSize: '12px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(239, 68, 68, 0.15)', color: 'var(--accent-red)', fontWeight: '700' }}>
                 -0.68 DISCOUNT RATE
               </span>
             </div>
-            <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+            <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
               Yield {liveUs10yYield} ➔ Cost of Capital
             </div>
-            <div style={{ fontSize: '8px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
               Kenaikan risk-free rate menaikkan hurdle rate valuasi saham teknologi dengan ekspektasi cash flow jangka panjang.
             </div>
           </div>
@@ -584,15 +584,15 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
             gap: '3px'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '8px', fontWeight: '800', color: 'var(--text-primary)' }}>BITCOIN ⇄ GLOBAL LIQUIDITY</span>
-              <span style={{ fontSize: '7px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-emerald)', fontWeight: '700' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)' }}>BITCOIN ⇄ GLOBAL LIQUIDITY</span>
+              <span style={{ fontSize: '12px', padding: '1px 3px', borderRadius: '2px', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-emerald)', fontWeight: '700' }}>
                 +0.76 LIQUIDITY SPONGE
               </span>
             </div>
-            <div style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
+            <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
               High-Beta Central Bank Proxy
             </div>
-            <div style={{ fontSize: '8px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.25 }}>
               Aset paling sensitif terhadap ekspansi neraca bank sentral (M2 global), bergerak sebelum indeks saham merespons.
             </div>
           </div>
@@ -607,11 +607,11 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
             onClick={() => setActiveRegion(r)}
             className={'telemetry-btn ' + (activeRegion === r ? 'active' : '')}
             style={{
-              fontSize: '9px',
+              fontSize: '12px',
               padding: '2px 7px',
               fontWeight: activeRegion === r ? '800' : '600',
               background: activeRegion === r ? 'var(--accent-blue)' : 'var(--bg-panel-subtle)',
-              color: activeRegion === r ? '#ffffff' : 'var(--text-primary)'
+              color: activeRegion === r ? 'var(--text-inverse)' : 'var(--text-primary)'
             }}
           >
             {r}
@@ -621,7 +621,7 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
 
       {/* 4. Assets & Global Instruments Table */}
       <div style={{ overflowX: 'auto', marginBottom: '10px', maxHeight: '380px', overflowY: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
           <thead style={{ position: 'sticky', top: 0, background: 'var(--bg-panel)', zIndex: 1 }}>
             <tr style={{ background: 'var(--bg-panel-subtle)', borderBottom: 'var(--border-hairline)', textAlign: 'left', color: 'var(--text-muted)' }}>
               <th style={{ padding: '5px 8px' }}>INSTRUMEN</th>
@@ -656,30 +656,30 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <span style={{ fontSize: '13px' }}>{item.flag}</span>
                       <div>
-                        <div style={{ fontSize: '11px', color: 'var(--accent-blue)', cursor: 'pointer' }} onClick={() => onSelectTicker && onSelectTicker(item.ticker, item.market)}>
+                        <div style={{ fontSize: '12px', color: 'var(--accent-blue)', cursor: 'pointer' }} onClick={() => onSelectTicker && onSelectTicker(item.ticker, item.market)}>
                           {item.ticker}
                         </div>
-                        <div style={{ fontSize: '8px', color: 'var(--text-muted)', fontWeight: '400' }}>{item.name}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '400' }}>{item.name}</div>
                       </div>
                     </div>
                   </td>
                   <td style={{ padding: '5px 8px' }}>
-                    <span className="badge" style={{ fontSize: '8px', padding: '1px 4px' }}>{item.region}</span>
+                    <span className="badge" style={{ fontSize: '12px', padding: '1px 4px' }}>{item.region}</span>
                   </td>
-                  <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: '700', fontSize: '11px', color: hasPrice ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                  <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: '700', fontSize: '12px', color: hasPrice ? 'var(--text-primary)' : 'var(--text-muted)' }}>
                     {priceText}
                   </td>
-                  <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: '700', fontSize: '11px', color: !hasChange ? 'var(--text-muted)' : (isUp ? 'var(--accent-green)' : 'var(--accent-rust)') }}>
+                  <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: '700', fontSize: '12px', color: !hasChange ? 'var(--text-muted)' : (isUp ? 'var(--accent-green)' : 'var(--accent-rust)') }}>
                     {hasChange ? `${isUp ? '+' : ''}${Number(item.change).toFixed(2)}%` : '—'}
                   </td>
-                  <td style={{ padding: '5px 8px', textAlign: 'right', color: 'var(--text-muted)', fontSize: '9px' }}>
+                  <td style={{ padding: '5px 8px', textAlign: 'right', color: 'var(--text-muted)', fontSize: '12px' }}>
                     {hasPrice ? 'live' : 'tidak ada feed'}
                   </td>
                   <td style={{ padding: '5px 8px', textAlign: 'center' }}>
                     <button
                       onClick={() => onSelectTicker && onSelectTicker(item.ticker, item.market === 'IDX' ? 'IDX' : 'GLOBAL')}
                       className="telemetry-btn"
-                      style={{ padding: '2px 6px', fontSize: '8px' }}
+                      style={{ padding: '2px 6px', fontSize: '12px' }}
                     >
                       📈 Chart
                     </button>
@@ -694,7 +694,7 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
       {/* 5. Cross-Currency & Arbitrage Quick Reference */}
       <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '8px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '10px', fontWeight: '700', color: 'var(--accent-orange)' }}>
+          <span style={{ fontSize: '12px', fontWeight: '700', color: 'var(--accent-orange)' }}>
             💱 FX &amp; ARBITRAGE CONVERTER:
           </span>
           <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
@@ -702,20 +702,20 @@ export default function GlobalMarketsTab({ onSelectTicker, macro, bundle, livePr
               type="number"
               value={amount}
               onChange={e => setAmount(Number(e.target.value))}
-              style={{ width: '80px', padding: '3px 6px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '10px' }}
+              style={{ width: '80px', padding: '3px 6px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '12px' }}
             />
             <select
               value={fromCurr}
               onChange={e => setFromCurr(e.target.value)}
-              style={{ padding: '3px 6px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '10px' }}
+              style={{ padding: '3px 6px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '12px' }}
             >
               {converterCurrencies.map(k => <option key={k} value={k}>{k}</option>)}
             </select>
-            <span style={{ color: 'var(--text-muted)', fontWeight: '700', fontSize: '10px' }}>➔</span>
+            <span style={{ color: 'var(--text-muted)', fontWeight: '700', fontSize: '12px' }}>➔</span>
             <select
               value={toCurr}
               onChange={e => setToCurr(e.target.value)}
-              style={{ padding: '3px 6px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '10px' }}
+              style={{ padding: '3px 6px', background: 'var(--bg-panel)', border: 'var(--border-hairline)', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '12px' }}
             >
               {converterCurrencies.map(k => <option key={k} value={k}>{k}</option>)}
             </select>

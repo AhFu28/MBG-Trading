@@ -42,7 +42,7 @@ function ExecutionHudOverlay({ symbol, market, currentPrice, plan, isCrypto, onO
       alignItems: 'center',
       justifyContent: 'space-between',
       gap: '6px',
-      fontSize: '11px',
+      fontSize: '12px',
       fontFamily: 'var(--font-mono, monospace)',
       pointerEvents: 'auto'
     }}>
@@ -63,7 +63,7 @@ function ExecutionHudOverlay({ symbol, market, currentPrice, plan, isCrypto, onO
           LIVE EXECUTION
         </span>
         <span style={{ color: '#93c5fd', fontWeight: 600 }}>{botName}</span>
-        <span style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '10px' }}>
+        <span style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '12px' }}>
           • Sizing: {isIdx ? '150 Lot' : '2,500 USDT'}
         </span>
       </div>
@@ -72,34 +72,34 @@ function ExecutionHudOverlay({ symbol, market, currentPrice, plan, isCrypto, onO
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
         {/* Entry */}
         <div style={{ background: 'rgba(255, 255, 255, 0.04)', padding: '2px 5px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.08)' }}>
-          <span style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '9px' }}>Entry: </span>
+          <span style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '12px' }}>Entry: </span>
           <strong style={{ color: '#f1f5f9' }}>{isIdx ? `Rp ${entry.toLocaleString()}` : `$${entry}`}</strong>
         </div>
 
         {/* Upper Barrier (TP) */}
         <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '2px 5px', borderRadius: '4px', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
-          <span style={{ color: 'var(--accent-emerald)', fontSize: '9px' }}>🎯 Barrier 1 (TP): </span>
+          <span style={{ color: 'var(--accent-emerald)', fontSize: '12px' }}>🎯 Barrier 1 (TP): </span>
           <strong style={{ color: 'var(--accent-mint)' }}>{isIdx ? `Rp ${tp.toLocaleString()}` : `$${tp}`} (+{tpPct}%)</strong>
         </div>
 
         {/* Lower Barrier (SL) */}
         <div style={{ background: 'rgba(239, 68, 68, 0.08)', padding: '2px 5px', borderRadius: '4px', border: '1px solid rgba(239, 68, 68, 0.25)' }}>
-          <span style={{ color: '#ef4444', fontSize: '9px' }}>🛑 Barrier 2 (SL): </span>
+          <span style={{ color: 'var(--accent-red)', fontSize: '12px' }}>🛑 Barrier 2 (SL): </span>
           <strong style={{ color: '#f87171' }}>{isIdx ? `Rp ${sl.toLocaleString()}` : `$${sl}`} ({slPct}%)</strong>
         </div>
 
         {/* Vertical Barrier (Time Horizon) */}
         <div style={{ background: 'rgba(245, 158, 11, 0.08)', padding: '2px 5px', borderRadius: '4px', border: '1px solid rgba(245, 158, 11, 0.25)' }}>
-          <span style={{ color: 'var(--accent-gold)', fontSize: '9px' }}>⏱️ Barrier 3 (Time): </span>
-          <strong style={{ color: '#fbbf24' }}>Bar 14/24 (H+3)</strong>
+          <span style={{ color: 'var(--accent-gold)', fontSize: '12px' }}>⏱️ Barrier 3 (Time): </span>
+          <strong style={{ color: 'var(--accent-gold-bright)' }}>Bar 14/24 (H+3)</strong>
         </div>
 
         {/* Trailing Stop & Slippage */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ color: '#93c5fd', fontSize: '10px' }}>
+          <span style={{ color: '#93c5fd', fontSize: '12px' }}>
             Trailing: <strong>{isIdx ? `Rp ${trailing.toLocaleString()}` : `$${trailing}`}</strong>
           </span>
-          <span style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '10px' }}>
+          <span style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '12px' }}>
             Slip: <span style={{ color: 'var(--accent-emerald)' }}>0.08% (TWAP)</span>
           </span>
           <span style={{
@@ -255,7 +255,7 @@ function ChartPane({
         padding: '4px 8px',
         background: 'rgba(18, 23, 34, 0.95)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-        fontSize: '10px'
+        fontSize: '12px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span style={{
@@ -268,7 +268,7 @@ function ChartPane({
           }}>
             {getTvSymbol(symbol, market)}
           </span>
-          <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>
             {market}
           </span>
         </div>
@@ -287,7 +287,7 @@ function ChartPane({
               border: '1px solid ' + (showHud ? 'rgba(59, 130, 246, 0.4)' : 'rgba(255, 255, 255, 0.1)'),
               borderRadius: '3px',
               padding: '1px 6px',
-              fontSize: '9px',
+              fontSize: '12px',
               fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
@@ -314,7 +314,7 @@ function ChartPane({
                 border: 'none',
                 borderRadius: '2px',
                 padding: '1px 5px',
-                fontSize: '9px',
+                fontSize: '12px',
                 fontWeight: 700,
                 cursor: 'pointer'
               }}
@@ -544,7 +544,7 @@ export default function ChartingDeskTab({
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-green, #00d084)' }} />
-            <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
               CHART WORKSTATION
             </span>
             <button
@@ -555,7 +555,7 @@ export default function ChartingDeskTab({
                 border: 'none',
                 padding: '2px 8px',
                 borderRadius: '4px',
-                fontSize: '10px',
+                fontSize: '12px',
                 fontWeight: 800,
                 cursor: 'pointer',
                 marginLeft: '6px'
@@ -591,14 +591,14 @@ export default function ChartingDeskTab({
                   onClick={() => handleSelectTicker(item.sym, item.mkt)}
                   style={{
                     padding: '3px 7px',
-                    fontSize: '10px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: 700,
                     borderRadius: '4px',
                     border: 'none',
                     cursor: 'pointer',
                     background: isSelected ? 'var(--accent-blue, #0066cc)' : 'transparent',
-                    color: isSelected ? '#ffffff' : 'var(--text-muted)',
+                    color: isSelected ? 'var(--text-inverse)' : 'var(--text-muted)',
                     transition: 'all 0.15s ease'
                   }}
                 >
@@ -619,7 +619,7 @@ export default function ChartingDeskTab({
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 color: 'var(--text-primary)',
                 padding: '4px 8px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
                 borderRadius: '4px',
                 width: '140px',
@@ -653,7 +653,7 @@ export default function ChartingDeskTab({
                 }}
                 style={{
                   padding: '3px 8px',
-                  fontSize: '10px',
+                  fontSize: '12px',
                   fontWeight: 800,
                   borderRadius: '4px',
                   border: 'none',
@@ -680,7 +680,7 @@ export default function ChartingDeskTab({
                 onClick={() => setActivePreset(p.id)}
                 style={{
                   padding: '3px 6px',
-                  fontSize: '10px',
+                  fontSize: '12px',
                   fontWeight: 700,
                   borderRadius: '4px',
                   border: activePreset === p.id ? '1px solid var(--accent-blue)' : '1px solid rgba(255, 255, 255, 0.08)',
@@ -704,7 +704,7 @@ export default function ChartingDeskTab({
               border: '1px solid rgba(255, 255, 255, 0.1)',
               color: showCompanion ? 'var(--accent-sky-soft)' : 'var(--text-muted)',
               padding: '3px 8px',
-              fontSize: '10px',
+              fontSize: '12px',
               fontWeight: 700,
               borderRadius: '4px',
               cursor: 'pointer'
@@ -718,9 +718,9 @@ export default function ChartingDeskTab({
             onClick={() => onOpenLotCalc && onOpenLotCalc(entryPrice, stopLossPrice, isCrypto ? 'CRYPTO' : 'IDX')}
             style={{
               background: 'var(--accent-green, #00d084)',
-              color: '#ffffff',
+              color: 'var(--text-inverse)',
               padding: '3px 9px',
-              fontSize: '10px',
+              fontSize: '12px',
               fontWeight: 700,
               display: 'flex',
               alignItems: 'center',
@@ -837,11 +837,11 @@ export default function ChartingDeskTab({
           }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '6px', borderBottom: 'var(--border-hairline)' }}>
-                <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                   RADAR STRATEGI: {cleanSym}
                 </span>
                 <span style={{
-                  fontSize: '9px',
+                  fontSize: '12px',
                   fontWeight: 800,
                   color: presetConfigs[activePreset].badgeColor,
                   background: 'rgba(255, 255, 255, 0.05)',
@@ -859,10 +859,10 @@ export default function ChartingDeskTab({
                 borderRadius: '6px',
                 border: '1px solid rgba(255, 255, 255, 0.05)'
               }}>
-                <span style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
                   STATUS SINYAL
                 </span>
-                <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--accent-green, #00d084)', marginTop: '2px' }}>
+                <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--accent-green, #00d084)', marginTop: '2px' }}>
                   {activePlan?.direction === 'BUY' ? '🔥 BUY SIGNAL CONFIRMED' : presetConfigs[activePreset].setupStatus}
                 </div>
               </div>
@@ -878,23 +878,23 @@ export default function ChartingDeskTab({
                 gap: '5px'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '9px', fontWeight: 800, color: 'var(--accent-sky-soft)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--accent-sky-soft)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                     TRIPLE-BARRIER CONTRACT
                   </span>
-                  <span style={{ fontSize: '8px', color: 'var(--accent-emerald)', background: 'rgba(16, 185, 129, 0.1)', padding: '1px 4px', borderRadius: '3px', fontWeight: 700 }}>
+                  <span style={{ fontSize: '12px', color: 'var(--accent-emerald)', background: 'rgba(16, 185, 129, 0.1)', padding: '1px 4px', borderRadius: '3px', fontWeight: 700 }}>
                     ACTIVE
                   </span>
                 </div>
-                <div style={{ fontSize: '9px', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: '1.4' }}>
                   López de Prado Triple-Barrier Rule:
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: 'var(--accent-emerald)' }}>▲ Target (+{(((target1Price - entryPrice) / entryPrice) * 100).toFixed(1)}%):</span>
                     <strong>{formatPriceVal(target1Price)}</strong>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#ef4444' }}>▼ Stop ({(((stopLossPrice - entryPrice) / entryPrice) * 100).toFixed(1)}%):</span>
+                    <span style={{ color: 'var(--accent-red)' }}>▼ Stop ({(((stopLossPrice - entryPrice) / entryPrice) * 100).toFixed(1)}%):</span>
                     <strong>{formatPriceVal(stopLossPrice)}</strong>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -918,7 +918,7 @@ export default function ChartingDeskTab({
                 flexDirection: 'column',
                 gap: '4px',
                 fontFamily: 'var(--font-mono)',
-                fontSize: '10px'
+                fontSize: '12px'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Entry Zone:</span>
@@ -952,13 +952,13 @@ export default function ChartingDeskTab({
                   borderRadius: '6px',
                   border: '1px solid rgba(255, 255, 255, 0.05)'
                 }}>
-                  <span style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block' }}>
                     RADAR BANDARMOLOGI
                   </span>
-                  <div style={{ fontSize: '10px', fontWeight: 700, color: '#00d084', marginTop: '2px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#00d084', marginTop: '2px' }}>
                     {activeBrokerSummary.bandar_accumulation_grade?.replace('_', ' ')}
                   </div>
-                  <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                     Modal Bandar: <strong style={{ color: 'var(--accent-orange)' }}>Rp {activeBrokerSummary.bandar_avg_price?.toLocaleString()}</strong>
                   </div>
                 </div>
@@ -972,10 +972,10 @@ export default function ChartingDeskTab({
                   width: '100%',
                   padding: '7px 10px',
                   background: 'var(--accent-green, #00d084)',
-                  color: '#ffffff',
+                  color: 'var(--text-inverse)',
                   border: 'none',
                   borderRadius: '4px',
-                  fontSize: '10px',
+                  fontSize: '12px',
                   fontWeight: 700,
                   cursor: 'pointer'
                 }}
@@ -998,7 +998,7 @@ export default function ChartingDeskTab({
                   color: '#000000',
                   border: 'none',
                   borderRadius: '4px',
-                  fontSize: '10px',
+                  fontSize: '12px',
                   fontWeight: 800,
                   cursor: 'pointer'
                 }}

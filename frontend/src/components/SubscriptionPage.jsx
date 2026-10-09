@@ -100,26 +100,26 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', flexWrap: 'wrap' }}>
           <div>
-            <div style={{ fontSize: '10.5px', fontWeight: '800', letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '7px' }}>
+            <div style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '0.08em', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '7px' }}>
               Akun Anda
             </div>
             <div style={{ fontSize: '15px', fontWeight: '800', marginBottom: '4px' }}>{email}</div>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
               <span style={{
-                fontSize: '11px', fontWeight: '900', padding: '4px 12px', borderRadius: '9999px',
+                fontSize: '12px', fontWeight: '900', padding: '4px 12px', borderRadius: '9999px',
                 background: isPro ? 'rgba(245,158,11,0.18)' : 'rgba(99,102,241,0.18)',
-                color: isPro ? '#fbbf24' : '#818cf8',
+                color: isPro ? 'var(--accent-gold-bright)' : '#818cf8',
                 border: `1px solid ${isPro ? 'rgba(245,158,11,0.45)' : 'rgba(99,102,241,0.45)'}`,
               }}>
                 {isPro ? '👑 PRO' : '⭐ FREE'}
               </span>
               {isPro && daysLeft !== null && (
-                <span style={{ fontSize: '11px', color: daysLeft <= 7 ? '#fb7185' : 'var(--text-secondary)' }}>
+                <span style={{ fontSize: '12px', color: daysLeft <= 7 ? '#fb7185' : 'var(--text-secondary)' }}>
                   {daysLeft} hari tersisa
                 </span>
               )}
               {account.expiresAt && (
-                <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                   s/d {new Date(account.expiresAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
                 </span>
               )}
@@ -130,7 +130,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
             <button
               onClick={onRefresh}
               style={{
-                padding: '8px 15px', borderRadius: '8px', fontSize: '11.5px', fontWeight: '700',
+                padding: '8px 15px', borderRadius: '8px', fontSize: '12px', fontWeight: '700',
                 background: 'rgba(255,255,255,0.06)', color: 'var(--text-primary)',
                 border: '1px solid rgba(255,255,255,0.14)', cursor: 'pointer', fontFamily: 'inherit',
               }}
@@ -140,7 +140,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
             <button
               onClick={onLogout}
               style={{
-                padding: '8px 15px', borderRadius: '8px', fontSize: '11.5px', fontWeight: '700',
+                padding: '8px 15px', borderRadius: '8px', fontSize: '12px', fontWeight: '700',
                 background: 'rgba(244,63,94,0.10)', color: '#fb7185',
                 border: '1px solid rgba(244,63,94,0.30)', cursor: 'pointer', fontFamily: 'inherit',
               }}
@@ -163,7 +163,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
         {!isPro && (
           <div style={{
             marginTop: '15px', background: 'rgba(0,0,0,0.26)', borderRadius: '9px',
-            padding: '13px 15px', fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.7,
+            padding: '13px 15px', fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.7,
           }}>
             Anda sedang di paket <strong>Free</strong>: sinyal tertunda {limits.delayHours} jam,
             maksimal {limits.signals} sinyal per hari, dan modul analitik masih terkunci.
@@ -176,7 +176,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
         <>
           <div style={panel}>
             <div style={{ fontSize: '16px', fontWeight: '900', marginBottom: '5px' }}>
-              👑 Upgrade ke Pro : {proPlan.price} <span style={{ fontSize: '11.5px', color: 'var(--text-muted)', fontWeight: '400' }}>{proPlan.period}</span>
+              👑 Upgrade ke Pro : {proPlan.price} <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '400' }}>{proPlan.period}</span>
             </div>
             <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
               Sinyal real-time, notifikasi Telegram, dan seluruh modul analitik terbuka.
@@ -184,7 +184,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '10px', marginBottom: '18px' }}>
               {proPlan.features.map(f => (
-                <div key={f} style={{ fontSize: '11.5px', display: 'flex', gap: '8px', lineHeight: 1.55 }}>
+                <div key={f} style={{ fontSize: '12px', display: 'flex', gap: '8px', lineHeight: 1.55 }}>
                   <span style={{ color: 'var(--accent-mint)', flexShrink: 0 }}>✓</span>
                   <span>{f}</span>
                 </div>
@@ -208,7 +208,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                     flexShrink: 0, width: '20px', height: '20px', borderRadius: '50%',
                     background: 'rgba(99,102,241,0.22)', color: '#a5b4fc',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '10.5px', fontWeight: '900',
+                    fontSize: '12px', fontWeight: '900',
                   }}>
                     {i + 1}
                   </span>
@@ -224,7 +224,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                   background: 'rgba(0,0,0,0.28)', border: '1px solid rgba(255,255,255,0.08)',
                   borderRadius: '11px', padding: '14px 16px',
                 }}>
-                  <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)', marginBottom: '9px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', marginBottom: '9px' }}>
                     {ch.icon} {ch.method.toUpperCase()}
                   </div>
                   <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '3px' }}>{ch.detail}</div>
@@ -233,14 +233,14 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                   }}>
                     <code style={{
                       fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)',
-                      color: '#fbbf24', letterSpacing: '0.02em',
+                      color: 'var(--accent-gold-bright)', letterSpacing: '0.02em',
                     }}>
                       {ch.account}
                     </code>
                     <button
                       onClick={() => copy(ch.account, ch.method)}
                       style={{
-                        padding: '3px 9px', borderRadius: '6px', fontSize: '9.5px', fontWeight: '700',
+                        padding: '3px 9px', borderRadius: '6px', fontSize: '12px', fontWeight: '700',
                         background: 'rgba(255,255,255,0.08)', color: 'var(--text-secondary)',
                         border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', fontFamily: 'inherit',
                       }}
@@ -248,7 +248,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                       {copied === ch.method ? '✓ Tersalin' : 'Salin'}
                     </button>
                   </div>
-                  <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '6px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' }}>
                     a.n. {ch.holder}
                   </div>
                 </div>
@@ -266,7 +266,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
               <div style={{ fontSize: '12.5px', fontWeight: '800', color: 'var(--accent-mint)', marginBottom: '6px' }}>
                 📝 Formulir Konfirmasi Pembayaran
               </div>
-              <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 14px' }}>
+              <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '0 0 14px' }}>
                 Sudah transfer? Kirim data pembayaran Anda di bawah agar Admin langsung mengaktifkan akun VIP Anda.
               </p>
 
@@ -289,7 +289,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                     <div style={{
                       padding: '8px 12px', background: 'rgba(239,68,68,0.15)',
                       border: '1px solid rgba(239,68,68,0.3)', borderRadius: '6px',
-                      color: '#f87171', fontSize: '11px',
+                      color: '#f87171', fontSize: '12px',
                     }}>
                       {submitError}
                     </div>
@@ -297,7 +297,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
                         NAMA PEMILIK REKENING / PENGIRIM *
                       </label>
                       <input
@@ -309,13 +309,13 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                         style={{
                           width: '100%', padding: '8px 10px', background: 'rgba(0,0,0,0.3)',
                           border: '1px solid rgba(255,255,255,0.15)', borderRadius: '7px',
-                          color: '#f8fafc', fontSize: '11.5px', boxSizing: 'border-box',
+                          color: '#f8fafc', fontSize: '12px', boxSizing: 'border-box',
                         }}
                       />
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
                         METODE PEMBAYARAN *
                       </label>
                       <select
@@ -324,7 +324,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                         style={{
                           width: '100%', padding: '8px 10px', background: 'rgba(20,25,40,0.9)',
                           border: '1px solid rgba(255,255,255,0.15)', borderRadius: '7px',
-                          color: '#f8fafc', fontSize: '11.5px', boxSizing: 'border-box',
+                          color: '#f8fafc', fontSize: '12px', boxSizing: 'border-box',
                         }}
                       >
                         <option value="Transfer Bank BCA">Transfer Bank BCA</option>
@@ -339,7 +339,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
                         NOMINAL TRANSFER (RP) *
                       </label>
                       <input
@@ -350,13 +350,13 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                         style={{
                           width: '100%', padding: '8px 10px', background: 'rgba(0,0,0,0.3)',
                           border: '1px solid rgba(255,255,255,0.15)', borderRadius: '7px',
-                          color: 'var(--accent-mint)', fontWeight: '700', fontSize: '11.5px', boxSizing: 'border-box',
+                          color: 'var(--accent-mint)', fontWeight: '700', fontSize: '12px', boxSizing: 'border-box',
                         }}
                       />
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
                         LINK BUKTI TRANSFER (OPSIONAL)
                       </label>
                       <input
@@ -367,14 +367,14 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                         style={{
                           width: '100%', padding: '8px 10px', background: 'rgba(0,0,0,0.3)',
                           border: '1px solid rgba(255,255,255,0.15)', borderRadius: '7px',
-                          color: '#f8fafc', fontSize: '11.5px', boxSizing: 'border-box',
+                          color: '#f8fafc', fontSize: '12px', boxSizing: 'border-box',
                         }}
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '4px' }}>
                       NOMOR REFERENSI / CATATAN
                     </label>
                     <input
@@ -385,7 +385,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
                       style={{
                         width: '100%', padding: '8px 10px', background: 'rgba(0,0,0,0.3)',
                         border: '1px solid rgba(255,255,255,0.15)', borderRadius: '7px',
-                        color: '#f8fafc', fontSize: '11.5px', boxSizing: 'border-box',
+                        color: '#f8fafc', fontSize: '12px', boxSizing: 'border-box',
                       }}
                     />
                   </div>
@@ -436,7 +436,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
             <div style={{
               marginTop: '15px', background: 'rgba(245,158,11,0.08)',
               border: '1px solid rgba(245,158,11,0.30)', borderRadius: '9px',
-              padding: '12px 15px', fontSize: '11.5px', color: '#fbbf24', lineHeight: 1.65,
+              padding: '12px 15px', fontSize: '12px', color: 'var(--accent-gold-bright)', lineHeight: 1.65,
             }}>
               ⏱ <strong>Aktivasi manual.</strong> Setelah bukti transfer diterima, admin mengaktifkan
               akun Anda. Biasanya dalam beberapa jam pada hari kerja. Anda tidak perlu membayar dua kali,
@@ -452,12 +452,12 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
           Perbandingan Paket
         </div>
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11.5px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                <th style={{ textAlign: 'left', padding: '9px 8px', color: 'var(--text-muted)', fontWeight: '800', fontSize: '10px' }}>FITUR</th>
-                <th style={{ textAlign: 'center', padding: '9px 8px', color: 'var(--text-muted)', fontWeight: '800', fontSize: '10px' }}>FREE</th>
-                <th style={{ textAlign: 'center', padding: '9px 8px', color: '#fbbf24', fontWeight: '800', fontSize: '10px' }}>PRO</th>
+                <th style={{ textAlign: 'left', padding: '9px 8px', color: 'var(--text-muted)', fontWeight: '800', fontSize: '12px' }}>FITUR</th>
+                <th style={{ textAlign: 'center', padding: '9px 8px', color: 'var(--text-muted)', fontWeight: '800', fontSize: '12px' }}>FREE</th>
+                <th style={{ textAlign: 'center', padding: '9px 8px', color: 'var(--accent-gold-bright)', fontWeight: '800', fontSize: '12px' }}>PRO</th>
               </tr>
             </thead>
             <tbody>
@@ -486,7 +486,7 @@ export default function SubscriptionPage({ account = {}, onRefresh, onLogout }) 
 
       <div style={{
         background: 'rgba(244,63,94,0.065)', border: '1px solid rgba(244,63,94,0.26)',
-        borderRadius: '11px', padding: '15px 18px', fontSize: '11px',
+        borderRadius: '11px', padding: '15px 18px', fontSize: '12px',
         color: 'var(--text-secondary)', lineHeight: 1.75,
       }}>
         <strong style={{ color: '#fb7185' }}>⚠️ Risiko:</strong> Semua sinyal adalah hasil screening

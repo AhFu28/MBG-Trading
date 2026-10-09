@@ -22,7 +22,7 @@ export default function DataIntegrityModal({
   const isBundleFresh = bundleAgeMin < 60;
   const isBundleWarning = bundleAgeMin >= 60 && bundleAgeMin < 360;
   const bundleStatus = isBundleFresh ? 'HEALTHY' : (isBundleWarning ? 'DEGRADED' : 'STALE');
-  const bundleColor = isBundleFresh ? 'var(--accent-emerald)' : (isBundleWarning ? 'var(--accent-gold)' : '#ef4444');
+  const bundleColor = isBundleFresh ? 'var(--accent-emerald)' : (isBundleWarning ? 'var(--accent-gold)' : 'var(--accent-red)');
 
   // 2. AI Multi-Agent Arena 24/7 State & Telemetry
   const [arenaData, setArenaData] = useState(null);
@@ -69,7 +69,7 @@ export default function DataIntegrityModal({
   const isArenaFresh = arenaAgeMin <= ARENA_FRESH_MIN;
   const isArenaWarning = arenaAgeMin > ARENA_FRESH_MIN && arenaAgeMin <= ARENA_DELAYED_MIN;
   const arenaStatus = isArenaFresh ? 'PERIODIC ACTIVE' : (isArenaWarning ? 'DELAYED' : 'OFFLINE');
-  const arenaColor = isArenaFresh ? 'var(--accent-emerald)' : (isArenaWarning ? 'var(--accent-gold)' : '#ef4444');
+  const arenaColor = isArenaFresh ? 'var(--accent-emerald)' : (isArenaWarning ? 'var(--accent-gold)' : 'var(--accent-red)');
 
   // 3. IDX Feed Status
   const idxStatus = 'ACTIVE';
@@ -244,7 +244,7 @@ export default function DataIntegrityModal({
               <div style={{ fontSize: '13px', fontWeight: '800', letterSpacing: '0.04em', color: 'var(--text-primary)' }}>
                 AUDIT INTEGRITAS & PROVENANCE DATA TERMINAL
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 Verifikasi Transparansi Jalur Data Aktual · Standar Integritas Nol-Klaim Palsu
               </div>
             </div>
@@ -284,7 +284,7 @@ export default function DataIntegrityModal({
               background: (!isBundleFresh || !isArenaFresh) ? 'var(--accent-gold)' : 'var(--accent-emerald)',
               boxShadow: `0 0 8px ${(!isBundleFresh || !isArenaFresh) ? 'var(--accent-gold)' : 'var(--accent-emerald)'}`
             }} />
-            <span style={{ fontSize: '11px', fontWeight: '700', color: (!isBundleFresh || !isArenaFresh) ? 'var(--accent-gold)' : 'var(--accent-emerald)' }}>
+            <span style={{ fontSize: '12px', fontWeight: '700', color: (!isBundleFresh || !isArenaFresh) ? 'var(--accent-gold)' : 'var(--accent-emerald)' }}>
               {(isBundleFresh && isArenaFresh) ? 'STATUS KESELURUHAN: DATA SEHAT & TERVERIFIKASI' : 'STATUS KESELURUHAN: PERLU PERIKSA KEDALUWARSAN'}
             </span>
           </div>
@@ -297,7 +297,7 @@ export default function DataIntegrityModal({
               color: isSyncing ? 'var(--accent-blue)' : 'var(--text-primary)',
               borderRadius: '4px',
               padding: '5px 12px',
-              fontSize: '10px',
+              fontSize: '12px',
               fontWeight: '700',
               cursor: isSyncing ? 'not-allowed' : 'pointer',
               display: 'flex',
@@ -322,11 +322,11 @@ export default function DataIntegrityModal({
             borderBottom: '1px solid rgba(56, 189, 248, 0.25)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-              <span style={{ fontSize: '10.5px', color: 'var(--accent-sky)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '12px', color: 'var(--accent-sky)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span>⚡</span>
                 {syncStage}
               </span>
-              <span style={{ fontSize: '10.5px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--accent-sky)' }}>
+              <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--accent-sky)' }}>
                 {syncProgress}%
               </span>
             </div>
@@ -355,12 +355,12 @@ export default function DataIntegrityModal({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            fontSize: '10px',
+            fontSize: '12px',
             color: 'var(--accent-emerald)',
             fontWeight: 600
           }}>
             <span>✅ Verifikasi seluruh feed bursa & AI Arena baru saja selesai ({formatWib(lastForcedSync)})</span>
-            <span style={{ fontSize: '9px', opacity: 0.85, fontFamily: 'var(--font-mono)' }}>0ms Latency · All Feeds Refreshed</span>
+            <span style={{ fontSize: '12px', opacity: 0.85, fontFamily: 'var(--font-mono)' }}>0ms Latency · All Feeds Refreshed</span>
           </div>
         )}
 
@@ -384,7 +384,7 @@ export default function DataIntegrityModal({
                   {feed.name}
                 </div>
                 <span style={{
-                  fontSize: '9.5px',
+                  fontSize: '12px',
                   fontWeight: '800',
                   fontFamily: 'var(--font-mono)',
                   padding: '2px 6px',
@@ -396,13 +396,13 @@ export default function DataIntegrityModal({
                   {feed.status}
                 </span>
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '2px', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '2px', fontFamily: 'var(--font-mono)' }}>
                 Sumber / Endpoint: <span style={{ color: 'var(--text-secondary)' }}>{feed.endpoint}</span>
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '4px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>
                 Penyedia: <span style={{ color: 'var(--accent-blue)', fontWeight: 600 }}>{feed.provider}</span> · Terakhir diperbarui: <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{feed.lastUpdate}</span>
               </div>
-              <div style={{ fontSize: '9.5px', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
                 {feed.details}
               </div>
             </div>
@@ -417,7 +417,7 @@ export default function DataIntegrityModal({
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          fontSize: '9.5px',
+          fontSize: '12px',
           color: 'var(--text-muted)'
         }}>
           <div>
@@ -427,11 +427,11 @@ export default function DataIntegrityModal({
             onClick={onClose}
             style={{
               background: 'var(--accent-blue)',
-              color: '#ffffff',
+              color: 'var(--text-inverse)',
               border: 'none',
               padding: '5px 14px',
               borderRadius: '4px',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: '700',
               cursor: 'pointer'
             }}

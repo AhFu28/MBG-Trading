@@ -115,7 +115,7 @@ export default function CryptoDeskTab({ data, onOpenChart, onOpenExecution, live
                   background: contractType === c.id ? 'var(--accent-blue)' : 'transparent',
                   color: contractType === c.id ? '#fff' : 'var(--text-muted)',
                   border: 'none', borderRadius: '5px', padding: '4px 11px',
-                  fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                  fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
                 }}
               >
                 {c.label}
@@ -138,7 +138,7 @@ export default function CryptoDeskTab({ data, onOpenChart, onOpenExecution, live
                   background: view === v.id ? 'var(--accent-blue)' : 'transparent',
                   color: view === v.id ? '#fff' : 'var(--text-muted)',
                   border: 'none', borderRadius: '5px', padding: '4px 10px',
-                  fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                  fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
                 }}
               >
                 {v.label}
@@ -148,7 +148,7 @@ export default function CryptoDeskTab({ data, onOpenChart, onOpenExecution, live
 
           <button
             onClick={() => onOpenChart && onOpenChart('BTCUSDT', 'CRYPTO')}
-            style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '7px', padding: '5px 11px', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+            style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '7px', padding: '5px 11px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
           >
             ⤢ Popup Chart
           </button>
@@ -159,10 +159,10 @@ export default function CryptoDeskTab({ data, onOpenChart, onOpenExecution, live
             style={{
               background: 'linear-gradient(135deg, var(--accent-blue), #2563eb)',
               border: 'none',
-              color: '#ffffff',
+              color: 'var(--text-inverse)',
               borderRadius: '7px',
               padding: '5px 12px',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: 800,
               cursor: 'pointer',
               fontFamily: 'inherit',
@@ -205,7 +205,7 @@ export default function CryptoDeskTab({ data, onOpenChart, onOpenExecution, live
               <h3 style={{ margin: 0, fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>
                 Pasangan Spot USDT
               </h3>
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 {spotRows.length} pasangan · harga live dari Binance
               </span>
             </div>
@@ -213,14 +213,14 @@ export default function CryptoDeskTab({ data, onOpenChart, onOpenExecution, live
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari pasangan…"
-              style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', borderRadius: '6px', padding: '5px 10px', fontSize: '11.5px', color: 'var(--text-primary)', fontFamily: 'inherit', outline: 'none', width: '170px' }}
+              style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', borderRadius: '6px', padding: '5px 10px', fontSize: '12px', color: 'var(--text-primary)', fontFamily: 'inherit', outline: 'none', width: '170px' }}
             />
           </div>
 
           <div style={{ overflowX: 'auto', maxHeight: '600px', overflowY: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11.5px' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
               <thead>
-                <tr style={{ position: 'sticky', top: 0, background: 'var(--bg-panel)', zIndex: 2, color: 'var(--text-muted)', fontSize: '10px' }}>
+                <tr style={{ position: 'sticky', top: 0, background: 'var(--bg-panel)', zIndex: 2, color: 'var(--text-muted)', fontSize: '12px' }}>
                   <th style={{ textAlign: 'left', padding: '6px 5px', fontWeight: 700 }}>Pasangan</th>
                   <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>Harga</th>
                   <th style={{ textAlign: 'right', padding: '6px 5px', fontWeight: 700 }}>24j %</th>
@@ -235,11 +235,11 @@ export default function CryptoDeskTab({ data, onOpenChart, onOpenExecution, live
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <CryptoIcon symbol={row.base} size={17} />
                         <span style={{ fontWeight: 800, color: 'var(--text-primary)' }}>{row.base}</span>
-                        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>/USDT</span>
+                        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>/USDT</span>
                       </div>
                     </td>
                     <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)' }}>{formatPrice(row.price)}</td>
-                    <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: 700, color: row.change24h === null ? 'var(--text-muted)' : row.change24h >= 0 ? '#16c784' : '#ea3943' }}>
+                    <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: 700, color: row.change24h === null ? 'var(--text-muted)' : row.change24h >= 0 ? 'var(--cmc-up)' : 'var(--cmc-down)' }}>
                       {row.change24h === null || row.change24h === undefined ? '—' : `${row.change24h > 0 ? '+' : ''}${Number(row.change24h).toFixed(2)}%`}
                     </td>
                     <td style={{ padding: '7px 5px', textAlign: 'right', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
@@ -248,7 +248,7 @@ export default function CryptoDeskTab({ data, onOpenChart, onOpenExecution, live
                     <td style={{ padding: '7px 5px', textAlign: 'center' }}>
                       <button
                         onClick={() => onOpenChart && onOpenChart(row.symbol, 'CRYPTO')}
-                        style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--accent-blue)', borderRadius: '5px', padding: '3px 9px', fontSize: '10px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+                        style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--accent-blue)', borderRadius: '5px', padding: '3px 9px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
                       >
                         Chart
                       </button>

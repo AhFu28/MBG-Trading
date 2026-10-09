@@ -92,7 +92,7 @@ function MiniCandleChart({ symbol, currentPrice, entry, sl, tp1, isPositive, isI
       ctx.stroke();
 
       const pVal = maxP - (pRange / gridSteps) * i;
-      ctx.fillStyle = isDark ? '#64748b' : '#94a3b8';
+      ctx.fillStyle = isDark ? 'var(--slate-500)' : '#94a3b8';
       ctx.font = '9px monospace';
       ctx.textAlign = 'left';
       const label = isIdx ? Math.round(pVal).toLocaleString('id-ID') : pVal.toFixed(2);
@@ -123,7 +123,7 @@ function MiniCandleChart({ symbol, currentPrice, entry, sl, tp1, isPositive, isI
       }
       ctx.fill();
 
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = 'var(--text-inverse)';
       ctx.font = 'bold 8.5px monospace';
       ctx.textAlign = 'center';
       ctx.fillText(text, padLeft + chartW + 31, y + 3.5);
@@ -132,7 +132,7 @@ function MiniCandleChart({ symbol, currentPrice, entry, sl, tp1, isPositive, isI
 
     if (tp1) drawRefLine(tp1, 'var(--accent-emerald)', 'TP1');
     if (entry) drawRefLine(entry, '#3b82f6', 'ENTRY');
-    if (sl) drawRefLine(sl, '#ef4444', 'SL');
+    if (sl) drawRefLine(sl, 'var(--accent-red)', 'SL');
 
     const candleWidth = Math.max(3.5, (chartW / numCandles) * 0.62);
     const spacing = chartW / numCandles;
@@ -140,7 +140,7 @@ function MiniCandleChart({ symbol, currentPrice, entry, sl, tp1, isPositive, isI
     candles.forEach((c, idx) => {
       const x = padLeft + idx * spacing + spacing / 2;
       const isBull = c.close >= c.open;
-      const candleColor = isBull ? 'var(--accent-emerald)' : '#ef4444';
+      const candleColor = isBull ? 'var(--accent-emerald)' : 'var(--accent-red)';
 
       const yOpen = getY(c.open);
       const yClose = getY(c.close);
@@ -160,7 +160,7 @@ function MiniCandleChart({ symbol, currentPrice, entry, sl, tp1, isPositive, isI
       ctx.fillRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
     });
 
-    ctx.fillStyle = isDark ? '#64748b' : '#94a3b8';
+    ctx.fillStyle = isDark ? 'var(--slate-500)' : '#94a3b8';
     ctx.font = '9px monospace';
     ctx.textAlign = 'left';
     ctx.fillText('15M INTRADAY TACTICAL', padLeft, height - 8);
@@ -367,14 +367,14 @@ export default function SecurityHubDrawer({
                 <span style={{ fontSize: '16px', fontWeight: 900, fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                   {clean}
                 </span>
-                <span className="badge badge-alert" style={{ fontSize: '8px', padding: '1px 5px' }}>
+                <span className="badge badge-alert" style={{ fontSize: '12px', padding: '1px 5px' }}>
                   {resolvedMarket}
                 </span>
-                <span style={{ fontSize: '9px', color: 'var(--accent-sky-soft)', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ fontSize: '12px', color: 'var(--accent-sky-soft)', fontFamily: 'var(--font-mono)' }}>
                   SECURITY HUB
                 </span>
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 {tradePlan?.name || tradePlan?.description || `${resolvedMarket} Trading Asset`}
               </div>
             </div>
@@ -411,7 +411,7 @@ export default function SecurityHubDrawer({
           alignItems: 'baseline'
         }}>
           <div>
-            <div style={{ fontSize: '9px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               HARGA PASAR REAL-TIME
             </div>
             <div style={{
@@ -440,7 +440,7 @@ export default function SecurityHubDrawer({
             }}>
               {isPositive ? '▲ +' : '▼ '}{Number(changePct).toFixed(2)}%
             </span>
-            <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
               24h Change
             </div>
           </div>
@@ -469,7 +469,7 @@ export default function SecurityHubDrawer({
                 borderBottom: activeSubTab === tab.id ? '2px solid var(--accent-blue, #3b82f6)' : '2px solid transparent',
                 color: activeSubTab === tab.id ? 'var(--accent-sky-soft)' : 'var(--text-muted)',
                 fontWeight: activeSubTab === tab.id ? 800 : 600,
-                fontSize: '11px',
+                fontSize: '12px',
                 padding: '10px 4px',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease'
@@ -494,35 +494,35 @@ export default function SecurityHubDrawer({
                 padding: '12px'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                  <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                     SMC STRATEGY TELEMETRY
                   </span>
-                  <span className="badge badge-bull" style={{ fontSize: '8px' }}>
+                  <span className="badge badge-bull" style={{ fontSize: '12px' }}>
                     {tradePlan?.setup_type || 'BULLISH ORDER BLOCK'}
                   </span>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                   <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '8px', borderRadius: '6px' }}>
-                    <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>ENTRY ZONE</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>ENTRY ZONE</div>
                     <div style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent-sky-soft)' }}>
                       {formatPrice(entry)}
                     </div>
                   </div>
                   <div style={{ background: 'rgba(255, 77, 77, 0.08)', padding: '8px', borderRadius: '6px' }}>
-                    <div style={{ fontSize: '9px', color: '#ff4d4d' }}>STOP LOSS</div>
+                    <div style={{ fontSize: '12px', color: '#ff4d4d' }}>STOP LOSS</div>
                     <div style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#ff4d4d' }}>
                       {formatPrice(sl)}
                     </div>
                   </div>
                   <div style={{ background: 'rgba(0, 208, 132, 0.08)', padding: '8px', borderRadius: '6px' }}>
-                    <div style={{ fontSize: '9px', color: '#00d084' }}>TAKE PROFIT 1</div>
+                    <div style={{ fontSize: '12px', color: '#00d084' }}>TAKE PROFIT 1</div>
                     <div style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#00d084' }}>
                       {formatPrice(tp1)}
                     </div>
                   </div>
                   <div style={{ background: 'rgba(0, 208, 132, 0.12)', padding: '8px', borderRadius: '6px' }}>
-                    <div style={{ fontSize: '9px', color: '#00d084' }}>TAKE PROFIT 2</div>
+                    <div style={{ fontSize: '12px', color: '#00d084' }}>TAKE PROFIT 2</div>
                     <div style={{ fontSize: '13px', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#00d084' }}>
                       {formatPrice(tp2)}
                     </div>
@@ -536,10 +536,10 @@ export default function SecurityHubDrawer({
                   marginTop: '10px',
                   paddingTop: '8px',
                   borderTop: '1px solid rgba(255, 255, 255, 0.06)',
-                  fontSize: '11px'
+                  fontSize: '12px'
                 }}>
                   <span style={{ color: 'var(--text-muted)' }}>Risk : Reward</span>
-                  <span style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent-gold, #fbbf24)' }}>
+                  <span style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent-gold, var(--accent-gold-bright))' }}>
                     1 : {Number(rr).toFixed(1)}
                   </span>
                 </div>
@@ -558,12 +558,12 @@ export default function SecurityHubDrawer({
                   display: 'flex', 
                   justifyContent: 'space-between', 
                   alignItems: 'center',
-                  fontSize: '10px', 
+                  fontSize: '12px', 
                   fontWeight: 700, 
                   color: 'var(--text-muted)' 
                 }}>
                   <span>MINI CANDLESTICK OVERVIEW</span>
-                  <span style={{ fontSize: '9px', color: 'var(--accent-sky-soft)', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--accent-sky-soft)', fontFamily: 'var(--font-mono)' }}>
                     TARGET TP1: {formatPrice(tp1)}
                   </span>
                 </div>
@@ -585,11 +585,11 @@ export default function SecurityHubDrawer({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {isIdx && (
                 <div style={{ background: 'var(--bg-panel-subtle, rgba(14, 18, 26, 0.85))', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))' }}>
-                  <div style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '8px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '8px' }}>
                     BROKER SUMMARY (BANDARMOLOGI BEI)
                   </div>
                   {brokerSummary ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '11px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <span style={{ color: 'var(--text-muted)' }}>Status Akumulasi:</span>
                         <span style={{ fontWeight: 800, color: brokerSummary.accumulation_score > 0 ? '#00d084' : '#ff4d4d' }}>
@@ -616,7 +616,7 @@ export default function SecurityHubDrawer({
                       </div>
                     </div>
                   ) : (
-                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                       Deteksi otomatis bandar: Saham terakumulasi oleh institusi asing dengan rasio pembeli terkonsentrasi.
                     </div>
                   )}
@@ -625,13 +625,13 @@ export default function SecurityHubDrawer({
 
               {isCrypto && (
                 <div style={{ background: 'var(--bg-panel-subtle, rgba(14, 18, 26, 0.85))', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))' }}>
-                  <div style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '8px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '8px' }}>
                     CRYPTO DERIVATIVES & WHALE RADAR
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '11px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span style={{ color: 'var(--text-muted)' }}>Funding Rate:</span>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color: (cryptoFutures?.funding?.funding_rate_pct || 0) < 0 ? '#00d084' : '#fbbf24' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color: (cryptoFutures?.funding?.funding_rate_pct || 0) < 0 ? '#00d084' : 'var(--accent-gold-bright)' }}>
                         {(cryptoFutures?.funding?.funding_rate_pct !== undefined ? `${cryptoFutures.funding.funding_rate_pct.toFixed(4)}%` : '+0.0100%')}
                       </span>
                     </div>
@@ -663,17 +663,17 @@ export default function SecurityHubDrawer({
                 padding: '12px'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                  <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                     KALKULATOR RISIKO & UKURAN POSISI
                   </span>
-                  <span className="badge badge-bull" style={{ fontSize: '8px' }}>
+                  <span className="badge badge-bull" style={{ fontSize: '12px' }}>
                     {resolvedMarket} COMPLIANT
                   </span>
                 </div>
 
                 {/* Capital Input */}
                 <div style={{ marginBottom: '12px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>
                     <span>Modal Portofolio</span>
                     <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--text-primary)' }}>
                       Rp {Number(calcCapital).toLocaleString('id-ID')}
@@ -705,7 +705,7 @@ export default function SecurityHubDrawer({
                         style={{
                           flex: 1,
                           padding: '3px 0',
-                          fontSize: '9px',
+                          fontSize: '12px',
                           fontFamily: 'var(--font-mono)',
                           fontWeight: calcCapital === val ? 800 : 500,
                           background: calcCapital === val ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.04)',
@@ -723,9 +723,9 @@ export default function SecurityHubDrawer({
 
                 {/* Risk % Chips */}
                 <div style={{ marginBottom: '12px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>
                     <span>Risiko Maksimal per Transaksi</span>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--accent-gold, #fbbf24)' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--accent-gold, var(--accent-gold-bright))' }}>
                       {calcRiskPct}% = Rp {Math.round((calcCapital * calcRiskPct) / 100).toLocaleString('id-ID')}
                     </span>
                   </div>
@@ -737,11 +737,11 @@ export default function SecurityHubDrawer({
                         style={{
                           flex: 1,
                           padding: '4px 0',
-                          fontSize: '10px',
+                          fontSize: '12px',
                           fontFamily: 'var(--font-mono)',
                           fontWeight: calcRiskPct === pct ? 800 : 600,
                           background: calcRiskPct === pct ? 'rgba(245, 158, 11, 0.2)' : 'rgba(255, 255, 255, 0.04)',
-                          color: calcRiskPct === pct ? 'var(--accent-gold, #fbbf24)' : 'var(--text-muted)',
+                          color: calcRiskPct === pct ? 'var(--accent-gold, var(--accent-gold-bright))' : 'var(--text-muted)',
                           border: `1px solid ${calcRiskPct === pct ? 'rgba(245, 158, 11, 0.5)' : 'transparent'}`,
                           borderRadius: '4px',
                           cursor: 'pointer'
@@ -777,7 +777,7 @@ export default function SecurityHubDrawer({
                         marginBottom: '10px',
                         textAlign: 'center'
                       }}>
-                        <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                           REKOMENDASI UKURAN POSISI
                         </div>
                         <div style={{
@@ -789,22 +789,22 @@ export default function SecurityHubDrawer({
                         }}>
                           {isIdx ? `${totalLots.toLocaleString('id-ID')} LOT` : `${actualShares.toLocaleString('en-US')} UNIT`}
                         </div>
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                           ({actualShares.toLocaleString('id-ID')} Lembar Saham · Alokasi {capitalAllocPct.toFixed(1)}% Portofolio)
                         </div>
                       </div>
 
                       {/* Detail Metrics */}
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '10.5px' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '12px' }}>
                         <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '8px', borderRadius: '4px' }}>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Modal Diperlukan:</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Modal Diperlukan:</div>
                           <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                             Rp {Math.round(requiredCapital).toLocaleString('id-ID')}
                           </div>
                         </div>
                         <div style={{ background: 'rgba(239, 68, 68, 0.08)', padding: '8px', borderRadius: '4px' }}>
-                          <div style={{ fontSize: '9px', color: '#ef4444' }}>Maks. Risiko jika Kena SL:</div>
-                          <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#ef4444' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--accent-red)' }}>Maks. Risiko jika Kena SL:</div>
+                          <div style={{ fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent-red)' }}>
                             -Rp {Math.round(actualShares * riskPerShare).toLocaleString('id-ID')} (-{slDistancePct.toFixed(1)}%)
                           </div>
                         </div>
@@ -830,7 +830,7 @@ export default function SecurityHubDrawer({
                             border: `1px solid ${calcCopied ? '#00d084' : 'rgba(255, 255, 255, 0.12)'}`,
                             borderRadius: '6px',
                             padding: '8px',
-                            fontSize: '10.5px',
+                            fontSize: '12px',
                             fontWeight: 700,
                             color: calcCopied ? '#00d084' : 'var(--text-primary)',
                             cursor: 'pointer'
@@ -847,7 +847,7 @@ export default function SecurityHubDrawer({
                             border: '1px solid rgba(59, 130, 246, 0.3)',
                             borderRadius: '6px',
                             padding: '8px 12px',
-                            fontSize: '10.5px',
+                            fontSize: '12px',
                             fontWeight: 700,
                             color: 'var(--accent-sky-soft)',
                             cursor: 'pointer'
@@ -875,11 +875,11 @@ export default function SecurityHubDrawer({
                       href={n.link || '#'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-primary)', textDecoration: 'none', lineHeight: 1.4 }}
+                      style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', textDecoration: 'none', lineHeight: 1.4 }}
                     >
                       {n.title}
                     </a>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '9px', color: 'var(--text-muted)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '12px', color: 'var(--text-muted)' }}>
                       <span>{n.source || 'Bloomberg News'}</span>
                       {(() => {
                         const dt = formatNewsDateTime(n);
@@ -893,7 +893,7 @@ export default function SecurityHubDrawer({
                   </div>
                 ))
               ) : (
-                <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '11px' }}>
+                <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>
                   Tidak ada berita spesifik langsung untuk {clean} saat ini.
                 </div>
               )}
@@ -923,7 +923,7 @@ export default function SecurityHubDrawer({
               borderRadius: '6px',
               color: 'var(--accent-sky-soft)',
               padding: '8px 10px',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: 800,
               cursor: 'pointer',
               display: 'flex',
@@ -955,7 +955,7 @@ export default function SecurityHubDrawer({
               borderRadius: '6px',
               color: 'var(--accent-blue)',
               padding: '8px 10px',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: 800,
               cursor: 'pointer',
               display: 'flex',
@@ -976,7 +976,7 @@ export default function SecurityHubDrawer({
               borderRadius: '6px',
               color: '#00d084',
               padding: '8px 10px',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: 800,
               cursor: 'pointer',
               display: 'flex',
@@ -996,7 +996,7 @@ export default function SecurityHubDrawer({
               borderRadius: '6px',
               color: copied ? '#00d084' : 'var(--text-primary)',
               padding: '8px 12px',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: 700,
               cursor: 'pointer'
             }}

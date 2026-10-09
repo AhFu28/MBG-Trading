@@ -42,14 +42,14 @@ export default function WhatsAppHandoff({ message, title = 'Untuk Mas Fuad', com
     }}>
       <div style={{
         display: 'flex', alignItems: 'center', gap: '7px',
-        fontSize: '11.5px', fontWeight: '800', color: '#25D366', marginBottom: '8px',
+        fontSize: '12px', fontWeight: '800', color: '#25D366', marginBottom: '8px',
       }}>
         <span>💬</span>
         <span>{title}</span>
       </div>
 
       <div style={{
-        fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.75,
+        fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.75,
         whiteSpace: 'pre-wrap', maxHeight: '190px', overflowY: 'auto',
         background: 'rgba(0,0,0,0.24)', borderRadius: '8px', padding: '11px 13px',
         marginBottom: '11px',
@@ -86,7 +86,7 @@ export default function WhatsAppHandoff({ message, title = 'Untuk Mas Fuad', com
         </button>
       </div>
 
-      <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '9px', lineHeight: 1.6 }}>
+      <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '9px', lineHeight: 1.6 }}>
         WhatsApp akan terbuka dengan pesan sudah terisi. Anda tinggal klik <strong>Kirim</strong> —
         WhatsApp tidak mengizinkan pengiriman otomatis.
       </div>

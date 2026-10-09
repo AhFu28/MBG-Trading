@@ -96,7 +96,7 @@ export default function MbgLogo({ size = 36, showText = false }) {
             MBG
           </div>
           <div style={{
-            fontSize: '9px',
+            fontSize: '12px',
             fontWeight: '700',
             letterSpacing: '0.06em',
             color: 'var(--accent-green)',

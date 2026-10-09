@@ -101,7 +101,7 @@ export default function PasswordGate({ children }) {
     }}>
       <div style={{
         width: '100%', maxWidth: '420px', padding: '40px 32px',
-        border: '2px solid #1c1d22', background: '#ffffff',
+        border: '2px solid #1c1d22', background: 'var(--text-inverse)',
         boxShadow: '6px 6px 0px rgba(0,0,0,0.25)'
       }}>
         {/* Header */}
@@ -113,7 +113,7 @@ export default function PasswordGate({ children }) {
           <h1 style={{ fontSize: '14px', fontWeight: '700', letterSpacing: '0.06em', margin: 0, color: '#1c1d22' }}>
             MARKET BRAIN GRID
           </h1>
-          <div style={{ fontSize: '10px', color: '#8a8a8a', marginTop: '4px', letterSpacing: '0.04em' }}>
+          <div style={{ fontSize: '12px', color: '#8a8a8a', marginTop: '4px', letterSpacing: '0.04em' }}>
             TRADING INTELLIGENCE COCKPIT // RESTRICTED ACCESS
           </div>
         </div>
@@ -121,7 +121,7 @@ export default function PasswordGate({ children }) {
         {/* Warning box */}
         <div style={{
           background: '#f5f0e8', border: '1px solid #d4c5a9', padding: '10px 14px',
-          marginBottom: '20px', fontSize: '10px', color: '#6b5e3f', letterSpacing: '0.02em'
+          marginBottom: '20px', fontSize: '12px', color: '#6b5e3f', letterSpacing: '0.02em'
         }}>
           ⚠ AUTHORIZED PERSONNEL ONLY. All access attempts are logged.
           Unauthorized access is prohibited.
@@ -130,7 +130,7 @@ export default function PasswordGate({ children }) {
         {/* Form */}
         <form onSubmit={handleSubmit}>
           <label style={{
-            display: 'block', fontSize: '10px', fontWeight: '700',
+            display: 'block', fontSize: '12px', fontWeight: '700',
             letterSpacing: '0.06em', color: '#1c1d22', marginBottom: '6px'
           }}>
             ACCESS CREDENTIAL:
@@ -152,7 +152,7 @@ export default function PasswordGate({ children }) {
 
           {error && (
             <div style={{
-              marginTop: '8px', padding: '8px 12px', fontSize: '10px',
+              marginTop: '8px', padding: '8px 12px', fontSize: '12px',
               background: '#fef2f2', border: '1px solid #c44b2b', color: '#c44b2b',
               fontWeight: '700', letterSpacing: '0.03em'
             }}>

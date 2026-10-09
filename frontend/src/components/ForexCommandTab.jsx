@@ -86,7 +86,7 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
             <h2 style={{ fontSize: '18px', margin: 0, fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
               FOREX COMMAND CENTER
             </h2>
-            <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '12px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
               28 MAJOR & MINOR PAIRS
             </span>
           </div>
@@ -95,7 +95,7 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
           </p>
         </div>
 
-        <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', padding: '6px 12px', borderRadius: '6px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', color: 'var(--text-secondary)' }}>
+        <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', padding: '6px 12px', borderRadius: '6px', background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', color: 'var(--text-secondary)' }}>
           WAKTU SISTEM: <strong style={{ color: 'var(--text-primary)' }}>{currentTime.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB</strong>
         </div>
       </div>
@@ -108,7 +108,7 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
               <span style={{ fontSize: '13px', fontWeight: '700' }}>{c.flag} {c.name}</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <span className={c.open ? 'pulse-dot-green' : ''} style={!c.open ? { width: '6px', height: '6px', borderRadius: '50%', background: 'var(--text-muted)' } : {}} />
-                <span style={{ fontSize: '10px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: c.open ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+                <span style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: c.open ? 'var(--accent-green)' : 'var(--text-muted)' }}>
                   {c.open ? 'SESSION OPEN' : 'CLOSED'}
                 </span>
               </div>
@@ -116,7 +116,7 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
             <div style={{ fontSize: '22px', fontFamily: 'var(--font-mono)', fontWeight: '800', margin: '8px 0 2px', letterSpacing: '0.02em', color: c.open ? 'var(--text-primary)' : 'var(--text-muted)' }}>
               {c.time}
             </div>
-            <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
               {c.open ? 'Volatilitas & Likuiditas Aktif' : 'Pasar Sesi Tutup'}
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
           <div style={{ padding: '16px' }}>
             <div style={{ marginBottom: '14px' }}>
               <strong style={{ fontSize: '14px' }}>🥇 EMAS, PERAK, MINYAK &amp; INDEKS DOLAR</strong>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '3px', lineHeight: 1.6 }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '3px', lineHeight: 1.6 }}>
                 Instrumen ini sebelumnya tidak diambil sama sekali, sehingga desker ini tidak
                 punya baris logam. Sekarang diambil langsung dari bursa.
               </div>
@@ -173,7 +173,7 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
             {metals.length === 0 ? (
               <div style={{ padding: '24px', background: 'var(--bg-panel-subtle)', borderRadius: 'var(--radius-sm)', textAlign: 'center', color: 'var(--text-muted)' }}>
                 <div style={{ fontSize: '20px', marginBottom: '8px' }}>🥇 Belum ada data logam</div>
-                <div style={{ fontSize: '11px' }}>Jalankan pipeline forex untuk mengisi baris ini.</div>
+                <div style={{ fontSize: '12px' }}>Jalankan pipeline forex untuk mengisi baris ini.</div>
               </div>
             ) : (
               <div style={{ overflowX: 'auto' }}>
@@ -205,7 +205,7 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
                               {m.symbol} ↗
                             </button>
                           </td>
-                          <td style={{ textAlign: 'center', fontSize: '11px', color: 'var(--text-secondary)' }}>{kelas}</td>
+                          <td style={{ textAlign: 'center', fontSize: '12px', color: 'var(--text-secondary)' }}>{kelas}</td>
                           <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
                             {/* 2 desimal — persis kaya dealing desk nyebut */}
                             {price.toFixed(2)}
@@ -308,12 +308,12 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
           <div style={{ padding: '24px 28px', maxWidth: '560px', margin: '0 auto' }}>
             <div style={{ marginBottom: '18px', textAlign: 'center' }}>
               <h3 style={{ fontSize: '16px', fontWeight: '800', margin: 0 }}>🧮 KALKULATOR RISIKO POSISI & PIP</h3>
-              <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px' }}>Hitung modal toleransi risiko sebelum open order</p>
+              <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>Hitung modal toleransi risiko sebelum open order</p>
             </div>
 
             <div style={{ display: 'grid', gap: '14px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px' }}>Pair Mata Uang</label>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px' }}>Pair Mata Uang</label>
                 <select value={calcPair} onChange={e => setCalcPair(e.target.value)} className="quant-input" style={{ width: '100%' }}>
                   {pairs.map(p => <option key={p.pair} value={p.pair}>{p.pair}</option>)}
                 </select>
@@ -321,11 +321,11 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px' }}>Ukuran Lot</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px' }}>Ukuran Lot</label>
                   <input type="number" step="0.01" value={calcLot} onChange={e => setCalcLot(Number(e.target.value))} className="quant-input" style={{ width: '100%' }} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px' }}>Pip Distance</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px' }}>Pip Distance</label>
                   <div style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
                     {calcPipDistance.toFixed(1)} Pips
                   </div>
@@ -334,11 +334,11 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px' }}>Harga Entry</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px' }}>Harga Entry</label>
                   <input type="number" step="0.0001" value={calcEntry} onChange={e => setCalcEntry(Number(e.target.value))} className="quant-input" style={{ width: '100%' }} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px' }}>Stop Loss</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px' }}>Stop Loss</label>
                   <input type="number" step="0.0001" value={calcSL} onChange={e => setCalcSL(Number(e.target.value))} className="quant-input" style={{ width: '100%' }} />
                 </div>
               </div>
@@ -408,7 +408,7 @@ export default function ForexCommandTab({ data, onOpenChart, livePrices = {}, fl
                             {isPos && <div style={{ height: '6px', borderRadius: '3px', background: 'var(--accent-green)', width: `${Math.min(100, c.net_speculative/1000)}%` }} />}
                           </div>
                         </div>
-                        <div style={{ textAlign: 'center', fontSize: '10px', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                        <div style={{ textAlign: 'center', fontSize: '12px', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
                           {c.net_speculative.toLocaleString()}
                         </div>
                       </td>

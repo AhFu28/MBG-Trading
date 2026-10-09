@@ -50,7 +50,7 @@ export default function ChangelogTab() {
             borderLeft: '4px solid var(--accent-cyan)',
             padding: '8px 12px',
             borderRadius: '0 6px 6px 0',
-            fontSize: '11px',
+            fontSize: '12px',
             color: 'var(--text-secondary)',
             margin: '8px 0',
             fontFamily: 'var(--font-mono)'
@@ -65,7 +65,7 @@ export default function ChangelogTab() {
             background: 'rgba(255, 255, 255, 0.02)',
             borderLeft: '3px solid var(--border-color)',
             padding: '6px 12px',
-            fontSize: '11.5px',
+            fontSize: '12px',
             color: 'var(--text-secondary)',
             fontStyle: 'italic',
             margin: '4px 0 8px 0'
@@ -151,7 +151,7 @@ export default function ChangelogTab() {
                     border: 'var(--border-muted)',
                     padding: '2px 5px',
                     borderRadius: '4px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     color: 'var(--accent-sky)'
                   }}>
                     {part.slice(1, -1)}
@@ -192,7 +192,7 @@ export default function ChangelogTab() {
       }}>
         <div>
           <div style={{
-            fontSize: '10px',
+            fontSize: '12px',
             fontFamily: 'var(--font-mono)',
             color: 'var(--text-muted)',
             marginBottom: '3px',
@@ -215,7 +215,7 @@ export default function ChangelogTab() {
           }}>
             <span>📜 Histori Update Harian (1 Paket Besar Per Tanggal)</span>
             <span style={{
-              fontSize: '10px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               background: 'rgba(0, 208, 132, 0.15)',
               color: 'var(--accent-green)',
@@ -237,7 +237,7 @@ export default function ChangelogTab() {
             borderRadius: '6px',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>TOTAL REKAP HARIAN</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>TOTAL REKAP HARIAN</div>
             <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>{CHANGELOG_DATA.length} Tanggal</div>
           </div>
           <div style={{
@@ -247,7 +247,7 @@ export default function ChangelogTab() {
             borderRadius: '6px',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>MODEL ARSITEKTUR</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>MODEL ARSITEKTUR</div>
             <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-green)' }}>1 Paket Per Tanggal</div>
           </div>
           <div style={{
@@ -257,7 +257,7 @@ export default function ChangelogTab() {
             borderRadius: '6px',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>FORMAT BACA</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>FORMAT BACA</div>
             <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-sky)' }}>Runtut & Terpadu</div>
           </div>
         </div>
@@ -283,7 +283,7 @@ export default function ChangelogTab() {
           overflowY: 'auto'
         }}>
           <div style={{
-            fontSize: '10px',
+            fontSize: '12px',
             fontFamily: 'var(--font-mono)',
             fontWeight: '800',
             color: 'var(--text-muted)',
@@ -310,7 +310,7 @@ export default function ChangelogTab() {
               color: 'var(--text-primary)',
               padding: '6px 10px',
               borderRadius: '6px',
-              fontSize: '11px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               outline: 'none',
               boxSizing: 'border-box'
@@ -348,7 +348,7 @@ export default function ChangelogTab() {
                       📅 {pkg.date}
                     </span>
                     <span style={{
-                      fontSize: '9px',
+                      fontSize: '12px',
                       fontFamily: 'var(--font-mono)',
                       fontWeight: '800',
                       padding: '1px 6px',
@@ -360,7 +360,7 @@ export default function ChangelogTab() {
                     </span>
                   </div>
 
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {pkg.version.replace('Package ', 'Paket ')}
                   </div>
                 </button>
@@ -372,7 +372,7 @@ export default function ChangelogTab() {
             marginTop: '8px',
             paddingTop: '10px',
             borderTop: 'var(--border-muted)',
-            fontSize: '10px',
+            fontSize: '12px',
             color: 'var(--text-muted)',
             lineHeight: '1.5'
           }}>
@@ -411,7 +411,7 @@ export default function ChangelogTab() {
               }}>
                 <span># {activePackage.version}</span>
                 <span style={{
-                  fontSize: '11px',
+                  fontSize: '12px',
                   background: activePackage.status === 'LATEST' ? 'rgba(0, 208, 132, 0.2)' : 'rgba(255,255,255,0.08)',
                   color: activePackage.status === 'LATEST' ? 'var(--accent-green)' : 'var(--text-muted)',
                   border: `1px solid ${activePackage.status === 'LATEST' ? 'var(--accent-green)' : 'var(--border-color)'}`,
@@ -445,7 +445,7 @@ export default function ChangelogTab() {
               padding: '12px 16px'
             }}>
               <div style={{
-                fontSize: '10px',
+                fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: '800',
                 color: 'var(--text-muted)',
@@ -470,13 +470,13 @@ export default function ChangelogTab() {
                       fontFamily: 'var(--font-mono)'
                     }}>
                       <div style={{
-                        fontSize: '11px',
+                        fontSize: '12px',
                         fontWeight: '800',
                         color: sIdx === activePackage.processFlow.length - 1 ? 'var(--accent-green)' : 'var(--text-primary)'
                       }}>
                         {step.step}
                       </div>
-                      <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                         {step.label}
                       </div>
                     </div>
@@ -514,7 +514,7 @@ export default function ChangelogTab() {
                 <table style={{
                   width: '100%',
                   borderCollapse: 'collapse',
-                  fontSize: '11px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   border: 'var(--border-muted)'
                 }}>
@@ -539,7 +539,7 @@ export default function ChangelogTab() {
                           <span style={{
                             padding: '1px 6px',
                             borderRadius: '3px',
-                            fontSize: '9px',
+                            fontSize: '12px',
                             fontWeight: '800',
                             background: row.status === 'PROD' ? 'rgba(0, 208, 132, 0.15)' : 'rgba(56, 189, 248, 0.15)',
                             color: row.status === 'PROD' ? 'var(--accent-green)' : 'var(--accent-sky)',

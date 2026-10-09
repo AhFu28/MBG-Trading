@@ -216,12 +216,12 @@ export default function NewsDetailModal({
           {/* Left info tag */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '14px' }}>📰</span>
-            <span style={{ fontSize: '11px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
+            <span style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
               INSTITUTIONAL RESEARCH DESK
             </span>
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>//</span>
+            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>//</span>
             <span style={{
-              fontSize: '9px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               fontWeight: '800',
               padding: '2px 6px',
@@ -232,11 +232,11 @@ export default function NewsDetailModal({
             }}>
               {source}
             </span>
-            <span className={`badge ${sentimentBadgeClass}`} style={{ fontSize: '8px', padding: '2px 6px' }}>
+            <span className={`badge ${sentimentBadgeClass}`} style={{ fontSize: '12px', padding: '2px 6px' }}>
               {sentiment}
             </span>
             <span style={{
-              fontSize: '8px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               color: 'var(--text-muted)',
               background: 'var(--bg-panel-subtle)',
@@ -248,7 +248,7 @@ export default function NewsDetailModal({
 
             {/* SNR Gauge */}
             <span style={{
-              fontSize: '8.5px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               fontWeight: '800',
               padding: '2px 6px',
@@ -273,7 +273,7 @@ export default function NewsDetailModal({
               title={isTtsPlaying ? 'Hentikan Audio' : 'Dengarkan Ringkasan Riset'}
               style={{
                 padding: '3px 8px',
-                fontSize: '10px',
+                fontSize: '12px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -292,7 +292,7 @@ export default function NewsDetailModal({
               title="Salin ringkasan riset ke clipboard"
               style={{
                 padding: '3px 8px',
-                fontSize: '10px',
+                fontSize: '12px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -358,7 +358,7 @@ export default function NewsDetailModal({
               title="Tutup Modal (Esc)"
               style={{
                 padding: '3px 9px',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: '800',
                 color: 'var(--text-muted)'
               }}
@@ -383,7 +383,7 @@ export default function NewsDetailModal({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            fontSize: '10px',
+            fontSize: '12px',
             color: 'var(--text-muted)',
             fontFamily: 'var(--font-mono)',
             flexWrap: 'wrap',
@@ -399,7 +399,7 @@ export default function NewsDetailModal({
                 ⏰ {dtInfo.timeStr}
               </span>
               {originalSourceTime && (
-                <span style={{ color: 'var(--text-muted)', fontSize: '10px' }} title={`Waktu asli rilis dari sumber: ${originalSourceTime}`}>
+                <span style={{ color: 'var(--text-muted)', fontSize: '12px' }} title={`Waktu asli rilis dari sumber: ${originalSourceTime}`}>
                   (Sumber: {originalSourceTime})
                 </span>
               )}
@@ -446,7 +446,7 @@ export default function NewsDetailModal({
             <span style={{ fontSize: '16px', flexShrink: 0, marginTop: '2px' }}>🏛️</span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
               <div style={{
-                fontSize: '9.5px',
+                fontSize: '12px',
                 fontWeight: '800',
                 fontFamily: 'var(--font-mono)',
                 color: 'var(--accent-blue)',
@@ -477,20 +477,20 @@ export default function NewsDetailModal({
             border: '1px solid rgba(255, 255, 255, 0.08)'
           }}>
             <div style={{ padding: '6px 8px', background: 'rgba(59, 130, 246, 0.04)', borderRadius: '4px', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
-              <div style={{ fontSize: '8.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>[1] WHAT CHANGED</div>
-              <div style={{ fontSize: '10.5px', color: 'var(--text-primary)', marginTop: '2px', lineHeight: 1.35 }}>{intel.what_changed?.summary}</div>
+              <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>[1] WHAT CHANGED</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-primary)', marginTop: '2px', lineHeight: 1.35 }}>{intel.what_changed?.summary}</div>
             </div>
             <div style={{ padding: '6px 8px', background: 'rgba(245, 158, 11, 0.04)', borderRadius: '4px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
-              <div style={{ fontSize: '8.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)' }}>[2] WHY IT CHANGED</div>
-              <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35 }}>{intel.why_it_changed?.primary_driver}</div>
+              <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)' }}>[2] WHY IT CHANGED</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35 }}>{intel.why_it_changed?.primary_driver}</div>
             </div>
             <div style={{ padding: '6px 8px', background: 'rgba(168, 85, 247, 0.04)', borderRadius: '4px', border: '1px solid rgba(168, 85, 247, 0.2)' }}>
-              <div style={{ fontSize: '8.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#c084fc' }}>[3] WHAT MATTERS</div>
-              <div style={{ fontSize: '10.5px', color: 'var(--text-primary)', marginTop: '2px', lineHeight: 1.35 }}>{intel.what_matters?.signal_vs_noise}</div>
+              <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-purple-light)' }}>[3] WHAT MATTERS</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-primary)', marginTop: '2px', lineHeight: 1.35 }}>{intel.what_matters?.signal_vs_noise}</div>
             </div>
             <div style={{ padding: '6px 8px', background: 'rgba(16, 185, 129, 0.04)', borderRadius: '4px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-              <div style={{ fontSize: '8.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>[4] WHAT'S NEXT ({intel.whats_next?.urgency})</div>
-              <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35 }}>{intel.whats_next?.action}: {intel.whats_next?.guidance}</div>
+              <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>[4] WHAT'S NEXT ({intel.whats_next?.urgency})</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.35 }}>{intel.whats_next?.action}: {intel.whats_next?.guidance}</div>
             </div>
           </div>
 
@@ -509,7 +509,7 @@ export default function NewsDetailModal({
               }}
             >
               <span style={{
-                fontSize: '10px',
+                fontSize: '12px',
                 fontWeight: '700',
                 fontFamily: 'var(--font-mono)',
                 color: 'var(--text-muted)',
@@ -529,7 +529,7 @@ export default function NewsDetailModal({
                       title={`Tampilkan chart ${ticker} di bawah`}
                       style={{
                         padding: '2px 8px',
-                        fontSize: '10px',
+                        fontSize: '12px',
                         fontFamily: 'var(--font-mono)',
                         fontWeight: '800',
                         color: isActive ? '#fff' : 'var(--accent-blue)',
@@ -547,7 +547,7 @@ export default function NewsDetailModal({
                   );
                 })}
               </div>
-              <span style={{ fontSize: '9px', color: 'var(--text-muted)', marginLeft: 'auto' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginLeft: 'auto' }}>
                 (Pilih ticker untuk berganti cuplikan grafik)
               </span>
             </div>
@@ -576,7 +576,7 @@ export default function NewsDetailModal({
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span style={{ fontSize: '13px' }}>📐</span>
                   <span style={{
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: '800',
                     fontFamily: 'var(--font-mono)',
                     color: 'var(--accent-blue)',
@@ -585,7 +585,7 @@ export default function NewsDetailModal({
                     SUPPORT & RESISTANCE TECHNICAL MATRIX ({techLevels.unit || 'IDR'})
                   </span>
                 </div>
-                <span style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                   CLASSIC PIVOT FORMULA
                 </span>
               </div>
@@ -603,13 +603,13 @@ export default function NewsDetailModal({
                   padding: '8px 10px',
                   borderRadius: '4px'
                 }}>
-                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', fontWeight: '700' }}>
+                  <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', fontWeight: '700' }}>
                     ⚖️ PIVOT (POROS)
                   </div>
                   <div style={{ fontSize: '14px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--text-primary)', marginTop: '2px' }}>
                     {typeof techLevels.pivot === 'number' ? techLevels.pivot.toLocaleString() : techLevels.pivot}
                   </div>
-                  <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                     Equilibrium harian
                   </div>
                 </div>
@@ -621,13 +621,13 @@ export default function NewsDetailModal({
                   padding: '8px 10px',
                   borderRadius: '4px'
                 }}>
-                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)', fontWeight: '700' }}>
+                  <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)', fontWeight: '700' }}>
                     🛡️ SUPPORT (S1 / S2)
                   </div>
                   <div style={{ fontSize: '14px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--accent-green)', marginTop: '2px' }}>
                     {techLevels.s1?.toLocaleString()} / {techLevels.s2?.toLocaleString()}
                   </div>
-                  <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                     Zona toleransi koreksi
                   </div>
                 </div>
@@ -639,13 +639,13 @@ export default function NewsDetailModal({
                   padding: '8px 10px',
                   borderRadius: '4px'
                 }}>
-                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--accent-red)', fontWeight: '700' }}>
+                  <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--accent-red)', fontWeight: '700' }}>
                     🎯 RESISTANCE (R1 / R2)
                   </div>
                   <div style={{ fontSize: '14px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--accent-red)', marginTop: '2px' }}>
                     {techLevels.r1?.toLocaleString()} / {techLevels.r2?.toLocaleString()}
                   </div>
-                  <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                     Target take profit / rawan retest
                   </div>
                 </div>
@@ -657,13 +657,13 @@ export default function NewsDetailModal({
                   padding: '8px 10px',
                   borderRadius: '4px'
                 }}>
-                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', fontWeight: '700' }}>
+                  <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', fontWeight: '700' }}>
                     ⚠️ INVALIDATION (CUT LOSS)
                   </div>
                   <div style={{ fontSize: '14px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--accent-gold)', marginTop: '2px' }}>
                     {techLevels.invalidation?.toLocaleString()}
                   </div>
-                  <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                     Batas risiko mutlak
                   </div>
                 </div>
@@ -671,7 +671,7 @@ export default function NewsDetailModal({
 
               {techLevels.invalidation_thesis && (
                 <div style={{
-                  fontSize: '10px',
+                  fontSize: '12px',
                   color: 'var(--text-muted)',
                   fontStyle: 'italic',
                   background: 'rgba(0,0,0,0.2)',
@@ -705,7 +705,7 @@ export default function NewsDetailModal({
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span style={{ fontSize: '12px' }}>📈</span>
-                <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--text-primary)' }}>
+                <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: 'var(--text-primary)' }}>
                   TRADINGVIEW LIVE SNIPPET // {resolvedChartSymbol}
                 </span>
               </div>
@@ -716,7 +716,7 @@ export default function NewsDetailModal({
                 }}
                 className="telemetry-btn"
                 style={{
-                  fontSize: '9px',
+                  fontSize: '12px',
                   padding: '2px 8px',
                   color: 'var(--accent-blue)',
                   borderColor: 'rgba(59, 130, 246, 0.4)'
@@ -749,7 +749,7 @@ export default function NewsDetailModal({
               }}
             >
               <div style={{
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: '800',
                 fontFamily: 'var(--font-mono)',
                 color: 'var(--accent-green)',
@@ -757,7 +757,7 @@ export default function NewsDetailModal({
               }}>
                 🛡️ ACTIONABLE TACTICAL PLAYBOOK
               </div>
-              <div style={{ fontSize: '11px', lineHeight: 1.5, color: 'var(--text-primary)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ fontSize: '12px', lineHeight: 1.5, color: 'var(--text-primary)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div>
                   <strong style={{ color: 'var(--accent-green)' }}>[🟢 Skenario Bullish]:</strong> {playbook.bull_scenario}
                 </div>
@@ -796,7 +796,7 @@ export default function NewsDetailModal({
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span style={{ fontSize: '14px' }}>🌊</span>
                 <span style={{
-                  fontSize: '11px',
+                  fontSize: '12px',
                   fontWeight: '800',
                   fontFamily: 'var(--font-mono)',
                   color: 'var(--accent-blue)',
@@ -807,7 +807,7 @@ export default function NewsDetailModal({
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{
-                  fontSize: '9px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   color: snrScore >= 85 ? 'var(--accent-green)' : 'var(--accent-gold)',
                   fontWeight: '800',
@@ -818,7 +818,7 @@ export default function NewsDetailModal({
                   ⚡ SNR: {snrScore}% (SIGNAL VERIFIED)
                 </span>
                 <span style={{
-                  fontSize: '9px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   color: sentimentColor,
                   fontWeight: '800'
@@ -840,17 +840,17 @@ export default function NewsDetailModal({
                 gap: '8px'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '9.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)' }}>
+                  <span style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)' }}>
                     📊 DEKOMPOSISI FAKTOR PENYEBAB (KENAPA BERGERAK?):
                   </span>
-                  <span style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                     Total Kontribusi: 100%
                   </span>
                 </div>
 
                 {intel.why_it_changed.drivers.map((d, dIdx) => (
                   <div key={dIdx} style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                       <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>
                         {dIdx === 0 ? '①' : dIdx === 1 ? '②' : '③'} {d.factor}
                       </span>
@@ -867,37 +867,37 @@ export default function NewsDetailModal({
             {/* 4-Pillar Detailed Insights */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px' }}>
               <div style={{ background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.25)', borderRadius: '5px', padding: '10px' }}>
-                <div style={{ fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <span>📊</span> [1] WHAT CHANGED (FAKTA PASAR)
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--text-primary)', marginTop: '4px', lineHeight: 1.45 }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-primary)', marginTop: '4px', lineHeight: 1.45 }}>
                   {intel.what_changed?.summary}
                 </div>
               </div>
 
               <div style={{ background: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: '5px', padding: '10px' }}>
-                <div style={{ fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <span>🔍</span> [2] WHY IT CHANGED (TRANSMISI UTAMA)
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.45 }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.45 }}>
                   {intel.why_it_changed?.primary_driver}
                 </div>
               </div>
 
               <div style={{ background: 'rgba(168, 85, 247, 0.05)', border: '1px solid rgba(168, 85, 247, 0.25)', borderRadius: '5px', padding: '10px' }}>
-                <div style={{ fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#c084fc', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-purple-light)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <span>🎯</span> [3] WHAT MATTERS (SIGNAL VS NOISE)
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--text-primary)', marginTop: '4px', lineHeight: 1.45 }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-primary)', marginTop: '4px', lineHeight: 1.45 }}>
                   {intel.what_matters?.signal_vs_noise}
                 </div>
               </div>
 
               <div style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '5px', padding: '10px' }}>
-                <div style={{ fontSize: '9px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <span>⚡</span> [4] WHAT'S NEXT ({intel.whats_next?.urgency} IMPACT)
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--text-primary)', marginTop: '4px', lineHeight: 1.45 }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-primary)', marginTop: '4px', lineHeight: 1.45 }}>
                   <strong style={{ color: 'var(--accent-green)' }}>{intel.whats_next?.action}:</strong> {intel.whats_next?.guidance}
                 </div>
               </div>
@@ -907,7 +907,7 @@ export default function NewsDetailModal({
           {/* 7. Full Layman Context & Narrative */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <div style={{
-              fontSize: '10px',
+              fontSize: '12px',
               fontWeight: '800',
               fontFamily: 'var(--font-mono)',
               color: 'var(--text-muted)',
@@ -951,7 +951,7 @@ export default function NewsDetailModal({
             className="telemetry-btn"
             style={{
               padding: '6px 12px',
-              fontSize: '10px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               display: 'inline-flex',
               alignItems: 'center',
@@ -972,7 +972,7 @@ export default function NewsDetailModal({
                 className="telemetry-btn"
                 style={{
                   padding: '6px 12px',
-                  fontSize: '10px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   background: 'rgba(59, 130, 246, 0.15)',
                   color: 'var(--accent-blue)',
@@ -995,7 +995,7 @@ export default function NewsDetailModal({
                 className="telemetry-btn"
                 style={{
                   padding: '6px 12px',
-                  fontSize: '10px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   color: 'var(--text-primary)',
                   display: 'inline-flex',
@@ -1017,7 +1017,7 @@ export default function NewsDetailModal({
             className="telemetry-btn"
             style={{
               padding: '6px 12px',
-              fontSize: '10px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               display: 'inline-flex',
               alignItems: 'center',

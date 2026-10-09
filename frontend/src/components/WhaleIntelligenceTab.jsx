@@ -871,12 +871,12 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
             <h2 style={{ fontSize: '18px', margin: 0, fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
               WHALE INTELLIGENCE HUB & RUNNING DESK
             </h2>
-            <span style={{ fontSize: '9px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-sky-soft)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-sky-soft)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
               INSTITUTIONAL RADAR
             </span>
           </div>
           <p style={{ margin: '5px 0 0 0', color: 'var(--text-secondary)', fontSize: '12px' }}>
-            <strong style={{ color: '#fbbf24' }}>⚠ Feed paus kripto = SIMULASI (demo mikrostruktur, bukan transaksi blockchain nyata)</strong> &bull; Broker Summary & Rekap Saham BEI (EOD) &bull; Running Trade Live &bull; Portofolio 13F Wall Street
+            <strong style={{ color: 'var(--accent-gold-bright)' }}>⚠ Feed paus kripto = SIMULASI (demo mikrostruktur, bukan transaksi blockchain nyata)</strong> &bull; Broker Summary & Rekap Saham BEI (EOD) &bull; Running Trade Live &bull; Portofolio 13F Wall Street
           </p>
         </div>
 
@@ -884,7 +884,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           {newTxNotice && (
             <span style={{
-              fontSize: '10px',
+              fontSize: '12px',
               padding: '5px 10px',
               borderRadius: '6px',
               background: 'rgba(56, 189, 248, 0.18)',
@@ -903,7 +903,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
 
           {lastBlockHeight && (
             <div style={{
-              fontSize: '11px',
+              fontSize: '12px',
               padding: '5px 10px',
               borderRadius: '6px',
               background: 'rgba(255, 255, 255, 0.04)',
@@ -920,7 +920,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
           )}
 
           <div style={{
-            fontSize: '11px',
+            fontSize: '12px',
             padding: '5px 12px',
             borderRadius: '6px',
             background: wsStatus === 'LIVE' ? 'rgba(0, 208, 132, 0.12)' : 'rgba(234, 179, 8, 0.12)',
@@ -944,7 +944,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
         {/* Crypto Whale Bias */}
         <div className="quant-card quant-card-interactive" style={{ padding: '16px 18px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
+            <span style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
               Crypto Whale Bias
             </span>
             <span style={{ fontSize: '18px' }}>🔗</span>
@@ -952,7 +952,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
           <div style={{ fontSize: '24px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '8px 0', color: cryptoNetSentiment === 'BULLISH' ? 'var(--accent-green)' : cryptoNetSentiment === 'BEARISH' ? 'var(--accent-rust)' : 'var(--text-primary)' }}>
             {cryptoNetSentiment}
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ color: 'var(--accent-green)', fontWeight: '700' }}>▲ {cryptoBullish} Outflow</span>
             <span style={{ color: 'var(--text-muted)' }}>&bull;</span>
             <span style={{ color: 'var(--accent-rust)', fontWeight: '700' }}>▼ {cryptoBearish} Inflow</span>
@@ -965,10 +965,10 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
         <div className="quant-card quant-card-interactive" style={{ padding: '16px 18px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
                 IDX Foreign Flow
               </span>
-              <div style={{ fontSize: '10px', color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)', fontWeight: '700', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)', fontWeight: '700', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <span>📅 {sessionInfo.idShortDate}</span>
                 <span>&bull;</span>
                 <span style={{ background: 'rgba(56, 189, 248, 0.15)', padding: '1px 5px', borderRadius: '3px' }}>{sessionInfo.sessionPill}</span>
@@ -979,7 +979,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
           <div style={{ fontSize: '24px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '8px 0', color: idxNetFlow >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
             {formatIdr(idxNetFlow)}
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
             Top Accumulating Broker: <strong style={{ color: 'var(--accent-gold)' }}>{idxTopBroker?.broker_code}</strong> ({idxTopBroker?.broker_name})
           </div>
         </div>
@@ -987,7 +987,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
         {/* Wall Street 13F */}
         <div className="quant-card quant-card-interactive" style={{ padding: '16px 18px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
+            <span style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
               Wall Street Smart Money (13F)
             </span>
             <span style={{ fontSize: '18px' }}>🇺🇸</span>
@@ -995,7 +995,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
           <div style={{ fontSize: '24px', fontWeight: '800', fontFamily: 'var(--font-mono)', margin: '8px 0', color: 'var(--text-primary)' }}>
             {usIncreased} <span style={{ fontSize: '13px', color: 'var(--accent-green)', fontWeight: '700' }}>Inflow</span> / {usDecreased} <span style={{ fontSize: '13px', color: 'var(--accent-rust)', fontWeight: '700' }}>Trim</span>
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
             Berkshire Hathaway &bull; Citadel &bull; Bridgewater &bull; Renaissance
           </div>
         </div>
@@ -1022,7 +1022,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                 style={{
                   background: 'var(--accent-rust)',
                   color: '#fff',
-                  fontSize: '9px',
+                  fontSize: '12px',
                   fontWeight: '800',
                   padding: '1px 6px',
                   borderRadius: '10px',
@@ -1086,7 +1086,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                 <span
                   style={{
-                    fontSize: '10px',
+                    fontSize: '12px',
                     fontWeight: '800',
                     padding: '2px 8px',
                     borderRadius: '4px',
@@ -1100,12 +1100,12 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                 <span style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                   {latestMegaWhaleAlert.amount?.toLocaleString()} {latestMegaWhaleAlert.symbol} (~${((latestMegaWhaleAlert.amount_usd || 0) / 1e6).toFixed(2)}M)
                 </span>
-                <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
                   {latestMegaWhaleAlert.from_name} ➔ {latestMegaWhaleAlert.to_name}
                 </span>
                 <span
                   style={{
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: '700',
                     color: latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'var(--accent-rust)' : 'var(--accent-green)'
                   }}
@@ -1124,7 +1124,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                   background: 'rgba(56, 189, 248, 0.18)',
                   border: '1px solid rgba(56, 189, 248, 0.4)',
                   color: 'var(--accent-sky)',
-                  fontSize: '11px',
+                  fontSize: '12px',
                   fontWeight: '800',
                   cursor: 'pointer',
                   display: 'inline-flex',
@@ -1141,7 +1141,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
           {/* Filter Bar */}
           <div style={{ padding: '12px 18px', borderBottom: 'var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', background: 'var(--bg-panel-subtle)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)' }}>FILTER SINYAL:</span>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)' }}>FILTER SINYAL:</span>
               <div className="quant-pill-nav" style={{ margin: 0 }}>
                 {[
                   { id: 'ALL', label: 'SEMUA ALIRAN' },
@@ -1152,7 +1152,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                     key={f.id}
                     onClick={() => setCryptoFilterSentiment(f.id)}
                     className={`quant-pill-btn ${cryptoFilterSentiment === f.id ? 'active' : ''}`}
-                    style={{ fontSize: '10px', padding: '3px 8px' }}
+                    style={{ fontSize: '12px', padding: '3px 8px' }}
                   >
                     {f.label}
                   </button>
@@ -1165,7 +1165,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                 style={{
                   padding: '3px 10px',
                   borderRadius: '4px',
-                  fontSize: '10px',
+                  fontSize: '12px',
                   fontWeight: '800',
                   cursor: 'pointer',
                   border: isStreamPaused ? '1px solid var(--accent-gold)' : 'var(--border-hairline)',
@@ -1182,7 +1182,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               </button>
             </div>
 
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span className={isStreamPaused ? 'pulse-dot-amber' : 'pulse-dot-green'} />
               <span>
                 {isStreamPaused ? 'Stream Dijeda' : 'Stream On-Chain Aktif'}:{' '}
@@ -1228,11 +1228,11 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                       >
                         {/* Waktu */}
                         <td style={{ padding: '10px 14px', fontFamily: 'var(--font-mono)' }}>
-                          <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                             {w.isNew && <span className="pulse-dot-green" />}
                             <span>{new Date(w.timestamp).toLocaleTimeString('id-ID', { hour12: false, timeZone: 'Asia/Jakarta' })} WIB</span>
                           </div>
-                          <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                             {new Date(w.timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                           </div>
                         </td>
@@ -1247,7 +1247,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                               {w.symbol}
                             </strong>
                           </div>
-                          <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                             {w.blockchain_name || w.blockchain || 'On-Chain'}
                           </div>
                         </td>
@@ -1255,7 +1255,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                         {/* Tipe Aliran */}
                         <td style={{ padding: '10px', textAlign: 'center' }}>
                           <span style={{
-                            fontSize: '10px',
+                            fontSize: '12px',
                             fontWeight: '800',
                             padding: '3px 8px',
                             borderRadius: '4px',
@@ -1279,19 +1279,19 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                         </td>
 
                         {/* Dari (Pengirim) */}
-                        <td style={{ padding: '10px', fontFamily: 'var(--font-mono)', fontSize: '11px' }}>
+                        <td style={{ padding: '10px', fontFamily: 'var(--font-mono)', fontSize: '12px' }}>
                           <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{w.from_name || 'Unknown Whale'}</div>
-                          <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{w.from_address ? `${w.from_address.slice(0, 10)}...` : 'Whale Vault'}</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{w.from_address ? `${w.from_address.slice(0, 10)}...` : 'Whale Vault'}</div>
                         </td>
 
                         {/* Ke (Penerima) */}
-                        <td style={{ padding: '10px', fontFamily: 'var(--font-mono)', fontSize: '11px' }}>
+                        <td style={{ padding: '10px', fontFamily: 'var(--font-mono)', fontSize: '12px' }}>
                           <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{w.to_name || 'Destination Vault'}</div>
-                          <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{w.to_address ? `${w.to_address.slice(0, 10)}...` : 'Cold Storage'}</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{w.to_address ? `${w.to_address.slice(0, 10)}...` : 'Cold Storage'}</div>
                         </td>
 
                         {/* Tesis Dampak */}
-                        <td style={{ padding: '10px', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                        <td style={{ padding: '10px', fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                           {w.impact_thesis || 'Perpindahan likuiditas on-chain terverifikasi.'}
                         </td>
 
@@ -1303,7 +1303,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                               target="_blank"
                               rel="noreferrer"
                               style={{
-                                fontSize: '10px',
+                                fontSize: '12px',
                                 color: 'var(--accent-blue)',
                                 textDecoration: 'none',
                                 border: '1px solid var(--accent-blue)',
@@ -1343,7 +1343,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                   <h3 style={{ fontSize: '16px', margin: 0, fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
                     WATCHER WHALE & ACTION ALERT RADAR (&gt; 100 BTC)
                   </h3>
-                  <span style={{ fontSize: '9px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.2)', color: 'var(--accent-rust)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.2)', color: 'var(--accent-rust)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
                     REAL-TIME RADAR
                   </span>
                 </div>
@@ -1364,7 +1364,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                   style={{
                     padding: '5px 12px',
                     borderRadius: '6px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: '800',
                     cursor: 'pointer',
                     border: audioAlertEnabled ? '1px solid var(--accent-green)' : 'var(--border-hairline)',
@@ -1387,7 +1387,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                   style={{
                     padding: '5px 12px',
                     borderRadius: '6px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: '800',
                     cursor: 'pointer',
                     border: isStreamPaused ? '1px solid var(--accent-gold)' : 'var(--border-hairline)',
@@ -1408,7 +1408,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                   style={{
                     padding: '5px 12px',
                     borderRadius: '6px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: '800',
                     cursor: 'pointer',
                     border: '1px solid var(--accent-blue)',
@@ -1428,20 +1428,20 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
             {/* Threshold Filter Bar */}
             <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: 'var(--border-hairline)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '800' }}>THRESHOLD RADAR:</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>THRESHOLD RADAR:</span>
                 {[100, 250, 500, 1000].map(th => (
                   <button
                     key={th}
                     onClick={() => setWhaleThresholdBtc(th)}
                     className={`quant-pill-btn ${whaleThresholdBtc === th ? 'active' : ''}`}
-                    style={{ fontSize: '10px', padding: '3px 8px' }}
+                    style={{ fontSize: '12px', padding: '3px 8px' }}
                   >
                     &ge; {th} BTC {th === 100 ? '(Default)' : th === 500 ? '(Humpback)' : th === 1000 ? '(Titan)' : ''}
                   </button>
                 ))}
               </div>
 
-              <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
                 Tercatat: <strong style={{ color: 'var(--accent-rust)' }}>{megaWhales.length}</strong> transaksi paus &ge; {whaleThresholdBtc} BTC
               </div>
             </div>
@@ -1464,11 +1464,11 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span className={latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'pulse-dot-amber' : 'pulse-dot-green'} />
-                    <span style={{ fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', color: latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'var(--accent-rust)' : 'var(--accent-green)', letterSpacing: '0.05em' }}>
+                    <span style={{ fontSize: '12px', fontWeight: '800', textTransform: 'uppercase', color: latestMegaWhaleAlert.sentiment === 'BEARISH' ? 'var(--accent-rust)' : 'var(--accent-green)', letterSpacing: '0.05em' }}>
                       ALERT PAUS TERBARU TERDETEKSI ({new Date(latestMegaWhaleAlert.timestamp).toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB)
                     </span>
                     <span style={{
-                      fontSize: '9px',
+                      fontSize: '12px',
                       fontWeight: '800',
                       padding: '2px 6px',
                       borderRadius: '3px',
@@ -1496,7 +1496,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
 
                 <div style={{ textAlign: 'right' }}>
                   <div style={{
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontWeight: '800',
                     padding: '4px 10px',
                     borderRadius: '6px',
@@ -1507,7 +1507,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                   }}>
                     {latestMegaWhaleAlert.signal === 'EXCHANGE_INFLOW' ? '🔴 RISIKO DUMP / INFLOW BURSA' : latestMegaWhaleAlert.signal === 'EXCHANGE_OUTFLOW' ? '🟢 SUPPLY SHOCK / AKUMULASI DINGIN' : latestMegaWhaleAlert.signal === 'TREASURY_MINT' ? '💵 INJEKSI LIKUIDITAS MINT' : '⚪ ROTASI OTC DARK POOL'}
                   </div>
-                  <div style={{ marginTop: '6px', fontSize: '11px', color: 'var(--text-muted)' }}>
+                  <div style={{ marginTop: '6px', fontSize: '12px', color: 'var(--text-muted)' }}>
                     Rekomendasi Cepat: <strong style={{ color: 'var(--text-primary)' }}>{latestMegaWhaleAlert.quickAction}</strong>
                   </div>
                 </div>
@@ -1537,7 +1537,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                     key={proto.key}
                     onClick={() => setSelectedPlaybookTab(proto.key)}
                     className={`quant-pill-btn ${selectedPlaybookTab === proto.key ? 'active' : ''}`}
-                    style={{ fontSize: '11px', padding: '5px 10px' }}
+                    style={{ fontSize: '12px', padding: '5px 10px' }}
                   >
                     <span>{proto.badge}</span>
                   </button>
@@ -1560,7 +1560,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
                     <div>
-                      <div style={{ fontSize: '10px', fontWeight: '800', color: proto.color, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                      <div style={{ fontSize: '12px', fontWeight: '800', color: proto.color, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                         {proto.riskLevel}
                       </div>
                       <div style={{ fontSize: '15px', fontWeight: '800', color: 'var(--text-primary)', marginTop: '2px' }}>
@@ -1568,7 +1568,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                       </div>
                     </div>
                     <span style={{
-                      fontSize: '11px',
+                      fontSize: '12px',
                       fontWeight: '800',
                       padding: '3px 8px',
                       borderRadius: '4px',
@@ -1604,7 +1604,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                             {i + 1}. {act.title}
                           </strong>
                         </div>
-                        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
                           {act.desc}
                         </div>
                       </div>
@@ -1623,12 +1623,12 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                 <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)' }}>
                   RIWAYAT PENCATATAN PERPINDAHAN PAUS (&ge; {whaleThresholdBtc} BTC)
                 </span>
-                <span style={{ fontSize: '10px', padding: '2px 7px', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ fontSize: '12px', padding: '2px 7px', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
                   {megaWhales.length} TRANSAKSI
                 </span>
               </div>
 
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 Klik baris transaksi untuk melihat Action Protocol yang sesuai
               </div>
             </div>
@@ -1681,11 +1681,11 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                         >
                           {/* Waktu */}
                           <td style={{ padding: '10px 14px', fontFamily: 'var(--font-mono)' }}>
-                            <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                               {w.isNew && <span className="pulse-dot-green" />}
                               <span>{new Date(w.timestamp).toLocaleTimeString('id-ID', { hour12: false, timeZone: 'Asia/Jakarta' })} WIB</span>
                             </div>
-                            <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                            <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                               {new Date(w.timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                             </div>
                           </td>
@@ -1707,7 +1707,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                           {/* Arah Aliran */}
                           <td style={{ padding: '10px', textAlign: 'center' }}>
                             <span style={{
-                              fontSize: '9px',
+                              fontSize: '12px',
                               fontWeight: '800',
                               padding: '2px 8px',
                               borderRadius: '4px',
@@ -1723,7 +1723,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                           {/* Kategori Paus */}
                           <td style={{ padding: '10px', textAlign: 'center' }}>
                             <span style={{
-                              fontSize: '9px',
+                              fontSize: '12px',
                               fontWeight: '800',
                               padding: '2px 6px',
                               borderRadius: '3px',
@@ -1736,23 +1736,23 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                           </td>
 
                           {/* Dari */}
-                          <td style={{ padding: '10px', fontFamily: 'var(--font-mono)', fontSize: '11px' }}>
+                          <td style={{ padding: '10px', fontFamily: 'var(--font-mono)', fontSize: '12px' }}>
                             <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{w.from_name || 'Cold Wallet'}</div>
-                            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{w.from_address ? `${w.from_address.slice(0, 10)}...` : 'Unknown'}</div>
+                            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{w.from_address ? `${w.from_address.slice(0, 10)}...` : 'Unknown'}</div>
                           </td>
 
                           {/* Ke */}
-                          <td style={{ padding: '10px', fontFamily: 'var(--font-mono)', fontSize: '11px' }}>
+                          <td style={{ padding: '10px', fontFamily: 'var(--font-mono)', fontSize: '12px' }}>
                             <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{w.to_name || 'Destination'}</div>
-                            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{w.to_address ? `${w.to_address.slice(0, 10)}...` : 'Cold Storage'}</div>
+                            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{w.to_address ? `${w.to_address.slice(0, 10)}...` : 'Cold Storage'}</div>
                           </td>
 
                           {/* Panduan Aksi */}
-                          <td style={{ padding: '10px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+                          <td style={{ padding: '10px', fontSize: '12px', color: 'var(--text-secondary)' }}>
                             <div style={{ fontWeight: '700', color: badgeColor, marginBottom: '2px' }}>
                               {w.quickAction || 'Wait & See'}
                             </div>
-                            <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.3 }}>
+                            <div style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.3 }}>
                               {w.impact_thesis}
                             </div>
                           </td>
@@ -1765,7 +1765,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                                 target="_blank"
                                 rel="noreferrer"
                                 style={{
-                                  fontSize: '10px',
+                                  fontSize: '12px',
                                   color: 'var(--accent-blue)',
                                   textDecoration: 'none',
                                   border: '1px solid var(--accent-blue)',
@@ -1807,7 +1807,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                     📅
                   </div>
                   <div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '800' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '800' }}>
                       TANGGAL PERDAGANGAN BEI
                     </div>
                     <div style={{ fontSize: '15px', fontWeight: '800', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
@@ -1821,7 +1821,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span className={sessionInfo.dotClass} />
                   <div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '800' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '800' }}>
                       STATUS SESI BURSA (WIB)
                     </div>
                     <div style={{ fontSize: '12px', fontWeight: '700', color: sessionInfo.sessionColor }}>
@@ -1832,8 +1832,8 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               </div>
 
               {/* Notice Jam 18:00 WIB EOD Automation */}
-              <div style={{ textAlign: 'right', fontSize: '11px' }}>
-                <div style={{ color: 'var(--text-muted)', fontSize: '10px', textTransform: 'uppercase', fontWeight: '700' }}>
+              <div style={{ textAlign: 'right', fontSize: '12px' }}>
+                <div style={{ color: 'var(--text-muted)', fontSize: '12px', textTransform: 'uppercase', fontWeight: '700' }}>
                   SINKRONISASI EOD OTOMATIS:
                 </div>
                 <div style={{ color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
@@ -1849,7 +1849,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               <button
                 onClick={() => setIdxSubView('TOP_FLOW')}
                 className={`quant-pill-btn ${idxSubView === 'TOP_FLOW' ? 'active' : ''}`}
-                style={{ fontSize: '11px', padding: '5px 12px' }}
+                style={{ fontSize: '12px', padding: '5px 12px' }}
               >
                 <span>📊</span>
                 <span>TOP SAHAM TERAKUMULASI</span>
@@ -1858,7 +1858,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               <button
                 onClick={() => setIdxSubView('ALL_BROKERS')}
                 className={`quant-pill-btn ${idxSubView === 'ALL_BROKERS' ? 'active' : ''}`}
-                style={{ fontSize: '11px', padding: '5px 12px' }}
+                style={{ fontSize: '12px', padding: '5px 12px' }}
               >
                 <span>🏛️</span>
                 <span>REKAP SEMUA BROKER BEI</span>
@@ -1867,7 +1867,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               <button
                 onClick={() => setIdxSubView('BROKER_PORTFOLIO')}
                 className={`quant-pill-btn ${idxSubView === 'BROKER_PORTFOLIO' ? 'active' : ''}`}
-                style={{ fontSize: '11px', padding: '5px 12px' }}
+                style={{ fontSize: '12px', padding: '5px 12px' }}
               >
                 <span>💼</span>
                 <span>PORTOFOLIO BROKER ("Pegang Saham Apa Saja?")</span>
@@ -1905,7 +1905,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                                 </button>
                                 {live && live.price && (
                                   <span style={{
-                                    fontSize: '9.5px',
+                                    fontSize: '12px',
                                     fontFamily: 'var(--font-mono)',
                                     fontWeight: '700',
                                     color: (live.changePct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)',
@@ -1917,7 +1917,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                                   </span>
                                 )}
                               </div>
-                              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{whale.company_name}</div>
+                              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{whale.company_name}</div>
                             </div>
                           );
                         })()}
@@ -1926,7 +1926,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                         <div style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '12px' }}>
                           {whale.trade_date || sessionInfo.idShortDate}
                         </div>
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
                           <span>🕒 {whale.trade_time || sessionInfo.idTime}</span>
                           <span>&bull;</span>
                           <span style={{ color: 'var(--accent-sky)', fontWeight: '700' }}>{whale.trade_session || sessionInfo.sessionPill}</span>
@@ -1934,7 +1934,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                       </td>
                       <td style={{ padding: '10px' }}>
                         <span style={{ fontWeight: '700', color: 'var(--accent-gold)' }}>{whale.broker_code}</span> - {whale.broker_name}
-                        <span style={{ marginLeft: '4px', fontSize: '9px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', padding: '1px 4px', borderRadius: '3px' }}>ASING</span>
+                        <span style={{ marginLeft: '4px', fontSize: '12px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', padding: '1px 4px', borderRadius: '3px' }}>ASING</span>
                       </td>
                       <td style={{ padding: '10px', color: 'var(--text-secondary)' }}>
                         {whale.counterparty_name || 'Ritel Domestik (YP/PD/XC)'}
@@ -1950,7 +1950,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                           {whale.action}
                         </span>
                       </td>
-                      <td style={{ padding: '10px', fontSize: '11px', color: 'var(--text-secondary)', maxWidth: '300px' }}>
+                      <td style={{ padding: '10px', fontSize: '12px', color: 'var(--text-secondary)', maxWidth: '300px' }}>
                         {whale.flow_thesis || 'Akumulasi broker asing institusional terdeteksi.'}
                       </td>
                     </tr>
@@ -1992,11 +1992,11 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                         </td>
                         <td style={{ padding: '10px' }}>
                           <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{b.name}</div>
-                          <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{b.category}</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{b.category}</div>
                         </td>
                         <td style={{ padding: '10px', textAlign: 'center' }}>
                           <span style={{
-                            fontSize: '10px',
+                            fontSize: '12px',
                             fontWeight: '800',
                             padding: '2px 6px',
                             borderRadius: '3px',
@@ -2020,7 +2020,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                         </td>
                         <td style={{ padding: '10px', textAlign: 'center' }}>
                           <span style={{
-                            fontSize: '9px',
+                            fontSize: '12px',
                             fontWeight: '800',
                             padding: '3px 8px',
                             borderRadius: '4px',
@@ -2042,7 +2042,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                               color: 'var(--accent-blue)',
                               padding: '4px 10px',
                               borderRadius: '4px',
-                              fontSize: '11px',
+                              fontSize: '12px',
                               fontWeight: '700',
                               cursor: 'pointer'
                             }}
@@ -2065,7 +2065,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               {/* Selector Bar: Pilih Broker & Rentang Tanggal */}
               <div className="quant-card" style={{ padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                     PILIH BROKER:
                   </span>
                   <select
@@ -2084,7 +2084,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
 
                 {/* Date Range Selector */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                     RENTANG TANGGAL:
                   </span>
                   <div className="quant-pill-nav" style={{ margin: 0 }}>
@@ -2098,7 +2098,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                         key={r.id}
                         onClick={() => setBrokerDateRange(r.id)}
                         className={`quant-pill-btn ${brokerDateRange === r.id ? 'active' : ''}`}
-                        style={{ fontSize: '10px', padding: '4px 9px' }}
+                        style={{ fontSize: '12px', padding: '4px 9px' }}
                       >
                         {r.label}
                       </button>
@@ -2114,11 +2114,11 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                     <strong style={{ fontSize: '14px', color: 'var(--text-primary)' }}>
                       Daftar Saham yang Ditransaksikan oleh Broker {selectedBrokerCode} ({MASTER_BROKERS.find(b => b.code === selectedBrokerCode)?.name})
                     </strong>
-                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                       Rincian harga beli rata-rata, harga jual rata-rata, net volume lot, dan status kepemilikan barang.
                     </div>
                   </div>
-                  <div style={{ fontSize: '11px', color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
                     Periode: {brokerDateRange === '1D' ? '1 Hari Terakhir (EOD)' : brokerDateRange === '3D' ? 'Akumulasi 3 Hari' : brokerDateRange === '1W' ? 'Akumulasi 1 Minggu' : 'Akumulasi 1 Bulan (MTD)'}
                   </div>
                 </div>
@@ -2153,7 +2153,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                             >
                               {h.ticker} ↗
                             </button>
-                            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{h.name}</div>
+                            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{h.name}</div>
                           </td>
 
                           {/* Beli (Buy) */}
@@ -2200,7 +2200,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                                     Rp {h.avgHold.toLocaleString()}
                                   </div>
                                   {live && live.price && (
-                                    <div style={{ fontSize: '9.5px', fontWeight: '700', color: pnlPct >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginTop: '2px' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: '700', color: pnlPct >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginTop: '2px' }}>
                                       Live: Rp {Math.round(livePrice).toLocaleString('id-ID')} ({pnlPct >= 0 ? '+' : ''}{pnlPct.toFixed(1)}%)
                                     </div>
                                   )}
@@ -2212,7 +2212,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                           {/* Status */}
                           <td style={{ padding: '10px 14px', textAlign: 'center' }}>
                             <span style={{
-                              fontSize: '9px',
+                              fontSize: '12px',
                               fontWeight: '800',
                               padding: '3px 8px',
                               borderRadius: '4px',
@@ -2251,7 +2251,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               <button
                 onClick={() => setUsSubView('GLOBAL_FLOW')}
                 className={`quant-pill-btn ${usSubView === 'GLOBAL_FLOW' ? 'active' : ''}`}
-                style={{ fontSize: '11px', padding: '5px 12px' }}
+                style={{ fontSize: '12px', padding: '5px 12px' }}
               >
                 <span>🌐</span>
                 <span>RINGKASAN ARUS 13F WALL STREET</span>
@@ -2260,7 +2260,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               <button
                 onClick={() => setUsSubView('HEDGE_FUNDS')}
                 className={`quant-pill-btn ${usSubView === 'HEDGE_FUNDS' ? 'active' : ''}`}
-                style={{ fontSize: '11px', padding: '5px 12px' }}
+                style={{ fontSize: '12px', padding: '5px 12px' }}
               >
                 <span>💼</span>
                 <span>PORTOFOLIO HEDGE FUND ("Fund Ini Pegang Apa?")</span>
@@ -2287,13 +2287,13 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                     <tr key={idx} style={{ borderBottom: 'var(--border-hairline)' }}>
                       <td style={{ padding: '10px 14px', fontWeight: 'bold' }}>
                         {us.fund_name}
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 'normal' }}>Periode: {us.filing_date}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 'normal' }}>Periode: {us.filing_date}</div>
                       </td>
                       <td style={{ padding: '10px' }}>
                         <button onClick={() => onOpenChart(`NASDAQ:${us.ticker}`)} style={{ background:'transparent', border:'none', color:'var(--accent-blue)', cursor:'pointer', fontWeight:'bold', fontSize:'13px' }}>
                           {us.ticker} ↗
                         </button>
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{us.company_name}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{us.company_name}</div>
                       </td>
                       <td style={{ padding: '10px', textAlign: 'center' }}>
                         <span className={`badge ${us.action === 'INCREASED' || us.action === 'NEW_POSITION' ? 'badge-bull' : 'badge-bear'}`} style={{ fontWeight: 'bold' }}>
@@ -2306,7 +2306,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                       <td style={{ padding: '10px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
                         ${Number(us.market_value_usd || 0).toLocaleString()}
                       </td>
-                      <td style={{ padding: '10px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+                      <td style={{ padding: '10px', fontSize: '12px', color: 'var(--text-secondary)' }}>
                         {us.strategy_thesis || 'Pembaruan portofolio institusi kuartal ini.'}
                       </td>
                     </tr>
@@ -2323,7 +2323,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
               {/* Fund Selector Card */}
               <div className="quant-card" style={{ padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                     PILIH HEDGE FUND:
                   </span>
                   <select
@@ -2339,7 +2339,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                   </select>
                 </div>
 
-                <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
                   Total Dana Kelolaan (AUM): <strong style={{ color: 'var(--accent-gold)' }}>{currentFund.aum}</strong> &bull; Filing: {currentFund.filingDate}
                 </div>
               </div>
@@ -2383,18 +2383,18 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                             >
                               {h.ticker} ↗
                             </button>
-                            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{h.name}</div>
+                            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{h.name}</div>
                           </td>
 
                           {/* Sektor */}
-                          <td style={{ padding: '10px', color: 'var(--text-secondary)', fontSize: '11px' }}>
+                          <td style={{ padding: '10px', color: 'var(--text-secondary)', fontSize: '12px' }}>
                             {h.sector}
                           </td>
 
                           {/* Aksi 13F */}
                           <td style={{ padding: '10px', textAlign: 'center' }}>
                             <span style={{
-                              fontSize: '9px',
+                              fontSize: '12px',
                               fontWeight: '800',
                               padding: '2px 6px',
                               borderRadius: '3px',
@@ -2432,7 +2432,7 @@ export default function WhaleIntelligenceTab({ data, onOpenChart, livePrices = {
                           </td>
 
                           {/* Tesis */}
-                          <td style={{ padding: '10px', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                          <td style={{ padding: '10px', fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                             {h.thesis}
                           </td>
                         </tr>

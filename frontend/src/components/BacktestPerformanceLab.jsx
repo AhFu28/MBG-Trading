@@ -224,13 +224,13 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
   const getStyleForSharpe = (sharpe) => {
     if (sharpe > 1.8) return { color: '#00FF00', fontWeight: 'bold' };
     if (sharpe > 1.2) return { color: 'var(--accent-sky)' };
-    return { color: '#ffffff' };
+    return { color: 'var(--text-inverse)' };
   };
 
   const getStyleForMDD = (mdd) => {
     if (mdd < 10) return { color: '#00FF00' };
     if (mdd > 20) return { color: '#FF4444' };
-    return { color: '#ffffff' };
+    return { color: 'var(--text-inverse)' };
   };
 
   // SVG plotting logic for equity curves
@@ -308,11 +308,11 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ fontSize: '14px' }}>⚠️</span>
-          <span style={{ fontSize: '11px', color: '#fca5a5', fontWeight: 'bold' }}>
+          <span style={{ fontSize: '12px', color: 'var(--accent-softred)', fontWeight: 'bold' }}>
             HASIL PENGUJIAN HISTORIS HIPOTETIS (SIMULATED BACKTEST) : BUKAN REKAM JEJAK TRADING UANG ASLI.
           </span>
         </div>
-        <span style={{ fontSize: '10px', color: '#888', fontFamily: 'monospace' }}>
+        <span style={{ fontSize: '12px', color: '#888', fontFamily: 'monospace' }}>
           Validasi Metodologi Deflated Sharpe Ratio (DSR) & Triple-Barrier
         </span>
       </div>
@@ -335,7 +335,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
                 border: '1px solid rgba(56, 189, 248, 0.4)',
                 padding: '6px 12px',
                 fontFamily: 'monospace',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: 'bold',
                 cursor: 'pointer',
                 borderRadius: '3px'
@@ -369,14 +369,14 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
               <span style={{ color: 'var(--accent-sky)', fontWeight: 'bold', fontSize: '12px' }}>
                 STRATEGY BEHAVIORAL CONTRACT // strategy_spec.json (v{activeSpec.spec_version || '2.1'})
               </span>
-              <span style={{ fontSize: '9px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', padding: '1px 6px', borderRadius: '2px' }}>
+              <span style={{ fontSize: '12px', background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-sky)', padding: '1px 6px', borderRadius: '2px' }}>
                 SPEC AS SINGLE SOURCE OF TRUTH
               </span>
             </div>
-            <span style={{ fontSize: '10px', color: '#666' }}>Author: {activeSpec.author || 'MBG Quant Desk'}</span>
+            <span style={{ fontSize: '12px', color: '#666' }}>Author: {activeSpec.author || 'MBG Quant Desk'}</span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', fontSize: '11px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', fontSize: '12px' }}>
             <div>
               <div style={{ color: '#888', fontWeight: 'bold' }}>🎯 OBJECTIVE & HIPOTESIS:</div>
               <div style={{ color: '#eee', marginTop: '2px', lineHeight: 1.4 }}>{activeSpec.objective}</div>
@@ -394,13 +394,13 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
 
             <div style={{ background: 'rgba(0,0,0,0.3)', padding: '8px 12px', borderRadius: '4px', border: '1px solid #1a2233' }}>
               <div style={{ color: '#a855f7', fontWeight: 'bold' }}>🛡️ TRIPLE-BARRIER EXECUTION RULES:</div>
-              <div style={{ color: '#ddd', marginTop: '4px', lineHeight: 1.5, fontSize: '10.5px' }}>
+              <div style={{ color: '#ddd', marginTop: '4px', lineHeight: 1.5, fontSize: '12px' }}>
                 • Profit Target: <strong style={{ color: '#00FF00' }}>+{activeSpec.execution_barriers?.profit_target_pct || 8.5}%</strong><br/>
                 • Stop Loss Keras: <strong style={{ color: '#FF4444' }}>-{activeSpec.execution_barriers?.hard_stop_loss_pct || 3.0}%</strong><br/>
                 • Time Barrier: <strong style={{ color: 'var(--accent-sky)' }}>{activeSpec.execution_barriers?.time_barrier_bars || 15} Candle Bars</strong><br/>
                 • Trailing Activation: <strong style={{ color: 'var(--accent-gold)' }}>+{activeSpec.execution_barriers?.trailing_stop_trigger_pct || 4.0}%</strong>
               </div>
-              <div style={{ color: '#888', fontSize: '9.5px', marginTop: '6px' }}>
+              <div style={{ color: '#888', fontSize: '12px', marginTop: '6px' }}>
                 Kriteria Lolos: {activeSpec.acceptance_criteria}
               </div>
             </div>
@@ -412,7 +412,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
       <div style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333', paddingBottom: '5px', marginBottom: '8px' }}>
           <h3 style={{ color: '#00FF00', margin: '0' }}>Strategy Scorecard Matrix (López de Prado DSR Validated)</h3>
-          <span style={{ fontSize: '10px', color: '#888' }}>*DSR ≥ 0.95 membuktikan strategi bebas dari overfit multiple testing</span>
+          <span style={{ fontSize: '12px', color: '#888' }}>*DSR ≥ 0.95 membuktikan strategi bebas dari overfit multiple testing</span>
         </div>
 
         <div style={{ overflowX: 'auto' }}>
@@ -463,7 +463,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
                     <span style={{ color: s.isDefensible ? '#00FF00' : '#FF4444', fontWeight: 'bold' }}>
                       {s.dsr}
                     </span>
-                    <span style={{ fontSize: '8px', color: '#666', marginLeft: '3px' }}>
+                    <span style={{ fontSize: '12px', color: '#666', marginLeft: '3px' }}>
                       (N={s.trialsTested})
                     </span>
                   </td>
@@ -477,7 +477,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
                         border: '1px solid rgba(0, 255, 0, 0.4)',
                         padding: '2px 6px',
                         borderRadius: '2px',
-                        fontSize: '9px',
+                        fontSize: '12px',
                         fontWeight: 'bold'
                       }}>
                         🛡️ DEFENSIBLE SPEC
@@ -489,7 +489,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
                         border: '1px solid rgba(255, 68, 68, 0.35)',
                         padding: '2px 6px',
                         borderRadius: '2px',
-                        fontSize: '9px',
+                        fontSize: '12px',
                         fontWeight: 'bold'
                       }}>
                         ⚠️ OVERFITTED
@@ -526,7 +526,7 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
         <h3 style={{ color: '#00FF00', margin: '0 0 10px 0', borderBottom: '1px dashed #223048', paddingBottom: '5px' }}>
           🛡️ Stress-Test & Defensibility Audit (López de Prado & Carver Framework)
         </h3>
-        <ul style={{ margin: '0', paddingLeft: '20px', lineHeight: '1.6', color: '#ddd', fontSize: '11px' }}>
+        <ul style={{ margin: '0', paddingLeft: '20px', lineHeight: '1.6', color: '#ddd', fontSize: '12px' }}>
           <li><strong>Worst-case streak analysis:</strong> {insights.worstStreak}</li>
           <li><strong>Market Regime Fit:</strong> {insights.marketRegime}</li>
           <li><strong>MBG Triple-Barrier Invalidation Effectiveness:</strong> {insights.slEffectiveness}</li>

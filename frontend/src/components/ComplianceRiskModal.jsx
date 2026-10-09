@@ -65,16 +65,16 @@ export default function ComplianceRiskModal() {
             <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-gold)', letterSpacing: '0.04em' }}>
               PERNYATAAN KEPATUHAN & PENGUNGKAPAN RISIKO (DISCLAIMER)
             </div>
-            <div style={{ fontSize: '10px', color: '#8b949e' }}>
+            <div style={{ fontSize: '12px', color: '#8b949e' }}>
               Market Brain Grid (MBG) · Terminal Riset & Screening Kuantitatif
             </div>
           </div>
         </div>
 
         {/* Body content */}
-        <div style={{ padding: '18px 20px', fontSize: '11px', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ padding: '18px 20px', fontSize: '12px', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div>
-            <strong style={{ color: '#ffffff' }}>1. Bukan Nasihat atau Rekomendasi Investasi:</strong>
+            <strong style={{ color: 'var(--text-inverse)' }}>1. Bukan Nasihat atau Rekomendasi Investasi:</strong>
             <p style={{ margin: '4px 0 0', color: '#8b949e' }}>
               Seluruh metrik, sinyal kuantitatif, proyeksi probabilitas, dan rencana transaksi yang ditampilkan di terminal MBG merupakan 
               hasil komputasi algoritma dan estimasi model statistik semata. Platform ini <strong>TIDAK</strong> bertindak sebagai Penasihat Investasi atau Manajer Investasi berizin.
@@ -82,14 +82,14 @@ export default function ComplianceRiskModal() {
           </div>
 
           <div>
-            <strong style={{ color: '#ffffff' }}>2. Data Simulasi & Keterbatasan Model:</strong>
+            <strong style={{ color: 'var(--text-inverse)' }}>2. Data Simulasi & Keterbatasan Model:</strong>
             <p style={{ margin: '4px 0 0', color: '#8b949e' }}>
               Fitur seperti AI Agent Arena, Paper Portfolio, dan Backtest Lab merupakan lingkungan pengujian hipotetis tanpa uang nyata. Kinerja historis tidak menjamin hasil masa depan.
             </p>
           </div>
 
           <div>
-            <strong style={{ color: '#ffffff' }}>3. Tanggung Jawab Keputusan Mandiri:</strong>
+            <strong style={{ color: 'var(--text-inverse)' }}>3. Tanggung Jawab Keputusan Mandiri:</strong>
             <p style={{ margin: '4px 0 0', color: '#8b949e' }}>
               Segala risiko finansial yang timbul dari keputusan jual/beli instrumen pasar modal berada sepenuhnya di bawah kendali dan tanggung jawab pengguna secara mandiri.
             </p>
@@ -106,7 +106,7 @@ export default function ComplianceRiskModal() {
           justifyContent: 'space-between',
           gap: '10px'
         }}>
-          <div style={{ fontSize: '10px', color: '#8b949e' }}>
+          <div style={{ fontSize: '12px', color: '#8b949e' }}>
             Tekan setuju untuk melanjutkan akses ke workspace terminal.
           </div>
           <button
@@ -117,7 +117,7 @@ export default function ComplianceRiskModal() {
               border: 'none',
               padding: '7px 18px',
               borderRadius: '4px',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: '800',
               cursor: 'pointer',
               letterSpacing: '0.03em'

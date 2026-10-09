@@ -45,7 +45,7 @@ const getCellStyle = (val) => {
     if (val >= 0.7) return { background: '#064e3b', color: '#6ee7b7', fontWeight: 'bold' };
     if (val >= 0.3) return { background: '#062d22', color: '#a7f3d0' };
     if (val > -0.3 && val < 0.3) return { background: '#18191d', color: '#9ca3af' };
-    if (val <= -0.7) return { background: '#881337', color: '#fca5a5', fontWeight: 'bold' };
+    if (val <= -0.7) return { background: '#881337', color: 'var(--accent-softred)', fontWeight: 'bold' };
     return { background: '#3f121d', color: '#fecaca' };
 };
 
@@ -91,7 +91,7 @@ export default function PearsonCorrelationWidget({ correlationData }) {
                         <div style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '0.06em', color: 'var(--text-primary)' }}>
                             CROSS-ASSET PEARSON CORRELATION MATRIX
                         </div>
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                             LINEAR ASSOCIATION (-1.0 TO +1.0) ACROSS 10 GLOBAL BENCHMARK ASSETS
                         </div>
                     </div>
@@ -101,14 +101,14 @@ export default function PearsonCorrelationWidget({ correlationData }) {
                     <button
                         onClick={() => setTimeframe('1M')}
                         className={'telemetry-btn ' + (timeframe === '1M' ? 'active' : '')}
-                        style={{ fontSize: '10px', padding: '4px 10px', fontWeight: '700' }}
+                        style={{ fontSize: '12px', padding: '4px 10px', fontWeight: '700' }}
                     >
                         1 BULAN (30 Hari)
                     </button>
                     <button
                         onClick={() => setTimeframe('3M')}
                         className={'telemetry-btn ' + (timeframe === '3M' ? 'active' : '')}
-                        style={{ fontSize: '10px', padding: '4px 10px', fontWeight: '700' }}
+                        style={{ fontSize: '12px', padding: '4px 10px', fontWeight: '700' }}
                     >
                         3 BULAN (90 Hari)
                     </button>
@@ -116,7 +116,7 @@ export default function PearsonCorrelationWidget({ correlationData }) {
             </div>
 
             {/* Legend Bar */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', padding: '8px 10px', background: 'var(--bg-panel-subtle)', border: 'var(--border-muted)', fontSize: '10px', marginBottom: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', padding: '8px 10px', background: 'var(--bg-panel-subtle)', border: 'var(--border-muted)', fontSize: '12px', marginBottom: '14px' }}>
                 <span style={{ fontWeight: '700', color: 'var(--accent-orange)' }}>SKALA WARNA:</span>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ width: '10px', height: '10px', background: '#064e3b', display: 'inline-block' }}></span> +1.0 (Positif Kuat)
@@ -137,7 +137,7 @@ export default function PearsonCorrelationWidget({ correlationData }) {
 
             {/* Heatmap Grid Table */}
             <div style={{ overflowX: 'auto', marginBottom: '16px' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10px', textAlign: 'center' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'center' }}>
                     <thead>
                         <tr>
                             <th style={{ padding: '6px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)' }}></th>
@@ -184,7 +184,7 @@ export default function PearsonCorrelationWidget({ correlationData }) {
 
             {/* Active Tooltip Callout */}
             {activeTooltip && (
-                <div style={{ padding: '8px 12px', background: 'var(--bg-panel-subtle)', border: '1px solid var(--accent-blue)', fontSize: '11px', marginBottom: '14px', color: 'var(--text-primary)' }}>
+                <div style={{ padding: '8px 12px', background: 'var(--bg-panel-subtle)', border: '1px solid var(--accent-blue)', fontSize: '12px', marginBottom: '14px', color: 'var(--text-primary)' }}>
                     💡 <strong>{activeTooltip.row} vs {activeTooltip.col}</strong>: Nilai Korelasi = <strong>{activeTooltip.val > 0 ? '+' : ''}{activeTooltip.val.toFixed(2)}</strong>.
                     {activeTooltip.val <= -0.7 ? ' Hubungan berlawanan arah sangat kuat (ideal untuk instrumen lindung nilai / hedging).' : activeTooltip.val >= 0.7 ? ' Bergerak hampir identik bersamaan (hindari double risk pada setup yang sama).' : ' Bergerak independen satu sama lain.'}
                 </div>
@@ -193,28 +193,28 @@ export default function PearsonCorrelationWidget({ correlationData }) {
             {/* Key Insights Box */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px' }}>
                 <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '10px' }}>
-                    <div style={{ color: 'var(--accent-green)', fontWeight: '700', fontSize: '10px', marginBottom: '4px' }}>
+                    <div style={{ color: 'var(--accent-green)', fontWeight: '700', fontSize: '12px', marginBottom: '4px' }}>
                         🛡️ BEST HEDGE PAIR (LINDUNG NILAI):
                     </div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.4 }}>
                         <strong>EUR/USD vs DXY (-0.95)</strong> &amp; <strong>SPY vs VIX (-0.85)</strong>: Ketika indeks saham jatuh terjal, volatilitas (VIX) melesat naik tajam. Gunakan emas atau instrumen inverse untuk memproteksi portofolio.
                     </div>
                 </div>
 
                 <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '10px' }}>
-                    <div style={{ color: 'var(--accent-blue)', fontWeight: '700', fontSize: '10px', marginBottom: '4px' }}>
+                    <div style={{ color: 'var(--accent-blue)', fontWeight: '700', fontSize: '12px', marginBottom: '4px' }}>
                         📈 HIGHEST SYNERGY (SEARAH):
                     </div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.4 }}>
                         <strong>SPY vs QQQ (+0.92)</strong> &amp; <strong>BTC vs ETH (+0.88)</strong>: Saham teknologi dan kripto utama bergerak seirama. Hindari memasang alokasi modal besar di keduanya sekaligus jika mencari diversifikasi murni.
                     </div>
                 </div>
 
                 <div style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', padding: '10px' }}>
-                    <div style={{ color: 'var(--accent-gold)', fontWeight: '700', fontSize: '10px', marginBottom: '4px' }}>
+                    <div style={{ color: 'var(--accent-gold)', fontWeight: '700', fontSize: '12px', marginBottom: '4px' }}>
                         🪙 SAFE HAVEN DYNAMICS:
                     </div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.4 }}>
                         <strong>Emas (XAU) vs DXY (-0.65)</strong>: Emas ditekan saat indeks Dolar AS menguat. Saat yield obligasi US10Y turun, daya tarik emas sebagai aset tanpa yield meningkat tajam.
                     </div>
                 </div>

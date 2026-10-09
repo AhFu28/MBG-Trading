@@ -870,7 +870,7 @@ export default function AiIntelligenceDrawer({
             <div style={{ fontSize: '13px', fontWeight: '900', fontFamily: 'var(--font-mono, monospace)', letterSpacing: '0.04em', color: '#fff' }}>
               AI QUANT INTELLIGENCE & SENTINEL DESK
             </div>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted, #94a3b8)', marginTop: '2px' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted, #94a3b8)', marginTop: '2px' }}>
               Top-Down Macro Thematic Regimes • Sectoral Transmission • Universal On-Demand Analyzer
             </div>
           </div>
@@ -879,7 +879,7 @@ export default function AiIntelligenceDrawer({
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {/* Minimalist Model Status (Gambar 3 & 4 Solution) */}
           <div style={{
-            fontSize: '10px',
+            fontSize: '12px',
             fontFamily: 'var(--font-mono, monospace)',
             padding: '4px 10px',
             borderRadius: '4px',
@@ -911,7 +911,7 @@ export default function AiIntelligenceDrawer({
             className="telemetry-btn"
             style={{
               padding: '3px 8px',
-              fontSize: '10px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono, monospace)',
               fontWeight: '700',
               color: 'var(--accent-sky)',
@@ -973,7 +973,7 @@ export default function AiIntelligenceDrawer({
               border: 'none',
               borderBottom: activeTab === tab.id ? '2px solid #3b82f6' : '2px solid transparent',
               padding: '11px 10px',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: '700',
               fontFamily: 'var(--font-mono, monospace)',
               color: activeTab === tab.id ? '#fff' : 'var(--text-muted, #94a3b8)',
@@ -1031,18 +1031,18 @@ export default function AiIntelligenceDrawer({
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <span style={{ fontSize: '14px' }}>{theme.icon}</span>
                       <span style={{
-                        fontSize: '9px',
+                        fontSize: '12px',
                         fontFamily: 'var(--font-mono)',
                         padding: '2px 6px',
                         borderRadius: '3px',
                         background: theme.severity === 'ELEVATED' || theme.severity === 'HIGH' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)',
-                        color: theme.severity === 'ELEVATED' || theme.severity === 'HIGH' ? '#ef4444' : 'var(--accent-emerald)',
+                        color: theme.severity === 'ELEVATED' || theme.severity === 'HIGH' ? 'var(--accent-red)' : 'var(--accent-emerald)',
                         fontWeight: '800'
                       }}>
                         {theme.tag}
                       </span>
                     </div>
-                    <div style={{ fontSize: '11px', fontWeight: '800', color: isSelected ? '#fff' : 'var(--text-primary)', marginTop: '4px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: '800', color: isSelected ? '#fff' : 'var(--text-primary)', marginTop: '4px' }}>
                       {theme.title}
                     </div>
                   </button>
@@ -1060,45 +1060,45 @@ export default function AiIntelligenceDrawer({
               <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-sky)', marginBottom: '8px' }}>
                 ⚡ RANTAI KAUSALITAS TRANSMISI MAKRO KE MIKRO
               </div>
-              <div style={{ fontSize: '11.5px', color: 'var(--text-primary)', marginBottom: '12px', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-primary)', marginBottom: '12px', lineHeight: 1.5 }}>
                 {currentTheme.catalyst_summary}
               </div>
 
               {/* 3-Step Flow Diagram */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
                 <div style={{ padding: '10px', borderRadius: '6px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <div style={{ fontSize: '9.5px', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', fontWeight: '800' }}>[1] ROOT DRIVER</div>
-                  <div style={{ fontSize: '11px', color: '#fff', marginTop: '4px' }}>{currentTheme.transmission_chain.root_driver}</div>
+                  <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', fontWeight: '800' }}>[1] ROOT DRIVER</div>
+                  <div style={{ fontSize: '12px', color: '#fff', marginTop: '4px' }}>{currentTheme.transmission_chain.root_driver}</div>
                 </div>
                 <div style={{ padding: '10px', borderRadius: '6px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <div style={{ fontSize: '9.5px', fontFamily: 'var(--font-mono)', color: 'var(--accent-sky)', fontWeight: '800' }}>[2] TRANSMISI PERANTARA</div>
-                  <div style={{ fontSize: '11px', color: '#fff', marginTop: '4px' }}>{currentTheme.transmission_chain.intermediate_fx}</div>
+                  <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--accent-sky)', fontWeight: '800' }}>[2] TRANSMISI PERANTARA</div>
+                  <div style={{ fontSize: '12px', color: '#fff', marginTop: '4px' }}>{currentTheme.transmission_chain.intermediate_fx}</div>
                 </div>
                 <div style={{ padding: '10px', borderRadius: '6px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <div style={{ fontSize: '9.5px', fontFamily: 'var(--font-mono)', color: 'var(--accent-emerald)', fontWeight: '800' }}>[3] DAMPAK EKONOMI RI</div>
-                  <div style={{ fontSize: '11px', color: '#fff', marginTop: '4px' }}>{currentTheme.transmission_chain.macro_impact}</div>
+                  <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--accent-emerald)', fontWeight: '800' }}>[3] DAMPAK EKONOMI RI</div>
+                  <div style={{ fontSize: '12px', color: '#fff', marginTop: '4px' }}>{currentTheme.transmission_chain.macro_impact}</div>
                 </div>
               </div>
 
               {/* Winner vs Loser Sectors */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '14px' }}>
                 <div style={{ padding: '10px', borderRadius: '6px', background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                  <div style={{ fontSize: '10px', fontWeight: '800', color: 'var(--accent-emerald)', fontFamily: 'var(--font-mono)', marginBottom: '6px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-emerald)', fontFamily: 'var(--font-mono)', marginBottom: '6px' }}>
                     ▲ SEKTOR PENERIMA MANFAAT (NET WINNER)
                   </div>
                   {currentTheme.transmission_chain.positive_sectors.map((s, idx) => (
-                    <div key={idx} style={{ fontSize: '10.5px', color: 'var(--text-primary)', marginBottom: '4px' }}>
+                    <div key={idx} style={{ fontSize: '12px', color: 'var(--text-primary)', marginBottom: '4px' }}>
                       <strong style={{ color: '#fff' }}>• {s.sector}</strong>: {s.rationale}
                     </div>
                   ))}
                 </div>
 
                 <div style={{ padding: '10px', borderRadius: '6px', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                  <div style={{ fontSize: '10px', fontWeight: '800', color: '#ef4444', fontFamily: 'var(--font-mono)', marginBottom: '6px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-red)', fontFamily: 'var(--font-mono)', marginBottom: '6px' }}>
                     ▼ SEKTOR TERTEKAN (MARGIN COMPRESSION)
                   </div>
                   {currentTheme.transmission_chain.negative_sectors.map((s, idx) => (
-                    <div key={idx} style={{ fontSize: '10.5px', color: 'var(--text-primary)', marginBottom: '4px' }}>
+                    <div key={idx} style={{ fontSize: '12px', color: 'var(--text-primary)', marginBottom: '4px' }}>
                       <strong style={{ color: '#fff' }}>• {s.sector}</strong>: {s.rationale}
                     </div>
                   ))}
@@ -1112,7 +1112,7 @@ export default function AiIntelligenceDrawer({
                 <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#fff' }}>
                   🎯 SAHAM PRIMADONA TEMA ({currentTheme.top_beneficiaries?.length || 0} REKOMENDASI TERTINGGI)
                 </div>
-                <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   Klik emiten untuk membuka Debat Sindikasi & Analisis Fundamental
                 </div>
               </div>
@@ -1145,12 +1145,12 @@ export default function AiIntelligenceDrawer({
                         <span style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#fff' }}>
                           ${stock.ticker}
                         </span>
-                        <span style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+                        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                           {stock.name}
                         </span>
                       </div>
                       <span style={{
-                        fontSize: '9px',
+                        fontSize: '12px',
                         fontFamily: 'var(--font-mono)',
                         padding: '2px 6px',
                         borderRadius: '3px',
@@ -1162,11 +1162,11 @@ export default function AiIntelligenceDrawer({
                       </span>
                     </div>
 
-                    <div style={{ fontSize: '10.5px', color: 'var(--text-primary)', lineHeight: 1.45 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.45 }}>
                       {stock.transmission_link}
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                       <div>
                         <span style={{ color: 'var(--text-muted)' }}>Harga: </span>
                         <strong style={{ color: '#fff' }}>Rp {stock.current_price?.toLocaleString('id-ID')}</strong>
@@ -1193,7 +1193,7 @@ export default function AiIntelligenceDrawer({
               borderRadius: '6px',
               background: 'rgba(255, 255, 255, 0.02)',
               border: '1px solid rgba(255, 255, 255, 0.06)',
-              fontSize: '10px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono, monospace)',
               color: 'var(--text-muted, #94a3b8)'
             }}>
@@ -1205,7 +1205,7 @@ export default function AiIntelligenceDrawer({
                 <span>•</span>
                 <span>Latency: {activeLatency} ms</span>
               </div>
-              <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 Cascade Failover: Ready
               </div>
             </div>
@@ -1251,7 +1251,7 @@ export default function AiIntelligenceDrawer({
                       color: selectedUniverse === u.id ? '#fff' : 'var(--text-muted)',
                       padding: '6px 10px',
                       borderRadius: '4px',
-                      fontSize: '10.5px',
+                      fontSize: '12px',
                       fontFamily: 'var(--font-mono)',
                       fontWeight: '700',
                       cursor: 'pointer'
@@ -1280,7 +1280,7 @@ export default function AiIntelligenceDrawer({
                     border: '1px solid var(--border-color, #1e2638)',
                     background: 'var(--bg-canvas, #07090d)',
                     color: '#fff',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)'
                   }}
                 />
@@ -1315,13 +1315,13 @@ export default function AiIntelligenceDrawer({
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
-                          fontSize: '11px'
+                          fontSize: '12px'
                         }}
                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.15)'}
                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                       >
                         <strong style={{ color: '#fff', fontFamily: 'var(--font-mono)' }}>${res.ticker}</strong>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>{res.name}</span>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>{res.name}</span>
                       </div>
                     ))}
                   </div>
@@ -1331,7 +1331,7 @@ export default function AiIntelligenceDrawer({
 
             {/* Quick Universe Chips */}
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Quick Select:</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Quick Select:</span>
               {(selectedUniverse === 'CRYPTO'
                 ? ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'NEARUSDT', 'LINKUSDT']
                 : selectedUniverse === 'US_EQUITIES'
@@ -1347,7 +1347,7 @@ export default function AiIntelligenceDrawer({
                     border: selectedTicker === t ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.06)',
                     background: selectedTicker === t ? 'rgba(59, 130, 246, 0.15)' : 'rgba(255,255,255,0.02)',
                     color: selectedTicker === t ? 'var(--accent-sky)' : 'var(--text-primary)',
-                    fontSize: '9.5px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: '700',
                     cursor: 'pointer'
@@ -1371,11 +1371,11 @@ export default function AiIntelligenceDrawer({
                     <span style={{ fontSize: '20px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#fff' }}>
                       ${currentDossier.ticker}
                     </span>
-                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                       {currentDossier.name}
                     </span>
                     <span style={{
-                      fontSize: '9.5px',
+                      fontSize: '12px',
                       fontFamily: 'var(--font-mono)',
                       padding: '2px 6px',
                       borderRadius: '3px',
@@ -1387,7 +1387,7 @@ export default function AiIntelligenceDrawer({
                     </span>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', fontSize: '11px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', fontSize: '12px' }}>
                     <span style={{ color: 'var(--text-muted)' }}>Harga Terkini:</span>
                     <strong style={{ color: '#fff', fontFamily: 'var(--font-mono)', fontSize: '14px' }}>
                       {currentDossier.currency === 'USD' ? `$${currentDossier.price}` : `Rp ${currentDossier.price?.toLocaleString('id-ID')}`}
@@ -1407,7 +1407,7 @@ export default function AiIntelligenceDrawer({
                   border: currentDossier.stance === 'STRONG_BULL' ? '1px solid var(--accent-emerald)' : '1px solid #3b82f6',
                   textAlign: 'right'
                 }}>
-                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>Sikap AI Sindikasi</div>
+                  <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>Sikap AI Sindikasi</div>
                   <div style={{ fontSize: '12px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: currentDossier.stance === 'STRONG_BULL' ? 'var(--accent-emerald)' : 'var(--accent-sky)' }}>
                     {currentDossier.stance === 'STRONG_BULL' ? 'STRONG BULLISH ACCUMULATE' : 'LEAN BULLISH'}
                   </div>
@@ -1426,7 +1426,7 @@ export default function AiIntelligenceDrawer({
                 <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-sky)' }}>
                   📊 ANALISIS FUNDAMENTAL & KATALIS ISU KORPORASI
                 </div>
-                <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                   Metrik Laba, Kapasitas Pabrik/Smelter & Arus Kas
                 </div>
               </div>
@@ -1434,32 +1434,32 @@ export default function AiIntelligenceDrawer({
               {/* 5-Column Financial Metrics */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px', marginBottom: '12px' }}>
                 <div style={{ padding: '8px 10px', borderRadius: '4px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Pertumbuhan Laba YoY</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Pertumbuhan Laba YoY</div>
                   <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-emerald)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
                     {currentDossier.fundamentals?.net_profit_yoy}
                   </div>
                 </div>
                 <div style={{ padding: '8px 10px', borderRadius: '4px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Pendapatan YoY</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Pendapatan YoY</div>
                   <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
                     {currentDossier.fundamentals?.revenue_yoy}
                   </div>
                 </div>
                 <div style={{ padding: '8px 10px', borderRadius: '4px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Margin EBITDA / NIM</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Margin EBITDA / NIM</div>
                   <div style={{ fontSize: '13px', fontWeight: '800', color: '#fff', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
                     {currentDossier.fundamentals?.ebitda_margin}
                   </div>
                 </div>
                 <div style={{ padding: '8px 10px', borderRadius: '4px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Rasio Modal / DER</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Rasio Modal / DER</div>
                   <div style={{ fontSize: '13px', fontWeight: '800', color: '#fff', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
                     {currentDossier.fundamentals?.der}
                   </div>
                 </div>
                 <div style={{ padding: '8px 10px', borderRadius: '4px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Status Arus Kas</div>
-                  <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--accent-emerald)', marginTop: '2px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>Status Arus Kas</div>
+                  <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-emerald)', marginTop: '2px' }}>
                     {currentDossier.fundamentals?.operating_cash_flow}
                   </div>
                 </div>
@@ -1471,7 +1471,7 @@ export default function AiIntelligenceDrawer({
                 borderRadius: '6px',
                 background: 'rgba(59, 130, 246, 0.08)',
                 border: '1px solid rgba(59, 130, 246, 0.25)',
-                fontSize: '11px',
+                fontSize: '12px',
                 lineHeight: 1.55,
                 color: 'var(--text-primary)'
               }}>
@@ -1491,18 +1491,18 @@ export default function AiIntelligenceDrawer({
                 <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#fff' }}>
                   🌐 PETA KETERKAITAN KONGLOMERASI & RANTAI PASOK (VALUE-CHAIN GRAPH)
                 </div>
-                <div style={{ fontSize: '9.5px', color: 'var(--accent-sky)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--accent-sky)' }}>
                   Klik ticker terkait untuk langsung membuka analisisnya
                 </div>
               </div>
 
-              <div style={{ fontSize: '11px', color: 'var(--text-primary)', marginBottom: '12px', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-primary)', marginBottom: '12px', lineHeight: 1.5 }}>
                 {currentDossier.ecosystem_linkages?.linkage_thesis}
               </div>
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
                 <div style={{
-                  fontSize: '9.5px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   padding: '3px 8px',
                   borderRadius: '4px',
@@ -1515,7 +1515,7 @@ export default function AiIntelligenceDrawer({
 
                 {currentDossier.ecosystem_linkages?.parent && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Induk:</span>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Induk:</span>
                     <button
                       onClick={() => setSelectedTicker(currentDossier.ecosystem_linkages.parent)}
                       style={{
@@ -1524,7 +1524,7 @@ export default function AiIntelligenceDrawer({
                         background: 'rgba(59, 130, 246, 0.2)',
                         border: '1px solid #3b82f6',
                         color: '#fff',
-                        fontSize: '10px',
+                        fontSize: '12px',
                         fontFamily: 'var(--font-mono)',
                         fontWeight: '800',
                         cursor: 'pointer'
@@ -1538,7 +1538,7 @@ export default function AiIntelligenceDrawer({
 
                 {currentDossier.ecosystem_linkages?.subsidiaries?.length > 0 && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Anak Usaha:</span>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Anak Usaha:</span>
                     {currentDossier.ecosystem_linkages.subsidiaries.map(sub => (
                       <button
                         key={sub}
@@ -1549,7 +1549,7 @@ export default function AiIntelligenceDrawer({
                           background: 'rgba(16, 185, 129, 0.15)',
                           border: '1px solid rgba(16, 185, 129, 0.4)',
                           color: 'var(--accent-emerald)',
-                          fontSize: '10px',
+                          fontSize: '12px',
                           fontFamily: 'var(--font-mono)',
                           fontWeight: '800',
                           cursor: 'pointer'
@@ -1563,7 +1563,7 @@ export default function AiIntelligenceDrawer({
 
                 {currentDossier.ecosystem_linkages?.peers?.length > 0 && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Mitra & Peers Terkait:</span>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Mitra & Peers Terkait:</span>
                     {currentDossier.ecosystem_linkages.peers.map(peer => (
                       <button
                         key={peer}
@@ -1574,7 +1574,7 @@ export default function AiIntelligenceDrawer({
                           background: 'rgba(255, 255, 255, 0.04)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           color: '#e2e8f0',
-                          fontSize: '10px',
+                          fontSize: '12px',
                           fontFamily: 'var(--font-mono)',
                           fontWeight: '700',
                           cursor: 'pointer'
@@ -1597,15 +1597,15 @@ export default function AiIntelligenceDrawer({
                 borderRadius: '8px',
                 padding: '14px'
               }}>
-                <div style={{ fontSize: '11px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-emerald)', marginBottom: '8px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-emerald)', marginBottom: '8px' }}>
                   🐂 BULL CASE STRATEGIST
                 </div>
                 {currentDossier.theses_bull?.map((t, idx) => (
-                  <div key={idx} style={{ fontSize: '10.5px', color: 'var(--text-primary)', marginBottom: '6px', lineHeight: 1.45 }}>
+                  <div key={idx} style={{ fontSize: '12px', color: 'var(--text-primary)', marginBottom: '6px', lineHeight: 1.45 }}>
                     • {t}
                   </div>
                 ))}
-                <div style={{ borderTop: '1px solid rgba(16, 185, 129, 0.2)', paddingTop: '6px', marginTop: '8px', fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--accent-emerald)' }}>
+                <div style={{ borderTop: '1px solid rgba(16, 185, 129, 0.2)', paddingTop: '6px', marginTop: '8px', fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--accent-emerald)' }}>
                   Target Resisten R1: <strong>{currentDossier.currency === 'USD' ? `$${currentDossier.levels?.r1}` : `Rp ${currentDossier.levels?.r1?.toLocaleString('id-ID')}`}</strong>
                 </div>
               </div>
@@ -1617,15 +1617,15 @@ export default function AiIntelligenceDrawer({
                 borderRadius: '8px',
                 padding: '14px'
               }}>
-                <div style={{ fontSize: '11px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#ef4444', marginBottom: '8px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-red)', marginBottom: '8px' }}>
                   🐻 RISK RED-TEAMER (SKEPTIC)
                 </div>
                 {currentDossier.theses_bear?.map((t, idx) => (
-                  <div key={idx} style={{ fontSize: '10.5px', color: 'var(--text-primary)', marginBottom: '6px', lineHeight: 1.45 }}>
+                  <div key={idx} style={{ fontSize: '12px', color: 'var(--text-primary)', marginBottom: '6px', lineHeight: 1.45 }}>
                     • {t}
                   </div>
                 ))}
-                <div style={{ borderTop: '1px solid rgba(239, 68, 68, 0.2)', paddingTop: '6px', marginTop: '8px', fontSize: '10px', fontFamily: 'var(--font-mono)', color: '#ef4444' }}>
+                <div style={{ borderTop: '1px solid rgba(239, 68, 68, 0.2)', paddingTop: '6px', marginTop: '8px', fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--accent-red)' }}>
                   Batas Invalidation S1: <strong>{currentDossier.currency === 'USD' ? `$${currentDossier.levels?.s1}` : `Rp ${currentDossier.levels?.s1?.toLocaleString('id-ID')}`}</strong>
                 </div>
               </div>
@@ -1637,16 +1637,16 @@ export default function AiIntelligenceDrawer({
                 borderRadius: '8px',
                 padding: '14px'
               }}>
-                <div style={{ fontSize: '11px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-sky)', marginBottom: '8px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-sky)', marginBottom: '8px' }}>
                   ⚖️ CRO RISK ARBITER (VERDICT)
                 </div>
                 <div style={{ fontSize: '12px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: '#fff', marginBottom: '4px' }}>
                   {currentDossier.risk_arbiter?.verdict}
                 </div>
-                <div style={{ fontSize: '10.5px', color: 'var(--text-primary)', marginBottom: '8px', lineHeight: 1.45 }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-primary)', marginBottom: '8px', lineHeight: 1.45 }}>
                   {currentDossier.risk_arbiter?.reasoning}
                 </div>
-                <div style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', marginBottom: '4px' }}>
+                <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', marginBottom: '4px' }}>
                   Stop Loss Ketat: <strong>{currentDossier.currency === 'USD' ? `$${currentDossier.risk_arbiter?.stop_loss}` : `Rp ${currentDossier.risk_arbiter?.stop_loss?.toLocaleString('id-ID')}`}</strong>
                 </div>
 
@@ -1655,7 +1655,7 @@ export default function AiIntelligenceDrawer({
                   borderTop: '1px solid rgba(255,255,255,0.06)',
                   paddingTop: '6px',
                   marginTop: '8px',
-                  fontSize: '9.5px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   color: 'var(--text-muted)',
                   display: 'flex',
@@ -1676,7 +1676,7 @@ export default function AiIntelligenceDrawer({
               borderRadius: '6px',
               background: 'rgba(255, 255, 255, 0.02)',
               border: '1px solid rgba(255, 255, 255, 0.06)',
-              fontSize: '10px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono, monospace)',
               color: 'var(--text-muted, #94a3b8)'
             }}>
@@ -1688,7 +1688,7 @@ export default function AiIntelligenceDrawer({
                 <span>•</span>
                 <span>Latency: {activeLatency} ms</span>
               </div>
-              <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 Cascade Failover: Ready
               </div>
             </div>
@@ -1728,7 +1728,7 @@ export default function AiIntelligenceDrawer({
                         conditional now: the assessor can genuinely fail, and a
                         failed run must not be labelled "live". */}
                     <span style={{
-                      fontSize: '9.5px',
+                      fontSize: '12px',
                       fontFamily: 'var(--font-mono)',
                       padding: '2px 7px',
                       borderRadius: '4px',
@@ -1740,7 +1740,7 @@ export default function AiIntelligenceDrawer({
                       {hasGeoFeed ? 'LLM ASSESSED' : 'BELUM DIASESMEN'}
                     </span>
                   </div>
-                  <div style={{ fontSize: '11.5px', color: '#e2e8f0', marginTop: '6px', lineHeight: 1.5, maxWidth: '640px' }}>
+                  <div style={{ fontSize: '12px', color: '#e2e8f0', marginTop: '6px', lineHeight: 1.5, maxWidth: '640px' }}>
                     {geo.primary_threat || 'Asesmen geopolitik belum dijalankan pada siklus pipeline terakhir. Panel ini tidak menampilkan tingkat ancaman karena belum ada yang diukur.'}
                   </div>
                 </div>
@@ -1752,10 +1752,10 @@ export default function AiIntelligenceDrawer({
                   border: '1px solid rgba(255,255,255,0.1)',
                   textAlign: 'right'
                 }}>
-                  <div style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>Skor Ancaman Komposit</div>
+                  <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>Skor Ancaman Komposit</div>
                   <div style={{ fontSize: '16px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: hasGeoFeed ? 'var(--accent-gold)' : 'var(--text-muted)' }}>
                     {hasGeoFeed && geo.threat_score !== null ? geo.threat_score : '—'}{' '}
-                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>/ 1.00</span>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>/ 1.00</span>
                   </div>
                 </div>
               </div>
@@ -1773,7 +1773,7 @@ export default function AiIntelligenceDrawer({
                     { lvl: 4, label: 'LVL 4 // GUARDED', range: '0.21 - 0.45', color: 'var(--accent-sky)' },
                     { lvl: 3, label: 'LVL 3 // ELEVATED', range: '0.46 - 0.65', color: 'var(--accent-gold)' },
                     { lvl: 2, label: 'LVL 2 // CONFLICT', range: '0.66 - 0.85', color: '#f97316' },
-                    { lvl: 1, label: 'LVL 1 // WARTIME', range: '0.86 - 1.00', color: '#ef4444' }
+                    { lvl: 1, label: 'LVL 1 // WARTIME', range: '0.86 - 1.00', color: 'var(--accent-red)' }
                   ].map(seg => {
                     const score = hasGeoFeed ? geo.threat_score : null;
                     // Map the composite score to its band. No score, no active band.
@@ -1805,7 +1805,7 @@ export default function AiIntelligenceDrawer({
                             transform: 'translateX(-50%)',
                             background: 'var(--accent-sky)',
                             color: '#07090d',
-                            fontSize: '8px',
+                            fontSize: '12px',
                             fontWeight: '900',
                             fontFamily: 'var(--font-mono)',
                             padding: '1px 5px',
@@ -1816,14 +1816,14 @@ export default function AiIntelligenceDrawer({
                           </div>
                         )}
                         <div style={{
-                          fontSize: '10px',
+                          fontSize: '12px',
                           fontWeight: '800',
                           fontFamily: 'var(--font-mono)',
                           color: isActive ? '#fff' : 'var(--text-muted)'
                         }}>
                           {seg.label}
                         </div>
-                        <div style={{ fontSize: '8.5px', color: isActive ? seg.color : 'rgba(255,255,255,0.3)', marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
+                        <div style={{ fontSize: '12px', color: isActive ? seg.color : 'rgba(255,255,255,0.3)', marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
                           {seg.range}
                         </div>
                       </div>
@@ -1844,7 +1844,7 @@ export default function AiIntelligenceDrawer({
                   <div style={{
                     width: `${(geo.threat_score || 0) * 100}%`,
                     height: '100%',
-                    background: 'linear-gradient(90deg, var(--accent-emerald) 0%, var(--accent-sky) 35%, var(--accent-gold) 65%, #ef4444 100%)',
+                    background: 'linear-gradient(90deg, var(--accent-emerald) 0%, var(--accent-sky) 35%, var(--accent-gold) 65%, var(--accent-red) 100%)',
                     borderRadius: '3px'
                   }} />
                 </div>
@@ -1857,7 +1857,7 @@ export default function AiIntelligenceDrawer({
                 <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#fff' }}>
                   📐 4 SUB-PILAR INTELIJEN RISIKO GLOBAL (QUANTITATIVE SUB-INDICES)
                 </div>
-                <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   Pembobotan kuantitatif yang mengkalkulasi Skor Ancaman Komposit 0.42
                 </div>
               </div>
@@ -1874,32 +1874,32 @@ export default function AiIntelligenceDrawer({
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                      <span style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>Bobot: {pillar.weight}</span>
+                      <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>Bobot: {pillar.weight}</span>
                       <span style={{
-                        fontSize: '8.5px',
+                        fontSize: '12px',
                         fontFamily: 'var(--font-mono)',
                         padding: '2px 5px',
                         borderRadius: '3px',
                         background: pillar.severity === 'ELEVATED' ? 'rgba(239,68,68,0.2)' : 'rgba(245,158,11,0.2)',
-                        color: pillar.severity === 'ELEVATED' ? '#ef4444' : 'var(--accent-gold)',
+                        color: pillar.severity === 'ELEVATED' ? 'var(--accent-red)' : 'var(--accent-gold)',
                         fontWeight: '800'
                       }}>
                         {pillar.severity}
                       </span>
                     </div>
 
-                    <div style={{ fontSize: '11px', fontWeight: '800', color: '#fff', marginTop: '2px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: '800', color: '#fff', marginTop: '2px' }}>
                       {pillar.name}
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', margin: '6px 0' }}>
-                      <span style={{ fontSize: '18px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: pillar.score >= 60 ? '#ef4444' : pillar.score >= 45 ? 'var(--accent-gold)' : 'var(--accent-sky)' }}>
+                      <span style={{ fontSize: '18px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: pillar.score >= 60 ? 'var(--accent-red)' : pillar.score >= 45 ? 'var(--accent-gold)' : 'var(--accent-sky)' }}>
                         {pillar.score}
                       </span>
-                      <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>/ 100</span>
+                      <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>/ 100</span>
                     </div>
 
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
                       {pillar.note}
                     </div>
                   </div>
@@ -1914,10 +1914,10 @@ export default function AiIntelligenceDrawer({
               borderRadius: '8px',
               padding: '14px 16px'
             }}>
-              <div style={{ fontSize: '11px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-emerald)', marginBottom: '6px' }}>
+              <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-emerald)', marginBottom: '6px' }}>
                 🎯 PANDUAN TAKTIKAL MITIGASI RISIKO MAKRO & PORTFOLIO ARMOR:
               </div>
-              <div style={{ fontSize: '11px', color: 'var(--text-primary)', lineHeight: 1.55 }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.55 }}>
                 {geo.macro_risk_guidance}
               </div>
             </div>
@@ -1933,7 +1933,7 @@ export default function AiIntelligenceDrawer({
                 <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-sky)' }}>
                   🧪 WHAT-IF SCENARIO STRESS TEST (SIMULASI RISIKO MAKRO)
                 </div>
-                <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   Pilih skenario untuk melihat simulasi dampak portofolio jika eskalasi terjadi
                 </div>
               </div>
@@ -1961,7 +1961,7 @@ export default function AiIntelligenceDrawer({
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{
-                          fontSize: '8.5px',
+                          fontSize: '12px',
                           fontFamily: 'var(--font-mono)',
                           padding: '2px 5px',
                           borderRadius: '3px',
@@ -1971,16 +1971,16 @@ export default function AiIntelligenceDrawer({
                         }}>
                           {sc.badge}
                         </span>
-                        <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', fontWeight: '800' }}>
+                        <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--accent-gold)', fontWeight: '800' }}>
                           DEFCON {sc.defcon_level}
                         </span>
                       </div>
 
-                      <div style={{ fontSize: '11px', fontWeight: '800', color: isSelected ? '#fff' : 'var(--text-primary)' }}>
+                      <div style={{ fontSize: '12px', fontWeight: '800', color: isSelected ? '#fff' : 'var(--text-primary)' }}>
                         {sc.name}
                       </div>
 
-                      <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                         Brent: <strong style={{ color: '#fff' }}>{sc.brent_price}</strong> • USD/IDR: <strong style={{ color: '#fff' }}>{sc.usd_idr}</strong>
                       </div>
                     </button>
@@ -1996,20 +1996,20 @@ export default function AiIntelligenceDrawer({
                 padding: '14px'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <div style={{ fontSize: '11.5px', fontWeight: '800', color: '#fff', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '12px', fontWeight: '800', color: '#fff', fontFamily: 'var(--font-mono)' }}>
                     HASIL SIMULASI: {activeSimulatedScenario.name}
                   </div>
-                  <span style={{ fontSize: '9.5px', color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--accent-sky)', fontFamily: 'var(--font-mono)' }}>
                     Cadangan Kas Direkomendasikan: <strong style={{ color: 'var(--accent-gold)' }}>{activeSimulatedScenario.cash_buffer}</strong>
                   </span>
                 </div>
 
-                <div style={{ fontSize: '11px', color: 'var(--text-primary)', lineHeight: 1.5, marginBottom: '10px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.5, marginBottom: '10px' }}>
                   <strong style={{ color: 'var(--accent-emerald)' }}>Fokus Taktikal: </strong>
                   {activeSimulatedScenario.tactical_focus}
                 </div>
 
-                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px', fontSize: '10px' }}>
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px', fontSize: '12px' }}>
                   <div>
                     <span style={{ color: 'var(--text-muted)' }}>Emiten Net-Winner: </span>
                     {activeSimulatedScenario.winners?.map(w => (
@@ -2026,7 +2026,7 @@ export default function AiIntelligenceDrawer({
                           border: '1px solid rgba(16, 185, 129, 0.3)',
                           color: 'var(--accent-emerald)',
                           borderRadius: '3px',
-                          fontSize: '9.5px',
+                          fontSize: '12px',
                           fontFamily: 'var(--font-mono)',
                           fontWeight: '800',
                           cursor: 'pointer'
@@ -2047,9 +2047,9 @@ export default function AiIntelligenceDrawer({
                           padding: '2px 5px',
                           background: 'rgba(239, 68, 68, 0.15)',
                           border: '1px solid rgba(239, 68, 68, 0.3)',
-                          color: '#ef4444',
+                          color: 'var(--accent-red)',
                           borderRadius: '3px',
-                          fontSize: '9.5px',
+                          fontSize: '12px',
                           fontFamily: 'var(--font-mono)',
                           fontWeight: '800'
                         }}
@@ -2068,7 +2068,7 @@ export default function AiIntelligenceDrawer({
                 <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: '#fff' }}>
                   🔥 5 TITIK RAWAN GEOPOLITIK GLOBAL (FLASHPOINTS MONITOR)
                 </div>
-                <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   Analisis transmisi ke saham energi, perbankan, dan logistik BEI
                 </div>
               </div>
@@ -2092,24 +2092,24 @@ export default function AiIntelligenceDrawer({
                         <div style={{ fontSize: '12px', fontWeight: '800', color: '#fff' }}>
                           {fp.name}
                         </div>
-                        <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                           Wilayah: {fp.region}
                         </div>
                       </div>
                       <span style={{
-                        fontSize: '8.5px',
+                        fontSize: '12px',
                         fontFamily: 'var(--font-mono)',
                         padding: '2px 6px',
                         borderRadius: '3px',
                         background: fp.threat_level === 'HIGH' || fp.threat_level === 'ELEVATED' ? 'rgba(239,68,68,0.2)' : 'rgba(245,158,11,0.2)',
-                        color: fp.threat_level === 'HIGH' || fp.threat_level === 'ELEVATED' ? '#ef4444' : 'var(--accent-gold)',
+                        color: fp.threat_level === 'HIGH' || fp.threat_level === 'ELEVATED' ? 'var(--accent-red)' : 'var(--accent-gold)',
                         fontWeight: '800'
                       }}>
                         {fp.status_badge}
                       </span>
                     </div>
 
-                    <div style={{ fontSize: '10.5px', color: 'var(--text-primary)', lineHeight: 1.45 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: 1.45 }}>
                       {fp.description}
                     </div>
 
@@ -2118,7 +2118,7 @@ export default function AiIntelligenceDrawer({
                       borderRadius: '4px',
                       background: 'rgba(255,255,255,0.02)',
                       border: '1px solid rgba(255,255,255,0.06)',
-                      fontSize: '10px',
+                      fontSize: '12px',
                       color: 'var(--text-muted)',
                       lineHeight: 1.4
                     }}>
@@ -2128,7 +2128,7 @@ export default function AiIntelligenceDrawer({
 
                     {/* Affected Tickers Chips */}
                     <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', alignItems: 'center', marginTop: '2px' }}>
-                      <span style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>Emiten Terdampak:</span>
+                      <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Emiten Terdampak:</span>
                       {fp.affected_tickers?.map(t => (
                         <button
                           key={t}
@@ -2142,7 +2142,7 @@ export default function AiIntelligenceDrawer({
                             background: 'rgba(59, 130, 246, 0.15)',
                             border: '1px solid rgba(59, 130, 246, 0.3)',
                             color: 'var(--accent-sky)',
-                            fontSize: '9.5px',
+                            fontSize: '12px',
                             fontFamily: 'var(--font-mono)',
                             fontWeight: '700',
                             cursor: 'pointer'
@@ -2170,7 +2170,7 @@ export default function AiIntelligenceDrawer({
               </div>
 
               <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10.5px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', textAlign: 'left' }}>
                       <th style={{ padding: '6px 8px' }}>KELAS ASET</th>
@@ -2204,7 +2204,7 @@ export default function AiIntelligenceDrawer({
               borderRadius: '6px',
               background: 'rgba(255, 255, 255, 0.02)',
               border: '1px solid rgba(255, 255, 255, 0.06)',
-              fontSize: '10px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono, monospace)',
               color: 'var(--text-muted, #94a3b8)'
             }}>
@@ -2216,7 +2216,7 @@ export default function AiIntelligenceDrawer({
                 <span>•</span>
                 <span>Latency: {activeLatency} ms</span>
               </div>
-              <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 Cascade Failover: Ready
               </div>
             </div>

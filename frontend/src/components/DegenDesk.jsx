@@ -32,7 +32,7 @@ function fmtAge(minutes) {
 
 const VERDICT_STYLE = {
   HIGH_RISK: { bg: 'rgba(244, 63, 94, 0.15)', color: '#fb7185', border: 'rgba(244, 63, 94, 0.4)', label: '🚨 RISIKO TINGGI' },
-  CAUTION: { bg: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', border: 'rgba(245, 158, 11, 0.4)', label: '⚠️ WASPADA' },
+  CAUTION: { bg: 'rgba(245, 158, 11, 0.15)', color: 'var(--accent-gold-bright)', border: 'rgba(245, 158, 11, 0.4)', label: '⚠️ WASPADA' },
   CLEAN: { bg: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-mint)', border: 'rgba(16, 185, 129, 0.4)', label: '✅ RELATIF AMAN' },
 };
 
@@ -96,28 +96,28 @@ export default function DegenDesk({ onOpenSwap }) {
               DEGEN DESK : MULTI-CHAIN MEMECOIN RADAR
             </span>
           </div>
-          <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '3px' }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '3px' }}>
             pump.fun live launches + DexScreener boosted board · Solana / Robinhood Chain / BSC-Aster / HyperEVM
             {lastUpdate && ` · update ${lastUpdate.toLocaleTimeString('id-ID')}`}
           </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '10.5px', fontWeight: '700', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', fontWeight: '700', color: 'var(--text-secondary)', cursor: 'pointer' }}>
             <input type="checkbox" checked={hideHighRisk} onChange={e => setHideHighRisk(e.target.checked)} />
             Sembunyikan Risiko Tinggi
           </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '10.5px', fontWeight: '700', color: 'var(--text-secondary)' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', fontWeight: '700', color: 'var(--text-secondary)' }}>
             Min. Curve
             <select
               value={minProgress}
               onChange={e => setMinProgress(Number(e.target.value))}
-              style={{ padding: '3px 6px', borderRadius: '6px', fontSize: '10.5px' }}
+              style={{ padding: '3px 6px', borderRadius: '6px', fontSize: '12px' }}
             >
               {[0, 10, 25, 50].map(p => <option key={p} value={p}>{p}%</option>)}
             </select>
           </label>
-          <button className="telemetry-btn" onClick={load} style={{ fontSize: '10.5px', padding: '5px 10px' }}>
+          <button className="telemetry-btn" onClick={load} style={{ fontSize: '12px', padding: '5px 10px' }}>
             🔄 Refresh
           </button>
         </div>
@@ -129,7 +129,7 @@ export default function DegenDesk({ onOpenSwap }) {
         border: '1px solid rgba(244, 63, 94, 0.3)',
         borderRadius: '10px',
         padding: '10px 14px',
-        fontSize: '10.5px',
+        fontSize: '12px',
         color: '#fb7185',
         lineHeight: 1.6
       }}>
@@ -140,7 +140,7 @@ export default function DegenDesk({ onOpenSwap }) {
       </div>
 
       {error && (
-        <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.35)', borderRadius: '10px', padding: '10px 14px', fontSize: '11px', color: '#fbbf24' }}>
+        <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.35)', borderRadius: '10px', padding: '10px 14px', fontSize: '12px', color: 'var(--accent-gold-bright)' }}>
           📡 {error}
         </div>
       )}
@@ -149,7 +149,7 @@ export default function DegenDesk({ onOpenSwap }) {
       <div className="telemetry-panel" style={{ borderRadius: '14px', overflow: 'hidden' }}>
         <div className="telemetry-header">
           <span>🚀 PELUNCURAN BARU (pump.fun Live) — {visible.length} token</span>
-          {loading && <span style={{ color: 'var(--accent-sky)', fontSize: '10px' }}>memuat…</span>}
+          {loading && <span style={{ color: 'var(--accent-sky)', fontSize: '12px' }}>memuat…</span>}
         </div>
 
         <div style={{ overflowX: 'auto' }}>
@@ -178,14 +178,14 @@ export default function DegenDesk({ onOpenSwap }) {
                           : <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', display: 'inline-block' }} />}
                         <div>
                           <div style={{ fontWeight: '800', fontSize: '12px' }}>${t.symbol}</div>
-                          <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {t.name}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td style={{ fontFamily: 'var(--font-mono)', fontSize: '11px' }}>{fmtAge(t.ageMinutes)}</td>
-                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: '700' }}>
+                    <td style={{ fontFamily: 'var(--font-mono)', fontSize: '12px' }}>{fmtAge(t.ageMinutes)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: '700' }}>
                       {fmtUsd(t.mcapUsd)}
                     </td>
                     <td style={{ textAlign: 'right' }}>
@@ -197,16 +197,16 @@ export default function DegenDesk({ onOpenSwap }) {
                             background: t.progress >= 100 ? 'var(--accent-emerald)' : t.progress > 50 ? 'var(--accent-sky)' : 'var(--accent-gold)'
                           }} />
                         </div>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10.5px', fontWeight: '700', minWidth: '32px' }}>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: '700', minWidth: '32px' }}>
                           {t.progress}%
                         </span>
                       </div>
                     </td>
                     <td>
-                      <span className="badge" style={{ background: v.bg, color: v.color, borderColor: v.border, fontSize: '9px' }}>
+                      <span className="badge" style={{ background: v.bg, color: v.color, borderColor: v.border, fontSize: '12px' }}>
                         {v.label}
                       </span>
-                      <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '3px', maxWidth: '230px', whiteSpace: 'normal', lineHeight: 1.4 }}>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '3px', maxWidth: '230px', whiteSpace: 'normal', lineHeight: 1.4 }}>
                         {t.rug.flags.slice(0, 2).map((f, i) => <div key={i}>• {f.text}</div>)}
                       </div>
                     </td>
@@ -215,7 +215,7 @@ export default function DegenDesk({ onOpenSwap }) {
                         href={t.pumpUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{ fontSize: '10px', color: '#c084fc', fontWeight: '700', textDecoration: 'none' }}
+                        style={{ fontSize: '12px', color: 'var(--accent-purple-light)', fontWeight: '700', textDecoration: 'none' }}
                       >
                         pump.fun ↗
                       </a>
@@ -225,7 +225,7 @@ export default function DegenDesk({ onOpenSwap }) {
               })}
               {!loading && visible.length === 0 && (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: 'center', padding: '24px', color: 'var(--text-muted)', fontSize: '11.5px' }}>
+                  <td colSpan={6} style={{ textAlign: 'center', padding: '24px', color: 'var(--text-muted)', fontSize: '12px' }}>
                     Tidak ada token yang lolos filter saat ini. Coba turunkan filter atau matikan "Sembunyikan Risiko Tinggi".
                   </td>
                 </tr>
@@ -239,7 +239,7 @@ export default function DegenDesk({ onOpenSwap }) {
       <div className="telemetry-panel" style={{ borderRadius: '14px', overflow: 'hidden' }}>
         <div className="telemetry-header">
           <span>📣 TOKEN DI-PROMOSIKAN (DexScreener Boosts) — {boosted.length} token</span>
-          <span style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontWeight: '600' }}>
+          <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '600' }}>
             Boost = promosi berbayar, bukan sinyal beli
           </span>
         </div>
@@ -257,33 +257,33 @@ export default function DegenDesk({ onOpenSwap }) {
                 gap: '6px'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '10px', fontWeight: '800', color: chain.color }}>
+                  <span style={{ fontSize: '12px', fontWeight: '800', color: chain.color }}>
                     {chain.icon} {chain.label}
                   </span>
                   <span style={{
-                    fontSize: '9px', fontWeight: '700', fontFamily: 'var(--font-mono)',
+                    fontSize: '12px', fontWeight: '700', fontFamily: 'var(--font-mono)',
                     background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '4px'
                   }}>
                     boost {b.boostAmount}
                   </span>
                 </div>
-                <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', lineHeight: 1.45, maxHeight: '58px', overflow: 'hidden' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.45, maxHeight: '58px', overflow: 'hidden' }}>
                   {b.description}
                 </div>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   <a href={b.url} target="_blank" rel="noopener noreferrer"
-                     style={{ fontSize: '9.5px', color: 'var(--accent-sky)', fontWeight: '700', textDecoration: 'none' }}>
+                     style={{ fontSize: '12px', color: 'var(--accent-sky)', fontWeight: '700', textDecoration: 'none' }}>
                     Chart ↗
                   </a>
                   {b.links.filter(l => l.type === 'twitter').map((l, i) => (
                     <a key={i} href={l.url} target="_blank" rel="noopener noreferrer"
-                       style={{ fontSize: '9.5px', color: '#c084fc', fontWeight: '700', textDecoration: 'none' }}>
+                       style={{ fontSize: '12px', color: 'var(--accent-purple-light)', fontWeight: '700', textDecoration: 'none' }}>
                       X ↗
                     </a>
                   ))}
                   {b.links.filter(l => l.url && !l.type).slice(0, 1).map((l, i) => (
                     <a key={i} href={l.url} target="_blank" rel="noopener noreferrer"
-                       style={{ fontSize: '9.5px', color: 'var(--accent-mint)', fontWeight: '700', textDecoration: 'none' }}>
+                       style={{ fontSize: '12px', color: 'var(--accent-mint)', fontWeight: '700', textDecoration: 'none' }}>
                       Site ↗
                     </a>
                   ))}
@@ -292,7 +292,7 @@ export default function DegenDesk({ onOpenSwap }) {
             );
           })}
           {!loading && boosted.length === 0 && (
-            <div style={{ color: 'var(--text-muted)', fontSize: '11px', padding: '8px' }}>
+            <div style={{ color: 'var(--text-muted)', fontSize: '12px', padding: '8px' }}>
               Tidak ada data boost yang bisa dimuat.
             </div>
           )}
@@ -304,7 +304,7 @@ export default function DegenDesk({ onOpenSwap }) {
         <div style={{ fontSize: '12px', fontWeight: '800', marginBottom: '8px' }}>
           🔌 RUTE EKSEKUSI (status integrasi sebenarnya)
         </div>
-        <table className="telemetry-table" style={{ fontSize: '11px' }}>
+        <table className="telemetry-table" style={{ fontSize: '12px' }}>
           <thead>
             <tr>
               <th>Chain</th>
@@ -316,21 +316,21 @@ export default function DegenDesk({ onOpenSwap }) {
             <tr>
               <td>🟣 Solana</td>
               <td>Jupiter Aggregator</td>
-              <td><span className="badge badge-alert" style={{ fontSize: '9px' }}>DEMO : belum menandatangani tx</span></td>
+              <td><span className="badge badge-alert" style={{ fontSize: '12px' }}>DEMO : belum menandatangani tx</span></td>
             </tr>
             <tr>
               <td>🪶 Robinhood Chain</td>
               <td>DEX native (Uniswap V3 fork per DexScreener)</td>
-              <td><span className="badge" style={{ fontSize: '9px' }}>HANYA RADAR DATA</span></td>
+              <td><span className="badge" style={{ fontSize: '12px' }}>HANYA RADAR DATA</span></td>
             </tr>
             <tr>
               <td>🟡 BSC / ⚡ HyperEVM</td>
               <td>Aster DEX (perpetual & spot)</td>
-              <td><span className="badge" style={{ fontSize: '9px' }}>HANYA RADAR DATA</span></td>
+              <td><span className="badge" style={{ fontSize: '12px' }}>HANYA RADAR DATA</span></td>
             </tr>
           </tbody>
         </table>
-        <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '8px', lineHeight: 1.6 }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px', lineHeight: 1.6 }}>
           Eksekusi nyata di Solana memerlukan server penandatanganan (private key tidak boleh ada di browser)
           atau persetujuan dompet lewat Jupiter. Robinhood Chain dan Aster belum punya adapter; keduanya
           masih radar pasif sampai adapter dan izin API-nya dibangun.

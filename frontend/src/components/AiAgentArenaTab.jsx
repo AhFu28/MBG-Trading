@@ -735,7 +735,7 @@ function SparklineChart({ data = [], isPositive, color = 'var(--accent-emerald)'
 
   // Strict check: if isPositive is supplied, use it; otherwise check end vs start
   const positive = isPositive !== undefined ? isPositive : (pointsData[pointsData.length - 1] >= pointsData[0]);
-  const strokeColor = positive ? 'var(--accent-emerald)' : '#ef4444';
+  const strokeColor = positive ? 'var(--accent-emerald)' : 'var(--accent-red)';
   const instanceId = useId().replace(/[^a-zA-Z0-9]/g, '');
   const fillGradientId = `grad_${positive ? 'pos' : 'neg'}_${instanceId}`;
 
@@ -1018,13 +1018,13 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
     <div style={{ background: '#090d16', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '10px 12px', margin: '8px 0' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '5px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '10px', fontWeight: '900', color: color }}>📈 SIMULASI STRATEGI ENTRY, TP & SL</span>
-          <span style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>| {conf.title}</span>
+          <span style={{ fontSize: '12px', fontWeight: '900', color: color }}>📈 SIMULASI STRATEGI ENTRY, TP & SL</span>
+          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>| {conf.title}</span>
         </div>
-        <div style={{ display: 'flex', gap: '8px', fontSize: '8.5px', fontFamily: 'var(--font-mono)' }}>
+        <div style={{ display: 'flex', gap: '8px', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
           <span style={{ color: 'var(--accent-emerald)' }}>● TP (Target Profit)</span>
           <span style={{ color: '#3b82f6' }}>● ENTRY Point</span>
-          <span style={{ color: '#ef4444' }}>● SL (Stop Loss)</span>
+          <span style={{ color: 'var(--accent-red)' }}>● SL (Stop Loss)</span>
         </div>
       </div>
 
@@ -1046,8 +1046,8 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
           ⚡ {conf.entryLabel}
         </text>
 
-        <line x1="30" y1={ySl} x2={width - 30} y2={ySl} stroke="#ef4444" strokeWidth="1.6" strokeDasharray="4 2" />
-        <rect x={width - 200} y={ySl - 9} width="195" height="17" fill="rgba(239, 68, 68, 0.22)" rx="3" stroke="#ef4444" strokeWidth="0.8" />
+        <line x1="30" y1={ySl} x2={width - 30} y2={ySl} stroke="var(--accent-red)" strokeWidth="1.6" strokeDasharray="4 2" />
+        <rect x={width - 200} y={ySl - 9} width="195" height="17" fill="rgba(239, 68, 68, 0.22)" rx="3" stroke="var(--accent-red)" strokeWidth="0.8" />
         <text x={width - 192} y={ySl + 3} fill="#f87171" fontSize="8" fontFamily="var(--font-mono)" fontWeight="700">
           🛡️ {conf.slLabel}
         </text>
@@ -1061,7 +1061,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
           const yClose = toY(c.c);
           const top = Math.min(yOpen, yClose);
           const bodyHeight = Math.max(Math.abs(yClose - yOpen), 3);
-          const candleColor = c.isBull ? 'var(--accent-emerald)' : '#ef4444';
+          const candleColor = c.isBull ? 'var(--accent-emerald)' : 'var(--accent-red)';
 
           return (
             <g key={idx}>
@@ -1070,7 +1070,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
 
               {c.isEntry && (
                 <g>
-                  <circle cx={cx} cy={yClose} r="3.5" fill="#3b82f6" stroke="#ffffff" strokeWidth="1.5" />
+                  <circle cx={cx} cy={yClose} r="3.5" fill="#3b82f6" stroke="var(--text-inverse)" strokeWidth="1.5" />
                   <rect x={cx - 30} y={yClose + 10} width="60" height="13" fill="#1e3a8a" rx="2" stroke="#3b82f6" strokeWidth="0.8" />
                   <text x={cx} y={yClose + 19} fill="#93c5fd" fontSize="7" fontWeight="800" textAnchor="middle" fontFamily="var(--font-mono)">
                     BUY ENTRY
@@ -1088,7 +1088,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
 
               {c.isExit && (
                 <g>
-                  <circle cx={cx} cy={yClose} r="3.5" fill="var(--accent-emerald)" stroke="#ffffff" strokeWidth="1.5" />
+                  <circle cx={cx} cy={yClose} r="3.5" fill="var(--accent-emerald)" stroke="var(--text-inverse)" strokeWidth="1.5" />
                   <rect x={cx - 30} y={yClose - 20} width="60" height="13" fill="#064e3b" rx="2" stroke="var(--accent-emerald)" strokeWidth="0.8" />
                   <text x={cx} y={yClose - 11} fill="#6ee7b7" fontSize="7" fontWeight="800" textAnchor="middle" fontFamily="var(--font-mono)">
                     TP HIT
@@ -1100,7 +1100,7 @@ function StrategySimulationChart({ agentId, color = '#3b82f6', width = 640, heig
         })}
       </svg>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', fontSize: '8.5px', color: 'var(--text-muted)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', fontSize: '12px', color: 'var(--text-muted)' }}>
         <span>Rasio R:R Terencana: <strong style={{ color: 'var(--accent-emerald)' }}>1 : 3.0+ (Positive Asymmetric Edge)</strong></span>
         <span>Eksekusi: <strong style={{ color: 'var(--text-primary)' }}>Limit Order + Dynamic Trailing Invalidation</strong></span>
       </div>
@@ -1717,7 +1717,7 @@ const INITIAL_AGENTS = [
     description: 'Event-driven momentum kilat menangkap ledakan volatilitas berita makro (CPI, NFP, Fed FOMC).',
     strategy: 'BREAKOUT_MOMENTUM',
     avatar: '🔥',
-    color: '#ef4444',
+    color: 'var(--accent-red)',
     tier: 'BASE',
     dnaBadge: 'BASE',
     dnaIcons: ['🔥'],
@@ -1755,7 +1755,7 @@ const INITIAL_AGENTS = [
     description: 'Kokoh dan disiplin memanfaatkan pantulan deviasi ekstrem Bollinger Bands dan support saham defensif.',
     strategy: 'MACRO_TREND_FOLLOWING',
     avatar: '⛰️',
-    color: '#eab308',
+    color: 'var(--accent-gold-bright)',
     tier: 'BASE',
     dnaBadge: 'BASE',
     dnaIcons: ['⛰️'],
@@ -4146,12 +4146,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               className="arena-toast-item"
               style={{
                 background: 'rgba(15, 23, 42, 0.95)',
-                color: '#ffffff',
+                color: 'var(--text-inverse)',
                 padding: '8px 14px',
                 borderRadius: 'var(--radius-sm)',
                 border: '1px solid rgba(59, 130, 246, 0.4)',
                 boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
-                fontSize: '11px',
+                fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: '700',
                 display: 'flex',
@@ -4194,12 +4194,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
             {/* Brand Title + Badge */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <span style={{ fontSize: '13px' }}>⚔️</span>
-              <span style={{ fontSize: '11px', fontWeight: '900', letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-primary)' }}>
+              <span style={{ fontSize: '12px', fontWeight: '900', letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-primary)' }}>
                 AI Multi-Agent Arena
               </span>
               <span
                 style={{
-                  fontSize: '8px',
+                  fontSize: '12px',
                   padding: '1px 5px',
                   borderRadius: '3px',
                   background: 'rgba(59, 130, 246, 0.15)',
@@ -4219,7 +4219,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <span
                 className="badge"
                 style={{
-                  fontSize: '8px',
+                  fontSize: '12px',
                   padding: '1px 5px',
                   background: isIdxMarketOpen() ? 'rgba(22, 163, 74, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                   color: isIdxMarketOpen() ? 'var(--accent-green)' : 'var(--accent-rust)',
@@ -4233,7 +4233,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <span
                 className="badge"
                 style={{
-                  fontSize: '8px',
+                  fontSize: '12px',
                   padding: '1px 5px',
                   background: isForexCommodityOpen() ? 'rgba(22, 163, 74, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                   color: isForexCommodityOpen() ? 'var(--accent-green)' : 'var(--accent-rust)',
@@ -4247,7 +4247,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <span
                 className="badge"
                 style={{
-                  fontSize: '8px',
+                  fontSize: '12px',
                   padding: '1px 5px',
                   background: isUsMarketOpen() ? 'rgba(22, 163, 74, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                   color: isUsMarketOpen() ? 'var(--accent-green)' : 'var(--accent-rust)',
@@ -4261,7 +4261,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <span
                 className="badge"
                 style={{
-                  fontSize: '8px',
+                  fontSize: '12px',
                   padding: '1px 5px',
                   background: 'rgba(59, 130, 246, 0.15)',
                   color: 'var(--accent-blue)',
@@ -4280,7 +4280,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <span
                 className="badge"
                 style={{
-                  fontSize: '8px',
+                  fontSize: '12px',
                   background: 'rgba(22, 163, 74, 0.12)',
                   color: 'var(--accent-green)',
                   padding: '1px 5px',
@@ -4294,9 +4294,9 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <span
                 className="badge"
                 style={{
-                  fontSize: '8px',
+                  fontSize: '12px',
                   background: 'rgba(168, 85, 247, 0.15)',
-                  color: '#c084fc',
+                  color: 'var(--accent-purple-light)',
                   border: '1px solid rgba(168, 85, 247, 0.35)',
                   padding: '1px 5px'
                 }}
@@ -4306,7 +4306,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
               <span
                 style={{
-                  fontSize: '8.5px',
+                  fontSize: '12px',
                   color: 'var(--accent-blue)',
                   fontFamily: 'var(--font-mono)',
                   fontWeight: '700'
@@ -4334,18 +4334,18 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 padding: '2px 8px',
                 minHeight: '22px',
                 borderRadius: 'var(--radius-sm)',
-                fontSize: '8.5px',
+                fontSize: '12px',
                 fontWeight: '800',
                 fontFamily: 'var(--font-mono)',
                 cursor: 'pointer',
                 border: isRunning ? '1px solid rgba(239, 68, 68, 0.4)' : 'none',
                 background: isRunning ? 'rgba(239, 68, 68, 0.15)' : 'var(--accent-green)',
-                color: isRunning ? 'var(--accent-rust)' : '#ffffff',
+                color: isRunning ? 'var(--accent-rust)' : 'var(--text-inverse)',
                 boxShadow: !isRunning ? '0 0 8px rgba(22, 163, 74, 0.35)' : 'none'
               }}
               title={isRunning ? 'Jeda seluruh eksekusi arena bot' : 'Jalankan arena multi-agent'}
             >
-              <span style={{ width: 5, height: 5, borderRadius: '50%', background: isRunning ? 'var(--accent-rust)' : '#ffffff', display: 'inline-block' }} />
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: isRunning ? 'var(--accent-rust)' : 'var(--text-inverse)', display: 'inline-block' }} />
               <span>{isRunning ? '⏸ JEDA' : '▶ RUN'}</span>
             </button>
 
@@ -4365,11 +4365,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 gap: '3px',
                 padding: '2px 6px',
                 minHeight: '22px',
-                fontSize: '8.5px',
+                fontSize: '12px',
                 fontWeight: '800',
-                color: isKillSwitchActive ? '#ffffff' : 'var(--accent-rust)',
-                background: isKillSwitchActive ? '#ef4444' : 'rgba(239, 68, 68, 0.1)',
-                borderColor: isKillSwitchActive ? '#ef4444' : 'rgba(239, 68, 68, 0.35)',
+                color: isKillSwitchActive ? 'var(--text-inverse)' : 'var(--accent-rust)',
+                background: isKillSwitchActive ? 'var(--accent-red)' : 'rgba(239, 68, 68, 0.1)',
+                borderColor: isKillSwitchActive ? 'var(--accent-red)' : 'rgba(239, 68, 68, 0.35)',
                 boxShadow: isKillSwitchActive ? '0 0 8px rgba(239, 68, 68, 0.5)' : 'none'
               }}
               title="Emergency Kill Switch: Blokir seluruh order baru secara instan"
@@ -4388,7 +4388,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 gap: '3px',
                 padding: '2px 7px',
                 minHeight: '22px',
-                fontSize: '8.5px',
+                fontSize: '12px',
                 fontWeight: '800',
                 color: showBrokerDesk ? 'var(--accent-gold)' : 'var(--text-secondary)',
                 background: showBrokerDesk ? 'rgba(245, 158, 11, 0.15)' : 'var(--bg-panel-subtle)',
@@ -4407,7 +4407,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               style={{
                 padding: '2px 6px',
                 minHeight: '22px',
-                fontSize: '8.5px',
+                fontSize: '12px',
                 fontWeight: '700',
                 color: 'var(--accent-rust)',
                 borderColor: 'rgba(239, 68, 68, 0.3)'
@@ -4435,12 +4435,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 border: '1px solid rgba(255, 255, 255, 0.07)'
               }}
             >
-              <span style={{ fontSize: '8px', fontWeight: '900', color: 'var(--accent-gold)', letterSpacing: '0.04em' }}>
+              <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--accent-gold)', letterSpacing: '0.04em' }}>
                 ⚙️ PARAM:
               </span>
 
               {/* Modal / Bot */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '12px' }}>
                 <label htmlFor="select-capital-per-bot" style={{ color: 'var(--text-secondary)', fontWeight: '700', cursor: 'pointer' }}>Modal:</label>
                 <select
                   id="select-capital-per-bot"
@@ -4449,7 +4449,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   onChange={e => handleApplyPresetCapital(Number(e.target.value))}
                   style={{
                     padding: '1px 4px',
-                    fontSize: '8.5px',
+                    fontSize: '12px',
                     minHeight: '22px',
                     fontFamily: 'var(--font-mono)',
                     borderRadius: '3px',
@@ -4470,7 +4470,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               </div>
 
               {/* Risk % */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '12px' }}>
                 <label htmlFor="select-risk-pct" style={{ color: 'var(--text-muted)', cursor: 'pointer' }}>Risk:</label>
                 <select
                   id="select-risk-pct"
@@ -4479,7 +4479,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   onChange={e => setRiskPerTradePct(Number(e.target.value))}
                   style={{
                     padding: '1px 3px',
-                    fontSize: '8.5px',
+                    fontSize: '12px',
                     minHeight: '22px',
                     borderRadius: '3px',
                     background: 'var(--bg-panel-subtle)',
@@ -4495,8 +4495,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               </div>
 
               {/* Max Pos */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
-                <label htmlFor="input-max-positions" style={{ fontSize: '8.5px', color: 'var(--text-secondary)', fontWeight: '700', cursor: 'pointer' }}>Max Pos:</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '12px' }}>
+                <label htmlFor="input-max-positions" style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '700', cursor: 'pointer' }}>Max Pos:</label>
                 <input
                   id="input-max-positions"
                   className="arena-input"
@@ -4537,7 +4537,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   style={{
                     width: '28px',
                     padding: '1px 3px',
-                    fontSize: '8.5px',
+                    fontSize: '12px',
                     minHeight: '22px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: '800',
@@ -4561,7 +4561,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   style={{
                     padding: '1px 4px',
                     minHeight: '22px',
-                    fontSize: '8px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: '800',
                     borderRadius: '3px',
@@ -4577,7 +4577,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               </div>
 
               {/* Mode Eksekusi */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '12px' }}>
                 <label htmlFor="select-execution-mode" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Mode:</label>
                 <select
                   id="select-execution-mode"
@@ -4590,12 +4590,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   }}
                   style={{
                     padding: '1px 3px',
-                    fontSize: '8.5px',
+                    fontSize: '12px',
                     minHeight: '22px',
                     borderRadius: '3px',
                     background: arenaExecutionMode === 'SPOT_ONLY' ? 'rgba(34, 197, 94, 0.15)' : (arenaExecutionMode === 'FUTURES_ONLY' ? 'rgba(168, 85, 247, 0.15)' : 'var(--bg-panel-subtle)'),
                     border: arenaExecutionMode === 'SPOT_ONLY' ? '1px solid var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '1px solid #a855f7' : 'var(--border-hairline)'),
-                    color: arenaExecutionMode === 'SPOT_ONLY' ? 'var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? '#c084fc' : 'var(--text-primary)'),
+                    color: arenaExecutionMode === 'SPOT_ONLY' ? 'var(--accent-green)' : (arenaExecutionMode === 'FUTURES_ONLY' ? 'var(--accent-purple-light)' : 'var(--text-primary)'),
                     fontWeight: '800',
                     cursor: 'pointer'
                   }}
@@ -4619,12 +4619,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 border: '1px solid rgba(255, 255, 255, 0.07)'
               }}
             >
-              <span style={{ fontSize: '8px', fontWeight: '900', color: 'var(--accent-blue)', letterSpacing: '0.04em' }}>
+              <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--accent-blue)', letterSpacing: '0.04em' }}>
                 👁️ VIEW:
               </span>
 
               {/* Urutan Bot */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '12px' }}>
                 <label htmlFor="select-agent-sort" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Urut:</label>
                 <select
                   id="select-agent-sort"
@@ -4632,7 +4632,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   onChange={e => setAgentSortBy(e.target.value)}
                   style={{
                     padding: '1px 4px',
-                    fontSize: '8.5px',
+                    fontSize: '12px',
                     minHeight: '22px',
                     fontFamily: 'var(--font-mono)',
                     borderRadius: '3px',
@@ -4651,7 +4651,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               </div>
 
               {/* Grafik Timeframe */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '12px' }}>
                 <label htmlFor="select-chart-timeframe" style={{ color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer' }}>Grafik:</label>
                 <select
                   id="select-chart-timeframe"
@@ -4663,7 +4663,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   }}
                   style={{
                     padding: '1px 4px',
-                    fontSize: '8.5px',
+                    fontSize: '12px',
                     minHeight: '22px',
                     fontFamily: 'var(--font-mono)',
                     borderRadius: '3px',
@@ -4694,7 +4694,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 style={{
                   padding: '1px 5px',
                   minHeight: '22px',
-                  fontSize: '8.5px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   fontWeight: '800',
                   borderRadius: '3px',
@@ -4723,7 +4723,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               flexWrap: 'wrap'
             }}
           >
-            <span style={{ fontSize: '8px', fontWeight: '900', color: '#c084fc', letterSpacing: '0.04em', marginRight: '2px' }}>
+            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--accent-purple-light)', letterSpacing: '0.04em', marginRight: '2px' }}>
               INTEL:
             </span>
 
@@ -4731,7 +4731,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               id="btn-profil-filosofi"
               onClick={() => setPhilosophyModalOpen(true)}
               className="telemetry-btn"
-              style={{ fontSize: '8.5px', padding: '2px 5px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-blue)' }}
+              style={{ fontSize: '12px', padding: '2px 5px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-blue)' }}
               title="Pelajari Profil, Filosofi & Strategi 4 Elemen"
             >
               <span>🧠</span>
@@ -4745,7 +4745,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 setRulesModalOpen(true);
               }}
               className="telemetry-btn"
-              style={{ fontSize: '8.5px', padding: '2px 5px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-gold)' }}
+              style={{ fontSize: '12px', padding: '2px 5px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-gold)' }}
               title="Panduan Terpadu: Aturan Trading & Status Siklus Hidup Bot"
             >
               <span>📋</span>
@@ -4756,7 +4756,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               id="btn-agent-review"
               onClick={() => setAgentReviewModalOpen(true)}
               className="telemetry-btn"
-              style={{ fontSize: '8.5px', padding: '2px 5px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-sky-soft)' }}
+              style={{ fontSize: '12px', padding: '2px 5px', minHeight: '22px', display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--accent-sky-soft)' }}
               title="Buka Analisis Kinerja & Review Sinyal"
             >
               <span>📊</span>
@@ -4768,7 +4768,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               onClick={() => setSessionRecapModalOpen(true)}
               className="telemetry-btn"
               style={{
-                fontSize: '8.5px',
+                fontSize: '12px',
                 padding: '2px 5px',
                 minHeight: '22px',
                 display: 'flex',
@@ -4810,11 +4810,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <span style={{ fontSize: '13px', fontWeight: '900', color: 'var(--accent-gold)', letterSpacing: '0.04em' }}>
                 💼 INSTITUTIONAL EXECUTION & PAPER BROKER DESK
               </span>
-              <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-green)', fontSize: '8.5px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+              <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-green)', fontSize: '12px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
                 VERIFIED GATEWAY
               </span>
               {isKillSwitchActive && (
-                <span className="badge" style={{ background: '#ef4444', color: '#fff', fontSize: '8.5px', fontWeight: '900' }}>
+                <span className="badge" style={{ background: 'var(--accent-red)', color: '#fff', fontSize: '12px', fontWeight: '900' }}>
                   🚨 KILL SWITCH ENGAGED
                 </span>
               )}
@@ -4826,7 +4826,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 onClick={() => onOpenExecution && onOpenExecution()}
                 style={{
                   padding: '4px 10px',
-                  fontSize: '9.5px',
+                  fontSize: '12px',
                   fontWeight: '800',
                   fontFamily: 'var(--font-mono)',
                   background: 'var(--accent-blue)',
@@ -4848,7 +4848,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 }}
                 style={{
                   padding: '4px 8px',
-                  fontSize: '9px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   background: 'transparent',
                   border: 'var(--border-hairline)',
@@ -4865,25 +4865,25 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
           {/* Metric Bar */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px', marginBottom: '12px' }}>
             <div style={{ background: 'var(--bg-panel-subtle)', padding: '6px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>SALDO KAS IDR</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>SALDO KAS IDR</div>
               <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                 {formatIdr(paperPortfolio.cashIdr)}
               </div>
             </div>
             <div style={{ background: 'var(--bg-panel-subtle)', padding: '6px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>SALDO KAS USDT</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>SALDO KAS USDT</div>
               <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                 {formatUsd(paperPortfolio.cashUsdt)}
               </div>
             </div>
             <div style={{ background: 'var(--bg-panel-subtle)', padding: '6px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>POSISI AKTIF</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>POSISI AKTIF</div>
               <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-blue)', fontFamily: 'var(--font-mono)' }}>
                 {paperPortfolio.positions?.length || 0} Terbuka
               </div>
             </div>
             <div style={{ background: 'var(--bg-panel-subtle)', padding: '6px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>TOTAL TRADES DIRESOLUSI</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>TOTAL TRADES DIRESOLUSI</div>
               <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
                 {paperPortfolio.tradeHistory?.length || 0} Closed
               </div>
@@ -4892,12 +4892,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
           {/* Active Positions Table */}
           {(!paperPortfolio.positions || paperPortfolio.positions.length === 0) ? (
-            <div style={{ padding: '16px', textAlign: 'center', background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', color: 'var(--text-muted)', fontSize: '11px' }}>
+            <div style={{ padding: '16px', textAlign: 'center', background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', color: 'var(--text-muted)', fontSize: '12px' }}>
               Belum ada posisi paper/live aktif yang dieksekusi. Tekan tombol <strong>[+ Buka Tiket Order]</strong> untuk membuka tiket trading manual ke sandbox.
             </div>
           ) : (
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                 <thead>
                   <tr style={{ borderBottom: 'var(--border-hairline)', color: 'var(--text-muted)', textAlign: 'left', background: 'rgba(255,255,255,0.02)' }}>
                     <th style={{ padding: '5px 8px' }}>TICKER / PASAR</th>
@@ -4951,7 +4951,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                       <tr key={p.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                         <td style={{ padding: '6px 8px' }}>
                           <strong style={{ color: 'var(--text-primary)' }}>{p.symbol}</strong>
-                          <span style={{ marginLeft: '4px', fontSize: '8px', color: 'var(--text-muted)' }}>({p.market})</span>
+                          <span style={{ marginLeft: '4px', fontSize: '12px', color: 'var(--text-muted)' }}>({p.market})</span>
                         </td>
                         <td style={{ padding: '6px 8px' }}>
                           <span style={{
@@ -4960,7 +4960,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                             background: dirRaw === '' ? 'rgba(255,255,255,0.06)' : (isLongPos ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)'),
                             color: dirRaw === '' ? 'var(--text-muted)' : (isLongPos ? 'var(--accent-green)' : 'var(--accent-rust)'),
                             fontWeight: '800',
-                            fontSize: '8.5px'
+                            fontSize: '12px'
                           }}>
                             {dirLabel} {posLotText}
                           </span>
@@ -4971,22 +4971,22 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                         <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: '700' }}>
                           {formatInstrumentPrice(p.currentPrice || p.entryPrice, p.market, p.symbol)}
                         </td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right', fontSize: '9px' }}>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', fontSize: '12px' }}>
                           <span style={{ color: 'var(--accent-rust)' }}>SL: {formatInstrumentPrice(p.effectiveSl || p.slPrice || p.stopLoss, p.market, p.symbol)}</span>
                           <span style={{ color: 'var(--accent-green)', marginLeft: '6px' }}>TP: {formatInstrumentPrice(p.tp1Price || p.target1, p.market, p.symbol)}</span>
                         </td>
                         <td style={{ padding: '6px 8px', textAlign: 'center' }}>
                           {p.hasHitTp1 ? (
-                            <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-green)', fontSize: '8px' }}>
+                            <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-green)', fontSize: '12px' }}>
                               🔒 BE LOCKED
                             </span>
                           ) : (
-                            <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>STANDARD SL</span>
+                            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>STANDARD SL</span>
                           )}
                         </td>
                         <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: '800', color: pnlColor }}>
                           {p.market === 'IDX' ? formatIdr(p.floatingPnL || 0) : formatUsd(p.floatingPnL || 0)}
-                          <div style={{ fontSize: '8px' }}>({p.floatingPnLPct || 0}%)</div>
+                          <div style={{ fontSize: '12px' }}>({p.floatingPnLPct || 0}%)</div>
                         </td>
                         <td style={{ padding: '6px 8px', textAlign: 'center' }}>
                           <button
@@ -5001,7 +5001,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                             }}
                             style={{
                               padding: '2px 6px',
-                              fontSize: '8.5px',
+                              fontSize: '12px',
                               background: 'rgba(239, 68, 68, 0.15)',
                               border: '1px solid rgba(239, 68, 68, 0.3)',
                               color: 'var(--accent-rust)',
@@ -5100,7 +5100,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           </span>
                           {ag.dnaBadge && (
                             <span style={{
-                              fontSize: '9px',
+                              fontSize: '12px',
                               fontFamily: 'var(--font-mono)',
                               fontWeight: '800',
                               padding: '1.5px 4px',
@@ -5113,7 +5113,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                             </span>
                           )}
                           <span style={{
-                            fontSize: '8.5px',
+                            fontSize: '12px',
                             fontFamily: 'var(--font-mono)',
                             padding: '1.5px 4px',
                             borderRadius: '2px',
@@ -5134,7 +5134,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                             return (
                               <span
                                 style={{
-                                  fontSize: '8.5px',
+                                  fontSize: '12px',
                                   fontFamily: 'var(--font-mono)',
                                   padding: '1.5px 4px',
                                   borderRadius: '2px',
@@ -5151,7 +5151,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                             );
                           })()}
                         </div>
-                        <div style={{ fontSize: '9.5px', color: ag.color, fontWeight: '700', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '150px' }}>
+                        <div style={{ fontSize: '12px', color: ag.color, fontWeight: '700', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '150px' }}>
                           {ag.role}
                         </div>
                       </div>
@@ -5165,7 +5165,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           setRulesModalOpen(true);
                         }}
                         style={{ 
-                          fontSize: '8.5px',
+                          fontSize: '12px',
                           padding: '2px 5px',
                           cursor: 'pointer',
                           background: liveStatus.bg,
@@ -5180,7 +5180,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                       <button
                         onClick={() => setEvolutionModal({ isOpen: true, agent: ag })}
                         style={{
-                          fontSize: '8.5px',
+                          fontSize: '12px',
                           fontFamily: 'var(--font-mono)',
                           fontWeight: '700',
                           padding: '2px 5px',
@@ -5211,18 +5211,18 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     gap: '4px'
                   }}>
                     <div>
-                      <div style={{ fontSize: '8px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '700' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '700' }}>
                         Saldo ({chartTimeframe})
                       </div>
-                      <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: isEquityProfit ? 'var(--accent-green)' : 'var(--accent-rust)', lineHeight: 1.1 }}>
-                        {formatIdr(stats.currentBotEquityIdr)} <span style={{ fontSize: '8.5px' }}>({stats.roiPct > 0 ? '+' : ''}{stats.roiPct}%)</span>
+                      <div style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', fontWeight: '800', color: isEquityProfit ? 'var(--accent-green)' : 'var(--accent-rust)', lineHeight: 1.1 }}>
+                        {formatIdr(stats.currentBotEquityIdr)} <span style={{ fontSize: '12px' }}>({stats.roiPct > 0 ? '+' : ''}{stats.roiPct}%)</span>
                       </div>
                     </div>
                     <div style={{ width: '75px', flexShrink: 0 }}>
                       <SparklineChart 
                         data={botEquityCurves[ag.id] || [capitalPerBotIdr]} 
                         isPositive={isEquityProfit} 
-                        color={isEquityProfit ? 'var(--accent-emerald)' : '#ef4444'} 
+                        color={isEquityProfit ? 'var(--accent-emerald)' : 'var(--accent-red)'} 
                         height={18} 
                       />
                     </div>
@@ -5234,7 +5234,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     gridTemplateColumns: 'repeat(4, 1fr)',
                     gap: '2px',
                     textAlign: 'center',
-                    fontSize: '8.5px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)',
                     background: 'var(--bg-panel-subtle)',
                     padding: '4px 2px',
@@ -5242,20 +5242,20 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     border: 'var(--border-hairline)'
                   }}>
                     <div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '8px', fontWeight: '700' }}>TRADE</div>
-                      <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '10px' }}>{stats.total}</div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '12px', fontWeight: '700' }}>TRADE</div>
+                      <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '12px' }}>{stats.total}</div>
                     </div>
                     <div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '8px', fontWeight: '700' }}>WIN RATE</div>
-                      <div style={{ fontWeight: '800', color: 'var(--accent-green)', fontSize: '10px' }}>{stats.winRate}%</div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '12px', fontWeight: '700' }}>WIN RATE</div>
+                      <div style={{ fontWeight: '800', color: 'var(--accent-green)', fontSize: '12px' }}>{stats.winRate}%</div>
                     </div>
                     <div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '8px', fontWeight: '700' }}>PF</div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '12px', fontWeight: '700' }}>PF</div>
                       {/* A ratio from a handful of trades is arithmetic, not
                           evidence. Marked so "PF 16.29" off 97 trades is not
                           read the same as a proven figure. */}
                       <div
-                        style={{ fontWeight: '800', color: isSampleMeaningful(stats.total) ? 'var(--accent-blue)' : 'var(--text-muted)', fontSize: '10px' }}
+                        style={{ fontWeight: '800', color: isSampleMeaningful(stats.total) ? 'var(--accent-blue)' : 'var(--text-muted)', fontSize: '12px' }}
                         title={isSampleMeaningful(stats.total)
                           ? 'Profit factor: laba kotor dibagi rugi kotor'
                           : `Sampel masih kecil (${stats.total} trade). Rasio ini belum bisa dijadikan patokan.`}
@@ -5264,8 +5264,8 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                       </div>
                     </div>
                     <div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '8px', fontWeight: '700' }}>NET GAIN</div>
-                      <div style={{ fontWeight: '800', color: isRealizedProfit ? 'var(--accent-green)' : 'var(--accent-rust)', fontSize: '10px' }}>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '12px', fontWeight: '700' }}>NET GAIN</div>
+                      <div style={{ fontWeight: '800', color: isRealizedProfit ? 'var(--accent-green)' : 'var(--accent-rust)', fontSize: '12px' }}>
                         {stats.netGainIdr > 0 ? '+' : ''}{formatCompactIdr(stats.netGainIdr)}
                       </div>
                     </div>
@@ -5275,7 +5275,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                       is below the confidence threshold, so it is a real caveat
                       rather than permanent boilerplate. */}
                   {!isSampleMeaningful(stats.total) && stats.total > 0 && (
-                    <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.4 }}>
                       * PF dari sampel &lt; {MIN_TRADES_FOR_CONFIDENCE} trade belum bisa dijadikan patokan.
                     </div>
                   )}
@@ -5283,16 +5283,16 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
                 <div style={{ borderTop: 'var(--border-hairline)', paddingTop: '4px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
-                    <span style={{ fontSize: '9.5px', fontWeight: '800', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+                    <span style={{ fontSize: '12px', fontWeight: '800', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
                       ⚡ Posisi ({agentPositions.length})
                     </span>
-                    <span style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                       {isUnlimitedPositions ? '∞' : `Max ${maxPositionsPerBot}`}
                     </span>
                   </div>
 
                   {agentPositions.length === 0 ? (
-                    <div style={{ padding: '6px 8px', textAlign: 'center', background: 'var(--bg-panel-subtle)', borderRadius: '3px', color: 'var(--text-muted)', fontSize: '8.5px', border: '1px dashed rgba(255,255,255,0.06)' }}>
+                    <div style={{ padding: '6px 8px', textAlign: 'center', background: 'var(--bg-panel-subtle)', borderRadius: '3px', color: 'var(--text-muted)', fontSize: '12px', border: '1px dashed rgba(255,255,255,0.06)' }}>
                       ○ Siaga memindai sinyal...
                     </div>
                   ) : (
@@ -5317,34 +5317,34 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                               background: 'var(--bg-panel-subtle)',
                               borderRadius: '3px',
                               borderLeft: `2.5px solid ${isPosProfit ? 'var(--accent-green)' : 'var(--accent-rust)'}`,
-                              fontSize: '8.5px',
+                              fontSize: '12px',
                               fontFamily: 'var(--font-mono)'
                             }}
                           >
                             {/* Baris 1: Symbol, Mode, Dir, Lots, Float PnL, Close button */}
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
-                                <strong style={{ fontSize: '10px' }}>{pos.symbol}</strong>
+                                <strong style={{ fontSize: '12px' }}>{pos.symbol}</strong>
                                 <span style={{
-                                  fontSize: '8px',
+                                  fontSize: '12px',
                                   padding: '1px 4px',
                                   borderRadius: '2px',
                                   background: (pos.executionMode === 'SPOT' || pos.market === 'IDX') ? 'rgba(34, 197, 94, 0.2)' : 'rgba(168, 85, 247, 0.2)',
-                                  color: (pos.executionMode === 'SPOT' || pos.market === 'IDX') ? 'var(--accent-green)' : '#c084fc',
+                                  color: (pos.executionMode === 'SPOT' || pos.market === 'IDX') ? 'var(--accent-green)' : 'var(--accent-purple-light)',
                                   fontWeight: '900',
                                   border: `1px solid ${(pos.executionMode === 'SPOT' || pos.market === 'IDX') ? 'rgba(34, 197, 94, 0.4)' : 'rgba(168, 85, 247, 0.4)'}`
                                 }}>
                                   {(pos.executionMode === 'SPOT' || pos.market === 'IDX') ? 'SPOT' : 'FUT'}
                                 </span>
-                                <span style={{ fontSize: '8px', padding: '1px 4px', borderRadius: '2px', background: pos.direction === 'LONG' ? 'rgba(22, 163, 74, 0.15)' : 'rgba(220, 38, 38, 0.15)', color: pos.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '800' }}>
+                                <span style={{ fontSize: '12px', padding: '1px 4px', borderRadius: '2px', background: pos.direction === 'LONG' ? 'rgba(22, 163, 74, 0.15)' : 'rgba(220, 38, 38, 0.15)', color: pos.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '800' }}>
                                   {pos.direction}
                                 </span>
-                                <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                                   {pos.market === 'CRYPTO' ? `${pos.sizeLots}c` : `${pos.sizeLots}L`}
                                 </span>
                               </div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <span style={{ fontWeight: '800', fontSize: '9.5px', color: isPosProfit ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                                <span style={{ fontWeight: '800', fontSize: '12px', color: isPosProfit ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                                   {isPosProfit && idrValue > 0 ? '+' : ''}{pnlDisplayIdr}
                                 </span>
                                 <button
@@ -5357,7 +5357,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                     display: 'inline-flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    fontSize: '10px',
+                                    fontSize: '12px',
                                     background: 'rgba(220, 38, 38, 0.12)',
                                     border: '1px solid var(--accent-rust)',
                                     color: 'var(--accent-rust)',
@@ -5374,7 +5374,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                             </div>
 
                             {/* Baris 2: In / Now / TP / SL in one neat mono line */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '8px', color: 'var(--text-muted)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--text-muted)' }}>
                               <span>In: <strong style={{ color: 'var(--text-primary)' }}>{formatInstrumentPrice(pos.entryPrice, pos.market, pos.symbol)}</strong></span>
                               <span>Now: <strong style={{ color: 'var(--text-primary)' }}>{formatInstrumentPrice(pos.currentPrice, pos.market, pos.symbol)}</strong></span>
                               <span style={{ color: 'var(--accent-green)' }}>TP: {formatInstrumentPrice(pos.tp1Price, pos.market, pos.symbol)}</span>
@@ -5396,7 +5396,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                       flex: 1,
                       padding: '5px 8px',
                       minHeight: '26px',
-                      fontSize: '9.5px',
+                      fontSize: '12px',
                       fontWeight: '800',
                       fontFamily: 'var(--font-mono)',
                       background: 'var(--bg-panel-subtle)',
@@ -5420,7 +5420,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     style={{
                       padding: '5px 8px',
                       minHeight: '26px',
-                      fontSize: '9.5px',
+                      fontSize: '12px',
                       fontFamily: 'var(--font-mono)',
                       fontWeight: '700',
                       background: 'rgba(220, 38, 38, 0.08)',
@@ -5469,7 +5469,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   <h3 id="agent-review-modal-title" style={{ margin: 0, fontSize: '13.5px', fontWeight: '900', color: 'var(--text-primary)' }}>
                     Analisa Kinerja & Audit Kuantitatif Multi-Agent
                   </h3>
-                  <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                     Rekapitulasi arena kuantitatif, riwayat silsilah performa tiap generasi, analisis akar penyebab Margin Call (MC), dan adaptasi mesin (Self-Improvement).
                   </div>
                 </div>
@@ -5502,7 +5502,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 style={{
                   padding: '6px 12px',
                   borderRadius: '4px',
-                  fontSize: '10.5px',
+                  fontSize: '12px',
                   fontWeight: reviewActiveTab === 'RECAP' ? '900' : '600',
                   fontFamily: 'var(--font-mono)',
                   cursor: 'pointer',
@@ -5529,7 +5529,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     style={{
                       padding: '6px 12px',
                       borderRadius: '4px',
-                      fontSize: '10.5px',
+                      fontSize: '12px',
                       fontWeight: isSelected ? '900' : '600',
                       fontFamily: 'var(--font-mono)',
                       cursor: 'pointer',
@@ -5545,7 +5545,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     <span>{ag.avatar}</span>
                     <span>{ag.name}</span>
                     {(ag.resetCount || 0) > 0 && (
-                      <span style={{ fontSize: '8.5px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(239, 68, 68, 0.25)', color: '#f87171' }}>
+                      <span style={{ fontSize: '12px', padding: '1px 4px', borderRadius: '3px', background: 'rgba(239, 68, 68, 0.25)', color: '#f87171' }}>
                         {ag.resetCount}x MC
                       </span>
                     )}
@@ -5555,7 +5555,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
             </div>
 
             {/* Modal Body Container with Smooth Scrolling */}
-            <div style={{ padding: '16px 20px', overflowY: 'auto', flex: 1, fontSize: '11px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{ padding: '16px 20px', overflowY: 'auto', flex: 1, fontSize: '12px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
               
               {/* TAB 1: RECAP ARENA */}
               {reviewActiveTab === 'RECAP' && (
@@ -5615,51 +5615,51 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     return (
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '8px', flexShrink: 0 }}>
                         <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>NET REALIZED PnL (ARENA)</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>NET REALIZED PnL (ARENA)</div>
                           <div style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: netRealizedPnlArena >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                             {netRealizedPnlArena >= 0 ? '+' : ''}{formatIdr(netRealizedPnlArena)}
                           </div>
-                          <div style={{ fontSize: '8.5px', color: netRealizedPnlArena >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                          <div style={{ fontSize: '12px', color: netRealizedPnlArena >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                             {netRealizedPnlArena >= 0 ? '+' : ''}{netRoiArenaPct}% dari total basis modal
                           </div>
                         </div>
 
                         <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>WIN RATE GABUNGAN</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>WIN RATE GABUNGAN</div>
                           <div style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
                             {overallWinRate}%
                           </div>
-                          <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                             {totalWins} Menang / {totalTrades - totalWins} Kalah ({totalTrades} Trade)
                           </div>
                         </div>
 
                         <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>SHARPE RATIO (ARENA)</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>SHARPE RATIO (ARENA)</div>
                           <div style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
                             {computedArenaSharpe}
                           </div>
-                          <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                             {Number(computedArenaSharpe) >= 2.0 ? 'Institutional Grade (> 2.0)' : 'Dihitung dari riwayat trade'}
                           </div>
                         </div>
 
                         <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>MAX DRAWDOWN (MDD)</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>MAX DRAWDOWN (MDD)</div>
                           <div style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
                             {computedArenaMdd}
                           </div>
-                          <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                             Circuit Breaker Guard Aktif
                           </div>
                         </div>
 
                         <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                          <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>TOTAL MARGIN CALL</div>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>TOTAL MARGIN CALL</div>
                           <div style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: totalMCAllBots > 0 ? 'var(--accent-rust)' : 'var(--accent-green)' }}>
                             {totalMCAllBots}x Ter-Reset
                           </div>
-                          <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                             {totalMCAllBots > 0 ? 'Adaptasi Mutasi DNA Aktif' : 'Semua Bot di Gen 1 (Sehat)'}
                           </div>
                         </div>
@@ -5670,15 +5670,15 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   {/* Comprehensive Leaderboard Table */}
                   <div style={{ background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', overflow: 'hidden', flexShrink: 0 }}>
                     <div style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.02)', borderBottom: 'var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '10.5px', fontWeight: '800', color: 'var(--text-primary)' }}>
+                      <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)' }}>
                         Leaderboard & Multi-Factor Efficiency Matrix
                       </span>
-                      <span style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                      <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                         Basis Modal Awal: {formatIdr(capitalPerBotIdr)} / agent • Klik nama atau tombol report untuk audit detail tiap bot
                       </span>
                     </div>
                     <div style={{ overflowX: 'auto' }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                         <thead>
                           <tr style={{ borderBottom: 'var(--border-hairline)', color: 'var(--text-muted)', textAlign: 'left' }}>
                             <th style={{ padding: '7px 8px' }}>AGENT</th>
@@ -5732,33 +5732,33 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                 </td>
                                 <td style={{ padding: '7px 8px', color: 'var(--text-secondary)' }}>{ag.strategy}</td>
                                 <td style={{ padding: '7px 8px' }}>
-                                  <span style={{ color: '#c084fc', fontWeight: '700' }}>Gen {ag.generation ?? 0}</span>
+                                  <span style={{ color: 'var(--accent-purple-light)', fontWeight: '700' }}>Gen {ag.generation ?? 0}</span>
                                   {(ag.resetCount || 0) > 0 ? (
-                                    <span style={{ color: 'var(--accent-rust)', fontSize: '8.5px', marginLeft: '4px' }}>
+                                    <span style={{ color: 'var(--accent-rust)', fontSize: '12px', marginLeft: '4px' }}>
                                       ({ag.resetCount}x MC)
                                     </span>
                                   ) : (
-                                    <span style={{ color: 'var(--accent-green)', fontSize: '8.5px', marginLeft: '4px' }}>
+                                    <span style={{ color: 'var(--accent-green)', fontSize: '12px', marginLeft: '4px' }}>
                                       (0 MC)
                                     </span>
                                   )}
                                 </td>
                                 <td style={{ padding: '7px 8px', color: 'var(--accent-green)', fontWeight: '800' }}>
-                                  {st.winRate}% <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>({st.wins}W/{st.losses}L)</span>
+                                  {st.winRate}% <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>({st.wins}W/{st.losses}L)</span>
                                 </td>
                                 <td style={{ padding: '7px 8px', color: 'var(--accent-blue)', fontWeight: '800' }}>{st.profitFactor}</td>
                                 <td style={{ padding: '7px 8px', color: 'var(--text-primary)' }}>{agSharpe}</td>
                                 <td style={{ padding: '7px 8px', color: 'var(--accent-green)' }}>{agAvgRr}</td>
                                 <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: '800', color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                                   <div>{formatIdr(st.currentBotEquityIdr)}</div>
-                                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>({st.roiPct > 0 ? '+' : ''}{st.roiPct}%)</div>
+                                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>({st.roiPct > 0 ? '+' : ''}{st.roiPct}%)</div>
                                 </td>
                                 <td style={{ padding: '7px 8px', textAlign: 'center' }}>
                                   <button
                                     onClick={() => setReviewActiveTab(ag.id)}
                                     style={{
                                       padding: '3px 8px',
-                                      fontSize: '9px',
+                                      fontSize: '12px',
                                       borderRadius: '3px',
                                       background: 'rgba(255,255,255,0.06)',
                                       border: `1px solid ${ag.color}`,
@@ -5817,29 +5817,29 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                               {targetAg.name} : {targetAg.role}
                             </span>
                             <span style={{
-                              fontSize: '9px',
+                              fontSize: '12px',
                               fontFamily: 'var(--font-mono)',
                               fontWeight: '800',
                               padding: '2px 7px',
                               borderRadius: '4px',
                               background: (targetAg.resetCount || 0) > 0 ? 'rgba(239, 68, 68, 0.18)' : 'rgba(168, 85, 247, 0.18)',
-                              color: (targetAg.resetCount || 0) > 0 ? '#fca5a5' : '#c084fc',
+                              color: (targetAg.resetCount || 0) > 0 ? 'var(--accent-softred)' : 'var(--accent-purple-light)',
                               border: (targetAg.resetCount || 0) > 0 ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(168, 85, 247, 0.4)'
                             }}>
                               🧬 GEN {targetAg.generation ?? 0} {(targetAg.resetCount || 0) > 0 ? `(⚠️ ${targetAg.resetCount}x MC)` : '(0 MC)'}
                             </span>
-                            <span className="badge" style={{ fontSize: '8.5px', color: getAgentLiveStatus(targetAg).color, border: `1px solid ${getAgentLiveStatus(targetAg).color}55`, background: getAgentLiveStatus(targetAg).bg }}>
+                            <span className="badge" style={{ fontSize: '12px', color: getAgentLiveStatus(targetAg).color, border: `1px solid ${getAgentLiveStatus(targetAg).color}55`, background: getAgentLiveStatus(targetAg).bg }}>
                               {getAgentLiveStatus(targetAg).label}
                             </span>
                           </div>
-                          <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
                             Filosofi: <strong>{targetAg.strategy}</strong> • Basis Modal: <strong>{formatIdr(capitalPerBotIdr)}</strong>
                           </div>
                         </div>
                       </div>
 
                       {/* Active DNA Mutated Traits Pill */}
-                      <div style={{ display: 'flex', gap: '6px', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                      <div style={{ display: 'flex', gap: '6px', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                         <div style={{ background: 'rgba(255,255,255,0.03)', padding: '4px 8px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                           <span style={{ color: 'var(--text-muted)' }}>Risk Multiplier:</span>{' '}
                           <strong style={{ color: (targetAg.dnaTraits?.riskMultiplier || 1.0) < 1.0 ? 'var(--accent-orange)' : 'var(--accent-green)' }}>
@@ -5848,7 +5848,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                         </div>
                         <div style={{ background: 'rgba(255,255,255,0.03)', padding: '4px 8px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                           <span style={{ color: 'var(--text-muted)' }}>Signal Filter:</span>{' '}
-                          <strong style={{ color: '#c084fc' }}>
+                          <strong style={{ color: 'var(--accent-purple-light)' }}>
                             +{targetAg.dnaTraits?.confidenceBoost || 0}% Conf.
                           </strong>
                         </div>
@@ -5864,51 +5864,51 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     {/* 2. Current Generation Performance Metric Grid */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '8px' }}>
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '8px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                        <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>SALDO AKTIF (GEN {targetAg.generation ?? 0})</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>SALDO AKTIF (GEN {targetAg.generation ?? 0})</div>
                         <div style={{ fontSize: '13px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: isPos ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                           {formatIdr(st.currentBotEquityIdr || capitalPerBotIdr)}
                         </div>
-                        <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                           ROI: {st.roiPct > 0 ? '+' : ''}{st.roiPct || 0}%
                         </div>
                       </div>
 
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '8px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                        <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>WIN RATE (GEN {targetAg.generation ?? 0})</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>WIN RATE (GEN {targetAg.generation ?? 0})</div>
                         <div style={{ fontSize: '13px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
                           {st.winRate}%
                         </div>
-                        <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                           {st.wins} Menang / {st.losses} Kalah
                         </div>
                       </div>
 
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '8px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                        <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>PROFIT FACTOR</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>PROFIT FACTOR</div>
                         <div style={{ fontSize: '13px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
                           {st.profitFactor}x
                         </div>
-                        <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                           Gross Profit vs Loss
                         </div>
                       </div>
 
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '8px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                        <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>TRADE DONE (SELESAI)</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>TRADE DONE (SELESAI)</div>
                         <div style={{ fontSize: '13px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
                           {st.total || 0} Tiket
                         </div>
-                        <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                           Posisi Aktif: {activeTrades.length} Tiket
                         </div>
                       </div>
 
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '8px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                        <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>TOTAL MARGIN CALL</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>TOTAL MARGIN CALL</div>
                         <div style={{ fontSize: '13px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: (targetAg.resetCount || 0) > 0 ? 'var(--accent-rust)' : 'var(--accent-green)' }}>
                           {targetAg.resetCount || 0}x Gugur
                         </div>
-                        <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                           {(targetAg.resetCount || 0) > 0 ? `Defisit Total: -${formatIdr((targetAg.resetsHistory || []).reduce((acc, r) => acc + (r.deficitIdr || 0), 0))}` : 'Kondisi Modal Bersih'}
                         </div>
                       </div>
@@ -5919,24 +5919,24 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 'var(--border-hairline)', paddingBottom: '6px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <span style={{ fontSize: '14px' }}>🧬</span>
-                          <strong style={{ fontSize: '11px', color: targetAg.color }}>
+                          <strong style={{ fontSize: '12px', color: targetAg.color }}>
                             Profil Filosofi, Regime Pasar & Universe Spesialisasi ({targetAg.name})
                           </strong>
                         </div>
-                        <span className="badge" style={{ fontSize: '8px', background: `${targetAg.color}22`, color: targetAg.color, border: `1px solid ${targetAg.color}55` }}>
+                        <span className="badge" style={{ fontSize: '12px', background: `${targetAg.color}22`, color: targetAg.color, border: `1px solid ${targetAg.color}55` }}>
                           {elementMeta.winRateEdge || 'High Statistical Edge'}
                         </span>
                       </div>
 
                       {/* Deep Philosophy Banner */}
                       {elementMeta.philosophy && (
-                        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 12px', borderRadius: '4px', borderLeft: `3px solid ${targetAg.color}`, fontSize: '9.5px', color: 'var(--text-primary)', lineHeight: '1.5' }}>
+                        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 12px', borderRadius: '4px', borderLeft: `3px solid ${targetAg.color}`, fontSize: '12px', color: 'var(--text-primary)', lineHeight: '1.5' }}>
                           <strong>💡 Filosofi & Core Alpha Edge:</strong> {elementMeta.philosophy}
                         </div>
                       )}
 
                       {/* Execution Timeframe & Risk Profile Pills */}
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '6px', fontSize: '9px' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '6px', fontSize: '12px' }}>
                         <div style={{ background: 'rgba(255,255,255,0.03)', padding: '6px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                           <span style={{ color: 'var(--text-muted)' }}>⏱️ Timeframe Preferensi:</span>{' '}
                           <strong style={{ color: 'var(--accent-blue)' }}>{elementMeta.preferredTimeframe || 'H4 / H1'}</strong>
@@ -5948,12 +5948,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                       </div>
 
                       {/* Optimal vs Weak Market Conditions */}
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '8px', fontSize: '9.5px', lineHeight: '1.5' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '8px', fontSize: '12px', lineHeight: '1.5' }}>
                         <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid var(--accent-green)' }}>
                           <strong style={{ color: 'var(--accent-green)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <span>🌤️</span> <span>Kondisi Pasar Optimal (High Win-Rate):</span>
                           </strong>
-                          <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '9px' }}>
+                          <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '12px' }}>
                             {elementMeta.optimalConditions || 'Volatilitas sehat dan likuiditas institusional tinggi.'}
                           </p>
                         </div>
@@ -5962,7 +5962,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           <strong style={{ color: 'var(--accent-rust)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <span>⛈️</span> <span>Kondisi Pasar Kurang Cocok (Vulnerable):</span>
                           </strong>
-                          <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '9px' }}>
+                          <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '12px' }}>
                             {elementMeta.weakConditions || 'Pasar choppy / whipsaw berkepanjangan tanpa arah.'}
                           </p>
                         </div>
@@ -5970,13 +5970,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
                       {/* Synergy Explanation (if Duo / Trio / Avatar) */}
                       {elementMeta.synergyExplanation && (
-                        <div style={{ background: 'rgba(168, 85, 247, 0.08)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid #c084fc', fontSize: '9.5px', color: 'var(--text-primary)', lineHeight: '1.5' }}>
-                          <strong style={{ color: '#c084fc' }}>⚡ Sinergi Multi-Elemen:</strong> {elementMeta.synergyExplanation}
+                        <div style={{ background: 'rgba(168, 85, 247, 0.08)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid var(--accent-purple-light)', fontSize: '12px', color: 'var(--text-primary)', lineHeight: '1.5' }}>
+                          <strong style={{ color: 'var(--accent-purple-light)' }}>⚡ Sinergi Multi-Elemen:</strong> {elementMeta.synergyExplanation}
                         </div>
                       )}
 
                       {/* Best vs Avoided Instruments */}
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '8px', fontSize: '9.5px', lineHeight: '1.5' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '8px', fontSize: '12px', lineHeight: '1.5' }}>
                         <div style={{ background: 'rgba(56, 189, 248, 0.08)', padding: '8px 12px', borderRadius: '4px', borderLeft: '3px solid var(--accent-sky)' }}>
                           <strong style={{ color: 'var(--accent-sky)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <span>💎</span> <span>Instrumen Terbaik (Optimal Universe):</span>
@@ -5984,7 +5984,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           <div style={{ color: 'var(--text-primary)', marginTop: '3px', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
                             {elementMeta.bestInstruments}
                           </div>
-                          <p style={{ margin: '3px 0 0 0', color: 'var(--text-secondary)', fontSize: '9px' }}>
+                          <p style={{ margin: '3px 0 0 0', color: 'var(--text-secondary)', fontSize: '12px' }}>
                             {elementMeta.instrumentEdge}
                           </p>
                         </div>
@@ -5996,7 +5996,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           <div style={{ color: 'var(--text-primary)', marginTop: '3px', fontWeight: '700' }}>
                             {elementMeta.avoidInstruments}
                           </div>
-                          <p style={{ margin: '3px 0 0 0', color: 'var(--text-muted)', fontSize: '9px' }}>
+                          <p style={{ margin: '3px 0 0 0', color: 'var(--text-muted)', fontSize: '12px' }}>
                             Instrumen ini memiliki spread lebar atau karakter volatilitas berlawanan dengan edge algoritma ini.
                           </p>
                         </div>
@@ -6008,11 +6008,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                       <div style={{ padding: '9px 14px', background: 'rgba(255,255,255,0.02)', borderBottom: 'var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <span style={{ fontSize: '14px' }}>🧬</span>
-                          <strong style={{ fontSize: '11px', color: 'var(--text-primary)' }}>
+                          <strong style={{ fontSize: '12px', color: 'var(--text-primary)' }}>
                             Analisis Penyebab Margin Call (MC) & Adaptasi Mesin (Self-Improvement Protocol)
                           </strong>
                         </div>
-                        <span style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                           Siklus Hidup Mesin & Silsilah Evolusi
                         </span>
                       </div>
@@ -6031,18 +6031,18 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                 <span style={{ fontSize: '16px' }}>🛡️</span>
-                                <strong style={{ color: 'var(--accent-green)', fontSize: '11px' }}>
+                                <strong style={{ color: 'var(--accent-green)', fontSize: '12px' }}>
                                   Status Generasi Prima: Gen 0 (Genesis Origin, Belum Pernah Margin Call)
                                 </strong>
                               </div>
-                              <span style={{ fontSize: '8px', padding: '1px 6px', borderRadius: '3px', background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
+                              <span style={{ fontSize: '12px', padding: '1px 6px', borderRadius: '3px', background: 'rgba(16, 185, 129, 0.2)', color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
                                 Zero Deficit (Sehat)
                               </span>
                             </div>
 
                             {/* AI Agent Operational Monologue for Gen 0 */}
                             <div style={{
-                              fontSize: '9.5px',
+                              fontSize: '12px',
                               color: 'var(--text-primary)',
                               lineHeight: '1.5',
                               fontStyle: 'italic',
@@ -6054,7 +6054,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                               💬 <strong>Refleksi Operasional AI ({targetAg.name}):</strong> "Seluruh parameter eksekusi {targetAg.strategy} berjalan prima dalam koridor toleransi risiko. Tidak ada anomali drawdown yang memicu circuit breaker; saya terus memprioritaskan penyaringan sinyal berkualitas tinggi pada instrumen {elementMeta.bestInstruments?.split(',')?.[0] || 'unggulan'}."
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '6px', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '6px', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                               <div style={{ background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: '3px' }}>
                                 <span style={{ color: 'var(--text-muted)' }}>Penyebab MC:</span> <strong style={{ color: 'var(--accent-green)' }}>N/A (Nol Kebangkrutan)</strong>
                               </div>
@@ -6096,22 +6096,22 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                       padding: '2px 7px',
                                       borderRadius: '3px',
                                       fontWeight: '900',
-                                      fontSize: '9.5px',
+                                      fontSize: '12px',
                                       fontFamily: 'var(--font-mono)'
                                     }}>
                                       💀 Gen {latestRh.fromGen} (MC) ➔ Respawn Gen {latestRh.toGen}
                                     </span>
-                                    <span style={{ fontSize: '8px', background: 'rgba(239, 68, 68, 0.25)', color: '#fca5a5', padding: '1px 5px', borderRadius: '3px', fontWeight: '700' }}>
+                                    <span style={{ fontSize: '12px', background: 'rgba(239, 68, 68, 0.25)', color: 'var(--accent-softred)', padding: '1px 5px', borderRadius: '3px', fontWeight: '700' }}>
                                       Margin Call Terkini
                                     </span>
                                   </div>
-                                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                                     Waktu: {latestRh.timestamp ? new Date(latestRh.timestamp).toLocaleString('id-ID') : '-'}
                                   </div>
                                 </div>
 
                                 {/* Financial Deficit & Toxic Pair Bar */}
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '6px', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '6px', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                                   <div style={{ background: 'rgba(0,0,0,0.25)', padding: '6px 8px', borderRadius: '3px' }}>
                                     <span style={{ color: 'var(--text-muted)' }}>Defisit Ekuitas saat Likuidasi:</span>{' '}
                                     <strong style={{ color: 'var(--accent-rust)' }}>-{formatIdr(latestRh.deficitIdr || 0)}</strong>
@@ -6128,10 +6128,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
                                 {/* Deep Technical Root Cause (Penyebab MC) */}
                                 <div style={{ background: 'rgba(239, 68, 68, 0.05)', padding: '8px 10px', borderRadius: '4px', borderLeft: '3px solid var(--accent-rust)' }}>
-                                  <div style={{ fontSize: '9.5px', fontWeight: '800', color: '#fca5a5', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-softred)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                     <span>⚠️</span> <span>Penyebab Margin Call (Failure Mode Analysis):</span>
                                   </div>
-                                  <div style={{ fontSize: '9.5px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: '1.5' }}>
+                                  <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: '1.5' }}>
                                     {rootCauseText}
                                   </div>
                                 </div>
@@ -6145,12 +6145,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                   borderLeft: `4px solid ${targetAg.color || '#a855f7'}`
                                 }}>
                                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-                                    <div style={{ fontSize: '9.5px', fontWeight: '900', color: '#d8b4fe', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: '900', color: '#d8b4fe', display: 'flex', alignItems: 'center', gap: '5px' }}>
                                       <span style={{ fontSize: '12px' }}>🤖</span>
                                       <span>Refleksi Diri & Introspeksi AI ({targetAg.name}, Pasca-MC Gen {latestRh.fromGen})</span>
                                     </div>
                                     <span style={{
-                                      fontSize: '7.5px',
+                                      fontSize: '12px',
                                       fontFamily: 'var(--font-mono)',
                                       padding: '1px 5px',
                                       borderRadius: '3px',
@@ -6162,7 +6162,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                     </span>
                                   </div>
                                   <div style={{
-                                    fontSize: '9.5px',
+                                    fontSize: '12px',
                                     color: 'var(--text-primary)',
                                     lineHeight: '1.6',
                                     fontStyle: 'italic',
@@ -6173,25 +6173,25 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                   }}>
                                     "{aiReflectionText}"
                                   </div>
-                                  <div style={{ marginTop: '5px', fontSize: '8.5px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <div style={{ marginTop: '5px', fontSize: '12px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                     <span>📌</span>
                                     <span>Introspeksi algoritma ini diadopsi sebagai dasar mutasi DNA risiko dan karantina instrumen toxic di Gen {latestRh.toGen}.</span>
                                   </div>
                                 </div>
 
                                 {/* Machine Self-Improvement Actions (Solusi Perbaikan) */}
-                                <div style={{ background: 'rgba(168, 85, 247, 0.06)', padding: '8px 10px', borderRadius: '4px', borderLeft: '3px solid #c084fc' }}>
-                                  <div style={{ fontSize: '9.5px', fontWeight: '800', color: '#d8b4fe', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <div style={{ background: 'rgba(168, 85, 247, 0.06)', padding: '8px 10px', borderRadius: '4px', borderLeft: '3px solid var(--accent-purple-light)' }}>
+                                  <div style={{ fontSize: '12px', fontWeight: '800', color: '#d8b4fe', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                     <span>🧬</span> <span>Solusi Perbaikan & Mutasi DNA Mesin (Self-Improvement Protocol):</span>
                                   </div>
-                                  <div style={{ fontSize: '9.5px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: '1.5' }}>
+                                  <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: '1.5' }}>
                                     {solutionText}
                                   </div>
-                                  <div style={{ marginTop: '6px', display: 'flex', flexWrap: 'wrap', gap: '6px', fontSize: '8.5px', fontFamily: 'var(--font-mono)' }}>
+                                  <div style={{ marginTop: '6px', display: 'flex', flexWrap: 'wrap', gap: '6px', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                                     <span style={{ background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '3px', color: 'var(--accent-green)' }}>
                                       ✓ Risk Multiplier: {((latestRh.mutation?.riskMultiplier || targetAg.dnaTraits?.riskMultiplier || 0.85) * 100).toFixed(0)}%
                                     </span>
-                                    <span style={{ background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '3px', color: '#c084fc' }}>
+                                    <span style={{ background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '3px', color: 'var(--accent-purple-light)' }}>
                                       ✓ Signal Filter: +{latestRh.mutation?.confidenceBoost || targetAg.dnaTraits?.confidenceBoost || 5}% Conf.
                                     </span>
                                     <span style={{ background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '3px', color: 'var(--accent-blue)' }}>
@@ -6207,11 +6207,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                               {/* COMPACT TABLE OF PAST GENERATIONS IF MORE THAN 1 */}
                               {targetAg.resetsHistory.length > 1 && (
                                 <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '4px', padding: '8px 10px', border: 'var(--border-hairline)' }}>
-                                  <div style={{ fontSize: '9.5px', fontWeight: '800', color: 'var(--text-muted)', marginBottom: '5px' }}>
+                                  <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', marginBottom: '5px' }}>
                                     📜 Silsilah Margin Call Generasi Terdahulu ({targetAg.resetsHistory.length - 1} Iterasi Sebelumnya):
                                   </div>
                                   <div style={{ overflowX: 'auto' }}>
-                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                                       <thead>
                                         <tr style={{ color: 'var(--text-muted)', textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                                           <th style={{ padding: '4px 6px' }}>GENERASI</th>
@@ -6224,11 +6224,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                       <tbody>
                                         {targetAg.resetsHistory.slice(1).map((pastRh, pIdx) => (
                                           <tr key={pIdx} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                                            <td style={{ padding: '4px 6px', color: '#fca5a5', fontWeight: '700' }}>Gen {pastRh.fromGen} ➔ {pastRh.toGen}</td>
+                                            <td style={{ padding: '4px 6px', color: 'var(--accent-softred)', fontWeight: '700' }}>Gen {pastRh.fromGen} ➔ {pastRh.toGen}</td>
                                             <td style={{ padding: '4px 6px', color: 'var(--text-muted)' }}>{pastRh.timestamp ? new Date(pastRh.timestamp).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }) : '-'}</td>
                                             <td style={{ padding: '4px 6px', color: 'var(--accent-rust)', fontWeight: '700' }}>-{formatIdr(pastRh.deficitIdr || 0)}</td>
                                             <td style={{ padding: '4px 6px', color: 'var(--accent-orange)' }}>{pastRh.toxicPair || 'N/A'}</td>
-                                            <td style={{ padding: '4px 6px', color: '#c084fc' }}>Risk: {((pastRh.mutation?.riskMultiplier || 0.85) * 100).toFixed(0)}%, Trail: {((pastRh.mutation?.trailingTightness || 1.15) * 100).toFixed(0)}%</td>
+                                            <td style={{ padding: '4px 6px', color: 'var(--accent-purple-light)' }}>Risk: {((pastRh.mutation?.riskMultiplier || 0.85) * 100).toFixed(0)}%, Trail: {((pastRh.mutation?.trailingTightness || 1.15) * 100).toFixed(0)}%</td>
                                           </tr>
                                         ))}
                                       </tbody>
@@ -6250,7 +6250,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
             {/* Modal Footer with Quick Actions */}
             <div style={{ padding: '10px 18px', background: 'var(--bg-panel-subtle)', borderTop: 'var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 {reviewActiveTab === 'RECAP' ? 'Menampilkan ringkasan konsolidasi arena' : `Menampilkan audit silsilah & performa ${reviewActiveTab}`}
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
@@ -6258,7 +6258,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   <button
                     onClick={() => setReviewActiveTab('RECAP')}
                     className="telemetry-btn"
-                    style={{ padding: '5px 12px', fontSize: '10px' }}
+                    style={{ padding: '5px 12px', fontSize: '12px' }}
                   >
                     ⬅️ Kembali ke Recap Arena
                   </button>
@@ -6267,7 +6267,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   id="btn-close-agent-review"
                   onClick={() => setAgentReviewModalOpen(false)}
                   className="telemetry-btn"
-                  style={{ padding: '5px 16px', fontSize: '11px', background: 'var(--accent-blue)', color: '#fff', border: 'none' }}
+                  style={{ padding: '5px 16px', fontSize: '12px', background: 'var(--accent-blue)', color: '#fff', border: 'none' }}
                 >
                   Tutup Review
                 </button>
@@ -6304,7 +6304,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   <h3 id="philosophy-modal-title" style={{ margin: 0, fontSize: '13.5px', fontWeight: '900', color: 'var(--text-primary)' }}>
                     Profil, Filosofi & Simulasi Strategi 16 AI Multi-Agent Roster
                   </h3>
-                  <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                     Logika di balik keputusan algoritma, titik entry order block / breakout, serta simulasi visual target TP dan SL tiap elemen.
                   </div>
                 </div>
@@ -6326,7 +6326,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   onClick={() => setSelectedPhilosophyAgent(a.id)}
                   style={{
                     padding: '5px 12px',
-                    fontSize: '10.5px',
+                    fontSize: '12px',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: selectedPhilosophyAgent === a.id ? '900' : '600',
                     borderRadius: '4px',
@@ -6347,7 +6347,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
             </div>
 
             {/* Modal Body: Selected Agent Strategy Blueprint & Interactive SVG Simulation Chart */}
-            <div style={{ padding: '14px 20px', overflowY: 'auto', flex: 1, fontSize: '11px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ padding: '14px 20px', overflowY: 'auto', flex: 1, fontSize: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {(() => {
                 const targetAg = agents.find(a => a.id === selectedPhilosophyAgent) || agents[0];
                 const metaConfigs = {
@@ -6533,14 +6533,14 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           <span style={{ fontSize: '24px' }}>{targetAg.avatar}</span>
                           <div>
                             <div style={{ fontSize: '14px', fontWeight: '900', color: 'var(--text-primary)' }}>{targetAg.name}</div>
-                            <div style={{ fontSize: '10px', color: targetAg.color, fontWeight: '700' }}>{targetAg.role}</div>
+                            <div style={{ fontSize: '12px', color: targetAg.color, fontWeight: '700' }}>{targetAg.role}</div>
                           </div>
                         </div>
                         <div style={{ display: 'flex', gap: '4px' }}>
-                          <span className="badge" style={{ fontSize: '8.5px', background: 'rgba(22, 163, 74, 0.15)', color: 'var(--accent-green)' }}>
+                          <span className="badge" style={{ fontSize: '12px', background: 'rgba(22, 163, 74, 0.15)', color: 'var(--accent-green)' }}>
                             Target R:R 1:3.0+
                           </span>
-                          <span className="badge" style={{ fontSize: '8.5px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-blue)' }}>
+                          <span className="badge" style={{ fontSize: '12px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-blue)' }}>
                             Confidence {targetAg.confidence}%
                           </span>
                         </div>
@@ -6557,50 +6557,50 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '8px' }}>
                       {/* Academic Literature Reference Badges */}
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-                        <strong style={{ color: 'var(--accent-blue)', fontSize: '10.5px' }}>📖 Literatur Teknikal (Buku Offline):</strong>
-                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '10px', lineHeight: '1.4', fontWeight: '600' }}>
+                        <strong style={{ color: 'var(--accent-blue)', fontSize: '12px' }}>📖 Literatur Teknikal (Buku Offline):</strong>
+                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '12px', lineHeight: '1.4', fontWeight: '600' }}>
                           {meta.technicalRef || 'Tsinaslanidis & Zapranis (2016) : Algorithmic Pattern Recognition'}
                         </p>
                       </div>
 
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-                        <strong style={{ color: 'var(--accent-green)', fontSize: '10.5px' }}>🏛️ Literatur Fundamental (Buku Offline):</strong>
-                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '10px', lineHeight: '1.4', fontWeight: '600' }}>
+                        <strong style={{ color: 'var(--accent-green)', fontSize: '12px' }}>🏛️ Literatur Fundamental (Buku Offline):</strong>
+                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '12px', lineHeight: '1.4', fontWeight: '600' }}>
                           {meta.fundamentalRef || 'N. Gregory Mankiw : Macroeconomics / Maurice Levi : International Finance'}
                         </p>
                       </div>
 
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: '1px solid rgba(234, 179, 8, 0.3)', gridColumn: '1 / -1' }}>
-                        <strong style={{ color: 'var(--accent-gold)', fontSize: '10.5px' }}>🧮 Model Kuantitatif & Formula Sizing:</strong>
-                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '10px', lineHeight: '1.4', fontFamily: 'var(--font-mono)' }}>
+                        <strong style={{ color: 'var(--accent-gold)', fontSize: '12px' }}>🧮 Model Kuantitatif & Formula Sizing:</strong>
+                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-primary)', fontSize: '12px', lineHeight: '1.4', fontFamily: 'var(--font-mono)' }}>
                           {meta.coreFormula || 'Fixed Fractional Risk Sizing (Mario Singh 2013)'}
                         </p>
                       </div>
 
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                        <strong style={{ color: 'var(--accent-blue)', fontSize: '10.5px' }}>🎯 Syarat Sinyal & Titik Entry:</strong>
-                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-secondary)', fontSize: '10px', lineHeight: '1.5' }}>
+                        <strong style={{ color: 'var(--accent-blue)', fontSize: '12px' }}>🎯 Syarat Sinyal & Titik Entry:</strong>
+                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-secondary)', fontSize: '12px', lineHeight: '1.5' }}>
                           {meta.trigger}
                         </p>
                       </div>
 
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                        <strong style={{ color: 'var(--accent-rust)', fontSize: '10.5px' }}>🛡️ Aturan Hard SL & Invalidation:</strong>
-                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-secondary)', fontSize: '10px', lineHeight: '1.5' }}>
+                        <strong style={{ color: 'var(--accent-rust)', fontSize: '12px' }}>🛡️ Aturan Hard SL & Invalidation:</strong>
+                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-secondary)', fontSize: '12px', lineHeight: '1.5' }}>
                           {meta.slRule}
                         </p>
                       </div>
 
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                        <strong style={{ color: 'var(--accent-green)', fontSize: '10.5px' }}>💰 Target Take Profit & Trailing:</strong>
-                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-secondary)', fontSize: '10px', lineHeight: '1.5' }}>
+                        <strong style={{ color: 'var(--accent-green)', fontSize: '12px' }}>💰 Target Take Profit & Trailing:</strong>
+                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-secondary)', fontSize: '12px', lineHeight: '1.5' }}>
                           {meta.tpRule}
                         </p>
                       </div>
 
                       <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                        <strong style={{ color: 'var(--accent-gold)', fontSize: '10.5px' }}>🌐 Pasar & Adaptasi Instrumen:</strong>
-                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-secondary)', fontSize: '10px', lineHeight: '1.5' }}>
+                        <strong style={{ color: 'var(--accent-gold)', fontSize: '12px' }}>🌐 Pasar & Adaptasi Instrumen:</strong>
+                        <p style={{ margin: '3px 0 0 0', color: 'var(--text-secondary)', fontSize: '12px', lineHeight: '1.5' }}>
                           {meta.markets}
                         </p>
                       </div>
@@ -6611,7 +6611,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
             </div>
 
             <div style={{ padding: '8px 18px', background: 'var(--bg-panel-subtle)', borderTop: 'var(--border-hairline)', display: 'flex', justifyContent: 'flex-end' }}>
-              <button id="btn-close-philosophy" onClick={() => setPhilosophyModalOpen(false)} className="telemetry-btn" style={{ padding: '5px 14px', fontSize: '11px' }}>
+              <button id="btn-close-philosophy" onClick={() => setPhilosophyModalOpen(false)} className="telemetry-btn" style={{ padding: '5px 14px', fontSize: '12px' }}>
                 Tutup Filosofi
               </button>
             </div>
@@ -6648,11 +6648,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               </h3>
             </div>
 
-            <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: '1.5', margin: '0 0 16px 0' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.5', margin: '0 0 16px 0' }}>
               {!resetConfirmModal.agentId ? (
                 <>
                   Apakah Anda yakin ingin mereset <strong>Seluruh Portofolio Multi-Agent</strong> kembali ke modal awal <strong>{formatIdr(capitalPerBotIdr)}</strong> / bot?
-                  <div style={{ marginTop: '10px', padding: '10px 12px', background: 'rgba(239, 68, 68, 0.08)', borderRadius: '4px', borderLeft: '3px solid var(--accent-rust)', fontSize: '10.5px' }}>
+                  <div style={{ marginTop: '10px', padding: '10px 12px', background: 'rgba(239, 68, 68, 0.08)', borderRadius: '4px', borderLeft: '3px solid var(--accent-rust)', fontSize: '12px' }}>
                     <div style={{ fontWeight: '800', color: 'var(--text-primary)', marginBottom: '5px' }}>Yang akan terjadi setelah Reset:</div>
                     <div style={{ marginBottom: '3px' }}>⏸ <strong>Trading ke STOP</strong>: Status beralih ke <em>PAUSED</em>. Anda harus menekan tombol <em>▶ 24/7 ACTIVE / Mulai</em> untuk memulai sesi baru.</div>
                     <div style={{ marginBottom: '3px' }}>📊 <strong>Laporan Sesi Otomatis</strong>: Seluruh riwayat dan performa sesi ini diarsipkan ke dalam <em>Laporan Evaluasi Sesi</em>.</div>
@@ -6664,7 +6664,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 <>
                   Apakah Anda yakin ingin mereset <strong>{resetConfirmModal.agentName}</strong> kembali ke modal awal <strong>{formatIdr(capitalPerBotIdr)}</strong>?
                   <br /><br />
-                  <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                     * Catatan: Posisi aktif agen ini akan ditutup dan saldo dipulihkan ke modal awal.
                   </span>
                 </>
@@ -6675,7 +6675,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <button
                 onClick={() => setResetConfirmModal({ isOpen: false, agentId: null, agentName: '' })}
                 className="telemetry-btn"
-                style={{ padding: '6px 14px', fontSize: '11px', fontWeight: '700' }}
+                style={{ padding: '6px 14px', fontSize: '12px', fontWeight: '700' }}
               >
                 Batal
               </button>
@@ -6683,10 +6683,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 onClick={handleExecuteReset}
                 style={{
                   padding: '6px 16px',
-                  fontSize: '11px',
+                  fontSize: '12px',
                   fontWeight: '800',
                   background: 'var(--accent-rust)',
-                  color: '#ffffff',
+                  color: 'var(--text-inverse)',
                   border: 'none',
                   borderRadius: 'var(--radius-xs)',
                   cursor: 'pointer'
@@ -6746,7 +6746,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   borderBottom: rulesActiveSubTab === 'RULES' ? '2px solid var(--accent-blue)' : '2px solid transparent',
                   color: rulesActiveSubTab === 'RULES' ? 'var(--text-primary)' : 'var(--text-muted)',
                   fontWeight: rulesActiveSubTab === 'RULES' ? '800' : '600',
-                  fontSize: '11.5px',
+                  fontSize: '12px',
                   cursor: 'pointer',
                   transition: 'all 0.15s'
                 }}
@@ -6763,7 +6763,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   borderBottom: rulesActiveSubTab === 'STATUS' ? '2px solid var(--accent-gold)' : '2px solid transparent',
                   color: rulesActiveSubTab === 'STATUS' ? 'var(--text-primary)' : 'var(--text-muted)',
                   fontWeight: rulesActiveSubTab === 'STATUS' ? '800' : '600',
-                  fontSize: '11.5px',
+                  fontSize: '12px',
                   cursor: 'pointer',
                   transition: 'all 0.15s'
                 }}
@@ -6772,7 +6772,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               </button>
             </div>
 
-            <div style={{ padding: '16px 20px', overflowY: 'auto', flex: 1, fontSize: '11px', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ padding: '16px 20px', overflowY: 'auto', flex: 1, fontSize: '12px', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {rulesActiveSubTab === 'RULES' ? (
                 <>
                   <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 14px', borderRadius: '4px', borderLeft: '3px solid var(--accent-blue)' }}>
@@ -6826,7 +6826,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 </>
               ) : (
                 <>
-                  <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>
                     Setiap agen AI memiliki status operasi dinamis yang berubah real-time berdasarkan kondisi pasar dan posisi aktif:
                   </div>
                   {Object.keys(BOT_STATUS_GUIDE).map(key => {
@@ -6834,12 +6834,12 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     return (
                       <div key={key} style={{ background: 'var(--bg-panel-subtle)', padding: '12px 14px', borderRadius: '4px', borderLeft: `4px solid ${item.badgeColor}` }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                          <span className="badge" style={{ fontSize: '9px', background: 'rgba(255,255,255,0.08)', color: item.badgeColor, fontWeight: '800' }}>
+                          <span className="badge" style={{ fontSize: '12px', background: 'rgba(255,255,255,0.08)', color: item.badgeColor, fontWeight: '800' }}>
                             {key}
                           </span>
                           <strong style={{ color: 'var(--text-primary)', fontSize: '12px' }}>{item.title}</strong>
                         </div>
-                        <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: '1.5', fontSize: '10.5px' }}>
+                        <p style={{ margin: 0, color: 'var(--text-secondary)', lineHeight: '1.5', fontSize: '12px' }}>
                           {item.desc}
                         </p>
                       </div>
@@ -6850,7 +6850,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
             </div>
 
             <div style={{ padding: '8px 18px', background: 'var(--bg-panel-subtle)', borderTop: 'var(--border-hairline)', display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={() => setRulesModalOpen(false)} className="telemetry-btn" style={{ padding: '5px 14px', fontSize: '11px' }}>
+              <button onClick={() => setRulesModalOpen(false)} className="telemetry-btn" style={{ padding: '5px 14px', fontSize: '12px' }}>
                 Tutup Panduan
               </button>
             </div>
@@ -6885,7 +6885,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   <h3 id="journal-modal-title" style={{ margin: 0, fontSize: '13px', fontWeight: '900', color: 'var(--text-primary)' }}>
                     Jurnal Transaksi: {journalModal.agentName}
                   </h3>
-                  <div style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                     Riwayat closed trade terverifikasi dengan konversi ganda Rupiah & Dollar.
                   </div>
                 </div>
@@ -6964,7 +6964,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                         {totalNetPnlIdr >= 0 ? '▲' : '▼'}
                       </div>
                       <div>
-                        <div style={{ fontSize: '8.5px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                           TOTAL REALIZED PnL ({journalModal.agentName})
                         </div>
                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
@@ -6974,7 +6974,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           }}>
                             {totalNetPnlIdr >= 0 ? '+' : ''}{formatIdr(totalNetPnlIdr)}
                           </span>
-                          <span style={{ fontSize: '10.5px', fontWeight: '700', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+                          <span style={{ fontSize: '12px', fontWeight: '700', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
                             ({totalNetPnlUsd >= 0 ? '+' : ''}{formatUsd(totalNetPnlUsd)})
                           </span>
                         </div>
@@ -6984,26 +6984,26 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     {/* Right: Key Quantitative Matrix */}
                     <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', fontFamily: 'var(--font-mono)' }}>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '8px', color: 'var(--text-muted)', fontWeight: '700' }}>TOTAL TRADES</div>
-                        <div style={{ fontSize: '11.5px', fontWeight: '800', color: 'var(--text-primary)' }}>
-                          {totalTradesCount} <span style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>trades</span>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700' }}>TOTAL TRADES</div>
+                        <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)' }}>
+                          {totalTradesCount} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>trades</span>
                         </div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '8px', color: 'var(--text-muted)', fontWeight: '700' }}>WIN RATE</div>
-                        <div style={{ fontSize: '11.5px', fontWeight: '800', color: Number(winRatePct) >= 50 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
-                          {winRatePct}% <span style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>({totalWins}W / {totalLosses}L)</span>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700' }}>WIN RATE</div>
+                        <div style={{ fontSize: '12px', fontWeight: '800', color: Number(winRatePct) >= 50 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
+                          {winRatePct}% <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>({totalWins}W / {totalLosses}L)</span>
                         </div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '8px', color: 'var(--text-muted)', fontWeight: '700' }}>PROFIT FACTOR</div>
-                        <div style={{ fontSize: '11.5px', fontWeight: '800', color: Number(profitFactorVal) >= 1.5 ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700' }}>PROFIT FACTOR</div>
+                        <div style={{ fontSize: '12px', fontWeight: '800', color: Number(profitFactorVal) >= 1.5 ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
                           {profitFactorVal}
                         </div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '8px', color: 'var(--text-muted)', fontWeight: '700' }}>AVG R:R</div>
-                        <div style={{ fontSize: '11.5px', fontWeight: '800', color: 'var(--accent-blue)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700' }}>AVG R:R</div>
+                        <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-blue)' }}>
                           1:{avgRr}
                         </div>
                       </div>
@@ -7014,11 +7014,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   <div style={{ padding: '12px', overflowY: 'auto', flex: 1 }}>
 
                     {targetTrades.length === 0 ? (
-                      <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '11px' }}>
+                      <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>
                         Belum ada riwayat transaksi yang ditutup untuk agen ini.
                       </div>
                     ) : (
-                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10.5px', fontFamily: 'var(--font-mono)' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                         <thead>
                           <tr style={{ borderBottom: 'var(--border-hairline)', color: 'var(--text-muted)', textAlign: 'left' }}>
                             <th style={{ padding: '6px 8px' }}>WAKTU</th>
@@ -7045,11 +7045,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                                     <span>{item.symbol}</span>
                                     <span style={{
-                                      fontSize: '8px',
+                                      fontSize: '12px',
                                       padding: '1px 4px',
                                       borderRadius: '2px',
                                       background: (item.executionMode === 'SPOT' || item.market === 'IDX') ? 'rgba(34, 197, 94, 0.2)' : 'rgba(168, 85, 247, 0.2)',
-                                      color: (item.executionMode === 'SPOT' || item.market === 'IDX') ? 'var(--accent-green)' : '#c084fc',
+                                      color: (item.executionMode === 'SPOT' || item.market === 'IDX') ? 'var(--accent-green)' : 'var(--accent-purple-light)',
                                       fontWeight: '900',
                                       border: `1px solid ${(item.executionMode === 'SPOT' || item.market === 'IDX') ? 'rgba(34, 197, 94, 0.4)' : 'rgba(168, 85, 247, 0.4)'}`
                                     }}>
@@ -7064,7 +7064,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                 <td style={{ padding: '6px 8px' }}>{formatInstrumentPrice(item.exitPrice, item.market, item.symbol)}</td>
                                 <td style={{ padding: '6px 8px' }}>
                                   <span style={{
-                                    fontSize: '8px',
+                                    fontSize: '12px',
                                     padding: '1px 4px',
                                     borderRadius: '2px',
                                     background: isWin ? 'rgba(22, 163, 74, 0.15)' : 'rgba(220, 38, 38, 0.15)',
@@ -7079,15 +7079,15 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                                 </td>
                                 <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: '800', color: isWin ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                                   <div>{isWin ? '+' : ''}{formatIdr(pnlIdr)}</div>
-                                  <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>({isWin ? '+' : ''}{formatUsd(item.pnlUsd)})</div>
+                                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>({isWin ? '+' : ''}{formatUsd(item.pnlUsd)})</div>
                                 </td>
                               </tr>
                               {/* Explainable AI Trade Reflection Sub-Row */}
                               <tr key={`${item.id}-reflection`} style={{ background: 'rgba(255,255,255,0.015)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                                <td colSpan={8} style={{ padding: '4px 10px 8px 10px', fontSize: '9.5px' }}>
+                                <td colSpan={8} style={{ padding: '4px 10px 8px 10px', fontSize: '12px' }}>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                     <span style={{
-                                      fontSize: '7.5px',
+                                      fontSize: '12px',
                                       fontWeight: '800',
                                       padding: '1px 5px',
                                       borderRadius: '3px',
@@ -7116,7 +7116,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
             })()}
 
             <div style={{ padding: '8px 18px', background: 'var(--bg-panel-subtle)', borderTop: 'var(--border-hairline)', display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={() => setJournalModal({ isOpen: false, agentId: 'ALL', agentName: 'Semua Agen' })} className="telemetry-btn" style={{ padding: '5px 12px', fontSize: '10px' }}>
+              <button onClick={() => setJournalModal({ isOpen: false, agentId: 'ALL', agentName: 'Semua Agen' })} className="telemetry-btn" style={{ padding: '5px 12px', fontSize: '12px' }}>
                 Tutup Modal
               </button>
             </div>
@@ -7154,11 +7154,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     <h3 id="session-recap-modal-title" style={{ margin: 0, fontSize: '14px', fontWeight: '900', color: 'var(--text-primary)', letterSpacing: '0.3px' }}>
                       Session Recap & Institutional Quant Post-Mortem Debrief
                     </h3>
-                    <span className="badge" style={{ fontSize: '8.5px', background: 'rgba(217, 70, 239, 0.18)', color: '#e879f9', border: '1px solid rgba(217, 70, 239, 0.4)' }}>
+                    <span className="badge" style={{ fontSize: '12px', background: 'rgba(217, 70, 239, 0.18)', color: '#e879f9', border: '1px solid rgba(217, 70, 239, 0.4)' }}>
                       Bridgewater & AQR Debrief Standard
                     </span>
                   </div>
-                  <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                     {sessionRecapData.sessionLabel} • Evaluasi Kinerja, Rekapitulasi Multiverse Alpha, & Rekomendasi Adaptif Sesi Berikutnya
                   </div>
                 </div>
@@ -7175,7 +7175,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
             {/* 2. Multi-Session Switcher Dropdown */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 14px', background: 'rgba(255,255,255,0.02)', borderBottom: 'var(--border-hairline)', flexWrap: 'wrap' }}>
-              <label htmlFor="select-session-recap" style={{ fontSize: '9px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              <label htmlFor="select-session-recap" style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 PILIH SESI:
               </label>
               <select
@@ -7184,11 +7184,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 onChange={e => setSelectedRecapSessionKey(e.target.value === 'LIVE' ? 'LIVE' : Number(e.target.value))}
                 style={{
                   background: 'var(--bg-panel-subtle, #161b22)',
-                  color: selectedRecapSessionKey === 'LIVE' ? 'var(--accent-sky)' : '#c084fc',
+                  color: selectedRecapSessionKey === 'LIVE' ? 'var(--accent-sky)' : 'var(--accent-purple-light)',
                   border: '1px solid var(--border-subtle, #30363d)',
                   borderRadius: '4px',
                   padding: '4px 10px',
-                  fontSize: '11px',
+                  fontSize: '12px',
                   fontFamily: 'var(--font-mono)',
                   fontWeight: '700',
                   cursor: 'pointer',
@@ -7207,7 +7207,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     ? 'Sesi #0 Genesis'
                     : (String(epNum).startsWith('0.') || String(epNum).includes('test') ? `Season ${epNum} (test)` : `Season ${epNum}`);
                   return (
-                    <option key={ep.id || idx} value={idx} style={{ background: '#0d1117', color: '#c084fc' }}>
+                    <option key={ep.id || idx} value={idx} style={{ background: '#0d1117', color: 'var(--accent-purple-light)' }}>
                       📑 {label} ({ep.createdAt ? ep.createdAt.split(',')[0] : 'Arsip'})
                     </option>
                   );
@@ -7225,7 +7225,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   key={tab.key}
                   onClick={() => { setRecapSubTab(tab.key); setPairDirFilter('ALL'); }}
                   style={{
-                    padding: '4px 12px', fontSize: '10px', fontWeight: '700',
+                    padding: '4px 12px', fontSize: '12px', fontWeight: '700',
                     borderRadius: '4px', cursor: 'pointer', minHeight: '26px',
                     border: recapSubTab === tab.key ? '1px solid rgba(217,70,239,0.6)' : '1px solid transparent',
                     background: recapSubTab === tab.key ? 'rgba(217,70,239,0.15)' : 'transparent',
@@ -7243,92 +7243,92 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               {/* SECTION 1: EXECUTIVE KPI SCORECARD */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px' }}>
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: '800' }}>NET REALIZED PnL</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>NET REALIZED PnL</div>
                   <div style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: sessionRecapData.netPnlIdr >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginTop: '2px' }}>
                     {sessionRecapData.netPnlIdr >= 0 ? '+' : ''}{formatIdr(sessionRecapData.netPnlIdr)}
                   </div>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                     ({sessionRecapData.netPnlUsd >= 0 ? '+' : ''}{formatUsd(sessionRecapData.netPnlUsd)})
                   </div>
                 </div>
 
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: '800' }}>RETURN ON CAPITAL (ROC)</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>RETURN ON CAPITAL (ROC)</div>
                   <div style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: Number(sessionRecapData.rocPct) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginTop: '2px' }}>
                     {Number(sessionRecapData.rocPct) >= 0 ? '+' : ''}{sessionRecapData.rocPct}%
                   </div>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                     Terhadap Total Modal Sesi
                   </div>
                 </div>
 
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: '800' }}>WIN RATE & VOLUME</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>WIN RATE & VOLUME</div>
                   <div style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: Number(sessionRecapData.winRate) >= 50 ? 'var(--accent-green)' : 'var(--accent-rust)', marginTop: '2px' }}>
                     {sessionRecapData.winRate}%
                   </div>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                     {sessionRecapData.totalTrades} Tiket ({sessionRecapData.wins}W / {sessionRecapData.losses}L)
                   </div>
                 </div>
 
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: '800' }}>PROFIT FACTOR</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>PROFIT FACTOR</div>
                   <div style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: Number(sessionRecapData.profitFactor) >= 1.5 ? 'var(--accent-green)' : 'var(--accent-orange)', marginTop: '2px' }}>
                     {sessionRecapData.profitFactor}
                   </div>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                     Gross Profit / Gross Loss
                   </div>
                 </div>
 
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: '800' }}>SHARPE RATIO (ALPHA)</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>SHARPE RATIO (ALPHA)</div>
                   <div style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: Number(sessionRecapData.sharpeRatio) >= 1.0 ? 'var(--accent-green)' : 'var(--accent-blue)', marginTop: '2px' }}>
                     {sessionRecapData.sharpeRatio}
                   </div>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                     Risk-Adjusted Efficiency
                   </div>
                 </div>
 
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: '800' }}>STATUS & UPTIME</div>
-                  <div style={{ fontSize: '12px', fontWeight: '900', color: sessionRecapData.isLive ? 'var(--accent-green)' : '#c084fc', marginTop: '3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>STATUS & UPTIME</div>
+                  <div style={{ fontSize: '12px', fontWeight: '900', color: sessionRecapData.isLive ? 'var(--accent-green)' : 'var(--accent-purple-light)', marginTop: '3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span>{sessionRecapData.isLive ? '🟢' : '📑'}</span>
                     <span>{sessionRecapData.isLive ? 'LIVE INTERIM' : 'DIARSIPKAN'}</span>
                   </div>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                     ⏱️ {sessionRecapData.uptimeStr}
                   </div>
                 </div>
 
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: '800' }}>MAX DRAWDOWN</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>MAX DRAWDOWN</div>
                   <div style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: Number(sessionRecapData.maxDrawdownPct || 0) > 10 ? 'var(--accent-rust)' : 'var(--accent-orange)', marginTop: '2px' }}>
                     -{sessionRecapData.maxDrawdownPct || 0}%
                   </div>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                     -{formatIdr(sessionRecapData.maxDrawdownIdr || 0)}
                   </div>
                 </div>
 
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: '800' }}>AVG WIN / AVG LOSS</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>AVG WIN / AVG LOSS</div>
                   <div style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)', marginTop: '2px' }}>
                     {sessionRecapData.winLossRatio || 0}x
                   </div>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                     +{formatIdr(sessionRecapData.avgWinIdr || 0)} / -{formatIdr(sessionRecapData.avgLossIdr || 0)}
                   </div>
                 </div>
 
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: '800' }}>EXPECTANCY / TRADE</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '800' }}>EXPECTANCY / TRADE</div>
                   <div style={{ fontSize: '15px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: (sessionRecapData.expectancyIdr || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginTop: '2px' }}>
                     {(sessionRecapData.expectancyIdr || 0) >= 0 ? '+' : ''}{formatIdr(sessionRecapData.expectancyIdr || 0)}
                   </div>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                     Nilai Ekspektasi Matematis
                   </div>
                 </div>
@@ -7353,17 +7353,17 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     </div>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                        <span className="badge" style={{ fontSize: '8.5px', background: 'rgba(245, 158, 11, 0.25)', color: 'var(--accent-gold)', border: '1px solid rgba(245, 158, 11, 0.5)' }}>
+                        <span className="badge" style={{ fontSize: '12px', background: 'rgba(245, 158, 11, 0.25)', color: 'var(--accent-gold)', border: '1px solid rgba(245, 158, 11, 0.5)' }}>
                           TOP PERFORMER OF THE SESSION
                         </span>
                         <span style={{ fontSize: '13px', fontWeight: '900', color: sessionRecapData.mvp.color }}>
                           {sessionRecapData.mvp.avatar} {sessionRecapData.mvp.name}
                         </span>
-                        <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
+                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
                           ({sessionRecapData.mvp.role})
                         </span>
                       </div>
-                      <p style={{ margin: '4px 0 0 0', fontSize: '10.5px', color: 'var(--text-primary)', lineHeight: '1.4' }}>
+                      <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: 'var(--text-primary)', lineHeight: '1.4' }}>
                         🌟 <strong>Alpha Edge:</strong> Eksekusi konsisten dengan disiplin risiko tinggi. Mengkontribusikan keuntungan terbesar sesi ini dengan profit factor <strong>{sessionRecapData.mvp.profitFactor}</strong> dan instrumen terbaik <strong>{sessionRecapData.mvp.bestPair}</strong>.
                       </p>
                     </div>
@@ -7371,11 +7371,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
                   <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>NET GAIN KONTRIBUSI</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>NET GAIN KONTRIBUSI</div>
                       <div style={{ fontSize: '14px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: sessionRecapData.mvp.netPnlIdr >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                         {sessionRecapData.mvp.netPnlIdr >= 0 ? '+' : ''}{formatIdr(sessionRecapData.mvp.netPnlIdr)}
                       </div>
-                      <div style={{ fontSize: '9px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
                         Win Rate: {sessionRecapData.mvp.winRate}% ({sessionRecapData.mvp.totalTrades} trade)
                       </div>
                     </div>
@@ -7387,18 +7387,18 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <div style={{
                 background: sessionRecapData.netPnlIdr >= 0 ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)',
                 borderLeft: sessionRecapData.netPnlIdr >= 0 ? '3px solid var(--accent-green)' : '3px solid var(--accent-rust)',
-                padding: '9px 12px', borderRadius: '4px', fontSize: '11px', color: 'var(--text-primary)', lineHeight: '1.5'
+                padding: '9px 12px', borderRadius: '4px', fontSize: '12px', color: 'var(--text-primary)', lineHeight: '1.5'
               }}>
                 <strong>📌 Blameless Debrief Summary:</strong> {sessionRecapData.keyTakeaway}
               </div>
 
               {/* SECTION 4: PER-AGENT PERFORMANCE MATRIX */}
               <div>
-                <div style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '900', color: 'var(--text-primary)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span>🤖</span>
                   <span>Matriks Komparasi 4 Elemen Bot (WATER, FIRE, AIR, EARTH)</span>
                 </div>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10px', fontFamily: 'var(--font-mono)', background: 'var(--bg-panel-subtle)', borderRadius: '4px', overflow: 'hidden' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', fontFamily: 'var(--font-mono)', background: 'var(--bg-panel-subtle)', borderRadius: '4px', overflow: 'hidden' }}>
                   <thead>
                     <tr style={{ borderBottom: 'var(--border-hairline)', color: 'var(--text-muted)', textAlign: 'left', background: 'rgba(255,255,255,0.02)' }}>
                       <th style={{ padding: '6px 8px' }}>AGENT</th>
@@ -7431,7 +7431,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                         </td>
                         <td style={{ padding: '6px 8px' }}>
                           <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{formatIdr(ab.currentEquity || capitalPerBotIdr)}</div>
-                          <span style={{ fontSize: '8.5px', color: (ab.currentEquity || capitalPerBotIdr) >= capitalPerBotIdr ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '600' }}>
+                          <span style={{ fontSize: '12px', color: (ab.currentEquity || capitalPerBotIdr) >= capitalPerBotIdr ? 'var(--accent-green)' : 'var(--accent-rust)', fontWeight: '600' }}>
                             {(((ab.currentEquity || capitalPerBotIdr) / capitalPerBotIdr) * 100).toFixed(0)}% Modal Awal
                           </span>
                         </td>
@@ -7446,7 +7446,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
               {/* SECTION 5: UNIVERSE ATTRIBUTION */}
               <div>
-                <div style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '900', color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span>🌐</span>
                   <span>Universe Attribution (Top Alpha Generators vs Toxic Drag Pairs)</span>
                 </div>
@@ -7456,10 +7456,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   <div style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '6px', padding: '10px 12px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', borderBottom: '1px solid rgba(16, 185, 129, 0.15)', paddingBottom: '6px' }}>
                       <span style={{ fontSize: '13px' }}>💎</span>
-                      <strong style={{ fontSize: '11px', color: 'var(--accent-green)' }}>Top Alpha Generators (Paling Menguntungkan)</strong>
+                      <strong style={{ fontSize: '12px', color: 'var(--accent-green)' }}>Top Alpha Generators (Paling Menguntungkan)</strong>
                     </div>
                     {sessionRecapData.topAlphaPairs.length === 0 ? (
-                      <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic', padding: '6px 0' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic', padding: '6px 0' }}>
                         Belum ada instrumen yang mencatatkan profit positif pada sesi ini.
                       </div>
                     ) : (
@@ -7467,16 +7467,16 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                         {sessionRecapData.topAlphaPairs.map((p, idx) => (
                           <div key={p.symbol} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-panel)', padding: '6px 8px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span style={{ fontSize: '10px', color: 'var(--accent-gold)', fontWeight: '900' }}>#{idx + 1}</span>
-                              <strong style={{ fontSize: '11px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{p.symbol}</strong>
-                              <span className="badge" style={{ fontSize: '8.5px', padding: '1px 4px' }}>{p.market}</span>
-                              <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{p.totalTrades} trades</span>
+                              <span style={{ fontSize: '12px', color: 'var(--accent-gold)', fontWeight: '900' }}>#{idx + 1}</span>
+                              <strong style={{ fontSize: '12px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{p.symbol}</strong>
+                              <span className="badge" style={{ fontSize: '12px', padding: '1px 4px' }}>{p.market}</span>
+                              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{p.totalTrades} trades</span>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '10.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
+                              <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
                                 +{formatIdr(p.netPnlIdr)}
                               </div>
-                              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                                 Win Rate: {p.winRate}%
                               </div>
                             </div>
@@ -7490,10 +7490,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   <div style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '6px', padding: '10px 12px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', borderBottom: '1px solid rgba(239, 68, 68, 0.15)', paddingBottom: '6px' }}>
                       <span style={{ fontSize: '13px' }}>⚠️</span>
-                      <strong style={{ fontSize: '11px', color: 'var(--accent-rust)' }}>Toxic Drag Pairs (Penyumbang Defisit Terbesar)</strong>
+                      <strong style={{ fontSize: '12px', color: 'var(--accent-rust)' }}>Toxic Drag Pairs (Penyumbang Defisit Terbesar)</strong>
                     </div>
                     {sessionRecapData.toxicDragPairs.length === 0 ? (
-                      <div style={{ fontSize: '10px', color: 'var(--accent-green)', padding: '6px 0' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--accent-green)', padding: '6px 0' }}>
                         ✅ Tidak ada instrumen toxic berkinerja negatif signifikan.
                       </div>
                     ) : (
@@ -7501,16 +7501,16 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                         {sessionRecapData.toxicDragPairs.map((p, idx) => (
                           <div key={p.symbol} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-panel)', padding: '6px 8px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <span style={{ fontSize: '10px', color: 'var(--accent-rust)', fontWeight: '900' }}>#{idx + 1}</span>
-                              <strong style={{ fontSize: '11px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{p.symbol}</strong>
-                              <span className="badge" style={{ fontSize: '8.5px', padding: '1px 4px' }}>{p.market}</span>
-                              <span style={{ fontSize: '8px', color: 'var(--accent-rust)', fontWeight: '700' }}>Cooldown Recom.</span>
+                              <span style={{ fontSize: '12px', color: 'var(--accent-rust)', fontWeight: '900' }}>#{idx + 1}</span>
+                              <strong style={{ fontSize: '12px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{p.symbol}</strong>
+                              <span className="badge" style={{ fontSize: '12px', padding: '1px 4px' }}>{p.market}</span>
+                              <span style={{ fontSize: '12px', color: 'var(--accent-rust)', fontWeight: '700' }}>Cooldown Recom.</span>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '10.5px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>
+                              <div style={{ fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>
                                 {formatIdr(p.netPnlIdr)}
                               </div>
-                              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                                 {p.totalTrades} trades (Loss)
                               </div>
                             </div>
@@ -7525,7 +7525,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
 
               {/* SECTION 5B: MARKET ASSET CLASS ATTRIBUTION */}
               <div>
-                <div style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '900', color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span>🏛️</span>
                   <span>Distribusi Kinerja per Kelas Aset (IDX, Crypto, Forex, US, Commodities)</span>
                 </div>
@@ -7533,15 +7533,15 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   {(sessionRecapData.marketClassList || []).map(m => (
                     <div key={m.market} style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                        <span style={{ fontSize: '11px', fontWeight: '900', color: m.market === 'IDX' ? 'var(--accent-gold)' : m.market === 'CRYPTO' ? 'var(--accent-orange)' : m.market === 'FOREX' ? 'var(--accent-blue)' : m.market === 'COMMODITIES' ? 'var(--accent-gold)' : '#c084fc' }}>
+                        <span style={{ fontSize: '12px', fontWeight: '900', color: m.market === 'IDX' ? 'var(--accent-gold)' : m.market === 'CRYPTO' ? 'var(--accent-orange)' : m.market === 'FOREX' ? 'var(--accent-blue)' : m.market === 'COMMODITIES' ? 'var(--accent-gold)' : 'var(--accent-purple-light)' }}>
                           {m.market}
                         </span>
-                        <span className="badge" style={{ fontSize: '8px' }}>{m.totalTrades} trade</span>
+                        <span className="badge" style={{ fontSize: '12px' }}>{m.totalTrades} trade</span>
                       </div>
                       <div style={{ fontSize: '13px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: m.netPnlIdr >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                         {m.netPnlIdr >= 0 ? '+' : ''}{formatIdr(m.netPnlIdr)}
                       </div>
-                      <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '2px', display: 'flex', justifyContent: 'space-between' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px', display: 'flex', justifyContent: 'space-between' }}>
                         <span>Win Rate: {m.winRate}%</span>
                         <span>PF: {m.profitFactor}x</span>
                       </div>
@@ -7553,7 +7553,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               {/* SECTION 5C: TOP 3 BEST TRADES VS TOP 3 WORST TRADES */}
               {((sessionRecapData.top3BestTrades?.length > 0) || (sessionRecapData.top3WorstTrades?.length > 0)) && (
                 <div>
-                  <div style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: '900', color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <span>⚖️</span>
                     <span>Audit Eksekusi: Top 3 Best Winning Trades vs Top 3 Worst Drawdown Trades</span>
                   </div>
@@ -7563,24 +7563,24 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     <div style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '6px', padding: '10px 12px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', borderBottom: '1px solid rgba(16, 185, 129, 0.15)', paddingBottom: '6px' }}>
                         <span style={{ fontSize: '12px' }}>🏆</span>
-                        <strong style={{ fontSize: '10.5px', color: 'var(--accent-green)' }}>Top 3 Best Trades (Sniper Hits)</strong>
+                        <strong style={{ fontSize: '12px', color: 'var(--accent-green)' }}>Top 3 Best Trades (Sniper Hits)</strong>
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                         {(sessionRecapData.top3BestTrades || []).map((t, idx) => (
                           <div key={t.id || idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-panel)', padding: '6px 8px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                             <div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                <span style={{ fontSize: '9px', fontWeight: '900', color: 'var(--accent-gold)' }}>#{idx + 1}</span>
-                                <strong style={{ fontSize: '11px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{t.symbol}</strong>
-                                <span className="badge" style={{ fontSize: '8px' }}>{t.agentId}</span>
-                                <span style={{ fontSize: '8px', color: t.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{t.direction}</span>
+                                <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--accent-gold)' }}>#{idx + 1}</span>
+                                <strong style={{ fontSize: '12px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{t.symbol}</strong>
+                                <span className="badge" style={{ fontSize: '12px' }}>{t.agentId}</span>
+                                <span style={{ fontSize: '12px', color: t.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{t.direction}</span>
                               </div>
-                              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                                 Alasan: {t.exitReason} • ROI: +{t.roiPct}%
                               </div>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
+                              <div style={{ fontSize: '12px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
                                 +{formatIdr(t.pnlIdr || (t.pnlUsd * usdToIdrRate))}
                               </div>
                             </div>
@@ -7593,24 +7593,24 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     <div style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '6px', padding: '10px 12px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', borderBottom: '1px solid rgba(239, 68, 68, 0.15)', paddingBottom: '6px' }}>
                         <span style={{ fontSize: '12px' }}>⚠️</span>
-                        <strong style={{ fontSize: '10.5px', color: 'var(--accent-rust)' }}>Top 3 Worst Trades (Risk Drag)</strong>
+                        <strong style={{ fontSize: '12px', color: 'var(--accent-rust)' }}>Top 3 Worst Trades (Risk Drag)</strong>
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                         {(sessionRecapData.top3WorstTrades || []).map((t, idx) => (
                           <div key={t.id || idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-panel)', padding: '6px 8px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
                             <div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                <span style={{ fontSize: '9px', fontWeight: '900', color: 'var(--accent-rust)' }}>#{idx + 1}</span>
-                                <strong style={{ fontSize: '11px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{t.symbol}</strong>
-                                <span className="badge" style={{ fontSize: '8px' }}>{t.agentId}</span>
-                                <span style={{ fontSize: '8px', color: t.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{t.direction}</span>
+                                <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--accent-rust)' }}>#{idx + 1}</span>
+                                <strong style={{ fontSize: '12px', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{t.symbol}</strong>
+                                <span className="badge" style={{ fontSize: '12px' }}>{t.agentId}</span>
+                                <span style={{ fontSize: '12px', color: t.direction === 'LONG' ? 'var(--accent-green)' : 'var(--accent-rust)' }}>{t.direction}</span>
                               </div>
-                              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                                 Alasan: {t.exitReason} • ROI: {t.roiPct}%
                               </div>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '11px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>
+                              <div style={{ fontSize: '12px', fontWeight: '900', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>
                                 {formatIdr(t.pnlIdr || (t.pnlUsd * usdToIdrRate))}
                               </div>
                             </div>
@@ -7628,28 +7628,28 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', borderBottom: '1px solid rgba(168, 85, 247, 0.15)', paddingBottom: '6px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <span style={{ fontSize: '14px' }}>🧠</span>
-                    <strong style={{ fontSize: '11px', color: '#c084fc' }}>Saran & Rekomendasi Kuantitatif untuk Sesi Berikutnya (Closed-Loop Roadmap)</strong>
+                    <strong style={{ fontSize: '12px', color: 'var(--accent-purple-light)' }}>Saran & Rekomendasi Kuantitatif untuk Sesi Berikutnya (Closed-Loop Roadmap)</strong>
                   </div>
-                  <span className="badge" style={{ fontSize: '8px', background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc' }}>
+                  <span className="badge" style={{ fontSize: '12px', background: 'rgba(168, 85, 247, 0.2)', color: 'var(--accent-purple-light)' }}>
                     Bridgewater Principles & Sovereign RPG Multi-Agent System
                   </span>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '8px' }}>
                   <div style={{ background: 'var(--bg-panel)', padding: '8px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                    <div style={{ fontSize: '10px', fontWeight: '800', color: 'var(--accent-blue)', marginBottom: '3px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-blue)', marginBottom: '3px' }}>
                       ⚖️ 1. Disiplin Modal Sovereign & Auto-MC Reset
                     </div>
-                    <p style={{ margin: 0, fontSize: '9.5px', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
+                    <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
                       Setiap bot mempertahankan modal independen Rp 1.000.000. Jika drawdown menyentuh batas Margin Call (≤ 15%), posisi otomatis dilikuidasi ke modal awal dengan autopsi pair toksik dan peningkatan generasi DNA.
                     </p>
                   </div>
 
                   <div style={{ background: 'var(--bg-panel)', padding: '8px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                    <div style={{ fontSize: '10px', fontWeight: '800', color: 'var(--accent-orange)', marginBottom: '3px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-orange)', marginBottom: '3px' }}>
                       🛡️ 2. Pengetatan Trailing & Filter Sinyal
                     </div>
-                    <p style={{ margin: 0, fontSize: '9.5px', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
+                    <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
                       {sessionRecapData.toxicDragPairs.length > 0
                         ? `Terapkan cooldown pada pair ${sessionRecapData.toxicDragPairs.map(p => p.symbol).join(', ')}. Perketat trailing ratchet (+15%) pada bot yang mencatatkan win rate di bawah 50%.`
                         : 'Pertahankan trailing ratchet 1.0x dan lanjutkan eksplorasi sinyal lintas instrumen likuid dengan parameter optimal.'}
@@ -7657,10 +7657,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   </div>
 
                   <div style={{ background: 'var(--bg-panel)', padding: '8px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                    <div style={{ fontSize: '10px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '3px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--accent-green)', marginBottom: '3px' }}>
                       🏛️ 3. Disiplin Jam Operasional Bursa
                     </div>
-                    <p style={{ margin: 0, fontSize: '9.5px', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
+                    <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
                       Maksimalkan pemindaian pada overlap sesi London/New York untuk FOREX & FUTURES. Saham BEI (EARTH) tetap disiplin di jam 09:00 - 15:45 WIB tanpa order spekulatif saat pasar tutup.
                     </p>
                   </div>
@@ -7685,13 +7685,13 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {/* Direction Filter Chips */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '9px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Arah:</span>
+                      <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Arah:</span>
                       {['ALL', 'LONG', 'SHORT'].map(dir => (
                         <button
                           key={dir}
                           onClick={() => setPairDirFilter(dir)}
                           style={{
-                            padding: '3px 10px', fontSize: '9.5px', fontWeight: '700', cursor: 'pointer',
+                            padding: '3px 10px', fontSize: '12px', fontWeight: '700', cursor: 'pointer',
                             minHeight: '24px', borderRadius: '4px',
                             border: pairDirFilter === dir
                               ? (dir === 'LONG' ? '1px solid var(--accent-green)' : dir === 'SHORT' ? '1px solid var(--accent-rust)' : '1px solid var(--accent-blue)')
@@ -7708,10 +7708,10 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     </div>
 
                     {!hasPairs && (
-                      <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)', fontSize: '11px' }}>
+                      <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)', fontSize: '12px' }}>
                         <div style={{ fontSize: '32px', marginBottom: '8px' }}>📭</div>
                         <div>Belum ada data pair untuk sesi ini.</div>
-                        {!sessionRecapData.isLive && <div style={{ fontSize: '9px', marginTop: '4px' }}>Sesi arsip lama tidak menyimpan data pair detail.</div>}
+                        {!sessionRecapData.isLive && <div style={{ fontSize: '12px', marginTop: '4px' }}>Sesi arsip lama tidak menyimpan data pair detail.</div>}
                       </div>
                     )}
 
@@ -7722,7 +7722,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           display: 'grid',
                           gridTemplateColumns: '1fr 80px 60px 80px 80px 80px',
                           gap: '6px', padding: '6px 10px',
-                          fontSize: '8px', fontWeight: '800', color: 'var(--text-muted)',
+                          fontSize: '12px', fontWeight: '800', color: 'var(--text-muted)',
                           textTransform: 'uppercase', letterSpacing: '0.04em',
                           borderBottom: 'var(--border-hairline)', background: 'var(--bg-panel-subtle)',
                           borderRadius: '4px 4px 0 0'
@@ -7740,7 +7740,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                           const isPositive = pnlToShow >= 0;
                           const tradesShown = pairDirFilter === 'LONG' ? p.longTrades : pairDirFilter === 'SHORT' ? p.shortTrades : p.totalTrades;
                           const wrShown = pairDirFilter === 'LONG' ? p.longWinRate : pairDirFilter === 'SHORT' ? p.shortWinRate : p.winRate;
-                          const mktColors = { 'FOREX': 'var(--accent-sky)', 'CRYPTO': '#fb923c', 'FUTURES': '#a78bfa', 'IDX': 'var(--accent-mint)' };
+                          const mktColors = { 'FOREX': 'var(--accent-sky)', 'CRYPTO': '#fb923c', 'FUTURES': 'var(--accent-purple)', 'IDX': 'var(--accent-mint)' };
                           const mktColor = mktColors[p.market] || '#94a3b8';
                           return (
                             <div key={p.symbol} style={{
@@ -7751,33 +7751,33 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                             }}>
                               <div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  <span style={{ fontSize: '8.5px', fontWeight: '800', color: mktColor,
+                                  <span style={{ fontSize: '12px', fontWeight: '800', color: mktColor,
                                     background: `${mktColor}18`, border: `1px solid ${mktColor}40`,
                                     borderRadius: '3px', padding: '1px 5px', letterSpacing: '0.03em' }}>
                                     {p.market}
                                   </span>
-                                  <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{p.symbol}</span>
+                                  <span style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{p.symbol}</span>
                                 </div>
-                                <div style={{ fontSize: '8px', color: 'var(--text-muted)', marginTop: '1px' }}>
+                                <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '1px' }}>
                                   L: {p.longWins || 0}W/{p.longTrades || 0} ({p.longWinRate || 0}%) • S: {p.shortWins || 0}W/{p.shortTrades || 0} ({p.shortWinRate || 0}%)
                                 </div>
                               </div>
-                              <div style={{ textAlign: 'right', fontSize: '11px', fontWeight: '800', fontFamily: 'var(--font-mono)',
+                              <div style={{ textAlign: 'right', fontSize: '12px', fontWeight: '800', fontFamily: 'var(--font-mono)',
                                 color: isPositive ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                                 {isPositive ? '+' : ''}{(pnlToShow / 1000).toFixed(0)}K
                               </div>
-                              <div style={{ textAlign: 'center', fontSize: '10px', color: 'var(--text-secondary)' }}>
+                              <div style={{ textAlign: 'center', fontSize: '12px', color: 'var(--text-secondary)' }}>
                                 {tradesShown || 0}
                               </div>
-                              <div style={{ textAlign: 'center', fontSize: '10px', fontWeight: '700',
+                              <div style={{ textAlign: 'center', fontSize: '12px', fontWeight: '700',
                                 color: Number(wrShown) >= 50 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                                 {wrShown || 0}%
                               </div>
-                              <div style={{ textAlign: 'center', fontSize: '9.5px', fontFamily: 'var(--font-mono)',
+                              <div style={{ textAlign: 'center', fontSize: '12px', fontFamily: 'var(--font-mono)',
                                 color: p.longNetPnlIdr >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                                 {p.longTrades > 0 ? `${p.longNetPnlIdr >= 0 ? '+' : ''}${(p.longNetPnlIdr / 1000).toFixed(0)}K` : '—'}
                               </div>
-                              <div style={{ textAlign: 'center', fontSize: '9.5px', fontFamily: 'var(--font-mono)',
+                              <div style={{ textAlign: 'center', fontSize: '12px', fontFamily: 'var(--font-mono)',
                                 color: p.shortNetPnlIdr >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)' }}>
                                 {p.shortTrades > 0 ? `${p.shortNetPnlIdr >= 0 ? '+' : ''}${(p.shortNetPnlIdr / 1000).toFixed(0)}K` : '—'}
                               </div>
@@ -7797,7 +7797,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <button
                 onClick={() => setSessionRecapModalOpen(false)}
                 className="telemetry-btn"
-                style={{ padding: '5px 14px', fontSize: '11px' }}
+                style={{ padding: '5px 14px', fontSize: '12px' }}
               >
                 Tutup Recap
               </button>
@@ -7811,7 +7811,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     }}
                     style={{
                       padding: '6px 16px',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       fontWeight: '800',
                       background: 'rgba(217, 70, 239, 0.2)',
                       color: '#f0abfc',
@@ -7836,7 +7836,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     }}
                     style={{
                       padding: '6px 16px',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       fontWeight: '800',
                       background: 'var(--bg-panel-subtle)',
                       color: 'var(--text-secondary)',
@@ -7908,11 +7908,11 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                     <h3 id="evolution-modal-title" style={{ margin: 0, fontSize: '14px', fontWeight: '900', color: 'var(--text-primary)' }}>
                       {evolutionModal.agent.name} : Silsilah Generasi & Mutasi DNA
                     </h3>
-                    <span className="badge" style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.4)', fontSize: '9px', fontWeight: '800' }}>
+                    <span className="badge" style={{ background: 'rgba(168, 85, 247, 0.2)', color: 'var(--accent-purple-light)', border: '1px solid rgba(168, 85, 247, 0.4)', fontSize: '12px', fontWeight: '800' }}>
                       🧬 GEN {evolutionModal.agent.generation ?? 0}
                     </span>
                   </div>
-                  <div style={{ fontSize: '10px', color: evolutionModal.agent.color, fontWeight: '700' }}>
+                  <div style={{ fontSize: '12px', color: evolutionModal.agent.color, fontWeight: '700' }}>
                     {evolutionModal.agent.role} • {evolutionModal.agent.strategy}
                   </div>
                 </div>
@@ -7930,83 +7930,83 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
             <div style={{ padding: '14px 18px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               
               {/* Concept Note */}
-              <div style={{ background: 'rgba(168, 85, 247, 0.08)', borderLeft: '3px solid #a855f7', padding: '8px 12px', borderRadius: '4px', fontSize: '10px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+              <div style={{ background: 'rgba(168, 85, 247, 0.08)', borderLeft: '3px solid #a855f7', padding: '8px 12px', borderRadius: '4px', fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
                 <strong>🎮 Siklus Hidup & Generasi Bot:</strong> Ketika saldo bot jatuh hingga minus (&le; 0), bot mengalami Margin Call (mati). Seluruh posisi aktif dilikuidasi seketika, dan bot berevolusi (respawn) ke <strong>Generasi berikutnya (Gen {((evolutionModal.agent.generation ?? 0) + 1)})</strong> dengan catatan defisit serta <strong>mutasi DNA</strong> (parameter risk & trailing stop yang diperketat).
               </div>
 
               {/* Status Metric Grid */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '8px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>GENERASI SAAT INI</div>
-                  <div style={{ fontSize: '15px', fontWeight: '900', color: '#c084fc', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>GENERASI SAAT INI</div>
+                  <div style={{ fontSize: '15px', fontWeight: '900', color: 'var(--accent-purple-light)', fontFamily: 'var(--font-mono)' }}>
                     Gen {evolutionModal.agent.generation ?? 0}
                   </div>
-                  <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Iterasi Evolusi Hidup</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Iterasi Evolusi Hidup</div>
                 </div>
 
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '8px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>TOTAL KALI TER-RESET</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>TOTAL KALI TER-RESET</div>
                   <div style={{ fontSize: '15px', fontWeight: '900', color: (evolutionModal.agent.resetCount || 0) > 0 ? 'var(--accent-rust)' : 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
                     {evolutionModal.agent.resetCount || 0}x
                   </div>
-                  <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Margin Call / Extinction</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Margin Call / Extinction</div>
                 </div>
 
                 <div style={{ background: 'var(--bg-panel-subtle)', padding: '8px 10px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                  <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>TOTAL DEFISIT HISTORIS</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>TOTAL DEFISIT HISTORIS</div>
                   <div style={{ fontSize: '14px', fontWeight: '900', color: (evolutionModal.agent.resetsHistory?.length || 0) > 0 ? 'var(--accent-rust)' : 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                     {(evolutionModal.agent.resetsHistory?.length || 0) > 0
                       ? `-${formatIdr((evolutionModal.agent.resetsHistory || []).reduce((acc, r) => acc + (r.deficitIdr || 0), 0))}`
                       : 'Rp 0'}
                   </div>
-                  <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Akumulasi Kerugian</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Akumulasi Kerugian</div>
                 </div>
               </div>
 
               {/* Mutated DNA Parameters */}
               <div style={{ background: 'var(--bg-panel-subtle)', padding: '10px 12px', borderRadius: '4px', border: 'var(--border-hairline)' }}>
-                <div style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <span>🧬</span>
                   <span>Parameter DNA Adaptif Aktif:</span>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px', fontSize: '9px', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                   <div style={{ background: 'var(--bg-panel)', padding: '6px 8px', borderRadius: '3px' }}>
-                    <div style={{ color: 'var(--text-muted)', fontSize: '8px' }}>Risk Multiplier</div>
-                    <div style={{ fontWeight: '800', color: (evolutionModal.agent.dnaTraits?.riskMultiplier || 1.0) < 1.0 ? 'var(--accent-orange)' : 'var(--accent-green)', fontSize: '11px' }}>
+                    <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Risk Multiplier</div>
+                    <div style={{ fontWeight: '800', color: (evolutionModal.agent.dnaTraits?.riskMultiplier || 1.0) < 1.0 ? 'var(--accent-orange)' : 'var(--accent-green)', fontSize: '12px' }}>
                       {((evolutionModal.agent.dnaTraits?.riskMultiplier || 1.0) * 100).toFixed(0)}%
                     </div>
-                    <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                       {(evolutionModal.agent.dnaTraits?.riskMultiplier || 1.0) < 1.0 ? 'Proteksi Risiko Diperketat' : 'Standar Default'}
                     </div>
                   </div>
 
                   <div style={{ background: 'var(--bg-panel)', padding: '6px 8px', borderRadius: '3px' }}>
-                    <div style={{ color: 'var(--text-muted)', fontSize: '8px' }}>Confidence Boost</div>
-                    <div style={{ fontWeight: '800', color: (evolutionModal.agent.dnaTraits?.confidenceBoost || 0) > 0 ? '#c084fc' : 'var(--text-primary)', fontSize: '11px' }}>
+                    <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Confidence Boost</div>
+                    <div style={{ fontWeight: '800', color: (evolutionModal.agent.dnaTraits?.confidenceBoost || 0) > 0 ? 'var(--accent-purple-light)' : 'var(--text-primary)', fontSize: '12px' }}>
                       +{(evolutionModal.agent.dnaTraits?.confidenceBoost || 0)}%
                     </div>
-                    <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Threshold Konfirmasi Masuk</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Threshold Konfirmasi Masuk</div>
                   </div>
 
                   <div style={{ background: 'var(--bg-panel)', padding: '6px 8px', borderRadius: '3px' }}>
-                    <div style={{ color: 'var(--text-muted)', fontSize: '8px' }}>Trailing Stop Tightness</div>
-                    <div style={{ fontWeight: '800', color: (evolutionModal.agent.dnaTraits?.trailingTightness || 1.0) > 1.0 ? 'var(--accent-blue)' : 'var(--text-primary)', fontSize: '11px' }}>
+                    <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Trailing Stop Tightness</div>
+                    <div style={{ fontWeight: '800', color: (evolutionModal.agent.dnaTraits?.trailingTightness || 1.0) > 1.0 ? 'var(--accent-blue)' : 'var(--text-primary)', fontSize: '12px' }}>
                       {((evolutionModal.agent.dnaTraits?.trailingTightness || 1.0) * 100).toFixed(0)}%
                     </div>
-                    <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>Kecepatan Kunci Profit</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Kecepatan Kunci Profit</div>
                   </div>
                 </div>
               </div>
 
               {/* Generation Timeline & History Table */}
               <div>
-                <div style={{ fontSize: '10.5px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <span>📜</span>
                   <span>Riwayat Gugur & Evolusi Generasi</span>
                 </div>
 
                 {(!evolutionModal.agent.resetsHistory || evolutionModal.agent.resetsHistory.length === 0) ? (
-                  <div style={{ padding: '18px', textAlign: 'center', background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', color: 'var(--text-muted)', fontSize: '10.5px' }}>
+                  <div style={{ padding: '18px', textAlign: 'center', background: 'var(--bg-panel-subtle)', borderRadius: '4px', border: 'var(--border-hairline)', color: 'var(--text-muted)', fontSize: '12px' }}>
                     🌱 <strong>Generasi 0 (Genesis Baseline):</strong> Bot beroperasi di konfigurasi awal murni dan belum pernah mengalami Margin Call / mutasi penalti.
                   </div>
                 ) : (
@@ -8018,28 +8018,28 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                         borderLeft: '3px solid var(--accent-rust)',
                         padding: '8px 10px',
                         borderRadius: '4px',
-                        fontSize: '9.5px',
+                        fontSize: '12px',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '4px'
                       }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <span className="badge" style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#fca5a5', fontSize: '8.5px', fontWeight: '800' }}>
+                            <span className="badge" style={{ background: 'rgba(239, 68, 68, 0.15)', color: 'var(--accent-softred)', fontSize: '12px', fontWeight: '800' }}>
                               Gen {rh.fromGen} ➔ Gen {rh.toGen}
                             </span>
                             <span style={{ color: 'var(--text-secondary)', fontWeight: '700' }}>
                               Defisit: <strong style={{ color: 'var(--accent-rust)', fontFamily: 'var(--font-mono)' }}>-{formatIdr(rh.deficitIdr || 0)}</strong>
                             </span>
                           </div>
-                          <span style={{ fontSize: '8px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                          <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                             {new Date(rh.timestamp).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
-                        <div style={{ fontSize: '8.5px', color: 'var(--text-muted)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                           Penyebab: <span style={{ color: 'var(--text-secondary)' }}>{rh.reason || 'MARGIN_CALL'}</span> • Posisi Terlikuidasi: <span style={{ color: 'var(--accent-rust)', fontWeight: '700' }}>{rh.positionsLiquidated || 0} order</span> • Pair Berisiko: <span style={{ color: 'var(--accent-gold)', fontWeight: '700' }}>{rh.toxicPair || 'N/A'}</span>
                         </div>
-                        <div style={{ fontSize: '8.5px', color: '#c084fc', background: 'rgba(168, 85, 247, 0.06)', padding: '3px 6px', borderRadius: '3px' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--accent-purple-light)', background: 'rgba(168, 85, 247, 0.06)', padding: '3px 6px', borderRadius: '3px' }}>
                           🧬 <strong>Adaptasi DNA:</strong> Risk dikurangi ke {((rh.mutation?.riskMultiplier || 1) * 100).toFixed(0)}%, Confidence boost +{rh.mutation?.confidenceBoost || 0}%, Trailing stop diperketat {((rh.mutation?.trailingTightness || 1) * 100).toFixed(0)}%.
                         </div>
                       </div>
@@ -8062,7 +8062,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
               <button
                 onClick={() => setEvolutionModal({ isOpen: false, agent: null })}
                 className="telemetry-btn"
-                style={{ padding: '5px 14px', fontSize: '10px' }}
+                style={{ padding: '5px 14px', fontSize: '12px' }}
               >
                 Tutup
               </button>
@@ -8072,7 +8072,7 @@ export default function AiAgentArenaTab({ data, livePrices = {}, onOpenChart, on
                   setEvolutionModal({ isOpen: false, agent: null });
                 }}
                 className="telemetry-btn"
-                style={{ padding: '5px 12px', fontSize: '10px', color: 'var(--accent-rust)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+                style={{ padding: '5px 12px', fontSize: '12px', color: 'var(--accent-rust)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
               >
                 🔄 Reset & Evolve Bot Ini ke Gen {((evolutionModal.agent.generation ?? 0) + 1)}
               </button>
