@@ -3,21 +3,127 @@ import { institutionalPaperBroker } from '../services/brokerGateway.js';
 import { getTvSymbol, cleanSymbolStr } from '../data/tv-helpers.js';
 import { formatUsdCompact } from '../services/marketOverview.js';
 
-const POPULAR_INSTRUMENTS = [
+const CORE_CRYPTO_LIST = [
   { symbol: 'BTCUSDT', coin: 'BTC', name: 'Bitcoin', market: 'CRYPTO' },
   { symbol: 'ETHUSDT', coin: 'ETH', name: 'Ethereum', market: 'CRYPTO' },
   { symbol: 'SOLUSDT', coin: 'SOL', name: 'Solana', market: 'CRYPTO' },
-  { symbol: 'BNBUSDT', coin: 'BNB', name: 'BNB', market: 'CRYPTO' },
-  { symbol: 'XRPUSDT', coin: 'XRP', name: 'XRP', market: 'CRYPTO' },
+  { symbol: 'BNBUSDT', coin: 'BNB', name: 'BNB Chain', market: 'CRYPTO' },
+  { symbol: 'XRPUSDT', coin: 'XRP', name: 'Ripple', market: 'CRYPTO' },
   { symbol: 'HYPEUSDC', coin: 'HYPE', name: 'Hyperliquid', market: 'CRYPTO' },
   { symbol: 'SUIUSDT', coin: 'SUI', name: 'Sui Network', market: 'CRYPTO' },
   { symbol: 'DOGEUSDT', coin: 'DOGE', name: 'Dogecoin', market: 'CRYPTO' },
   { symbol: 'AVAXUSDT', coin: 'AVAX', name: 'Avalanche', market: 'CRYPTO' },
   { symbol: 'LINKUSDT', coin: 'LINK', name: 'Chainlink', market: 'CRYPTO' },
+  { symbol: 'PEPEUSDT', coin: 'PEPE', name: 'Pepe', market: 'CRYPTO' },
+  { symbol: 'WIFUSDT', coin: 'WIF', name: 'dogwifhat', market: 'CRYPTO' },
+  { symbol: 'NEARUSDT', coin: 'NEAR', name: 'NEAR Protocol', market: 'CRYPTO' },
+  { symbol: 'APTUSDT', coin: 'APT', name: 'Aptos', market: 'CRYPTO' },
+  { symbol: 'TIAUSDT', coin: 'TIA', name: 'Celestia', market: 'CRYPTO' },
+  { symbol: 'RENDERUSDT', coin: 'RENDER', name: 'Render Network', market: 'CRYPTO' },
+  { symbol: 'INJUSDT', coin: 'INJ', name: 'Injective', market: 'CRYPTO' },
+  { symbol: 'AAVEUSDT', coin: 'AAVE', name: 'Aave', market: 'CRYPTO' },
+  { symbol: 'CRVUSDT', coin: 'CRV', name: 'Curve DAO', market: 'CRYPTO' },
+  { symbol: 'UNIUSDT', coin: 'UNI', name: 'Uniswap', market: 'CRYPTO' },
+  { symbol: 'LTCUSDT', coin: 'LTC', name: 'Litecoin', market: 'CRYPTO' },
+  { symbol: 'ARBUSDT', coin: 'ARB', name: 'Arbitrum', market: 'CRYPTO' },
+  { symbol: 'OPUSDT', coin: 'OP', name: 'Optimism', market: 'CRYPTO' },
+  { symbol: 'FTMUSDT', coin: 'FTM', name: 'Fantom', market: 'CRYPTO' },
+  { symbol: 'ATOMUSDT', coin: 'ATOM', name: 'Cosmos', market: 'CRYPTO' },
+  { symbol: 'DOTUSDT', coin: 'DOT', name: 'Polkadot', market: 'CRYPTO' },
+  { symbol: 'TONUSDT', coin: 'TON', name: 'Toncoin', market: 'CRYPTO' },
+  { symbol: 'KASUSDT', coin: 'KAS', name: 'Kaspa', market: 'CRYPTO' },
+  { symbol: 'RUNEUSDT', coin: 'RUNE', name: 'THORChain', market: 'CRYPTO' },
+  { symbol: 'SEIUSDT', coin: 'SEI', name: 'Sei', market: 'CRYPTO' },
+  { symbol: 'STXUSDT', coin: 'STX', name: 'Stacks', market: 'CRYPTO' },
+  { symbol: 'FETUSDT', coin: 'FET', name: 'Artificial Superintelligence', market: 'CRYPTO' },
+  { symbol: 'TAOUSDT', coin: 'TAO', name: 'Bittensor', market: 'CRYPTO' },
+  { symbol: 'WLDUSDT', coin: 'WLD', name: 'Worldcoin', market: 'CRYPTO' },
+  { symbol: 'POPCATUSDT', coin: 'POPCAT', name: 'Popcat', market: 'CRYPTO' },
+  { symbol: 'BONKUSDT', coin: 'BONK', name: 'Bonk', market: 'CRYPTO' },
+  { symbol: 'SHIBUSDT', coin: 'SHIB', name: 'Shiba Inu', market: 'CRYPTO' },
+  { symbol: 'FLOKIUSDT', coin: 'FLOKI', name: 'Floki', market: 'CRYPTO' },
+  { symbol: 'PENDLEUSDT', coin: 'PENDLE', name: 'Pendle', market: 'CRYPTO' },
+  { symbol: 'ENAUSDT', coin: 'ENA', name: 'Ethena', market: 'CRYPTO' }
+];
+
+const CORE_IDX_LIST = [
   { symbol: 'BBCA', coin: 'BBCA', name: 'Bank Central Asia', market: 'IDX' },
   { symbol: 'BBRI', coin: 'BBRI', name: 'Bank Rakyat Indonesia', market: 'IDX' },
+  { symbol: 'BMRI', coin: 'BMRI', name: 'Bank Mandiri', market: 'IDX' },
+  { symbol: 'BBNI', coin: 'BBNI', name: 'Bank Negara Indonesia', market: 'IDX' },
+  { symbol: 'ASII', coin: 'ASII', name: 'Astra International', market: 'IDX' },
+  { symbol: 'TLKM', coin: 'TLKM', name: 'Telkom Indonesia', market: 'IDX' },
+  { symbol: 'AMMN', coin: 'AMMN', name: 'Amman Mineral Internasional', market: 'IDX' },
+  { symbol: 'BREN', coin: 'BREN', name: 'Barito Renewables Energy', market: 'IDX' },
+  { symbol: 'CUAN', coin: 'CUAN', name: 'Petrindo Jaya Kreasi', market: 'IDX' },
+  { symbol: 'ADRO', coin: 'ADRO', name: 'Adaro Energy', market: 'IDX' },
+  { symbol: 'ANTM', coin: 'ANTM', name: 'Aneka Tambang (Antam)', market: 'IDX' },
+  { symbol: 'PTBA', coin: 'PTBA', name: 'Bukit Asam', market: 'IDX' },
+  { symbol: 'BRMS', coin: 'BRMS', name: 'Bumi Resources Minerals', market: 'IDX' },
+  { symbol: 'MEDC', coin: 'MEDC', name: 'Medco Energi Internasional', market: 'IDX' },
+  { symbol: 'PGAS', coin: 'PGAS', name: 'Perusahaan Gas Negara', market: 'IDX' },
+  { symbol: 'UNTR', coin: 'UNTR', name: 'United Tractors', market: 'IDX' },
+  { symbol: 'CPIN', coin: 'CPIN', name: 'Charoen Pokphand', market: 'IDX' },
+  { symbol: 'ICBP', coin: 'ICBP', name: 'Indofood CBP Sukses Makmur', market: 'IDX' },
+  { symbol: 'INDF', coin: 'INDF', name: 'Indofood Sukses Makmur', market: 'IDX' },
+  { symbol: 'KLBF', coin: 'KLBF', name: 'Kalbe Farma', market: 'IDX' },
+  { symbol: 'MAPI', coin: 'MAPI', name: 'Mitra Adiperkasa', market: 'IDX' },
+  { symbol: 'ACES', coin: 'ACES', name: 'Aspirasi Hidup Indonesia', market: 'IDX' },
+  { symbol: 'EXCL', coin: 'EXCL', name: 'XL Axiata', market: 'IDX' },
+  { symbol: 'ISAT', coin: 'ISAT', name: 'Indosat Ooredoo Hutchison', market: 'IDX' },
+  { symbol: 'BRPT', coin: 'BRPT', name: 'Barito Pacific', market: 'IDX' },
+  { symbol: 'TPIA', coin: 'TPIA', name: 'Chandra Asri Pacific', market: 'IDX' },
+  { symbol: 'MDKA', coin: 'MDKA', name: 'Merdeka Copper Gold', market: 'IDX' },
+  { symbol: 'MBMA', coin: 'MBMA', name: 'Merdeka Battery Materials', market: 'IDX' },
+  { symbol: 'GOTO', coin: 'GOTO', name: 'GoTo Gojek Tokopedia', market: 'IDX' },
+  { symbol: 'BRIS', coin: 'BRIS', name: 'Bank Syariah Indonesia', market: 'IDX' }
+];
+
+const CORE_US_LIST = [
   { symbol: 'NVDA', coin: 'NVDA', name: 'Nvidia Corp', market: 'US' },
-  { symbol: 'AAPL', coin: 'AAPL', name: 'Apple Inc', market: 'US' }
+  { symbol: 'AAPL', coin: 'AAPL', name: 'Apple Inc', market: 'US' },
+  { symbol: 'MSFT', coin: 'MSFT', name: 'Microsoft Corp', market: 'US' },
+  { symbol: 'TSLA', coin: 'TSLA', name: 'Tesla Inc', market: 'US' },
+  { symbol: 'AMZN', coin: 'AMZN', name: 'Amazon.com Inc', market: 'US' },
+  { symbol: 'GOOGL', coin: 'GOOGL', name: 'Alphabet Inc (Google)', market: 'US' },
+  { symbol: 'META', coin: 'META', name: 'Meta Platforms (Facebook)', market: 'US' },
+  { symbol: 'AMD', coin: 'AMD', name: 'Advanced Micro Devices', market: 'US' },
+  { symbol: 'PLTR', coin: 'PLTR', name: 'Palantir Technologies', market: 'US' },
+  { symbol: 'SMCI', coin: 'SMCI', name: 'Super Micro Computer', market: 'US' },
+  { symbol: 'AVGO', coin: 'AVGO', name: 'Broadcom Inc', market: 'US' },
+  { symbol: 'CRM', coin: 'CRM', name: 'Salesforce Inc', market: 'US' },
+  { symbol: 'NFLX', coin: 'NFLX', name: 'Netflix Inc', market: 'US' },
+  { symbol: 'COIN', coin: 'COIN', name: 'Coinbase Global', market: 'US' },
+  { symbol: 'SOFI', coin: 'SOFI', name: 'SoFi Technologies', market: 'US' },
+  { symbol: 'JPM', coin: 'JPM', name: 'JPMorgan Chase & Co', market: 'US' },
+  { symbol: 'GS', coin: 'GS', name: 'Goldman Sachs', market: 'US' },
+  { symbol: 'V', coin: 'V', name: 'Visa Inc', market: 'US' },
+  { symbol: 'MA', coin: 'MA', name: 'Mastercard Inc', market: 'US' },
+  { symbol: 'LLY', coin: 'LLY', name: 'Eli Lilly and Co', market: 'US' },
+  { symbol: 'XOM', coin: 'XOM', name: 'Exxon Mobil Corp', market: 'US' },
+  { symbol: 'CVX', coin: 'CVX', name: 'Chevron Corp', market: 'US' },
+  { symbol: 'BA', coin: 'BA', name: 'Boeing Co', market: 'US' },
+  { symbol: 'CAT', coin: 'CAT', name: 'Caterpillar Inc', market: 'US' },
+  { symbol: 'MU', coin: 'MU', name: 'Micron Technology', market: 'US' },
+  { symbol: 'INTC', coin: 'INTC', name: 'Intel Corp', market: 'US' },
+  { symbol: 'ARM', coin: 'ARM', name: 'Arm Holdings plc', market: 'US' }
+];
+
+const CORE_COMMODITY_FOREX_LIST = [
+  { symbol: 'XAUUSD', coin: 'XAUUSD', name: 'Gold (Emas Spot USD)', market: 'COMMODITY' },
+  { symbol: 'XAGUSD', coin: 'XAGUSD', name: 'Silver (Perak Spot USD)', market: 'COMMODITY' },
+  { symbol: 'USOIL', coin: 'USOIL', name: 'WTI Crude Oil', market: 'COMMODITY' },
+  { symbol: 'EURUSD', coin: 'EURUSD', name: 'Euro / US Dollar', market: 'FOREX' },
+  { symbol: 'GBPUSD', coin: 'GBPUSD', name: 'British Pound / USD', market: 'FOREX' },
+  { symbol: 'USDJPY', coin: 'USDJPY', name: 'US Dollar / Japanese Yen', market: 'FOREX' },
+  { symbol: 'USDIDR', coin: 'USDIDR', name: 'US Dollar / Rupiah', market: 'FOREX' }
+];
+
+const POPULAR_INSTRUMENTS = [
+  ...CORE_CRYPTO_LIST.slice(0, 10),
+  ...CORE_IDX_LIST.slice(0, 4),
+  ...CORE_US_LIST.slice(0, 4),
+  ...CORE_COMMODITY_FOREX_LIST.slice(0, 2)
 ];
 
 export default function HyperliquidProDesk({
@@ -45,6 +151,68 @@ export default function HyperliquidProDesk({
   const [showLedger, setShowLedger] = useState(true);
   const [actionNotice, setActionNotice] = useState(null);
 
+  // Searchable Multi-Asset Picker Modal state
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('ALL');
+  const [allInstruments, setAllInstruments] = useState(() => [
+    ...CORE_CRYPTO_LIST,
+    ...CORE_IDX_LIST,
+    ...CORE_US_LIST,
+    ...CORE_COMMODITY_FOREX_LIST
+  ]);
+
+  // Dynamically load all 200+ Hyperliquid Perps
+  useEffect(() => {
+    fetch('https://api.hyperliquid.xyz/info', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'meta' })
+    })
+      .then(r => r.json())
+      .then(d => {
+        if (d && Array.isArray(d.universe) && d.universe.length > 0) {
+          const hlCoins = d.universe.map(u => ({
+            symbol: `${u.name}USDT`,
+            coin: u.name,
+            name: `${u.name} Perpetual`,
+            market: 'CRYPTO'
+          }));
+          setAllInstruments(prev => {
+            const existingCoins = new Set(prev.map(p => p.coin));
+            const newCoins = hlCoins.filter(c => !existingCoins.has(c.coin));
+            return [...prev, ...newCoins];
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Filter instruments for search and category
+  const filteredInstruments = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return allInstruments.filter(inst => {
+      const matchCat = selectedCategory === 'ALL' || inst.market === selectedCategory;
+      if (!matchCat) return false;
+      if (!q) return true;
+      return (
+        inst.coin.toLowerCase().includes(q) ||
+        inst.symbol.toLowerCase().includes(q) ||
+        (inst.name && inst.name.toLowerCase().includes(q))
+      );
+    });
+  }, [allInstruments, selectedCategory, searchQuery]);
+
+  // Close picker on Escape key
+  useEffect(() => {
+    if (!isPickerOpen) return;
+    const handleKey = (e) => {
+      if (e.key === 'Escape') setIsPickerOpen(false);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isPickerOpen]);
+
   // Live Hyperliquid L2 Order Book state
   const [l2Depth, setL2Depth] = useState(null);
   const [isLiveStreaming, setIsLiveStreaming] = useState(false);
@@ -71,8 +239,8 @@ export default function HyperliquidProDesk({
     const clean = cleanSymbolStr(raw);
     const candidateCoin = clean.replace('USDT', '').replace('USDC', '');
 
-    // 1. Check popular instruments list
-    const found = POPULAR_INSTRUMENTS.find(i => 
+    // 1. Check all instruments list
+    const found = allInstruments.find(i => 
       i.symbol === raw || i.symbol === clean || i.coin === raw || i.coin === clean || i.coin === candidateCoin
     );
     if (found) return found;
@@ -88,7 +256,7 @@ export default function HyperliquidProDesk({
       name: raw,
       market: isCryptoPair ? 'CRYPTO' : (isUS ? 'US' : 'IDX')
     };
-  }, [selectedPair]);
+  }, [selectedPair, allInstruments]);
 
   const isCrypto = activeInstrument.market === 'CRYPTO';
   const baseCoin = (activeInstrument.coin || cleanSym.replace('USDT', '').replace('USDC', '') || 'BTC').toUpperCase();
@@ -585,32 +753,35 @@ export default function HyperliquidProDesk({
       }}>
         {/* Left: Ticker Selector & Core Metrics */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0 }}>
-          {/* Pair Dropdown */}
+          {/* Pair Selector Trigger Button */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '15px' }}>⚡</span>
-            <select
-              value={selectedPair}
-              onChange={(e) => {
-                setSelectedPair(e.target.value);
-                setOrderSize('');
-              }}
+            <button
+              onClick={() => setIsPickerOpen(true)}
               style={{
-                background: 'transparent',
-                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
                 color: '#f8fafc',
-                fontSize: '15px',
+                fontSize: '14px',
                 fontWeight: 900,
                 fontFamily: 'var(--font-mono)',
+                padding: '4px 10px',
+                borderRadius: '6px',
                 cursor: 'pointer',
-                outline: 'none'
+                transition: 'all 0.15s ease'
               }}
+              title="Klik untuk memilih dari 300+ instrumen (Kripto, Saham BEI, Wall Street, Komoditas)"
             >
-              {POPULAR_INSTRUMENTS.map(inst => (
-                <option key={inst.symbol} value={inst.symbol} style={{ background: '#0f172a', color: '#fff' }}>
-                  {inst.coin}-{inst.market === 'CRYPTO' ? 'USDC' : inst.market}
-                </option>
-              ))}
-            </select>
+              <span style={{ fontSize: '14px' }}>
+                {activeInstrument.market === 'CRYPTO' ? '⚡' : activeInstrument.market === 'IDX' ? '🏛️' : activeInstrument.market === 'US' ? '🇺🇸' : '🥇'}
+              </span>
+              <span>
+                {activeInstrument.coin || cleanSym}-{activeInstrument.market === 'CRYPTO' ? 'USDC' : activeInstrument.market}
+              </span>
+              <span style={{ fontSize: '10px', color: '#64748b' }}>▼</span>
+            </button>
 
             <span style={{
               fontSize: '10px',
@@ -1612,6 +1783,211 @@ export default function HyperliquidProDesk({
           </div>
         )}
       </div>
+
+      {/* ── SEARCHABLE INSTRUMENT PICKER MODAL (300+ ASSETS) ── */}
+      {isPickerOpen && (
+        <div
+          onClick={() => setIsPickerOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            zIndex: 10000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px'
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: 'min(720px, 95vw)',
+              maxHeight: '85vh',
+              background: '#0d1117',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              borderRadius: '14px',
+              boxShadow: '0 25px 60px rgba(0, 0, 0, 0.85)',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden'
+            }}
+          >
+            {/* Modal Header & Search Bar */}
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '18px' }}>🌐</span>
+                  <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#f8fafc' }}>
+                    Pilih Instrumen Trading
+                  </h3>
+                  <span style={{ fontSize: '11px', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+                    ({allInstruments.length} Aset Tersedia)
+                  </span>
+                </div>
+                <button
+                  onClick={() => setIsPickerOpen(false)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: '#94a3b8',
+                    fontSize: '18px',
+                    cursor: 'pointer',
+                    padding: '4px'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Search input */}
+              <div style={{ position: 'relative' }}>
+                <input
+                  type="text"
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Cari simbol atau nama (misal BTC, SOL, PEPE, BBCA, AMMN, NVDA, TSLA, GOLD)..."
+                  style={{
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
+                    borderRadius: '8px',
+                    padding: '10px 14px',
+                    fontSize: '13px',
+                    color: '#f8fafc',
+                    fontFamily: 'var(--font-mono)',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              {/* Category Filter Pills */}
+              <div style={{ display: 'flex', gap: '6px', marginTop: '12px', flexWrap: 'wrap' }}>
+                {[
+                  { id: 'ALL', label: `Semua (${allInstruments.length})` },
+                  { id: 'CRYPTO', label: `⚡ Kripto Perps (${allInstruments.filter(i => i.market === 'CRYPTO').length})` },
+                  { id: 'IDX', label: `🏛️ Saham BEI (${CORE_IDX_LIST.length})` },
+                  { id: 'US', label: `🇺🇸 Wall Street (${CORE_US_LIST.length})` },
+                  { id: 'COMMODITY', label: `🥇 Komoditas & FX (${CORE_COMMODITY_FOREX_LIST.length})` }
+                ].map(cat => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    style={{
+                      background: selectedCategory === cat.id ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.04)',
+                      border: selectedCategory === cat.id ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
+                      color: selectedCategory === cat.id ? 'var(--accent-sky)' : '#94a3b8',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      padding: '4px 10px',
+                      borderRadius: '6px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Instrument List */}
+            <div style={{ flex: 1, overflowY: 'auto', maxHeight: '420px', padding: '10px' }}>
+              {filteredInstruments.length === 0 ? (
+                <div style={{ padding: '36px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>
+                  Tidak ada instrumen yang cocok dengan "{searchQuery}"
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: '6px' }}>
+                  {filteredInstruments.map(inst => {
+                    const isSelected = selectedPair === inst.symbol || cleanSym === inst.coin;
+                    const live = livePrices[inst.symbol] || livePrices[inst.coin] || livePrices[`${inst.coin}/USDT`] || livePrices[`${inst.coin}USDT`];
+                    const px = live?.price;
+                    const chg = live?.changePct;
+
+                    return (
+                      <div
+                        key={`${inst.market}-${inst.symbol}`}
+                        onClick={() => {
+                          setSelectedPair(inst.symbol);
+                          setOrderSize('');
+                          setIsPickerOpen(false);
+                          setSearchQuery('');
+                        }}
+                        style={{
+                          background: isSelected ? 'rgba(56, 189, 248, 0.12)' : 'rgba(255, 255, 255, 0.02)',
+                          border: isSelected ? '1px solid rgba(56, 189, 248, 0.35)' : '1px solid rgba(255, 255, 255, 0.05)',
+                          borderRadius: '8px',
+                          padding: '9px 12px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '4px',
+                          transition: 'all 0.12s ease'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <span style={{
+                            fontFamily: 'var(--font-mono)',
+                            fontWeight: 800,
+                            fontSize: '13px',
+                            color: isSelected ? 'var(--accent-sky)' : '#f8fafc'
+                          }}>
+                            {inst.coin}
+                          </span>
+                          <span style={{
+                            fontSize: '9px',
+                            fontFamily: 'var(--font-mono)',
+                            fontWeight: 700,
+                            padding: '1px 5px',
+                            borderRadius: '3px',
+                            background: inst.market === 'CRYPTO' ? 'rgba(16, 185, 129, 0.12)' : inst.market === 'IDX' ? 'rgba(168, 85, 247, 0.12)' : inst.market === 'US' ? 'rgba(56, 189, 248, 0.12)' : 'rgba(234, 179, 8, 0.12)',
+                            color: inst.market === 'CRYPTO' ? 'var(--accent-mint)' : inst.market === 'IDX' ? '#c084fc' : inst.market === 'US' ? 'var(--accent-sky)' : '#facc15',
+                            border: '1px solid rgba(255, 255, 255, 0.08)'
+                          }}>
+                            {inst.market}
+                          </span>
+                        </div>
+
+                        <div style={{
+                          fontSize: '10.5px',
+                          color: '#64748b',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}>
+                          {inst.name}
+                        </div>
+
+                        {px !== undefined && (
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '2px' }}>
+                            <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: '#cbd5e1' }}>
+                              {inst.market === 'IDX' ? `Rp ${Math.round(px).toLocaleString('id-ID')}` : `$${Number(px).toLocaleString(undefined, { minimumFractionDigits: px < 1 ? 4 : 2, maximumFractionDigits: 4 })}`}
+                            </span>
+                            {chg !== undefined && (
+                              <span style={{
+                                fontSize: '10.5px',
+                                fontFamily: 'var(--font-mono)',
+                                fontWeight: 700,
+                                color: chg >= 0 ? 'var(--accent-emerald)' : 'var(--accent-rust)'
+                              }}>
+                                {chg >= 0 ? '+' : ''}{Number(chg).toFixed(2)}%
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
