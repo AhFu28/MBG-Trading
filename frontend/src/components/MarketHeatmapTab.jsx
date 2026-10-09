@@ -1,161 +1,264 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import AssetIcon from './AssetIcon.jsx';
 
-// Top crypto coins with approximate market cap weights (relative)
-const CRYPTO_UNIVERSE = [
-  { symbol: 'BTC', name: 'Bitcoin', weight: 58 },
-  { symbol: 'ETH', name: 'Ethereum', weight: 13 },
-  { symbol: 'BNB', name: 'BNB', weight: 3.5 },
-  { symbol: 'SOL', name: 'Solana', weight: 3.2 },
-  { symbol: 'XRP', name: 'XRP', weight: 3.0 },
-  { symbol: 'DOGE', name: 'Dogecoin', weight: 1.8 },
-  { symbol: 'ADA', name: 'Cardano', weight: 1.5 },
-  { symbol: 'AVAX', name: 'Avalanche', weight: 1.2 },
-  { symbol: 'LINK', name: 'Chainlink', weight: 1.0 },
-  { symbol: 'SUI', name: 'Sui', weight: 0.9 },
-  { symbol: 'NEAR', name: 'NEAR', weight: 0.7 },
-  { symbol: 'PEPE', name: 'PEPE', weight: 0.6 },
-  { symbol: 'APT', name: 'Aptos', weight: 0.5 },
-  { symbol: 'RENDER', name: 'Render', weight: 0.4 },
-  { symbol: 'FET', name: 'Fetch.ai', weight: 0.3 },
-];
-
-// Top IDX stocks with approximate market cap weights (relative)
-const IDX_UNIVERSE = [
-  { symbol: 'BBCA', name: 'Bank Central Asia', weight: 18 },
-  { symbol: 'BBRI', name: 'Bank Rakyat Indo', weight: 12 },
-  { symbol: 'BMRI', name: 'Bank Mandiri', weight: 8 },
-  { symbol: 'TLKM', name: 'Telkom Indonesia', weight: 6 },
-  { symbol: 'ASII', name: 'Astra International', weight: 5 },
-  { symbol: 'AMMN', name: 'Amman Mineral', weight: 4.5 },
-  { symbol: 'BREN', name: 'Barito Renewables', weight: 4 },
-  { symbol: 'CUAN', name: 'Petrindo Jaya', weight: 3.5 },
-  { symbol: 'BBNI', name: 'Bank Negara Indo', weight: 3 },
-  { symbol: 'ADRO', name: 'Adaro Energy', weight: 2.5 },
-  { symbol: 'ANTM', name: 'Aneka Tambang', weight: 2 },
-  { symbol: 'BRMS', name: 'Bumi Resources Min', weight: 1.8 },
-  { symbol: 'MEDC', name: 'Medco Energi', weight: 1.5 },
-  { symbol: 'PTBA', name: 'Bukit Asam', weight: 1.3 },
-  { symbol: 'INDF', name: 'Indofood', weight: 1.2 },
-  { symbol: 'ICBP', name: 'Indofood CBP', weight: 1.1 },
-  { symbol: 'GOTO', name: 'GoTo Group', weight: 1.0 },
-  { symbol: 'UNTR', name: 'United Tractors', weight: 0.9 },
-  { symbol: 'KLBF', name: 'Kalbe Farma', weight: 0.8 },
-  { symbol: 'CPIN', name: 'Charoen Pokphand', weight: 0.7 },
-];
-
-const US_UNIVERSE = [
-  { symbol: 'AAPL', name: 'Apple', weight: 15 },
-  { symbol: 'NVDA', name: 'Nvidia', weight: 14 },
-  { symbol: 'MSFT', name: 'Microsoft', weight: 13 },
-  { symbol: 'AMZN', name: 'Amazon', weight: 8 },
-  { symbol: 'GOOGL', name: 'Alphabet', weight: 7 },
-  { symbol: 'META', name: 'Meta', weight: 6 },
-  { symbol: 'TSLA', name: 'Tesla', weight: 5 },
-  { symbol: 'BRK.B', name: 'Berkshire', weight: 4 },
-  { symbol: 'AVGO', name: 'Broadcom', weight: 3.5 },
-  { symbol: 'JPM', name: 'JP Morgan', weight: 3 },
-  { symbol: 'V', name: 'Visa', weight: 2.5 },
-  { symbol: 'MA', name: 'Mastercard', weight: 2 },
-  { symbol: 'COST', name: 'Costco', weight: 1.5 },
-  { symbol: 'AMD', name: 'AMD', weight: 1.3 },
-  { symbol: 'NFLX', name: 'Netflix', weight: 1.2 },
-];
-
 const MARKET_TABS = [
-  { id: 'CRYPTO', label: '⚡ CRYPTO', icon: '₿' },
-  { id: 'IDX', label: '🏛️ SAHAM IDX', icon: '🇮🇩' },
-  { id: 'US', label: '🇺🇸 US STOCKS', icon: '🗽' },
+  { id: 'CRYPTO', label: '⚡ Kripto (TradingView Global)', icon: '₿', hint: '100+ Koin Terbesar Dunia' },
+  { id: 'US', label: '🇺🇸 US Stocks (S&P 500)', icon: '🗽', hint: 'Wall Street Multi-Sektor' },
+  { id: 'IDX', label: '🏛️ Saham BEI (Bursa Efek)', icon: '🇮🇩', hint: '30+ Bluechip Sektoral' },
+];
+
+const IDX_SECTORS = [
+  {
+    name: 'Perbankan & Finansial',
+    stocks: [
+      { symbol: 'BBCA', name: 'Bank Central Asia', weight: 22 },
+      { symbol: 'BBRI', name: 'Bank Rakyat Indonesia', weight: 15 },
+      { symbol: 'BMRI', name: 'Bank Mandiri', weight: 11 },
+      { symbol: 'BBNI', name: 'Bank Negara Indonesia', weight: 4.5 },
+      { symbol: 'BRIS', name: 'Bank Syariah Indonesia', weight: 2.5 }
+    ]
+  },
+  {
+    name: 'Energi & Petrokimia',
+    stocks: [
+      { symbol: 'BREN', name: 'Barito Renewables', weight: 6.5 },
+      { symbol: 'CUAN', name: 'Petrindo Jaya', weight: 4.2 },
+      { symbol: 'ADRO', name: 'Adaro Energy', weight: 3.5 },
+      { symbol: 'MEDC', name: 'Medco Energi', weight: 2.2 },
+      { symbol: 'PTBA', name: 'Bukit Asam', weight: 2.0 },
+      { symbol: 'PGAS', name: 'Perusahaan Gas Negara', weight: 1.8 },
+      { symbol: 'BRPT', name: 'Barito Pacific', weight: 2.4 }
+    ]
+  },
+  {
+    name: 'Mineral & Pertambangan',
+    stocks: [
+      { symbol: 'AMMN', name: 'Amman Mineral', weight: 7.0 },
+      { symbol: 'ANTM', name: 'Aneka Tambang', weight: 2.8 },
+      { symbol: 'MDKA', name: 'Merdeka Copper Gold', weight: 2.2 },
+      { symbol: 'BRMS', name: 'Bumi Resources Min', weight: 2.0 },
+      { symbol: 'MBMA', name: 'Merdeka Battery Mat', weight: 1.6 }
+    ]
+  },
+  {
+    name: 'Konsumer, Otomotif & Telko',
+    stocks: [
+      { symbol: 'ASII', name: 'Astra International', weight: 6.8 },
+      { symbol: 'TLKM', name: 'Telkom Indonesia', weight: 6.5 },
+      { symbol: 'ICBP', name: 'Indofood CBP', weight: 2.2 },
+      { symbol: 'INDF', name: 'Indofood Makmur', weight: 1.9 },
+      { symbol: 'GOTO', name: 'GoTo Gojek Tokopedia', weight: 2.2 },
+      { symbol: 'KLBF', name: 'Kalbe Farma', weight: 1.6 },
+      { symbol: 'ISAT', name: 'Indosat Ooredoo', weight: 1.7 }
+    ]
+  }
 ];
 
 function getChangeColor(pct) {
-  if (pct > 5) return 'hsl(142, 70%, 35%)';
-  if (pct > 2) return 'hsl(142, 60%, 30%)';
-  if (pct > 0.5) return 'hsl(142, 50%, 25%)';
-  if (pct > 0) return 'hsl(142, 40%, 22%)';
-  if (pct > -0.5) return 'hsl(0, 40%, 22%)';
-  if (pct > -2) return 'hsl(0, 50%, 25%)';
-  if (pct > -5) return 'hsl(0, 60%, 30%)';
-  return 'hsl(0, 70%, 35%)';
+  if (pct >= 4) return '#059669';
+  if (pct >= 1.5) return '#10b981';
+  if (pct >= 0) return '#047857';
+  if (pct > -1.5) return '#b91c1c';
+  if (pct > -4) return '#dc2626';
+  return '#ef4444';
 }
 
+function TradingViewCryptoHeatmap() {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    containerRef.current.innerHTML = '';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'tradingview-widget-container__widget';
+    wrapper.style.width = '100%';
+    wrapper.style.height = '100%';
+    containerRef.current.appendChild(wrapper);
+
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-crypto-coins-heatmap.js';
+    script.type = 'text/javascript';
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      dataSource: 'Crypto',
+      blockSize: 'market_cap_calc',
+      blockColor: 'change',
+      locale: 'id',
+      symbolUrl: '',
+      colorTheme: 'dark',
+      hasTopBar: false,
+      isDataSetEnabled: false,
+      isZoomEnabled: true,
+      hasSymbolTooltip: true,
+      width: '100%',
+      height: '100%'
+    });
+    containerRef.current.appendChild(script);
+
+    return () => {
+      if (containerRef.current) containerRef.current.innerHTML = '';
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        width: '100%',
+        height: 'calc(100vh - 195px)',
+        minHeight: '580px',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        background: '#07090e',
+        border: '1px solid rgba(255, 255, 255, 0.08)'
+      }}
+      className="tradingview-widget-container"
+    />
+  );
+}
+
+function TradingViewStockHeatmap() {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    containerRef.current.innerHTML = '';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'tradingview-widget-container__widget';
+    wrapper.style.width = '100%';
+    wrapper.style.height = '100%';
+    containerRef.current.appendChild(wrapper);
+
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js';
+    script.type = 'text/javascript';
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      dataSource: 'SPX500',
+      blockSize: 'market_cap_basic',
+      blockColor: 'change',
+      locale: 'id',
+      symbolUrl: '',
+      colorTheme: 'dark',
+      hasTopBar: false,
+      isDataSetEnabled: false,
+      isZoomEnabled: true,
+      hasSymbolTooltip: true,
+      isMonoSize: false,
+      width: '100%',
+      height: '100%'
+    });
+    containerRef.current.appendChild(script);
+
+    return () => {
+      if (containerRef.current) containerRef.current.innerHTML = '';
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        width: '100%',
+        height: 'calc(100vh - 195px)',
+        minHeight: '580px',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        background: '#07090e',
+        border: '1px solid rgba(255, 255, 255, 0.08)'
+      }}
+      className="tradingview-widget-container"
+    />
+  );
+}
 
 export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSelectTicker, data }) {
   const [activeMarket, setActiveMarket] = useState('CRYPTO');
 
-  const universe = activeMarket === 'CRYPTO' ? CRYPTO_UNIVERSE
-    : activeMarket === 'IDX' ? IDX_UNIVERSE : US_UNIVERSE;
-
-  const totalWeight = universe.reduce((s, t) => s + t.weight, 0);
-
-  // Build enriched tiles with live price data
-  const tiles = useMemo(() => {
-    return universe.map(item => {
-      const sym = item.symbol;
-      // Try multiple key formats for livePrices
-      const lp = livePrices[sym] || livePrices[`${sym}USDT`] || livePrices[`${sym}/USDT`]
-        || livePrices[`IDX:${sym}`] || livePrices[`${sym}.JK`] || null;
-      const hasData = lp && lp.changePct !== undefined;
-      const changePct = hasData ? Number(lp.changePct) : 0;
-      const price = lp?.price !== undefined ? lp.price : null;
-      return {
-        ...item,
-        changePct: Math.round(changePct * 100) / 100,
-        price,
-        hasData,
-        flash: flashMap[sym] || flashMap[`${sym}USDT`] || null,
-        flexGrow: item.weight / totalWeight,
-      };
-    });
-  }, [universe, livePrices, flashMap, totalWeight]);
-
-  // Summary stats
-  const stats = useMemo(() => {
-    let gainers = 0, losers = 0, totalChange = 0;        tiles.forEach(t => {
-          if (!t.hasData) return; // no-data tiles excluded from stats
-          if (t.changePct > 0) gainers++;
-          else if (t.changePct < 0) losers++;
-          totalChange += t.changePct;
+  // Flat list for IDX stats
+  const idxFlatList = useMemo(() => {
+    const list = [];
+    IDX_SECTORS.forEach(sec => {
+      sec.stocks.forEach(st => {
+        const lp = livePrices[st.symbol] || livePrices[`IDX:${st.symbol}`] || livePrices[`${st.symbol}.JK`];
+        const changePct = lp && lp.changePct !== undefined ? Number(lp.changePct) : 0;
+        const price = lp?.price;
+        list.push({
+          ...st,
+          sector: sec.name,
+          changePct,
+          price
         });
-        const covered = tiles.filter(t => t.hasData).length;
-        return { gainers, losers, avgChange: covered > 0 ? Math.round((totalChange / covered) * 100) / 100 : 0 };
-  }, [tiles]);
+      });
+    });
+    return list;
+  }, [livePrices]);
 
-  const formatPrice = (price, market) => {
-    if (price == null) return '—';
-    if (market === 'IDX') return `Rp ${Number(price).toLocaleString('id-ID')}`;
-    if (price < 0.01) return `$${price.toFixed(6)}`;
-    if (price < 1) return `$${price.toFixed(4)}`;
-    return `$${Number(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  };
+  const idxStats = useMemo(() => {
+    let gainers = 0;
+    let losers = 0;
+    let sum = 0;
+    idxFlatList.forEach(item => {
+      if (item.changePct > 0) gainers++;
+      else if (item.changePct < 0) losers++;
+      sum += item.changePct;
+    });
+    const avg = idxFlatList.length > 0 ? (sum / idxFlatList.length).toFixed(2) : '0.00';
+    return { gainers, losers, avg };
+  }, [idxFlatList]);
 
   return (
-    <div style={{ padding: '12px', height: '100%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '16px' }}>🗺️</span>
-          <span style={{ fontSize: '14px', fontWeight: '800', color: 'var(--text-primary)' }}>MARKET HEATMAP</span>
-          <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>TREEMAP VIEW</span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', height: '100%' }}>
+      {/* Top Header Bar */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px',
+        padding: '10px 16px',
+        background: 'var(--bg-panel, #0a0d12)',
+        borderRadius: '12px',
+        border: '1px solid rgba(255, 255, 255, 0.08)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '18px' }}>🗺️</span>
+          <div>
+            <div style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', letterSpacing: '-0.01em' }}>
+              MARKET HEATMAP INTERAKTIF
+            </div>
+            <div style={{ fontSize: '10px', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+              Pemetaan visual bobot kapitalisasi pasar & perubahan harga real-time
+            </div>
+          </div>
         </div>
 
-        {/* Market Selector Tabs */}
-        <div style={{ display: 'flex', gap: '4px' }}>
+        {/* Market Switcher Segment */}
+        <div style={{
+          display: 'flex',
+          background: 'rgba(255, 255, 255, 0.04)',
+          borderRadius: '8px',
+          padding: '2px',
+          border: '1px solid rgba(255, 255, 255, 0.1)'
+        }}>
           {MARKET_TABS.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveMarket(tab.id)}
               style={{
-                padding: '4px 10px',
-                fontSize: '10px',
-                fontWeight: activeMarket === tab.id ? '800' : '600',
-                background: activeMarket === tab.id ? 'var(--accent-blue)' : 'var(--bg-panel-subtle)',
-                color: activeMarket === tab.id ? '#fff' : 'var(--text-secondary)',
-                border: activeMarket === tab.id ? 'none' : 'var(--border-hairline)',
-                borderRadius: 'var(--radius-xs)',
+                padding: '6px 14px',
+                fontSize: '11px',
+                fontWeight: activeMarket === tab.id ? 800 : 600,
+                background: activeMarket === tab.id ? 'var(--accent-sky)' : 'transparent',
+                color: activeMarket === tab.id ? '#000000' : '#94a3b8',
+                border: 'none',
+                borderRadius: '6px',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease'
               }}
+              title={tab.hint}
             >
               {tab.label}
             </button>
@@ -163,140 +266,115 @@ export default function MarketHeatmapTab({ livePrices = {}, flashMap = {}, onSel
         </div>
       </div>
 
-      {/* Summary Bar */}
-      <div style={{
-        display: 'flex', gap: '12px', padding: '6px 10px',
-        background: 'var(--bg-panel-subtle)', borderRadius: 'var(--radius-xs)',
-        border: 'var(--border-hairline)', fontSize: '10px', alignItems: 'center'
-      }}>
-        <span style={{ color: 'var(--text-muted)' }}>
-          📊 {tiles.length} Aset
-        </span>
-        <span style={{ color: 'var(--color-bull)' }}>
-          ▲ {stats.gainers} Naik
-        </span>
-        <span style={{ color: 'var(--color-bear)' }}>
-          ▼ {stats.losers} Turun
-        </span>
-        <span style={{
-          color: stats.avgChange >= 0 ? 'var(--color-bull)' : 'var(--color-bear)',
-          fontWeight: '700', fontFamily: 'var(--font-mono)'
-        }}>
-          Avg: {stats.avgChange >= 0 ? '+' : ''}{stats.avgChange}%
-        </span>
-      </div>
+      {/* Main Content Area */}
+      {activeMarket === 'CRYPTO' && (
+        <TradingViewCryptoHeatmap />
+      )}
 
-      {/* Heatmap Treemap Grid */}
-      <div style={{
-        flex: 1, display: 'flex', flexWrap: 'wrap', gap: '2px',
-        borderRadius: 'var(--radius-sm)', overflow: 'hidden',
-        minHeight: '400px'
-      }}>
-        {tiles.map(tile => {
-          const bgColor = tile.hasData ? getChangeColor(tile.changePct) : 'rgba(255,255,255,0.06)'; // neutral gray for no-data
-          const areaPercent = tile.flexGrow * 100;
-          // Calculate min dimensions based on weight
-          const isLarge = tile.weight > 5;
-          const isMedium = tile.weight > 1.5;
+      {activeMarket === 'US' && (
+        <TradingViewStockHeatmap />
+      )}
 
-          return (
-            <div
-              key={tile.symbol}
-              onClick={() => onSelectTicker && onSelectTicker(tile.symbol, activeMarket === 'IDX' ? 'IDX' : activeMarket === 'CRYPTO' ? 'CRYPTO' : 'US')}
-              style={{
-                flexBasis: isLarge ? `${Math.max(areaPercent * 2.5, 20)}%`
-                  : isMedium ? `${Math.max(areaPercent * 2.5, 12)}%`
-                  : `${Math.max(areaPercent * 2.5, 8)}%`,
-                flexGrow: tile.weight,
-                minWidth: isLarge ? '120px' : isMedium ? '80px' : '60px',
-                minHeight: isLarge ? '100px' : isMedium ? '70px' : '50px',
-                background: bgColor,
-                borderRadius: '3px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                padding: '4px',
-                transition: 'all 0.2s ease',
-                position: 'relative',
-                overflow: 'hidden',
-                border: tile.flash ? `1px solid ${tile.flash === 'up' ? 'var(--color-bull)' : 'var(--color-bear)'}` : '1px solid rgba(255,255,255,0.05)'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.filter = 'brightness(1.3)';
-                e.currentTarget.style.zIndex = '10';
-                e.currentTarget.style.transform = 'scale(1.02)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.filter = 'none';
-                e.currentTarget.style.zIndex = '1';
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-              title={`${tile.name} (${tile.symbol})\n${tile.hasData ? `${tile.changePct >= 0 ? '+' : ''}${tile.changePct}%` : 'Menunggu data live...'}\n${tile.price ? formatPrice(tile.price, activeMarket) : '—'}`}
-            >
-              {/* Asset logo for tiles */}
-              {(isLarge || isMedium) && (
-                <AssetIcon symbol={tile.symbol} market={activeMarket} size={isLarge ? 24 : 16} style={{ marginBottom: '3px' }} />
-              )}
+      {activeMarket === 'IDX' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {/* IDX Quick Summary HUD */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            padding: '8px 14px',
+            background: 'rgba(255, 255, 255, 0.02)',
+            borderRadius: '8px',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            fontSize: '11px',
+            fontFamily: 'var(--font-mono)'
+          }}>
+            <span style={{ color: '#94a3b8' }}>📊 24 Emiten Unggulan</span>
+            <span style={{ color: 'var(--accent-mint)' }}>▲ {idxStats.gainers} Naik</span>
+            <span style={{ color: '#f87171' }}>▼ {idxStats.losers} Turun</span>
+            <span style={{ color: Number(idxStats.avg) >= 0 ? 'var(--accent-emerald)' : '#ef4444', fontWeight: 800 }}>
+              Rata-rata: {Number(idxStats.avg) >= 0 ? '+' : ''}{idxStats.avg}%
+            </span>
+          </div>
 
-              {/* Symbol */}
-              <span style={{
-                fontSize: isLarge ? '14px' : isMedium ? '11px' : '9px',
-                fontWeight: '800',
-                color: '#fff',
-                textShadow: '0 1px 2px rgba(0,0,0,0.5)',
-                letterSpacing: '0.5px'
-              }}>
-                {tile.symbol}
-              </span>
-
-              {/* Change % (or honest no-data state) */}
-              <span style={{
-                fontSize: isLarge ? '13px' : isMedium ? '10px' : '8px',
-                fontWeight: '700',
-                color: tile.hasData ? 'rgba(255,255,255,0.9)' : 'var(--text-muted, #94a3b8)',
-                fontFamily: 'var(--font-mono)',
-                textShadow: '0 1px 2px rgba(0,0,0,0.4)'
-              }}>
-                {tile.hasData ? `${tile.changePct >= 0 ? '+' : ''}${tile.changePct}%` : 'NO DATA'}
-              </span>
-
-              {/* Price for large tiles */}
-              {isLarge && tile.price && (
-                <span style={{
-                  fontSize: '9px',
-                  color: 'rgba(255,255,255,0.6)',
+          {/* Hierarchical Sector Treemap */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+            gap: '12px'
+          }}>
+            {IDX_SECTORS.map(sector => (
+              <div
+                key={sector.name}
+                style={{
+                  background: 'rgba(15, 23, 42, 0.65)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '12px',
+                  padding: '12px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}
+              >
+                <div style={{
+                  fontSize: '11.5px',
+                  fontWeight: 800,
+                  color: 'var(--accent-sky)',
                   fontFamily: 'var(--font-mono)',
-                  marginTop: '2px'
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+                  paddingBottom: '4px'
                 }}>
-                  {formatPrice(tile.price, activeMarket)}
-                </span>
-              )}
-            </div>
-          );
-        })}
-      </div>
+                  {sector.name}
+                </div>
 
-      {/* Legend */}
-      <div style={{
-        display: 'flex', justifyContent: 'center', gap: '3px', alignItems: 'center',
-        padding: '4px', fontSize: '8px', color: 'var(--text-muted)'
-      }}>
-        <span style={{ background: 'hsl(0, 70%, 35%)', width: '12px', height: '8px', borderRadius: '1px' }} />
-        <span>-5%+</span>
-        <span style={{ background: 'hsl(0, 50%, 25%)', width: '12px', height: '8px', borderRadius: '1px' }} />
-        <span>-2%</span>
-        <span style={{ background: 'hsl(0, 40%, 22%)', width: '12px', height: '8px', borderRadius: '1px' }} />
-        <span>-0.5%</span>
-        <span style={{ width: '8px' }} />
-        <span style={{ background: 'hsl(142, 40%, 22%)', width: '12px', height: '8px', borderRadius: '1px' }} />
-        <span>+0.5%</span>
-        <span style={{ background: 'hsl(142, 60%, 30%)', width: '12px', height: '8px', borderRadius: '1px' }} />
-        <span>+2%</span>
-        <span style={{ background: 'hsl(142, 70%, 35%)', width: '12px', height: '8px', borderRadius: '1px' }} />
-        <span>+5%+</span>
-      </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '6px' }}>
+                  {sector.stocks.map(st => {
+                    const lp = livePrices[st.symbol] || livePrices[`IDX:${st.symbol}`] || livePrices[`${st.symbol}.JK`];
+                    const chg = lp && lp.changePct !== undefined ? Number(lp.changePct) : 0;
+                    const px = lp?.price;
+                    const bg = getChangeColor(chg);
+
+                    return (
+                      <div
+                        key={st.symbol}
+                        onClick={() => onSelectTicker && onSelectTicker(st.symbol, 'IDX')}
+                        style={{
+                          background: bg,
+                          borderRadius: '8px',
+                          padding: '10px 8px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '3px',
+                          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.15)',
+                          transition: 'transform 0.12s ease'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <AssetIcon symbol={st.symbol} market="IDX" size={14} />
+                          <span style={{ fontSize: '12.5px', fontWeight: 900, color: '#ffffff', fontFamily: 'var(--font-mono)' }}>
+                            {st.symbol}
+                          </span>
+                        </div>
+                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#ffffff', fontFamily: 'var(--font-mono)' }}>
+                          {chg >= 0 ? '+' : ''}{chg.toFixed(2)}%
+                        </span>
+                        {px && (
+                          <span style={{ fontSize: '9px', color: 'rgba(255,255,255,0.85)', fontFamily: 'var(--font-mono)' }}>
+                            Rp {Math.round(px).toLocaleString('id-ID')}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

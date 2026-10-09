@@ -497,7 +497,11 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
                       {item.symbol}
                     </span>
                     <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-                      {price === undefined || price === null ? DASH : formatPrice(price)}
+                      {price === undefined || price === null 
+                        ? DASH 
+                        : item.market === 'IDX' 
+                          ? `Rp ${Math.round(price).toLocaleString('id-ID')}` 
+                          : formatPrice(price)}
                     </span>
                     <span style={{ fontSize: '12px', fontFamily: 'var(--font-mono)', fontWeight: 800, color: changeColor(change), minWidth: '54px', textAlign: 'right' }}>
                       {change === undefined || change === null ? DASH : formatPct(change)}

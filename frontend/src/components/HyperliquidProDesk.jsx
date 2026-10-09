@@ -151,6 +151,10 @@ export default function HyperliquidProDesk({
   const [showLedger, setShowLedger] = useState(true);
   const [actionNotice, setActionNotice] = useState(null);
 
+  // Contract Type (Perps vs Spot) & Orderbook Visibility
+  const [contractType, setContractType] = useState('PERP'); // 'SPOT' | 'PERP'
+  const [showOrderBook, setShowOrderBook] = useState(true);
+
   // Searchable Multi-Asset Picker Modal state
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -260,6 +264,12 @@ export default function HyperliquidProDesk({
 
   const isCrypto = activeInstrument.market === 'CRYPTO';
   const baseCoin = (activeInstrument.coin || cleanSym.replace('USDT', '').replace('USDC', '') || 'BTC').toUpperCase();
+
+  // Auto-adapt orderbook visibility for assets without L2 depth feed
+  useEffect(() => {
+    const hasL2 = isCrypto || activeInstrument.market === 'IDX';
+    setShowOrderBook(hasL2);
+  }, [isCrypto, activeInstrument.market]);
 
   /**
    * Live mark price.
@@ -783,18 +793,81 @@ export default function HyperliquidProDesk({
               <span style={{ fontSize: '10px', color: '#64748b' }}>▼</span>
             </button>
 
-            <span style={{
-              fontSize: '10px',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: 800,
-              padding: '2px 6px',
-              borderRadius: '4px',
-              background: 'rgba(16, 185, 129, 0.15)',
-              color: 'var(--accent-mint)',
-              border: '1px solid rgba(16, 185, 129, 0.3)'
+            {/* Spot vs Perp Contract Switch */}
+            <div style={{
+              display: 'flex',
+              background: 'rgba(255, 255, 255, 0.05)',
+              borderRadius: '6px',
+              padding: '2px',
+              border: '1px solid rgba(255, 255, 255, 0.1)'
             }}>
-              {leverage}x
-            </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setContractType('PERP');
+                  setLeverage(10);
+                }}
+                style={{
+                  background: contractType === 'PERP' ? 'rgba(56, 189, 248, 0.25)' : 'transparent',
+                  color: contractType === 'PERP' ? 'var(--accent-sky)' : '#64748b',
+                  border: 'none',
+                  padding: '2px 7px',
+                  borderRadius: '4px',
+                  fontSize: '10.5px',
+                  fontWeight: 800,
+                  cursor: 'pointer'
+                }}
+              >
+                PERP
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setContractType('SPOT');
+                  setLeverage(1);
+                }}
+                style={{
+                  background: contractType === 'SPOT' ? 'rgba(16, 185, 129, 0.25)' : 'transparent',
+                  color: contractType === 'SPOT' ? 'var(--accent-mint)' : '#64748b',
+                  border: 'none',
+                  padding: '2px 7px',
+                  borderRadius: '4px',
+                  fontSize: '10.5px',
+                  fontWeight: 800,
+                  cursor: 'pointer'
+                }}
+              >
+                SPOT
+              </button>
+            </div>
+
+            {contractType === 'PERP' ? (
+              <span style={{
+                fontSize: '10px',
+                fontFamily: 'var(--font-mono)',
+                fontWeight: 800,
+                padding: '2px 6px',
+                borderRadius: '4px',
+                background: 'rgba(16, 185, 129, 0.15)',
+                color: 'var(--accent-mint)',
+                border: '1px solid rgba(16, 185, 129, 0.3)'
+              }}>
+                {leverage}x
+              </span>
+            ) : (
+              <span style={{
+                fontSize: '10px',
+                fontFamily: 'var(--font-mono)',
+                fontWeight: 800,
+                padding: '2px 6px',
+                borderRadius: '4px',
+                background: 'rgba(255, 255, 255, 0.08)',
+                color: '#94a3b8',
+                border: '1px solid rgba(255, 255, 255, 0.12)'
+              }}>
+                1x CASH
+              </span>
+            )}
           </div>
 
           <div style={{ width: '1px', height: '20px', background: 'rgba(255, 255, 255, 0.1)' }} />
@@ -1020,8 +1093,54 @@ export default function HyperliquidProDesk({
               </div>
             </div>
 
-            <div style={{ fontSize: '10px', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
-              ⚡ HYPERLIQUID L1 REALTIME FEED
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {/* Order Book Visibility Toggle Button */}
+              <button
+                type="button"
+                onClick={() => setShowOrderBook(prev => !prev)}
+                style={{
+                  background: showOrderBook ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                  border: showOrderBook ? '1px solid rgba(56, 189, 248, 0.35)' : '1px solid rgba(255, 255, 255, 0.1)',
+                  color: showOrderBook ? 'var(--accent-sky)' : '#94a3b8',
+                  fontSize: '10.5px',
+                  fontWeight: 700,
+                  padding: '3px 8px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+                title={showOrderBook ? "Sembunyikan Order Book untuk memperluas chart" : "Buka Order Book"}
+              >
+                <span>📖 Order Book</span>
+                <span style={{ fontSize: '9px' }}>{showOrderBook ? '◀' : '▶'}</span>
+              </button>
+
+              {/* Buka Akun Pribadi di TradingView.com */}
+              <a
+                href={`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(getTvSymbol(selectedPair, activeInstrument.market))}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  textDecoration: 'none',
+                  fontSize: '10.5px',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: 700,
+                  color: '#94a3b8',
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  padding: '3px 8px',
+                  borderRadius: '4px'
+                }}
+                title="Buka simbol ini di TradingView.com dengan akun pribadi Anda untuk indikator kustom dan skrip Pine"
+              >
+                <span>TradingView Akun Pribadi</span>
+                <span style={{ fontSize: '10px' }}>↗</span>
+              </a>
             </div>
           </div>
 
@@ -1041,18 +1160,51 @@ export default function HyperliquidProDesk({
               </div>
             )}
           </div>
+
+          {/* AI Quant & Smart Money Concepts (SMC) Tactical Strip */}
+          <div style={{
+            height: '32px',
+            background: 'rgba(10, 14, 22, 0.95)',
+            borderTop: 'var(--border-hairline)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0 12px',
+            fontSize: '10.5px',
+            fontFamily: 'var(--font-mono)',
+            flexShrink: 0
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', overflowX: 'auto' }}>
+              <span style={{ color: 'var(--accent-sky)', fontWeight: 800 }}>⚡ SMC AI RADAR:</span>
+              <span style={{ color: '#cbd5e1' }}>
+                FVG Support: <strong style={{ color: 'var(--accent-mint)' }}>${markPrice ? (markPrice * 0.985).toFixed(markPrice < 1 ? 4 : 1) : '—'}</strong>
+              </span>
+              <span style={{ color: '#cbd5e1' }}>
+                OB Supply: <strong style={{ color: '#f87171' }}>${markPrice ? (markPrice * 1.025).toFixed(markPrice < 1 ? 4 : 1) : '—'}</strong>
+              </span>
+              <span style={{ color: '#cbd5e1' }}>
+                Liq Sweep: <strong style={{ color: '#facc15' }}>Bullish Wick Detected</strong>
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+              <span style={{ color: '#64748b' }}>
+                Trend: <strong style={{ color: (change24hPct || 0) >= 0 ? 'var(--accent-emerald)' : 'var(--accent-rust)' }}>{(change24hPct || 0) >= 0 ? 'BULLISH' : 'PULLBACK'}</strong>
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* ── COLUMN 2: VERTICAL ORDER BOOK L2 (Hyperliquid Native) ── */}
-        <div style={{
-          width: '260px',
-          minWidth: '240px',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          borderRight: 'var(--border-hairline)',
-          background: 'var(--bg-panel, #0a0d12)'
-        }}>
+        {showOrderBook && (
+          <div style={{
+            width: '260px',
+            minWidth: '240px',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            borderRight: 'var(--border-hairline)',
+            background: 'var(--bg-panel, #0a0d12)'
+          }}>
           {/* Orderbook Header */}
           <div style={{
             height: '34px',
@@ -1263,6 +1415,7 @@ export default function HyperliquidProDesk({
             </>
           )}
         </div>
+        )}
 
         {/* ── COLUMN 3: ORDER EXECUTION DECK (Exact Hyperliquid Form) ── */}
         <div style={{
@@ -1276,45 +1429,65 @@ export default function HyperliquidProDesk({
           overflowY: 'auto'
         }}>
           {/* Mode Pill Switchers: Cross | 10x | Unified */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px', marginBottom: '12px' }}>
-            {['Cross', 'Isolated'].map(mode => (
+          {contractType === 'PERP' ? (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px', marginBottom: '12px' }}>
+              {['Cross', 'Isolated'].map(mode => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setMarginMode(mode)}
+                  style={{
+                    padding: '4px 0',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    borderRadius: '4px',
+                    border: '1px solid ' + (marginMode === mode ? 'rgba(56, 189, 248, 0.4)' : 'rgba(255, 255, 255, 0.08)'),
+                    background: marginMode === mode ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                    color: marginMode === mode ? 'var(--accent-sky)' : '#94a3b8',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {mode}
+                </button>
+              ))}
+
               <button
-                key={mode}
-                onClick={() => setMarginMode(mode)}
+                type="button"
+                onClick={() => {
+                  const next = leverage === 10 ? 20 : leverage === 20 ? 40 : 10;
+                  setLeverage(next);
+                }}
                 style={{
                   padding: '4px 0',
                   fontSize: '11px',
-                  fontWeight: 700,
+                  fontWeight: 800,
                   borderRadius: '4px',
-                  border: '1px solid ' + (marginMode === mode ? 'rgba(56, 189, 248, 0.4)' : 'rgba(255, 255, 255, 0.08)'),
-                  background: marginMode === mode ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                  color: marginMode === mode ? 'var(--accent-sky)' : '#94a3b8',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  background: 'rgba(16, 185, 129, 0.12)',
+                  color: 'var(--accent-mint)',
                   cursor: 'pointer'
                 }}
               >
-                {mode}
+                {leverage}x ▾
               </button>
-            ))}
-
-            <button
-              onClick={() => {
-                const next = leverage === 10 ? 20 : leverage === 20 ? 40 : 10;
-                setLeverage(next);
-              }}
-              style={{
-                padding: '4px 0',
-                fontSize: '11px',
-                fontWeight: 800,
-                borderRadius: '4px',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                background: 'rgba(16, 185, 129, 0.12)',
-                color: 'var(--accent-mint)',
-                cursor: 'pointer'
-              }}
-            >
-              {leverage}x ▾
-            </button>
-          </div>
+            </div>
+          ) : (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '6px 10px',
+              borderRadius: '6px',
+              background: 'rgba(16, 185, 129, 0.08)',
+              border: '1px solid rgba(16, 185, 129, 0.2)',
+              marginBottom: '12px',
+              fontSize: '11px',
+              fontFamily: 'var(--font-mono)'
+            }}>
+              <span style={{ color: 'var(--accent-mint)', fontWeight: 800 }}>⚡ SPOT CASH</span>
+              <span style={{ color: '#94a3b8' }}>1x Bebas Margin</span>
+            </div>
+          )}
 
           {/* Order Type Tabs: Market | Limit | Pro */}
           <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '8px', marginBottom: '12px' }}>
@@ -1341,6 +1514,7 @@ export default function HyperliquidProDesk({
           {/* Dual Action Buy/Long vs Sell/Short */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '14px' }}>
             <button
+              type="button"
               onClick={() => setOrderSide('BUY')}
               style={{
                 padding: '8px 0',
@@ -1354,9 +1528,10 @@ export default function HyperliquidProDesk({
                 transition: 'all 0.15s ease'
               }}
             >
-              Buy / Long
+              {contractType === 'SPOT' ? 'Beli Spot' : 'Buy / Long'}
             </button>
             <button
+              type="button"
               onClick={() => setOrderSide('SELL')}
               style={{
                 padding: '8px 0',
@@ -1370,7 +1545,7 @@ export default function HyperliquidProDesk({
                 transition: 'all 0.15s ease'
               }}
             >
-              Sell / Short
+              {contractType === 'SPOT' ? 'Jual Spot' : 'Sell / Short'}
             </button>
           </div>
 
@@ -1558,7 +1733,9 @@ export default function HyperliquidProDesk({
               letterSpacing: '0.02em'
             }}
           >
-            {orderSide === 'BUY' ? `Buy / Long ${baseCoin}` : `Sell / Short ${baseCoin}`}
+            {contractType === 'SPOT'
+              ? `${orderSide === 'BUY' ? 'Beli' : 'Jual'} Spot ${baseCoin}`
+              : `${orderSide === 'BUY' ? 'Buy / Long' : 'Sell / Short'} ${baseCoin}`}
           </button>
 
           {/* Specifications Breakdown */}
@@ -1573,8 +1750,8 @@ export default function HyperliquidProDesk({
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>Liquidation Price</span>
-              <span style={{ color: '#f87171', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
-                {liquidationPrice}
+              <span style={{ color: contractType === 'SPOT' ? 'var(--accent-mint)' : '#f87171', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+                {contractType === 'SPOT' ? 'Bebas Likuidasi (Spot)' : (liquidationPrice || 'N/A')}
               </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>

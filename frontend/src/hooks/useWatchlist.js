@@ -92,6 +92,7 @@ function publish(next) {
   memoryEntries = next;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    localStorage.setItem(LEGACY_KEY, JSON.stringify(next.map(e => e.symbol)));
   } catch {
     // Storage may be full or disabled. The in-memory list still works for this
     // session, which is better than losing the click entirely.

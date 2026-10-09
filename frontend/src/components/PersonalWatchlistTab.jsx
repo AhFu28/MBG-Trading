@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { bumpAchievement } from '../services/achievements.js';
+import { useWatchlist } from '../hooks/useWatchlist.js';
 
 export default function PersonalWatchlistTab({ 
   allStocks = [], 
@@ -12,42 +13,31 @@ export default function PersonalWatchlistTab({
   allCryptoSpot = [], 
   livePrices = {} 
 }) {
-  const [watchlist, setWatchlist] = useState(() => {
-    try {
-      const saved = localStorage.getItem('mbg_user_watchlist');
-      return saved ? JSON.parse(saved) : ['BBRI', 'ASII', 'TLKM', 'MEDC', 'BTCUSDT'];
-    } catch (e) {
-      return ['BBRI', 'ASII', 'TLKM', 'MEDC', 'BTCUSDT'];
-    }
-  });
+  const { entries, add, remove, has, count } = useWatchlist();
+  const watchlist = useMemo(() => entries.map(e => e.symbol), [entries]);
 
   const [inputTicker, setInputTicker] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    try {
-      localStorage.setItem('mbg_user_watchlist', JSON.stringify(watchlist));
-    } catch (e) {
-      console.error('Failed to save watchlist to localStorage:', e);
-    }
-    bumpAchievement('watchlistCount', watchlist.length, { absolute: true });
-  }, [watchlist]);
+    bumpAchievement('watchlistCount', count, { absolute: true });
+  }, [count]);
 
   const handleAddTicker = (e) => {
     if (e && e.preventDefault) e.preventDefault();
     const clean = inputTicker.trim().toUpperCase().replace('$', '').replace('.JK', '');
     if (!clean) return;
-    if (watchlist.includes(clean)) {
+    if (has(clean)) {
       setErrorMessage('Ticker sudah ada di Watchlist!');
       return;
     }
-    setWatchlist(prev => [clean, ...prev]);
+    add(clean);
     setInputTicker('');
     setErrorMessage('');
   };
 
   const handleRemoveTicker = (tickerToRemove) => {
-    setWatchlist(prev => prev.filter(t => t !== tickerToRemove));
+    remove(tickerToRemove);
   };
 
   const effectiveStocks = useMemo(() => {

@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, Suspense, lazy } from 'react';
+import { useWatchlist } from '../hooks/useWatchlist.js';
 const NewsTab = lazy(() => import('./NewsTab.jsx'));
 import PersonalWatchlistTab from './PersonalWatchlistTab.jsx';
 import PearsonCorrelationWidget from './PearsonCorrelationWidget.jsx';
@@ -51,6 +52,7 @@ export default function MasterQuantLeaderboard({
   // Alias for internal use — reads from controlled prop
   const activeMainTab = activeTab;
   const setActiveMainTab = (tab) => onTabChange?.(tab);
+  const watchlist = useWatchlist();
 
   const [stockSubFilter, setStockSubFilter] = useState('ALL_STOCKS');
   const [cryptoSubFilter, setCryptoSubFilter] = useState('ALL_CRYPTO');
@@ -1045,7 +1047,26 @@ export default function MasterQuantLeaderboard({
                               {idx + 1}
                             </td>
                             <td className="sticky-col-ticker" style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '13px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    watchlist.toggle(item.ticker, item.market === 'CRYPTO' ? 'CRYPTO' : 'IDX');
+                                  }}
+                                  title={watchlist.has(item.ticker, item.market === 'CRYPTO' ? 'CRYPTO' : 'IDX') ? "Hapus dari Watchlist" : "Tambah ke Watchlist"}
+                                  style={{
+                                    background: 'transparent',
+                                    border: 'none',
+                                    color: watchlist.has(item.ticker, item.market === 'CRYPTO' ? 'CRYPTO' : 'IDX') ? '#f59e0b' : 'rgba(255, 255, 255, 0.25)',
+                                    cursor: 'pointer',
+                                    fontSize: '13px',
+                                    padding: '0 2px',
+                                    lineHeight: 1
+                                  }}
+                                >
+                                  {watchlist.has(item.ticker, item.market === 'CRYPTO' ? 'CRYPTO' : 'IDX') ? '★' : '☆'}
+                                </button>
                                 <AssetIcon symbol={item.ticker} market={item.market === 'CRYPTO' ? 'CRYPTO' : 'IDX'} size={18} />
                                 <span>{item.ticker}</span>
                               </div>
@@ -1124,19 +1145,19 @@ export default function MasterQuantLeaderboard({
                             }}>
                               {Number(item.changePct) >= 0 ? '+' + Number(item.changePct).toFixed(2) + '%' : Number(item.changePct).toFixed(2) + '%'}
                             </td>
-                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}>
-                              <code>{item.entryRange ? item.entryRange : formatFinancialPrice(item.entry, item.market)}</code>
+                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', fontWeight: '700', fontSize: '11.5px', color: '#cbd5e1' }}>
+                              <span>{item.entryRange ? item.entryRange : formatFinancialPrice(item.entry, item.market)}</span>
                             </td>
-                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', color: item.dynamic?.isTrailingActive ? 'var(--accent-green)' : 'var(--accent-rust-text, #ff3b30)' }}>
-                              <code>{formatFinancialPrice(item.dynamic?.effectiveSl || item.stopLoss, item.market)}</code>
+                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', fontWeight: '700', fontSize: '11.5px', color: item.dynamic?.isTrailingActive ? 'var(--accent-green)' : 'var(--accent-rust-text, #ff3b30)' }}>
+                              <span>{formatFinancialPrice(item.dynamic?.effectiveSl || item.stopLoss, item.market)}</span>
                               {item.dynamic?.isTrailingActive && (
                                 <div style={{ fontSize: '8.5px', color: 'var(--accent-emerald)', fontWeight: '800' }}>
                                   🛡️ BE LOCKED
                                 </div>
                               )}
                             </td>
-                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', color: 'var(--accent-green-text, #15803d)', fontWeight: '700' }}>
-                              <code>{formatFinancialPrice(item.target1, item.market)}</code>
+                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', color: 'var(--accent-green-text, #10b981)', fontWeight: '800', fontSize: '11.5px' }}>
+                              <span>{formatFinancialPrice(item.target1, item.market)}</span>
                             </td>
                             <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}>
                               {/*
