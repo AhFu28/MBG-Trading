@@ -8,7 +8,7 @@ import HyperliquidProDesk from './HyperliquidProDesk.jsx';
 /**
  * ExecutionHudOverlay - jev-trade inspired real-time visual execution & triple-barrier HUD
  */
-function ExecutionHudOverlay({ symbol, market, currentPrice, plan, isCrypto }) {
+function ExecutionHudOverlay({ symbol, market, currentPrice, plan, isCrypto, onOpenLotCalc, onOpenExecution }) {
   const isIdx = market === 'IDX' || (!isCrypto && !symbol.includes('USDT'));
   const p = Number(currentPrice || (isIdx ? 1200 : 100));
   const entry = plan?.entry_price || plan?.entry_low || p;
@@ -22,6 +22,7 @@ function ExecutionHudOverlay({ symbol, market, currentPrice, plan, isCrypto }) {
   const isProfit = Number(pnlPct) >= 0;
 
   const botName = isIdx ? 'Bot-06 Bandarmology VWAP' : 'Bot-02 Momentum Alpha';
+  const cleanSym = cleanSymbolStr(symbol);
 
   return (
     <div style={{
@@ -110,6 +111,58 @@ function ExecutionHudOverlay({ symbol, market, currentPrice, plan, isCrypto }) {
           }}>
             PnL: {isProfit ? `+${pnlPct}%` : `${pnlPct}%`}
           </span>
+
+          {onOpenLotCalc && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenLotCalc(entry, sl, market, cleanSym);
+              }}
+              style={{
+                background: '#2457D6',
+                color: '#fff',
+                border: 'none',
+                padding: '2px 7px',
+                borderRadius: '4px',
+                fontSize: '10px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '3px'
+              }}
+              title="1-Klik Bawa ke Sizing"
+            >
+              ⚡ Sizing
+            </button>
+          )}
+
+          {onOpenExecution && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenExecution({ symbol: cleanSym, market, side: 'LONG', entry, stopLoss: sl, takeProfit: tp });
+              }}
+              style={{
+                background: '#3BC78A',
+                color: '#0B0E14',
+                border: 'none',
+                padding: '2px 7px',
+                borderRadius: '4px',
+                fontSize: '10px',
+                fontWeight: 900,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '3px'
+              }}
+              title="1-Klik Eksekusi Order"
+            >
+              🚀 Order
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -128,7 +181,9 @@ function ChartPane({
   isActive,
   onActivate,
   plan = null,
-  currentPrice = null
+  currentPrice = null,
+  onOpenLotCalc,
+  onOpenExecution
 }) {
   const containerRef = useRef(null);
   const clean = cleanSymbolStr(symbol);
@@ -280,6 +335,8 @@ function ChartPane({
             currentPrice={currentPrice}
             plan={plan}
             isCrypto={isCrypto}
+            onOpenLotCalc={onOpenLotCalc}
+            onOpenExecution={onOpenExecution}
           />
         )}
         <div
@@ -306,6 +363,7 @@ export default function ChartingDeskTab({
   flashMap = {},
   onOpenLotCalc,
   onOpenPrediction,
+  onOpenExecution,
   initialSymbol = 'BBCA'
 }) {
   const [deskMode, setDeskMode] = useState('PRO'); // 'PRO' (Hyperliquid Pro Desk) | 'GRID' (Multi-Pane Grid)
@@ -704,6 +762,8 @@ export default function ChartingDeskTab({
             onActivate={() => setActivePaneId(1)}
             plan={activePaneId === 1 ? activePlan : null}
             currentPrice={activePaneId === 1 ? currentPrice : null}
+            onOpenLotCalc={onOpenLotCalc}
+            onOpenExecution={onOpenExecution}
           />
 
           {/* Pane 2 (if 2-Split or 4-Grid) */}
@@ -720,6 +780,8 @@ export default function ChartingDeskTab({
               onActivate={() => setActivePaneId(2)}
               plan={activePaneId === 2 ? activePlan : null}
               currentPrice={activePaneId === 2 ? currentPrice : null}
+              onOpenLotCalc={onOpenLotCalc}
+              onOpenExecution={onOpenExecution}
             />
           )}
 
@@ -738,6 +800,8 @@ export default function ChartingDeskTab({
                 onActivate={() => setActivePaneId(3)}
                 plan={activePaneId === 3 ? activePlan : null}
                 currentPrice={activePaneId === 3 ? currentPrice : null}
+                onOpenLotCalc={onOpenLotCalc}
+                onOpenExecution={onOpenExecution}
               />
               <ChartPane
                 paneId={4}
@@ -751,6 +815,8 @@ export default function ChartingDeskTab({
                 onActivate={() => setActivePaneId(4)}
                 plan={activePaneId === 4 ? activePlan : null}
                 currentPrice={activePaneId === 4 ? currentPrice : null}
+                onOpenLotCalc={onOpenLotCalc}
+                onOpenExecution={onOpenExecution}
               />
             </>
           )}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import BloombergNewsWire from './BloombergNewsWire.jsx';
+import MorningBriefAudioPodcast from './MorningBriefAudioPodcast.jsx';
 import AssetIcon from './AssetIcon.jsx';
 import CryptoIcon from './CryptoIcon.jsx';
 import { formatNewsDateTime } from './newsHelpers.js';
@@ -444,6 +445,14 @@ export default function HomeDashboardTab({
 
         {/* LEFT COLUMN: HERO + COCKPIT STACK */}
         <div className="home-cockpit-left" style={isWireCollapsed ? { width: '100%' } : {}}>
+
+          {/* 2-MINUTE AUDIO PODCAST & MORNING BRIEF */}
+          <MorningBriefAudioPodcast
+            macro={macro}
+            bundle={data}
+            livePrices={livePrices}
+            onSelectTicker={onSelectTicker}
+          />
 
 
       {/* =========================================================================

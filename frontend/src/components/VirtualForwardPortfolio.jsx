@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { institutionalPaperBroker } from '../services/brokerGateway.js';
 import { bumpAchievement } from '../services/achievements.js';
+import TradervueCalendarAndEquity from './TradervueCalendarAndEquity.jsx';
 
 const JOURNAL_STORAGE_KEY = 'mbg_user_trade_journal_v1';
 
@@ -376,10 +377,11 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
 
       {/* Tabs & Controls */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', marginBottom: '15px', flexWrap: 'wrap', gap: '10px' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {[
             { id: 'active', label: `Posisi Aktif (${activePositions.length})` },
             { id: 'history', label: `Riwayat Closed (${closedPositions.length})` },
+            { id: 'calendar', label: '📅 Kalender PnL & Equity' },
             { id: 'strategy', label: 'Statistik Strategi' },
             { id: 'journal', label: `📓 Jurnal Evaluasi (${journals.length})` }
           ].map(tab => (
@@ -627,6 +629,16 @@ const VirtualForwardPortfolio = ({ dailyTradePlans = [], paperPortfolio, current
             </tbody>
           </table>
         </div>
+      )}
+
+      {/* Tradervue Calendar & Visual Equity Curve */}
+      {activeTab === 'calendar' && (
+        <TradervueCalendarAndEquity
+          startingCapital={initialCapital}
+          closedPositions={closedPositions}
+          journals={journals}
+          unrealizedPnL={unrealizedPnL}
+        />
       )}
 
       {/* Strategy Stats */}

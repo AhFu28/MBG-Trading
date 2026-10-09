@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { getTvSymbol } from '../data/tv-helpers.js';
 import HyperliquidProDesk from './HyperliquidProDesk.jsx';
 
-export default function TradingViewModal({ initialSymbol, market = 'IDX', onClose, onOpenLotCalc, onOpenExecution }) {
+export default function TradingViewModal({ initialSymbol, market = 'IDX', onClose, onOpenLotCalc, onOpenExecution, tradePlans = [] }) {
   const containerRef = useRef(null);
 
   // Helper to identify if symbol belongs to Crypto or IDX
@@ -21,6 +21,15 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
   const [refreshKey, setRefreshKey] = useState(0);
 
   const isCurrentCrypto = isCryptoSymbol(currentSymbol, market);
+  const cleanSym = (currentSymbol || '').replace('.JK', '').replace('/', '').toUpperCase();
+
+  const matchedPlan = useMemo(() => {
+    if (!tradePlans || tradePlans.length === 0) return null;
+    return tradePlans.find(p => {
+      const pClean = (p.clean_ticker || p.symbol || '').replace('.JK', '').replace('/', '').toUpperCase();
+      return pClean === cleanSym || cleanSym.startsWith(pClean) || pClean.startsWith(cleanSym);
+    });
+  }, [tradePlans, cleanSym]);
 
   // Auto-guard: Automatically switch to Day interval if an Indonesian stock is active
   useEffect(() => {
@@ -326,6 +335,148 @@ export default function TradingViewModal({ initialSymbol, market = 'IDX', onClos
             ))}
           </div>
         </div>
+
+        {/* Smart Setup Overlay Bar (1-Click Sizing & Order Placement) */}
+        {matchedPlan ? (
+          <div style={{
+            background: 'linear-gradient(90deg, rgba(36, 87, 214, 0.16) 0%, rgba(16, 185, 129, 0.14) 100%)',
+            borderBottom: '1px solid #2F3A49',
+            padding: '8px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            fontSize: '11.5px',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <span style={{
+                background: matchedPlan.direction === 'SHORT' ? '#FF6B75' : '#3BC78A',
+                color: '#0B0E14',
+                fontWeight: '900',
+                padding: '2px 7px',
+                borderRadius: '4px',
+                fontSize: '10px',
+                letterSpacing: '0.04em'
+              }}>
+                🎯 SETUP AI: {matchedPlan.direction} {matchedPlan.clean_ticker || cleanSym}
+              </span>
+              <span style={{ color: '#F3F5F7' }}>
+                Entry: <strong style={{ color: '#78A9FF', fontFamily: 'var(--font-mono)' }}>{matchedPlan.entry_price}</strong>
+              </span>
+              <span style={{ color: '#F3F5F7' }}>
+                SL: <strong style={{ color: '#FF6B75', fontFamily: 'var(--font-mono)' }}>{matchedPlan.stop_loss}</strong>
+              </span>
+              <span style={{ color: '#F3F5F7' }}>
+                TP1: <strong style={{ color: '#3BC78A', fontFamily: 'var(--font-mono)' }}>{matchedPlan.target_1}</strong>
+              </span>
+              {matchedPlan.target_2 && (
+                <span style={{ color: '#F3F5F7' }}>
+                  TP2: <strong style={{ color: '#3BC78A', fontFamily: 'var(--font-mono)' }}>{matchedPlan.target_2}</strong>
+                </span>
+              )}
+              <span style={{ color: '#F3C969', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+                R:R {matchedPlan.risk_reward_ratio || '1:2.0'}x
+              </span>
+              {matchedPlan.technical_signal && (
+                <span style={{ color: '#A7B0BD', fontSize: '10.5px' }}>
+                  ({matchedPlan.technical_signal})
+                </span>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {onOpenLotCalc && (
+                <button
+                  type="button"
+                  onClick={() => onOpenLotCalc(matchedPlan.entry_price, matchedPlan.stop_loss, matchedPlan.market || (isCurrentCrypto ? 'CRYPTO' : 'IDX'), matchedPlan.clean_ticker || cleanSym)}
+                  style={{
+                    background: 'linear-gradient(135deg, #2457D6, #1d46b3)',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '5px 12px',
+                    borderRadius: '6px',
+                    fontSize: '11px',
+                    fontWeight: '800',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    boxShadow: '0 2px 10px rgba(36, 87, 214, 0.45)'
+                  }}
+                  title="Otomatis isi Entry & Stop Loss ke Kalkulator Ukuran Lot"
+                >
+                  <span>⚡ 1-Klik Bawa ke Sizing</span>
+                </button>
+              )}
+              {onOpenExecution && (
+                <button
+                  type="button"
+                  onClick={() => onOpenExecution({
+                    symbol: matchedPlan.clean_ticker || cleanSym,
+                    market: matchedPlan.market || (isCurrentCrypto ? 'CRYPTO' : 'IDX'),
+                    side: matchedPlan.direction || 'LONG',
+                    entry: matchedPlan.entry_price,
+                    stopLoss: matchedPlan.stop_loss,
+                    takeProfit: matchedPlan.target_1
+                  })}
+                  style={{
+                    background: 'linear-gradient(135deg, #3BC78A, #10b981)',
+                    color: '#0B0E14',
+                    border: 'none',
+                    padding: '5px 12px',
+                    borderRadius: '6px',
+                    fontSize: '11px',
+                    fontWeight: '900',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    boxShadow: '0 2px 10px rgba(59, 199, 138, 0.35)'
+                  }}
+                  title="Langsung buka tiket order paper dengan parameter rencana"
+                >
+                  <span>🚀 1-Klik Eksekusi Paper</span>
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.02)',
+            borderBottom: '1px solid #2F3A49',
+            padding: '6px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontSize: '11px',
+            color: '#A7B0BD'
+          }}>
+            <span>
+              💡 Belum ada trading plan AI resmi untuk <strong>{cleanSym}</strong>. Anda dapat menghitung risiko mandiri via Sizing / Lot.
+            </span>
+            <div style={{ display: 'flex', gap: '6px' }}>
+              {onOpenLotCalc && (
+                <button
+                  type="button"
+                  onClick={() => onOpenLotCalc('', '', isCurrentCrypto ? 'CRYPTO' : 'IDX', cleanSym)}
+                  style={{
+                    background: 'rgba(243, 201, 105, 0.12)',
+                    color: '#F3C969',
+                    border: '1px solid rgba(243, 201, 105, 0.3)',
+                    padding: '3px 8px',
+                    borderRadius: '4px',
+                    fontSize: '10.5px',
+                    fontWeight: '700',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Hitung Lot {cleanSym}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Chart iframe container */}
         <div style={{ flex: 1, position: 'relative', width: '100%', minHeight: 0 }}>

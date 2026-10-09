@@ -1074,6 +1074,7 @@ export default function App() {
                   flashMap={flashMap}
                   onOpenLotCalc={handleOpenLotCalc}
                   onOpenPrediction={handleOpenPrediction}
+                  onOpenExecution={handleOpenExecution}
                   initialSymbol={chartModal.symbol || 'BBCA'}
                 />
               </main>
@@ -1316,6 +1317,7 @@ export default function App() {
                 onClose={handleCloseChart}
                 onOpenLotCalc={handleOpenLotCalc}
                 onOpenExecution={handleOpenExecution}
+                tradePlans={data?.daily_trade_plans || []}
               />
             )}
 
