@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { PLANS, TIER } from '../services/featureAccess.js';
-import { signUp, logIn, ownerLogin } from '../services/accountClient.js';
+import { signUp, logIn, ownerLogin, requestPasswordReset } from '../services/accountClient.js';
 
 /**
- * AuthPanel — sign in / sign up.
+ * AuthPanel — sign in / sign up / password recovery.
  *
  * Replaces the old single shared password screen.
  *
@@ -22,9 +22,10 @@ export default function AuthPanel({
   accountsReady = true,
 }) {
   // A missing account database forces owner mode: it is the only path that works.
-  const [mode, setMode] = useState(accountsReady ? initialMode : 'owner'); // login | signup | owner
+  const [mode, setMode] = useState(accountsReady ? initialMode : 'owner'); // login | signup | owner | forgot
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [displayName, setDisplayName] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -49,7 +50,7 @@ export default function AuthPanel({
       setEmptyFieldError('Email wajib diisi.');
       return;
     }
-    if (!password.trim()) {
+    if (mode !== 'forgot' && !password.trim()) {
       setEmptyFieldError('Kata sandi wajib diisi.');
       return;
     }
@@ -57,6 +58,12 @@ export default function AuthPanel({
     setBusy(true);
 
     try {
+      if (mode === 'forgot') {
+        const res = await requestPasswordReset(email.trim());
+        setNotice(res?.message || 'Tautan pemulihan kata sandi telah dikirim ke email Anda. Cek folder inbox atau spam.');
+        return;
+      }
+
       if (mode === 'owner') {
         if (!password.trim()) throw new Error('Kata sandi wajib diisi.');
         await ownerLogin(password.trim());
@@ -88,7 +95,7 @@ export default function AuthPanel({
   const field = {
     width: '100%', padding: '11px 13px', borderRadius: '9px', fontSize: '13px',
     background: 'rgba(0,0,0,0.30)', border: '1px solid rgba(255,255,255,0.12)',
-    color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit',
+    color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box',
   };
   const label = {
     display: 'block', fontSize: '10.5px', fontWeight: '800', letterSpacing: '0.06em',
@@ -99,6 +106,7 @@ export default function AuthPanel({
     login: 'Masuk ke Akun Anda',
     signup: 'Buat Akun Gratis',
     owner: 'Akses Pemilik',
+    forgot: 'Pemulihan Kata Sandi',
   };
 
   return (
@@ -135,8 +143,8 @@ export default function AuthPanel({
         </div>
       )}
 
-      {/* Mode tabs — hidden in owner mode to keep it unobtrusive */}
-      {mode !== 'owner' && (
+      {/* Mode tabs — hidden in owner or forgot mode to keep it unobtrusive */}
+      {mode !== 'owner' && mode !== 'forgot' && (
         <div style={{
           display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px',
           background: 'rgba(0,0,0,0.30)', borderRadius: '10px', padding: '4px', marginBottom: '18px',
@@ -181,20 +189,54 @@ export default function AuthPanel({
           </div>
         )}
 
-        <div>
-          <label style={label} htmlFor="mbg-pass">Kata Sandi</label>
-          <input
-            id="mbg-pass" style={field} value={password} type="password"
-            autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
-            onChange={e => setPassword(e.target.value)}
-            placeholder={mode === 'signup' ? 'Minimal 8 karakter' : '••••••••'}
-          />
-          {mode === 'signup' && (
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '5px' }}>
-              Minimal 8 karakter. Gunakan yang tidak Anda pakai di tempat lain.
+        {mode !== 'forgot' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
+              <label style={{ ...label, marginBottom: 0 }} htmlFor="mbg-pass">Kata Sandi</label>
+              {mode === 'login' && (
+                <button
+                  type="button"
+                  onClick={() => { setMode('forgot'); setError(''); setNotice(''); setEmptyFieldError(''); }}
+                  style={{
+                    background: 'none', border: 'none', padding: 0,
+                    fontSize: '11px', color: 'var(--accent-primary, #6366f1)',
+                    cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'underline',
+                  }}
+                >
+                  Lupa sandi?
+                </button>
+              )}
             </div>
-          )}
-        </div>
+            <div style={{ position: 'relative' }}>
+              <input
+                id="mbg-pass"
+                style={{ ...field, paddingRight: '40px' }}
+                value={password}
+                type={showPassword ? 'text' : 'password'}
+                autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
+                onChange={e => setPassword(e.target.value)}
+                placeholder={mode === 'signup' ? 'Minimal 8 karakter' : '••••••••'}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(p => !p)}
+                style={{
+                  position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)',
+                  background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)',
+                  fontSize: '14px', padding: '4px', display: 'flex', alignItems: 'center',
+                }}
+                title={showPassword ? 'Sembunyikan sandi' : 'Tampilkan sandi'}
+              >
+                {showPassword ? '👁️' : '🔒'}
+              </button>
+            </div>
+            {mode === 'signup' && (
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '5px' }}>
+                Minimal 8 karakter. Gunakan yang tidak Anda pakai di tempat lain.
+              </div>
+            )}
+          </div>
+        )}
 
         {/* An empty submit is reported in the panel rather than by the browser's
             native tooltip, so the reason is always visible and testable. */}
@@ -234,9 +276,24 @@ export default function AuthPanel({
             cursor: busy ? 'wait' : 'pointer',
           }}
         >
-          {busy ? 'Memproses…' : (mode === 'signup' ? 'Daftar Sekarang' : 'Masuk')}
+          {busy ? 'Memproses…' : (mode === 'signup' ? 'Daftar Sekarang' : mode === 'forgot' ? 'Kirim Tautan Pemulihan' : 'Masuk')}
         </button>
       </form>
+
+      {mode === 'forgot' && (
+        <div style={{ marginTop: '16px', textAlign: 'center' }}>
+          <button
+            type="button"
+            onClick={() => { setMode('login'); setError(''); setNotice(''); }}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+              fontSize: '11.5px', color: 'var(--accent-primary, #6366f1)', fontWeight: '700',
+            }}
+          >
+            ← Kembali ke Halaman Masuk
+          </button>
+        </div>
+      )}
 
       {mode === 'signup' && (
         <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '14px', lineHeight: 1.65, textAlign: 'center' }}>
@@ -256,18 +313,20 @@ export default function AuthPanel({
         </div>
       )}
 
-      <div style={{ marginTop: '16px', textAlign: 'center' }}>
-        <button
-          type="button"
-          onClick={() => { setMode(mode === 'owner' ? 'login' : 'owner'); setError(''); setNotice(''); }}
-          style={{
-            background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-            fontSize: '10.5px', color: 'var(--text-muted)', textDecoration: 'underline',
-          }}
-        >
-          {mode === 'owner' ? '← Kembali' : 'Akses pemilik (kata sandi sistem)'}
-        </button>
-      </div>
+      {mode !== 'forgot' && (
+        <div style={{ marginTop: '16px', textAlign: 'center' }}>
+          <button
+            type="button"
+            onClick={() => { setMode(mode === 'owner' ? 'login' : 'owner'); setError(''); setNotice(''); }}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+              fontSize: '10.5px', color: 'var(--text-muted)', textDecoration: 'underline',
+            }}
+          >
+            {mode === 'owner' ? '← Kembali' : 'Akses pemilik (kata sandi sistem)'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

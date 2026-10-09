@@ -79,6 +79,21 @@ export async function logIn({ email, password }) {
   });
 }
 
+/** Request password reset email */
+export async function requestPasswordReset(email) {
+  try {
+    return await call('/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  } catch (err) {
+    if (err?.status === 404 || err?.status === 503) {
+      return { ok: true, message: 'Jika email terdaftar, instruksi pemulihan telah dikirim.' };
+    }
+    throw err;
+  }
+}
+
 /**
  * End the account session (`mbg_session`).
  *

@@ -27,6 +27,13 @@ import { test as base, expect } from '@playwright/test';
  * locked out needs a free one.
  */
 async function installSession(page, { tier = 'pro', isAdmin = false, email = 'e2e@example.com' } = {}) {
+  // Pre-seed onboarding preference so first-visit modal does not intercept route tests
+  await page.addInitScript(() => {
+    try {
+      localStorage.setItem('mbg_onboarded_v1', 'true');
+    } catch (e) {}
+  });
+
   // Account session.
   await page.route('**/api/account/me', route => route.fulfill({
     status: 200,
@@ -221,7 +228,21 @@ export async function gotoCockpitRoute(page, id) {
   await page.waitForSelector('.cmc-topnav', { timeout: 15_000 });
 
   await dismissComplianceModal(page);
+  await dismissOnboardingModal(page);
   await page.waitForTimeout(400);
+}
+
+/**
+ * Accept the first-run onboarding modal if it is present.
+ */
+export async function dismissOnboardingModal(page) {
+  const btn = page.getByRole('button', { name: /Mulai Masuk ke Terminal/i }).first();
+  const shown = await btn.isVisible().catch(() => false);
+  if (shown) {
+    await btn.click();
+    await page.waitForTimeout(300);
+  }
+  return shown;
 }
 
 /**

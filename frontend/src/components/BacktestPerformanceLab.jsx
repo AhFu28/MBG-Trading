@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { bumpAchievement } from '../services/achievements.js';
 
 /**
  * Deflated Sharpe Ratio (DSR) Calculation based on Marcos López de Prado (2018)
@@ -122,6 +123,10 @@ const BacktestPerformanceLab = ({ backtestLab, data = {}, strategyRankings = [] 
   const rawData = backtestLab || data.backtest_lab || null;
   const [selectedStrategyId, setSelectedStrategyId] = useState('ALL');
   const [showSpecContract, setShowSpecContract] = useState(true);
+
+  useEffect(() => {
+    bumpAchievement('backtestsRun', 1);
+  }, []);
 
   // Harmonize backend schema: directly supports archetype keys (BREAKOUT, OVERSOLD_REBOUND, etc.)
   const { strategies, bestStrategy, bestSharpe, insights, activeSpec, hasZeroTrades } = useMemo(() => {

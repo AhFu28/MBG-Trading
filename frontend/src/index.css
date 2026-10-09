@@ -1672,4 +1672,27 @@ body[data-theme="dark"],
   }
 }
 
+/* --- Print Styling for Research & Reports --- */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+  nav, header, footer, .cmc-top-bar, .sub-nav-tabs, .no-print, .telemetry-btn {
+    display: none !important;
+  }
+  .research-print-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+  .research-print-container div {
+    background: transparent !important;
+    border-color: #e5e7eb !important;
+    color: #111827 !important;
+  }
+}
+
 

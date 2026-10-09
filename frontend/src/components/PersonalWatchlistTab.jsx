@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { bumpAchievement } from '../services/achievements.js';
 
 export default function PersonalWatchlistTab({ 
   allStocks = [], 
@@ -29,6 +30,7 @@ export default function PersonalWatchlistTab({
     } catch (e) {
       console.error('Failed to save watchlist to localStorage:', e);
     }
+    bumpAchievement('watchlistCount', watchlist.length, { absolute: true });
   }, [watchlist]);
 
   const handleAddTicker = (e) => {

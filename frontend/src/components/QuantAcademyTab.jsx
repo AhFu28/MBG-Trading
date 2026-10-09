@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { bumpAchievement } from '../services/achievements.js';
 
 // ============================================================================
 // DATA KURIKULUM 6 LEVEL & 20 MODUL LENGKAP
@@ -1292,7 +1293,16 @@ function PreflightScorecard() {
 export default function QuantAcademyTab() {
   const [activeLevelId, setActiveLevelId] = useState('lvl-1');
   const [activeModuleId, setActiveModuleId] = useState('mod-1-1');
-  const [completedModules, setCompletedModules] = useState(['mod-1-1']);
+  const [completedModules, setCompletedModules] = useState(() => {
+    try {
+      const saved = localStorage.getItem('mbg_academy_progress_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return ['mod-1-1'];
+  });
   const [searchGlossary, setSearchGlossary] = useState('');
   const [selectedGlossaryCategory, setSelectedGlossaryCategory] = useState('Semua');
 
@@ -1308,7 +1318,12 @@ export default function QuantAcademyTab() {
     setActiveLevelId(lvlId);
     setActiveModuleId(modId);
     if (!completedModules.includes(modId)) {
-      setCompletedModules(prev => [...prev, modId]);
+      const updated = [...completedModules, modId];
+      setCompletedModules(updated);
+      try {
+        localStorage.setItem('mbg_academy_progress_v1', JSON.stringify(updated));
+      } catch (e) {}
+      bumpAchievement('academyLessonsDone', updated.length, { absolute: true });
     }
   };
 

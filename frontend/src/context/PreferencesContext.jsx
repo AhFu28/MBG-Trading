@@ -117,6 +117,7 @@ const TRANSLATIONS = {
 };
 
 const LANG_KEY = 'mbg_language';
+const MARKET_FOCUS_KEY = 'mbg_market_focus_v1';
 
 const PreferencesContext = createContext(null);
 
@@ -129,6 +130,22 @@ export function PreferencesProvider({ children }) {
     // Default to Indonesian: the product's primary audience.
     return 'id';
   });
+
+  const [marketFocus, setMarketFocusState] = useState(() => {
+    try {
+      const saved = localStorage.getItem(MARKET_FOCUS_KEY);
+      if (['ALL', 'IDX', 'CRYPTO'].includes(saved)) return saved;
+    } catch { /* storage unavailable */ }
+    return 'ALL';
+  });
+
+  const setMarketFocus = useCallback((focus) => {
+    const val = ['ALL', 'IDX', 'CRYPTO'].includes(focus) ? focus : 'ALL';
+    setMarketFocusState(val);
+    try {
+      localStorage.setItem(MARKET_FOCUS_KEY, val);
+    } catch { /* storage unavailable */ }
+  }, []);
 
   useEffect(() => {
     try {
@@ -152,8 +169,8 @@ export function PreferencesProvider({ children }) {
   }, [language]);
 
   const value = useMemo(
-    () => ({ language, setLanguage, t, languages: LANGUAGES }),
-    [language, t],
+    () => ({ language, setLanguage, marketFocus, setMarketFocus, t, languages: LANGUAGES }),
+    [language, setLanguage, marketFocus, setMarketFocus, t],
   );
 
   return (
@@ -175,6 +192,8 @@ export function usePreferences() {
   return {
     language: 'id',
     setLanguage: () => {},
+    marketFocus: 'ALL',
+    setMarketFocus: () => {},
     t: (key, fallback) => fallback ?? key,
     languages: LANGUAGES,
   };

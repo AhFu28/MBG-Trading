@@ -12,6 +12,7 @@ import PersonalWatchlistTab from './components/PersonalWatchlistTab.jsx';
 import CommandPaletteModal from './components/CommandPaletteModal.jsx';
 import DataIntegrityModal from './components/DataIntegrityModal.jsx';
 import ComplianceRiskModal from './components/ComplianceRiskModal.jsx';
+import OnboardingModal from './components/OnboardingModal.jsx';
 
 // Code Splitting for heavy secondary modules
 const TradingViewModal = lazy(() => import('./components/TradingViewModal.jsx'));
@@ -258,7 +259,20 @@ export default function App() {
     return me;
   }, []);
 
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
   useEffect(() => { refreshAccount(); }, [refreshAccount]);
+
+  useEffect(() => {
+    if (account?.authenticated) {
+      try {
+        const onboarded = localStorage.getItem('mbg_onboarded_v1');
+        if (!onboarded) {
+          setShowOnboarding(true);
+        }
+      } catch (e) {}
+    }
+  }, [account?.authenticated]);
 
   /**
    * The single logout path for the whole app.
@@ -1360,6 +1374,12 @@ export default function App() {
                 onRefreshDesk={refetchAll}
               />
             )}
+
+            {/* 7. Welcome Onboarding Modal (Journey A08-A10) */}
+            <OnboardingModal
+              isOpen={showOnboarding}
+              onClose={() => setShowOnboarding(false)}
+            />
           </Suspense>
 
           {/* 5. Institutional Disclaimer Footer + Feed Health Status (single bottom region) */}

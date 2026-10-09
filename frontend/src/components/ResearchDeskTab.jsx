@@ -230,8 +230,20 @@ export default function ResearchDeskTab() {
 
       {/* Paper reader */}
       {paper && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <button onClick={backToCatalog} className="telemetry-btn" style={{ alignSelf: 'flex-start', fontSize: '12px', padding: '4px 12px' }}>← Kembali ke katalog</button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }} className="research-print-container">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <button onClick={backToCatalog} className="telemetry-btn no-print" style={{ fontSize: '12px', padding: '4px 12px' }}>
+              ← Kembali ke katalog
+            </button>
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="telemetry-btn no-print"
+              style={{ fontSize: '12px', padding: '4px 12px', background: 'rgba(99,102,241,0.15)', borderColor: 'rgba(99,102,241,0.35)', color: 'var(--accent-sky)' }}
+            >
+              🖨️ Cetak / Ekspor PDF
+            </button>
+          </div>
 
           <div style={{ background: 'var(--bg-panel)', border: 'var(--border-hairline)', borderRadius: '10px', padding: '16px 18px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' }}>

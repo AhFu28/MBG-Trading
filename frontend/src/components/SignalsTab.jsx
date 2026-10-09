@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   TIERS,
   buildTierView,
   maskPlanForTier,
   featuresFor,
 } from '../services/signalTiers.js';
+import { bumpAchievement } from '../services/achievements.js';
 
 function fmtMoney(value, market) {
   if (value === null || value === undefined) return '—';
@@ -61,6 +62,12 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
     if (filter === 'ALL') return rows;
     return rows.filter(r => String(r.market).toUpperCase() === filter);
   }, [view, tier, filter]);
+
+  useEffect(() => {
+    if (visible.length > 0) {
+      bumpAchievement('signalsReviewed', visible.length, { absolute: true });
+    }
+  }, [visible.length]);
 
   const idrCount = view.visible.filter(p => String(p.market).toUpperCase() === 'IDX').length;
   const cryptoCount = view.visible.filter(p => String(p.market).toUpperCase() === 'CRYPTO').length;

@@ -11,6 +11,32 @@ export default function NewsDetailModal({
   const [isTtsPlaying, setIsTtsPlaying] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeChartSymbol, setActiveChartSymbol] = useState(null);
+  const [isBookmarked, setIsBookmarked] = useState(() => {
+    try {
+      const saved = localStorage.getItem('mbg_bookmarked_news_v1');
+      const list = saved ? JSON.parse(saved) : [];
+      return list.includes(news?.id || news?.title);
+    } catch (e) {
+      return false;
+    }
+  });
+
+  const handleToggleBookmark = () => {
+    try {
+      const key = 'mbg_bookmarked_news_v1';
+      const saved = localStorage.getItem(key);
+      let list = saved ? JSON.parse(saved) : [];
+      const itemKey = currentNews?.id || currentNews?.title;
+      if (list.includes(itemKey)) {
+        list = list.filter(k => k !== itemKey);
+        setIsBookmarked(false);
+      } else {
+        list.push(itemKey);
+        setIsBookmarked(true);
+      }
+      localStorage.setItem(key, JSON.stringify(list));
+    } catch (e) {}
+  };
 
   // Sync internal state when parent news prop changes
   useEffect(() => {
@@ -276,6 +302,55 @@ export default function NewsDetailModal({
               <span>{copied ? '✓' : '📋'}</span>
               <span>{copied ? 'Tersalin' : 'Salin'}</span>
             </button>
+
+            {/* Bookmark button */}
+            <button
+              type="button"
+              onClick={handleToggleBookmark}
+              className="telemetry-btn"
+              title={isBookmarked ? 'Hapus dari Simpanan' : 'Simpan Berita'}
+              style={{
+                padding: '3px 8px',
+                fontSize: '10px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                background: isBookmarked ? 'rgba(245, 158, 11, 0.2)' : 'transparent',
+                borderColor: isBookmarked ? 'var(--accent-gold)' : 'var(--border-color)',
+                color: isBookmarked ? 'var(--accent-gold)' : 'var(--text-secondary)'
+              }}
+            >
+              <span>{isBookmarked ? '★' : '☆'}</span>
+              <span>{isBookmarked ? 'Tersimpan' : 'Simpan'}</span>
+            </button>
+
+            {/* Quick Chart button */}
+            {onSelectTicker && (currentNews?.primary_ticker || (currentNews?.related_tickers && currentNews.related_tickers[0])) && (
+              <button
+                type="button"
+                onClick={() => {
+                  const t = currentNews?.primary_ticker || currentNews.related_tickers[0];
+                  const isCrypto = currentNews?.stream === 'CRYPTO' || ['BTC', 'ETH', 'SOL'].includes(t);
+                  onSelectTicker(t, isCrypto ? 'CRYPTO' : 'IDX');
+                  onClose && onClose();
+                }}
+                className="telemetry-btn"
+                title="Buka Chart emiten di TradingView"
+                style={{
+                  padding: '3px 8px',
+                  fontSize: '10px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  background: 'rgba(99, 102, 241, 0.15)',
+                  borderColor: 'rgba(99, 102, 241, 0.35)',
+                  color: '#a5b4fc'
+                }}
+              >
+                <span>📈</span>
+                <span>Chart</span>
+              </button>
+            )}
 
             <button
               onClick={onClose}
