@@ -26,6 +26,7 @@ const ROUTES = [
   { id: 'STOCK', marker: /saham|stock|idx|emiten/i },
   { id: 'FOREX', marker: /forex|komoditas|emas|gold|oil/i },
   { id: 'NEWS', marker: /berita|news|headline/i },
+  { id: 'RESEARCH', marker: /research desk|studi|paper|laporan|katalog/i },
   { id: 'WHALES', marker: /whale|paus|on-chain|dompet/i },
   { id: 'ECONOMIC_CALENDAR', marker: /kalender|calendar|event|rilis/i },
   { id: 'ACADEMY', marker: /academy|materi|belajar|kurikulum/i },
@@ -110,5 +111,18 @@ test.describe('navigation reaches every route by clicking, not by URL', () => {
     // clicking it fell through to the fallback desk.
     await expect(page.getByText(/modul tidak dikenal/i)).toHaveCount(0);
     await expect(page.getByText(/berita|news|headline/i).first()).toBeVisible({ timeout: 5000 });
+  });
+
+  test('the Research menu reaches Research Desk and it renders content', async ({ authedPage: page }) => {
+    await gotoCockpitRoute(page, 'HOME');
+
+    await page.getByRole('button', { name: /Research/i }).first().click();
+
+    const researchItem = page.getByRole('menuitem', { name: /Research Desk/i });
+    await expect(researchItem).toBeVisible({ timeout: 5000 });
+    await researchItem.click();
+
+    await expect(page.getByText(/modul tidak dikenal/i)).toHaveCount(0);
+    await expect(page.getByText(/Research Desk|Studi Strategi|Katalog/i).first()).toBeVisible({ timeout: 5000 });
   });
 });

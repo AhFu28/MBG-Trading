@@ -102,6 +102,40 @@ async function installSession(page, { tier = 'pro', isAdmin = false, email = 'e2
       ]
     ])
   }));
+
+  // Research Desk mock (P-8 P0c)
+  await page.route('**/api/research/reports*', route => {
+    const url = new URL(route.request().url());
+    const slug = url.searchParams.get('slug');
+    if (slug) {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        headers: { 'X-Data-Source': 'sample-fallback' },
+        body: JSON.stringify({
+          report: { slug: 'idx-strategy-study-daily-plans', report_type: 'strategy_study', edition_no: 1 },
+          metadata: { title: 'Studi Strategi: Daily Trade Plans IDX', data_cutoff: '2026-10-08T17:10:57Z' },
+          sections: [
+            { section_key: 'metadata', claims: [], content_blocks: [{ type: 'paragraph', text: 'Studi empiris kinerja rencana perdagangan harian IDX.' }] }
+          ]
+        })
+      });
+    }
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      headers: { 'X-Data-Source': 'sample-fallback' },
+      body: JSON.stringify([
+        {
+          slug: 'idx-strategy-study-daily-plans',
+          title: 'Studi Strategi: Daily Trade Plans IDX',
+          report_type: 'strategy_study',
+          state: 'draft',
+          edition_no: 1
+        }
+      ])
+    });
+  });
 }
 
 /** Console noise that is not a product defect. Each entry needs a reason. */
