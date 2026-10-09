@@ -45,7 +45,7 @@ export const NAV_GROUPS = [
     items: [
       { id: 'SIGNALS', label: 'Sinyal Trading', desc: 'Rencana entry, SL & TP harian' },
       { id: 'AI_AGENTS', label: 'AI Agent Arena', desc: '16 bot otonom uji strategi 24/7' },
-      { id: 'CHARTING', label: 'Charting Desk', desc: 'Chart TradingView & Pro Desk' },
+      { id: 'CHARTING', label: 'Charting Desk', desc: 'Chart TradingView & 1-Klik Sizing' },
     ],
   },
   {
