@@ -127,13 +127,15 @@ Perintah CLI `tg-send` sudah terpasang global di PATH sistem dan bisa dipanggil 
 
 1. **Pesan pendek (satu baris saja):**
    ```bash
-   tg-send "Halo Kamerad Fuad, ini update sistem terbaru..."
+   tg-send "Halo update sistem..."               # Kirim ke grup default (Citcat)
+   tg-send --japri "Halo Jendral Arib..."         # Kirim ke japri/chat pribadi Jendral Arib
    ```
 
 2. **Pesan panjang / multi-baris (CARA YANG DISARANKAN):**
    ```bash
    # Tulis dulu ke file, baru kirim
-   tg-send --file "path/ke/file_pesan.txt"
+   tg-send --file "path/ke/file_pesan.txt"        # Ke grup
+   tg-send --japri --file "path/ke/file.txt"      # Ke japri Jendral Arib
    ```
 
 3. **Lewat stdin:**
