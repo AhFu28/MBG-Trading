@@ -119,6 +119,10 @@ Sistem di laptop ini memiliki bridge Telegram aktif (`MbgTelegramBridge`) menggu
 
 Perintah CLI `tg-send` sudah terpasang global di PATH sistem dan bisa dipanggil langsung dari terminal / shell mana saja dengan kecepatan instan (< 1 detik).
 
+### 🎛️ Fitur Remote Session Cockpit (`/sess`):
+- Jendral Arib dapat mengetik `/sess` atau `/session` di chat pribadi bot untuk memunculkan tombol interaktif (Inline Keyboard) memilih sesi DeepSeek Harness yang aktif di laptop (`MBG QUANT`, `Pricing Dashboard`, dll.) atau membuat sesi baru.
+- Setiap perintah yang dikirim Jendral di chat pribadi akan tercatat dan dieksekusi terhubung dengan sesi kerja tersebut.
+
 ### 🛠️ Cara Penggunaan oleh AI Agent
 
 1. **Pesan pendek (satu baris saja):**
