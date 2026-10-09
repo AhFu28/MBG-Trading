@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { isIdxMarketOpen, isForexCommodityOpen } from '../utils/marketHours.js';
 
 /**
  * DataIntegrityModal - Institutional Data Provenance & Source Health Verification
@@ -71,18 +72,50 @@ export default function DataIntegrityModal({
   const arenaStatus = isArenaFresh ? 'PERIODIC ACTIVE' : (isArenaWarning ? 'DELAYED' : 'OFFLINE');
   const arenaColor = isArenaFresh ? 'var(--accent-emerald)' : (isArenaWarning ? 'var(--accent-gold)' : 'var(--accent-red)');
 
-  // 3. IDX Feed Status
-  const idxStatus = 'ACTIVE';
-  const idxColor = 'var(--accent-emerald)';
+  // 3. IDX Feed Status — COMPUTED from the real poll time + BEI market hours.
+  // The scanner poll only runs while the market is open, so a closed market is
+  // an honest non-green status, never a fake ACTIVE.
+  const idxMarketOpen = isIdxMarketOpen();
+  const idxLastUpdate = lastUpdateTime ? new Date(lastUpdateTime) : null;
+  const idxAgeSec = idxLastUpdate ? Math.max(0, Math.round((Date.now() - idxLastUpdate.getTime()) / 1000)) : null;
+  const idxStatus = !idxMarketOpen
+    ? 'PASAR TUTUP'
+    : (idxAgeSec != null && idxAgeSec < 120 ? 'ACTIVE (REALTIME)' : (idxAgeSec != null ? 'DEGRADED (' + Math.round(idxAgeSec / 60) + ' mnt)' : 'MENUNGGU DATA'));
+  const idxColor = !idxMarketOpen
+    ? 'var(--accent-gold)'
+    : (idxAgeSec != null && idxAgeSec < 120 ? 'var(--accent-emerald)' : 'var(--accent-amber)');
 
   // 4. Binance Crypto WS
   const wsColor = isWsConnected ? 'var(--accent-emerald)' : 'var(--accent-gold)';
   const wsStatusText = isWsConnected ? 'CONNECTED (REALTIME)' : 'FALLBACK POLLING (45S)';
 
-  // 5. Gemini Model Info
+  // 5. Komoditas & Valuta — COMPUTED from the real poll time + market hours
+  const cfdOpen = isForexCommodityOpen();
+  const cfdAgeSec = idxLastUpdate ? Math.max(0, Math.round((Date.now() - idxLastUpdate.getTime()) / 1000)) : null;
+  const cfdStatus = !cfdOpen
+    ? 'PASAR TUTUP'
+    : (cfdAgeSec != null && cfdAgeSec < 120 ? 'SYNCED (LIVE)' : (cfdAgeSec != null ? 'DEGRADED (' + Math.round(cfdAgeSec / 60) + ' mnt)' : 'MENUNGGU DATA'));
+  const cfdColor = !cfdOpen
+    ? 'var(--accent-gold)'
+    : (cfdAgeSec != null && cfdAgeSec < 120 ? 'var(--accent-emerald)' : 'var(--accent-amber)');
+
+  // 6. Gemini Model Info
   const geminiModel = data?.model_used || data?.daily_snips?.model_used || 'gemini-3.8-flash (Auto-Discovered)';
 
-  // 6. Force Update Interactive Telemetry State
+  // Kurs USD/IDR — COMPUTED from the real fetch time (usdToIdrTime prop)
+  const fxTime = usdToIdrTime ? new Date(usdToIdrTime) : null;
+  const fxAgeMin = fxTime ? Math.max(0, Math.round((Date.now() - fxTime.getTime()) / 60000)) : null;
+  const fxStatus = fxAgeMin == null ? 'MENUNGGU DATA' : (fxAgeMin < 15 ? 'VERIFIED (LIVE)' : (fxAgeMin < 120 ? 'DEGRADED (' + fxAgeMin + ' mnt)' : 'STALE (' + Math.round(fxAgeMin / 60) + ' jam)'));
+  const fxColor = fxAgeMin == null ? 'var(--accent-gold)' : (fxAgeMin < 15 ? 'var(--accent-emerald)' : (fxAgeMin < 120 ? 'var(--accent-amber)' : 'var(--accent-red)'));
+
+  // Gemini LLM — COMPUTED: the last run = when the pipeline last executed
+  // (the bundle carries model_used only after a real run)
+  const llmStatus = data?.model_used
+    ? (bundleAgeMin < 400 ? 'READY (RUN ' + (bundleAgeMin < 90 ? bundleAgeMin + ' mnt' : Math.round(bundleAgeMin / 60) + ' jam') + ' LALU)' : 'IDLE (RUN ' + Math.round(bundleAgeMin / 60) + ' jam lalu)')
+    : 'MENUNGGU PIPELINE';
+  const llmColor = data?.model_used ? (bundleAgeMin < 400 ? 'var(--accent-sky)' : 'var(--accent-amber)') : 'var(--accent-gold)';
+
+  // 8. Force Update Interactive Telemetry State
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncProgress, setSyncProgress] = useState(0);
   const [syncStage, setSyncStage] = useState('');
@@ -111,7 +144,7 @@ export default function DataIntegrityModal({
 
       await new Promise(r => setTimeout(r, 280));
       setSyncProgress(100);
-      setSyncStage('Semua feed bursa & AI Arena berhasil diverifikasi & disegarkan!');
+      setSyncStage('Sinkronisasi selesai — semua feed diminta menyegarkan ulang.');
       setLastForcedSync(new Date());
 
       setTimeout(() => {
@@ -165,7 +198,7 @@ export default function DataIntegrityModal({
       lastUpdate: lastUpdateTime ? `${formatWib(new Date(lastUpdateTime))}` : 'Streaming 12 detik',
       status: idxStatus,
       statusColor: idxColor,
-      details: '849 Emiten Terdaftar, Volume, RSI(14), MA20, MA50 & Net Foreign Flow.'
+      details: 'Universe scanner BEI: Volume, RSI(14), MA20, MA50 & Net Foreign Flow. Jumlah emiten dari scan riil, bukan angka tetap.'
     },
     {
       name: 'Crypto Spot & Futures Universe',
@@ -181,17 +214,17 @@ export default function DataIntegrityModal({
       endpoint: 'scanner.tradingview.com/cfd/scan & /forex/scan',
       provider: 'TradingView CFD Multi-Asset Feed',
       lastUpdate: lastUpdateTime ? formatWib(new Date(lastUpdateTime)) : 'Polling teratur',
-      status: 'SYNCED',
-      statusColor: 'var(--accent-emerald)',
-      details: 'Gold Spot (XAUUSD), Minyak Brent (UKOIL), WTI, DXY Index, dan 38 Pasangan Forex Utama.'
+      status: cfdStatus,
+      statusColor: cfdColor,
+      details: 'Gold Spot (XAUUSD), Minyak Brent (UKOIL), WTI, DXY Index, dan pasangan Forex utama.'
     },
     {
       name: 'Kurs Konversi USD / IDR',
       endpoint: 'api.binance.vision / USDTIDR Gateway',
       provider: 'Pasar Valuta USDT/IDR Live Liquidity',
       lastUpdate: usdToIdrTime ? `${formatWib(new Date(usdToIdrTime))}` : 'Real-time cache',
-      status: 'VERIFIED',
-      statusColor: 'var(--accent-emerald)',
+      status: fxStatus,
+      statusColor: fxColor,
       details: `Kurs acuan kalkulasi lot: Rp ${Number(usdToIdrRate).toLocaleString('id-ID')} per USD.`
     },
     {
@@ -199,9 +232,9 @@ export default function DataIntegrityModal({
       endpoint: 'Google Generative Language API (v1beta)',
       provider: geminiModel,
       lastUpdate: bundleDate ? formatWib(bundleDate) : 'Sesuai jadwal pipeline',
-      status: 'READY',
-      statusColor: 'var(--accent-sky)',
-      details: `Model aktif: ${geminiModel}. Eksekusi server-side via GitHub Actions (Zero API leakage).`
+      status: llmStatus,
+      statusColor: llmColor,
+      details: `Model aktif: ${geminiModel}. Eksekusi server-side via GitHub Actions (Zero API leakage). Jadwal periodik — bukan realtime.`
     }
   ];
 
@@ -359,8 +392,8 @@ export default function DataIntegrityModal({
             color: 'var(--accent-emerald)',
             fontWeight: 600
           }}>
-            <span>✅ Verifikasi seluruh feed bursa & AI Arena baru saja selesai ({formatWib(lastForcedSync)})</span>
-            <span style={{ fontSize: '12px', opacity: 0.85, fontFamily: 'var(--font-mono)' }}>0ms Latency · All Feeds Refreshed</span>
+            <span>✅ Sinkronisasi selesai — semua feed di-refresh ulang ({formatWib(lastForcedSync)})</span>
+            <span style={{ fontSize: '12px', opacity: 0.85, fontFamily: 'var(--font-mono)' }}>onRefetchAll dijalankan · header tiap feed diverifikasi saat dibuka</span>
           </div>
         )}
 
