@@ -378,9 +378,14 @@ export function DashPanel({ title, subtitle, right, children, minHeight, style }
         flexDirection: 'column',
         minWidth: 0,
         minHeight: minHeight || 0,
-        padding: '13px 15px',
-        gap: '11px',
-        borderRadius: '10px',
+        padding: '16px 18px',
+        gap: '12px',
+        borderRadius: '16px',
+        background: 'linear-gradient(180deg, rgba(18, 24, 34, 0.72) 0%, rgba(12, 16, 24, 0.82) 100%)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.05)',
+        boxShadow: '0 4px 24px -2px rgba(0, 0, 0, 0.35)',
         ...style,
       }}
     >

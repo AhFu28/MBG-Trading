@@ -152,15 +152,29 @@ function MajorCard({ coin, onOpen }) {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '9px',
-        padding: '13px 14px',
-        borderRadius: '10px',
-        border: 'var(--border-hairline)',
-        background: 'var(--bg-panel)',
+        gap: '10px',
+        padding: '14px 16px',
+        borderRadius: '16px',
+        border: '1px solid rgba(255, 255, 255, 0.05)',
+        background: 'linear-gradient(180deg, rgba(20, 26, 38, 0.65) 0%, rgba(13, 17, 24, 0.75) 100%)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        boxShadow: '0 4px 16px -2px rgba(0, 0, 0, 0.3)',
         cursor: 'pointer',
         textAlign: 'left',
         fontFamily: 'inherit',
         minWidth: 0,
+        transition: 'transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.24s ease, box-shadow 0.24s ease',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-2px)';
+        e.currentTarget.style.borderColor = 'rgba(77, 141, 255, 0.25)';
+        e.currentTarget.style.boxShadow = '0 10px 24px -4px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(77, 141, 255, 0.15)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'none';
+        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+        e.currentTarget.style.boxShadow = '0 4px 16px -2px rgba(0, 0, 0, 0.3)';
       }}
       title={`Buka ${coin.symbol}`}
     >
@@ -365,7 +379,7 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(178px, 1fr))', gap: '10px' }}>
         {loading && majors.length === 0
           ? Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="telemetry-panel" style={{ height: '92px', opacity: 0.45, borderRadius: '10px' }} />
+              <div key={i} className="telemetry-panel" style={{ height: '92px', opacity: 0.45, borderRadius: '16px' }} />
             ))
           : majors.map(coin => (
               <MajorCard key={coin.symbol} coin={coin} onOpen={openAsset} />

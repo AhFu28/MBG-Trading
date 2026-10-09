@@ -99,6 +99,34 @@ export const NAV_GROUPS = [
 /** Menus only an admin may see. Mirrors the gate in featureAccess.js. */
 const ADMIN_ONLY_IDS = new Set(['FLOW_PROCESS', 'CHANGELOG', 'ADMIN_APPROVAL']);
 
+const jakartaTimeFormatter = new Intl.DateTimeFormat('id-ID', {
+  timeZone: 'Asia/Jakarta',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+  hourCycle: 'h23'
+});
+
+export function HeaderClock() {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div 
+      className="cmc-clock-pill cmc-hide-narrow"
+      title="Waktu Jakarta (WIB)"
+    >
+      <span style={{ fontSize: '10px' }}>🕒</span>
+      <span>{jakartaTimeFormatter.format(now)} WIB</span>
+    </div>
+  );
+}
+
 export default function CmcTopNav({
   activeTab,
   onNavigate,
@@ -110,6 +138,10 @@ export default function CmcTopNav({
   isMobileOpen,
   setMobileOpen,
   onOpenCommandPalette,
+  defconLevel,
+  defconLabel,
+  onOpenSentinel,
+  onOpenLotCalc,
 }) {
   const [openGroup, setOpenGroup] = useState(null);
   const [mobileGroup, setMobileGroup] = useState(null);
@@ -240,19 +272,22 @@ export default function CmcTopNav({
         onMouseLeave={scheduleClose}
         style={{
           position: 'absolute',
-          top: 'calc(100% + 6px)',
+          top: 'calc(100% + 8px)',
           left: 0,
-          minWidth: '268px',
-          maxWidth: '340px',
-          background: 'var(--bg-panel)',
-          border: 'var(--border-hairline)',
-          borderRadius: '11px',
-          boxShadow: '0 16px 40px rgba(0,0,0,0.45)',
-          padding: '7px',
+          minWidth: '272px',
+          maxWidth: '350px',
+          background: 'rgba(15, 20, 30, 0.96)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          borderRadius: '14px',
+          boxShadow: '0 20px 48px -4px rgba(0,0,0,0.65), 0 0 1px 1px rgba(255, 255, 255, 0.08)',
+          padding: '8px',
           zIndex: 400,
           display: 'flex',
           flexDirection: 'column',
-          gap: '1px',
+          gap: '2px',
+          animation: 'cmcPanelDrop 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
         {items.map(item => {
@@ -266,18 +301,25 @@ export default function CmcTopNav({
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-start',
-                gap: '1px',
+                gap: '2px',
                 width: '100%',
-                padding: '7px 10px',
-                borderRadius: '7px',
+                padding: '8px 12px',
+                borderRadius: '10px',
                 border: 'none',
-                background: active ? 'rgba(59,130,246,0.13)' : 'transparent',
+                background: active ? 'rgba(59,130,246,0.15)' : 'transparent',
                 cursor: 'pointer',
                 textAlign: 'left',
                 fontFamily: 'inherit',
+                transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = active ? 'rgba(59,130,246,0.18)' : 'var(--bg-panel-subtle)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = active ? 'rgba(59,130,246,0.13)' : 'transparent'; }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = active ? 'rgba(59,130,246,0.22)' : 'rgba(255, 255, 255, 0.05)';
+                e.currentTarget.style.transform = 'translateX(3px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = active ? 'rgba(59,130,246,0.15)' : 'transparent';
+                e.currentTarget.style.transform = 'none';
+              }}
             >
               <span style={{ fontSize: '12px', fontWeight: 700, color: active ? 'var(--accent-sky-soft)' : 'var(--text-primary)' }}>
                 {item.label}
@@ -406,11 +448,16 @@ export default function CmcTopNav({
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: '12px',
-        padding: '7px 13px',
-        borderRadius: '12px',
-        marginBottom: '10px',
+        padding: '8px 16px',
+        borderRadius: '16px',
+        marginBottom: '14px',
         position: 'relative',
         zIndex: 300,
+        background: 'rgba(13, 17, 24, 0.85)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.45)',
       }}
     >
       {/* Brand */}
@@ -436,55 +483,73 @@ export default function CmcTopNav({
       </div>
 
       {/* Right controls */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+        {/* Real-time Jakarta Clock */}
+        <HeaderClock />
+
+        {/* DEFCON threat indicator (minimalist pill) */}
+        {onOpenSentinel && (
+          <button
+            onClick={onOpenSentinel}
+            title={`AI Sentiment & Geopolitical ${defconLabel || (defconLevel != null ? `DEFCON ${defconLevel}` : 'SENTINEL')}`}
+            className="cmc-defcon-pill"
+          >
+            <span
+              style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                background: (defconLabel?.includes('1') || defconLevel === 1) ? 'var(--accent-red)' : (defconLabel?.includes('2') || defconLevel === 2) ? 'var(--accent-orange)' : 'var(--accent-blue)',
+                boxShadow: '0 0 6px currentColor'
+              }}
+            />
+            <span>{defconLabel || (defconLevel != null ? `DEFCON ${defconLevel}` : 'SENTINEL')}</span>
+          </button>
+        )}
+
+        {/* Quick Lot Calculator */}
+        {onOpenLotCalc && (
+          <button
+            onClick={onOpenLotCalc}
+            title="Kalkulator Ukuran Lot dan Risiko"
+            className="cmc-action-pill cmc-hide-narrow"
+          >
+            <span>💰</span>
+            <span>Lot Calc</span>
+          </button>
+        )}
+
+        {/* Global Search (Ctrl + K) */}
         {onOpenCommandPalette && (
           <button
             onClick={onOpenCommandPalette}
             title="Cari aset (Ctrl+K)"
-            style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '5px 9px', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: '5px' }}
+            className="cmc-action-pill"
           >
             🔍<span className="cmc-hide-narrow">Cari</span>
           </button>
         )}
 
+        {/* Watchlist Counter */}
         <button
           onClick={() => handleNavigate('WATCHLIST')}
           title={`Watchlist (${watchlist.count} instrumen)`}
-          style={{ position: 'relative', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--accent-gold)', borderRadius: '8px', padding: '5px 9px', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}
+          className="cmc-action-pill cmc-action-watchlist"
         >
           ★
           {watchlist.count > 0 && (
-            <span style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--accent-gold)', color: '#000', borderRadius: '9px', fontSize: '12px', fontWeight: 900, padding: '0 4px', lineHeight: '13px', minWidth: '13px' }}>
+            <span className="cmc-badge-count">
               {watchlist.count}
             </span>
           )}
         </button>
 
-        {onToggleTheme && (
-          <button
-            onClick={onToggleTheme}
-            title={theme === 'dark' ? 'Mode terang' : 'Mode gelap'}
-            style={{ background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '5px 9px', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}
-          >
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </button>
-        )}
-
+        {/* Account / Tier Status (No Dark Mode toggle here - pure dark terminal) */}
         <button
           onClick={() => handleNavigate('SUBSCRIPTION')}
           title={account?.email ? `Masuk sebagai ${account.email}` : 'Akun'}
-          style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '5px 10px', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}
+          className="cmc-action-pill cmc-action-account"
         >
-          {/*
-            The badge reads the TIER, not `isPro`.
-
-            `isPro` is true for both PRO and LEGEND, so a Legend account was
-            labelled "PRO" in the top nav while its own desks were gated at
-            LEGEND — the badge and the gate disagreed, and a user who had earned
-            the tier saw a lower one. The icon differs too: a crown for Legend,
-            a star for Pro, so the two are distinguishable at a glance rather
-            than by reading small text.
-          */}
           <span>{isAdmin ? '👑' : account?.tier === 'legend' ? '👑' : account?.isPro ? '⭐' : '👤'}</span>
           <span className="cmc-hide-narrow">
             {isAdmin ? 'ADMIN' : account?.tier === 'legend' ? 'LEGEND' : account?.isPro ? 'PRO' : 'AKUN'}
@@ -496,7 +561,7 @@ export default function CmcTopNav({
           className="cmc-topnav-mobile-toggle"
           onClick={() => setMobileOpen && setMobileOpen(!isMobileOpen)}
           aria-label="Buka navigasi"
-          style={{ display: 'none', background: 'var(--bg-panel-subtle)', border: 'var(--border-hairline)', color: 'var(--text-primary)', borderRadius: '8px', padding: '5px 10px', fontSize: '14px', cursor: 'pointer' }}
+          style={{ display: 'none', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.06)', color: 'var(--text-primary)', borderRadius: '10px', padding: '5px 10px', fontSize: '14px', cursor: 'pointer' }}
         >
           ☰
         </button>

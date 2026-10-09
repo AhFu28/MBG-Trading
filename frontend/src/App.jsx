@@ -6,7 +6,6 @@ import { canAccess, requiredTierFor, MODULES, TIER } from './services/featureAcc
 import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
 import CmcMarketDashboard from './components/cmc/CmcMarketDashboard.jsx';
 import CmcTopNav from './components/CmcTopNav.jsx';
-import GlobalMarketTicker from './components/GlobalMarketTicker.jsx';
 import { useLivePrices } from './hooks/useLivePrices.js';
 import PersonalWatchlistTab from './components/PersonalWatchlistTab.jsx';
 import CommandPaletteModal from './components/CommandPaletteModal.jsx';
@@ -45,59 +44,6 @@ const AchievementsPage = lazy(() => import('./components/AchievementsPage.jsx'))
 // non-Legend account should never download the execution surface's code.
 const LegendDeskTab = lazy(() => import('./components/LegendDeskTab.jsx'));
 const AdminApprovalDesk = lazy(() => import('./components/AdminApprovalDesk.jsx'));
-
-const isIdxMarketOpen = () => {
-  const now = new Date();
-  const jktStr = now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
-  const jktDate = new Date(jktStr);
-  const day = jktDate.getDay();
-  if (day === 0 || day === 6) return false;
-  const totalMin = jktDate.getHours() * 60 + jktDate.getMinutes();
-  if (day === 5) {
-    return (totalMin >= 540 && totalMin <= 690) || (totalMin >= 840 && totalMin <= 949); // Friday close 15:49 WIB
-  }
-  return (totalMin >= 540 && totalMin <= 720) || (totalMin >= 810 && totalMin <= 950);
-};
-
-const jakartaTimeFormatter = new Intl.DateTimeFormat('id-ID', {
-  timeZone: 'Asia/Jakarta',
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-  hour12: false,
-  hourCycle: 'h23'
-});
-
-function HeaderClock() {
-  const [now, setNow] = useState(() => new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <div 
-      style={{ 
-        fontSize: '10px', 
-        padding: '3px 8px', 
-        borderRadius: 'var(--radius-xs)', 
-        background: 'var(--bg-panel-subtle)', 
-        color: 'var(--text-primary)', 
-        fontFamily: 'var(--font-mono)',
-        fontWeight: '700',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '4px',
-        border: 'var(--border-hairline)'
-      }}
-      title="Waktu Jakarta (WIB)"
-    >
-      <span>🕒</span>
-      <span>{jakartaTimeFormatter.format(now)} WIB</span>
-    </div>
-  );
-}
 
 export default function App() {
   const [data, setData] = useState(null);
@@ -616,10 +562,7 @@ export default function App() {
     <>
     <div className="app-layout app-layout-topnav">
 
-        {/* ===== TOP NAVIGATION (CoinMarketCap-style hover menus) =====
-            The left sidebar was removed on Jendral Arib's instruction:
-            "pilihan sectionnya bukan di side bar, tapi di atas aja".
-            Mobile handling now lives inside the nav itself. */}
+        {/* ===== TOP NAVIGATION (CoinMarketCap-style hover menus) ===== */}
         <CmcTopNav
           activeTab={activeTab}
           onNavigate={setActiveTab}
@@ -631,200 +574,13 @@ export default function App() {
           isMobileOpen={isMobileOpen}
           setMobileOpen={setMobileOpen}
           onOpenCommandPalette={() => setIsPaletteOpen(true)}
+          defconLabel={data?.geopolitical_threat?.defcon_level != null ? `DEFCON ${data.geopolitical_threat.defcon_level}` : 'SENTINEL'}
+          onOpenSentinel={() => setIsAiDrawerOpen(true)}
+          onOpenLotCalc={() => handleOpenLotCalc()}
         />
 
         {/* ===== MAIN CONTENT AREA ===== */}
         <div className="main-content">
-
-          {/* 1. Master Top Header Bar (Modern Dribbble Floating Glass HUD) */}
-          <header className="telemetry-panel" style={{
-            marginBottom: '10px',
-            padding: '7px 14px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'nowrap',
-            gap: '10px',
-            minHeight: '44px',
-            borderRadius: '12px',
-            background: 'var(--bg-panel)',
-            boxShadow: 'var(--shadow-md)',
-            overflowX: 'auto',
-            boxSizing: 'border-box'
-          }}>
-            {/* Left: Active Module Title & Tier Pills */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-              <button
-                className="mobile-header-hamburger"
-                onClick={() => setMobileOpen(prev => !prev)}
-                aria-label="Buka Navigasi"
-                title="Buka Navigasi"
-              >
-                ☰
-              </button>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '4px 8px',
-                borderRadius: '8px',
-                background: 'var(--bg-panel-subtle)',
-                border: '1px solid rgba(255, 255, 255, 0.05)'
-              }}>
-                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-green)', boxShadow: '0 0 6px rgba(46, 230, 168, 0.55)' }} />
-                <div style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '0.04em', color: 'var(--text-primary)', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
-                  {getTabLabel(activeTab)}
-                </div>
-              </div>
-
-              {/* Mode Santai / Mode Pro Switcher */}
-              <button
-                onClick={toggleDisplayMode}
-                style={{
-                  fontSize: '9.5px',
-                  fontWeight: '600',
-                  fontFamily: 'var(--font-mono)',
-                  letterSpacing: '0.08em',
-                  padding: '3px 9px',
-                  minHeight: '26px',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  border: displayMode === 'SIMPLE' ? '1px solid rgba(100, 116, 139, 0.45)' : '1px solid rgba(100, 116, 139, 0.25)',
-                  background: displayMode === 'SIMPLE' ? 'rgba(100, 116, 139, 0.12)' : 'rgba(100, 116, 139, 0.06)',
-                  color: 'var(--text-secondary)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}
-                title={displayMode === 'SIMPLE' ? 'Klik untuk beralih ke Mode Pro (Kuantitatif Lengkap)' : 'Klik untuk beralih ke Mode Santai (Ramah Pemula)'}
-              >
-                <span>{displayMode === 'SIMPLE' ? '🍃' : '⚡'}</span>
-                <span>{displayMode === 'SIMPLE' ? 'MODE SANTAI' : 'MODE PRO'}</span>
-              </button>
-            </div>
-
-            {/* Center: Dribbble-style Command Search Bar */}
-            <div
-              onClick={() => setIsPaletteOpen(true)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                background: 'var(--bg-panel-subtle)',
-                border: 'var(--border-hairline)',
-                borderRadius: '6px',
-                padding: '5px 12px',
-                cursor: 'pointer',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '11px',
-                color: 'var(--text-muted)',
-                minWidth: '160px',
-                maxWidth: '240px',
-                flexShrink: 1,
-                transition: 'all 0.2s ease'
-              }}
-              title="Buka Global Command Palette (Tekan Ctrl + K)"
-            >
-              <span>🔍</span>
-              <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Cari saham, crypto...</span>
-              <span style={{ fontSize: '9px', padding: '1px 5px', borderRadius: '4px', background: 'rgba(255, 255, 255, 0.1)', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>Ctrl K</span>
-            </div>
-
-            {/* Right: Quick Launch Tools & Clock */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', flexShrink: 0 }}>
-              {/* Bursa Luar Negeri (Global Market Sessions Ticker) */}
-              <GlobalMarketTicker onNavigateGlobal={() => setActiveTab('GLOBAL_MARKETS')} />
-
-              {/* Master Terminal Time */}
-              <HeaderClock />
-
-              {/* AI Sentinel Quick Launch */}
-              <button
-                className="telemetry-btn"
-                onClick={() => setIsAiDrawerOpen(true)}
-                style={{
-                  fontSize: '9.5px',
-                  padding: '3px 8px',
-                  color: 'var(--accent-blue)',
-                  borderColor: 'rgba(77, 141, 255, 0.3)',
-                  background: 'rgba(77, 141, 255, 0.1)',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '3px',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap'
-                }}
-                title="Buka AI Sentinel Desk"
-              >
-                <span>🛡️</span>
-                {/* The engine now publishes `geopolitical_threat` (step 1 of
-                    engine/run_pipeline.py). It is ABSENT whenever the assessor
-                    failed, so this falls back to the desk name, never to a
-                    number. A missing feed must not render as a threat level —
-                    that was the original bug, when a hardcoded 4 was shown. */}
-                <span style={{ fontWeight: 700 }}>
-                  {data?.geopolitical_threat?.defcon_level != null
-                    ? `DEFCON ${data.geopolitical_threat.defcon_level}`
-                    : 'SENTINEL'}
-                </span>
-              </button>
-
-              {/* Quick Launch Lot Calculator Modal */}
-              <button
-                className="telemetry-btn"
-                onClick={() => handleOpenLotCalc()}
-                style={{
-                  fontSize: '9.5px',
-                  padding: '3px 8px',
-                  color: 'var(--text-inverse)',
-                  borderColor: 'var(--text-primary)',
-                  background: 'var(--text-primary)',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '3px',
-                  whiteSpace: 'nowrap'
-                }}
-                title="Kalkulator Ukuran Lot dan Manajemen Risiko"
-              >
-                <span>💰</span>
-                <span style={{ fontWeight: 700 }}>LOT CALC</span>
-              </button>
-
-              {/* Manual Refresh / Sync Button */}
-              <button
-                className="telemetry-btn"
-                onClick={() => {
-                  refetchAll();
-                  setSyncTrigger(prev => prev + 1);
-                }}
-                style={{ fontSize: '10px', padding: '3px 7px', borderRadius: '8px', whiteSpace: 'nowrap' }}
-                title="Sinkronisasi Ulang Seluruh Data Ticker"
-              >
-                🔄
-              </button>
-
-              {/* Dark / Light Mode Switcher */}
-              <button
-                className="telemetry-btn"
-                onClick={toggleTheme}
-                style={{
-                  fontSize: '9.5px',
-                  padding: '3px 8px',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '3px',
-                  whiteSpace: 'nowrap'
-                }}
-                title={theme === 'dark' ? 'Ganti ke Mode Terang' : 'Ganti ke Mode Gelap'}
-              >
-                <span>{theme === 'dark' ? '☀️' : '🌙'}</span>
-                <span style={{ fontWeight: 700 }}>{theme === 'dark' ? 'LIGHT' : 'DARK'}</span>
-              </button>
-            </div>
-          </header>
 
           {/* Mode Santai (New User Guidance Ribbon) */}
           {displayMode === 'SIMPLE' && (
