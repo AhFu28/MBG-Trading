@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, Suspense, lazy } from 'react';
-import NewsTab from './NewsTab.jsx';
+const NewsTab = lazy(() => import('./NewsTab.jsx'));
 import PersonalWatchlistTab from './PersonalWatchlistTab.jsx';
 import PearsonCorrelationWidget from './PearsonCorrelationWidget.jsx';
 import AssetIcon from './AssetIcon.jsx';
