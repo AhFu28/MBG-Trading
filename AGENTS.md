@@ -113,6 +113,32 @@ Jendral bilang *"susah mencernanya"*. Jadi masalahnya bukan cuma bahasa, tapi
 
 ---
 
+## ✈️ Telegram Skill: Kirim Pesan Cepat ke Grup Citcat / Kamerad Fuad / Jendral Arib
+
+Sistem di laptop ini memiliki bridge Telegram aktif (`MbgTelegramBridge`) menggunakan bot resmi **`@Arib_Intelegence_Bot`**.
+
+Perintah CLI `tg-send` sudah terpasang global di PATH sistem dan bisa dipanggil langsung dari terminal / shell mana saja dengan kecepatan instan (< 1 detik).
+
+### 🛠️ Cara Penggunaan oleh AI Agent
+
+1. **Pesan pendek (satu baris saja):**
+   ```bash
+   tg-send "Halo Kamerad Fuad, ini update sistem terbaru..."
+   ```
+
+2. **Pesan panjang / multi-baris (CARA YANG DISARANKAN):**
+   ```bash
+   # Tulis dulu ke file, baru kirim
+   tg-send --file "path/ke/file_pesan.txt"
+   ```
+
+3. **Lewat stdin:**
+   ```bash
+   type pesan.txt | tg-send
+   ```
+
+---
+
 ## 📱 WhatsApp Skill: Kirim Pesan ke Kamerad Fuad (+6281224170187)
 
 Sistem di laptop ini memiliki bridge WhatsApp aktif (`MbgWaBridge`) yang sudah
