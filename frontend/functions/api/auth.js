@@ -82,7 +82,20 @@ async function deriveJwtSecret(passwordHash) {
 async function resolveAuthConfig(env) {
   const passwordHash = env.PASSWORD_HASH || DEFAULT_PASSWORD_HASH;
   const jwtSecret = env.JWT_SECRET || (await deriveJwtSecret(passwordHash));
-  return { passwordHash, jwtSecret };
+  /*
+   * `secretIsConfigured` reports whether the signing key is PRIVATE.
+   *
+   * When JWT_SECRET is absent the key is derived from the password hash, and that
+   * hash has a default committed in this file (sha256("MBG")). Anyone who can read
+   * this repository can therefore compute the signing key and mint a valid token.
+   * Verified live against production on 2026-10-11: a self-signed token was
+   * accepted by /api/auth AND returned the 1.9 MB /api/data bundle.
+   *
+   * The admin claim is NO LONGER gated on this flag (owner directive, 2026-10-15).
+   * It is still reported, because it measures how much the claim is worth: when
+   * false, anyone who reads this repository can mint a token with the same rights.
+   */
+  return { passwordHash, jwtSecret, secretIsConfigured: !!env.JWT_SECRET };
 }
 
 // --- Rate Limiting (in-memory, resets on cold start — acceptable for edge) ---
@@ -126,7 +139,7 @@ async function hashPassword(password) {
 // --- GET: Verify existing JWT session ---
 export async function onRequestGet(context) {
   const { env, request } = context;
-  const { jwtSecret: JWT_SECRET } = await resolveAuthConfig(env);
+  const { jwtSecret: JWT_SECRET, secretIsConfigured } = await resolveAuthConfig(env);
 
   const cookies = parseCookies(request.headers.get('Cookie'));
   const token = cookies['mbg_jwt'] || cookies['mbg_session'];
@@ -149,8 +162,73 @@ export async function onRequestGet(context) {
     });
   }
 
-  // TRUST03: the tier comes from the server-issued JWT claim.
-  return new Response(JSON.stringify({ authenticated: true, tier: payload.tier || 'PRO' }), {
+  /*
+   * WHO IS THE OWNER, AND WHY THIS MATTERS (2026-10-10)
+   * ---------------------------------------------------
+   * This route serves the legacy owner cockpit (/api/auth), and its JWT is the
+   * ONLY credential the owner holds there. Before this fix the response carried
+   * no identity at all — just `tier: 'PRO'` — so the browser had no way to know
+   * the owner is an administrator. The owner was therefore permanently capped at
+   * PRO and hit the "Khusus Pro" / "Khusus Legend" lock screens.
+   *
+   * `kind` separates the two token families that share this cookie space:
+   *   - 'owner'   signed in onRequestPost below, after the cockpit password check
+   *   - 'account' signed by /api/account/login with kind: 'account'
+   *
+   * A token issued before this change has no `kind` but DOES carry the exact
+   * legacy owner shape `{ authenticated: true, tier: 'PRO' }`, so it is still
+   * recognised and the owner does not have to log in again. The shape is matched
+   * exactly rather than "anything with a tier": a loose truthiness test would
+   * promote any future token family that forgets to set `kind`.
+   *
+   * An account token always carries kind: 'account' and can never be promoted to
+   * admin here. Note that forging any of this still requires the HMAC signing key
+   * — verifyJWT() rejects an unsigned or altered token before this line runs.
+   */
+  const isLegacyOwnerToken =
+    payload.kind === undefined &&
+    payload.authenticated === true &&
+    payload.tier === 'PRO';
+
+  const isOwner = payload.kind === 'owner' || isLegacyOwnerToken;
+  /*
+   * OWNER DIRECTIVE (Jendral Arib, 2026-10-15):
+   *   "pass MBG itu hanya untuk akses admin, dan untuk bagian admin pastikan
+   *    semua fitur terbuka."
+   *
+   * So an owner session IS an admin session and every desk opens. The claim is
+   * driven by isOwner — never by tier, and never unconditionally: an account token
+   * still carries kind: 'account' and can never be promoted here.
+   *
+   * The "(isOwner && secretIsConfigured)" term that used to sit here is exactly
+   * what kept the owner locked out of his own admin desks in production.
+   */
+  const isAdminGranted = isOwner;
+
+  return new Response(JSON.stringify({
+    authenticated: true,
+    // Lower-case, matching /api/account/me. A legacy owner token carries the
+    // historical upper-case 'PRO', so the check below stays exact.
+    tier: isOwner ? 'legend' : (payload.tier || 'free'),
+    isAdmin: isAdminGranted,
+    /*
+     * ADMIN IS GRANTED — BUT SAY HOW STRONG IT IS (revised 2026-10-15)
+     *
+     * The claim is no longer withheld, because the owner needs his desks open.
+     * What has NOT changed: an admin claim is only worth as much as the token
+     * behind it. While JWT_SECRET is unset the signing key is derivable from this
+     * public repository, so a forged owner token is indistinguishable from a real
+     * one and would inherit the same rights.
+     *
+     * Stated out loud rather than buried. One secret closes the forgery path and
+     * does not change how the owner logs in.
+     */
+    securityWarning: secretIsConfigured ? null
+      : 'JWT_SECRET belum diset: sesi admin tetap diberikan, TETAPI token dapat dipalsukan siapa pun yang membaca repositori publik ini. Jalankan: wrangler pages secret put JWT_SECRET',
+    adminForgeable: isOwner && !secretIsConfigured,
+    email: payload.email || null,
+    expiresAt: payload.expiresAt || null,
+  }), {
     status: 200,
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
   });
@@ -160,7 +238,7 @@ export async function onRequestGet(context) {
 export async function onRequestPost(context) {
   const { env, request } = context;
   const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
-  const { passwordHash: PASSWORD_HASH, jwtSecret: JWT_SECRET } = await resolveAuthConfig(env);
+  const { passwordHash: PASSWORD_HASH, jwtSecret: JWT_SECRET, secretIsConfigured } = await resolveAuthConfig(env);
 
   if (!checkRateLimit(ip)) {
     return new Response(JSON.stringify({ error: 'Too many attempts. Try again in 15 minutes.' }), {
@@ -210,12 +288,37 @@ export async function onRequestPost(context) {
     rateLimitMap.delete(ip);
 
     const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
-    // TRUST03: the tier is server-issued (JWT claim), never client-asserted.
-    // M0: every authenticated cockpit user is a Pro-cockpit user; per-user VIP
-    // grants move here when the Supabase grant table lands (D-2).
-    const token = await signJWT({ authenticated: true, tier: 'PRO', expiresAt }, JWT_SECRET);
+    /*
+     * TRUST03: the tier is server-issued (JWT claim), never client-asserted.
+     *
+     * The cockpit password holder IS the owner, and the owner is an
+     * administrator. Saying so here — in the signed claim and in the response —
+     * is what lets the UI stop showing the owner the "Khusus Pro" / "Khusus
+     * Legend" lock screens. The client never decides this; it only reads it.
+     */
+    const token = await signJWT(
+      { authenticated: true, kind: 'owner', tier: 'legend', expiresAt },
+      JWT_SECRET
+    );
 
-    return new Response(JSON.stringify({ authenticated: true, tier: 'PRO', expiresAt }), {
+    /*
+     * `tier` is lower-case to match /api/account/me, which returns 'free' / 'pro'.
+     * The old owner route returned 'PRO' in upper case; CmcTopNav compares
+     * `account.tier === 'legend'` for its badge, so the case is load-bearing.
+     */
+    return new Response(JSON.stringify({
+      authenticated: true,
+      tier: 'legend',
+      /*
+       * Granted on the password match, per the owner directive of 2026-10-15. This
+       * line only runs after the constant-time comparison above succeeded, so it is
+       * NOT a blanket claim on every token — the GET path still requires isOwner.
+       */
+      isAdmin: true,
+      securityWarning: secretIsConfigured ? null
+        : 'JWT_SECRET belum diset: sesi admin diberikan, TETAPI token dapat dipalsukan siapa pun yang membaca repositori publik ini. Jalankan: wrangler pages secret put JWT_SECRET',
+      expiresAt,
+    }), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',

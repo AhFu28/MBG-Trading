@@ -135,25 +135,59 @@ export async function onRequestGet(context) {
 
   const rssUrl = `https://news.google.com/rss/search?q=${query}+when:1d&hl=id&gl=ID&ceid=ID:id`;
 
-  try {
+  // One upstream attempt, each with its own abort timer.
+  //
+  // WHY THIS IS A SEPARATE FUNCTION (P0-1, production incident 2026-10-10):
+  // GET https://mbg-trading.pages.dev/api/news answered
+  // HTTP 502 {"status":"error","message":"The operation was aborted","articles":[]}.
+  // The old 4500 ms budget was too tight for news.google.com answered from
+  // Cloudflare's edge, so each attempt now gets 9000 ms and the caller retries
+  // exactly once before reporting failure.
+  async function fetchRssOnce(timeoutMs) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 4500);
-
-    const resp = await fetch(rssUrl, {
-      signal: controller.signal,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'application/rss+xml, application/xml, text/xml, */*'
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const resp = await fetch(rssUrl, {
+        signal: controller.signal,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'application/rss+xml, application/xml, text/xml, */*'
+        }
+      });
+      if (!resp.ok) {
+        throw new Error(`Upstream returned ${resp.status}`);
       }
-    });
-
-    clearTimeout(timeout);
-
-    if (!resp.ok) {
-      throw new Error(`Upstream returned ${resp.status}`);
+      return await resp.text();
+    } finally {
+      clearTimeout(timeout);
     }
+  }
 
-    const xml = await resp.text();
+  try {
+    /*
+     * Two attempts total (initial + 1 retry).
+     *
+     * An EMPTY body is not a success. The first version of this loop repeated
+     * only while `xml === null`, so a whitespace-only upstream response ended the
+     * loop and was reported as a healthy feed with zero articles — exactly the
+     * silent downgrade this incident is about. A usable feed must contain at
+     * least one <item>.
+     */
+    const RSS_TIMEOUT_MS = 9000;
+    const isUsable = (body) => typeof body === 'string' && /<item>[\s\S]*?<\/item>/.test(body);
+    let xml = null;
+    let lastError = null;
+    for (let attempt = 1; attempt <= 2 && !isUsable(xml); attempt++) {
+      try {
+        xml = await fetchRssOnce(RSS_TIMEOUT_MS);
+      } catch (err) {
+        lastError = err;
+        xml = null;
+      }
+    }
+    if (!isUsable(xml)) {
+      throw lastError || new Error('Live RSS feed returned no usable items');
+    }
     const itemMatches = xml.match(/<item>[\s\S]*?<\/item>/g) || [];
 
     const articles = [];
