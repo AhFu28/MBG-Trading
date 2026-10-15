@@ -40,6 +40,9 @@ export default function NewsTab({
   const [dynamicArticles, setDynamicArticles] = useState([]);
   const [isLiveSyncing, setIsLiveSyncing] = useState(false);
   const [countdownSec, setCountdownSec] = useState(60);
+  // Honest feed status: 'memuat' | 'ok' | 'gagal'. It lives apart from the
+  // articles so a failed refresh never wipes the last good list on screen.
+  const [liveRssStatus, setLiveRssStatus] = useState('memuat');
 
   const fetchLiveRssNews = useCallback(async (silent = false) => {
     if (!silent) setIsLiveSyncing(true);
@@ -49,10 +52,21 @@ export default function NewsTab({
         const data = await res.json();
         if (Array.isArray(data?.articles) && data.articles.length > 0) {
           setDynamicArticles(data.articles);
+          setLiveRssStatus('ok');
           if (!silent) showToast(`⚡ ${data.articles.length} berita menit ini berhasil diperbarui!`);
+        } else {
+          // HTTP 200 with zero articles still means no fresh data. Report it as
+          // a failure instead of letting a stale "live" claim stay on screen.
+          setLiveRssStatus('gagal');
         }
+      } else {
+        // Previously this branch stayed silent, so the UI kept looking live
+        // while the endpoint was down. That broke the project's honesty rule.
+        setLiveRssStatus('gagal');
       }
     } catch (e) {
+      // Keep the last good articles visible; only the status changes.
+      setLiveRssStatus('gagal');
       console.warn('Live RSS fetch error:', e);
     } finally {
       if (!silent) setIsLiveSyncing(false);
@@ -493,6 +507,30 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
             <span>{isLiveSyncing ? '⚡⏳' : '⚡'}</span>
             <span>{isLiveSyncing ? 'Menarik Feed...' : `Live Feed (${countdownSec}s)`}</span>
           </button>
+          {/* Honest RSS status. Never says "live" unless the last fetch returned
+              articles; shows plain Indonesian wording alongside the technical tag. */}
+          <span
+            title={
+              liveRssStatus === 'ok'
+                ? 'Feed RSS terakhir berhasil ditarik.'
+                : liveRssStatus === 'memuat'
+                  ? 'Sedang menarik feed RSS.'
+                  : 'Feed RSS terakhir gagal ditarik. Artikel terakhir yang tampil dipertahankan.'
+            }
+            style={{
+              marginLeft: '4px',
+              padding: '2px 8px',
+              fontSize: '12px',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: '800',
+              borderRadius: '4px',
+              color: liveRssStatus === 'ok' ? 'var(--accent-mint)' : liveRssStatus === 'gagal' ? 'var(--accent-rust)' : 'var(--text-muted)',
+              background: liveRssStatus === 'ok' ? 'rgba(16, 185, 129, 0.12)' : liveRssStatus === 'gagal' ? 'rgba(239, 68, 68, 0.12)' : 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid ' + (liveRssStatus === 'ok' ? 'rgba(16, 185, 129, 0.35)' : liveRssStatus === 'gagal' ? 'rgba(239, 68, 68, 0.35)' : 'var(--border-color)')
+            }}
+          >
+            {liveRssStatus === 'ok' ? 'LIVE RSS: OK' : liveRssStatus === 'gagal' ? 'LIVE RSS: GAGAL' : 'LIVE RSS: MEMUAT'}
+          </span>
           <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginLeft: '6px' }}>
             // IDX Equities &amp; Global Crypto ETF Intelligence
           </span>
@@ -756,7 +794,13 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
                         gap: '3px'
                       }}>
                         <span>🤖</span>
-                        <span>AI SYNTHESIZED ({news.model_used || 'Gemini'})</span>
+                        {/*
+                          * Never invent a model name. `model_used` is written by the
+                          * pipeline only after a real run, so when it is absent the
+                          * honest label is "not recorded" — previously this said
+                          * "Gemini" whether or not Gemini had ever touched the item.
+                          */}
+                        <span>AI SYNTHESIZED ({news.model_used || 'model tidak tercatat'})</span>
                       </span>
                     )}
 

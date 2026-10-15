@@ -88,6 +88,10 @@ describe('navigation structure', () => {
       'ACADEMY',
       'PEARSON_CORRELATION',
       'TESTING',
+      // E-12 (2026-10-11): the public architecture map. It is a static Research &
+      // Learn entry with a TIER.FREE gate — not an admin extra — so it belongs to
+      // this list rather than to ADMIN_ONLY_IDS.
+      'ARCHITECTURE',
     ]);
   });
 
@@ -101,12 +105,22 @@ describe('navigation structure', () => {
   });
 
   it('keeps admin-only desks out of the static navigation model', () => {
-    // Flow Process, Changelog and Admin Approval are injected only for an
-    // admin account, so they must not be entries any user could reach.
+    // Flow Process and Admin Approval are injected only for an admin account,
+    // so they must not be entries any user could reach.
     const all = NAV_GROUPS.flatMap(g => (g.items || []).map(i => i.id));
     expect(all).not.toContain('FLOW_PROCESS');
-    expect(all).not.toContain('CHANGELOG');
     expect(all).not.toContain('ADMIN_APPROVAL');
+  });
+
+  it('gives Changelog a real door in the Account menu', () => {
+    /*
+     * CHANGELOG was demoted to TIER.FREE on 2026-10-10 (E-1, E-3). A FREE module
+     * with no menu entry is unreachable, which is how release history went
+     * missing for every non-admin user. This assertion is the opposite of the one
+     * above on purpose: Changelog must be PRESENT.
+     */
+    const all = NAV_GROUPS.flatMap(g => (g.items || []).map(i => i.id));
+    expect(all).toContain('CHANGELOG');
   });
 });
 

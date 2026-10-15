@@ -47,8 +47,18 @@ const DEFAULT_FOREX_TICKERS = [
 ];
 
 // Default list Commodities & Strategic Macro CFD
+//
+// Every ticker below was probed against scanner.tradingview.com/cfd on 2026-10-11
+// and returned a live quote. Note the oil prefix: FX:USOIL / FX:UKOIL resolve,
+// TVC:USOIL / TVC:UKOIL return NOTHING — an earlier list used the TVC form in
+// marketOverview.js, so two of eight commodity symbols were silently dead.
+// TVC:PLATINUM (1687.8) and TVC:PALLADIUM (1148.0) were added the same day after
+// the probe. Copper (COMEX:HG1!) and natural gas (NYMEX:NG1!) do exist, but only
+// on the separate "futures" scanner market — reaching them means a second request
+// per refresh, which is deliberately out of scope here (P2-7).
 const DEFAULT_COMMODITY_TICKERS = [
-  'TVC:GOLD', 'TVC:SILVER', 'FX:USOIL', 'FX:UKOIL', 'TVC:DXY'
+  'TVC:GOLD', 'TVC:SILVER', 'FX:USOIL', 'FX:UKOIL', 'TVC:DXY',
+  'TVC:PLATINUM', 'TVC:PALLADIUM'
 ];
 
 // Reverse proxy helper with graceful direct fallback (H-06)

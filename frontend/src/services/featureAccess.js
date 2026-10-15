@@ -29,6 +29,9 @@ export const MODULES = {
   STOCK: 'STOCK',
   CRYPTO: 'CRYPTO',
   CHANGELOG: 'CHANGELOG',
+  // E-12: the sanitised public system map. Same subject as FLOW_PROCESS, no
+  // operational detail, so it can live at FREE instead of ADMIN.
+  ARCHITECTURE: 'ARCHITECTURE',
   AI_AGENTS: 'AI_AGENTS',
   FUTURES: 'FUTURES',
   FOREX: 'FOREX',
@@ -66,7 +69,9 @@ export const MODULES = {
  * PRO-level is analytical desks: futures, charting, whale tracker, heatmap,
  * testing lab, pearson correlation, quant academy, economic calendar.
  *
- * ADMIN-only desks: Flow Process, Changelog, Admin Approval.
+ * ADMIN-only desks: Flow Process and Admin Approval. Changelog (E-1) and
+ * Architecture (E-12) sit at FREE: both are readable by any signed-in user
+ * because their public copies carry no operational detail.
  */
 export const MODULE_TIER = {
   // --- Public: visible without an account (shop window) ---------------------
@@ -115,9 +120,18 @@ export const MODULE_TIER = {
   [MODULES.TRADING_BOT]: TIER.LEGEND,
   [MODULES.JEV_EXECUTION]: TIER.LEGEND,
 
-  // --- Admin only (Perintah Jendral Arib: Flow Process & Changelog khusus admin)
+  // --- Admin only (Perintah Jendral Arib: Flow Process khusus admin) ---------
+  //
+  // FLOW_PROCESS stays ADMIN deliberately: it documents the architecture and
+  // names cockpit credentials/JWT handling, so it must not be public.
+  // CHANGELOG was demoted to FREE (E-1, 2026-10-10) so an ordinary signed-in
+  // user can read release history without hunting for an admin account.
   [MODULES.FLOW_PROCESS]: TIER.ADMIN,
-  [MODULES.CHANGELOG]: TIER.ADMIN,
+  [MODULES.CHANGELOG]: TIER.FREE,
+  // ARCHITECTURE is the PUBLIC counterpart of FlowProcessTab (E-12, 2026-10-11):
+  // it explains data sources, cadence and known gaps without naming anything
+  // internal. FlowProcessTab itself stays ADMIN for exactly that reason.
+  [MODULES.ARCHITECTURE]: TIER.FREE,
 };
 
 /**
@@ -128,6 +142,34 @@ export const MODULE_TIER = {
 export const PUBLIC_MODULES = Object.keys(MODULE_TIER).filter(
   m => MODULE_TIER[m] === TIER.GUEST,
 );
+
+/**
+ * Owner accounts that may see admin-only surfaces (P1-7, 2026-10-11).
+ *
+ * This list used to be written out twice — once in App.jsx for the render gate,
+ * once in CmcTopNav.jsx for the menu. A security-relevant list with two copies
+ * drifts, and the copy that drifts silently is the one that grants access. There
+ * is now one list, imported by both, so the menu and the gate cannot disagree.
+ *
+ * It is a convenience for the owner's own accounts, NOT the security boundary:
+ * server-side admin is granted by functions/api/auth.js only when JWT_SECRET is
+ * configured. See P0-0 in "rencana fixing.md".
+ */
+export const ADMIN_EMAILS = ['naufalarib60@gmail.com', 'ahmfuadi28@gmail.com'];
+
+/**
+ * QA wave 4 (2026-10-12) tightened this. The first version was
+ * ADMIN_EMAILS.includes(String(email || '').toLowerCase()), which had two holes:
+ *
+ *   - String() coerced ANY value, so isAdminEmail([...]) or an object whose
+ *     toString() returned an address came back true. Only a real string may match.
+ *   - no trim, while the server (functions/api/_shared.js) trims the claim. Two
+ *     copies of one rule that disagree is exactly what P1-7 set out to remove.
+ *
+ * Client and server now agree on what an address is.
+ */
+export const isAdminEmail = (email) =>
+  typeof email === 'string' && ADMIN_EMAILS.includes(email.trim().toLowerCase());
 
 /**
  * Tier ordering. LEGEND sits above PRO but below ADMIN.

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { canAccess, MODULES } from '../services/featureAccess.js';
 
 /**
  * CommandPaletteModal - Bloomberg / OpenTerminalUI Style Global Command Palette
@@ -13,7 +14,15 @@ export default function CommandPaletteModal({
   onNavigateTab,
   onOpenLotCalc,
   onToggleTheme,
-  onRefetch
+  onRefetch,
+  /*
+   * Needed to decide which tabs may be OFFERED, not just which may be opened.
+   * A palette entry that leads straight to a lock screen is a broken promise
+   * (E-9, 2026-10-10): CHANGELOG was listed unconditionally even though it was
+   * admin-only at the time.
+   */
+  userTier = 'guest',
+  isAdmin = false,
 }) {
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('ALL'); // 'ALL' | 'IDX' | 'CRYPTO' | 'TABS' | 'ACTIONS'
@@ -33,7 +42,8 @@ export default function CommandPaletteModal({
   }, [isOpen]);
 
   // Terminal Navigation Tabs
-  const systemTabs = useMemo(() => [
+  const systemTabs = useMemo(() => {
+    const tabs = [
     { id: 'HOME', label: 'Home Command Center', category: 'TABS', icon: '🏠', desc: 'Ringkasan makro wire, bento barometer & top alpha' },
     { id: 'CHARTING', label: 'Institutional Charting Desk', category: 'TABS', icon: '📈', desc: 'TradingView multi-pane & Jev-Trade execution overlay' },
     { id: 'AI_AGENTS', label: 'AI Agent Arena', category: 'TABS', icon: '🤖', desc: '16 Sovereign algorithmic bots & live trading simulator' },
@@ -47,8 +57,31 @@ export default function CommandPaletteModal({
     { id: 'FOREX', label: 'Forex & Commodities', category: 'TABS', icon: '💱', desc: 'Major interbank forex pairs, emas & energi' },
     { id: 'STOCK', label: 'Stock Desk (IDX & US)', category: 'TABS', icon: '🏛️', desc: 'Saham BEI dan mega-cap Wall Street dalam satu meja' },
     { id: 'WATCHLIST', label: 'Personal Watchlist', category: 'TABS', icon: '⭐', desc: 'Koleksi instrumen favorit bertanda bintang' },
-    { id: 'CHANGELOG', label: 'Changelog & System History', category: 'TABS', icon: '📋', desc: 'Dokumentasi rilis dan riwayat evolusi platform' }
-  ], []);
+    { id: 'CHANGELOG', label: 'Changelog & System History', category: 'TABS', icon: '📋', desc: 'Dokumentasi rilis dan riwayat evolusi platform' },
+    { id: 'ARCHITECTURE', label: 'Arsitektur Sistem', category: 'TABS', icon: '🧭', desc: 'Alur data dari sumber sampai layar & sumber per pasar' },
+    ];
+
+    /*
+     * Never offer a destination the visitor cannot open.
+     *
+     * This delegates to canAccess() rather than comparing tier strings. The first
+     * attempt at this filter compared `userTier !== 'guest'`, but App.jsx emits
+     * 'GUEST' in upper case while TIER.GUEST is 'guest' — so the guard silently
+     * passed and guests still saw the entry. canAccess() runs the value through
+     * normalizeTier(), which is exactly the case handling this needs. One gate,
+     * one implementation.
+     *
+     * FLOW_PROCESS is absent from this list entirely: it is TIER.ADMIN and
+     * documents cockpit credential handling.
+     */
+    return tabs.filter(t => {
+      // Same gate for both: an entry that leads to a lock screen is a broken
+      // promise. ARCHITECTURE added E-12 (2026-10-11), TIER.FREE.
+      if (t.id === 'CHANGELOG') return canAccess(MODULES.CHANGELOG, userTier, isAdmin);
+      if (t.id === 'ARCHITECTURE') return canAccess(MODULES.ARCHITECTURE, userTier, isAdmin);
+      return true;
+    });
+  }, [userTier, isAdmin]);
 
   // System Actions
   const systemActions = useMemo(() => [

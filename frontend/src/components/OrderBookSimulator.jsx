@@ -1,10 +1,18 @@
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
 
 /**
- * OrderBookSimulator - High-Precision Level 2 Market Depth & Broker Summary Terminal
- * 100% Real Data Pipeline:
- * - Crypto Spot: Real Live L2 Market Depth via Tokocrypto / Indodax Bappebti-Regulated Feed
- * - IDX Equities: Real Best Quote Microstructure (OJK Fraksi) & EOD Broker Summary ala Stockbit / NeoBDM
+ * OrderBookSimulator - Level 2 Market Depth & Broker Summary panel.
+ *
+ * HONESTY NOTE (P0-3, 2026-10-11):
+ *
+ * IDX (equity) side — SYNTHETIC. Depth is generated from a decay curve
+ * (`Math.exp(-0.08 * i)`, baseLots 8500/25000) and the broker summary falls back
+ * to hardcoded mock rows, because no IDX L2 feed is wired into this repo. The
+ * badge used to read "IDX OFFICIAL FEED", which told the user they were watching
+ * an exchange feed. They were not. The badge now says so.
+ *
+ * Crypto side — a real exchange L2 endpoint is polled (hyperliquid / binance,
+ * see `feedSource` and `liveDepth`).
  */
 const OrderBookSimulator = ({ 
   ticker = 'BBCA', 
@@ -326,7 +334,7 @@ const OrderBookSimulator = ({
             color: isCrypto ? 'var(--accent-mint)' : 'var(--accent-purple-light)',
             border: '1px solid ' + (isCrypto ? 'rgba(16, 185, 129, 0.3)' : 'rgba(168, 85, 247, 0.3)')
           }}>
-            {isCrypto ? '⚡ LEVEL-2 MARKET DEPTH' : '🏛️ IDX OFFICIAL FEED'}
+            {isCrypto ? '⚡ LEVEL-2 MARKET DEPTH' : '🏛️ SIMULASI DEPTH (SINTETIS)'}
           </span>
 
           <h2 style={{ fontSize: '18px', fontWeight: 900, margin: 0, color: '#f8fafc', letterSpacing: '0.02em' }}>
@@ -481,7 +489,7 @@ const OrderBookSimulator = ({
             </div>
           ) : (
             <div style={{ fontSize: '12px', color: 'var(--slate-500)', fontWeight: 600 }}>
-              BEI REGULATED TICK RULES & EOD BROKER SUMMARY
+              BEI TICK RULES (OJK FRAKSI) & BROKER SUMMARY
             </div>
           )}
 
@@ -803,9 +811,24 @@ const OrderBookSimulator = ({
           </>
         )}
 
-        {/* ================= VIEW 2: BROKER SUMMARY (STOCKBIT / NEOBDM) ================= */}
+        {/* ===== VIEW 2: BROKER SUMMARY — real data when the parent supplies it, otherwise a SIMULATED dataset ===== */}
         {activeView === 'BROKER_SUMMARY' && (
           <div style={{ padding: '16px 22px', overflowY: 'auto', flex: 1 }}>
+            {/*
+              * A mock must announce itself. Without this banner the simulated
+              * fallback rows look exactly like real broker data, which is the
+              * mistake P0-3 is about.
+              */}
+            {!brokerSummaryData && (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px',
+                padding: '8px 12px', borderRadius: '8px',
+                background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.35)',
+                color: 'var(--accent-gold-bright)', fontSize: '12px', fontWeight: 700,
+              }}>
+                ⚠️ Data broker summary resmi untuk {ticker} belum tersedia — angka di panel ini adalah SIMULASI, bukan data BEI.
+              </div>
+            )}
             
             {/* Header Telemetry Cards */}
             <div style={{
@@ -968,7 +991,7 @@ const OrderBookSimulator = ({
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent-emerald)', display: 'inline-block' }} />
             {isCrypto 
               ? `Jalur Data: ${feedSource === 'hyperliquid' ? 'Institutional L2 Order Book (Perp)' : 'Global Spot Direct Feed'}`
-              : 'Jalur Data: BEI Microstructure Model & EOD Broker Summary'
+              : 'Jalur Data: model mikrostruktur BEI & broker summary (SINTETIS bila data resmi tidak tersedia)'
             }
           </span>
           <span style={{ fontFamily: 'var(--font-mono)' }}>

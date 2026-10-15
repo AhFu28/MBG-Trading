@@ -68,10 +68,15 @@ describe('free tier is deliberately limited', () => {
     // RESEARCH is included on purpose: the featureAccess comment already placed
     // the daily news/riset desk at Free, and the Research Desk reader serves the
     // session-gated sample paper in the pilot - the same tier as NEWS.
+    // CHANGELOG was demoted from ADMIN to FREE (E-1, 2026-10-10) so release
+    // history is readable without an admin account. FLOW_PROCESS stays ADMIN.
+    // ARCHITECTURE (E-12, 2026-10-11) is the sanitised public system map and
+    // joins them at FREE; the internal Flow Process map was NOT demoted.
     expect(new Set(freeModules)).toEqual(
       new Set([
         MODULES.HOME, MODULES.SIGNALS, MODULES.NEWS, MODULES.RESEARCH,
         MODULES.SUBSCRIPTION, MODULES.SETTINGS, MODULES.ACHIEVEMENTS,
+        MODULES.CHANGELOG, MODULES.ARCHITECTURE,
       ]),
     );
   });
@@ -150,8 +155,15 @@ describe('pro', () => {
 
   it('keeps internal admin-only modules locked for regular pro users', () => {
     expect(canAccess(MODULES.FLOW_PROCESS, TIER.PRO)).toBe(false);
-    expect(canAccess(MODULES.CHANGELOG, TIER.PRO)).toBe(false);
     expect(canAccess(MODULES.ADMIN_APPROVAL, TIER.PRO)).toBe(false);
+  });
+
+  it('lets a signed-in FREE account read the changelog (E-1, 2026-10-10)', () => {
+    // Demoted from ADMIN to FREE so release history is readable without an admin
+    // account. FLOW_PROCESS deliberately stays locked — see the test above.
+    expect(canAccess(MODULES.CHANGELOG, TIER.FREE)).toBe(true);
+    expect(canAccess(MODULES.CHANGELOG, TIER.PRO)).toBe(true);
+    expect(canAccess(MODULES.CHANGELOG, TIER.GUEST)).toBe(false);
   });
 
   it('unlocks everything when admin flag is active', () => {

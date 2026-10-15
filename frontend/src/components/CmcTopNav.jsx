@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import MbgLogo from './MbgLogo.jsx';
 import { useWatchlist } from '../hooks/useWatchlist.js';
 import { usePreferences } from '../context/PreferencesContext.jsx';
+import { isAdminEmail } from '../services/featureAccess.js';
 
 /**
  * CmcTopNav — the horizontal, hover-opened navigation bar.
@@ -70,6 +71,13 @@ export const NAV_GROUPS = [
       { id: 'ACADEMY', label: 'Quant Academy', desc: 'Materi belajar kuantitatif' },
       { id: 'PEARSON_CORRELATION', label: 'Pearson Correlation', desc: 'Matriks korelasi antar aset' },
       { id: 'TESTING', label: 'Testing Lab', desc: 'Backtest & forward test' },
+      /**
+       * ARCHITECTURE is TIER.FREE (E-12, 2026-10-11). It gets a static entry
+       * here, like CHANGELOG in the Account group: the menu lookup is generic,
+       * so the item is simply found. It deliberately does NOT join
+       * ADMIN_ONLY_IDS below — that set is only for admin-injected extras.
+       */
+      { id: 'ARCHITECTURE', label: 'Arsitektur Sistem', desc: 'Alur data & sumber per pasar (peta publik)' },
     ],
   },
   {
@@ -79,6 +87,13 @@ export const NAV_GROUPS = [
       { id: 'SETTINGS', label: 'Setting', desc: 'Bahasa, mode tampilan & preferensi' },
       { id: 'SUBSCRIPTION', label: 'Langganan', desc: 'Status akun dan paket' },
       { id: 'ACHIEVEMENTS', label: 'Legend Path', desc: 'Achievement menuju tier Legend' },
+      /**
+       * CHANGELOG is TIER.FREE (E-1, 2026-10-10), so an ordinary signed-in user
+       * can read it — but only if there is a door. It used to have none: the tab
+       * was registered and rendered with no menu entry and no palette entry, so
+       * release history was unreachable without an admin account.
+       */
+      { id: 'CHANGELOG', label: 'Changelog', desc: 'Catatan rilis & riwayat evolusi platform' },
       /**
        * The LEGEND desks are listed here so they are REACHABLE.
        *
@@ -97,7 +112,10 @@ export const NAV_GROUPS = [
 ];
 
 /** Menus only an admin may see. Mirrors the gate in featureAccess.js. */
-const ADMIN_ONLY_IDS = new Set(['FLOW_PROCESS', 'CHANGELOG', 'ADMIN_APPROVAL']);
+// Only modules that exist SOLELY as admin-injected extras belong here. CHANGELOG
+// left this set on 2026-10-10: it is TIER.FREE and lives in the static ACCOUNT
+// menu, where the generic lookup above already finds it.
+const ADMIN_ONLY_IDS = new Set(['FLOW_PROCESS', 'ADMIN_APPROVAL']);
 
 const jakartaTimeFormatter = new Intl.DateTimeFormat('id-ID', {
   timeZone: 'Asia/Jakarta',
@@ -163,8 +181,9 @@ export default function CmcTopNav({
   })), [t]);
 
   const isAdmin = useMemo(
-    () => !!account?.isAdmin
-      || ['naufalarib60@gmail.com', 'ahmfuadi28@gmail.com'].includes(String(account?.email || '').toLowerCase()),
+    // Single source of truth for the owner list (P1-7): the same helper backs
+    // App.jsx's render gate, so the menu can never disagree with the gate.
+    () => !!account?.isAdmin || isAdminEmail(account?.email),
     [account],
   );
 
@@ -245,7 +264,9 @@ export default function CmcTopNav({
     ? [
         { id: 'ADMIN_APPROVAL', label: 'Admin Approval Desk', desc: 'Kelola langganan pengguna' },
         { id: 'FLOW_PROCESS', label: 'Flow Process', desc: 'Arsitektur sistem (internal)' },
-        { id: 'CHANGELOG', label: 'Changelog', desc: 'Riwayat rilis (internal)' },
+        // CHANGELOG is NOT injected here any more: it became a static TIER.FREE
+        // entry in the ACCOUNT group below, and injecting it again rendered the
+        // same item twice for an admin.
       ]
     : [];
 

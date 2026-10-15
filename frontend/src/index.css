@@ -1714,6 +1714,112 @@ body[data-theme="dark"],
   to   { transform: translateX(-33.333%); }
 }
 
+/* --- Cross-market ticker (MarketTicker.jsx, WP4) --- */
+.market-ticker {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  background: #131923;
+  border-top: 1px solid #2F3A49;
+  border-bottom: 1px solid #2F3A49;
+}
+
+.market-ticker-viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+
+.market-ticker-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marketTickerMove 46s linear infinite;
+  will-change: transform;
+}
+
+/* Pause on hover so a quote can actually be read. */
+.market-ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marketTickerMove {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.market-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.market-ticker-item-clickable { cursor: pointer; }
+
+.market-ticker-symbol {
+  font-weight: 800;
+  color: #F3F5F7;
+  letter-spacing: 0.02em;
+}
+
+.market-ticker-price {
+  font-family: var(--font-mono);
+  color: #A7B0BD;
+}
+
+.market-ticker-change {
+  font-family: var(--font-mono);
+  font-weight: 800;
+}
+.market-ticker-change.is-up { color: #3BC78A; }
+.market-ticker-change.is-down { color: #FF6B75; }
+.market-ticker-change.is-flat { color: #A7B0BD; }
+
+/* Market badge: IDX / US / FX / CMDTY / CRYPTO */
+.market-ticker-badge {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.market-ticker-badge-idx    { color: #7FB0FF; background: rgba(127, 176, 255, 0.12); border-color: rgba(127, 176, 255, 0.4); }
+.market-ticker-badge-us     { color: #9BE8C4; background: rgba(22, 199, 132, 0.12);  border-color: rgba(22, 199, 132, 0.4); }
+.market-ticker-badge-fx     { color: #F3C969; background: rgba(243, 201, 105, 0.12); border-color: rgba(243, 201, 105, 0.4); }
+.market-ticker-badge-cmdty  { color: #E0A87A; background: rgba(224, 168, 122, 0.12); border-color: rgba(224, 168, 122, 0.4); }
+.market-ticker-badge-crypto { color: #C9A8FF; background: rgba(201, 168, 255, 0.12); border-color: rgba(201, 168, 255, 0.4); }
+.market-ticker-badge-lain   { color: #A7B0BD; background: rgba(167, 176, 189, 0.12); border-color: rgba(167, 176, 189, 0.4); }
+
+/* Group header rows in the Home cross-market table (WP8 D-4). */
+.cmc-group-row td {
+  padding: 9px 5px 5px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--bg-panel-subtle);
+  border-top: var(--border-hairline);
+  position: sticky;
+  top: 28px;
+  z-index: 1;
+}
+
+.market-ticker-stamp {
+  text-align: center;
+  font-size: 11px;
+  color: #A7B0BD;
+  padding: 3px 0 5px;
+}
+
+@media (max-width: 768px) {
+  .market-ticker-item { padding: 8px 12px; gap: 6px; }
+}
+
 /* --- Card lift on hover --- */
 .lp-card {
   transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
@@ -1799,6 +1905,10 @@ body[data-theme="dark"],
     transition: none;
   }
   .lp-marquee-track {
+    animation: none;
+  }
+  /* MarketTicker: keep the strip readable as a static slice instead of moving. */
+  .market-ticker-track {
     animation: none;
   }
   .lp-card:hover,

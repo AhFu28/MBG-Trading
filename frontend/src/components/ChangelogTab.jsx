@@ -1,7 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { CHANGELOG_DATA } from '../data/changelogData.js';
 
-export default function ChangelogTab() {
+/**
+ * ChangelogTab — curated release packages (human-written, see data/changelogData.js).
+ *
+ * E-5: `onNavigateTab` is optional so the tab still renders when the host does not
+ * pass it yet. When present it links to the public ARCHITECTURE map (TIER.FREE).
+ */
+export default function ChangelogTab({ onNavigateTab }) {
   const [selectedPackageId, setSelectedPackageId] = useState(CHANGELOG_DATA[0]?.id || 'pkg-24092026');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -426,6 +432,28 @@ export default function ChangelogTab() {
                 📅 {activePackage.date}
               </span>
             </div>
+
+            {/* E-5: one-click path to the public architecture map (TIER.FREE). */}
+            {onNavigateTab && (
+              <button
+                onClick={() => onNavigateTab('ARCHITECTURE')}
+                className="telemetry-btn"
+                title="Buka peta arsitektur sistem (tier FREE)"
+                style={{
+                  marginTop: '8px',
+                  padding: '4px 10px',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  fontFamily: 'inherit',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  cursor: 'pointer'
+                }}
+              >
+                🧭 Lihat Arsitektur Sistem
+              </button>
+            )}
 
             <div style={{ marginTop: '8px', fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', lineHeight: '1.4' }}>
               {activePackage.title}

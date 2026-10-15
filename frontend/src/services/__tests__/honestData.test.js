@@ -84,9 +84,18 @@ describe('invented threat level', () => {
    * `geopolitical_threat` is absent from the bundle, so this always evaluated to
    * 4 and the condition could never be true — the alert banner was unreachable
    * code dressed as a safety feature, and the `|| 4` invented a threat level.
+   *
+   * D-7 (2026-10-11): that component was deleted. It had zero product imports —
+   * 123 KB of dead code, together with its only consumer BloombergNewsWire.jsx.
+   * The guard moved to the home that is actually rendered.
    */
-  it('HomeDashboard does not gate its conflict banner on an absent threat feed', () => {
-    const home = readCode('components/HomeDashboardTab.jsx');
+  it('the orphaned HomeDashboard was deleted rather than left to rot', () => {
+    expect(fs.existsSync(path.join(SRC, 'components/HomeDashboardTab.jsx'))).toBe(false);
+    expect(fs.existsSync(path.join(SRC, 'components/BloombergNewsWire.jsx'))).toBe(false);
+  });
+
+  it('the live home does not gate anything on an absent threat feed', () => {
+    const home = readCode('components/cmc/CmcMarketDashboard.jsx');
     expect(home).not.toMatch(/geopolitical_threat\?\.defcon_level\s*\|\|\s*4/);
     expect(home).not.toMatch(/bundleDefconLevel/);
   });

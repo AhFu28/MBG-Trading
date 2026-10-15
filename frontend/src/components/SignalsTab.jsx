@@ -132,7 +132,12 @@ export default function SignalsTab({ plans = [], userTier = TIERS.GUEST, onNavig
                 )}
               </div>
               <button
-                onClick={() => onNavigateTab && onNavigateTab('CHANGELOG')}
+                /*
+                 * The label promises a VIP plan, so the destination must be the
+                 * subscription page. This used to open CHANGELOG, which is
+                 * admin-only — every non-VIP user was sent to a lock screen.
+                 */
+                onClick={() => onNavigateTab && onNavigateTab('SUBSCRIPTION')}
                 style={{
                   marginTop: '10px', width: '100%', padding: '7px 12px', borderRadius: '7px',
                   background: 'linear-gradient(135deg, var(--accent-gold) 0%, #d97706 100%)',

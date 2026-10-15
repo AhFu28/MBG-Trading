@@ -36,8 +36,13 @@ const STAGES = [
     title: '2 · PIPELINE CLOUD',
     subtitle: 'pemilik data, GitHub Actions',
     nodes: [
-      { id: 'hourly', label: 'Jadwal jam (:00)', status: 'ok', detail: '.github/workflows/hourly_crypto_macro.yml, mode hourly_crypto_macro: crypto_futures · whale · forex · macro. Bug "sukses 10 hari tanpa commit/push" ditutup: bundle kini di-commit DAN di-push (352cd07 + push_bundle_to_edge.py).' },
-      { id: 'daily', label: 'Jadwal harian (22:30 UTC)', status: 'ok', detail: '.github/workflows/daily_idx_eod.yml, us_stocks + kalender + earnings, mode us_stocks (BARU, e97031e). Nama mode asli disebut di pesan commit (d347473).' },
+      { id: 'hourly', label: 'Cron tiap jam (:00), nyatanya 4-7 jam', status: 'warn', detail: '.github/workflows/hourly_crypto_macro.yml, mode hourly_crypto_macro: crypto_futures · whale · forex · macro. Bug "sukses 10 hari tanpa commit/push" ditutup: bundle kini di-commit DAN di-push (352cd07 + push_bundle_to_edge.py). JUJUR SOAL JADWAL: cron memang 0 * * * *, tetapi runner gratis GitHub menunda jadwal yang tidak dijamin; jeda commit terukur 4,0 / 4,6 / 7,2 / 6,7 jam pada 10 Oktober 2026. Jadi jangan tulis "tiap jam" di UI — tulis rentang nyatanya.' },
+      // E-8 follow-up (QA wave 4, 2026-10-12): this claimed a daily-scheduled job.
+      // daily_idx_eod.yml has NO cron — line 4 is workflow_dispatch with the comment
+      // "Cron scheduled runs disabled". The '30 22 * * *' cron lives in
+      // hourly_crypto_macro.yml:22. "Jadwal harian" implied an automation that does
+      // not exist for this file.
+      { id: 'daily', label: 'Jadwal harian — dipicu manual', status: 'warn', detail: '.github/workflows/daily_idx_eod.yml menjalankan us_stocks + kalender + earnings, mode us_stocks (BARU, e97031e). JUJUR SOAL JADWAL: workflow ini TIDAK punya cron — isinya cuma workflow_dispatch dengan catatan "Cron scheduled runs disabled". Cron 30 22 * * * ada di hourly_crypto_macro.yml:22, bukan di sini. Jadi job ini berjalan kalau dipicu manual, bukan otomatis tiap 22:30 UTC.' },
       { id: 'validate', label: 'Validasi bundle', status: 'ok', detail: 'scripts/push_bundle_to_edge.py, menolak penanda konflik dan JSON rusak/terpotong sebelum commit; gagal bersuara kalau bundle kosong. Gerbang ini menangkap bundle rusak pada 6 Oktober sebelum sempat ter-push.' },
       { id: 'commit', label: 'Commit + push', status: 'ok', detail: 'Verifikasi run 37437433618: bundle valid & publishable, 25 sections, SEGAR 6 / BASI 0, crypto 15 pair, whale 5 ekor, forex 33 pair.' },
     ],
@@ -50,7 +55,10 @@ const STAGES = [
       { id: 'qa-ps', label: 'Sintaks PowerShell (2 installer)', status: 'ok', detail: 'Gerbang 1 dari 5: kedua installer .ps1 dicek sintaksnya sebelum push.' },
       { id: 'qa-yaml', label: 'Workflow YAML + sintaks Python', status: 'ok', detail: 'Gerbang 2: YAML workflow + sintaks Python engine dicek.' },
       { id: 'qa-engine', label: 'Tes engine (130+)', status: 'ok', detail: 'Gerbang 3: npm run test:engine, unittest suite engine (crypto_futures, liquidity_heat, forex_scanner, whale_tracker, vip_signal_router, send_wa_fuad).' },
-      { id: 'qa-frontend', label: 'Tes frontend (396)', status: 'ok', detail: 'Gerbang 4: vitest run, 396 tes (honestData, dataEndpoint, account, paymentAndAdmin, signalTiers, chunkLoadRetry, dst.). Termasuk secret-guard: repo gagal push kalau membawa nilai kredensial (JWT_SECRET / COCKPIT_PASSWORD / PASSWORD_HASH / ADMIN_TOKEN / sb_secret_) — guard dibenahi 8 Okt setelah kunci lolos.' },
+      // E-8 (2026-10-11): this said "396 tes". The suite is now 603, so the number was
+      // quietly false — a stale count is still a false claim. State an order of
+      // magnitude and name the binding rule (the suite must be green) instead.
+      { id: 'qa-frontend', label: 'Tes frontend (600+)', status: 'ok', detail: 'Gerbang 4: vitest run, lebih dari 600 tes (honestData, dataEndpoint, account, paymentAndAdmin, signalTiers, chunkLoadRetry, dst.). Angka persisnya bergerak tiap perubahan — yang mengikat adalah suite WAJIB hijau. Termasuk secret-guard: repo gagal push kalau membawa nilai kredensial (JWT_SECRET / COCKPIT_PASSWORD / PASSWORD_HASH / ADMIN_TOKEN / sb_secret_) — guard dibenahi 8 Okt setelah kunci lolos.' },
       { id: 'qa-build', label: 'Build produksi', status: 'ok', detail: 'Gerbang 5: vite build, bundle produksi harus bersih sebelum push.' },
     ],
   },
@@ -59,9 +67,17 @@ const STAGES = [
     title: '4 · WEB (Cloudflare Pages)',
     subtitle: 'mbg-trading.pages.dev',
     nodes: [
-      { id: 'web-prices', label: 'Harga pasar (CORS langsung)', status: 'ok', detail: 'SUDAH JALAN: saham, crypto, forex, emas, TradingView scanner + fallback langsung + Binance WS/REST. CSP fix (8 Okt) membuka TradingView widget di Charting Desk (script-src + frame-src).' },
+      // E-8 (2026-10-11): the old text claimed "SUDAH JALAN" while the cross-market route
+      // was still broken (application/json tripped a CORS preflight). It is true NOW, but
+      // only because of the text/plain fix — so state what was verified, when, and what is
+      // still missing, instead of a blanket "it works".
+      { id: 'web-prices', label: 'Harga pasar (CORS langsung)', status: 'ok', detail: 'SUDAH JALAN dan DIVERIFIKASI 11 Okt di browser sungguhan dari build produksi: saham US, forex, dan komoditas (emas, perak, minyak WTI/Brent, DXY, platinum, paladium) terisi lewat TradingView scanner; crypto lewat Binance WS/REST. Kuncinya header text/plain — versi application/json memicu preflight CORS dan mati. BELUM ADA: tembaga dan gas alam tidak tersedia di pasar cfd scanner; padanannya (COMEX:HG1!, NYMEX:NG1!) ada di pasar futures dan butuh satu request tambahan. CSP fix (8 Okt) membuka TradingView widget di Charting Desk (script-src + frame-src).' },
       { id: 'web-data', label: 'Data engine → web', status: 'ok', detail: '/api/data kini SESSION-GATED (401 untuk tamu): rantai session → edge KV → bundled snapshot yang selalu ada. Tamu mendapat snapshot build-time dengan header X-Data-Source/X-Data-Age-Hours jujur, tidak disamarkan segar.' },
-      { id: 'web-ea', label: '/api/ea (EA MT5)', status: 'blocked', detail: 'Masih placeholder-200 kecuali env MT5_EA_SOURCE di-set. EA riil ada di engine/mt5/ — penyajian EA terverifikasi = paket P-2 (rencana).' },
+      // E-8 follow-up (QA wave 4, 2026-10-12): this said the endpoint still returns a
+      // placeholder unless MT5_EA_SOURCE is set. Stale — ea.js:9 imports _ea_inline.txt
+      // and ea.js:21 falls back to it, so the real EA (16.354 bytes) is served with no
+      // env var at all, still behind requireSession.
+      { id: 'web-ea', label: '/api/ea (EA MT5)', status: 'ok', detail: 'SUDAH JALAN dan session-gated: functions/api/ea.js:14 memanggil requireSession, lalu :21 menyajikan salinan inline EA asli (_ea_inline.txt, 16.354 byte). Env MT5_EA_SOURCE cuma penimpa opsional, bukan syarat. Sumber EA memang publik di engine/mt5/ — endpoint ini ada supaya jalur unduh tetap di balik sesi, bukan untuk merahasiakan.' },
       { id: 'web-account', label: 'Daftar akun + pembayaran', status: 'pending', detail: 'Kode sudah ada (signup/login, payment-confirm, admin approve/reject, tabel subscription_requests) — butuh schema Supabase dijalankan di dashboard + env Supabase di Cloudflare (aksi owner).' },
     ],
   },

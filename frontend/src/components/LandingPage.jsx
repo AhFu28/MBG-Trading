@@ -3,7 +3,8 @@ import AuthPanel from './AuthPanel.jsx';
 import MbgLogo from './MbgLogo.jsx';
 import { PLANS, TIER, allowedModules, MODULE_TIER } from '../services/featureAccess.js';
 import { usePreferences } from '../context/PreferencesContext.jsx';
-import { fetchMajorCards, fetchGlobalMetrics, formatUsdCompact, formatPrice } from '../services/marketOverview.js';
+import { fetchMajorCards, fetchGlobalMetrics, fetchCrossMarketAssets, formatUsdCompact } from '../services/marketOverview.js';
+import MarketTicker from './MarketTicker.jsx';
 
 /**
  * LandingPage — Institutional Front Door & Product Showcase.
@@ -34,6 +35,21 @@ const MODULE_LABEL = {
   ECONOMIC_CALENDAR: 'Kalender Makro',
   ADMIN_APPROVAL: 'Admin Approval Desk',
   FLOW_PROCESS: 'Flow Process Blueprint',
+};
+
+/**
+ * Honest badge per module tier.
+ *
+ * The landing page is the public shop window, so every badge must state exactly
+ * what a visitor gets. There is no "default to GRATIS" fallback here on purpose:
+ * an unmapped tier falls back to the strictest label, never to a free one.
+ */
+const MODULE_BADGE = {
+  [TIER.GUEST]: { text: 'PUBLIK', color: '#3BC78A', bg: 'rgba(59, 199, 138, 0.12)', border: 'rgba(59, 199, 138, 0.4)' },
+  [TIER.FREE]: { text: 'GRATIS', color: '#78A9FF', bg: 'rgba(120, 169, 255, 0.12)', border: 'rgba(120, 169, 255, 0.4)' },
+  [TIER.PRO]: { text: 'PRO', color: '#F3C969', bg: 'rgba(243, 201, 105, 0.12)', border: 'rgba(243, 201, 105, 0.4)' },
+  [TIER.LEGEND]: { text: 'LEGEND', color: '#C084FC', bg: 'rgba(192, 132, 252, 0.12)', border: 'rgba(192, 132, 252, 0.4)' },
+  [TIER.ADMIN]: { text: 'INTERNAL', color: '#8B93A1', bg: 'rgba(139, 147, 161, 0.12)', border: 'rgba(139, 147, 161, 0.4)' },
 };
 
 /** Reveal-on-scroll helper respecting reduced-motion */
@@ -79,37 +95,75 @@ function Reveal({ children, delay = 0, style = {} }) {
   );
 }
 
-/** Live ticker strip from real market feeds with graceful degradation */
+/**
+ * Live ticker strip for the public landing page.
+ *
+ * WHY IT FETCHES ITS OWN DATA: visitors are not logged in, so App.jsx cannot
+ * hand over `livePrices` (that hook feeds the authenticated terminal).
+ *
+ * MARKETS SHOWN: crypto majors (Binance) plus US equities, forex and
+ * commodities from the TradingView scanner via fetchCrossMarketAssets. The
+ * scanner leg only works because fetchScannerMarket sends
+ * Content-Type: text/plain — see the comment there for the CORS reason.
+ *
+ * FRESHNESS: refreshed on a 60s timer AND the strip prints 'Diperbarui HH:MM',
+ * so it never pretends to be a live stream. Item count is capped so the strip
+ * stays readable.
+ */
+function pickQuota(rows, market, count) {
+  return (Array.isArray(rows) ? rows : [])
+    .filter(row => row && row.symbol)
+    .slice(0, count)
+    .map(row => ({
+      market,
+      symbol: row.symbol,
+      price: row.price,
+      change: row.change24h,
+    }));
+}
+
 function LiveTickerStrip() {
-  const [coins, setCoins] = useState(null);
+  const [payload, setPayload] = useState(null);
   const [global, setGlobal] = useState(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let alive = true;
-    (async () => {
-      const [majors, globals] = await Promise.all([fetchMajorCards(), fetchGlobalMetrics()]);
+
+    const load = async () => {
+      const [majors, cross, globals] = await Promise.all([
+        fetchMajorCards(),
+        fetchCrossMarketAssets(),
+        fetchGlobalMetrics(),
+      ]);
       if (!alive) return;
-      if (!majors?.length && !globals) {
+
+      const rows = Array.isArray(cross) ? cross : [];
+      const items = [
+        ...pickQuota(rows.filter(x => x.market === 'US'), 'US', 4),
+        ...pickQuota(rows.filter(x => x.market === 'FX'), 'FX', 4),
+        ...pickQuota(rows.filter(x => x.market === 'COMMODITY'), 'COMMODITY', 3),
+        ...pickQuota(majors, 'CRYPTO', 5),
+      ];
+
+      // One trading session can be unavailable while another still answers, so
+      // only a completely empty result counts as a failure.
+      if (!items.length) {
         setFailed(true);
         return;
       }
-      setCoins(majors);
-      setGlobal(globals);
-    })();
-    return () => { alive = false; };
+      setFailed(false);
+      setPayload({ items, updatedAt: Date.now() });
+      if (globals) setGlobal(globals);
+    };
+
+    load();
+    // Honest freshness: refresh every 60 seconds instead of freezing silently.
+    const timer = setInterval(load, 60000);
+    return () => { alive = false; clearInterval(timer); };
   }, []);
 
-  const items = useMemo(() => {
-    if (!coins?.length) return [];
-    return coins.map(c => ({
-      symbol: c.symbol,
-      price: formatPrice(c.price),
-      change: c.change24h,
-    }));
-  }, [coins]);
-
-  if (failed) {
+  if (failed && !payload) {
     return (
       <div style={{
         borderTop: '1px solid #2F3A49',
@@ -125,7 +179,7 @@ function LiveTickerStrip() {
     );
   }
 
-  if (!items.length) {
+  if (!payload) {
     return (
       <div style={{
         borderTop: '1px solid #2F3A49',
@@ -147,26 +201,17 @@ function LiveTickerStrip() {
         borderTop: '1px solid #2F3A49',
         borderBottom: '1px solid #2F3A49',
         background: '#131923',
-        overflow: 'hidden',
-        position: 'relative',
       }}
-      title="Harga pasar langsung dari sumber yang sama dengan terminal"
     >
-      <div className="lp-marquee-track">
-        {[...items, ...items, ...items].map((it, i) => (
-          <span key={`${it.symbol}-${i}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 22px', fontSize: '12px', whiteSpace: 'nowrap' }}>
-            <span style={{ fontWeight: 800, color: '#F3F5F7', letterSpacing: '0.02em' }}>{it.symbol}</span>
-            <span style={{ fontFamily: 'var(--font-mono)', color: '#A7B0BD' }}>{it.price}</span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color: it.change >= 0 ? '#3BC78A' : '#FF6B75' }}>
-              {it.change >= 0 ? '+' : ''}{Number(it.change).toFixed(2)}%
-            </span>
-          </span>
-        ))}
-      </div>
+      <MarketTicker
+        items={payload.items}
+        updatedAt={payload.updatedAt}
+        ariaLabel="Pita harga pasar lintas pasar"
+      />
 
       {global?.totalMarketCap ? (
         <div style={{ textAlign: 'center', fontSize: '12px', color: '#A7B0BD', paddingBottom: '5px' }}>
-          Kapitalisasi pasar global {formatUsdCompact(global.totalMarketCap)} · Realtime Market Engine
+          Kapitalisasi pasar global {formatUsdCompact(global.totalMarketCap)} · Snapshot 60 detik
         </div>
       ) : null}
     </div>
@@ -301,7 +346,9 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
   };
 
   const freeCount = allowedModules(TIER.FREE).length;
-  const proCount = Object.keys(MODULE_TIER).length;
+  // Count what a Pro account can actually open. Using Object.keys(MODULE_TIER)
+  // would include the admin-only desks and overstate the paid tier.
+  const proCount = allowedModules(TIER.PRO).length;
   const section = { maxWidth: '1200px', margin: '0 auto', padding: '0 24px' };
 
   const NAV_LINKS = [
@@ -723,19 +770,23 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '12px' }}>
           {Object.entries(MODULE_TIER).map(([id, minTier], i) => {
-            const isPro = minTier === TIER.PRO;
-            const isGuest = minTier === TIER.GUEST;
-            const badge = isPro
-              ? { text: 'PRO', color: '#F3C969', bg: 'rgba(243, 201, 105, 0.12)', border: 'rgba(243, 201, 105, 0.4)' }
-              : isGuest
-                ? { text: 'PUBLIK', color: '#3BC78A', bg: 'rgba(59, 199, 138, 0.12)', border: 'rgba(59, 199, 138, 0.4)' }
-                : { text: 'GRATIS', color: '#78A9FF', bg: 'rgba(120, 169, 255, 0.12)', border: 'rgba(120, 169, 255, 0.4)' };
+            // A LEGEND desk is as locked to a visitor as a PRO one.
+            const isLocked = minTier === TIER.PRO || minTier === TIER.LEGEND;
+            /*
+             * INTERNAL desks are not for sale and not reachable from this public
+             * page, so the shop window does not show them at all. The old code had
+             * no branch for ADMIN and fell through to "GRATIS", which advertised an
+             * admin-only tool as free — the exact opposite of the truth.
+             */
+            if (minTier === TIER.ADMIN) return null;
+            // Strictest label as fallback: never advertise an unknown tier as free.
+            const badge = MODULE_BADGE[minTier] || MODULE_BADGE[TIER.ADMIN];
 
             return (
               <Reveal key={id} delay={Math.min(i * 20, 260)}>
                 <div style={{
                   background: '#131923',
-                  border: `1px solid ${isPro ? 'rgba(243, 201, 105, 0.25)' : '#2F3A49'}`,
+                  border: `1px solid ${isLocked ? 'rgba(243, 201, 105, 0.25)' : '#2F3A49'}`,
                   borderRadius: '10px',
                   padding: '12px 14px',
                   display: 'flex',
@@ -746,7 +797,7 @@ export default function LandingPage({ onAuthenticated, configured = true }) {
                   boxSizing: 'border-box'
                 }}>
                   <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#F3F5F7' }}>
-                    {isPro && <span style={{ marginRight: '6px', opacity: 0.7 }}>🔒</span>}
+                    {isLocked && <span style={{ marginRight: '6px', opacity: 0.7 }}>🔒</span>}
                     {MODULE_LABEL[id] || id}
                   </span>
                   <span style={{

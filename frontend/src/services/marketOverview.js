@@ -541,8 +541,13 @@ const CROSS_MARKET_UNIVERSES = [
     scanner: 'cfd',
     label: 'Komoditas',
     symbols: [
-      'TVC:GOLD', 'TVC:SILVER', 'TVC:USOIL', 'TVC:UKOIL', 'TVC:DXY',
-      'TVC:PLATINUM', 'TVC:COPPER', 'TVC:NATGAS',
+      // The oil prefix is not cosmetic. Probed 2026-10-11: FX:USOIL (WTI 91.65)
+      // and FX:UKOIL (Brent 104.40) return quotes; TVC:USOIL and TVC:UKOIL return
+      // nothing at all. TVC:COPPER and TVC:NATGAS were removed for the same
+      // reason — on the cfd market they are dead. They exist only on the
+      // "futures" scanner as COMEX:HG1! and NYMEX:NG1! (P2-7).
+      'TVC:GOLD', 'TVC:SILVER', 'FX:USOIL', 'FX:UKOIL', 'TVC:DXY',
+      'TVC:PLATINUM', 'TVC:PALLADIUM',
     ],
   },
 ];
@@ -557,7 +562,18 @@ async function fetchScannerMarket({ scanner, symbols, market, label }) {
   const json = await getJSON(`${TV_SCANNER}/${scanner}/scan`, {
     init: {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      // WHY text/plain AND NOT application/json (P0-2).
+      // Verified in a real browser from https://mbg-trading.pages.dev on 2026-10-10:
+      // TradingView's CORS preflight only allows the "Referer,Accept" request
+      // headers, so sending application/json dies with
+      // "Request header field content-type is not allowed by
+      //  Access-Control-Allow-Headers in preflight response".
+      // The OPTIONS preflight never succeeds, the fetch throws, and the whole
+      // cross-market table silently degrades to crypto only.
+      // text/plain is a CORS-safelisted content type: no preflight, plain POST,
+      // HTTP 200 with real quotes (NVDA 229.28, AAPL 336.64 at the time of the test).
+      // Same pattern already proven in useLivePrices.js. Do NOT change it back.
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         symbols: { tickers: symbols, query: { types: [] } },
         columns: ['description', 'close', 'change', 'volume', 'market_cap_basic', 'type'],

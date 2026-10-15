@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
+import { canAccess, MODULES, TIER } from '../../services/featureAccess.js';
 
 /**
  * The locked-module screen, and why there are TWO of them.
@@ -81,3 +82,60 @@ describe('locked module screen', () => {
     expect(src).toMatch(/!isAdmin && !canAccess\(activeTab, userTier, isAdmin\)/);
   });
 });
+
+/**
+ * Strip JS comments before scanning source text.
+ *
+ * Learned the hard way: the first version of the guard below scanned raw source and
+ * failed on the very comment that DESCRIBED the bug it prevents, because the
+ * explanation quoted the lock-screen wording verbatim. A guard that forbids a
+ * phrase must not also forbid discussing it. The ':\\/' arm keeps 'https://' from
+ * being eaten by the line-comment rule.
+ */
+function stripComments(src) {
+  return src
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/(^|[^:])\/\/.*$/gm, '$1');
+}
+
+describe('the curated changelog is readable by a signed-in non-admin', () => {
+  /**
+   * E-9 regression, found by the Lead on 2026-10-12.
+   *
+   * CHANGELOG was demoted to TIER.FREE (E-1), its nav entry and palette entry were
+   * opened up — and App.jsx still wrapped the render in a SECOND isAdmin gate. So a
+   * FREE user was shown the menu item, clicked it, and hit a lock screen reading
+   * "Changelog Khusus Admin". The whole E-1 change was invisible in practice.
+   *
+   * The existing palette tests could not catch this: they prove the door is
+   * offered, not that it opens onto a room.
+   *
+   * These two assertions pin the tier rule and the render path together, so they
+   * cannot drift apart again.
+   */
+  it('allows FREE and above to open CHANGELOG, and refuses a guest', () => {
+    expect(canAccess(MODULES.CHANGELOG, TIER.FREE, false)).toBe(true);
+    expect(canAccess(MODULES.CHANGELOG, TIER.PRO, false)).toBe(true);
+    expect(canAccess(MODULES.CHANGELOG, TIER.LEGEND, false)).toBe(true);
+    expect(canAccess(MODULES.CHANGELOG, TIER.GUEST, false)).toBe(false);
+    // The UPPER CASE string App.jsx actually emits must behave identically.
+    expect(canAccess(MODULES.CHANGELOG, 'FREE', false)).toBe(true);
+    expect(canAccess(MODULES.CHANGELOG, 'GUEST', false)).toBe(false);
+  });
+
+  it('does not gate the CHANGELOG render behind isAdmin', () => {
+    const src = stripComments(readApp());
+    const marker = src.indexOf("activeTab === 'CHANGELOG' ?");
+    expect(marker, 'the CHANGELOG branch is gone').toBeGreaterThan(-1);
+
+    const next = src.indexOf("activeTab === 'NEWS' ?", marker);
+    expect(next, 'could not find the branch following CHANGELOG').toBeGreaterThan(marker);
+
+    const branch = src.slice(marker, next);
+    expect(branch, 'CHANGELOG is still locked behind an admin screen')
+      .not.toMatch(/Khusus Admin/);
+    expect(branch, 'CHANGELOG must render the curated tab for every entitled tier')
+      .toMatch(/<ChangelogTab/);
+  });
+});
+

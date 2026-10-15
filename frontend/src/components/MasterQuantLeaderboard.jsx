@@ -521,7 +521,9 @@ export default function MasterQuantLeaderboard({
         <div className='telemetry-header' style={{ background: 'var(--bg-panel-subtle)', borderBottom: 'var(--border-hairline)', fontSize: '12px', color: 'var(--text-muted)' }}>
           <span>
             {activeMainTab === 'STOCK'
-              ? `📈 Saham IDX · ${allStockItems.length} emiten aktif BEI · SCANNER TRADINGVIEW REALTIME · KLIK BARIS UNTUK CHART & ORDER BOOK`
+              // NOT "realtime": the scanner is polled on a ~12 s scheduler
+              // (useLivePrices.js:686), so the label states the real cadence.
+              ? `📈 Saham IDX · ${allStockItems.length} emiten aktif BEI · SCANNER TRADINGVIEW · JEDA ~12 DETIK · KLIK BARIS UNTUK CHART & ORDER BOOK`
               : `⚡ Crypto Spot · ${allCryptoItems.length} pasangan USDT Binance · LIVE WEBSOCKET 1 DETIK`}
           </span>
         </div>
@@ -668,9 +670,9 @@ export default function MasterQuantLeaderboard({
                   fontWeight: '800',
                   letterSpacing: '0.3px'
                 }}
-                title="Harga dan sinyal terhubung langsung ke Binance WebSocket & TradingView Scanner. Strategi beradaptasi dinamis secara real-time."
+                title="Crypto mengalir dari Binance WebSocket (~1 detik). IDX datang dari TradingView Scanner dengan jeda ~12 detik, jadi bukan tick realtime. Strategi beradaptasi otomatis."
               >
-                ⚡ REALTIME QUANT STREAM
+                ⚡ LIVE STREAM · IDX JEDA ~12 DTK
               </span>
               <input
                 type='text'

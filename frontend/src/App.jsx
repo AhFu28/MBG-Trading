@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, Suspense, lazy } from
 import PasswordGate from './components/PasswordGate.jsx';
 import { fetchMe } from './services/accountClient.js';
 import { endSession } from './services/sessionCleanup.js';
-import { canAccess, requiredTierFor, MODULES, TIER } from './services/featureAccess.js';
+import { canAccess, requiredTierFor, MODULES, TIER, isAdminEmail } from './services/featureAccess.js';
 import MasterQuantLeaderboard from './components/MasterQuantLeaderboard.jsx';
 import CmcMarketDashboard from './components/cmc/CmcMarketDashboard.jsx';
 import CmcTopNav from './components/CmcTopNav.jsx';
@@ -22,6 +22,7 @@ import { institutionalPaperBroker } from './services/brokerGateway.js';
 const FlowProcessTab = lazy(() => import('./components/FlowProcessTab.jsx'));
 const ResearchDeskTab = lazy(() => import('./components/ResearchDeskTab.jsx'));
 const ChangelogTab = lazy(() => import('./components/ChangelogTab.jsx'));
+const ArchitectureTab = lazy(() => import('./components/ArchitectureTab.jsx'));
 const ChartingDeskTab = lazy(() => import('./components/ChartingDeskTab.jsx'));
 const WhaleIntelligenceTab = lazy(() => import('./components/WhaleIntelligenceTab.jsx'));
 const CryptoFuturesTab = lazy(() => import('./components/CryptoFuturesTab.jsx'));
@@ -104,8 +105,18 @@ export default function App() {
   const isBundleFresh = bundleAgeMin < 60;
   const bundleStatus = isBundleFresh ? '🟢 SYNCED' : (bundleAgeMin < 360 ? '🟡 DEGRADED' : '🔴 STALE');
   const bundleColor = isBundleFresh ? 'var(--accent-emerald)' : (bundleAgeMin < 360 ? 'var(--accent-gold)' : '#ef4444');
-  const activeGeminiModel = data?.model_used || data?.daily_snips?.model_used || 'gemini-3.8-flash';
-  const geminiShortLabel = String(activeGeminiModel).toUpperCase().replace('GEMINI-', '').replace(' (AUTO-DISCOVERED)', '');
+  /*
+   * PROVENANCE (P2-4, 2026-10-11)
+   *
+   * `model_used` is written into the bundle only after a real pipeline run, so it
+   * is the only honest source for which model produced this data. There is
+   * deliberately NO hardcoded fallback: the old 'gemini-3.8-flash' default
+   * announced a model — with a green health dot — even when nothing had recorded one.
+   */
+  const activeGeminiModel = data?.model_used || data?.daily_snips?.model_used || null;
+  const geminiShortLabel = activeGeminiModel
+    ? String(activeGeminiModel).toUpperCase().replace('GEMINI-', '').replace(' (AUTO-DISCOVERED)', '')
+    : null;
 
   // Global Keyboard Listener for Command Palette (Ctrl + K / Cmd + K)
   useEffect(() => {
@@ -191,7 +202,20 @@ export default function App() {
       if (res.ok) {
         const body = await res.json();
         if (body?.authenticated) {
-          const owner = { authenticated: true, tier: 'pro', isPro: true, owner: true, email: body.email || null };
+          /*
+           * The legacy owner cockpit (/api/auth). Read the tier and the admin
+           * flag FROM THE SERVER — /api/auth answers with both. Hardcoding
+           * `tier: 'pro'` here was the reason the owner stayed capped at PRO and
+           * kept hitting the Legend/Admin lock screens (fixed 2026-10-10).
+           */
+          const owner = {
+            authenticated: true,
+            tier: body.tier || 'legend',
+            isPro: true,
+            owner: true,
+            email: body.email || null,
+            isAdmin: !!body.isAdmin,
+          };
           setAccount(owner);
           setAccountChecked(true);
           return owner;
@@ -247,7 +271,7 @@ export default function App() {
 
   const isAdmin = isLocalDev || 
                   !!account?.isAdmin || 
-                  ['naufalarib60@gmail.com', 'ahmfuadi28@gmail.com'].includes(String(account?.email || '').toLowerCase());
+                  isAdminEmail(account?.email);
 
   /**
    * The tier the UI gates on. The SERVER decides it; this only reads.
@@ -599,6 +623,7 @@ export default function App() {
       case 'US_STOCKS': return '📈 Stock Desk (IDX & US)';
       case 'FLOW_PROCESS': return '⚡ Flow Process & System Architecture';
       case 'CHANGELOG': return '📜 Changelog Update & Catatan Rilis';
+      case 'ARCHITECTURE': return '🧭 Arsitektur Sistem';
       case 'AI_AGENTS': return '🤖 AI Multi-Agent Arena';
       case 'AI_SENTINEL':
       case 'AI_SENTINEL_DEFCON':
@@ -897,6 +922,7 @@ export default function App() {
               <main>
                 <CmcMarketDashboard
                   livePrices={livePrices}
+                  allIdxStocks={allIdxStocks}
                   onOpenAsset={handleOpenChart}
                   onOpenChart={handleOpenChart}
                   newsRows={data?.macro_telemetry?.live_news || []}
@@ -945,36 +971,33 @@ export default function App() {
                   </div>
                 </main>
               )
+            ) : activeTab === 'ARCHITECTURE' ? (
+              /* PUBLIC ARCHITECTURE MAP (E-12, 2026-10-11): TIER.FREE, sanitised.
+                 No isAdmin gate here on purpose — the global entitlement gate above
+                 already blocks guests, and this tab exists to be readable by an
+                 ordinary signed-in user. Do not copy FlowProcessTab material in. */
+              <main>
+                <ArchitectureTab />
+              </main>
             ) : activeTab === 'CHANGELOG' ? (
-              /* SYSTEM CHANGELOG & VERSION RELEASES (KHUSUS ADMIN) */
-              isAdmin ? (
-                <main>
-                  <ChangelogTab />
-                </main>
-              ) : (
-                <main>
-                  <div className="telemetry-panel" style={{
-                    borderRadius: '16px', padding: '52px 28px', textAlign: 'center', maxWidth: '560px', margin: '40px auto',
-                  }}>
-                    <div style={{ fontSize: '38px', marginBottom: '16px' }}>🔒</div>
-                    <div style={{ fontSize: '18px', fontWeight: '900', marginBottom: '10px' }}>
-                      Changelog Khusus Admin
-                    </div>
-                    <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '22px' }}>
-                      Riwayat rilis teknis internal hanya dapat diakses oleh administrator sistem.
-                    </div>
-                    <button
-                      onClick={() => setActiveTab('HOME')}
-                      style={{
-                        padding: '10px 22px', borderRadius: '8px', fontSize: '12px', fontWeight: '700',
-                        background: 'var(--accent-blue)', color: '#fff', border: 'none', cursor: 'pointer'
-                      }}
-                    >
-                      ← Kembali ke Home
-                    </button>
-                  </div>
-                </main>
-              )
+              /* CURATED RELEASE NOTES — FREE since E-1 (2026-10-10).
+                 No isAdmin gate here: the global gate above (:773) already blocks
+                 guests, and CHANGELOG is TIER.FREE, so any signed-in user may read
+                 it.
+
+                 E-9 regression found by Lead, 2026-10-12: this branch kept a
+                 SECOND inner isAdmin gate. A FREE user therefore saw the menu
+                 entry AND the palette entry (both correctly gated by canAccess)
+                 and then landed on a "Changelog Khusus Admin" lock screen. A door
+                 offered and then slammed is worse than no door. The curated data
+                 had already been redacted for a FREE audience — only this gate was
+                 left behind, and it made the whole E-1 change invisible.
+
+                 E-5: ChangelogTab gets onNavigateTab so it can link to the public
+                 Architecture map. */
+              <main>
+                <ChangelogTab onNavigateTab={setActiveTab} />
+              </main>
             ) : activeTab === 'NEWS' ? (
               /* TERMINAL LIVE NEWS — was never routed.
                  The menu entry existed since the CMC top nav shipped, but no
@@ -1295,7 +1318,8 @@ export default function App() {
                 <span>IDX BEI: <strong style={{ color: 'var(--accent-emerald)' }}>{allIdxStocks.length > 0 ? `🟢 ${allIdxStocks.length} STOCKS` : '—'}</strong></span>
                 <span>Binance WS: <strong style={{ color: isWsConnected ? 'var(--accent-emerald)' : 'var(--accent-gold)' }}>{isWsConnected ? '🟢 CONNECTED' : '🟡 POLLING'}</strong></span>
                 <span>Macro Bundle: <strong style={{ color: bundleColor }}>{bundleStatus} ({bundleAgeMin}m)</strong></span>
-                <span>Gemini LLM: <strong style={{ color: 'var(--accent-sky)' }}>🟢 {geminiShortLabel}</strong></span>
+                {/* No model recorded means no green dot — an unknown model is not a healthy one. */}
+                <span>Gemini LLM: <strong style={{ color: activeGeminiModel ? 'var(--accent-sky)' : 'var(--text-muted)' }}>{activeGeminiModel ? `🟢 ${geminiShortLabel}` : '⚪ TIDAK TERCATAT'}</strong></span>
                 <span>MCP Server: <strong style={{ color: 'var(--accent-sky)' }}>🟢 READY</strong></span>
               </span>
               <span>AUDIT PROVENANCE & FRESHNESS ↗</span>
@@ -1324,6 +1348,8 @@ export default function App() {
         onNavigateTab={setActiveTab}
         onOpenLotCalc={handleOpenLotCalc}
         onToggleTheme={toggleTheme}
+        userTier={userTier}
+        isAdmin={isAdmin}
         onRefetch={() => {
           refetchAll();
           setSyncTrigger(prev => prev + 1);
