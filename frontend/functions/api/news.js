@@ -133,21 +133,35 @@ export async function onRequestGet(context) {
     tag = 'MACRO';
   }
 
-  const rssUrl = `https://news.google.com/rss/search?q=${query}+when:1d&hl=id&gl=ID&ceid=ID:id`;
+  /*
+   * TWO INDEPENDENT ENGINES, RACED (P0-1, revised 2026-10-15).
+   *
+   * Measured evidence: news.google.com answers in 0.7-2.7 s from a residential
+   * connection but did not answer within 9 s from Cloudflare's edge, TWICE — the
+   * pattern of Google throttling datacentre egress ranges. A single-source
+   * endpoint therefore had a single point of failure that no retry could fix:
+   * the retry simply ran into the same wall a second time.
+   *
+   * Bing News is the second engine, measured working from the same machine
+   * (11-12 items). It refuses the OR operator (zero items when it is present),
+   * so its query is the same terms with OR stripped; quoted phrases and plain
+   * multi-word queries both work.
+   *
+   * The first USABLE response wins, so a slow Google can never hold this
+   * endpoint hostage: whichever engine answers first serves the request, and
+   * the response says which one did.
+   */
+  const qBing = query.split('+OR+').join('+');
+  const SOURCES = [
+    { id: 'google-news', url: 'https://news.google.com/rss/search?q=' + query + '+when:1d&hl=id&gl=ID&ceid=ID:id' },
+    { id: 'bing-news', url: 'https://www.bing.com/news/search?q=' + qBing + '&format=RSS' },
+  ];
 
-  // One upstream attempt, each with its own abort timer.
-  //
-  // WHY THIS IS A SEPARATE FUNCTION (P0-1, production incident 2026-10-10):
-  // GET https://mbg-trading.pages.dev/api/news answered
-  // HTTP 502 {"status":"error","message":"The operation was aborted","articles":[]}.
-  // The old 4500 ms budget was too tight for news.google.com answered from
-  // Cloudflare's edge, so each attempt now gets 9000 ms and the caller retries
-  // exactly once before reporting failure.
-  async function fetchRssOnce(timeoutMs) {
+  async function fetchRssOnce(url, timeoutMs) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
     try {
-      const resp = await fetch(rssUrl, {
+      const resp = await fetch(url, {
         signal: controller.signal,
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -155,7 +169,7 @@ export async function onRequestGet(context) {
         }
       });
       if (!resp.ok) {
-        throw new Error(`Upstream returned ${resp.status}`);
+        throw new Error('Upstream returned ' + resp.status);
       }
       return await resp.text();
     } finally {
@@ -165,28 +179,41 @@ export async function onRequestGet(context) {
 
   try {
     /*
-     * Two attempts total (initial + 1 retry).
+     * Two ROUNDS of parallel attempts (initial + 1 retry).
      *
-     * An EMPTY body is not a success. The first version of this loop repeated
-     * only while `xml === null`, so a whitespace-only upstream response ended the
-     * loop and was reported as a healthy feed with zero articles — exactly the
-     * silent downgrade this incident is about. A usable feed must contain at
-     * least one <item>.
+     * An EMPTY body is not a success. The first version of the retry loop
+     * repeated only while `xml === null`, so a whitespace-only upstream response
+     * ended the loop and was reported as a healthy feed with zero articles —
+     * exactly the silent downgrade this incident is about. A usable feed must
+     * contain at least one <item>.
      */
     const RSS_TIMEOUT_MS = 9000;
     const isUsable = (body) => typeof body === 'string' && /<item>[\s\S]*?<\/item>/.test(body);
+
+    async function attempt(source) {
+      const body = await fetchRssOnce(source.url, RSS_TIMEOUT_MS);
+      if (!isUsable(body)) {
+        throw new Error(source.id + ': feed answered but contains no <item>');
+      }
+      return { source: source.id, body };
+    }
+
     let xml = null;
+    let engine = null;
     let lastError = null;
-    for (let attempt = 1; attempt <= 2 && !isUsable(xml); attempt++) {
+    for (let round = 1; round <= 2 && !xml; round++) {
       try {
-        xml = await fetchRssOnce(RSS_TIMEOUT_MS);
-      } catch (err) {
-        lastError = err;
-        xml = null;
+        // Promise.any: the first usable feed settles the round, so a hanging
+        // engine cannot add its own timeout to the user's wait.
+        const winner = await Promise.any(SOURCES.map(attempt));
+        xml = winner.body;
+        engine = winner.source;
+      } catch (agg) {
+        lastError = agg && agg.errors && agg.errors[0] ? agg.errors[0] : agg;
       }
     }
     if (!isUsable(xml)) {
-      throw lastError || new Error('Live RSS feed returned no usable items');
+      throw lastError || new Error('No live RSS source returned usable items');
     }
     const itemMatches = xml.match(/<item>[\s\S]*?<\/item>/g) || [];
 
@@ -247,6 +274,7 @@ export async function onRequestGet(context) {
     return new Response(JSON.stringify({
       status: 'ok',
       last_synced: new Date().toISOString(),
+      source_engine: engine,
       total: articles.length,
       articles
     }), {
