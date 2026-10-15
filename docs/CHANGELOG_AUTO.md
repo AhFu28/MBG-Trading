@@ -6,6 +6,28 @@
 > Automated data-bundle commits ([skip ci]) are excluded by default.
 > The draft is deterministic — no wall-clock timestamp.
 
+## 2026-10-16
+
+### Fixes
+
+- fix(news): unwrap Bing click-tracker links and stop branding unattributed articles (`eaac6fc`)
+
+## 2026-10-15
+
+### Features
+
+- feat(tooling): git-log changelog generator with redaction, and a macro cache age guard (`cf8e9b4`)
+
+### Fixes
+
+- fix(news): race two independent RSS engines instead of one blocked host (`f038458`)
+- fix(auth): an owner session is an admin session, and /api/news stops failing silently (`aded187`)
+- fix(honesty): cross-market data, public architecture map, admin access (`8cf4ca9`)
+
+### Docs
+
+- docs(plan): fixing plan, round reports and generated changelog draft (`9c94067`)
+
 ## 2026-10-10
 
 ### Fixes
@@ -289,4 +311,396 @@
 ### Features
 
 - feat(v5.8.0): security hardening, honest data labeling & Paper Broker v2 (side-aware) (`e72cf4c`)
+
+## 2026-09-28
+
+### Features
+
+- feat(ui): redesign cockpit with clean dribbble glassmorphic aesthetics, floating HUD, and portfolio analytics hero (`35404f9`)
+- feat(web3): integrate native Phantom wallet and Solana memecoin fast swap desk with 0.8% fee routing (`e5ae8dc`)
+- feat(core): add simple mode toggle, 3-tier foundation, bandarmology confluence and VIP telegram dispatcher (`5479a01`)
+
+## 2026-09-27
+
+### Features
+
+- feat(news): expand to 18 global streams, add verifiable source timestamps and chronological sorting (`cd5eda3`)
+- feat(arena): streamline audit modal, add AI agent self-reflection & update date-grouped changelog (`50280bd`)
+
+## 2026-09-26
+
+### Features
+
+- feat(provenance): add interactive multi-stage force update progress bar and real-time feed verification (`ae83216`)
+- feat(provenance): add AI multi-agent arena 24/7 feed card and real-time state sync to integrity modal (`9e059c8`)
+- feat(arena): add standalone zero-dependency 24/7 arena runner (`71ccba9`)
+
+### Fixes
+
+- fix(ci): optimize off-peak cron schedule and add resilient git rebase retry loop (`4a00c6a`)
+
+### Docs
+
+- docs(changelog): document Sprint 13 24/7 autonomous continuous arena execution (`f8c7c96`)
+
+### Chores & Data
+
+- chore(data): sync fresh macro bundle and 24/7 arena telemetry state (`9db9e6b`)
+- ci(workflow): add high-frequency 24/7 arena trading workflow (`4877a2a`)
+
+## 2026-09-25
+
+### Features
+
+- feat(cloud): add Hugging Face Spaces 24/7 autonomous trading daemon and direct client sync (`0235db8`)
+- feat(arena): restore 100% concurrent independent execution for all 16 AI agents (`ccf0ba3`)
+- feat(arena): enforce institutional real-market execution, zero-mock logs, and bitget fee model (`c43258f`)
+- feat(arena): implement 24/7 autonomous cloud arena evaluator and github actions cron (`bba8a44`)
+- feat(arena): re-arrange AI Agent Arena header into ergonomic functional capsules (`f1a474e`)
+- feat(architecture-mt5-audit): add flow process tab, bitget mt5 ea, audit remediation, zero-random compliance [Sprint 7] (`41da37f`)
+- feat(arena-home-pipeline): streamline arena header, fix home layout, align spot gold, add hourly cron and changelog [Sprint 6] (`91206cf`)
+- feat(arena): restore Season 1 archive to ensure active live session defaults to Season 2 (`62d74ba`)
+- feat(v5.5.3): Wall St metadata, paper trading reconciliation, stable SVG IDs, theme-aware headers & CSP (`87b05c0`)
+
+### Fixes
+
+- fix(huggingface): add UID 1000 user to Dockerfile and sanitize YAML frontmatter (`5fadc58`)
+- fix(arena): calibrate multi-agent confidence and implement fair round-robin spawner to eliminate bot starvation (`a83f2cc`)
+- fix(arena): resolve post-reset hydration race, reconcile exit fill math, and enforce zero baseline (`d9eb5a1`)
+- fix(cockpit): restore locked 480px height for internal News scrolling and eliminate vertical whitespace gap (`6426b01`)
+- fix(arena): prevent ErrorBoundary cache reset from wiping trade history journal and auth (`5d38a43`)
+- fix(cockpit): polish Smart Money layout symmetry, edge scanner proxy, and typography (H-06, L-04, C-05) (`3dc0e9f`)
+- fix(home): restore missing brentChg variable in HomeDashboardTab (`4b02b7f`)
+- fix(live-feeds): unblock Binance WS/REST via CSP, permit live spot gold quotes, and fix Bandarmology truncation (`69d7518`)
+- fix(macro): refresh bundle to 25 Sep 2026 and sanitize macro cache gold quote (`23b3034`)
+
+## 2026-09-24
+
+### Features
+
+- feat(audit): implement pre-launch audit hardening, data integrity telemetry & compliance (v5.5.0) (`f64bb3e`)
+- feat(changelog): merge multi-releases into 1 unified daily package per date and add missing dates (22 Sept & 13-15 Sept) (`cfa072d`)
+- feat(changelog): implement daily grouped architecture with 1-date multi-sprint roll-up and quick sub-sprint filters (`9e07ab9`)
+
+### Fixes
+
+- fix(forensics): v5.5.2 unified gold pricing, 24h session TTL, upcoming macro calendar, dynamic JPY pips and anti-jitter agent seed (`99ccf4d`)
+- fix(forensics): v5.5.1 live USD/IDR sync, WS-REST gap healing, quant model broker badge, strict WIB timezone and defense alert clamping (`0da434e`)
+
+### Docs
+
+- docs(changelog): register v5.4.0 in changelogData and group 2026-09-24 compliance/qa/layout release in CHANGELOG.md (`8e1eee0`)
+
+## 2026-09-23
+
+### Features
+
+- feat(audit): compliance audit, qa/qc bugfixes (fvg playground, supercycle, timer cleanup), and changelog update (`5c165a1`)
+- feat(academy): add interactive SVG visual dam simulator, 8-step domino stepper, crisis charts, order book ladder, and execution bracket (`d23e7b0`)
+- feat(academy): implement 6-level masterclass curriculum (20 modules) with real-world analogies, historical case studies, and risk sandbox (`06b1c40`)
+- feat(academy): upgrade to executive hedge fund working paper series (MBG-WP-2026) with dual-layer layman/quant views and 6 interactive widgets (`f15e412`)
+- feat(cockpit): refine 50/50 vertical alignment, 4-barometer HUD, defense tail-risk alert, date-grouped changelog (`9f02373`)
+- feat(mcp): introduce local-first MBG MCP agentic gateway server (`f06606b`)
+- feat(academy): add interactive math-first quant lab sandbox with live parameter sliders (`f73dd6e`)
+- feat(charting): add real-time visual trade execution overlay and triple-barrier brackets (`7ebc8e6`)
+- feat(backtest): implement behavioral strategy spec & deflated sharpe ratio (DSR) (`c21930a`)
+- feat(intelligence): transform news & research analysis to 4-pillar intelligence artifacts (`54e8a31`)
+- feat(refresh): add explicit manual AI research and sentinel desk sync buttons with cache busting (`a02241c`)
+- feat(ai-intelligence): integrate Gemini LLM into live news research synthesis, crisis alert sentinel, and explainable AI trade reflections in agent arena (`4dc84ba`)
+- feat(geopolitical): upgrade DEFCON to computed quantitative Threat Barometer and What-If Stress Simulator (`8b71b41`)
+- feat(ai-desk): institutional redesign - clean model status, 5-flashpoint geopolitical desk, fundamental catalysts, conglomerate linkages, and multi-market universe switcher (`caccd10`)
+- feat(macro-topdown): implement institutional top-down macro-to-micro framework, sectoral transmission engine, and universal 861-stock on-demand syndicate analyzer (`2757c29`)
+- feat(sentinel-desk): remove redundant idx badge, expand syndicate debates to 6 multi-asset/macro instruments, and supercharge sentinel desk layout (`b37e1d2`)
+- feat: institutional research desk, dynamic gemini 4 discovery, S/R matrix charts, and AI sentinel drawer (`ab0b2e5`)
+
+### Fixes
+
+- fix(ui/ux): restore full-width academy learning canvas with sticky sidebar and expand breathing room (`eb8dd66`)
+- fix(academy): remove duplicate render of InteractiveQuantLabSandbox (`de046b3`)
+
+### Docs
+
+- docs(changelog): update README.md, CHANGELOG.md and in-app changelogData.js for v5.1.0 quant sprint evolution (`d4d1795`)
+- docs: update interface preview and cockpit showcase screenshots in README with latest AI Sentinel Desk, News Research Note, and Sovereign Agent Arena (`74230be`)
+- docs: update changelog v5.0.0 and comprehensive README documentation for institutional AI Sentinel Desk, DEFCON Threat Barometer, and news research engine (`389d08b`)
+
+## 2026-09-22
+
+### Features
+
+- feat(news-research): upgrade news wire to institutional standards and sanitize mojibake (`b13f920`)
+- feat: institutional upgrade - multi-model AI cascade, universal multi-asset paper portfolio, live cross-asset correlation, and macro forex/us analyzers (`1bd753b`)
+- feat: sovereign agent model, auto-mc rebirth evolution, gemini-3.8-flash macro sentinel, dynamic lot sizing and 16-agent literature integration (`e152b2c`)
+
+### Fixes
+
+- fix(quant-audit): harmonize sovereign modal, fix pearson widget runtime error, and clean arena anomalies (`e82177b`)
+
+## 2026-09-21
+
+### Features
+
+- feat(data-feed): bind livePrices across US stocks, 28 forex pairs and whale broker portfolio (`95cf450`)
+- feat(arena): audit and overhaul AI Multi-Agent Arena (realism, 16 agent profiles, self-learning, quant reports) (`cfc3a59`)
+- feat(arena): Season 1 live label, Season 0.11 (test) archive label, consistent naming across dropdown/recap/keyTakeaway (`d2348b5`)
+- feat(arena): v4.8.0 - Season 0.1 auto-label, Pair Recap sub-tab (Long/Short breakdown), allPairs epoch persistence, fix archived-session auto-start bug (`8d76198`)
+- feat(arena): introduce Agent 16 CHAOS with unlimited carpet-bomb scalping and auto-rebirth (`5ce3f97`)
+- feat(arena): add Spot vs Futures multi-mode execution and dynamic tiered market scanner pipeline (`0634cc2`)
+- feat(arena): expand crypto universe to 38 pairs and US stocks/ETFs to 37 instruments (`889dd5b`)
+- feat(arena): implement agent DNA multi-position engine with pyramiding, ATR scaling, and single-bullet rules (`f224b64`)
+
+### Fixes
+
+- fix(arena): ensure Phase 3 self-learning (toxic blacklist, positive reinforcement) is 100% active (`1a5e219`)
+- fix(arena): season reset now starts all agents at Gen 0 with clean MC history - generation/resetCount only increments on in-season margin calls (`6a91ab4`)
+- fix(arena): audit cleanup - fix 7 sub-8px fonts, remove bare outline:none, enforce touch targets >=24px (`61b0b3e`)
+- fix(arena): add unique philosophies, trigger rules, and strategy simulations for all 15 agents in philosophy modal (`54757a5`)
+
+### Docs
+
+- docs(changelog): add v4.7.0 release notes for AI Arena Engine & UI/UX Audit Hardening (`8932cdf`)
+
+## 2026-09-20
+
+### Features
+
+- feat(arena): optimize kanban card height to 75% compact scale, add dynamic sort & DNA badges (`282a4d5`)
+- feat(arena): complete full 15 multi-agent roster (4 base, 6 duo, 4 trio, 1 master) with locked 4-column deck (`a55ae71`)
+- feat(arena): locked 4-column kanban grid, 4 combo bots (STEAM, STORM, LAVA, AVATAR), and total AUM tracking (`681beb4`)
+- feat(arena): remove synthetic tick delta, enforce 100% real live market prices only (`9b2ef1c`)
+- feat(ai-agents): archive Session 0 post-mortem, evolve 4 elements to Gen 2, initialize clean PAUSED Session 1 (`bea8f1c`)
+
+### Fixes
+
+- fix(arena): ensure collision-free position ids when scaling into same instrument (`2f26c32`)
+- fix(arena): allow symbol scaling when candidate list exhausts and bump agents version to v9 (`99f9c3d`)
+- fix(arena): dynamic max position capacity and portfolio capital scaling for all 15 agents (`aa9b3d1`)
+- fix(arena): resilient session uptime timer with Date.now delta tracking and visibilitychange handling (`7eebbea`)
+- fix(arena): dynamic proportional ATR, realistic tick volatility, and position normalizer for TP/SL/MC (`e37eedd`)
+- fix(arena): reset agents baseline to clean Gen 0 before Session 1 starts (`66ba213`)
+- fix(arena): dropdown session selector, manual max pos blank input, accurate paused uptime, and remove redundant archive button (`5ceaeab`)
+
+### Docs
+
+- docs(changelog): add Package 19092026 (v4.2.0) documenting AI Agent Arena Genesis, Zero Simulation Policy & Session 0 Archive (`83cad75`)
+- docs(changelog): record v4.5.0 AI Multi-Agent Arena in changelog & detail 15-bot architecture in README (`737c842`)
+
+## 2026-09-19
+
+### Features
+
+- feat(ui): complete UI/UX layout redesign, refine financial typography, and isolate AI Agent Arena for standalone release (`8ccce7f`)
+- feat(data): implement Zero Simulation Policy, adaptive market hours, actual CFD commodities, and QA/QC compliance (`b818e5c`)
+
+### Fixes
+
+- fix(live-prices): lock stock prices when markets are closed and disable weekend micro-tick simulation (`3602e27`)
+- fix(live-prices): resolve browser CORS on TV scanners, add live prices to US stocks, and align weekend close (`015a91a`)
+
+### Docs
+
+- docs: track UI/UX redesign walkthrough in repository (`d4d0613`)
+- docs: enrich README with 7 quantitative strategy engines, expanded macro formulas, and remove setup guide (`352755b`)
+- docs: overhaul README with institutional architecture, philosophy, multi-asset dataflow diagrams, and interface showcase (`02b4241`)
+
+## 2026-09-18
+
+### Features
+
+- feat(ui): display dynamic live ticks in Home bento & tables and broaden universe (`31a3203`)
+- feat(live-prices): integrate real-time IHSG/LQ45 indices and BEI micro-tick engine (`57a3e11`)
+- feat(cockpit): add 3-column Tri-Signal Matrix with authentic logos for IDX, Crypto, and US Equities (`05452f3`)
+- feat(foreign-flow): expand radar to full official IDX 100 universe with interactive scope toggle (`75837f0`)
+- feat(cockpit): refine layout balance, expand foreign flow to 6 items, enlarge radar fonts and optimize card spacing (`ab036f3`)
+- feat(cockpit): implement 4-card bento row and tri-bento matrix with compact foreign flow sparkline (`21eda17`)
+
+### Fixes
+
+- fix(ui): streamline signal setup layout, stabilize crypto futures table, and format forex/us-stocks decimals (`b52ed4e`)
+- fix(foreign-flow): eliminate zero-value records in top outflow, expand candidate pool, and enforce strict sign filtering (`5ecee19`)
+- fix(ui): remove obsolete stale data banner and wire watchlist to live prices (`63b2828`)
+- fix(watchlist): import PersonalWatchlistTab in App.jsx and add full data fallback (`976eb53`)
+- fix(layout): replace percentage columns in home-tri-bento-grid with minmax fr units to fix news sidebar gap alignment (`d08f67f`)
+- fix(cockpit): swap commodities and idx alpha, fix badge wrap, lock bento widths, unify 6px gaps (`fa865f8`)
+
+### Docs
+
+- docs(changelog): register v4.1 APEX update for Tri-Signal Matrix and authentic multi-market logos (`572976b`)
+
+### Chores & Data
+
+- chore(mockup): add interactive html cockpit mockups for reference (`ba0388e`)
+
+## 2026-09-17
+
+### Features
+
+- feat(cockpit): resolve 5 UI & engine requests via PDCA (radar matrix, bandar symmetry, dynamic tickers, news filters) (`d41c5a2`)
+- feat(strategy): implement dual-speed reactive engine, live trailing stop, and eliminate all cron jobs (`2889579`)
+- feat(ui): compact top HUD header and enable news wire internal scroll mode with cockpit layout balance (`e49aa8d`)
+- feat(ui): optimize zero-scroll sidebar and full-height live news wire with mobile/tablet responsiveness (`be61086`)
+- feat(ui): add Multi-Chart Grid, Security Hub Drawer, and mobile/tablet responsiveness (`7905188`)
+
+### Fixes
+
+- fix(ui): resolve mobile layout overlapping and sidebar overflow (`dd46940`)
+
+### Docs
+
+- docs(changelog): register update package 17092026 v4.0.0 APEX in master changelog registry (`a49cd08`)
+
+### Chores & Data
+
+- chore(platform): eliminate obsolete vercel configs and unify cloudflare pages deployment (`cf5f69b`)
+
+### Other
+
+- merge: add Multi-Chart Grid, Security Hub Drawer, and mobile/tablet responsiveness (`bc3d806`)
+
+## 2026-09-16
+
+### Features
+
+- feat(icons): add authentic brand logos for Saham IDX, US Equities, and dual-flag badges for Forex (`bbfa337`)
+- feat(bloomberg-v4): add 12-stream news intelligence, market heatmap, sentiment radar & intermarket matrix (`a772c5b`)
+- feat(whale-tracker): add Watcher Whale (>100 BTC) alert radar, audio chime & institutional action playbook (`9c1b087`)
+- feat(crypto-futures): standardize metrics to Binance Futures & Coinglass specifications (`f7da4f1`)
+- feat(universe): expand IDX to 849+ stocks, Binance crypto to 744+ spot pairs & 60+ perps, and DexScreener multi-chain live search (`0d27388`)
+- feat(realtime): live ticker streaming via Binance Vision & TV scanner, sidebar ticker radar, and DexScreener futures radar (`aedf585`)
+- feat(sync): add automated upstream midday sync desk script and prompt runner (`372d4e2`)
+- feat: complete whale running trade, broker tracker, cryptowave news, macro calendar 40+ events, and eod workflow (`e7210e2`)
+- feat(changelog): update Package 16092026 with intraday 30-min sync, auto 1D chart timeframe, and 2-col news cockpit layout (`7af74d1`)
+- feat(whale): add dedicated trading date section and timestamps for IDX foreign radar (`89ef1cb`)
+- feat(ui): agile institutional quant cockpit redesign with realtime WebSockets and sleek aesthetics (`b527bc9`)
+- feat(realtime): zero-delay WebSocket streaming for Mempool Bitcoin onchain whales and Binance Futures live ticker and liquidation radar (`b7ed619`)
+- feat(whales): integrate real Bitcoin on-chain Mempool tracker, verified entity tags, direct explorer links and flow guidance (`2f1e09a`)
+- feat: intraday 30-min market sync, multi-tier foreign flow fetcher & frontend freshness fixes (`cecbfa3`)
+- feat(v3.0): Whale Intelligence Hub, Crypto Futures, Forex Command Center, US Stock Intelligence — 4 new engine fetchers, 4 new React tabs, pipeline integration, changelog update (`6753d1f`)
+- feat(news): optimize Live News to full-width 2-column cockpit layout (`d66df2e`)
+- feat(changelog): simplify Changelog to clean Markdown document with daily packages up to 16092026, process flow, and module tables (`ee4ff36`)
+- feat: release Update Package 16092026 - interactive NewsDetailModal & Stockbit Snips takeaways (`11f50de`)
+- feat: complete audit fixes, real market sync, CF Pages security & Bull-Bear debate engine (`7a2e8b8`)
+
+### Fixes
+
+- fix: add missing CryptoIcon import in HomeDashboardTab (`198f89a`)
+- fix(crypto-icons): add multi-color authentic brand icons across crypto spot, futures, heatmap, and sidebar (`deb92b4`)
+- fix(news): sort all news feeds newest-first by pub_date (`36161de`)
+- fix(futures & whales): smooth price font color flash & continuous live on-chain whale stream (`4d5f38c`)
+- fix(crypto-futures): resolve real mark price from Gate.io + Binance Vision and fallback from livePrices instead of 0.00 (`1693fe1`)
+- fix(pricing): align ticker tape and charting desk prices with live stream and fix TradingView crypto symbol mapping (`10825bc`)
+- fix(sync): resolve upstream merge conflicts, fix intraday workflow requirements path, and refresh telemetry timestamps (`515d233`)
+- fix(chart): auto set timeframe to 1D for IDX stocks with smart adaptive selector (`dc81cc7`)
+- fix(auth): set default password to 'mbg' and update README to Cloudflare Pages (`264c3e1`)
+
+### Docs
+
+- docs(whale): add BEI broker masking protocol banner and explain EOD release cycles (`799de9a`)
+
+### Chores & Data
+
+- chore(v3.0): update GitHub workflows, robust offline fallbacks, and sync latest v3.0 telemetry bundle (`6443e4d`)
+
+### Other
+
+- Merge branch 'main' of https://github.com/AhFu28/MBG-Trading (`582967a`)
+- merge: integrate Bloomberg v4.0 terminal & multi-market logos into main (`219f414`)
+- Merge pull request #1 from AhFu28/feature-naufal (`dda3386`)
+- merge: sync upstream origin/main hourly telemetry (fe16dac) preserving v3.0 whale & futures modules (`60b4d0e`)
+- merge: sync origin/main logic (intraday 30m, NewsDetailModal, auto 1D timeframe) with feature-naufal v3.0 telemetry (`93fc181`)
+
+## 2026-09-12
+
+### Fixes
+
+- fix(macro): include ihsg in news_macro execute payload and bundle caches (`eb41015`)
+- fix(macro): update live IHSG quote to 6,506 level across bundles (`7dac6dc`)
+
+## 2026-09-11
+
+### Features
+
+- feat(technicals): add native RSI, MACD, Bollinger, EMA, ATR technical indicators and confluence scoring (`85d626c`)
+- feat(perf & test): frontend code-splitting, exp3 bandit wiring, and automated smoke test suite (`8210aac`)
+- feat(release): update Changelog registry with Update Package 11092026 and dynamic filter engine (`105ec18`)
+- feat(cockpit): add continuous running ticker tape & subtle blend dark scrollbars (`0916b1d`)
+- feat(home): restore classic top-5 foreign flow structure, polish bandarmology cards, and fill page height with telemetry strip (`077743a`)
+- feat(home): adopt exact sample 2-column layout (72% cockpit + 28% live news) with zero horizontal scroll (`0281824`)
+- feat(dividend): active timeline windowing (-1 month past to +6 months ahead) and dynamic countdowns (`7de4110`)
+- feat(global): streamline topbar session ticker & enrich Pasar Global tab with macro barometer and commodities (`83b970b`)
+- feat: add SoSoValue Spot ETF net flow and turnover telemetry widget (`9b23369`)
+- feat: implement SoSoValue-style research desk with 24/7 dual-stream live news (`6d6d0ec`)
+- feat: multi-asset crypto spot support in Charting Desk & Lot Calculator with live TradingView indicators (`9c1913d`)
+
+### Other
+
+- fix & optimize: resolve critical cross-layer blockers and prune over-engineering bloat (`0d187de`)
+
+## 2026-09-10
+
+### Features
+
+- feat: upgrade to MBG APEX, integrate TradingView real-time feed, fix mobile nav & paper portfolio (`4b07d8f`)
+- feat(cockpit): fix favicon Tri-Loop, zero-scroll Home bento, foreign flow data, crypto signals, bandarmology radar, and MBG wire (`2863fb2`)
+- feat(branding): implement exact Concept 4 Tri-Loop vector logo in Quantum Emerald, remove all Astra references, pure MBG identity (`3a5ea7b`)
+- feat(branding): official MBG Market Brain Grid tri-loop vector logo and polish (`36974d8`)
+- feat: institutional charting desk with strategy presets and drawing tools (Update Package 10092026) (`8aba0b2`)
+- feat(branding): add cool MBG monogram logo badge, Market Brain Grid title, clean header title, and SVG favicon (`956d071`)
+- feat(ui): move clock, sync controls, and theme switch to top header, simplify sidebar footer (`94a87d7`)
+- feat(release): 100% Update Package 10092026 - time sync, auto-pick paper trading, backtest schema, and market data alignment (`bcc85ba`)
+- feat(release): deploy Update Package 10092026 - interactive changelog, telegram bot 24/7, home command center, konglo M&A radar, and broker summary (`ff3fad9`)
+- feat(ui): implement Home command center, zero-scroll sidebar, top header tools, and unified testing hub (`8717af0`)
+- feat(telegram): implement Telegram V1 with 24/7 Cloudflare Pages serverless webhook and interactive group commands (`18f1111`)
+
+### Fixes
+
+- fix(charting): fix tradingview study IDs and add dynamic key remount for strategy presets (`08b426d`)
+- fix(ui): eliminate blank screen by correcting Sidebar className syntax, restoring HomeDashboard variables, and adding ErrorBoundary (`73a1ce2`)
+- fix(ui): resolve blank screen caused by unquoted className in Sidebar.jsx and clean up mojibake in App.jsx (`1ec9cff`)
+
+### Chores & Data
+
+- chore: sync local engine cache and telegram webhook (`de44c2a`)
+
+## 2026-09-09
+
+### Features
+
+- feat(ui): left sidebar navigation (SoSoValue style) — Sidebar.jsx, activeTab lift, remove horizontal tabs (`da68791`)
+- feat(ui): implement SoSoValue design system, typography, and fix OrderBookSimulator (`3f8337e`)
+- feat: integrate ARIB macro suite, MBG B Plan (Backtest Lab & Current Test), and Quant Academy (`1513907`)
+- feat: complete MBG v2 quant engine, lot calculator, and cloudflare deployment config (`e6a5f54`)
+- feat: implement 5-tab terminal, live news feed, watchlist, wiki, dark mode, and drawer text wrapping (`d09d995`)
+
+### Fixes
+
+- fix(markets): add real-time clock ticker and dynamic market open/closed status calculation (`c6030e8`)
+- fix(ui): restyle global markets, pearson correlation, and quant academy to native Bloomberg CSS and upgrade header title (`dec1a59`)
+- fix(ui): inject  in JSX and add comprehensive high-contrast dark mode badge/button styles (`f4a82d3`)
+- fix(quant): resolve audit findings, restore live news sync, exact RR math, and ticker rendering (`fc8b186`)
+- fix(ui): restore ticker symbol rendering in leaderboard, watchlist, and hero bar (`8db469b`)
+
+### Docs
+
+- docs: add comprehensive manual and feature definitions based on PRD v2 (`5c83d68`)
+
+## 2026-09-08
+
+### Features
+
+- feat(ui): complete Bloomberg Quant Terminal - live news wire, ticker tape, and unified expandable ranking table (`678ca81`)
+- feat: regenerate master bundle with 20 plans and updated engine merge logic (`5b07455`)
+- feat(ux): transform to Unified Alpha Cockpit - eliminate 6 tabs, add Executive Hero and Unified Scanner (`34fa89b`)
+- feat: integrate telegram notifier engine, update workflows and documentation (`299b50d`)
+- feat(security): add SHA-256 password gate with anti-brute lockout (`7054462`)
+- feat: add 20 daily trade plans, TradingView interactive modal, and AllTickerExplorer (`dd850ae`)
+- feat: initial build of MBG Trading Intelligence Cockpit (`bf5bc3c`)
+
+### Fixes
+
+- fix(vercel): add vercel.json configurations for both root and frontend (`34e3d94`)
+
+### Chores & Data
+
+- chore: update local telemetry data cache (`61f507c`)
 
