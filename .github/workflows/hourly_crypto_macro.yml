@@ -3,6 +3,11 @@ name: 24/7 Hourly Crypto & US Macro Radar
 on:
   schedule:
     # Hourly: crypto futures, on-chain whales, forex, macro telemetry.
+    #
+    # HONESTY NOTE (P1-5, 2026-10-11): this cron is REQUESTED hourly, not
+    # guaranteed hourly. GitHub Actions deprioritises scheduled workflows on free
+    # runners, and the measured gaps on 2026-10-10 were 4.0 / 4.6 / 7.2 / 6.7
+    # hours. Do not describe this as "tiap jam" in the UI — say the real range.
     - cron: '0 * * * *'
     # Daily: US stocks and the earnings calendar.
     #
@@ -37,6 +42,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          # The changelog generator reads git log, so it needs full history.
+          fetch-depth: 0
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -129,6 +137,21 @@ jobs:
           echo "=== git status ==="
           git status --short
 
+      - name: Prove the changelog redaction still works (E-6)
+        run: |
+          # Runs BEFORE the generator on purpose. If a redaction pattern has rotted,
+          # fail here rather than publish a draft carrying something that must not be
+          # public — this file is committed to a public repo every hour.
+          node scripts/gen_changelog.mjs --selftest
+
+      - name: Refresh the auto-generated changelog draft (E-6)
+        run: |
+          # Derived from git log only. Deterministic: it changes only when history
+          # changes, so it never causes an extra commit on its own.
+          node scripts/gen_changelog.mjs
+          echo "=== changelog draft head ==="
+          head -n 15 docs/CHANGELOG_AUTO.md
+
       - name: Commit & Push Updated Cockpit Data Bundle
         run: |
           git config --global user.name "github-actions[bot]"
@@ -141,6 +164,8 @@ jobs:
           # latest_arena_state.json, which the arena workflow owns — two writers
           # on one file is how a rebase conflict quietly discards work.
           git add engine/cache/latest_cockpit_bundle.json
+          # E-6: ship the regenerated draft together with the bundle it describes.
+          git add docs/CHANGELOG_AUTO.md
 
           # FAIL LOUDLY WHEN NOTHING CHANGED.
           #

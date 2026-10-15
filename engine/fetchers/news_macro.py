@@ -375,19 +375,36 @@ class NewsMacroFetcher:
 
     def fetch_macro_indicators(self) -> dict:
         """Fetch current prices and daily % changes for macro bellwethers"""
-        import os, json
+        import os, json, time
         cache_file = os.path.join(os.path.dirname(__file__), "..", "cache", "last_known_macro.json")
         indicators = {}
         
+        # P0-4 (2026-10-12): this cache used to be read with NO age check while
+        # :827 stamps updated_at with datetime.now(). Values written on 2026-09-30
+        # could therefore reach the UI wearing today's timestamp. A cache older
+        # than the threshold is now treated as absent, and its age is carried into
+        # data_source so the real origin stays visible instead of being flattened
+        # into the word "cached".
+        CACHE_MAX_AGE_HOURS = 24
+        cache_age_hours = None
+
         try:
             if os.path.exists(cache_file):
-                with open(cache_file, "r") as f:
-                    indicators = json.load(f)
+                age_hours = (time.time() - os.path.getmtime(cache_file)) / 3600.0
+                if age_hours > CACHE_MAX_AGE_HOURS:
+                    logger.warning(
+                        f"Macro cache is {age_hours:.1f}h old (limit {CACHE_MAX_AGE_HOURS}h). "
+                        "Ignoring it rather than serving stale prices as if fresh."
+                    )
+                else:
+                    with open(cache_file, "r") as f:
+                        indicators = json.load(f)
+                    cache_age_hours = round(age_hours, 1)
         except Exception as e:
             logger.warning(f"Failed to read macro cache: {e}")
 
         if not indicators:
-            logger.warning("No cache found, using absolute last resort hardcoded macro values.")
+            logger.warning("No USABLE cache (missing or too old). Using absolute last resort hardcoded macro values.")
             indicators = {
                 "gold_price": 2750.0,
                 "gold_change_pct": 0.45,
@@ -402,7 +419,7 @@ class NewsMacroFetcher:
                 "data_source": "fallback"
             }
         else:
-            indicators["data_source"] = "cached"
+            indicators["data_source"] = f"cached:{cache_age_hours}h"
             if indicators.get("gold_price") and not (1000 <= indicators["gold_price"] <= 10000):
                 indicators["gold_price"] = 4262.0
             if indicators.get("brent_oil_price") and not (40 <= indicators["brent_oil_price"] <= 160):
