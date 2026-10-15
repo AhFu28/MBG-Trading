@@ -39,6 +39,41 @@ function cleanHtml(str) {
     .trim();
 }
 
+/*
+ * Bing wraps its RSS links in a click tracker: the real article URL is the url=
+ * query parameter, percent-encoded. Unwrapping sends the reader straight to the
+ * publisher instead of through Bing's redirect, and lets the hostname serve as
+ * an honest source label when the feed names no publisher.
+ *
+ * Google News links are deliberately left alone: their /rss/articles/CBMi...
+ * form encodes the target opaquely, and guessing at it risks fabricating a link
+ * — which is worse than a working redirect.
+ */
+function unwrapLink(link) {
+  if (!link || link.indexOf('bing.com/news/apiclick.aspx') === -1) return link;
+  try {
+    const parsed = new URL(link);
+    const real = parsed.searchParams.get('url');
+    if (!real) return link;
+    let target = decodeURIComponent(real);
+    // Bing sometimes double-encodes; a target that still looks encoded gets one more pass.
+    if (/%3a%2f%2f/i.test(target) || /%2f/i.test(target)) {
+      try { target = decodeURIComponent(target); } catch (e) { /* keep the first pass */ }
+    }
+    return /^https?:\/\//i.test(target) ? target : link;
+  } catch (e) {
+    return link;
+  }
+}
+
+function sourceFromLink(link) {
+  try {
+    return new URL(link).hostname.replace(/^www\./, '') || '';
+  } catch (e) {
+    return '';
+  }
+}
+
 function parseWibDate(dateStr) {
   let dt = new Date(dateStr);
   if (isNaN(dt.getTime())) {
@@ -228,7 +263,7 @@ export async function onRequestGet(context) {
       let sourceName = (itemXml.match(/<source[^>]*>([\s\S]*?)<\/source>/) || [])[1] || '';
 
       rawTitle = cleanHtml(rawTitle);
-      link = cleanHtml(link);
+      link = unwrapLink(cleanHtml(link));
       pubDate = cleanHtml(pubDate);
       sourceName = cleanHtml(sourceName);
 
@@ -239,7 +274,9 @@ export async function onRequestGet(context) {
         sourceName = parts.pop().trim();
         title = parts.join(' - ').trim();
       }
-      if (!sourceName) sourceName = 'Warta Pasar';
+      // No invented attribution: when the feed names no publisher, the link
+      // hostname is the honest label — and 'tidak tercatat' when even that fails.
+      if (!sourceName) sourceName = sourceFromLink(link) || 'Sumber tidak tercatat';
 
       const dateMeta = parseWibDate(pubDate);
       const analysis = analyzeText(title, sourceName);
