@@ -100,7 +100,9 @@ function devBundlePlugin() {
               articles.push({
                 id: `dev-live-rss-${ts}-${i}`,
                 title: title,
-                source: sourceName || 'Warta Pasar',
+                // Same rule as functions/api/news.js: never brand an article the
+                // feed did not attribute - the hostname is the honest label.
+                source: sourceName || (() => { try { return new URL(link).hostname.replace(/^www\./, ''); } catch { return 'Sumber tidak tercatat'; } })(),
                 link: link,
                 pub_date: dt.toUTCString(),
                 timestamp_ms: ts,

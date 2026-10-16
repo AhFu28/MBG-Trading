@@ -52,8 +52,8 @@ Catatan positif: `frontend/public/data/` **sudah tidak ada**, dan `_save_local_f
 | R-1 | Tambah **cek umur** pada pembacaan `last_known_macro.json`. Kalau lebih tua dari ambang (usul: 24 jam), perlakukan sebagai tidak ada dan catat di log. | Menutup akar risiko. Tembolok tua lebih jujur diabaikan daripada dipakai diam-diam. | S |
 | R-2 | Bawa umurnya ke label: kalau nilai berasal dari tembolok, tulis `data_source: "cached:<umur>j"`, bukan `"cached"`. | `updated_at` tetap waktu tulis, tetapi asal angkanya jadi terlihat. | S |
 | R-3 | **Hentikan tracking** kelima berkas: keluarkan dari git dan tambahkan `engine/cache/*.json` ke `.gitignore`. | Artefak data tidak boleh ada di riwayat git. | S |
-| R-4 | Hapus jalur nilai keras `:389-403`, atau ubah supaya bagian yang memakainya menampilkan tanda "tidak tersedia". | Patuh aturan kejujuran proyek: sel kosong lebih baik daripada angka karangan. | M |
-| R-5 | Tegaskan apakah `research_archive.json` benar-benar dibaca `news_research_agent.py`. | Kalau hanya konstanta yang tidak dipakai, ia artefak mati juga. | S |
+| **R-4 — SELESAI 2026-10-16** | Jalur nilai keras dihapus — dan ternyata tertenun lebih dalam dari perkiraan: default serupa ada di `build_daily_snips` (DXY 104,0), `generate_impact_assessment` (104), frontend `NewsTab` (104,5 **dan** 99,65 — dua nilai berbeda untuk satu field), `MorningBriefAudioPodcast` (emas 4262,4, IHSG 6.374,91, VIX 18,0 — podcast bahkan menucapkannya dalam kata-kata). Kini verdict tanpa data bernama NO_DATA, frontend merender tanda pisah, dan skrip podcast hanya disusun dari nilai yang ada. | Patuh aturan kejujuran proyek: sel kosong lebih baik daripada angka karangan. | M |
+| **R-5 — TERJAWAB 2026-10-16** | `research_archive.json` **aktif**: dibaca dan ditulis `news_research_agent.py:341-364`. Ia basi di clone lokal hanya karena agent tidak jalan lokal sejak 30 September. Bukan artefak mati — tidak dihapus, tetapi tetap keluar dari tracking git (artefak data runtime). | — | S |
 
 **R-1, R-2, dan R-3 saya sarankan dikerjakan lebih dulu** — ketiganya kecil, dan bersama-sama menutup risiko provenance tanpa mengubah tampilan produk.
 
