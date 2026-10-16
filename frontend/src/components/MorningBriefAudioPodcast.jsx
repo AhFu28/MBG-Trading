@@ -24,28 +24,40 @@ export default function MorningBriefAudioPodcast({
 
   // Extract key real data
   const ihsgLive = livePrices['IHSG'] || livePrices['.JKSE'] || livePrices['IDX:COMPOSITE'];
-  const ihsgVal = ihsgLive?.price !== undefined ? ihsgLive.price : (macro.ihsg_price || macro.jkse_price || 6374.91);
-  const ihsgChange = ihsgLive?.changePct !== undefined ? Number(ihsgLive.changePct) : (macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : 1.56);
+  const ihsgVal = ihsgLive?.price !== undefined ? ihsgLive.price : (macro.ihsg_price !== undefined ? Number(macro.ihsg_price) : (macro.jkse_price !== undefined ? Number(macro.jkse_price) : null));
+  const ihsgChange = ihsgLive?.changePct !== undefined ? Number(ihsgLive.changePct) : (macro.ihsg_change_pct !== undefined ? Number(macro.ihsg_change_pct) : null);
 
   const goldLive = livePrices['XAUUSD'] || livePrices['GOLD'];
-  const goldVal = goldLive?.price !== undefined ? goldLive.price : (macro.gold_price || 4262.4);
+  const goldVal = goldLive?.price !== undefined ? goldLive.price : (macro.gold_price !== undefined ? Number(macro.gold_price) : null);
 
   const brentLive = livePrices['BRENT'] || livePrices['UKOIL'];
-  const brentVal = brentLive?.price !== undefined ? brentLive.price : (macro.brent_oil_price || 99.2);
+  const brentVal = brentLive?.price !== undefined ? brentLive.price : (macro.brent_oil_price !== undefined ? Number(macro.brent_oil_price) : null);
 
   const topPlans = (bundle?.daily_trade_plans || []).slice(0, 3);
   const topTickers = topPlans.map(p => p.clean_ticker || p.symbol?.replace('.JK', '')).filter(Boolean);
   const tickerListStr = topTickers.length > 0 ? topTickers.join(', ') : 'BBCA, BMRI, dan AUTO';
 
   // Construct Podcast Script in natural, concise Indonesian
-  const podcastScript = `
-Selamat pagi rekan trader MBG Trading. Berikut intisari pasar dua menit untuk hari ini.
-Indeks Harga Saham Gabungan terpantau di level ${Math.round(ihsgVal)}, dengan pergerakan ${ihsgChange >= 0 ? 'menguat' : 'terkoreksi'} ${Math.abs(ihsgChange).toFixed(2)} persen. 
-Level pivot kunci berada di enam ribu empat puluh satu.
-Dari komoditas global, emas acuan dunia bertahan di sekitar empat ribu dua ratus dolar per troy ounce, dan minyak mentah Brent di level sembilan puluh sembilan dolar per barel.
-Fokus radar kuantitatif hari ini tertuju pada ${tickerListStr}. 
-Ingat pesan disiplin: batasi risiko maksimal satu hingga dua persen modal per posisi, dan selalu tentukan Stop Loss sebelum menekan tombol beli. Selamat beraktivitas dan jaga kedisiplinan rencana trading Anda.
-`.trim();
+  // Construct Podcast Script - only from values that actually exist (R-4).
+  // The old template narrated invented prices as spoken words ("empat ribu dua
+  // ratus dolar") even while live variables sat unused right above it, quoted a
+  // "pivot kunci" level with no data source at all, and fell back to its own
+  // constants (6374.91 / 4262.4 / 99.2) when data was missing.
+  const scriptParts = [];
+  scriptParts.push('Selamat pagi rekan trader MBG Trading. Berikut intisari pasar dua menit untuk hari ini.');
+  if (ihsgVal !== null && ihsgChange !== null) {
+    scriptParts.push(`Indeks Harga Saham Gabungan terpantau di level ${Math.round(ihsgVal)}, dengan pergerakan ${ihsgChange >= 0 ? 'menguat' : 'terkoreksi'} ${Math.abs(ihsgChange).toFixed(2)} persen.`);
+  } else {
+    scriptParts.push('Data IHSG tidak tersedia pada edisi ini.');
+  }
+  if (goldVal !== null && brentVal !== null) {
+    scriptParts.push(`Dari komoditas global, emas acuan dunia di sekitar ${Math.round(goldVal)} dolar per troy ounce, dan minyak mentah Brent di level ${brentVal} dolar per barel.`);
+  } else {
+    scriptParts.push('Data komoditas global tidak tersedia pada edisi ini.');
+  }
+  scriptParts.push(`Fokus radar kuantitatif hari ini tertuju pada ${tickerListStr}.`);
+  scriptParts.push('Ingat pesan disiplin: batasi risiko maksimal satu hingga dua persen modal per posisi, dan selalu tentukan Stop Loss sebelum menekan tombol beli. Selamat beraktivitas dan jaga kedisiplinan rencana trading Anda.');
+  const podcastScript = scriptParts.join(' ');
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -283,10 +295,10 @@ Ingat pesan disiplin: batasi risiko maksimal satu hingga dua persen modal per po
             🎯 PIVOT KUNCI IHSG
           </div>
           <div style={{ fontSize: '13px', fontWeight: '900', color: '#F3F5F7', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
-            {Math.round(ihsgVal).toLocaleString('id-ID')} ({ihsgChange >= 0 ? '+' : ''}{ihsgChange.toFixed(2)}%)
+            {ihsgVal != null ? Math.round(ihsgVal).toLocaleString('id-ID') : '-'}{ihsgChange != null ? ' (' + (ihsgChange >= 0 ? '+' : '') + ihsgChange.toFixed(2) + '%)' : ''}
           </div>
           <div style={{ fontSize: '12px', color: '#A7B0BD', marginTop: '1px' }}>
-            Pivot 6.041 · Support 5.992
+            Level harga terkini, bukan proyeksi.
           </div>
         </div>
 
@@ -295,10 +307,10 @@ Ingat pesan disiplin: batasi risiko maksimal satu hingga dua persen modal per po
             🪙 ENERGI &amp; LOGAM MULIA
           </div>
           <div style={{ fontSize: '13px', fontWeight: '900', color: '#F3F5F7', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
-            XAU ${Math.round(goldVal).toLocaleString()} · Oil ${Number(brentVal).toFixed(1)}
+            {goldVal != null ? ('XAU $' + Math.round(goldVal).toLocaleString()) : 'XAU -'}{brentVal != null ? (' · Oil $' + Number(brentVal).toFixed(1)) : ' · Oil -'}
           </div>
           <div style={{ fontSize: '12px', color: '#A7B0BD', marginTop: '1px' }}>
-            Emas safe-haven stabil di atas $4.190
+            {goldVal != null && brentVal != null ? 'Level harga terkini, bukan proyeksi.' : 'Data komoditas tidak tersedia pada edisi ini.'}
           </div>
         </div>
 

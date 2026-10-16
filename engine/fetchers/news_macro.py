@@ -251,6 +251,24 @@ class NewsProcessor:
 
     @classmethod
     def build_daily_snips(cls, macro: dict, live_news: list) -> dict:
+        # R-4: no verdict, confidence or trading guidance can be built from prices
+        # that do not exist. The old path classified on defaults (DXY 104.0 and
+        # friends) and emitted a HIGH-confidence badge plus stop-loss advice from
+        # invented data.
+        if not all(macro.get(k) is not None for k in ("gold_price", "brent_oil_price", "dxy_index", "us10y_yield")):
+            return {
+                "edition": "MORNING_BRIEF",
+                "generated_at": datetime.now().isoformat(),
+                "market_verdict": {
+                    "stance": "NO_DATA",
+                    "badge": "⚪ DATA MAKRO TIDAK TERSEDIA",
+                    "confidence": "NONE",
+                    "narrative": "Sumber harga makro tidak merespons saat edisi ini disusun. Verdict tidak dibuat daripada angka yang dikarang."
+                },
+                "macro_pulse": {},
+                "top_catalysts": [],
+                "actionable_guidance": "Radar makro tidak punya data valid pada edisi ini. Jangan jadikan edisi ini dasar keputusan."
+            }
         gold_c = float(macro.get("gold_change_pct", 0) or 0)
         oil_c = float(macro.get("brent_oil_change_pct", 0) or 0)
         dxy_val = float(macro.get("dxy_index", 104.0) or 104.0)
@@ -404,20 +422,13 @@ class NewsMacroFetcher:
             logger.warning(f"Failed to read macro cache: {e}")
 
         if not indicators:
-            logger.warning("No USABLE cache (missing or too old). Using absolute last resort hardcoded macro values.")
-            indicators = {
-                "gold_price": 2750.0,
-                "gold_change_pct": 0.45,
-                "brent_oil_price": 74.20,
-                "brent_oil_change_pct": 1.15,
-                "dxy_index": 104.50,
-                "dxy_change_pct": -0.10,
-                "us10y_yield": 4.28,
-                "us10y_change_pct": 0.05,
-                "ihsg_price": 6506.40,
-                "ihsg_change_pct": -1.29,
-                "data_source": "fallback"
-            }
+            # R-4 (2026-10-16): the old "absolute last resort" dict invented gold at
+            # 2750 and DXY at 104.50 the moment cache and yfinance both failed —
+            # materially wrong prices (real gold ~4200) that downstream verdict
+            # logic then classified on. An empty report with an honest label is the
+            # fix; every consumer is required to handle missing fields.
+            logger.warning("No USABLE cache (missing or too old) and live fetch unavailable. Reporting macro as unavailable instead of inventing prices.")
+            indicators = {"data_source": "fallback"}
         else:
             indicators["data_source"] = f"cached:{cache_age_hours}h"
             if indicators.get("gold_price") and not (1000 <= indicators["gold_price"] <= 10000):
@@ -840,8 +851,8 @@ class NewsMacroFetcher:
             "dxy_index": macro.get("dxy_index"),
             "dxy_change_pct": macro.get("dxy_change_pct"),
             "us10y_yield": macro.get("us10y_yield"),
-            "ihsg_price": macro.get("ihsg_price", 6506.40),
-            "ihsg_change_pct": macro.get("ihsg_change_pct", -1.29),
+            "ihsg_price": macro.get("ihsg_price"),
+            "ihsg_change_pct": macro.get("ihsg_change_pct"),
             "idx_affected_sectors": affected_sectors,
             "idx_affected_stocks": affected_stocks,
             "etf_flows": macro.get("etf_flows", {}),
@@ -851,7 +862,8 @@ class NewsMacroFetcher:
                 f"Global telemetry report: Gold at ${macro.get('gold_price')} ({macro.get('gold_change_pct')}%), "
                 f"Brent Crude at ${macro.get('brent_oil_price')} ({macro.get('brent_oil_change_pct')}%). "
                 f"DXY at {macro.get('dxy_index')} pts. Monitored for impact on Indonesian equities."
-            ),
+            ) if macro.get("gold_price") is not None else
+            "Data makro tidak tersedia pada edisi ini; tidak ada angka yang dikarang.",
             "updated_at": datetime.now().isoformat()
         }
 

@@ -395,10 +395,10 @@ export default function NewsTab({
 Edisi: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}
 
 1. GLOBAL MACRO PULSE:
-• Emas (XAU/USD): $${macro?.gold_price || '2,750.0'} (${goldChg})
-• Minyak Brent  : $${macro?.brent_oil_price || '74.2'} (${oilChg})
-• DXY Dollar    : ${macro?.dxy_index || '104.5'} pts
-• US 10Y Yield  : ${macro?.us10y_yield || '4.28'}%
+• Emas (XAU/USD): ${macro?.gold_price != null ? '$' + macro.gold_price : 'tidak tersedia'} (${goldChg})
+• Minyak Brent  : ${macro?.brent_oil_price != null ? '$' + macro.brent_oil_price : 'tidak tersedia'} (${oilChg})
+• DXY Dollar    : ${macro?.dxy_index != null ? macro.dxy_index + ' pts' : 'tidak tersedia'}
+• US 10Y Yield  : ${macro?.us10y_yield != null ? macro.us10y_yield + '%' : 'tidak tersedia'}
 
 2. MARKET VERDICT & SENTIMEN:
 ${verdict.badge || '⚡ ROTASI KOMODITAS & ENERGI'}
@@ -1368,29 +1368,29 @@ ${snips.actionable_guidance || 'Disiplin pasang stop loss 3-4% dan terapkan trai
             }}>
               <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>XAU/USD: </span>
-                <strong style={{ color: 'var(--text-primary)' }}>${macro?.gold_price || '2750'}</strong>
+                <strong style={{ color: 'var(--text-primary)' }}>{macro?.gold_price != null ? '$' + macro.gold_price : '—'}</strong>
                 <span style={{ color: (macro?.gold_change_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginLeft: '3px' }}>
-                  {(macro?.gold_change_pct || 0) >= 0 ? '+' : ''}{macro?.gold_change_pct || '+0.39'}%
+                  {macro?.gold_change_pct != null ? ((macro.gold_change_pct >= 0 ? '+' : '') + macro.gold_change_pct + '%') : '—'}
                 </span>
               </div>
               <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>BRENT: </span>
-                <strong style={{ color: 'var(--text-primary)' }}>${macro?.brent_oil_price || '74.2'}</strong>
+                <strong style={{ color: 'var(--text-primary)' }}>{macro?.brent_oil_price != null ? '$' + macro.brent_oil_price : '—'}</strong>
                 <span style={{ color: (macro?.brent_oil_change_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginLeft: '3px' }}>
-                  {(macro?.brent_oil_change_pct || 0) >= 0 ? '+' : ''}{macro?.brent_oil_change_pct || '+2.03'}%
+                  {macro?.brent_oil_change_pct != null ? ((macro.brent_oil_change_pct >= 0 ? '+' : '') + macro.brent_oil_change_pct + '%') : '—'}
                 </span>
               </div>
               <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>DXY: </span>
-                <strong style={{ color: 'var(--text-primary)' }}>{macro?.dxy_index || '99.65'}</strong>
+                <strong style={{ color: 'var(--text-primary)' }}>{macro?.dxy_index != null ? macro.dxy_index : '—'}</strong>
                 <span style={{ color: (macro?.dxy_change_pct || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-rust)', marginLeft: '3px' }}>
-                  {(macro?.dxy_change_pct || 0) >= 0 ? '+' : ''}{macro?.dxy_change_pct || '+0.19'}%
+                  {macro?.dxy_change_pct != null ? ((macro.dxy_change_pct >= 0 ? '+' : '') + macro.dxy_change_pct + '%') : '—'}
                 </span>
               </div>
               <div style={{ padding: '4px 6px', background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>US10Y: </span>
-                <strong style={{ color: 'var(--text-primary)' }}>{macro?.us10y_yield || '4.94'}%</strong>
-                <span style={{ color: 'var(--accent-green)', marginLeft: '3px' }}>+2bp</span>
+                <strong style={{ color: 'var(--text-primary)' }}>{macro?.us10y_yield != null ? macro.us10y_yield + '%' : '—'}</strong>
+                <span style={{ color: 'var(--text-muted)', marginLeft: '3px' }}>{macro?.us10y_change_pct != null ? ((macro.us10y_change_pct >= 0 ? '+' : '') + macro.us10y_change_pct + 'bp') : '—'}</span>
               </div>
             </div>
           </div>

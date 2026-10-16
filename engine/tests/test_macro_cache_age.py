@@ -115,7 +115,7 @@ def test_cache_older_than_24h_is_ignored_entirely():
     with mock.patch.object(news_macro, "yf", mock.MagicMock()):
         with mock.patch.object(news_macro.yf, "Ticker", side_effect=_ticker_factory([])):
             result = news_macro.NewsMacroFetcher().fetch_macro_indicators()
-    assert result["gold_price"] != 9999.0
+    assert "gold_price" not in result
     assert result["data_source"] == "fallback"
 
 
@@ -160,6 +160,24 @@ def test_missing_cache_falls_back_and_says_so():
         with mock.patch.object(news_macro.yf, "Ticker", side_effect=_ticker_factory([])):
             result = news_macro.NewsMacroFetcher().fetch_macro_indicators()
     assert result["data_source"] == "fallback"
-    # The hardcoded last-resort prices are documented in the source; what this
-    # test owns is that a missing cache is not silently served as if it existed.
-    assert result["gold_price"] == 2750.0
+    # R-4: a missing cache no longer falls back to invented prices - the price
+    # keys are simply absent, and every consumer must handle that honestly.
+    assert "gold_price" not in result
+
+
+def test_daily_snips_refuses_a_verdict_without_prices():
+    # The old path classified on defaults and emitted a HIGH-confidence badge
+    # plus stop-loss advice from invented data.
+    snips = news_macro.NewsProcessor.build_daily_snips({"data_source": "fallback"}, [])
+    assert snips["market_verdict"]["stance"] == "NO_DATA"
+    assert snips["market_verdict"]["confidence"] == "NONE"
+    assert snips["macro_pulse"] == {}
+    assert "stop loss" not in snips["actionable_guidance"].lower()
+
+
+def test_daily_snips_builds_a_verdict_when_prices_exist():
+    macro = {"gold_price": 4200.0, "brent_oil_price": 84.0, "dxy_index": 103.0, "us10y_yield": 4.1,
+             "gold_change_pct": 0.2, "brent_oil_change_pct": 0.5, "dxy_change_pct": 0.1}
+    snips = news_macro.NewsProcessor.build_daily_snips(macro, [])
+    assert snips["market_verdict"]["stance"] in ("SELECTIVE_BULLISH", "DEFENSIVE", "MIXED_VOLATILE", "CONSOLIDATIVE")
+    assert snips["macro_pulse"]["gold"]["price"] == 4200.0
