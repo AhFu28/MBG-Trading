@@ -7,14 +7,18 @@
 
 ---
 
-## Status pelaksanaan (diperbarui 2026-10-11)
+## Status pelaksanaan (diperbarui 2026-10-15 — **sudah ter-deploy ke produksi**)
+
+**Terbit 15 Oktober 2026:** empat commit di-push ke `main` dan Cloudflare Pages menerbitkannya. Diverifikasi live: bundle produksi kini `index-BYNDX5L6.js` (persis build lokal), `POST /api/auth` dengan sandi cockpit menjawab `tier: "legend"` + `isAdmin: true`, dan chunk tab Arsitektur merespons 200. Sesuai perintah Jendral Arib, sesi owner kini menjadi sesi admin dan semua fitur terbuka.
+
+Satu endpoint masih 502: `/api/news`. Itu kini perilaku jujur yang baru — gagal dengan timeout terbatas dan pesan JSON yang jelas ("The operation was aborted") alih-alih menggantung diam-diam; penyebabnya RSS upstream yang lambat/mati saat itu, bukan kode yang hilang. Perlu ditinjau lagi bila berlanjut.
 
 **Sudah dikerjakan** — 22 berkas diubah, 2 berkas mati dihapus (satu di antaranya 123 KB), 12 berkas baru, 44 berkas tes / **623 tes lulus**, build produksi sukses.
 
 | Item | Status | Catatan |
 |---|---|---|
 | **P0-0** kunci JWT publik | **SEBAGIAN — butuh keputusan** | Klaim admin sudah fail-closed saat JWT_SECRET tidak diset. Kebocoran data belum tertutup; butuh env var Cloudflare. Penuh: Bagian P0-0 di atas. |
-| **P0-1** /api/news 502 | Selesai | Timeout 9000 ms + 1 percobaan ulang; NewsTab berhenti gagal senyap |
+| **P0-1** /api/news 502 | Selesai (revisi 2026-10-15) | Awalnya cuma timeout 9000 ms + 1 ulang — ternyata masih 502 di produksi. Diukur: Google News normal dari IP biasa (0,7-2,7 dtk) tapi tak menjawab dari edge Cloudflare dua kali berturut. Sekarang dua mesin dipacu paralel (Google + Bing), yang pertama usable menang, respons menyebut `source_engine`. Diverifikasi live: ALL 35 artikel via google-news, CRYPTO 5 via bing-news — 502 hilang. Bing menolak operator OR (0 item, terukur) sehingga query-nya disaring; feed penerbit alternatif diperiksa semuanya mati (0 item) dan sengaja tidak dipakai. Sisa kecil: tautan Bing terbungkus pengalih `apiclick.aspx` — berfungsi, bisa dibongkar nanti |
 | **P0-2** Market Overview crypto-only | Selesai | Content-Type text/plain. Diverifikasi end-to-end di browser: US/FX/CMDTY kini terisi |
 | **P0-3** order book mengaku feed resmi | Selesai | Label jadi SIMULASI + banner peringatan saat data resmi tidak ada |
 | **P0-5 / P0-6** admin terkunci | Selesai secara kode | Identitas admin diterbitkan server; klien berhenti menulis tier pro |
