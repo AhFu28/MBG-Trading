@@ -87,6 +87,18 @@ frontend/*.txt
 
 # Archive dumps, session exports & diagnostic bundles (prevent secret leaks)
 *.zip
+
+# --- Engine data artifacts (P0-4 R-3, 2026-10-15) --------------------------
+# Runtime caches, not source. Committing them made every fresh clone's mtime
+# lie (a checkout dates the file "now" while the data is weeks old) and invited
+# readers to treat a fallback copy as an official source.
+#
+# Exactly two cache files are deliberately committed by CI and stay tracked:
+#   - engine/cache/latest_cockpit_bundle.json  (hourly workflow, git add there)
+#   - engine/cache/latest_arena_state.json     (arena workflow)
+engine/cache/*
+!engine/cache/latest_cockpit_bundle.json
+!engine/cache/latest_arena_state.json
 *.tar.gz
 *.7z
 *.rar
