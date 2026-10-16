@@ -550,6 +550,17 @@ const CROSS_MARKET_UNIVERSES = [
       'TVC:PLATINUM', 'TVC:PALLADIUM',
     ],
   },
+  {
+    market: 'COMMODITY',
+    scanner: 'futures',
+    label: 'Komoditas',
+    // Probed 2026-10-16 against the live scanner (P2-7 follow-up): COMEX:HG1!
+    // answers "Copper Futures" 6.6395 (+1.27%) and NYMEX:NG1! answers "Henry Hub
+    // Natural Gas Futures" 3.224 (-0.37%) on the "futures" market - the same
+    // symbols that are dead on "cfd". Market stays COMMODITY so the table groups
+    // them with the rest of the metals and energy.
+    symbols: ['COMEX:HG1!', 'NYMEX:NG1!'],
+  },
 ];
 
 /**

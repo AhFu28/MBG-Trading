@@ -446,9 +446,11 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
   /**
    * Index / macro cards, built only from quotes that are ALREADY on this page.
    *
-   * HONEST GAP: IHSG comes from the bundle seed and DXY from the commodity
-   * ladder, both via livePrices. S&P 500 has no source in this component, so it
-   * is deliberately absent rather than shown with an invented number.
+   * IHSG comes from the bundle seed, DXY and S&P 500 from the commodity/index
+   * ladder, all via livePrices. The S&P 500 gap noted on 2026-10-11 is closed:
+   * SP:SPX was probed live on the "america" scanner (7744.06 on 2026-10-16) and
+   * joins the ladder in useLivePrices.js. A field with no quote still renders
+   * nothing rather than an invented number.
    */
   const indexCards = useMemo(() => {
     const out = [];
@@ -459,6 +461,10 @@ export default function CmcMarketDashboard({ onOpenAsset, onOpenChart, livePrice
     const dxy = livePrices?.DXY;
     if (dxy && Number.isFinite(Number(dxy.price))) {
       out.push({ key: 'CMDTY:DXY', market: 'CMDTY', label: 'DXY', name: 'Indeks dolar AS', price: dxy.price, change24h: dxy.changePct });
+    }
+    const spx = livePrices?.SPX;
+    if (spx && Number.isFinite(Number(spx.price))) {
+      out.push({ key: 'IDX:SPX', market: 'US', label: 'S&P 500', name: 'Indeks S&P 500', price: spx.price, change24h: spx.changePct });
     }
     return out;
   }, [livePrices]);

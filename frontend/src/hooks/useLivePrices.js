@@ -54,11 +54,13 @@ const DEFAULT_FOREX_TICKERS = [
 // marketOverview.js, so two of eight commodity symbols were silently dead.
 // TVC:PLATINUM (1687.8) and TVC:PALLADIUM (1148.0) were added the same day after
 // the probe. Copper (COMEX:HG1!) and natural gas (NYMEX:NG1!) do exist, but only
-// on the separate "futures" scanner market — reaching them means a second request
-// per refresh, which is deliberately out of scope here (P2-7).
+// on the separate "futures" scanner market, so they are fetched by
+// marketOverview.js's futures universe instead of this ladder (P2-7 follow-up,
+// 2026-10-16). SP:SPX joins the ladder, probed the same day: "S&P 500" 7744.06
+// (+0.33%) on the "america" market - it feeds the S&P index card.
 const DEFAULT_COMMODITY_TICKERS = [
   'TVC:GOLD', 'TVC:SILVER', 'FX:USOIL', 'FX:UKOIL', 'TVC:DXY',
-  'TVC:PLATINUM', 'TVC:PALLADIUM'
+  'TVC:PLATINUM', 'TVC:PALLADIUM', 'SP:SPX'
 ];
 
 // Reverse proxy helper with graceful direct fallback (H-06)
@@ -545,6 +547,8 @@ export function useLivePrices(bundleData) {
               aliases.push('UKOIL', 'BRENT', 'OIL_BRENT');
             } else if (rawSym === 'TVC:DXY') {
               aliases.push('DXY', 'USDX');
+            } else if (rawSym === 'SP:SPX') {
+              aliases.push('SPX', 'SP500');
             }
 
             aliases.forEach(key => {
