@@ -10,7 +10,17 @@
 
 ### Fixes
 
+- fix(macro): claim live only when a price actually moved (`8c05d36`)
 - fix(news): unwrap Bing click-tracker links and stop branding unattributed articles (`eaac6fc`)
+
+### Docs
+
+- docs(plan): close P0-4 - cache age guard, untracked artifacts, honest live label (`b377331`)
+- docs(plan): record deployment status and the P0-1 dual-engine revision (`a99c4cc`)
+
+### Chores & Data
+
+- chore(data): stop tracking runtime cache artifacts (P0-4 R-3) (`92c0d8d`)
 
 ## 2026-10-15
 
