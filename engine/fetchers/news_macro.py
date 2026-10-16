@@ -426,6 +426,14 @@ class NewsMacroFetcher:
                 indicators["brent_oil_price"] = 74.20
 
         try:
+            # Snapshot the price fields before the yfinance sweep so the label
+            # below can tell "values actually moved" from "the loop ran and
+            # changed nothing". The old code stamped data_source=live
+            # unconditionally, so a sweep where every ticker returned empty
+            # history still relabelled stale (or hardcoded) numbers as live —
+            # and rewrote the cache with the lie baked in.
+            _price_keys = ("gold_price", "brent_oil_price", "dxy_index", "us10y_yield", "ihsg_price")
+            _before = json.dumps({k: indicators.get(k) for k in _price_keys}, sort_keys=True, default=str)
             for key, symbol in self.tickers.items():
                 t = yf.Ticker(symbol)
                 hist = t.history(period="5d")
@@ -457,15 +465,18 @@ class NewsMacroFetcher:
                     elif key == "ihsg":
                         indicators["ihsg_price"] = round(current, 2)
                         indicators["ihsg_change_pct"] = change_pct
-            indicators["data_source"] = "live"
-            logger.info("Successfully fetched live macro indicators from yfinance.")
-            
-            try:
-                os.makedirs(os.path.dirname(cache_file), exist_ok=True)
-                with open(cache_file, "w") as f:
-                    json.dump(indicators, f)
-            except Exception as e:
-                logger.warning(f"Failed to write macro cache: {e}")
+            moved = json.dumps({k: indicators.get(k) for k in _price_keys}, sort_keys=True, default=str) != _before
+            if not moved:
+                logger.warning("yfinance answered but no price field moved; keeping the honest label instead of claiming live.")
+            else:
+                indicators["data_source"] = "live"
+                logger.info("Successfully fetched live macro indicators from yfinance.")
+                try:
+                    os.makedirs(os.path.dirname(cache_file), exist_ok=True)
+                    with open(cache_file, "w") as f:
+                        json.dump(indicators, f)
+                except Exception as e:
+                    logger.warning(f"Failed to write macro cache: {e}")
                 
         except Exception as e:
             logger.warning(f"Error fetching macro indicators via yfinance: {e}. Using cached/fallback values.")
