@@ -8,18 +8,28 @@
 
 ## 2026-10-16
 
+### Features
+
+- feat(data): copper and natgas via the futures scanner, S&P 500 index card (`0971e95`)
+
 ### Fixes
 
+- fix(macro): remove every invented price from the no-data path (P0-4 R-4) (`5229b52`)
 - fix(macro): claim live only when a price actually moved (`8c05d36`)
 - fix(news): unwrap Bing click-tracker links and stop branding unattributed articles (`eaac6fc`)
 
 ### Docs
 
+- docs(plan): close the copper/natgas and S&P 500 items with probe evidence (`06d02d2`)
+- docs(plan): repair a sentence my truncated-anchor edit had split (`243bdfb`)
+- docs(plan): flag the orphan morning-brief podcast component for a wire-or-delete decision (`2ef45f5`)
+- docs(plan): close R-4 - the invented-price weave ran deeper than planned (`8157532`)
 - docs(plan): close P0-4 - cache age guard, untracked artifacts, honest live label (`b377331`)
 - docs(plan): record deployment status and the P0-1 dual-engine revision (`a99c4cc`)
 
 ### Chores & Data
 
+- chore(dev): stop branding unattributed dev news, close R-4/R-5 in the audit (`46a6bac`)
 - chore(data): stop tracking runtime cache artifacts (P0-4 R-3) (`92c0d8d`)
 
 ## 2026-10-15
