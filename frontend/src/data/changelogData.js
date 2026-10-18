@@ -3,14 +3,53 @@
 
 export const CHANGELOG_DATA = [
   {
+    "id": "pkg-16102026",
+    "sprintLabel": "Audit integritas data & kejujuran tampilan (rilis 15 dan 16 Oktober 2026)",
+    "version": "Package 16102026",
+    "semanticVersion": "Tidak tercatat",
+    "date": "16 Oktober 2026",
+    "status": "LATEST",
+    "statusColor": "var(--accent-green)",
+    "badgeLabel": "LATEST / ANGKA KARANGAN DIHAPUS - ADMIN PENUH - S&P 500, TEMBAGA & GAS ALAM HADIR",
+    "title": "Update 16 Oktober 2026: Audit Kejujuran Data - Verdict Tanpa Data Berhenti Mengkarang Angka, Akses Admin Penuh untuk Pemilik, S&P 500 + Tembaga & Gas Alam Hadir, Tab Arsitektur Publik",
+    "description": "Ringkasan rilis 15-16 Oktober 2026 - Verdict tanpa data berhenti mengkarang angka (NO_DATA, bukan HIGH confidence), akses admin penuh untuk pemilik, kartu S&P 500 dan tabel tembaga & gas alam hadir lewat probe langsung, tab Arsitektur publik, dan generator changelog dari git log dengan redaksi.",
+    "processFlow": [
+      {
+        "step": "P0-2 — Market Overview Lintas Pasar Hidup Kembali",
+        "label": "[DIVERIFIKASI DI BROWSER, 11 OKT] saham US, forex, dan komoditas terisi - bukan crypto saja. Kuncinya header text/plain; application/json memicu preflight CORS yang tidak diizinkan TradingView:"
+      },
+      {
+        "step": "Admin — Sesi Pemilik Menjadi Sesi Admin Penuh",
+        "label": "[PERINTAH JENDRAL ARIB, 15 OKT] pass MBG hanya untuk akses admin, dan semua fitur harus terbuka:"
+      },
+      {
+        "step": "R-4 — Angka Karangan Dihapus dari Jalur Tanpa Data",
+        "label": "[TEMUAN AUDIT] verdict pasar berlabel HIGH confidence plus saran stop loss dibangun dari default (DXY 104,0 dan kawan-kawan) saat semua sumber gagal:"
+      },
+      {
+        "step": "S&P 500, Tembaga & Gas Alam Hadir",
+        "label": "[DIPROBE LANGSUNG 16 OKT] SP:SPX 7.744,06 (+0,33%) - COMEX:HG1! 6,6395 (+1,27%) - NYMEX:NG1! 3,224 (-0,37%):"
+      },
+      {
+        "step": "E-12 — Tab Arsitektur Publik (TIER FREE)",
+        "label": "[LAPORAN JENDRAL ARIB] bagian changelog & arsitektur kok tidak ada ya:"
+      },
+      {
+        "step": "E-6/E-7 — Changelog Otomatis dari Git Log (dengan redaksi)",
+        "label": "[LATAR BELAKANG] changelog tangan selalu basi; draf kini dibangkitkan CI tiap jam dan menolak menerbitkan data pribadi:"
+      }
+    ],
+    "markdownContent": "\n## [2026-10-16] — Audit Kejujuran Data & Kelengkapan Pasar\n\n### Yang berhenti mengkarang\n\n- Verdict pasar tanpa data kini bernama NO_DATA (confidence NONE) - bukan lagi HIGH confidence dari default.\n- Podcast pagi dan grid NewsTab tidak lagi menampilkan angka karangan (DXY 99,65/104/104,5; emas 2750/4262,4; IHSG 6.374,91; VIX 18,0) - field tanpa data merender tanda pisah.\n- /api/news gagal dengan jujur (timeout + dua mesin: Google News dan Bing News) - bukan 502 senyap.\n\n### Yang hadir\n\n- Kartu S&P 500 (SP:SPX) dan tabel tembaga (COMEX:HG1!) serta gas alam (NYMEX:NG1!) - diprobe langsung sebelum dipasang.\n- Tab Arsitektur publik (TIER FREE): sumber data, kadensi, dan keterbatasan per pasar.\n- Akses admin penuh untuk pemilik sesuai perintah Jendral Arib.\n- Generator changelog dari git log berjalan di CI tiap jam, dengan redaksi data pribadi.\n\n### Catatan keamanan\n\n- Sandi cockpit tetap seperti sebelumnya sesuai perintah pemilik. Selama JWT_SECRET belum diset di Cloudflare, sesi admin dapat dipalsukan siapa pun yang membaca repositori publik ini - peringatan yang sama tampil di respons /api/auth.\n\n### Belum selesai\n\n- Jadwal IDX (keputusan desain on-demand pemilik), komponen podcast pagi yang belum tersambung, dan atribusi nomor WhatsApp mitra di kode.\n"
+  },
+  {
     "id": "pkg-06102026",
     "sprintLabel": "Sprint 26, 27, 28, 29, 30 (5 rilis pada 6 Oktober 2026)",
     "version": "Package 06102026",
     "semanticVersion": "Tidak tercatat",
     "date": "6 Oktober 2026",
-    "status": "LATEST",
-    "statusColor": "var(--accent-green)",
-    "badgeLabel": "LATEST / FOREX & EMAS DIPULIHKAN XAU ORA ANA BLAS",
+    "status": "STABLE",
+    "statusColor": "var(--text-muted)",
+    "badgeLabel": "STABLE / FOREX & EMAS DIPULIHKAN XAU ORA ANA BLAS",
     "title": "Update 6 Oktober 2026: Forex & Emas Dipulihkan: XAU Ora Ana Blas + Ora Tau Di-refresh; 24H Change Diperbaiki + Panel \"Uang Sedang Ke Mana\"; Crypto Futures: Data Basi 10 Hari Dipulihkan + Fokus Futures Mu",
     "description": "Ringkasan 5 rilis pada 6 Oktober 2026 - Forex & Emas Dipulihkan: XAU Ora Ana Blas + Ora Tau Di-refresh; 24H Change Diperbaiki + Panel \"Uang Sedang Ke Mana\"; Crypto Futures: Data Basi 10 Hari Dipulihkan + Fokus Futures Murni; Automated WhatsApp Bot Daemon (Baileys + Outbox Queue); One-Click WhatsApp Direct Handoff ([nomor disunting]).",
     "processFlow": [
