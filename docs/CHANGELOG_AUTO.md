@@ -6,6 +6,12 @@
 > Automated data-bundle commits ([skip ci]) are excluded by default.
 > The draft is deterministic — no wall-clock timestamp.
 
+## 2026-10-18
+
+### Docs
+
+- docs(changelog): curated entry for the Oct 15-16 honesty audit releases (`a2b07ad`)
+
 ## 2026-10-16
 
 ### Features
