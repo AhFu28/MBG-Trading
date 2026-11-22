@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-22T00:53:56.545571+00:00",
+  "last_updated": "2026-11-22T02:35:36.367034+00:00",
   "data_sources": {
     "macro": "unknown"
   },
@@ -51128,22 +51128,22 @@
       [
         1.0,
         -0.268,
-        -0.106
+        -0.068
       ],
       [
         -0.268,
         1.0,
-        -0.131
+        -0.123
       ],
       [
-        -0.106,
-        -0.131,
+        -0.068,
+        -0.123,
         1.0
       ]
     ],
     "data_source": "live",
     "sample_size": 22,
-    "last_updated": "2026-11-22T00:53:56.521206"
+    "last_updated": "2026-11-22T02:35:36.345757"
   },
   "whale_intelligence": {
     "crypto_whales": [
@@ -53151,7 +53151,7 @@
         "take_profit_1": 369.96,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.315710+00:00"
+        "updated_at": "2026-11-22T02:35:36.168543+00:00"
       },
       {
         "ticker": "NVDA",
@@ -53177,7 +53177,7 @@
         "take_profit_1": 135.57,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.316745+00:00"
+        "updated_at": "2026-11-22T02:35:36.169716+00:00"
       },
       {
         "ticker": "MSFT",
@@ -53203,7 +53203,7 @@
         "take_profit_1": 523.28,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.317655+00:00"
+        "updated_at": "2026-11-22T02:35:36.170801+00:00"
       },
       {
         "ticker": "META",
@@ -53229,7 +53229,7 @@
         "take_profit_1": 605.71,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.318598+00:00"
+        "updated_at": "2026-11-22T02:35:36.171876+00:00"
       },
       {
         "ticker": "GOOGL",
@@ -53255,7 +53255,7 @@
         "take_profit_1": 286.51,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.319483+00:00"
+        "updated_at": "2026-11-22T02:35:36.172889+00:00"
       },
       {
         "ticker": "AMD",
@@ -53281,7 +53281,7 @@
         "take_profit_1": 458.34,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.320378+00:00"
+        "updated_at": "2026-11-22T02:35:36.173887+00:00"
       },
       {
         "ticker": "AVGO",
@@ -53307,7 +53307,7 @@
         "take_profit_1": 328.76,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.321247+00:00"
+        "updated_at": "2026-11-22T02:35:36.174890+00:00"
       },
       {
         "ticker": "CRM",
@@ -53333,7 +53333,7 @@
         "take_profit_1": 195.07,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.322131+00:00"
+        "updated_at": "2026-11-22T02:35:36.175927+00:00"
       },
       {
         "ticker": "PLTR",
@@ -53359,7 +53359,7 @@
         "take_profit_1": 154.97,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.323018+00:00"
+        "updated_at": "2026-11-22T02:35:36.176921+00:00"
       },
       {
         "ticker": "SMCI",
@@ -53385,7 +53385,7 @@
         "take_profit_1": 23.38,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.323920+00:00"
+        "updated_at": "2026-11-22T02:35:36.178002+00:00"
       },
       {
         "ticker": "AMZN",
@@ -53411,7 +53411,7 @@
         "take_profit_1": 266.57,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.324745+00:00"
+        "updated_at": "2026-11-22T02:35:36.178993+00:00"
       },
       {
         "ticker": "TSLA",
@@ -53437,7 +53437,7 @@
         "take_profit_1": 373.49,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.325584+00:00"
+        "updated_at": "2026-11-22T02:35:36.179980+00:00"
       },
       {
         "ticker": "NFLX",
@@ -53463,7 +53463,7 @@
         "take_profit_1": 61.27,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.326416+00:00"
+        "updated_at": "2026-11-22T02:35:36.180953+00:00"
       },
       {
         "ticker": "COIN",
@@ -53489,7 +53489,7 @@
         "take_profit_1": 110.13,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.327241+00:00"
+        "updated_at": "2026-11-22T02:35:36.181924+00:00"
       },
       {
         "ticker": "SOFI",
@@ -53515,7 +53515,7 @@
         "take_profit_1": 13.48,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.328084+00:00"
+        "updated_at": "2026-11-22T02:35:36.182895+00:00"
       },
       {
         "ticker": "JPM",
@@ -53541,7 +53541,7 @@
         "take_profit_1": 335.37,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.328907+00:00"
+        "updated_at": "2026-11-22T02:35:36.183872+00:00"
       },
       {
         "ticker": "GS",
@@ -53567,7 +53567,7 @@
         "take_profit_1": 853.95,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.329703+00:00"
+        "updated_at": "2026-11-22T02:35:36.184896+00:00"
       },
       {
         "ticker": "V",
@@ -53593,7 +53593,7 @@
         "take_profit_1": 434.02,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.331007+00:00"
+        "updated_at": "2026-11-22T02:35:36.185911+00:00"
       },
       {
         "ticker": "MA",
@@ -53619,7 +53619,7 @@
         "take_profit_1": 675.64,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.331863+00:00"
+        "updated_at": "2026-11-22T02:35:36.186894+00:00"
       },
       {
         "ticker": "UNH",
@@ -53645,7 +53645,7 @@
         "take_profit_1": 367.04,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.332684+00:00"
+        "updated_at": "2026-11-22T02:35:36.187874+00:00"
       },
       {
         "ticker": "JNJ",
@@ -53671,7 +53671,7 @@
         "take_profit_1": 292.11,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.333498+00:00"
+        "updated_at": "2026-11-22T02:35:36.188834+00:00"
       },
       {
         "ticker": "PFE",
@@ -53697,7 +53697,7 @@
         "take_profit_1": 29.59,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.334303+00:00"
+        "updated_at": "2026-11-22T02:35:36.189814+00:00"
       },
       {
         "ticker": "LLY",
@@ -53723,7 +53723,7 @@
         "take_profit_1": 1454.88,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.335144+00:00"
+        "updated_at": "2026-11-22T02:35:36.190820+00:00"
       },
       {
         "ticker": "XOM",
@@ -53749,7 +53749,7 @@
         "take_profit_1": 172.79,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.335966+00:00"
+        "updated_at": "2026-11-22T02:35:36.191812+00:00"
       },
       {
         "ticker": "CVX",
@@ -53775,7 +53775,7 @@
         "take_profit_1": 225.04,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.336757+00:00"
+        "updated_at": "2026-11-22T02:35:36.192774+00:00"
       },
       {
         "ticker": "BA",
@@ -53801,7 +53801,7 @@
         "take_profit_1": 168.36,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.337563+00:00"
+        "updated_at": "2026-11-22T02:35:36.193755+00:00"
       },
       {
         "ticker": "GE",
@@ -53827,7 +53827,7 @@
         "take_profit_1": 334.39,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.338391+00:00"
+        "updated_at": "2026-11-22T02:35:36.194763+00:00"
       },
       {
         "ticker": "CAT",
@@ -53853,7 +53853,7 @@
         "take_profit_1": 551.29,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.339247+00:00"
+        "updated_at": "2026-11-22T02:35:36.195809+00:00"
       },
       {
         "ticker": "MU",
@@ -53879,7 +53879,7 @@
         "take_profit_1": 642.07,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.340048+00:00"
+        "updated_at": "2026-11-22T02:35:36.196777+00:00"
       },
       {
         "ticker": "INTC",
@@ -53905,7 +53905,7 @@
         "take_profit_1": 55.38,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.340879+00:00"
+        "updated_at": "2026-11-22T02:35:36.197736+00:00"
       },
       {
         "ticker": "ARM",
@@ -53931,7 +53931,7 @@
         "take_profit_1": 164.38,
         "risk_reward_ratio": 2.0,
         "data_source": "yfinance_live",
-        "updated_at": "2026-11-21T03:24:34.341698+00:00"
+        "updated_at": "2026-11-22T02:35:36.198704+00:00"
       }
     ],
     "earnings_calendar": [],
@@ -53977,7 +53977,7 @@
       "INTC": "Price            Open       High        Low      Close     Volume\nDate                                                             \n2026-08-21  92.709999  92.769997  89.750000  90.070000   91670100\n2026-08-24  88.860001  88.910004  85.139999  87.260002   96903400\n2026-08-25  90.059998  90.180000  87.290001  87.480003   81853800\n2026-08-26  86.809998  88.279999  85.629997  88.239998   75752800\n2026-08-27  89.910004  92.949997  88.459999  92.089996  100556800\n...               ...        ...        ...        ...        ...\n2026-11-16  56.709999  57.200001  54.889999  55.470001  105966900\n2026-11-17  55.169998  55.240002  52.419998  55.169998  104613600\n2026-11-18  55.389999  56.000000  53.439999  54.669998   81360900\n2026-11-19  57.500000  59.439999  54.849998  55.720001  133949100\n2026-11-20  54.310001  56.480000  51.099998  51.279999  207757700\n\n[65 rows x 5 columns]",
       "ARM": "Price             Open        High         Low       Close    Volume\nDate                                                                \n2026-08-21  253.460007  255.929993  242.500000  243.320007   3687200\n2026-08-24  236.339996  240.250000  233.289993  238.779999   3305700\n2026-08-25  244.809998  247.990005  240.339996  241.559998   3485400\n2026-08-26  240.289993  253.000000  238.500000  251.059998   4092200\n2026-08-27  255.460007  267.690002  249.464996  255.210007   4880000\n...                ...         ...         ...         ...       ...\n2026-11-16  180.445007  181.830002  174.639999  175.050003   5156200\n2026-11-17  178.550003  184.929993  173.199997  183.389999   6269300\n2026-11-18  188.690002  191.649994  181.001007  182.759995   4394500\n2026-11-19  190.149994  190.649002  176.470001  177.169998   3884900\n2026-11-20  169.070007  170.675003  150.369995  152.199997  10619600\n\n[65 rows x 5 columns]"
     },
-    "updated_at": "2026-11-21T03:24:34.341716+00:00"
+    "updated_at": "2026-11-22T02:35:36.198722+00:00"
   },
   "arena_state": {
     "agents": [
@@ -53997,8 +53997,8 @@
           "trailingTightness": 1.0
         },
         "winRate": 50.0,
-        "totalTrades": 26,
-        "totalRoiPct": 0,
+        "totalTrades": 437,
+        "totalRoiPct": 31.6,
         "activePositionsCount": 3
       },
       {
@@ -54016,9 +54016,9 @@
           "confidenceBoost": 0,
           "trailingTightness": 1.0
         },
-        "winRate": 46.2,
-        "totalTrades": 26,
-        "totalRoiPct": 0,
+        "winRate": 51.9,
+        "totalTrades": 681,
+        "totalRoiPct": -42.8,
         "activePositionsCount": 3
       },
       {
@@ -54036,9 +54036,9 @@
           "confidenceBoost": 0,
           "trailingTightness": 1.0
         },
-        "winRate": 56.2,
-        "totalTrades": 16,
-        "totalRoiPct": 0,
+        "winRate": 50.0,
+        "totalTrades": 245,
+        "totalRoiPct": 8.37,
         "activePositionsCount": 3
       },
       {
@@ -54057,8 +54057,8 @@
           "trailingTightness": 1.0
         },
         "winRate": 44.1,
-        "totalTrades": 34,
-        "totalRoiPct": 0,
+        "totalTrades": 706,
+        "totalRoiPct": 19.63,
         "activePositionsCount": 3
       },
       {
@@ -54077,8 +54077,8 @@
           "trailingTightness": 1.0
         },
         "winRate": 52.9,
-        "totalTrades": 17,
-        "totalRoiPct": 0,
+        "totalTrades": 280,
+        "totalRoiPct": 17.94,
         "activePositionsCount": 3
       },
       {
@@ -54097,8 +54097,8 @@
           "trailingTightness": 1.0
         },
         "winRate": 50.0,
-        "totalTrades": 24,
-        "totalRoiPct": 0,
+        "totalTrades": 342,
+        "totalRoiPct": -6.26,
         "activePositionsCount": 3
       },
       {
@@ -54116,9 +54116,9 @@
           "confidenceBoost": 0,
           "trailingTightness": 1.0
         },
-        "winRate": 53.3,
-        "totalTrades": 30,
-        "totalRoiPct": 0,
+        "winRate": 56.2,
+        "totalTrades": 673,
+        "totalRoiPct": 82.75,
         "activePositionsCount": 3
       },
       {
@@ -54136,9 +54136,9 @@
           "confidenceBoost": 0,
           "trailingTightness": 1.0
         },
-        "winRate": 55.2,
-        "totalTrades": 29,
-        "totalRoiPct": 0,
+        "winRate": 59.3,
+        "totalTrades": 659,
+        "totalRoiPct": -35.81,
         "activePositionsCount": 3
       },
       {
@@ -54157,8 +54157,8 @@
           "trailingTightness": 1.0
         },
         "winRate": 60.7,
-        "totalTrades": 28,
-        "totalRoiPct": 0,
+        "totalTrades": 626,
+        "totalRoiPct": 77.04,
         "activePositionsCount": 3
       },
       {
@@ -54176,9 +54176,9 @@
           "confidenceBoost": 0,
           "trailingTightness": 1.0
         },
-        "winRate": 55.0,
-        "totalTrades": 20,
-        "totalRoiPct": 0,
+        "winRate": 50.0,
+        "totalTrades": 270,
+        "totalRoiPct": 25.94,
         "activePositionsCount": 3
       },
       {
@@ -54196,9 +54196,9 @@
           "confidenceBoost": 0,
           "trailingTightness": 1.0
         },
-        "winRate": 62.1,
-        "totalTrades": 29,
-        "totalRoiPct": 0,
+        "winRate": 56.7,
+        "totalTrades": 582,
+        "totalRoiPct": -72.85,
         "activePositionsCount": 3
       },
       {
@@ -54216,9 +54216,9 @@
           "confidenceBoost": 0,
           "trailingTightness": 1.0
         },
-        "winRate": 44.0,
-        "totalTrades": 25,
-        "totalRoiPct": 0,
+        "winRate": 45.8,
+        "totalTrades": 628,
+        "totalRoiPct": -0.92,
         "activePositionsCount": 3
       },
       {
@@ -54236,9 +54236,9 @@
           "confidenceBoost": 0,
           "trailingTightness": 1.0
         },
-        "winRate": 64.7,
-        "totalTrades": 17,
-        "totalRoiPct": 0,
+        "winRate": 65.0,
+        "totalTrades": 248,
+        "totalRoiPct": 2.12,
         "activePositionsCount": 3
       },
       {
@@ -54256,9 +54256,9 @@
           "confidenceBoost": 0,
           "trailingTightness": 1.0
         },
-        "winRate": 45.5,
-        "totalTrades": 22,
-        "totalRoiPct": 0,
+        "winRate": 50.0,
+        "totalTrades": 317,
+        "totalRoiPct": 69.09,
         "activePositionsCount": 3
       },
       {
@@ -54276,9 +54276,9 @@
           "confidenceBoost": 0,
           "trailingTightness": 1.0
         },
-        "winRate": 56.7,
-        "totalTrades": 30,
-        "totalRoiPct": 0,
+        "winRate": 54.8,
+        "totalTrades": 549,
+        "totalRoiPct": -13.86,
         "activePositionsCount": 3
       },
       {
@@ -54296,9 +54296,9 @@
           "confidenceBoost": 0,
           "trailingTightness": 1.0
         },
-        "winRate": 44.4,
-        "totalTrades": 27,
-        "totalRoiPct": 0,
+        "winRate": 41.4,
+        "totalTrades": 616,
+        "totalRoiPct": -16.73,
         "activePositionsCount": 3
       }
     ],
@@ -54310,11 +54310,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 4.33e-06,
-        "currentPrice": 3.422e-06,
+        "currentPrice": 3.41e-06,
         "slPrice": 0.0,
         "tp1Price": 0.0,
         "tp2Price": 0.0,
-        "roiPct": -20.97,
+        "roiPct": -21.25,
         "trailingStopActive": false,
         "openedAt": "2026-10-06T05:26:08.338734+00:00",
         "rationale": "STEAM [SMC-Tight]: Deep discount zone (22%) pada PEPEUSDT."
@@ -54326,11 +54326,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 4.33e-06,
-        "currentPrice": 3.422e-06,
+        "currentPrice": 3.41e-06,
         "slPrice": 0.0,
         "tp1Price": 0.0,
         "tp2Price": 0.0,
-        "roiPct": 20.97,
+        "roiPct": 21.25,
         "trailingStopActive": false,
         "openedAt": "2026-10-06T05:26:08.338925+00:00",
         "rationale": "STORM [Donchian-Fast]: Early breakout (22%) pada PEPEUSDT."
@@ -54342,11 +54342,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 4.33e-06,
-        "currentPrice": 3.422e-06,
+        "currentPrice": 3.41e-06,
         "slPrice": 0.0,
         "tp1Price": 0.0,
         "tp2Price": 0.0,
-        "roiPct": -20.97,
+        "roiPct": -21.25,
         "trailingStopActive": false,
         "openedAt": "2026-10-06T05:26:08.339768+00:00",
         "rationale": "SANDSTORM [Fade Break]: False-breakout fade pada PEPEUSDT."
@@ -54358,11 +54358,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 4.33e-06,
-        "currentPrice": 3.422e-06,
+        "currentPrice": 3.41e-06,
         "slPrice": 0.0,
         "tp1Price": 0.0,
         "tp2Price": 0.0,
-        "roiPct": 20.97,
+        "roiPct": 21.25,
         "trailingStopActive": false,
         "openedAt": "2026-10-06T05:26:08.340228+00:00",
         "rationale": "CYCLONE [Asym Reversal]: Reversal eruption pada PEPEUSDT."
@@ -54406,11 +54406,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 1.311,
-        "currentPrice": 1.3067,
+        "currentPrice": 1.302,
         "slPrice": 1.3307,
         "tp1Price": 1.2717,
         "tp2Price": 1.2454,
-        "roiPct": 0.33,
+        "roiPct": 0.69,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:49:06.680383+00:00",
         "rationale": "WATER [SMC]: Liquidity sweep Premium (97%) pada RENDERUSDT."
@@ -54438,11 +54438,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 70.74,
-        "currentPrice": 70.33,
+        "currentPrice": 70.4,
         "slPrice": 69.68,
         "tp1Price": 72.86,
         "tp2Price": 74.28,
-        "roiPct": -0.58,
+        "roiPct": -0.48,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:49:06.680725+00:00",
         "rationale": "AIR [Donchian]: Range breakout (94%) ekspansi tren pada SOLUSDT."
@@ -54470,11 +54470,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 1.311,
-        "currentPrice": 1.3067,
+        "currentPrice": 1.302,
         "slPrice": 1.3307,
         "tp1Price": 1.2717,
         "tp2Price": 1.2454,
-        "roiPct": 0.33,
+        "roiPct": 0.69,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:49:06.681162+00:00",
         "rationale": "STEAM [SMC-Tight]: Deep premium zone (97%) pada RENDERUSDT."
@@ -54486,11 +54486,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 1.311,
-        "currentPrice": 1.3067,
+        "currentPrice": 1.302,
         "slPrice": 1.2913,
         "tp1Price": 1.3503,
         "tp2Price": 1.3765,
-        "roiPct": -0.33,
+        "roiPct": -0.69,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:49:06.681294+00:00",
         "rationale": "STORM [Donchian-Fast]: Early breakout (97%) pada RENDERUSDT."
@@ -54534,11 +54534,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 1.311,
-        "currentPrice": 1.3067,
+        "currentPrice": 1.302,
         "slPrice": 1.3307,
         "tp1Price": 1.2717,
         "tp2Price": 1.2454,
-        "roiPct": 0.33,
+        "roiPct": 0.69,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:49:06.681655+00:00",
         "rationale": "LAVA [Capitulation]: Panic sell absorption bounce pada RENDERUSDT."
@@ -54550,11 +54550,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 0.1458,
-        "currentPrice": 0.1443,
+        "currentPrice": 0.1444,
         "slPrice": 0.1453,
         "tp1Price": 0.1414,
         "tp2Price": 0.1385,
-        "roiPct": 1.03,
+        "roiPct": 0.96,
         "trailingStopActive": true,
         "openedAt": "2026-11-21T18:49:06.681755+00:00",
         "rationale": "SANDSTORM [Fade Break]: False-breakout fade pada ADAUSDT."
@@ -54566,11 +54566,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 1682.32,
-        "currentPrice": 1683.65,
+        "currentPrice": 1685.88,
         "slPrice": 1657.09,
         "tp1Price": 1732.79,
         "tp2Price": 1766.44,
-        "roiPct": 0.08,
+        "roiPct": 0.21,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:49:06.681865+00:00",
         "rationale": "TEMPEST [Triple Confluence]: Aligned multi-factor pada ETHUSDT."
@@ -54582,11 +54582,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 1682.32,
-        "currentPrice": 1683.65,
+        "currentPrice": 1685.88,
         "slPrice": 1657.09,
         "tp1Price": 1732.79,
         "tp2Price": 1766.44,
-        "roiPct": 0.08,
+        "roiPct": 0.21,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:49:06.681977+00:00",
         "rationale": "GEOTHERMAL [Vol Expansion]: Burst (+4.13%) pada ETHUSDT."
@@ -54598,11 +54598,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 70.74,
-        "currentPrice": 70.33,
+        "currentPrice": 70.4,
         "slPrice": 69.68,
         "tp1Price": 72.86,
         "tp2Price": 74.28,
-        "roiPct": -0.58,
+        "roiPct": -0.48,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:49:06.682101+00:00",
         "rationale": "OCEANIC [Channel Rev]: Channel extreme (94%) pada SOLUSDT."
@@ -54614,11 +54614,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 0.1458,
-        "currentPrice": 0.1443,
+        "currentPrice": 0.1444,
         "slPrice": 0.1453,
         "tp1Price": 0.1414,
         "tp2Price": 0.1385,
-        "roiPct": 1.03,
+        "roiPct": 0.96,
         "trailingStopActive": true,
         "openedAt": "2026-11-21T18:49:06.682284+00:00",
         "rationale": "CYCLONE [Asym Reversal]: Reversal eruption pada ADAUSDT."
@@ -54630,11 +54630,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 1682.32,
-        "currentPrice": 1683.65,
+        "currentPrice": 1685.88,
         "slPrice": 1657.09,
         "tp1Price": 1732.79,
         "tp2Price": 1766.44,
-        "roiPct": 0.08,
+        "roiPct": 0.21,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:49:06.682485+00:00",
         "rationale": "AVATAR [Quad Synthesis]: Sovereign confluence pada ETHUSDT."
@@ -54646,11 +54646,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 1682.32,
-        "currentPrice": 1683.65,
+        "currentPrice": 1685.88,
         "slPrice": 1657.09,
         "tp1Price": 1732.79,
         "tp2Price": 1766.44,
-        "roiPct": 0.08,
+        "roiPct": 0.21,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:49:06.682693+00:00",
         "rationale": "CHAOS [Adaptive]: Dynamic sampling (+4.13%) pada ETHUSDT."
@@ -54662,11 +54662,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 0.1458,
-        "currentPrice": 0.1443,
+        "currentPrice": 0.1444,
         "slPrice": 0.1453,
         "tp1Price": 0.1414,
         "tp2Price": 0.1385,
-        "roiPct": 1.03,
+        "roiPct": 0.96,
         "trailingStopActive": true,
         "openedAt": "2026-11-21T18:50:06.352758+00:00",
         "rationale": "WATER [SMC]: Liquidity sweep Premium (97%) pada ADAUSDT."
@@ -54678,11 +54678,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 0.1458,
-        "currentPrice": 0.1443,
+        "currentPrice": 0.1444,
         "slPrice": 0.1436,
         "tp1Price": 0.1502,
         "tp2Price": 0.1531,
-        "roiPct": -1.03,
+        "roiPct": -0.96,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.352978+00:00",
         "rationale": "FIRE [Momentum]: Volatility surge (+3.85%) breakout pada ADAUSDT."
@@ -54694,11 +54694,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 548.35,
-        "currentPrice": 549.75,
+        "currentPrice": 549.38,
         "slPrice": 540.12,
         "tp1Price": 564.8,
         "tp2Price": 575.77,
-        "roiPct": 0.26,
+        "roiPct": 0.19,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.353104+00:00",
         "rationale": "AIR [Donchian]: Range breakout (94%) ekspansi tren pada BNBUSDT."
@@ -54710,11 +54710,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 0.9348,
-        "currentPrice": 0.9293,
+        "currentPrice": 0.9328,
         "slPrice": 0.9488,
         "tp1Price": 0.9068,
         "tp2Price": 0.8881,
-        "roiPct": 0.59,
+        "roiPct": 0.21,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.353234+00:00",
         "rationale": "EARTH [Mean Reversion]: Statistical support bounce (+3.38%) pada XRPUSDT."
@@ -54726,11 +54726,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 0.9348,
-        "currentPrice": 0.9293,
+        "currentPrice": 0.9328,
         "slPrice": 0.9208,
         "tp1Price": 0.9628,
         "tp2Price": 0.9815,
-        "roiPct": -0.59,
+        "roiPct": -0.21,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.353352+00:00",
         "rationale": "STORM [Donchian-Fast]: Early breakout (97%) pada XRPUSDT."
@@ -54742,11 +54742,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 0.9348,
-        "currentPrice": 0.9293,
+        "currentPrice": 0.9328,
         "slPrice": 0.9488,
         "tp1Price": 0.9068,
         "tp2Price": 0.8881,
-        "roiPct": 0.59,
+        "roiPct": 0.21,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.353479+00:00",
         "rationale": "MUD [Deep Value]: Accumulation at washed-out lows (+3.38%) pada XRPUSDT."
@@ -54758,11 +54758,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 0.9348,
-        "currentPrice": 0.9293,
+        "currentPrice": 0.9328,
         "slPrice": 0.9208,
         "tp1Price": 0.9628,
         "tp2Price": 0.9815,
-        "roiPct": -0.59,
+        "roiPct": -0.21,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.353606+00:00",
         "rationale": "LIGHTNING [Impulse]: Violent thrust (+3.38%) pada XRPUSDT."
@@ -54774,11 +54774,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 70.79,
-        "currentPrice": 70.33,
+        "currentPrice": 70.4,
         "slPrice": 71.85,
         "tp1Price": 68.67,
         "tp2Price": 67.25,
-        "roiPct": 0.65,
+        "roiPct": 0.55,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.353837+00:00",
         "rationale": "SANDSTORM [Fade Break]: False-breakout fade pada SOLUSDT."
@@ -54790,11 +54790,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 60133.3,
-        "currentPrice": 60203.88,
+        "currentPrice": 60324.21,
         "slPrice": 59231.3,
         "tp1Price": 61937.3,
         "tp2Price": 63139.97,
-        "roiPct": 0.12,
+        "roiPct": 0.32,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.353961+00:00",
         "rationale": "TEMPEST [Triple Confluence]: Aligned multi-factor pada BTCUSDT."
@@ -54806,11 +54806,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 60133.3,
-        "currentPrice": 60203.88,
+        "currentPrice": 60324.21,
         "slPrice": 59231.3,
         "tp1Price": 61937.3,
         "tp2Price": 63139.97,
-        "roiPct": 0.12,
+        "roiPct": 0.32,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.354197+00:00",
         "rationale": "GEOTHERMAL [Vol Expansion]: Burst (+3.11%) pada BTCUSDT."
@@ -54822,11 +54822,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 548.35,
-        "currentPrice": 549.75,
+        "currentPrice": 549.38,
         "slPrice": 540.12,
         "tp1Price": 564.8,
         "tp2Price": 575.77,
-        "roiPct": 0.26,
+        "roiPct": 0.19,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.354279+00:00",
         "rationale": "OCEANIC [Channel Rev]: Channel extreme (94%) pada BNBUSDT."
@@ -54838,11 +54838,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 70.79,
-        "currentPrice": 70.33,
+        "currentPrice": 70.4,
         "slPrice": 71.85,
         "tp1Price": 68.67,
         "tp2Price": 67.25,
-        "roiPct": 0.65,
+        "roiPct": 0.55,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.354405+00:00",
         "rationale": "CYCLONE [Asym Reversal]: Reversal eruption pada SOLUSDT."
@@ -54854,11 +54854,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 60133.3,
-        "currentPrice": 60203.88,
+        "currentPrice": 60324.21,
         "slPrice": 59231.3,
         "tp1Price": 61937.3,
         "tp2Price": 63139.97,
-        "roiPct": 0.12,
+        "roiPct": 0.32,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.354532+00:00",
         "rationale": "AVATAR [Quad Synthesis]: Sovereign confluence pada BTCUSDT."
@@ -54870,11 +54870,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 60133.3,
-        "currentPrice": 60203.88,
+        "currentPrice": 60324.21,
         "slPrice": 59231.3,
         "tp1Price": 61937.3,
         "tp2Price": 63139.97,
-        "roiPct": 0.12,
+        "roiPct": 0.32,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:50:06.354658+00:00",
         "rationale": "CHAOS [Adaptive]: Dynamic sampling (+3.11%) pada BTCUSDT."
@@ -54886,11 +54886,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 8.617,
-        "currentPrice": 8.597,
+        "currentPrice": 8.602,
         "slPrice": 8.4877,
         "tp1Price": 8.8755,
         "tp2Price": 9.0479,
-        "roiPct": -0.23,
+        "roiPct": -0.17,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:51:06.341347+00:00",
         "rationale": "FIRE [Momentum]: Volatility surge (+2.69%) breakout pada LINKUSDT."
@@ -54902,11 +54902,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 8.617,
-        "currentPrice": 8.597,
+        "currentPrice": 8.602,
         "slPrice": 8.7463,
         "tp1Price": 8.3585,
         "tp2Price": 8.1861,
-        "roiPct": 0.23,
+        "roiPct": 0.17,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:51:06.341615+00:00",
         "rationale": "MUD [Deep Value]: Accumulation at washed-out lows (+2.69%) pada LINKUSDT."
@@ -54918,11 +54918,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 8.617,
-        "currentPrice": 8.597,
+        "currentPrice": 8.602,
         "slPrice": 8.7463,
         "tp1Price": 8.3585,
         "tp2Price": 8.1861,
-        "roiPct": 0.23,
+        "roiPct": 0.17,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:51:06.341794+00:00",
         "rationale": "LIGHTNING [Impulse]: Violent thrust (+2.69%) pada LINKUSDT."
@@ -54934,11 +54934,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 8.617,
-        "currentPrice": 8.597,
+        "currentPrice": 8.602,
         "slPrice": 8.7463,
         "tp1Price": 8.3585,
         "tp2Price": 8.1861,
-        "roiPct": 0.23,
+        "roiPct": 0.17,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:51:06.341956+00:00",
         "rationale": "LAVA [Capitulation]: Panic sell absorption bounce pada LINKUSDT."
@@ -54950,11 +54950,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 0.0553,
-        "currentPrice": 0.05522,
+        "currentPrice": 0.05527,
         "slPrice": 0.0545,
         "tp1Price": 0.057,
         "tp2Price": 0.0581,
-        "roiPct": -0.14,
+        "roiPct": -0.05,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:51:06.342139+00:00",
         "rationale": "TEMPEST [Triple Confluence]: Aligned multi-factor pada DOGEUSDT."
@@ -54966,11 +54966,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 0.0553,
-        "currentPrice": 0.05522,
+        "currentPrice": 0.05527,
         "slPrice": 0.0545,
         "tp1Price": 0.057,
         "tp2Price": 0.0581,
-        "roiPct": -0.14,
+        "roiPct": -0.05,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:51:06.342303+00:00",
         "rationale": "GEOTHERMAL [Vol Expansion]: Burst (+2.69%) pada DOGEUSDT."
@@ -54982,11 +54982,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 0.0553,
-        "currentPrice": 0.05522,
+        "currentPrice": 0.05527,
         "slPrice": 0.0545,
         "tp1Price": 0.057,
         "tp2Price": 0.0581,
-        "roiPct": -0.14,
+        "roiPct": -0.05,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:51:06.342472+00:00",
         "rationale": "AVATAR [Quad Synthesis]: Sovereign confluence pada DOGEUSDT."
@@ -54998,11 +54998,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 0.0553,
-        "currentPrice": 0.05522,
+        "currentPrice": 0.05527,
         "slPrice": 0.0545,
         "tp1Price": 0.057,
         "tp2Price": 0.0581,
-        "roiPct": -0.14,
+        "roiPct": -0.05,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T18:51:06.342633+00:00",
         "rationale": "CHAOS [Adaptive]: Dynamic sampling (+2.69%) pada DOGEUSDT."
@@ -55014,11 +55014,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 548.93,
-        "currentPrice": 549.75,
+        "currentPrice": 549.38,
         "slPrice": 557.16,
         "tp1Price": 532.46,
         "tp2Price": 521.48,
-        "roiPct": -0.15,
+        "roiPct": -0.08,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T19:25:06.358515+00:00",
         "rationale": "WATER [SMC]: Liquidity sweep Premium (96%) pada BNBUSDT."
@@ -55030,11 +55030,11 @@
         "market": "CRYPTO",
         "direction": "LONG",
         "entryPrice": 0.1091,
-        "currentPrice": 0.1086,
+        "currentPrice": 0.1088,
         "slPrice": 0.1075,
         "tp1Price": 0.1124,
         "tp2Price": 0.1146,
-        "roiPct": -0.46,
+        "roiPct": -0.27,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T23:03:06.277468+00:00",
         "rationale": "LAVA [Capitulation]: Panic sell absorption bounce pada FETUSDT."
@@ -55046,11 +55046,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 0.109,
-        "currentPrice": 0.1086,
+        "currentPrice": 0.1088,
         "slPrice": 0.1106,
         "tp1Price": 0.1057,
         "tp2Price": 0.1035,
-        "roiPct": 0.37,
+        "roiPct": 0.18,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T23:56:06.343376+00:00",
         "rationale": "EARTH [Mean Reversion]: Statistical support bounce (-4.55%) pada FETUSDT."
@@ -55062,11 +55062,11 @@
         "market": "CRYPTO",
         "direction": "SHORT",
         "entryPrice": 548.68,
-        "currentPrice": 549.75,
+        "currentPrice": 549.38,
         "slPrice": 556.91,
         "tp1Price": 532.22,
         "tp2Price": 521.25,
-        "roiPct": -0.2,
+        "roiPct": -0.13,
         "trailingStopActive": false,
         "openedAt": "2026-11-21T23:56:06.343613+00:00",
         "rationale": "STEAM [SMC-Tight]: Deep premium zone (95%) pada BNBUSDT."
@@ -61475,7 +61475,7 @@
       }
     ],
     "session_id": 1790346473,
-    "last_evaluated": "2026-11-22T00:53:56.525558+00:00"
+    "last_evaluated": "2026-11-22T00:13:06.473775+00:00"
   },
   "geopolitical_threat": {
     "defcon_level": 3,
@@ -61493,12 +61493,12 @@
     "latency_ms": 11600,
     "evaluated_at": "2026-11-22T00:53:45.485963+00:00"
   },
-  "mode": "hourly_crypto_macro",
+  "mode": "us_stocks",
   "section_timestamps": {
     "idx": "2026-10-05T07:43:06.242975+00:00",
     "crypto": "2026-11-22T00:53:56.545556+00:00",
     "macro": "2026-11-22T00:53:56.545558+00:00",
     "trade_plans": "2026-10-05T07:43:06.242975+00:00"
   },
-  "execution_duration_sec": 55.42
+  "execution_duration_sec": 2.18
 }
